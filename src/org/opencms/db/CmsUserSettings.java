@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/06/25 11:38:02 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsTaskService;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -53,7 +52,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.33 $
  * 
  * @since 6.0.0
  */
@@ -163,6 +162,45 @@ public class CmsUserSettings {
 
     private String m_workplaceReportType;
 
+    /** Flag for displaying the date created column. */
+    public static final int FILELIST_DATE_CREATED = 1024;
+
+    /** Flag for displaying the date expired column. */
+    public static final int FILELIST_DATE_EXPIRED = 8192;
+
+    /** Flag for displaying the changed column. */
+    public static final int FILELIST_DATE_LASTMODIFIED = 4;
+
+    /** Flag for displaying the date released column. */
+    public static final int FILELIST_DATE_RELEASED = 4096;
+
+    /** Flag for displaying the locked column. */
+    public static final int FILELIST_LOCKEDBY = 256;
+
+    /** Flag for displaying the name column. */
+    public static final int FILELIST_NAME = 512;
+
+    /** Flag for displaying the access column. */
+    public static final int FILELIST_PERMISSIONS = 128;
+
+    /** Flag for displaying the size column. */
+    public static final int FILELIST_SIZE = 8;
+
+    /** Flag for displaying the state column. */
+    public static final int FILELIST_STATE = 16;
+
+    /** Flag for displaying the title column. */
+    public static final int FILELIST_TITLE = 1;
+
+    /** Flag for displaying the filetype column. */
+    public static final int FILELIST_TYPE = 2;
+
+    /** Flag for displaying the owner column. */
+    public static final int FILELIST_USER_CREATED = 32;
+
+    /** Flag for displaying the user who last modified column. */
+    public static final int FILELIST_USER_LASTMODIFIED = 2048;
+
     /**
      * Creates an empty new user settings object.<p>
      */
@@ -172,7 +210,7 @@ public class CmsUserSettings {
         m_workplaceReportType = I_CmsReport.REPORT_TYPE_SIMPLE;
         m_explorerButtonStyle = BUTTONSTYLE_DEFAULT;
         m_explorerFileEntries = ENTRYS_PER_PAGE_DEFAULT;
-        m_explorerSettings = I_CmsWpConstants.C_FILELIST_NAME;
+        m_explorerSettings = CmsUserSettings.FILELIST_NAME;
         m_editorSettings = new HashMap();
     }
 
@@ -797,12 +835,12 @@ public class CmsUserSettings {
             m_projectSettings = new CmsUserProjectSettings();
             m_projectSettings.setDeleteAfterPublishing(false);
             try {
-                m_projectSettings.setManagerGroup(cms.readGroup(CmsDefaultUsers.C_DEFAULT_GROUP_PROJECTMANAGERS).getId());
+                m_projectSettings.setManagerGroup(cms.readGroup(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS).getId());
             } catch (Exception e) {
                 // ignore
             }
             try {
-                m_projectSettings.setUserGroup(cms.readGroup(CmsDefaultUsers.C_DEFAULT_GROUP_USERS).getId());
+                m_projectSettings.setUserGroup(cms.readGroup(CmsDefaultUsers.DEFAULT_GROUP_USERS).getId());
             } catch (Exception e) {
                 // ignore
             }
@@ -1328,7 +1366,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileDateCreated(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_CREATED);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_DATE_CREATED);
     }
 
     /**
@@ -1338,7 +1376,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileDateExpired(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_EXPIRED);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_DATE_EXPIRED);
     }
 
     /**
@@ -1348,7 +1386,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileDateLastModified(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_DATE_LASTMODIFIED);
     }
 
     /**
@@ -1358,7 +1396,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileDateReleased(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_DATE_RELEASED);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_DATE_RELEASED);
     }
 
     /**
@@ -1368,7 +1406,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileLockedBy(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_LOCKEDBY);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_LOCKEDBY);
     }
 
     /**
@@ -1378,7 +1416,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFilePermissions(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_PERMISSIONS);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_PERMISSIONS);
     }
 
     /**
@@ -1388,7 +1426,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileSize(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_SIZE);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_SIZE);
     }
 
     /**
@@ -1398,7 +1436,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileState(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_STATE);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_STATE);
     }
 
     /**
@@ -1408,7 +1446,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileTitle(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_TITLE);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_TITLE);
     }
 
     /**
@@ -1418,7 +1456,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileType(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_TYPE);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_TYPE);
     }
 
     /**
@@ -1428,7 +1466,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileUserCreated(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_CREATED);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_USER_CREATED);
     }
 
     /**
@@ -1438,7 +1476,7 @@ public class CmsUserSettings {
      */
     public void setShowExplorerFileUserLastModified(boolean show) {
 
-        setExplorerSetting(show, I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
+        setExplorerSetting(show, CmsUserSettings.FILELIST_USER_LASTMODIFIED);
     }
 
     /**
@@ -1608,7 +1646,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileDateCreated() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_CREATED) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_DATE_CREATED) > 0);
     }
 
     /**
@@ -1618,7 +1656,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileDateExpired() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_EXPIRED) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_DATE_EXPIRED) > 0);
     }
 
     /**
@@ -1628,7 +1666,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileDateLastModified() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_DATE_LASTMODIFIED) > 0);
     }
 
     /**
@@ -1638,7 +1676,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileDateReleased() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_DATE_RELEASED) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_DATE_RELEASED) > 0);
     }
 
     /**
@@ -1648,7 +1686,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileLockedBy() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_LOCKEDBY) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_LOCKEDBY) > 0);
     }
 
     /**
@@ -1658,7 +1696,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFilePermissions() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_PERMISSIONS) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_PERMISSIONS) > 0);
     }
 
     /**
@@ -1668,7 +1706,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileSize() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_SIZE) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_SIZE) > 0);
     }
 
     /**
@@ -1678,7 +1716,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileState() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_STATE) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_STATE) > 0);
     }
 
     /**
@@ -1688,7 +1726,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileTitle() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_TITLE) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_TITLE) > 0);
     }
 
     /**
@@ -1698,7 +1736,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileType() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_TYPE) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_TYPE) > 0);
     }
 
     /**
@@ -1708,7 +1746,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileUserCreated() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_USER_CREATED) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_CREATED) > 0);
     }
 
     /**
@@ -1718,7 +1756,7 @@ public class CmsUserSettings {
      */
     public boolean showExplorerFileUserLastModified() {
 
-        return ((m_explorerSettings & I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED) > 0);
+        return ((m_explorerSettings & CmsUserSettings.FILELIST_USER_LASTMODIFIED) > 0);
     }
 
     /**

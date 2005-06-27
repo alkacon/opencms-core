@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,15 +39,14 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsDefaultPasswordHandler;
 import org.opencms.security.I_CmsPasswordHandler;
 import org.opencms.staticexport.CmsLink;
 import org.opencms.staticexport.CmsLinkTable;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsResourceTranslator;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -154,10 +153,10 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/");
         
         // create a second site
-        cms.createResource("/sites/mysite", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/sites/mysite", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         cms.unlockResource("/sites/mysite");      
         
-        cms.createResource("/sites/othersite", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/sites/othersite", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         cms.unlockResource("/sites/othersite");
          
         CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
@@ -316,7 +315,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/");
 
         // need to create the "galleries" folder manually
-        cms.createResource("/system/galleries", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource("/system/galleries", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         cms.unlockResource("/system/galleries");
         
         CmsResourceTranslator oldFolderTranslator = OpenCms.getResourceManager().getFolderTranslator();
@@ -451,9 +450,9 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         cms.getRequestContext().setSiteRoot("/");        
         cms.lockResource("/sites/default");
         cms.lockResource("/system");       
-        cms.deleteResource("/sites/default/importtest", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        cms.deleteResource("/system/bodies", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        cms.deleteResource("/system/galleries/pics", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.deleteResource("/sites/default/importtest", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.deleteResource("/system/bodies", CmsResource.DELETE_PRESERVE_SIBLINGS);
+        cms.deleteResource("/system/galleries/pics", CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource("/sites/default");
         cms.unlockResource("/system");               
         cms.publishProject();

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminPicGalleries.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,8 +38,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -53,7 +52,7 @@ import java.util.Hashtable;
  * <p>
  *
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -64,14 +63,9 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
     /**
      * This method must be implemented by all galleries. 
      * It must return the path to the gallery root folder.<p>
-     * 
-     * The root folder names are usually defined as constants in 
-     * the I_CmsWpConstants interface.
-     * 
-     * @see I_CmsWpConstants
      */ 
     public String getGalleryPath() {
-        return C_VFS_GALLERY_PICS;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_PICS;
     }
     
     /**
@@ -134,17 +128,17 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
         }
                
         // Check if we must redirect to head_1
-        if(foldername.equals(C_VFS_GALLERY_PICS) && templateFile.endsWith("administration_head_picgalleries2")) {
+        if(foldername.equals(CmsWorkplaceDefault.C_VFS_GALLERY_PICS) && templateFile.endsWith("administration_head_picgalleries2")) {
             // we are in the wrong head - use the first one
-            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/picgallery/administration_head_picgalleries1", elementName, parameters, templateSelector);
+            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, CmsWorkplace.VFS_PATH_WORKPLACE + "administration/picgallery/administration_head_picgalleries1", elementName, parameters, templateSelector);
         }        
 
         // Check if we must redirect to head_2
         try {
             String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
-            if(foldername.startsWith(C_VFS_GALLERY_PICS) && (parent.equals(C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_picgalleries1")) {
+            if(foldername.startsWith(CmsWorkplaceDefault.C_VFS_GALLERY_PICS) && (parent.equals(CmsWorkplaceDefault.C_VFS_GALLERY_PICS)) && templateFile.endsWith("administration_head_picgalleries1")) {
                 // we are in the wrong head - use the second one
-                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_picgalleries2", elementName, parameters, templateSelector);
+                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, CmsWorkplace.VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_picgalleries2", elementName, parameters, templateSelector);
             }
         }
         catch(Exception e) {}                        
@@ -152,7 +146,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
         // Now read further parameters        
         String action = (String)parameters.get("action");
         String unzip = (String) parameters.get("unzip");                          
-        String newname = (String)parameters.get(C_PARA_NAME);
+        String newname = (String)parameters.get(CmsWorkplaceDefault.C_PARA_NAME);
         String title = (String)parameters.get("TITLE"); // both for gallery and upload file
         String step = (String)parameters.get("step");
         String imagedescription = (String)parameters.get("DESCRIPTION");
@@ -172,7 +166,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getPicGalleryPath();
-                    CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.getSitePath(folder), CmsPropertyDefinition.PROPERTY_TITLE, title);
                     }
@@ -236,18 +230,18 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                     filename = (String)files.nextElement();
                 }
                 if(filename != null) {
-                    session.putValue(C_PARA_RESOURCE, filename);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
                 }
-                filename = (String)session.getValue(C_PARA_RESOURCE);
+                filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
 
                 // get the filecontent
                 if(filename != null) {
                     filecontent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(filename);
                 }
                 if(filecontent != null) {
-                    session.putValue(C_PARA_FILECONTENT, filecontent);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_FILECONTENT, filecontent);
                 }
-                filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
+                filecontent = (byte[])session.getValue(CmsWorkplaceDefault.C_PARA_FILECONTENT);
                 if("0".equals(step)) {
                     templateSelector = "";
                 }
@@ -277,9 +271,9 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
                                     if( zip.isValidZipFile() ) {
 
                                     // remove the values form the session
-                                    session.removeValue(C_PARA_RESOURCE);
-                                    session.removeValue(C_PARA_FILECONTENT);
-                                    session.removeValue(C_PARA_NEWTYPE);
+                                    session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
+                                    session.removeValue(CmsWorkplaceDefault.C_PARA_FILECONTENT);
+                                    session.removeValue(CmsWorkplaceDefault.C_PARA_NEWTYPE);
                                     session.removeValue("unzip");
                                     // return to the filelist
                                     try {
@@ -350,7 +344,7 @@ public class CmsAdminPicGalleries extends CmsAdminGallery {
         
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
-        xmlTemplateDocument.setData("galleryRootFolder", C_VFS_GALLERY_PICS);        
+        xmlTemplateDocument.setData("galleryRootFolder", CmsWorkplaceDefault.C_VFS_GALLERY_PICS);        
 
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,

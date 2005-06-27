@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskList.java,v $
- * Date   : $Date: 2005/06/23 13:09:23 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskService;
 
 import com.opencms.legacy.CmsLegacyException;
-import com.opencms.template.*;
+import com.opencms.template.A_CmsXmlContent;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -58,7 +58,7 @@ import org.w3c.dom.Element;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2005/06/23 13:09:23 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/06/22 10:38:32 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:25 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
@@ -36,7 +37,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -60,8 +60,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.3 $
- * $Date: 2005/06/22 10:38:32 $
+ * $Revision: 1.4 $
+ * $Date: 2005/06/27 23:22:25 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -155,9 +155,9 @@ public abstract class CmsMasterContent
     protected void initValues() {
         m_dataSet = new CmsMasterDataSet();
         m_dataSet.m_masterId = CmsUUID.getNullUUID();
-        m_dataSet.m_subId = I_CmsConstants.C_UNKNOWN_ID;
+        m_dataSet.m_subId = CmsDbUtil.UNKNOWN_ID;
         m_dataSet.m_lockedBy = CmsUUID.getNullUUID();
-        m_dataSet.m_versionId = I_CmsConstants.C_UNKNOWN_ID;
+        m_dataSet.m_versionId = CmsDbUtil.UNKNOWN_ID;
         m_dataSet.m_userName = null;
         m_dataSet.m_groupName = null;
         m_dataSet.m_lastModifiedByName = null;
@@ -573,7 +573,7 @@ public abstract class CmsMasterContent
         buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
         buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
         buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0 ? "i" : "-"));
+        buf.append(((accessFlags & CmsResource.FLAG_INTERNAL) > 0 ? "i" : "-"));
 
         return buf.toString();
     }
@@ -958,12 +958,12 @@ public abstract class CmsMasterContent
         Vector subChannels = new Vector();
         String siteRoot = cms.getRequestContext().getSiteRoot();
         try {
-            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             subChannels.addAll(cms.getResourcesInFolder(channel, CmsResourceFilter.ONLY_VISIBLE));
 
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
-                if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {            
+                if (resource.getState() != CmsResource.STATE_DELETED) {            
                     String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
                     if (v.size() == 0) {
@@ -1004,13 +1004,13 @@ public abstract class CmsMasterContent
         cms.getRequestContext().saveSiteRoot();
         try {           
             String rootChannel = getDbAccessObject(this.getSubId()).getRootChannel();           
-            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);        
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);        
             //Vector subChannels = cms.getResourcesInFolder(I_CmsConstants.VFS_FOLDER_COS + rootChannel);
             Vector subChannels = new Vector(cms.getResourcesInFolder(rootChannel, CmsResourceFilter.ONLY_VISIBLE));
             int offset = rootChannel.length()-1;
             for (int i=0; i < subChannels.size(); i++) {
                 CmsResource resource = (CmsResource)subChannels.get(i);
-                if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
+                if (resource.getState() != CmsResource.STATE_DELETED) {
                     String folder = cms.getSitePath(resource);
                     Vector v = getAllSubChannelsOf(cms, folder);
                     if (v.size() == 0 && cms.hasPermissions(resource, CmsPermissionSet.ACCESS_VIEW)) {

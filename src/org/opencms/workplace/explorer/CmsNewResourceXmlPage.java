@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,8 +45,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.IOException;
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +123,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      */
     public static TreeMap getBodies(CmsObject cms) throws CmsException {
 
-        return getElements(cms, I_CmsWpConstants.C_VFS_DIR_DEFAULTBODIES);
+        return getElements(cms, CmsWorkplace.VFS_DIR_DEFAULTBODIES);
     }
 
     /**
@@ -135,7 +135,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
      */
     public static TreeMap getTemplates(CmsObject cms) throws CmsException {
 
-        return getElements(cms, I_CmsWpConstants.C_VFS_DIR_TEMPLATES);
+        return getElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES);
     }
 
     /**
@@ -151,7 +151,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
         TreeMap elements = new TreeMap();
 
         // get all visible template elements in the module folders
-        List modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES, CmsResourceFilter.IGNORE_EXPIRATION);
+        List modules = cms.getSubFolders(CmsWorkplace.VFS_PATH_MODULES, CmsResourceFilter.IGNORE_EXPIRATION);
         for (int i = 0; i < modules.size(); i++) {
             List moduleTemplateFiles = new ArrayList();
             String folder = cms.getSitePath((CmsFolder)modules.get(i));

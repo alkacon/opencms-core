@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlTemplate.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.editors.CmsDefaultPageEditor;
 
-import com.opencms.core.I_CmsConstants;
 import com.opencms.defaults.A_CmsContentDefinition;
 import com.opencms.defaults.I_CmsTimedContentDefinition;
 import com.opencms.legacy.CmsLegacyException;
@@ -63,7 +62,7 @@ import javax.servlet.http.HttpServletRequest;
  * that can include other subtemplates.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.5 $ $Date: 2005/06/21 15:49:58 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/27 23:22:20 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

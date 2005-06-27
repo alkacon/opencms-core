@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,8 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsUUID;
@@ -51,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -119,7 +118,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        // check the created folder
        CmsFolder folder = cms.readFolder(resourcename);
        
-       assertEquals(folder.getState(), I_CmsConstants.C_STATE_NEW);
+       assertEquals(folder.getState(), CmsResource.STATE_NEW);
        assertTrue(folder.getDateLastModified() > timestamp);
        assertTrue(folder.getDateCreated() > timestamp);
        
@@ -128,7 +127,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
        // state must be "new"
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+       assertState(cms, resourcename, CmsResource.STATE_NEW);
        // date last modified 
        assertDateLastModifiedAfter(cms, resourcename, timestamp);
        // date created
@@ -140,7 +139,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
        cms.publishProject();    
        
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+       assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);       
    }
    
    /**
@@ -157,7 +156,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        storeResources(cms, resourcename);
        long timestamp = System.currentTimeMillis();
        
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+       assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);       
        cms.lockResource(resourcename);       
        
        try {
@@ -173,7 +172,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        CmsResource original = cms.readResource(resourcename);
        
        // delete resource and try again
-       cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+       cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
        cms.createResource(resourcename, CmsResourceTypeFolder.getStaticTypeId(), null, null);
        
        // ensure created resource is a folder
@@ -181,7 +180,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
        // state must be "changed"
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+       assertState(cms, resourcename, CmsResource.STATE_CHANGED);
        // date last modified 
        assertDateLastModifiedAfter(cms, resourcename, timestamp);
        // the user last modified must be the current user
@@ -201,7 +200,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
        cms.publishProject();    
        
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+       assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);       
    }   
     
    /**
@@ -227,7 +226,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
        // state must be "new"
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+       assertState(cms, resourcename, CmsResource.STATE_NEW);
        // date last modified 
        assertDateLastModifiedAfter(cms, resourcename, timestamp);
        // date created
@@ -241,7 +240,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
        cms.publishProject();    
        
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+       assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);       
    }
    
    /**
@@ -261,7 +260,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        String contentStr = "Hello this is my NEW AND ALSO CHANGED other content";
        byte[] content = contentStr.getBytes();      
 
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
+       assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
        cms.lockResource(resourcename);
        
        try {
@@ -277,13 +276,13 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        CmsResource original = cms.readResource(resourcename);
        
        // delete resource and try again
-       cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+       cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
        cms.createResource(resourcename, CmsResourceTypePlain.getStaticTypeId(), content, null);
               
        // project must be current project
        assertProject(cms, resourcename, cms.getRequestContext().currentProject());
        // state must be "changed"
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+       assertState(cms, resourcename, CmsResource.STATE_CHANGED);
        // date last modified 
        assertDateLastModifiedAfter(cms, resourcename, timestamp);
        // the user last modified must be the current user
@@ -305,7 +304,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
        cms.unlockProject(cms.getRequestContext().currentProject().getId());
        cms.publishProject();    
               
-       assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);       
+       assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);       
    }
 
     /**
@@ -331,7 +330,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             true,
             0,
             cms.getRequestContext().currentProject().getId(),
-            I_CmsConstants.C_STATE_NEW,
+            CmsResource.STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
             timestamp, 
@@ -348,7 +347,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
         assertDateLastModified(cms, resourcename, timestamp);
         // date created
@@ -360,7 +359,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();   
         
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }  
     
     /**
@@ -387,7 +386,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             true,
             0,
             cms.getRequestContext().currentProject().getId(),
-            I_CmsConstants.C_STATE_NEW,
+            CmsResource.STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
             timestamp, 
@@ -404,7 +403,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resourcename, CmsResource.STATE_CHANGED);
         // date last modified 
         assertDateLastModified(cms, resourcename, timestamp);
         // the user last modified must be the current user
@@ -416,7 +415,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();     
         
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);        
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);        
     }      
     
     /**
@@ -444,7 +443,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
-            I_CmsConstants.C_STATE_NEW,
+            CmsResource.STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
             timestamp, 
@@ -461,7 +460,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
         // date last modified 
         assertDateLastModified(cms, resourcename, timestamp);
         // date created
@@ -475,7 +474,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();   
         
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }  
     
     /**
@@ -505,7 +504,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
-            I_CmsConstants.C_STATE_NEW,
+            CmsResource.STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
             timestamp, 
@@ -522,7 +521,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resourcename, CmsResource.STATE_CHANGED);
         // date last modified 
         assertDateLastModified(cms, resourcename, timestamp);
         // the user last modified must be the current user
@@ -534,7 +533,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();     
         
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);        
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);        
     }  
         
     /**
@@ -587,7 +586,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
-            I_CmsConstants.C_STATE_NEW,
+            CmsResource.STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
             timestamp, 
@@ -607,8 +606,8 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertResourceType(cms, resourcename2, CmsResourceTypePlain.getStaticTypeId());
         assertResourceType(cms, siblingname, CmsResourceTypePlain.getStaticTypeId());
         // state
-        assertState(cms, resourcename2, I_CmsConstants.C_STATE_NEW);
-        assertState(cms, siblingname, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resourcename2, CmsResource.STATE_NEW);
+        assertState(cms, siblingname, CmsResource.STATE_CHANGED);
         // date last modified
         assertDateLastModified(cms, resourcename2, file.getDateLastModified());      
         assertDateLastModified(cms, siblingname, file.getDateLastModified());      
@@ -639,7 +638,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
             false,
             0,
             cms.getRequestContext().currentProject().getId(),
-            I_CmsConstants.C_STATE_NEW,
+            CmsResource.STATE_NEW,
             timestamp,
             cms.getRequestContext().currentUser().getId(),
             timestamp, 
@@ -661,9 +660,9 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         assertResourceType(cms, resourcename2, CmsResourceTypePlain.getStaticTypeId());
         assertResourceType(cms, siblingname, CmsResourceTypePlain.getStaticTypeId());
         // state
-        assertState(cms, resourcename1, I_CmsConstants.C_STATE_NEW);
-        assertState(cms, resourcename2, I_CmsConstants.C_STATE_NEW);
-        assertState(cms, siblingname, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, resourcename1, CmsResource.STATE_NEW);
+        assertState(cms, resourcename2, CmsResource.STATE_NEW);
+        assertState(cms, siblingname, CmsResource.STATE_CHANGED);
         // date last modified
         assertDateLastModified(cms, resourcename1, timestamp);      
         assertDateLastModified(cms, resourcename2, timestamp);      
@@ -686,7 +685,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();     
         
-        assertState(cms, resourcename1, I_CmsConstants.C_STATE_UNCHANGED);  
-        assertState(cms, resourcename2, I_CmsConstants.C_STATE_UNCHANGED);  
+        assertState(cms, resourcename1, CmsResource.STATE_UNCHANGED);  
+        assertState(cms, resourcename2, CmsResource.STATE_UNCHANGED);  
     }  
 }

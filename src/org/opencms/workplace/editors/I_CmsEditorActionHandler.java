@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/I_CmsEditorActionHandler.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,62 +46,62 @@ import javax.servlet.jsp.JspException;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsEditorActionHandler {
     
     /** Prefix for direct edit end elements, used on JPS pages that supply the direct edit html. */
-    String C_DIRECT_EDIT_AREA_END = "end_directedit";
+    String DIRECT_EDIT_AREA_END = "end_directedit";
     
     /** Prefix for direct edit start elements, used on JPS pages that supply the direct edit html. */
-    String C_DIRECT_EDIT_AREA_START = "start_directedit";
+    String DIRECT_EDIT_AREA_START = "start_directedit";
     
     /** Key to identify the direct edit configuration file. */
-    String C_DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
+    String DIRECT_EDIT_INCLUDE_FILE_URI = "__directEditIncludeFileUri";
 
     /** Default direct edit include file URI. */
-    String C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = "/system/workplace/editors/direct_edit.jsp";
+    String DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT = "/system/workplace/editors/direct_edit.jsp";
 
     /** Element name for direct edit includes. */
-    String C_DIRECT_EDIT_INCLUDES = "directedit_includes";
+    String DIRECT_EDIT_INCLUDES = "directedit_includes";
     
     /** Constant for: direct edit mode disabled. */
-    String C_DIRECT_EDIT_MODE_DISABLED = "disabled";
+    String DIRECT_EDIT_MODE_DISABLED = "disabled";
     
     /** Constant for: direct edit mode enabled. */
-    String C_DIRECT_EDIT_MODE_ENABLED = "enabled";
+    String DIRECT_EDIT_MODE_ENABLED = "enabled";
     
     /** Constant for: direct edit mode inactive. */
-    String C_DIRECT_EDIT_MODE_INACTIVE = "inactive";
+    String DIRECT_EDIT_MODE_INACTIVE = "inactive";
 
     /** Option value that indicates the "delete" button should be displayed. */
-    String C_DIRECT_EDIT_OPTION_DELETE = "delete";
+    String DIRECT_EDIT_OPTION_DELETE = "delete";
     
     /** Option value that indicates the "edit" button should be displayed. */
-    String C_DIRECT_EDIT_OPTION_EDIT = "edit";
+    String DIRECT_EDIT_OPTION_EDIT = "edit";
 
     /** Option value that indicates the "new" button should be displayed. */
-    String C_DIRECT_EDIT_OPTION_NEW = "new";
+    String DIRECT_EDIT_OPTION_NEW = "new";
     
     /** Key to identify the edit button style, used on JPS pages that supply the direct edit html. */  
-    String C_DIRECT_EDIT_PARAM_BUTTONSTYLE = "__directEditButtonStyle";
+    String DIRECT_EDIT_PARAM_BUTTONSTYLE = "__directEditButtonStyle";
     
     /** Key to identify the edit element, used on JPS pages that supply the direct edit html. */  
-    String C_DIRECT_EDIT_PARAM_ELEMENT = "__directEditElement";
+    String DIRECT_EDIT_PARAM_ELEMENT = "__directEditElement";
     
     /** Key to identify the edit language, used on JPS pages that supply the direct edit html. */  
-    String C_DIRECT_EDIT_PARAM_LOCALE = "__directEditLocale";
+    String DIRECT_EDIT_PARAM_LOCALE = "__directEditLocale";
     
     /** Key to identify the link to use for the "new" button (if enabled). */
-    String C_DIRECT_EDIT_PARAM_NEWLINK = "__directEditNewLink";
+    String DIRECT_EDIT_PARAM_NEWLINK = "__directEditNewLink";
     
     /** Key to identify additional direct edit options, used e.g. to control which direct edit buttons are displayed */
-    String C_DIRECT_EDIT_PARAM_OPTIONS = "__directEditOptions";
+    String DIRECT_EDIT_PARAM_OPTIONS = "__directEditOptions";
     
     /** Key to identify the edit target, used on JPS pages that supply the direct edit html. */
-    String C_DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
+    String DIRECT_EDIT_PARAM_TARGET = "__directEditTarget";
             
     /**
      * Performs an action which is configurable in the implementation of the interface, e.g. save, exit, publish.<p>

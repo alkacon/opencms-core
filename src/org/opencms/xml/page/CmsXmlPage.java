@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,10 +103,10 @@ public class CmsXmlPage extends A_CmsXmlDocument {
     public static final String ATTRIBUTE_TYPE = "type";
 
     /** Property to check if relative links are allowed. */
-    public static final String C_PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
+    public static final String PROPERTY_ALLOW_RELATIVE = "allowRelativeLinks";
 
     /** The DTD address of the OpenCms xmlpage. */
-    public static final String C_XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX + "xmlpage.xsd";
+    public static final String XMLPAGE_XSD_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX + "xmlpage.xsd";
 
     /** Name of the anchor node. */
     public static final String NODE_ANCHOR = "anchor";
@@ -274,9 +274,9 @@ public class CmsXmlPage extends A_CmsXmlDocument {
             CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
             InputSource source;
             try {
-                source = resolver.resolveEntity(null, C_XMLPAGE_XSD_SYSTEM_ID);
+                source = resolver.resolveEntity(null, XMLPAGE_XSD_SYSTEM_ID);
                 // store content definition in static variable
-                m_contentDefinition = CmsXmlContentDefinition.unmarshal(source, C_XMLPAGE_XSD_SYSTEM_ID, resolver);
+                m_contentDefinition = CmsXmlContentDefinition.unmarshal(source, XMLPAGE_XSD_SYSTEM_ID, resolver);
             } catch (CmsXmlException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XML_PAGE_UNMARSHAL_CONTENDDEF_0), e);
             }
@@ -547,7 +547,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         Document newDocument = DocumentHelper.createDocument();
         Element root = newDocument.addElement(NODE_PAGES);
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
-        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, C_XMLPAGE_XSD_SYSTEM_ID);
+        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, XMLPAGE_XSD_SYSTEM_ID);
 
         Map pages = new HashMap();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,7 +96,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
      */
     public void actionEdit(HttpServletRequest request) throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             performEditOperation(request);
             // set the request parameters before returning to the overview

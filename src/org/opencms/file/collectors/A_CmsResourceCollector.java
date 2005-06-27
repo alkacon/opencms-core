@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,14 +46,14 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /** Format for file create parameter. */
-    private static final PrintfFormat C_FORMAT_NUMBER = new PrintfFormat("%0.4d");
+    private static final PrintfFormat NUMBER_FORMAT = new PrintfFormat("%0.4d");
 
     /** The collector order of this collector. */
     protected int m_order;
@@ -156,7 +156,7 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
         int j = 0;
         do {
-            number = C_FORMAT_NUMBER.sprintf(++j);
+            number = NUMBER_FORMAT.sprintf(++j);
             checkName = CmsStringUtil.substitute(fileName, "${number}", number);
         } while (result.contains(checkName));
 

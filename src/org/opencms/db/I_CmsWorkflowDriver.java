@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/I_CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,14 +48,14 @@ import java.util.List;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsWorkflowDriver {
 
     /** The type ID to identify workflow driver implementations. */
-    int C_DRIVER_TYPE_ID = 4;
+    int DRIVER_TYPE_ID = 4;
 
     /**
      * Creates a new task.<p>

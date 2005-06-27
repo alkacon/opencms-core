@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChacc.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,14 @@
  
 package org.opencms.file;
 
+import org.opencms.main.CmsException;
+import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.I_CmsPrincipal;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestResourceFilter;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,20 +46,11 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.security.CmsAccessControlEntry;
-import org.opencms.security.CmsPermissionSet;
-import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestResourceFilter;
-
 /**
  * Unit test for the "chacc" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestChacc extends OpenCmsTestCase {
   
@@ -109,7 +108,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
                 
         cms.lockResource(resource1);
-        cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+        cms.chacc(resource1, I_CmsPrincipal.PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
         cms.unlockResource(resource1);
         
         // now evaluate the result
@@ -121,11 +120,11 @@ public class TestChacc extends OpenCmsTestCase {
         CmsAccessControlEntry ace = 
                new CmsAccessControlEntry(res.getResourceId(), group.getId(), 
                    permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), 
-                   flags + I_CmsConstants.C_ACCESSFLAGS_GROUP);      
+                   flags + CmsAccessControlEntry.ACCESS_FLAGS_GROUP);      
         tc.assertAce(cms, resource1, ace);
          // test the acl with the permission set        
          int denied = permissions.getDeniedPermissions();
-         if (flags == I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) {
+         if (flags == CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) {
             denied = 0;
          }
         CmsPermissionSet permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
@@ -148,7 +147,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
                 
         cms.lockResource(resource1);
-        cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+        cms.chacc(resource1, I_CmsPrincipal.PRINCIPAL_GROUP, group.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
         cms.unlockResource(resource1);
 
         // now evaluate the result
@@ -160,11 +159,11 @@ public class TestChacc extends OpenCmsTestCase {
         CmsAccessControlEntry ace = 
                new CmsAccessControlEntry(res.getResourceId(), group.getId(), 
                    permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), 
-                   flags + I_CmsConstants.C_ACCESSFLAGS_GROUP);      
+                   flags + CmsAccessControlEntry.ACCESS_FLAGS_GROUP);      
         tc.assertAce(cms, resource1, ace);
          // test the acl with the permission set        
          int denied = permissions.getDeniedPermissions();
-         if ((flags & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
+         if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) > 0) {
             denied = 0;
          }
         CmsPermissionSet permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
@@ -183,7 +182,7 @@ public class TestChacc extends OpenCmsTestCase {
             // add the group and the inherited flag to the acl
             ace = new CmsAccessControlEntry(res.getResourceId(), group.getId(), 
                       permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), 
-                      flags + I_CmsConstants.C_ACCESSFLAGS_GROUP + I_CmsConstants.C_ACCESSFLAGS_INHERITED); 
+                      flags + CmsAccessControlEntry.ACCESS_FLAGS_GROUP + CmsAccessControlEntry.ACCESS_FLAGS_INHERITED); 
             tc.assertAce(cms, subResName, ace);
             
             // test the acl with the permission set     
@@ -209,7 +208,7 @@ public class TestChacc extends OpenCmsTestCase {
         tc.storeResources(cms, resource1);
                 
         cms.lockResource(resource1);
-        cms.chacc(resource1, I_CmsPrincipal.C_PRINCIPAL_USER, user.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
+        cms.chacc(resource1, I_CmsPrincipal.PRINCIPAL_USER, user.getName(), permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), flags);
         cms.unlockResource(resource1);
 
         // now evaluate the result
@@ -221,11 +220,11 @@ public class TestChacc extends OpenCmsTestCase {
         CmsAccessControlEntry ace = 
                new CmsAccessControlEntry(res.getResourceId(), user.getId(), 
                    permissions.getAllowedPermissions(), permissions.getDeniedPermissions(), 
-                   flags + I_CmsConstants.C_ACCESSFLAGS_USER);      
+                   flags + CmsAccessControlEntry.ACCESS_FLAGS_USER);      
         tc.assertAce(cms, resource1, ace);
          // test the acl with the permission set
          int denied = permissions.getDeniedPermissions();
-         if (flags == I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) {
+         if (flags == CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) {
             denied = 0;
          }
         CmsPermissionSet permission = new CmsPermissionSet(permissions.getAllowedPermissions(), denied);
@@ -241,7 +240,7 @@ public class TestChacc extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a file and a group");
-        chaccFileGroup(this, cms, "/index.html", cms.readGroup("Users"), CmsPermissionSet.ACCESS_READ, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);   
+        chaccFileGroup(this, cms, "/index.html", cms.readGroup("Users"), CmsPermissionSet.ACCESS_READ, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);   
     }  
     
     /**
@@ -265,7 +264,7 @@ public class TestChacc extends OpenCmsTestCase {
         //TODO: This test is not working correctly so far!
         CmsObject cms = getCmsObject();     
         echo("Testing chacc on a folder and a group");
-        chaccFolderGroup(this, cms, "/folder2/", cms.readGroup("Guests"), CmsPermissionSet.ACCESS_READ, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);   
+        chaccFolderGroup(this, cms, "/folder2/", cms.readGroup("Guests"), CmsPermissionSet.ACCESS_READ, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);   
     }
     
     /**
@@ -289,8 +288,8 @@ public class TestChacc extends OpenCmsTestCase {
         String resName = "/folder2/";
         
         cms.lockResource(resName);
-        cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_USER, testUser.getName(), "+r+w+v+i");
-        cms.chacc(resName, I_CmsPrincipal.C_PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
+        cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName(), "+r+w+v+i");
+        cms.chacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName(), "+r+v+i");
         cms.unlockResource(resName);
         cms.publishProject(); 
         
@@ -320,7 +319,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");       
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
-        cms.rmacc(resName, I_CmsPrincipal.C_PRINCIPAL_USER, testUser.getName());
+        cms.rmacc(resName, I_CmsPrincipal.PRINCIPAL_USER, testUser.getName());
         cms.unlockResource(resName);
         cms.publishProject();         
         
@@ -331,7 +330,7 @@ public class TestChacc extends OpenCmsTestCase {
         cms.loginUser("Admin", "admin");       
         cms.getRequestContext().setCurrentProject(offline);
         cms.lockResource(resName);
-        cms.rmacc(resName, I_CmsPrincipal.C_PRINCIPAL_GROUP, testGroup.getName());
+        cms.rmacc(resName, I_CmsPrincipal.PRINCIPAL_GROUP, testGroup.getName());
         cms.unlockResource(resName);
         cms.publishProject();
         

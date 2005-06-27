@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,13 @@ package org.opencms.jsp.util;
 
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Date;
 import java.util.HashMap;
@@ -60,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0
  */
@@ -82,7 +81,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     public static final String UNKKNOWN_STATUS_CODE = "unknown";
 
     /** The OpenCms VFS path containing the handler files. */
-    public static final String VFS_FOLDER_HANDLER = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "handler/";
+    public static final String VFS_FOLDER_HANDLER = CmsWorkplace.VFS_PATH_SYSTEM + "handler/";
 
     /** The error message. */
     private String m_errorMessage;
@@ -334,7 +333,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
         if (parameterMap == null) {
             parameterMap = new HashMap(1);
         }
-        parameterMap.put(I_CmsConstants.C_PARAMETER_LOCALE, getLocale().toString());
+        parameterMap.put(CmsLocaleManager.PARAMETER_LOCALE, getLocale().toString());
 
         try {
             // set site root and URI to display template part correct
@@ -384,7 +383,7 @@ public class CmsJspStatusBean extends CmsJspActionElement {
     public String key(String keyName, String defaultKeyName) {
 
         String value = getMessages().key(keyName, getLocalizeParameters());
-        if (value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION) && CmsStringUtil.isNotEmpty(defaultKeyName)) {
+        if (value.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION) && CmsStringUtil.isNotEmpty(defaultKeyName)) {
             value = getMessages().key(defaultKeyName, getLocalizeParameters());
         }
         return CmsStringUtil.escapeHtml(value);

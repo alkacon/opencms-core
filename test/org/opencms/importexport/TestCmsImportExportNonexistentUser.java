@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.importexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -151,7 +151,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             
             // delete the dummy plain text file
             cms.lockResource(filename);
-            cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+            cms.deleteResource(filename, CmsResource.DELETE_REMOVE_SIBLINGS);
             // publish the deleted dummy plain text file
             cms.unlockResource(filename);
             cms.publishResource(filename);

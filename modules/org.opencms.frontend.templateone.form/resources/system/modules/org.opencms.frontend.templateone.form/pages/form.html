@@ -58,7 +58,7 @@ if (! showForm) {
 
 	// create the form head 
 	%>	<form name="emailform" action="<%= cms.link(cms.getRequestContext().getUri()) %>" method="post" style="margin-top: 14px; margin-bottom: 0; padding: 0;">
-	<input type="hidden" name="<%= CmsFormHandler.C_PARAM_FORMACTION %>" value="<%= CmsFormHandler.C_ACTION_SUBMIT %>">
+	<input type="hidden" name="<%= CmsFormHandler.PARAM_FORMACTION %>" value="<%= CmsFormHandler.ACTION_SUBMIT %>">
 	<%= messages.key("form.html.start") %><%= formConfiguration.getFormAttributes() %>>
 		<%
 	// create the html output to display the form fields
@@ -74,7 +74,7 @@ if (! showForm) {
 		String mandatory = "";
 		if (errorMessage != null) {
 			// create the error message for the field
-			if (CmsFormHandler.C_ERROR_MANDATORY.equals(errorMessage)) {
+			if (CmsFormHandler.ERROR_MANDATORY.equals(errorMessage)) {
 				errorMessage = messages.key("form.error.mandatory");
 			} else {
 				errorMessage = messages.key("form.error.validation");

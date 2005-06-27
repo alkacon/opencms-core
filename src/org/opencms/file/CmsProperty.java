@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.RandomAccess;
  * 
  * The ID of the structure or resource record where a property value is mapped to is represented by 
  * the "PROPERTY_MAPPING_ID" table attribute in the database. The "PROPERTY_MAPPING_TYPE" table 
- * attribute (see {@link #C_STRUCTURE_RECORD_MAPPING} and {@link #C_RESOURCE_RECORD_MAPPING})
+ * attribute (see {@link #STRUCTURE_RECORD_MAPPING} and {@link #RESOURCE_RECORD_MAPPING})
  * determines whether the value of the "PROPERTY_MAPPING_ID" attribute of the current row is
  * a structure or resource record ID.<p>
  * 
@@ -66,7 +66,7 @@ import java.util.RandomAccess;
  * or {@link org.opencms.file.CmsObject#writePropertyObjects(String, List)}, no matter
  * whether you want to save a new (non-existing) property, update an existing property, or delete an
  * existing property. To delete a property you would write a property object with either the
- * structure and/or resource record values set to {@link #C_DELETE_VALUE} to indicate that a
+ * structure and/or resource record values set to {@link #DELETE_VALUE} to indicate that a
  * property value should be deleted in the database. Set property values to null if they should
  * remain unchanged in the database when a property object is written. As for example you want to
  * update just the structure value of a property, you would set the structure value to the new string,
@@ -82,7 +82,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0 
  */
@@ -92,37 +92,37 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * Signals that the resource property values of a resource
      * should be deleted using deleteAllProperties.<p>
      */
-    public static final int C_DELETE_OPTION_DELETE_RESOURCE_VALUES = 3;
+    public static final int DELETE_OPTION_DELETE_RESOURCE_VALUES = 3;
 
     /**
      * Signals that both the structure and resource property values of a resource
      * should be deleted using deleteAllProperties.<p>
      */
-    public static final int C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES = 1;
+    public static final int DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES = 1;
 
     /**
      * Signals that the structure property values of a resource
      * should be deleted using deleteAllProperties.<p>
      */
-    public static final int C_DELETE_OPTION_DELETE_STRUCTURE_VALUES = 2;
+    public static final int DELETE_OPTION_DELETE_STRUCTURE_VALUES = 2;
 
     /**
      * An empty string to decide that a property value should be deleted when this
      * property object is written to the database.<p>
      */
-    public static final String C_DELETE_VALUE = new String("");
+    public static final String DELETE_VALUE = new String("");
 
     /**
      * Value of the "mapping-type" database attribute to indicate that a property value is mapped
      * to a resource record.<p>
      */
-    public static final int C_RESOURCE_RECORD_MAPPING = 2;
+    public static final int RESOURCE_RECORD_MAPPING = 2;
 
     /**
      * Value of the "mapping-type" database attribute to indicate that a property value is mapped
      * to a structure record.<p>
      */
-    public static final int C_STRUCTURE_RECORD_MAPPING = 1;
+    public static final int STRUCTURE_RECORD_MAPPING = 1;
 
     /** Key used for a individual (structure) property value. */
     public static final String TYPE_INDIVIDUAL = "individual";
@@ -133,7 +133,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /**
      * A null property object to be used in caches if a property is not found.<p>
      */
-    private static final CmsProperty C_NULL_PROPERTY = new CmsProperty();
+    private static final CmsProperty NULL_PROPERTY = new CmsProperty();
 
     /**
      * Boolean flag to decide if the property definition for this property should be created 
@@ -234,7 +234,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
             }
         }
 
-        return C_NULL_PROPERTY;
+        return NULL_PROPERTY;
     }
 
     /**
@@ -244,7 +244,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public static final CmsProperty getNullProperty() {
 
-        return C_NULL_PROPERTY;
+        return NULL_PROPERTY;
     }
 
     /**
@@ -416,7 +416,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * property object is written to the database.<p>
      * 
      * @return true, if the resource value of this property should be deleted
-     * @see CmsProperty#C_DELETE_VALUE
+     * @see CmsProperty#DELETE_VALUE
      */
     public boolean deleteResourceValue() {
 
@@ -428,7 +428,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * property object is written to the database.<p>
      * 
      * @return true, if the structure value of this property should be deleted
-     * @see CmsProperty#C_DELETE_VALUE
+     * @see CmsProperty#DELETE_VALUE
      */
     public boolean deleteStructureValue() {
 
@@ -522,7 +522,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public String getValue(String defaultValue) {
 
-        if (this == CmsProperty.C_NULL_PROPERTY) {
+        if (this == CmsProperty.NULL_PROPERTY) {
             // return the default value if this property is the null property
             return defaultValue;
         }
@@ -593,7 +593,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean isNullProperty() {
 
-        return this == C_NULL_PROPERTY;
+        return this == NULL_PROPERTY;
     }
 
     /**

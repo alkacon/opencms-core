@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsReportTestThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,16 @@
 
 package org.opencms.workplace.threads;
 
+import org.opencms.file.CmsObject;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
-
-import org.opencms.file.CmsObject;
 
 /**
  * Does a full static export of all system resources in the current site.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +78,7 @@ public class CmsReportTestThread extends A_CmsReportThread {
     public void run() {
 
         I_CmsReport report = getReport();
-        report.println(Messages.get().container(Messages.RPT_TEST_REPORT_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_TEST_REPORT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         for (int i = 0; i < m_count; i++) {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
@@ -92,6 +91,6 @@ public class CmsReportTestThread extends A_CmsReportThread {
                 // just continue
             }
         }
-        getReport().println(Messages.get().container(Messages.RPT_TEST_REPORT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_TEST_REPORT_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 }

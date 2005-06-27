@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReplace.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
+
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestReplace extends OpenCmsTestCase {
   
@@ -108,13 +108,13 @@ public class TestReplace extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, path, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, path, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, path, CmsResource.STATE_CHANGED);
         // date lastmodified must be new
         assertDateLastModifiedAfter(cms, path, timestamp);
         // user lastmodified must be current user
         assertUserLastModified(cms, path, cms.getRequestContext().currentUser());
         // assert lock state
-        assertLock(cms, path, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, path, CmsLock.TYPE_EXCLUSIVE);
         // assert new content
         assertContent(cms, path, contentStr.getBytes());
         // now check the rest of the attributes

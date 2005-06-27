@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.34 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsWorkplaceAction.java,v $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,11 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace;
-
-import org.opencms.main.OpenCms;
+package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsFrameset;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.CmsWorkplaceSettings;
+
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -44,32 +48,32 @@ import javax.servlet.http.HttpSession;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsWorkplaceAction {
 
     /** File name of explorer file list loader (same for JSP and XML). */
-    public static final String C_FILE_WORKPLACE_FILELIST = "explorer_files.jsp";
+    public static final String FILE_WORKPLACE_FILELIST = "explorer_files.jsp";
 
     /** Relative path to the JSP explorer. */
-    public static final String C_JSP_WORKPLACE_FILELIST = "../views/explorer/" + C_FILE_WORKPLACE_FILELIST;
+    public static final String JSP_WORKPLACE_FILELIST = "../views/explorer/" + FILE_WORKPLACE_FILELIST;
 
     /** Path to the different workplace views. */
-    public static final String C_PATH_VIEWS_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "views/";
-
-    /** Path to the JSP workplace frame loader file. */
-    public static final String C_JSP_WORKPLACE_URI = C_PATH_VIEWS_WORKPLACE + "workplace.jsp";
-
+    public static final String PATH_VIEWS_WORKPLACE = CmsWorkplace.VFS_PATH_WORKPLACE + "views/";
+    
     /** Path to the explorer workplace view. */
-    public static final String C_PATH_VIEW_EXPLORER = C_PATH_VIEWS_WORKPLACE + "explorer/";
+    public static final String PATH_VIEW_EXPLORER = PATH_VIEWS_WORKPLACE + "explorer/";
 
     /** Path to the XML workplace. */
-    public static final String C_PATH_XML_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/";
+    public static final String PATH_XML_WORKPLACE = CmsWorkplace.VFS_PATH_WORKPLACE + "action/";
 
     /** Path to the XML workplace frame loader file. */
-    public static final String C_XML_WORKPLACE_URI = C_PATH_XML_WORKPLACE + "index.html";
+    public static final String XML_WORKPLACE_URI = PATH_XML_WORKPLACE + "index.html";
+
+    /** Session attribute for the file list. */
+    private static final String FILELIST_ATTRIBUTE = "__filelist";
 
     /**
      * Constructor is private since there must be no instances of this class.<p>
@@ -91,11 +95,11 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return null;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
             return settings.getExplorerResource();
         } else {
-            return (String)session.getAttribute(I_CmsWpConstants.C_PARA_FILELIST);
+            return (String)session.getAttribute(FILELIST_ATTRIBUTE);
         }
     }
 
@@ -109,15 +113,15 @@ public final class CmsWorkplaceAction {
     public static String getExplorerFileFullUri(CmsObject cms, HttpServletRequest req) {
 
         HttpSession session = req.getSession(false);
-        String link = C_PATH_XML_WORKPLACE + C_FILE_WORKPLACE_FILELIST;
+        String link = PATH_XML_WORKPLACE + FILE_WORKPLACE_FILELIST;
         if (session == null) {
             return OpenCms.getLinkManager().substituteLink(cms, link);
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
             return OpenCms.getLinkManager().substituteLink(cms, link);
         }
-        return OpenCms.getLinkManager().substituteLink(cms, C_PATH_VIEW_EXPLORER + C_FILE_WORKPLACE_FILELIST);
+        return OpenCms.getLinkManager().substituteLink(cms, PATH_VIEW_EXPLORER + FILE_WORKPLACE_FILELIST);
     }
 
     /**
@@ -130,13 +134,13 @@ public final class CmsWorkplaceAction {
 
         HttpSession session = req.getSession(false);
         if (session == null) {
-            return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+            return CmsWorkplaceDefault.C_WP_EXPLORER_FILELIST;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
-            return I_CmsWpConstants.C_WP_EXPLORER_FILELIST;
+            return CmsWorkplaceDefault.C_WP_EXPLORER_FILELIST;
         }
-        return C_JSP_WORKPLACE_FILELIST;
+        return JSP_WORKPLACE_FILELIST;
     }
 
     /**
@@ -149,13 +153,13 @@ public final class CmsWorkplaceAction {
 
         HttpSession session = req.getSession(false);
         if (session == null) {
-            return C_XML_WORKPLACE_URI;
+            return XML_WORKPLACE_URI;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings == null) {
-            return C_XML_WORKPLACE_URI;
+            return XML_WORKPLACE_URI;
         }
-        return C_JSP_WORKPLACE_URI;
+        return CmsFrameset.JSP_WORKPLACE_URI;
     }
 
     /**
@@ -170,29 +174,10 @@ public final class CmsWorkplaceAction {
         if (session == null) {
             return;
         }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         if (settings != null) {
             settings.setExplorerResource(currentFolder);
         }
-        session.setAttribute(I_CmsWpConstants.C_PARA_FILELIST, currentFolder);
-    }
-
-    /**
-     * Updates the user preferences after changes have been made.<p>
-     * 
-     * @param cms the current cms context
-     * @param req the current http request
-     */
-    public static void updatePreferences(CmsObject cms, HttpServletRequest req) {
-
-        HttpSession session = req.getSession(false);
-        if (session == null) {
-            return;
-        }
-        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
-        if (settings == null) {
-            return;
-        }
-        settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
+        session.setAttribute(FILELIST_ATTRIBUTE, currentFolder);
     }
 }

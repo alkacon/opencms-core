@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
- * Date   : $Date: 2005/06/23 16:41:19 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@
 //
 // $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlExtractor.java,v $
 // $Author: a.kandzior $
-// $Date: 2005/06/23 16:41:19 $
-// $Revision: 1.8 $
+// $Date: 2005/06/27 23:22:09 $
+// $Revision: 1.9 $
 //
 // This library is free software; you can redistribute it and/or
 // modify it under the terms of the GNU Lesser General Public
@@ -73,7 +73,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,9 +130,9 @@ public final class CmsHtmlExtractor {
         // otherwise you will get strange results for some specific HTML constructs
         StringBuffer newContent = new StringBuffer(content.length() + 32);
 
-        newContent.append(CmsLinkProcessor.C_HTML_START);
+        newContent.append(CmsLinkProcessor.HTML_START);
         newContent.append(content);
-        newContent.append(CmsLinkProcessor.C_HTML_END);
+        newContent.append(CmsLinkProcessor.HTML_END);
 
         // make sure the Lexer uses the right encoding
         InputStream in = new ByteArrayInputStream(newContent.toString().getBytes(encoding));

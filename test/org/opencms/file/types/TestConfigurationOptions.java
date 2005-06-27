@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/types/TestConfigurationOptions.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -50,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit tests for the resource type configuration options.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class TestConfigurationOptions extends OpenCmsTestCase {
 
@@ -150,7 +149,7 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
         // the user last modified must be the current user
         assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser());
 
@@ -177,6 +176,6 @@ public class TestConfigurationOptions extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
 
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);
     }
 }

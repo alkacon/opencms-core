@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsStaticExportManager.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -230,8 +230,8 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         cms.lockResource(folder);
         cms.writePropertyObject(folder, new CmsProperty(
             CmsPropertyDefinition.PROPERTY_EXPORTNAME,
-            CmsProperty.C_DELETE_VALUE,
-            CmsProperty.C_DELETE_VALUE));
+            CmsProperty.DELETE_VALUE,
+            CmsProperty.DELETE_VALUE));
         cms.unlockResource(folder);
         cms.lockResource(vfsName);
         cms.writePropertyObject(vfsName, new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORTSUFFIX, ".pdf", null));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsLinkCheck.java,v $
- * Date   : $Date: 2005/06/17 07:23:47 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:24 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.mail.CmsMailTransport;
 import org.opencms.mail.CmsSimpleMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.validation.CmsPointerLinkValidator;
@@ -85,6 +84,8 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
 
     /** The defintion of the filename to store the serialized hashtable in the rfs. */
     static final String LINKTABLE_FILENAME = OpenCms.getSystemInfo().getPackagesRfsPath() + "linkcheck";
+    /** The key for the date of the last linkcheck in the linkchecktable. */
+    public static final String C_LINKCHECKTABLE_DATE = "linkcheckdate";
     
     /**
      * Constructor, does nothing.<p>
@@ -330,12 +331,12 @@ public class CmsLinkCheck extends CmsXmlTemplate implements I_CmsScheduledJob {
         GregorianCalendar actDate = new GregorianCalendar();
         String actDateString = getDateString(actDate);
         template.setData("actdate", actDateString);
-        newLinkchecktable.put(I_CmsConstants.C_LINKCHECKTABLE_DATE, actDateString);
+        newLinkchecktable.put(CmsLinkCheck.C_LINKCHECKTABLE_DATE, actDateString);
 
         StringBuffer mailContent = new StringBuffer(template.getProcessedDataValue("single_message"));
 
         // get all links from the database
-        linkList = new Vector(cms.readResources(I_CmsConstants.C_ROOT, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED
+        linkList = new Vector(cms.readResources("/", CmsResourceFilter.ONLY_VISIBLE_NO_DELETED
             .addRequireType(CmsResourceTypePointer.getStaticTypeId())));
         for (int i = 0; i < linkList.size(); i++) {
             CmsFile linkElement = (CmsFile)linkList.elementAt(i);

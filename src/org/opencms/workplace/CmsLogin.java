@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspLoginBean;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,7 +130,7 @@ public class CmsLogin extends CmsJspLoginBean {
         super(context, req, res);
 
         // this page must never be cached
-        res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
+        res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
         CmsRequestUtil.setNoCacheHeaders(res);
 
         // divine the best locale from the users browser settings
@@ -176,7 +175,7 @@ public class CmsLogin extends CmsJspLoginBean {
             CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
         if (m_requestedResource == null) {
             // no resource was requested, use default workplace URI
-            m_requestedResource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+            m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
         }
 
         if (cms.getRequestContext().currentUser().isGuestUser()) {
@@ -271,19 +270,19 @@ public class CmsLogin extends CmsJspLoginBean {
             String resource = CmsRequestUtil.splitUri(m_requestedResource)[0];
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
                 // bad resource name, use workplace as default
-                resource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+                resource = CmsFrameset.JSP_WORKPLACE_URI;
             }
             if (!getCmsObject().existsResource(resource)) {
                 // requested resource does either not exist or is not readable by user
-                if (CmsWorkplaceAction.C_JSP_WORKPLACE_URI.equals(resource)) {
+                if (CmsFrameset.JSP_WORKPLACE_URI.equals(resource)) {
                     // we know the Workplace exists, so the user does not have access to the Workplace
                     // probalbly this is a "Guest" user in a default setup where "Guest" has no access to the Workplace
                     m_message = Messages.get().container(Messages.GUI_LOGIN_FAILED_NO_WORKPLACE_PERMISSIONS_0);
                     m_action = ACTION_DISPLAY;
-                } else if (getCmsObject().existsResource(CmsWorkplaceAction.C_JSP_WORKPLACE_URI)) {
+                } else if (getCmsObject().existsResource(CmsFrameset.JSP_WORKPLACE_URI)) {
                     // resource does either not exist or is not readable, but general workplace permissions are granted
                     m_message = Messages.get().container(Messages.GUI_LOGIN_UNKNOWN_RESOURCE_1, m_requestedResource);
-                    m_requestedResource = CmsWorkplaceAction.C_JSP_WORKPLACE_URI;
+                    m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
                 } else {
                     // resource does not exist and no general workplace permissions granted
                     m_message = Messages.get().container(
@@ -463,7 +462,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("<title>");
 
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TITLE_0));
-        html.append("OpenCms " + OpenCms.getSystemInfo().getVersionNumber());
+        html.append("OpenCms " + OpenCms.getSystemInfo().getVersionName());
 
         html.append("</title>\n");
 

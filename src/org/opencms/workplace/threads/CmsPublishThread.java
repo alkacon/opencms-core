@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsPublishThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,11 @@ package org.opencms.workplace.threads;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSessionInfo;
 import org.opencms.main.CmsSessionManager;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,7 +93,7 @@ public class CmsPublishThread extends A_CmsReportThread {
 
         // if the project to publish is a temporary project, we have to update the
         // user info after publishing
-        if (m_cms.getRequestContext().currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
+        if (m_cms.getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
             m_updateSessionInfo = true;
         } else {
             m_updateSessionInfo = false;
@@ -118,14 +118,14 @@ public class CmsPublishThread extends A_CmsReportThread {
         try {
             getReport().println(
                 Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_BEGIN_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
             getCms().publishProject(getReport(), m_publishList);
             if (m_updateSessionInfo) {
                 updateSessionInfo();
             }
             getReport().println(
                 Messages.get().container(Messages.RPT_PUBLISH_RESOURCE_END_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
         } catch (Exception e) {
             getReport().println(e);
             LOG.error(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_FAILED_0), e);
@@ -155,14 +155,14 @@ public class CmsPublishThread extends A_CmsReportThread {
                 m_cms.readProject(projectId);
             } catch (CmsException e) {
                 // the project does not longer exist, update the project information with the online project
-                sessionInfo.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                sessionInfo.setProject(CmsProject.ONLINE_PROJECT_ID);
                 // update the workplace settings as well
-                m_settings.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                m_settings.setProject(CmsProject.ONLINE_PROJECT_ID);
                 getReport().println(
                     Messages.get().container(
                         Messages.RPT_PUBLISH_RESOURCE_SWITCH_PROJECT_1,
                         m_cms.getRequestContext().currentProject().getName()),
-                    I_CmsReport.C_FORMAT_DEFAULT);
+                    I_CmsReport.FORMAT_DEFAULT);
             }
         }
     }

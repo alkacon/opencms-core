@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,18 +37,18 @@ import java.io.File;
 
 /** 
  * @author Michael Emmerich 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
    // some test Strings    
-    private static final String C_STRING_1 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;";     
-    private static final String C_STRING_2 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
-    private static final String C_STRING_1_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
-    private static final String C_STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
+    private static final String STRING_1 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;";     
+    private static final String STRING_2 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
+    private static final String STRING_1_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
+    private static final String STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
   
     
-    private static final String C_CR_FF = "\r\n"; 
+    private static final String CR_LF = "\r\n"; 
     
     /**
      * Default JUnit constructor.<p>
@@ -64,13 +64,13 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
      */
     public void testISO() {
         System.out.println("Testing US-ASCII conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("US-ASCII", CmsHtmlConverter.C_PARAM_WORD);        
-        String convertedHtml1 = converter.convertToStringSilent(C_STRING_1);
-        String convertedHtml2 = converter.convertToStringSilent(C_STRING_2);
+        CmsHtmlConverter converter = new CmsHtmlConverter("US-ASCII", CmsHtmlConverter.PARAM_WORD);        
+        String convertedHtml1 = converter.convertToStringSilent(STRING_1);
+        String convertedHtml2 = converter.convertToStringSilent(STRING_2);
         
         // the converted code will end with a cr ff (\r\n)         
-        assertEquals(C_STRING_1 + C_CR_FF, convertedHtml1);
-        assertEquals(C_STRING_2 + C_CR_FF, convertedHtml2);  
+        assertEquals(STRING_1 + CR_LF, convertedHtml1);
+        assertEquals(STRING_2 + CR_LF, convertedHtml2);  
     }
 
     /** 
@@ -78,13 +78,13 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
      */
     public void testUTF8() {
         System.out.println("Testing UTF-8 conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.C_PARAM_WORD);        
-        String convertedHtml1 = converter.convertToStringSilent(C_STRING_1);
-        String convertedHtml2 = converter.convertToStringSilent(C_STRING_2);
+        CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.PARAM_WORD);        
+        String convertedHtml1 = converter.convertToStringSilent(STRING_1);
+        String convertedHtml2 = converter.convertToStringSilent(STRING_2);
         
         // the converted code will end with a cr ff (\r\n)         
-        assertEquals(C_STRING_1_UTF8_RESULT + C_CR_FF, convertedHtml1);
-        assertEquals(C_STRING_2_UTF8_RESULT + C_CR_FF, convertedHtml2);  
+        assertEquals(STRING_1_UTF8_RESULT + CR_LF, convertedHtml1);
+        assertEquals(STRING_2_UTF8_RESULT + CR_LF, convertedHtml2);  
     }
     
     /**
@@ -92,7 +92,7 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
      */
     public void testremoveWordTags() {
         System.out.println("Testing Word conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.C_PARAM_XHTML);        
+        CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.PARAM_XHTML);        
         
         // read a file and convert it
         File inputfile = new File (getTestDataPath("test2.html"));

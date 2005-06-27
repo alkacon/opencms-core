@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,8 +95,8 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
         result.append("\t");
         result.append(getNameLower());
         result.append("GalleryPath = \"");
-        result.append(A_CmsGallery.C_PATH_GALLERIES);
-        result.append(A_CmsGallery.C_OPEN_URI_SUFFIX);
+        result.append(A_CmsGallery.PATH_GALLERIES);
+        result.append(A_CmsGallery.OPEN_URI_SUFFIX);
         result.append("?");
         result.append(A_CmsGallery.PARAM_GALLERY_TYPENAME);
         result.append("=");

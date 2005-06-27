@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsExplorerDialog.java,v $
- * Date   : $Date: 2005/06/26 14:52:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,14 +47,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
 public class CmsExplorerDialog extends CmsWidgetDialog {
 
     /** List of explorer tools. */
-    public static final List C_EXPLORER_TOOLS = new ArrayList();
+    public static final List EXPLORER_TOOLS = new ArrayList();
 
     /**
      * Public constructor with JSP action element.<p>
@@ -80,11 +80,11 @@ public class CmsExplorerDialog extends CmsWidgetDialog {
 
     /* fill the explorer tools list, do not forget to add the message bundle also */
     static {
-        C_EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
-        C_EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
+        EXPLORER_TOOLS.add("/galleryoverview/downloadgallery");
+        EXPLORER_TOOLS.add("/galleryoverview/htmlgallery");
+        EXPLORER_TOOLS.add("/galleryoverview/imagegallery");
+        EXPLORER_TOOLS.add("/galleryoverview/linkgallery");
+        EXPLORER_TOOLS.add("/galleryoverview/tablegallery");
     }
 
     /**

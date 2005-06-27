@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/27 13:21:37 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,18 +70,18 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.35 $
+ * @version $Revision: 1.36 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
-    private static final String C_SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/test2.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_5 = "http://www.opencms.org/test5.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
-    private static final String C_SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
+    private static final String SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/test2.xsd";
+    private static final String SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
+    private static final String SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
+    private static final String SCHEMA_SYSTEM_ID_5 = "http://www.opencms.org/test5.xsd";
+    private static final String SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
+    private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
+    private static final String SCHEMA_SYSTEM_ID_8 = "http://www.opencms.org/test8.xsd";
+    private static final String SCHEMA_SYSTEM_ID_9 = "http://www.opencms.org/test9.xsd";
 
     /**
      * Default JUnit constructor.<p>
@@ -158,13 +158,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -199,7 +199,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -223,7 +223,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
 
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -242,7 +242,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
 
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -259,7 +259,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
 
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -274,7 +274,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
 
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -301,13 +301,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-6.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_6, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_6, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-6.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-6.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         CmsXmlContentValueSequence titleSequence;
 
@@ -328,7 +328,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         // ensure the document structure is as expected
         titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
@@ -352,7 +352,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         // ensure the document structure is as expected
         titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
@@ -387,7 +387,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         optionSequence = xmlcontent.getValueSequence("Option", Locale.ENGLISH);
         assertEquals("Option", optionSequence.getElementName());
@@ -408,7 +408,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // now re-create the XML content from the XML document
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         titleSequence = xmlcontent.getValueSequence("Title", Locale.ENGLISH);
         assertEquals(4, titleSequence.getElementCount());
@@ -442,13 +442,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         CmsXmlContentValueSequence nestedSequence;
 
@@ -463,7 +463,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // re-create the XML content
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -482,7 +482,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // re-create the XML content
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -498,7 +498,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // re-create the XML content
         content = xmlcontent.toString();
         System.out.println(content);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -526,14 +526,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-3.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_3, resolver);
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_3, resolver);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_3, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_3, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now create the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-3.xml", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-3.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
@@ -557,13 +557,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-4.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now create the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         System.out.println(xmlcontent.toString());
 
         // validate the XML structure
@@ -606,10 +606,10 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
-        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_8, resolver);
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_8, resolver);
 
         // read an existing (empty) XML content with just one locale node
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
@@ -621,7 +621,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(Locale.ENGLISH, locales.get(0));
 
         // create a fresh XML content based on the schema and try again  
-        xmlcontent = CmsXmlContentFactory.createDocument(null, Locale.ENGLISH, CmsEncoder.C_UTF8_ENCODING, cd1);
+        xmlcontent = CmsXmlContentFactory.createDocument(null, Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8, cd1);
         xmlcontent.validateXmlStructure(resolver);
 
         locales = xmlcontent.getLocales();
@@ -646,14 +646,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-5.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_5, resolver);
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_5, resolver);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_5, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_5, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-5.xml", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-5.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
@@ -693,14 +693,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-2.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_2, resolver);
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_2, resolver);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_2, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_2, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now create the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-2.xml", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-2.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         assertTrue(xmlcontent.hasValue("Html", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
@@ -784,13 +784,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-9.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_9, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_9, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-9.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-9.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         CmsXmlContentErrorHandler errorHandler;
 
@@ -833,7 +833,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -862,9 +862,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
 
         // now read the XML content
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
@@ -917,9 +917,9 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_ISO_8859_1));
 
         // now read the XML content
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
@@ -941,7 +941,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             properties);
 
         // copy the resource as a sibling to "de"
-        cms.copyResource(resourcenameEn, resourcenameDe, org.opencms.main.I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.copyResource(resourcenameEn, resourcenameDe, org.opencms.file.CmsResource.COPY_AS_SIBLING);
         // now lock the "DE" sibling
         cms.changeLock(resourcenameDe);
         // add the "DE" locale property to the german version
@@ -1004,13 +1004,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         String resourcename = "/mappingtest_nested.html";
         // create a file in the VFS with this content (required for mappings to work)
@@ -1064,14 +1064,14 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-4.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_4, resolver);
+            CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_4, resolver);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now create the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-4.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         System.out.println(xmlcontent.toString());
 
         // validate the XML structure
@@ -1148,8 +1148,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-3.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
-        definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_3, resolver);
+            CmsEncoder.ENCODING_UTF_8);
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_3, resolver);
 
         I_CmsXmlContentHandler contentHandler;
 
@@ -1160,8 +1160,8 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
-        definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_8, resolver);
+            CmsEncoder.ENCODING_UTF_8);
+        definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_8, resolver);
 
         contentHandler = definition.getContentHandler();
         assertSame(definition.getContentHandler().getClass().getName(), CmsDefaultXmlContentHandler.class.getName());
@@ -1191,13 +1191,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         // add 2 deep cascaded nodes
         xmlcontent.addValue(cms, "DeepCascade", Locale.ENGLISH, 0);
@@ -1246,7 +1246,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -1262,7 +1262,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // output the current document
         System.out.println(xmlcontent.toString());
         // re-create the document
-        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.C_UTF8_ENCODING, resolver);
+        xmlcontent = CmsXmlContentFactory.unmarshal(xmlcontent.toString(), CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -1291,13 +1291,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -1443,13 +1443,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-8.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
         // validate the XML structure
         xmlcontent.validateXmlStructure(resolver);
 
@@ -1505,13 +1505,13 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         // unmarshal content definition
         content = CmsFileUtil.readFile(
             "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
 
         // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.C_UTF8_ENCODING);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
 
         // "fill up" the XML content with some values
         CmsXmlContentValueSequence toastSequence = xmlcontent.getValueSequence("Toast", Locale.ENGLISH);

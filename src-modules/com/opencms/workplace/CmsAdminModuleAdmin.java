@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleAdmin.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -86,7 +86,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      * @return java.util.Hashtable
      */
     private void fillHashtable(CmsObject cms, Hashtable table, String module) {
-        table.put(C_MODULE_PACKETNAME, module);
+        table.put(CmsWorkplaceDefault.C_MODULE_PACKETNAME, module);
         table.put(C_VERSION, getStringValue(OpenCms.getModuleManager().getModule(module).getVersion().toString()));
         table.put(C_GROUP, getStringValue(OpenCms.getModuleManager().getModule(module).getGroup()));
         table.put(C_MODULENAME, getStringValue(OpenCms.getModuleManager().getModule(module).getNiceName()));
@@ -121,10 +121,10 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             paraVal.addElement(getStringValue(value));
             paraTyp.addElement("");
         }
-        table.put(C_SESSION_MODULE_ADMIN_PROP_NAMES, paraNames);
-        table.put(C_SESSION_MODULE_ADMIN_PROP_DESCR, paraDescr);
-        table.put(C_SESSION_MODULE_ADMIN_PROP_TYP, paraTyp);
-        table.put(C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);        
+        table.put(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_NAMES, paraNames);
+        table.put(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_DESCR, paraDescr);
+        table.put(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_TYP, paraTyp);
+        table.put(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_VAL, paraVal);        
     }
 
     /**
@@ -153,12 +153,12 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         if((from == null) || "".equals(from)) {
 
             // first call; clear session
-            session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
+            session.removeValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA);
             fillHashtable(cms, sessionData, packetName);
-            session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
+            session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA, sessionData);
             stepTo = "firstpage";
         }else {
-            sessionData = (Hashtable)session.getValue(C_SESSION_MODULE_ADMIN_DATA);
+            sessionData = (Hashtable)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA);
             if("first".equals(from)) {
 
                 //  put the data in the session
@@ -171,7 +171,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 sessionData.put(C_EMAIL, getStringValue((String)parameters.get(C_EMAIL)));
                 sessionData.put(C_DATE, getStringValue((String)parameters.get(C_DATE)));
     
-                session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
+                session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA, sessionData);
                 stepTo = "deps";
             }
             if("deps".equals(from)) {
@@ -181,7 +181,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
                 Vector allDeps = new Vector();
                 allDeps = parseAllDeps(getStringValue(allData));
                 sessionData.put(C_DEPENDENCY, allDeps);
-                session.putValue(C_SESSION_MODULE_ADMIN_DATA, sessionData);
+                session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA, sessionData);
 
                 // decide if we are going back or forward => set stepTo
                 String back = (String)parameters.get("back");
@@ -202,14 +202,14 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
 
                 // ready; save changes in registry
                 updateTheModule(cms, sessionData, packetName);
-                session.removeValue(C_SESSION_MODULE_ADMIN_DATA);
+                session.removeValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA);
                 templateSelector = "done";
             }
         }
         if("firstpage".equals(stepTo)) {
 
             // show the first page
-            templateDocument.setData(C_MODULE_PACKETNAME, (String)sessionData.get(C_MODULE_PACKETNAME));
+            templateDocument.setData(CmsWorkplaceDefault.C_MODULE_PACKETNAME, (String)sessionData.get(CmsWorkplaceDefault.C_MODULE_PACKETNAME));
             templateDocument.setData(C_VERSION, (String)sessionData.get(C_VERSION));
             templateDocument.setData(C_MODULENAME, (String)sessionData.get(C_MODULENAME));
             templateDocument.setData(C_DESCRIPTION, (String)sessionData.get(C_DESCRIPTION));
@@ -225,7 +225,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
         if("deps".equals(stepTo)) {
 
             // show the dependencies
-            templateDocument.setData(C_MODULE_PACKETNAME, (String)sessionData.get(C_MODULE_PACKETNAME));
+            templateDocument.setData(CmsWorkplaceDefault.C_MODULE_PACKETNAME, (String)sessionData.get(CmsWorkplaceDefault.C_MODULE_PACKETNAME));
             Vector deps = (Vector)sessionData.get(C_DEPENDENCY);
             String entrys = "";
             for(int i = 0;i < deps.size();i++) {
@@ -298,7 +298,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      */
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
-            cms.createResource(folder + newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.createResource(folder + newFolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         }catch(Exception e) {
         }
     }
@@ -311,7 +311,7 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
      */
     private void updateTheModule(CmsObject cms, Hashtable table, String module) {
         SimpleDateFormat dateFormat = new java.text.SimpleDateFormat("dd.MM.yyyy");
-        String name = (String)table.get(C_MODULE_PACKETNAME);
+        String name = (String)table.get(CmsWorkplaceDefault.C_MODULE_PACKETNAME);
 
         try {
         
@@ -349,8 +349,8 @@ public class CmsAdminModuleAdmin extends CmsWorkplaceDefault {
             }
 
             // last not least: the properties
-            Vector paraNames = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_NAMES);
-            Vector paraVal = (Vector)table.get(C_SESSION_MODULE_ADMIN_PROP_VAL);
+            Vector paraNames = (Vector)table.get(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_NAMES);
+            Vector paraVal = (Vector)table.get(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_VAL);
             
             Map parameters = new HashMap();
             for (int i=0; i<paraNames.size(); i++) {

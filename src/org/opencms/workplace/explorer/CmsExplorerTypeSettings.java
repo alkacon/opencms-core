@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,11 +106,9 @@ public class CmsExplorerTypeSettings implements Comparable {
      * @param rules the display rules
      * @param target the frame target of the menu entry
      * @param order the sort order of the current entry
-     * @param isXml true, if the used dialog uses the legacy XMLTemplate mechanism
      */
-    public void addContextMenuEntry(String key, String uri, String rules, String target, String order, String isXml) {
+    public void addContextMenuEntry(String key, String uri, String rules, String target, String order) {
 
-        boolean isXmlValue = Boolean.valueOf(isXml).booleanValue();
         Integer orderValue = new Integer(0);
         try {
             orderValue = Integer.valueOf(order);
@@ -120,13 +118,13 @@ public class CmsExplorerTypeSettings implements Comparable {
             }
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
-            CmsExplorerContextMenuItem.C_TYPE_ENTRY,
+            CmsExplorerContextMenuItem.TYPE_ENTRY,
             key,
             uri,
             rules,
             target,
-            orderValue,
-            isXmlValue);
+            orderValue);
+        
         m_contextMenuEntries.add(item);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
@@ -147,13 +145,12 @@ public class CmsExplorerTypeSettings implements Comparable {
             LOG.error(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
-            CmsExplorerContextMenuItem.C_TYPE_SEPARATOR,
+            CmsExplorerContextMenuItem.TYPE_SEPARATOR,
             null,
             null,
             null,
             null,
-            orderValue,
-            false);
+            orderValue);
         m_contextMenuEntries.add(item);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  * 
@@ -125,7 +125,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         public CmsFlexCacheVariation(CmsFlexCacheKey theKey) {
 
             m_key = theKey;
-            m_map = Collections.synchronizedMap(new HashMap(CmsFlexCache.C_INITIAL_CAPACITY_VARIATIONS));
+            m_map = Collections.synchronizedMap(new HashMap(CmsFlexCache.INITIAL_CAPACITY_VARIATIONS));
         }
     }
 
@@ -177,34 +177,34 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     }
 
     /** Suffix to append to online cache entries. */
-    public static final String C_CACHE_OFFLINESUFFIX = " [offline]";
+    public static final String CACHE_OFFLINESUFFIX = " [offline]";
 
     /** Suffix to append to online cache entries. */
-    public static final String C_CACHE_ONLINESUFFIX = " [online]";
+    public static final String CACHE_ONLINESUFFIX = " [online]";
 
     /** Trigger for clearcache event: Clear complete cache. */
-    public static final int C_CLEAR_ALL = 0;
+    public static final int CLEAR_ALL = 0;
 
     /** Trigger for clearcache event: Clear only entries. */
-    public static final int C_CLEAR_ENTRIES = 1;
+    public static final int CLEAR_ENTRIES = 1;
 
     /** Trigger for clearcache event: Clear complete offine cache. */
-    public static final int C_CLEAR_OFFLINE_ALL = 4;
+    public static final int CLEAR_OFFLINE_ALL = 4;
 
     /** Trigger for clearcache event: Clear only offline entries. */
-    public static final int C_CLEAR_OFFLINE_ENTRIES = 5;
+    public static final int CLEAR_OFFLINE_ENTRIES = 5;
 
     /** Trigger for clearcache event: Clear complete online cache. */
-    public static final int C_CLEAR_ONLINE_ALL = 2;
+    public static final int CLEAR_ONLINE_ALL = 2;
 
     /** Trigger for clearcache event: Clear only online entries. */
-    public static final int C_CLEAR_ONLINE_ENTRIES = 3;
+    public static final int CLEAR_ONLINE_ENTRIES = 3;
 
     /** Initial cache size, this should be a power of 2 because of the Java collections implementation. */
-    public static final int C_INITIAL_CAPACITY_CACHE = 512;
+    public static final int INITIAL_CAPACITY_CACHE = 512;
 
     /** Initial size for variation lists, should be a power of 2. */
-    public static final int C_INITIAL_CAPACITY_VARIATIONS = 8;
+    public static final int INITIAL_CAPACITY_VARIATIONS = 8;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexCache.class);
@@ -329,22 +329,22 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 }
                 int i = it.intValue();
                 switch (i) {
-                    case C_CLEAR_ALL:
+                    case CLEAR_ALL:
                         clear();
                         break;
-                    case C_CLEAR_ENTRIES:
+                    case CLEAR_ENTRIES:
                         clearEntries();
                         break;
-                    case C_CLEAR_ONLINE_ALL:
+                    case CLEAR_ONLINE_ALL:
                         clearOnline();
                         break;
-                    case C_CLEAR_ONLINE_ENTRIES:
+                    case CLEAR_ONLINE_ENTRIES:
                         clearOnlineEntries();
                         break;
-                    case C_CLEAR_OFFLINE_ALL:
+                    case CLEAR_OFFLINE_ALL:
                         clearOffline();
                         break;
-                    case C_CLEAR_OFFLINE_ENTRIES:
+                    case CLEAR_OFFLINE_ENTRIES:
                         clearOfflineEntries();
                         break;
                     default:
@@ -700,7 +700,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                         allEntries.remove();
                         this.m_variationCache.remove(nextObject);
                     }
-                    v.m_map = Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
+                    v.m_map = Collections.synchronizedMap(new HashMap(INITIAL_CAPACITY_VARIATIONS));
                 } else {
                     // Clear key and entry
                     m_size -= v.m_map.size();
@@ -749,7 +749,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                 allEntries.remove();
                 this.m_variationCache.remove(nextObject);
             }
-            v.m_map = Collections.synchronizedMap(new HashMap(C_INITIAL_CAPACITY_VARIATIONS));
+            v.m_map = Collections.synchronizedMap(new HashMap(INITIAL_CAPACITY_VARIATIONS));
         }
         m_size = 0;
     }
@@ -770,7 +770,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_KEYS_AND_ENTRIES_0));
         }
-        clearAccordingToSuffix(C_CACHE_OFFLINESUFFIX, false);
+        clearAccordingToSuffix(CACHE_OFFLINESUFFIX, false);
     }
 
     /**
@@ -790,7 +790,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_OFFLINE_ENTRIES_0));
         }
-        clearAccordingToSuffix(C_CACHE_OFFLINESUFFIX, true);
+        clearAccordingToSuffix(CACHE_OFFLINESUFFIX, true);
     }
 
     /**
@@ -809,7 +809,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_KEYS_AND_ENTRIES_0));
         }
-        clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, false);
+        clearAccordingToSuffix(CACHE_ONLINESUFFIX, false);
     }
 
     /**
@@ -829,7 +829,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_ONLINE_ENTRIES_0));
         }
-        clearAccordingToSuffix(C_CACHE_ONLINESUFFIX, true);
+        clearAccordingToSuffix(CACHE_ONLINESUFFIX, true);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorSelector.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.workplace.editors;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.I_CmsWpConstants;
 
 /**
  * Selects the dialog which should be displayed by OpenCms depending on the configuration value.<p>
@@ -49,16 +49,13 @@ import org.opencms.workplace.I_CmsWpConstants;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  * 
  * @see org.opencms.workplace.editors.I_CmsEditorHandler
  */
 public class CmsEditorSelector {
-
-    /** Debug flag. */
-    public static final boolean C_DEBUG = false;
 
     // necessary member variables
     private CmsJspActionElement m_jsp;
@@ -72,7 +69,7 @@ public class CmsEditorSelector {
     public CmsEditorSelector(CmsJspActionElement jsp) {
 
         setJsp(jsp);
-        setParamResource(jsp.getRequest().getParameter(I_CmsWpConstants.C_PARA_RESOURCE));
+        setParamResource(jsp.getRequest().getParameter(CmsDialog.PARAM_RESOURCE));
     }
 
     /**
@@ -82,21 +79,15 @@ public class CmsEditorSelector {
      */
     public String getSelectedEditorUri() {
 
-        if (C_DEBUG) {
-            System.err.println("["
-                + this.getClass().getName()
-                + "].getSelectedEditorUri() - Resource: "
-                + getParamResource());
-        }
         // get the handler class from the OpenCms runtime property
         I_CmsEditorHandler editorClass = OpenCms.getWorkplaceManager().getEditorHandler();
 
         // the resourcenameparameter could be encoded, so decode it
         String resource = getParamResource();
-        resource = CmsEncoder.unescape(resource, CmsEncoder.C_UTF8_ENCODING);
+        resource = CmsEncoder.unescape(resource, CmsEncoder.ENCODING_UTF_8);
         if (editorClass == null) {
             // error getting the dialog class, return to file list
-            return CmsWorkplace.C_FILE_EXPLORER_FILELIST;
+            return CmsWorkplace.FILE_EXPLORER_FILELIST;
         }
         // get the dialog URI from the class defined in the configuration 
         return editorClass.getEditorUri(resource, getJsp());

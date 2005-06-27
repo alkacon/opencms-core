@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsLogReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.report;
 
 import org.opencms.main.CmsLog;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Locale;
 
@@ -44,7 +44,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +64,7 @@ public class CmsLogReport extends A_CmsReport {
     public CmsLogReport() {
 
         // generate a message object with the default (english) locale
-        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE);
+        this(BUNDLE_NAME, CmsWorkplace.DEFAULT_LOCALE);
     }
 
     /**
@@ -74,7 +74,7 @@ public class CmsLogReport extends A_CmsReport {
      */
     public CmsLogReport(Class clazz) {
 
-        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE, clazz);
+        this(BUNDLE_NAME, CmsWorkplace.DEFAULT_LOCALE, clazz);
     }
 
     /**
@@ -122,25 +122,25 @@ public class CmsLogReport extends A_CmsReport {
     public synchronized void print(String value, int format) {
 
         switch (format) {
-            case C_FORMAT_HEADLINE:
+            case FORMAT_HEADLINE:
                 m_buffer.append("[ ");
                 m_buffer.append(value);
                 m_buffer.append(" ]");
                 break;
-            case C_FORMAT_WARNING:
+            case FORMAT_WARNING:
                 m_buffer.append("!!! ");
                 m_buffer.append(value);
                 m_buffer.append(" !!!");
                 break;
-            case C_FORMAT_ERROR:
+            case FORMAT_ERROR:
                 m_buffer.append("!!! ");
                 m_buffer.append(value);
                 m_buffer.append(" !!!");
                 addError(value);
                 break;
-            case C_FORMAT_NOTE:
-            case C_FORMAT_OK:
-            case C_FORMAT_DEFAULT:
+            case FORMAT_NOTE:
+            case FORMAT_OK:
+            case FORMAT_DEFAULT:
             default:
                 m_buffer.append(value);
         }

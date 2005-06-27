@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,9 +218,9 @@ public class CmsAdminMenu extends CmsToolDialog {
                 continue;
             }
             // skip initial '/'
-            int pos = tool.getHandler().getPath().indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR);
+            int pos = tool.getHandler().getPath().indexOf(CmsToolManager.TOOLPATH_SEPARATOR);
             // only install if at first level
-            if (path.indexOf(CmsToolManager.C_TOOLPATH_SEPARATOR, pos + 1) < 0) {
+            if (path.indexOf(CmsToolManager.TOOLPATH_SEPARATOR, pos + 1) < 0) {
 
                 addItem(
                     tool.getHandler().getGroup(),

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsSelectBox.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.w3c.dom.Element;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -85,13 +85,13 @@ public class CmsSelectBox extends A_CmsWpElement {
         StringBuffer result = new StringBuffer();
         
         // Read selectbox parameters
-        String selectClass = n.getAttribute(C_SELECTBOX_CLASS);
-        String selectName = n.getAttribute(C_SELECTBOX_NAME);
-        String selectMethod = n.getAttribute(C_SELECTBOX_METHOD);
-        String selectWidth = n.getAttribute(C_SELECTBOX_WIDTH);
-        String selectOnchange = n.getAttribute(C_SELECTBOX_ONCHANGE);
-        String selectSize = n.getAttribute(C_SELECTBOX_SIZE);
-        String selectDiv = n.getAttribute(C_SELECTBOX_DIV);
+        String selectClass = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_CLASS);
+        String selectName = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_NAME);
+        String selectMethod = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_METHOD);
+        String selectWidth = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_WIDTH);
+        String selectOnchange = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_ONCHANGE);
+        String selectSize = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_SIZE);
+        String selectDiv = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_DIV);
         if((selectSize == null) || (selectSize.length() == 0)) {
             selectSize = "1";
         }

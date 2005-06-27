@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsNavBase.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:23 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,19 +28,20 @@
 
 package com.opencms.defaults;
 
-import org.opencms.file.*;
-import org.opencms.main.*;
+import org.opencms.file.CmsObject;
+import org.opencms.main.CmsException;
 
-import com.opencms.core.*;
-import com.opencms.template.*;
-import java.util.*;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsXmlTemplate;
+
+import java.util.Hashtable;
 
 /**
  * This abstract class builds the default Navigation.
  *
  * @author Alexander Kandzior
  * @author Waruschan Babachan
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:32 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -561,7 +561,7 @@ public class CmsSetupTests {
 
         FileWriter fOut = null;
         PrintWriter dOut = null;
-        String filename = basePath + CmsSetupDb.C_SETUP_FOLDER + "versions.txt";
+        String filename = basePath + CmsSetupDb.SETUP_FOLDER + "versions.txt";
         try {
             File file = new File(filename);
             if (file.exists()) {

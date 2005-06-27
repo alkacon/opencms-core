@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlWpButtonsDefFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -41,7 +40,7 @@ import com.opencms.template.A_CmsXmlContent;
  * 
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -115,11 +114,11 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent {
     
     public String getButtonSubmit(String name, String action, String value, 
             String style, String width) throws CmsException {
-        setData(I_CmsWpConstants.C_BUTTON_NAME, name);
-        setData(I_CmsWpConstants.C_BUTTON_ACTION, action);
-        setData(I_CmsWpConstants.C_BUTTON_VALUE, value);
-        setData(I_CmsWpConstants.C_BUTTON_STYLE, style);
-        setData(I_CmsWpConstants.C_BUTTON_WIDTH, width);
+        setData(CmsWorkplaceDefault.C_BUTTON_NAME, name);
+        setData(CmsWorkplaceDefault.C_BUTTON_ACTION, action);
+        setData(CmsWorkplaceDefault.C_BUTTON_VALUE, value);
+        setData(CmsWorkplaceDefault.C_BUTTON_STYLE, style);
+        setData(CmsWorkplaceDefault.C_BUTTON_WIDTH, width);
         return getProcessedDataValue("submitbutton");
     }
     
@@ -131,11 +130,11 @@ public class CmsXmlWpButtonsDefFile extends A_CmsXmlContent {
     
     public String getButtonText(String name, String action, String value, 
             String style, String width) throws CmsException {
-        setData(I_CmsWpConstants.C_BUTTON_NAME, name);
-        setData(I_CmsWpConstants.C_BUTTON_ACTION, action);
-        setData(I_CmsWpConstants.C_BUTTON_VALUE, value);
-        setData(I_CmsWpConstants.C_BUTTON_STYLE, style);
-        setData(I_CmsWpConstants.C_BUTTON_WIDTH, width);
+        setData(CmsWorkplaceDefault.C_BUTTON_NAME, name);
+        setData(CmsWorkplaceDefault.C_BUTTON_ACTION, action);
+        setData(CmsWorkplaceDefault.C_BUTTON_VALUE, value);
+        setData(CmsWorkplaceDefault.C_BUTTON_STYLE, style);
+        setData(CmsWorkplaceDefault.C_BUTTON_WIDTH, width);
         return getProcessedDataValue("textbutton");
     }
     

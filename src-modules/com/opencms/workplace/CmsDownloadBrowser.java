@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsDownloadBrowser.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
@@ -36,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -50,7 +50,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Mario Stanke
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -91,21 +91,21 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
         if(!"error".equals(templateSelector)) {
 
             // clear session parameters of first load
-            if(parameters.get(C_PARA_INITIAL) != null) {
-                session.removeValue(C_PARA_FOLDER);
-                session.removeValue(C_PARA_PAGE);
+            if(parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL) != null) {
+                session.removeValue(CmsWorkplaceDefault.C_PARA_FOLDER);
+                session.removeValue(CmsWorkplaceDefault.C_PARA_PAGE);
                 session.removeValue("_DOWNLIST_");
-                session.removeValue(C_PARA_FILTER);
+                session.removeValue(CmsWorkplaceDefault.C_PARA_FILTER);
                 session.removeValue("numfiles");
                 session.removeValue("lasturl");
             }
 
             // most parameters have to be stored in the session because 'getFiles' needs them
-            String folder = (String)parameters.get(C_PARA_FOLDER);
+            String folder = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FOLDER);
             if(folder != null) {
-                session.putValue(C_PARA_FOLDER, folder);
+                session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, folder);
             }
-            folder = (String)session.getValue(C_PARA_FOLDER);
+            folder = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
             if(folder == null || "".equals(folder)) {
                 folder = getConfigFile(cms).getDownGalleryPath();
                 List galleries = cms.getSubFolders(folder);
@@ -113,7 +113,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
 
                     // take the first gallery
                     folder = cms.getSitePath((CmsResource)galleries.get(0));
-                    session.putValue(C_PARA_FOLDER, folder);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, folder);
                 }
                 else {
 
@@ -122,8 +122,8 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                 }
             }
             if(!"error_no_gallery".equals(templateSelector)) {
-                String pageText = (String)parameters.get(C_PARA_PAGE);
-                String filter = (String)parameters.get(C_PARA_FILTER);
+                String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
+                String filter = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FILTER);
                 
                 // check if the user requested a file deletion
                 String deleteAction = (String)parameters.get("action");
@@ -136,7 +136,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                             if (cms.getLock(res).isNullLock()) {
                                 cms.lockResource(deleteResource);
                             }
-                            cms.deleteResource(deleteResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                            cms.deleteResource(deleteResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
                         } catch (CmsException e) {
                             xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
                             templateSelector = "error";
@@ -150,27 +150,27 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                 // Check if the user requested a certain page number
                 if(pageText == null || "".equals(pageText)) {
                     pageText = "1";
-                    parameters.put(C_PARA_PAGE, pageText);
+                    parameters.put(CmsWorkplaceDefault.C_PARA_PAGE, pageText);
                 }
-                session.putValue(C_PARA_PAGE, pageText);
+                session.putValue(CmsWorkplaceDefault.C_PARA_PAGE, pageText);
 
                 // Check if the user requested a filter
                 if(filter == null) {
                     filter = "";
-                    session.putValue(C_PARA_FILTER, filter);
-                    parameters.put(C_PARA_FILTER, filter);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_FILTER, filter);
+                    parameters.put(CmsWorkplaceDefault.C_PARA_FILTER, filter);
                 }
 
                 // Compute the maximum page number
                 Vector filteredFiles = getFilteredDownList(cms, folder, filter);
-                int maxpage = ((filteredFiles.size() - 1) / C_DOWNBROWSER_MAXENTRIES) + 1;
+                int maxpage = ((filteredFiles.size() - 1) / CmsWorkplaceDefault.C_DOWNBROWSER_MAXENTRIES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, CmsEncoder.escape(folder,
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_FOLDER, CmsEncoder.escape(folder,
                     cms.getRequestContext().getEncoding()));
-                xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
-                xmlTemplateDocument.setData(C_PARA_FILTER, filter);
-                xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_PAGE, pageText);
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_FILTER, filter);
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_MAXPAGE, "" + maxpage);
                 session.putValue("_DOWNLIST_", filteredFiles);
                 session.putValue("numfiles", new Integer(filteredFiles.size())); // for 'showNextButton'
             }
@@ -245,14 +245,14 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
         int numFiles = filteredFiles.size();
 
         // Get limits for the requested page
-        String pageText = (String)session.getValue(C_PARA_PAGE);
+        String pageText = (String)session.getValue(CmsWorkplaceDefault.C_PARA_PAGE);
         if(pageText == null || "".equals(pageText)) {
             pageText = "1";
         }
         int page = new Integer(pageText).intValue();
-        int from = (page - 1) * C_DOWNBROWSER_MAXENTRIES;
-        int to = ((from + C_DOWNBROWSER_MAXENTRIES) > numFiles) ? numFiles : (from + C_DOWNBROWSER_MAXENTRIES);
-        String folder = (String)session.getValue(C_PARA_FOLDER);
+        int from = (page - 1) * CmsWorkplaceDefault.C_DOWNBROWSER_MAXENTRIES;
+        int to = ((from + CmsWorkplaceDefault.C_DOWNBROWSER_MAXENTRIES) > numFiles) ? numFiles : (from + CmsWorkplaceDefault.C_DOWNBROWSER_MAXENTRIES);
+        String folder = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
         if(folder == null || "".equals(folder)) {
             folder = getConfigFile(cms).getDownGalleryPath();
             List galleries = cms.getSubFolders(folder);
@@ -261,7 +261,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
                 // take the first gallery if none was chosen
                 folder = cms.getSitePath((CmsResource)galleries.get(0));
             }
-            session.putValue(C_PARA_FOLDER, folder);
+            session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, folder);
         }
 
         // Generate the download list for all files on the selected page
@@ -292,7 +292,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
         Vector filteredFiles = new Vector();
         for(int i=0; i<allFiles.size(); i++) {
             CmsFile file = (CmsFile)allFiles.get(i);
-            if (file.getState() != I_CmsConstants.C_STATE_DELETED) {
+            if (file.getState() != CmsResource.STATE_DELETED) {
                 String filename = file.getName();
                 String title = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 boolean filenameFilter = inFilter(filename, filter);
@@ -335,13 +335,13 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
     public int modifyDisplayedColumns(CmsObject cms, int prefs) {
 
         // not display the following columns
-        prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
-        prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
-        prefs = ((prefs & C_FILELIST_USER_CREATED) == 0) ? prefs : (prefs - C_FILELIST_USER_CREATED);
-        prefs = ((prefs & C_FILELIST_GROUP) == 0) ? prefs : (prefs - C_FILELIST_GROUP);
-        prefs = ((prefs & C_FILELIST_PERMISSIONS) == 0) ? prefs : (prefs - C_FILELIST_PERMISSIONS);
-        prefs = ((prefs & C_FILELIST_STATE) == 0) ? prefs : (prefs - C_FILELIST_STATE);
-        prefs = ((prefs & C_FILELIST_LOCKEDBY) == 0) ? prefs : (prefs - C_FILELIST_LOCKEDBY);
+        prefs = ((prefs & CmsUserSettings.FILELIST_NAME) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_NAME);
+        prefs = ((prefs & CmsUserSettings.FILELIST_TITLE) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_TITLE);
+        prefs = ((prefs & CmsUserSettings.FILELIST_USER_CREATED) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_USER_CREATED);
+        prefs = ((prefs & CmsWorkplaceDefault.C_FILELIST_GROUP) == 0) ? prefs : (prefs - CmsWorkplaceDefault.C_FILELIST_GROUP);
+        prefs = ((prefs & CmsUserSettings.FILELIST_PERMISSIONS) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_PERMISSIONS);
+        prefs = ((prefs & CmsUserSettings.FILELIST_STATE) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_STATE);
+        prefs = ((prefs & CmsUserSettings.FILELIST_LOCKEDBY) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_LOCKEDBY);
         return prefs;
     }
 
@@ -363,7 +363,7 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
             Hashtable parameters) {
 
         // Get the current page number
-        String pageText = (String)parameters.get(C_PARA_PAGE);
+        String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
         int page = new Integer(pageText).intValue();
         return new Boolean(page > 1);
     }
@@ -387,14 +387,14 @@ public class CmsDownloadBrowser extends A_CmsGalleryBrowser implements I_CmsFile
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // Get the current page number
-        String pageText = (String)parameters.get(C_PARA_PAGE);
+        String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
         int page = new Integer(pageText).intValue();
 
         // get the number of pics
         int numFiles = ((Integer)session.getValue("numfiles")).intValue();
 
         // Get the maximum page number
-        int maxpage = ((numFiles - 1) / C_DOWNBROWSER_MAXENTRIES) + 1;
+        int maxpage = ((numFiles - 1) / CmsWorkplaceDefault.C_DOWNBROWSER_MAXENTRIES) + 1;
         return new Boolean(page < maxpage);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlStringValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,14 +42,14 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlStringValue extends A_CmsXmlValueCdataBase {
 
     /** The name of this type as used in the XML schema. */
-    public static final String C_TYPE_NAME = "OpenCmsString";
+    public static final String TYPE_NAME = "OpenCmsString";
 
     /**
      * Creates a new, empty schema type descriptor of type "OpenCmsString".<p>
@@ -97,7 +97,7 @@ public class CmsXmlStringValue extends A_CmsXmlValueCdataBase {
      */
     public String getSchemaDefinition() {
 
-        return "<xsd:simpleType name=\"" + C_TYPE_NAME + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";
+        return "<xsd:simpleType name=\"" + TYPE_NAME + "\"><xsd:restriction base=\"xsd:string\" /></xsd:simpleType>";
     }
 
     /**
@@ -105,7 +105,7 @@ public class CmsXmlStringValue extends A_CmsXmlValueCdataBase {
      */
     public String getTypeName() {
 
-        return C_TYPE_NAME;
+        return TYPE_NAME;
     }
 
     /**

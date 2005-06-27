@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/06/27 10:32:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Iterator;
 import java.util.Locale;
@@ -46,14 +45,14 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlAreaWidget extends A_CmsWidget {
     
     /** VFS path to the available HtmlArea Locales. */
-    public static final String HTMLAREA_LOCALES_VFS = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "resources/editors/htmlarea/lang/";
+    public static final String HTMLAREA_LOCALES_VFS = CmsWorkplace.VFS_PATH_WORKPLACE + "resources/editors/htmlarea/lang/";
 
     /**
      * Creates a new html area editor widget.<p>
@@ -185,7 +184,7 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            String val = CmsEncoder.adjustHtmlEncoding(values[0], CmsEncoder.C_UTF8_ENCODING);
+            String val = CmsEncoder.adjustHtmlEncoding(values[0], CmsEncoder.ENCODING_UTF_8);
             param.setStringValue(cms, val);
         }
     }

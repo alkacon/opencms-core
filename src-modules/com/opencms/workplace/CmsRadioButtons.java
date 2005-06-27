@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsRadioButtons.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.Element;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -86,9 +86,9 @@ public class CmsRadioButtons extends A_CmsWpElement {
         Vector names = new Vector();
         Vector descriptions = new Vector();
         Integer returnObject = null;
-        String radioName = n.getAttribute(C_RADIO_NAME);
-        String radioMethod = n.getAttribute(C_RADIO_METHOD);
-        String radioOrder = n.getAttribute(C_RADIO_ORDER);
+        String radioName = n.getAttribute(CmsWorkplaceDefault.C_RADIO_NAME);
+        String radioMethod = n.getAttribute(CmsWorkplaceDefault.C_RADIO_METHOD);
+        String radioOrder = n.getAttribute(CmsWorkplaceDefault.C_RADIO_ORDER);
         if(radioOrder == null || ((!"row".equals(radioOrder)) && (!"col".equals(radioOrder)))) {
             radioOrder = "col";
         }
@@ -146,26 +146,26 @@ public class CmsRadioButtons extends A_CmsWpElement {
         for(int i = 0;i < numValues;i++) {
             
             // Set values for this radiobutton entry
-            radiodef.setData(C_RADIO_RADIONAME, radioName);
-            radiodef.setData(C_RADIO_NAME, (String)descriptions.elementAt(i));
-            radiodef.setData(C_RADIO_LINK, (String)values.elementAt(i));
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_RADIONAME, radioName);
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_NAME, (String)descriptions.elementAt(i));
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_LINK, (String)values.elementAt(i));
             
             // Check, if an image should be displayed
             if((String)names.elementAt(i) == null || "".equals(names.elementAt(i))) {
-                radiodef.setData(C_RADIO_IMAGEENTRY, "");
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_IMAGEENTRY, "");
             }
             else {
-                radiodef.setData(C_RADIO_IMAGENAME, "ic_" + (String)names.elementAt(i) + ".gif");
-                radiodef.setData(C_RADIO_IMAGEENTRY, radiodef.getProcessedDataValue("radiobuttons." 
-                        + C_RADIO_IMAGEOPTION, callingObject));
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_IMAGENAME, "ic_" + (String)names.elementAt(i) + ".gif");
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_IMAGEENTRY, radiodef.getProcessedDataValue("radiobuttons." 
+                        + CmsWorkplaceDefault.C_RADIO_IMAGEOPTION, callingObject));
             }
             
             // Check, if this should be the preselected option
             if(i == selectedOption) {
-                radiodef.setData(C_RADIO_SELECTEDENTRY, radiodef.getDataValue("radiobuttons." + C_RADIO_SELECTEDOPTION));
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_SELECTEDENTRY, radiodef.getDataValue("radiobuttons." + CmsWorkplaceDefault.C_RADIO_SELECTEDOPTION));
             }
             else {
-                radiodef.setData(C_RADIO_SELECTEDENTRY, "");
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_SELECTEDENTRY, "");
             }
             
             // Now get output for this option 

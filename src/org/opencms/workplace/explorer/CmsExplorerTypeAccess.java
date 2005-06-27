@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,7 @@ public class CmsExplorerTypeAccess {
             // create an OpenCms user context with "Guest" permissions
             CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
 
-            if (key.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
+            if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
                 // read the group
                 principal = OpenCms.getImportExportManager().translateGroup(principal);
                 principalId = cms.readGroup(principal).getId();

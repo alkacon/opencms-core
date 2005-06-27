@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContent.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import junit.framework.TestCase;
  * Tests for generating an XML content.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCmsXmlContent extends TestCase {
 
-    private static final String C_SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
+    private static final String SCHEMA_SYSTEM_ID_1 = "http://www.opencms.org/test1.xsd";
     
     /**
      * Default JUnit constructor.<p>
@@ -75,13 +75,13 @@ public class TestCmsXmlContent extends TestCase {
         String content;        
                 
         // unmarshal content definition
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_1, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
         // store content definition in entitiy resolver
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlEntityResolver.cacheSystemId(C_SCHEMA_SYSTEM_ID_1, definition.getSchema().asXML().getBytes(CmsEncoder.C_UTF8_ENCODING));
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_1, definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
         // now create the XML content
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.C_UTF8_ENCODING, resolver); 
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver); 
                         
         assertTrue(xmlcontent.hasValue("String", Locale.ENGLISH));
         assertTrue(xmlcontent.hasValue("DateTime", Locale.ENGLISH));

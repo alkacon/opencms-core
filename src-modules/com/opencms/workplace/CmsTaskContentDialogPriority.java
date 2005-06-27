@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDialogPriority.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -168,10 +168,10 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
             CmsTask task = taskService.readTask(taskid);
             taskName = task.getName();
             taskDescription = CmsTaskAction.getDescription(cms, task.getId());
-            paraAcceptation = taskService.getTaskPar(task.getId(), C_TASKPARA_ACCEPTATION);
-            paraAll = taskService.getTaskPar(task.getId(), C_TASKPARA_ALL);
-            paraCompletion = taskService.getTaskPar(task.getId(), C_TASKPARA_COMPLETION);
-            paraDelivery = taskService.getTaskPar(task.getId(), C_TASKPARA_DELIVERY);
+            paraAcceptation = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION);
+            paraAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
+            paraCompletion = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION);
+            paraDelivery = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY);
             due = CmsDateUtil.getDateShort(task.getTimeOut().getTime());
 
             // preselect the old user and role in the dialog for forwarding and resurrection
@@ -210,10 +210,10 @@ public class CmsTaskContentDialogPriority extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData("description", CmsEncoder.escape(taskDescription,
             cms.getRequestContext().getEncoding()));
         xmlTemplateDocument.setData("due", due);
-        xmlTemplateDocument.setData(C_TASKPARA_ACCEPTATION, paraAcceptation);
-        xmlTemplateDocument.setData(C_TASKPARA_ALL, paraAll);
-        xmlTemplateDocument.setData(C_TASKPARA_COMPLETION, paraCompletion);
-        xmlTemplateDocument.setData(C_TASKPARA_DELIVERY, paraDelivery);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION, paraAcceptation);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_ALL, paraAll);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_COMPLETION, paraCompletion);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_DELIVERY, paraDelivery);
         xmlTemplateDocument.setData("groupindex", groupIdxString);
         xmlTemplateDocument.setData("userindex", userIdxString);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/A_CmsMessageDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +144,7 @@ public abstract class A_CmsMessageDialog extends CmsWidgetDialog {
     protected List idsList() {
 
         if (!isForAll()) {
-            return CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.C_ITEM_SEPARATOR);
+            return CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
         }
         List ids = new ArrayList();
         Iterator itSessions = OpenCms.getSessionManager().getSessionInfos().iterator();

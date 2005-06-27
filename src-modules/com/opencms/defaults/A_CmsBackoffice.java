@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/A_CmsBackoffice.java,v $
-* Date   : $Date: 2005/06/25 11:19:03 $
-* Version: $Revision: 1.8 $
+* Date   : $Date: 2005/06/27 23:22:23 $
+* Version: $Revision: 1.9 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,11 +32,11 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsUUID;
 
@@ -76,7 +76,7 @@ import java.util.Vector;
  * 
  * @author Michael Knoll
  * @author Michael Emmerich
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -2758,7 +2758,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             }
         }
 
-        if (actProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+        if (actProjectId == CmsProject.ONLINE_PROJECT_ID) {
             style = C_STYLE_UNCHANGED;
         } else if (projectId != actProjectId) {
             // not is in this project
@@ -2782,13 +2782,13 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             }
 
             switch (state) {
-                case I_CmsConstants.C_STATE_NEW :
+                case CmsResource.STATE_NEW :
                     style = C_STYLE_NEW;
                     break;
-                case I_CmsConstants.C_STATE_CHANGED :
+                case CmsResource.STATE_CHANGED :
                     style = C_STYLE_CHANGED;
                     break;
-                case I_CmsConstants.C_STATE_DELETED :
+                case CmsResource.STATE_DELETED :
                     style = C_STYLE_DELETED;
                     break;
                 default :
@@ -2825,7 +2825,7 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
             }
         }
 
-        if (actProjectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+        if (actProjectId == CmsProject.ONLINE_PROJECT_ID) {
             template.setData("backofficecontextmenue", "backofficeonline");
         } else if (projectId != actProjectId) {
             // not is in this project
@@ -2848,9 +2848,9 @@ public abstract class A_CmsBackoffice extends CmsWorkplaceDefault {
                 }
             }
             if (lockedByUserId.isNullUUID()) {
-                if (state == I_CmsConstants.C_STATE_UNCHANGED) {
+                if (state == CmsResource.STATE_UNCHANGED) {
                     template.setData("backofficecontextmenue", "backofficenolock");
-                } else if (state == I_CmsConstants.C_STATE_DELETED) {
+                } else if (state == CmsResource.STATE_DELETED) {
                     template.setData("backofficecontextmenue", "backofficedeleted");
                 } else {
                     template.setData("backofficecontextmenue", "backofficenolockchanged");

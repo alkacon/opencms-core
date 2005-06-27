@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2005/06/23 16:41:19 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.search.documents.A_CmsVfsDocument;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
     public String getDocumentKey(boolean withMimeType) {
 
         StringBuffer result = new StringBuffer(32);
-        result.append(A_CmsVfsDocument.C_VFS_DOCUMENT_KEY_PREFIX);
+        result.append(A_CmsVfsDocument.VFS_DOCUMENT_KEY_PREFIX);
         result.append(getType());
         if (withMimeType) {
             result.append(":");

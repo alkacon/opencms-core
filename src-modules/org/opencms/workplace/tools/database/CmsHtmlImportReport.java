@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,14 +89,14 @@ public class CmsHtmlImportReport extends CmsReport {
     public void actionReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_END:
                 actionCloseDialog();
                 break;
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
                 break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
@@ -104,7 +104,7 @@ public class CmsHtmlImportReport extends CmsReport {
                 CmsHtmlImportThread thread = new CmsHtmlImportThread(getCms(), m_htmlImport);
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
                 break;
         }
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/CmsUri.java,v $
-* Date   : $Date: 2005/06/21 15:49:58 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:30 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.editors.CmsDefaultPageEditor;
 
-import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsResponse;
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -154,7 +153,7 @@ public class CmsUri {
             // only if the resource is cacheable and if the current project is online,
             // then the browser may cache the resource
             if(proxySettings.isProxyPrivateCacheable()
-                        && cms.getRequestContext().currentProject().getId() == org.opencms.main.I_CmsConstants.C_PROJECT_ONLINE_ID){
+                        && cms.getRequestContext().currentProject().getId() == org.opencms.file.CmsProject.ONLINE_PROJECT_ID){
                 // set max-age to 5 minutes. In this time a proxy may cache this content.
                 resp.setHeader("Cache-Control", "max-age=300");
                 if(!proxySettings.isProxyPublicCacheable()){

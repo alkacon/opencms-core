@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/06/26 15:35:13 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,10 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -55,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -165,8 +164,8 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // assert some basic status info
         assertDateLastModifiedAfter(cms, resource1, timestamp);
         assertProject(cms, resource1, project2);
-        assertLock(cms, resource1, CmsLock.C_TYPE_EXCLUSIVE);
-        assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        assertLock(cms, resource1, CmsLock.TYPE_EXCLUSIVE);
+        assertState(cms, resource1, CmsResource.STATE_CHANGED);
         
         // now login as user "test1" (default will be in the "Offline" project)
         cms.loginUser("test1", "test1");
@@ -177,7 +176,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
         // assert some basic status info
         assertProject(cms, resource1, project2);
-        assertLock(cms, resource1, CmsLock.C_TYPE_INHERITED);        
+        assertLock(cms, resource1, CmsLock.TYPE_INHERITED);        
         
         // now unlock the folder again
         cms.unlockResource(resource2);
@@ -198,7 +197,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.publishProject();
         
         // ensure the file was published - state must be "unchanged" 
-        assertState(cms, resource1, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resource1, CmsResource.STATE_UNCHANGED);
     }
     
     /**
@@ -243,10 +242,10 @@ public class TestPublishIssues extends OpenCmsTestCase {
         // check if the setup was created as planned
         cmsFile = cms.readFile(resourceA);
         assertEquals(2, cmsFile.getSiblingCount());
-        assertState(cms, resourceA, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resourceA, CmsResource.STATE_UNCHANGED);
         cmsFile = cms.readFile(resourceB);
         assertEquals(2, cmsFile.getSiblingCount());        
-        assertState(cms, resourceB, I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, resourceB, CmsResource.STATE_UNCHANGED);
         
         // we use the default "Offline" project as "projectA"
 //        CmsProject projectA = cms.readProject("Offline");        
@@ -359,18 +358,18 @@ public class TestPublishIssues extends OpenCmsTestCase {
         long touchTime = System.currentTimeMillis();
         
         cms.lockResource("/folder1/");
-        cms.touch("/folder1/", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
-        cms.touch("/folder1/index.html", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
-        cms.touch("/folder1/subfolder11/", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
-        cms.touch("/folder1/subfolder11/index.html", touchTime, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.touch("/folder1/", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.touch("/folder1/index.html", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.touch("/folder1/subfolder11/", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.touch("/folder1/subfolder11/index.html", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
         
         cms.unlockResource("/folder1/");
         cms.publishResource("/folder1/");
         
-        assertState(cms, "/folder1/", I_CmsConstants.C_STATE_UNCHANGED);        
-        assertState(cms, "/folder1/index.html", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder1/subfolder11/", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder1/subfolder11/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder1/", CmsResource.STATE_UNCHANGED);        
+        assertState(cms, "/folder1/index.html", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder1/subfolder11/", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder1/subfolder11/index.html", CmsResource.STATE_UNCHANGED);
         
         cms.createResource("/folder_a/", CmsResourceTypeFolder.getStaticTypeId());
         cms.createResource("/folder_a/file_a.txt", CmsResourceTypePlain.getStaticTypeId());
@@ -380,10 +379,10 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.unlockResource("/folder_a/");
         cms.publishResource("/folder_a/");
         
-        assertState(cms, "/folder_a/", I_CmsConstants.C_STATE_UNCHANGED);        
-        assertState(cms, "/folder_a/file_a.txt", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder_a/folder_b/", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder_a/folder_b/file_b.txt", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder_a/", CmsResource.STATE_UNCHANGED);        
+        assertState(cms, "/folder_a/file_a.txt", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder_a/folder_b/", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder_a/folder_b/file_b.txt", CmsResource.STATE_UNCHANGED);
         
     }
     
@@ -411,23 +410,23 @@ public class TestPublishIssues extends OpenCmsTestCase {
         
         cms.lockResource("/folder1/");
         // copy the whole folder creating siblings of all resources
-        cms.copyResource("/folder1/", "/folder2/folder1", I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.copyResource("/folder1/", "/folder2/folder1", CmsResource.COPY_AS_SIBLING);
         cms.unlockResource("/folder1/");
         
         // direct publish the new folder
         cms.unlockResource("/folder2/folder1/");
         cms.publishResource("/folder2/folder1/");
         
-        assertState(cms, "/folder2/folder1/", I_CmsConstants.C_STATE_UNCHANGED);        
-        assertState(cms, "/folder2/folder1/index.html", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/index.html", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/jsp.jsp", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/index.html", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/", I_CmsConstants.C_STATE_UNCHANGED);
-        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/index.html", I_CmsConstants.C_STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/", CmsResource.STATE_UNCHANGED);        
+        assertState(cms, "/folder2/folder1/index.html", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/index.html", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder11/subsubfolder111/jsp.jsp", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/index.html", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/", CmsResource.STATE_UNCHANGED);
+        assertState(cms, "/folder2/folder1/subfolder12/subsubfolder121/index.html", CmsResource.STATE_UNCHANGED);
         
     }
     
@@ -453,7 +452,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.createResource("/test", CmsResourceTypeFolder.getStaticTypeId());
         
         // create siblings
-        cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/subtest", I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.copyResource("/folder1/subfolder12/subsubfolder121", "/test/subtest", CmsResource.COPY_AS_SIBLING);
         cms.unlockResource("/test");
         
         // publish
@@ -468,11 +467,11 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.getRequestContext().setCurrentProject(project);
         
         // check lock
-        assertEquals(cms.getLock("/test/subtest/image1.gif").getType(), CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertEquals(cms.getLock("/test/subtest/image1.gif").getType(), CmsLock.TYPE_SHARED_EXCLUSIVE);
         
         // delete the folder
         cms.lockResource("/test/subtest");
-        cms.deleteResource("/test/subtest", I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.deleteResource("/test/subtest", CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockResource("/test/subtest");
 
         // publish
@@ -496,7 +495,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         echo("Testing publish scenario using 'publish all Siblings'");
         
         cms.lockResource("/folder1/");
-        cms.touch("/folder1/", System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+        cms.touch("/folder1/", System.currentTimeMillis(), CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, true);
         cms.unlockResource("/folder1/");
         
         // publish the project (this did cause an exception because of primary key violation!)

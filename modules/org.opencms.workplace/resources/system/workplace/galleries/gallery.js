@@ -141,11 +141,11 @@
 	
 	function deleteResource(uri) {
 		top.gallery_fs.gallery_head.action = "deleteResource";
-		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+"delete.jsp")%>?resource="+uri;				
+		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.PATH_DIALOGS+"delete.jsp")%>?resource="+uri;				
 	}
 	
 	function publishResource(uri) {
-		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.C_PATH_DIALOGS+"publishresource.jsp")%>?resource="+uri;				
+		top.gallery_fs.gallery_list.location.href="<%=wp.getJsp().link(wp.PATH_DIALOGS+"publishresource.jsp")%>?resource="+uri;				
 	}
 	
 	function editProperty(uri) {			

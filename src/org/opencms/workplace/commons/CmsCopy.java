@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
@@ -67,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +118,7 @@ public class CmsCopy extends CmsDialog {
     public void actionCopy() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         CmsResource resource = null;
         try {
             resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
@@ -136,7 +135,7 @@ public class CmsCopy extends CmsDialog {
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             // check if this exception requires a confirmation or error screen
@@ -175,7 +174,7 @@ public class CmsCopy extends CmsDialog {
                         + "\n</p>\n";
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(message + key("confirm.message." + getParamDialogtype()));
-                    getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);
+                    getJsp().include(FILE_DIALOG_SCREEN_CONFIRM);
                 } else {
                     // file type is different, create error message
                     includeErrorpage(this, e);
@@ -215,23 +214,23 @@ public class CmsCopy extends CmsDialog {
             // for folders, show an additional option "preserve links"
             int defaultMode = getSettings().getUserSettings().getDialogCopyFolderMode();
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\""
-                + I_CmsConstants.C_COPY_AS_SIBLING
+                + CmsResource.COPY_AS_SIBLING
                 + "\"");
-            if (defaultMode == I_CmsConstants.C_COPY_AS_SIBLING) {
+            if (defaultMode == CmsResource.COPY_AS_SIBLING) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
             retValue.append(key("messagebox.option.folder.assibling.copy") + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\""
-                + I_CmsConstants.C_COPY_PRESERVE_SIBLING
+                + CmsResource.COPY_PRESERVE_SIBLING
                 + "\"");
-            if (defaultMode == I_CmsConstants.C_COPY_PRESERVE_SIBLING) {
+            if (defaultMode == CmsResource.COPY_PRESERVE_SIBLING) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
             retValue.append(key("messagebox.option.folder.preserve.copy") + "<br>\n");
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"");
-            if (defaultMode == I_CmsConstants.C_COPY_AS_NEW) {
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + CmsResource.COPY_AS_NEW + "\"");
+            if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
@@ -241,15 +240,15 @@ public class CmsCopy extends CmsDialog {
             // for files, show copy option "copy as sibling" and "copy as new resource"
             int defaultMode = getSettings().getUserSettings().getDialogCopyFileMode();
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\""
-                + I_CmsConstants.C_COPY_AS_SIBLING
+                + CmsResource.COPY_AS_SIBLING
                 + "\"");
-            if (defaultMode == I_CmsConstants.C_COPY_AS_SIBLING) {
+            if (defaultMode == CmsResource.COPY_AS_SIBLING) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
             retValue.append(key("messagebox.option.file.assibling.copy") + "<br>\n");
-            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + I_CmsConstants.C_COPY_AS_NEW + "\"");
-            if (defaultMode == I_CmsConstants.C_COPY_AS_NEW) {
+            retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + CmsResource.COPY_AS_NEW + "\"");
+            if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
@@ -371,7 +370,7 @@ public class CmsCopy extends CmsDialog {
         }
 
         // get the copy mode from request parameter
-        int copyMode = I_CmsConstants.C_COPY_PRESERVE_SIBLING;
+        int copyMode = CmsResource.COPY_PRESERVE_SIBLING;
         try {
             copyMode = Integer.parseInt(getParamCopymode());
         } catch (Exception e) {
@@ -431,7 +430,7 @@ public class CmsCopy extends CmsDialog {
             // delete existing target resource if confirmed by the user
             if (DIALOG_CONFIRMED.equals(getParamAction())) {
                 checkLock(target);
-                getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                getCms().deleteResource(target, CmsResource.DELETE_PRESERVE_SIBLINGS);
             }
 
             // copy the resource       

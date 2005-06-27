@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.db.postgresql;
 
 import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbException;
-import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.generic.CmsSqlManager;
 import org.opencms.db.generic.Messages;
 import org.opencms.file.CmsBackupProject;
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Antonio Core 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -97,9 +97,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 stmt4.setString(1, currentResource.getBackupId().toString());
                 stmt4.setInt(2, currentResource.getTagId());
                 stmt4.setString(3, currentResource.getStructureId().toString());
-                stmt4.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+                stmt4.setInt(4, CmsProperty.STRUCTURE_RECORD_MAPPING);
                 stmt4.setString(5, currentResource.getResourceId().toString());
-                stmt4.setInt(6, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+                stmt4.setInt(6, CmsProperty.RESOURCE_RECORD_MAPPING);
                 stmt4.addBatch();
             }
 

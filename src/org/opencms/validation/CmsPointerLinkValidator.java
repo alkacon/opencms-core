@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidator.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
@@ -57,7 +56,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +101,7 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
     public String launch(CmsObject cms, Map parameters) throws CmsException {
 
         if (Boolean.valueOf((String)parameters.get("writeLog")).booleanValue()) {
-            m_report = new CmsLogReport(I_CmsReport.C_BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
+            m_report = new CmsLogReport(I_CmsReport.BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
         }
 
         validateLinks(cms);
@@ -134,11 +133,11 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
 
         m_report.println(
             Messages.get().container(Messages.RPT_VALIDATE_EXTERNAL_LINKS_BEGIN_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         // get all links
         List links = cms.readResources(
-            I_CmsConstants.C_ROOT,
+            "/",
             CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(CmsResourceTypePointer.getStaticTypeId()));
         Iterator iterator = links.iterator();
         Map brokenLinks = new HashMap();
@@ -151,12 +150,12 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
             m_report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_1,
                 new Integer(i),
-                new Integer(links.size())), I_CmsReport.C_FORMAT_NOTE);
-            m_report.print(Messages.get().container(Messages.RPT_VALIDATE_LINK_0), I_CmsReport.C_FORMAT_NOTE);
+                new Integer(links.size())), I_CmsReport.FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.RPT_VALIDATE_LINK_0), I_CmsReport.FORMAT_NOTE);
             m_report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 link.getRootPath()));
-            m_report.print(Messages.get().container(Messages.GUI_LINK_POINTING_TO_0), I_CmsReport.C_FORMAT_NOTE);
+            m_report.print(Messages.get().container(Messages.GUI_LINK_POINTING_TO_0), I_CmsReport.FORMAT_NOTE);
             m_report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 linkUrl));
@@ -165,21 +164,21 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
             // check link and append it to the list of broken links, if test fails
             if (!checkUrl(cms, linkUrl)) {
                 brokenLinks.put(link.getRootPath(), linkUrl);
-                m_report.println(Messages.get().container(Messages.RPT_BROKEN_0), I_CmsReport.C_FORMAT_ERROR);
+                m_report.println(Messages.get().container(Messages.RPT_BROKEN_0), I_CmsReport.FORMAT_ERROR);
             } else {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
             }
         }
 
         m_report.println(Messages.get().container(
             Messages.RPT_LINK_VALIDATION_STAT_2,
             new Integer(links.size()),
-            new Integer(brokenLinks.size())), I_CmsReport.C_FORMAT_HEADLINE);
+            new Integer(brokenLinks.size())), I_CmsReport.FORMAT_HEADLINE);
         m_report.println(
             Messages.get().container(Messages.RPT_VALIDATE_EXTERNAL_LINKS_END_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         OpenCms.getLinkManager().setPointerLinkValidationResult(new CmsPointerLinkValidationResult(brokenLinks));
 

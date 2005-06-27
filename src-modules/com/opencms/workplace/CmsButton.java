@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsButton.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;BUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -77,11 +77,11 @@ public class CmsButton extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // Read button parameters
-        String buttonName = n.getAttribute(C_BUTTON_NAME);
-        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
-        String buttonAlt = n.getAttribute(C_BUTTON_ALT);
-        String buttonHref = n.getAttribute(C_BUTTON_HREF);
-        String buttonMethod = n.getAttribute(C_BUTTON_METHOD);
+        String buttonName = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_NAME);
+        String buttonAction = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_ACTION);
+        String buttonAlt = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_ALT);
+        String buttonHref = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_HREF);
+        String buttonMethod = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_METHOD);
         if(buttonHref == null || "".equals(buttonHref)) {
             buttonHref = "";
         }
@@ -132,7 +132,7 @@ public class CmsButton extends A_CmsWpElement {
         
         // Get button definition and language values
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
+        buttonAlt = lang.getLanguageValue(CmsWorkplaceDefault.C_LANG_BUTTON + "." + buttonAlt);
         
         // get the processed button.
         if(activate) {

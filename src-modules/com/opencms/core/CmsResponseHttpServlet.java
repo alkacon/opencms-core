@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/CmsResponseHttpServlet.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,8 @@
 
 package com.opencms.core;
 
-import org.opencms.main.*;
+import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,7 +43,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.5 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/27 23:22:30 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -85,7 +86,7 @@ public class CmsResponseHttpServlet implements I_CmsResponse {
         m_res = res;
         m_req = req;
         // write OpenCms server identification in the response header
-        m_res.setHeader("Server", "OpenCms/" + OpenCms.getSystemInfo().getVersionNumber());
+        m_res.setHeader("Server", "OpenCms/" + OpenCms.getSystemInfo().getVersionName());
     }
 
     /**

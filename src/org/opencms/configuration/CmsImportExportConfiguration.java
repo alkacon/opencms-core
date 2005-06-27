@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0
  */
@@ -159,10 +159,10 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     protected static final String N_STATICEXPORT_VFS_PREFIX = "vfs-prefix";
 
     /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
+    private static final String CONFIGURATION_DTD_NAME = "opencms-importexport.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
+    private static final String DEFAULT_XML_FILE_NAME = "opencms-importexport.xml";
 
     /** The configured import/export manager. */
     private CmsImportExportManager m_importExportManager;
@@ -175,7 +175,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public CmsImportExportConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
         }
@@ -442,14 +442,14 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         i = m_importExportManager.getImportUserTranslations().keySet().iterator();
         while (i.hasNext()) {
             String to = (String)i.next();
-            principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_USER).addAttribute(
+            principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.PRINCIPAL_USER).addAttribute(
                 A_FROM,
                 (String)m_importExportManager.getImportUserTranslations().get(to)).addAttribute(A_TO, to);
         }
         i = m_importExportManager.getImportGroupTranslations().keySet().iterator();
         while (i.hasNext()) {
             String to = (String)i.next();
-            principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.C_PRINCIPAL_GROUP).addAttribute(
+            principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.PRINCIPAL_GROUP).addAttribute(
                 A_FROM,
                 (String)m_importExportManager.getImportGroupTranslations().get(to)).addAttribute(A_TO, to);
         }
@@ -561,7 +561,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 
     /**

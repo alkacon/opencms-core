@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/06/25 13:44:14 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
@@ -92,6 +92,12 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
 
+    /** Property constant for <code>"NavImage"</code>. */
+    public static final String PROPERTY_NAVIMAGE = "NavImage";
+
+    /** Property constant for <code>"NavInfo"</code>. */
+    public static final String PROPERTY_NAVINFO = "NavInfo";
+
     /** Property for the navigation position. */
     public static final String PROPERTY_NAVPOS = "NavPos";
 
@@ -132,7 +138,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     public static final int PROPERYDEFINITION_RESOURCE = 1;
 
     /** The null property definition object. */
-    private static final CmsPropertyDefinition C_NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(
+    private static final CmsPropertyDefinition NULL_PROPERTY_DEFINITION = new CmsPropertyDefinition(
         CmsUUID.getNullUUID(),
         "");
 
@@ -160,7 +166,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
      */
     public static CmsPropertyDefinition getNullPropertyDefinition() {
 
-        return CmsPropertyDefinition.C_NULL_PROPERTY_DEFINITION;
+        return CmsPropertyDefinition.NULL_PROPERTY_DEFINITION;
     }
 
     /**

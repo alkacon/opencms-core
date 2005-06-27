@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/I_CmsResourceLoader.java,v $
- * Date   : $Date: 2005/06/25 13:44:14 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  * 
@@ -71,6 +71,9 @@ import javax.servlet.http.HttpServletResponse;
  * @see org.opencms.flex.CmsFlexRequestDispatcher
  */
 public interface I_CmsResourceLoader extends I_CmsConfigurationParameterHandler {
+
+    /** Request parameter to force element selection. */
+    String PARAMETER_ELEMENT = "__element";
 
     /** 
      * Destroys this ResourceLoder.<p>

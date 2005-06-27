@@ -27,14 +27,14 @@ while(i.hasNext()) {
 <table border="0" style="margin-top: 14px;">
 <tr>
 <form name="confirmvalues" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
-<input type="hidden" name="<%= CmsFormHandler.C_PARAM_FORMACTION %>" value="<%= CmsFormHandler.C_ACTION_CONFIRMED %>">
+<input type="hidden" name="<%= CmsFormHandler.PARAM_FORMACTION %>" value="<%= CmsFormHandler.ACTION_CONFIRMED %>">
 <%= formHandler.createHiddenFields() %>
 <td><input type="submit" value="<%= messages.key("form.button.checked") %>" class="formbutton">&nbsp;&nbsp;&nbsp;&nbsp;</td>
 </form>
 
 
 <form name="displayvalues" method="post" action="<%= cms.link(cms.getRequestContext().getUri()) %>">
-<input type="hidden" name="<%= CmsFormHandler.C_PARAM_FORMACTION %>" value="<%= CmsFormHandler.C_ACTION_CORRECT_INPUT %>">
+<input type="hidden" name="<%= CmsFormHandler.PARAM_FORMACTION %>" value="<%= CmsFormHandler.ACTION_CORRECT_INPUT %>">
 <%= formHandler.createHiddenFields() %>
 <td><input type="submit" value="<%= messages.key("form.button.correct") %>" class="formbutton"></td>
 </form>

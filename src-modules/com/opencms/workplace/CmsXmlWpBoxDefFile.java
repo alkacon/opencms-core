@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlWpBoxDefFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -40,12 +39,12 @@ import com.opencms.template.A_CmsXmlContent;
  *  Content definition for the workplace messagebox element definition file.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  **/
 
-public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsWpConstants {
+public class CmsXmlWpBoxDefFile extends A_CmsXmlContent {
     
     /**
      * Default constructor.
@@ -92,14 +91,14 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsWpConsta
     
     public String getErrorpage(String title, String message, String reason, 
             String suggestion, String link, String msgReason, String msgButton) throws CmsException {
-        setData(C_ERROR_TITLE, title);
-        setData(C_ERROR_MESSAGE, message);
-        setData(C_ERROR_REASON, reason);
-        setData(C_ERROR_SUGGESTION, suggestion);
-        setData(C_ERROR_LINK, link);
-        setData(C_ERROR_MSG_REASON, msgReason);
-        setData(C_ERROR_MSG_BUTTON, msgButton);
-        return getProcessedDataValue(C_TAG_ERRORPAGE);
+        setData(CmsWorkplaceDefault.C_ERROR_TITLE, title);
+        setData(CmsWorkplaceDefault.C_ERROR_MESSAGE, message);
+        setData(CmsWorkplaceDefault.C_ERROR_REASON, reason);
+        setData(CmsWorkplaceDefault.C_ERROR_SUGGESTION, suggestion);
+        setData(CmsWorkplaceDefault.C_ERROR_LINK, link);
+        setData(CmsWorkplaceDefault.C_ERROR_MSG_REASON, msgReason);
+        setData(CmsWorkplaceDefault.C_ERROR_MSG_BUTTON, msgButton);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_ERRORPAGE);
     }
     
     /**
@@ -130,14 +129,14 @@ public class CmsXmlWpBoxDefFile extends A_CmsXmlContent implements I_CmsWpConsta
     
     public String getMessagebox(String title, String message1, String message2, 
             String button1, String button2, String link1, String link2) throws CmsException {
-        setData(C_MESSAGE_TITLE, title);
-        setData(C_MESSAGE_MESSAGE1, message1);
-        setData(C_MESSAGE_MESSAGE2, message2);
-        setData(C_MESSAGE_BUTTON1, button1);
-        setData(C_MESSAGE_BUTTON2, button2);
-        setData(C_MESSAGE_LINK1, link1);
-        setData(C_MESSAGE_LINK2, link2);
-        return getProcessedDataValue(C_TAG_MESSAGEBOX);
+        setData(CmsWorkplaceDefault.C_MESSAGE_TITLE, title);
+        setData(CmsWorkplaceDefault.C_MESSAGE_MESSAGE1, message1);
+        setData(CmsWorkplaceDefault.C_MESSAGE_MESSAGE2, message2);
+        setData(CmsWorkplaceDefault.C_MESSAGE_BUTTON1, button1);
+        setData(CmsWorkplaceDefault.C_MESSAGE_BUTTON2, button2);
+        setData(CmsWorkplaceDefault.C_MESSAGE_LINK1, link1);
+        setData(CmsWorkplaceDefault.C_MESSAGE_LINK2, link2);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_MESSAGEBOX);
     }
     
     /**

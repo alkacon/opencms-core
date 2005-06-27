@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 
@@ -127,17 +127,17 @@ public class TestCmsXmlContentDefinition extends TestCase {
         cd1.addType(new CmsXmlDateTimeValue("Date", "1", "1"));
         cd1.addType(new CmsXmlStringValue("Option", "0", "1")); 
         
-        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
         
         Locale locale = Locale.ENGLISH;
         
-        CmsXmlContent content = CmsXmlContentFactory.createDocument(null, locale, CmsEncoder.C_UTF8_ENCODING, cd1);        
+        CmsXmlContent content = CmsXmlContentFactory.createDocument(null, locale, CmsEncoder.ENCODING_UTF_8, cd1);        
         content.validateXmlStructure(resolver);
 
         // change cd to break validation
         cd1.addType(new CmsXmlStringValue("Kaputt", "1", "1"));
-        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes(CmsEncoder.C_UTF8_ENCODING));
+        CmsXmlEntityResolver.cacheSystemId(schemaUri, cd1.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
 
         try {
             content.validateXmlStructure(resolver);
@@ -150,7 +150,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
         System.out.println(content.toString());
     }
     
-    private static final String C_SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
+    private static final String SCHEMA_SYSTEM_ID_1B = "http://www.opencms.org/test1b.xsd";
     
     /** 
      * Tests XML content definition with a different inner / outer sequence name.<p>
@@ -163,8 +163,8 @@ public class TestCmsXmlContentDefinition extends TestCase {
         String content;       
         
         // unmarshal content definition
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1b.xsd", CmsEncoder.C_UTF8_ENCODING);
-        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_SCHEMA_SYSTEM_ID_1B, resolver);
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1b.xsd", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1B, resolver);
         
         Document schema;
         StringWriter out;
@@ -181,7 +181,7 @@ public class TestCmsXmlContentDefinition extends TestCase {
             
         System.out.println(out.toString());
         
-        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("Outer", "Inner", C_SCHEMA_SYSTEM_ID_1B);         
+        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("Outer", "Inner", SCHEMA_SYSTEM_ID_1B);         
         
         cd2.addType(new CmsXmlStringValue("E1", "1", "1"));
         cd2.addType(new CmsXmlStringValue("E2", "1", "1"));

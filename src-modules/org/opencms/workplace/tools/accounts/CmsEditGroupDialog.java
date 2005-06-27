@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsCheckboxWidget;
@@ -65,14 +65,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditGroupDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "group";
+    public static final String KEY_PREFIX = "group";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -124,7 +124,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
                 CmsGroup newGroup = getCms().createGroup(
                     m_group.getName(),
                     m_group.getDescription(),
-                    m_group.isEnabled() ? I_CmsConstants.C_FLAG_ENABLED : I_CmsConstants.C_FLAG_DISABLED,
+                    m_group.isEnabled() ? I_CmsPrincipal.FLAG_ENABLED : I_CmsPrincipal.FLAG_DISABLED,
                     getParentGroup());
                 newGroup.setProjectManager(m_group.getProjectManager());
                 newGroup.setProjectCoWorker(m_group.getProjectCoWorker());
@@ -248,7 +248,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
         // initialize the user object to use for the dialog
         initGroupObject();
 
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
         if (m_group.getId() == null) {

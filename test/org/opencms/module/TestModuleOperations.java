@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/06/26 15:07:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -288,7 +288,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         List dependencies = OpenCms.getModuleManager().checkDependencies(
             module,
-            CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+            CmsModuleManager.DEPENDENCY_MODE_IMPORT);
 
         if (dependencies.size() != 2) {
             fail("Module '" + moduleName + "' has 2 dependencies, not " + dependencies.size());
@@ -307,7 +307,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // add one (of two) depdendencies, with different but o.k. version number
         addDependency(cms, new CmsModuleDependency(dep1.getName(), new CmsModuleVersion("2.5")));
 
-        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_IMPORT);
 
         if (dependencies.size() != 1) {
             fail("Module '" + moduleName + "' still needs 1 dependency, not " + dependencies.size());
@@ -321,7 +321,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         CmsModuleDependency dep3 = new CmsModuleDependency("org.opencms.test.dependency2", new CmsModuleVersion("1.0"));
         addDependency(cms, dep3);
 
-        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_IMPORT);
 
         if (dependencies.size() != 1) {
             fail("Module '" + moduleName + "' still needs 1 dependency, not " + dependencies.size());
@@ -334,7 +334,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // finally add depdendency with right version
         addDependency(cms, dep2);
 
-        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_IMPORT);
 
         if (dependencies.size() != 0) {
             fail("Module '" + moduleName + "' must have dependencies fullfilled");
@@ -382,13 +382,13 @@ public class TestModuleOperations extends OpenCmsTestCase {
             new CmsModuleVersion("1.5"));
 
         module = OpenCms.getModuleManager().getModule(dep1.getName());
-        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_DELETE);
+        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_DELETE);
         if (!dependencies.contains(dep4)) {
             fail("Dependency not checked: " + dep4);
         }
 
         module = OpenCms.getModuleManager().getModule(dep2.getName());
-        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_DELETE);
+        dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_DELETE);
         if (!dependencies.contains(dep4)) {
             fail("Dependency not checked: " + dep4);
         }

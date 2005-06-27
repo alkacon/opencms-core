@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,25 +49,30 @@ import org.apache.commons.httpclient.util.URIUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class CmsTemplateForm extends CmsTemplateBean {
 
     /** Name of the resource bundle containing the localized form messages.<p> */
-    public static final String C_MESSAGE_BUNDLE_FORM = "templateone_form";
+    public static final String MESSAGE_BUNDLE_FORM = "templateone_form";
+    
     /** Request parameter name for the action parameter to determine if the form has been submitted.<p> */
-    public static final String C_PARAM_ACTION = "action";
+    public static final String PARAM_ACTION = "action";
 
     /** Holds the error messages for form validation.<p> */
     private Map m_errors;
+    
     /** Stores the URI of the JSP form.<p> */
     private String m_formUri;
+    
     /** Stores the URI of the calling page including eventual request parameter appendings.<p> */
     private String m_pageUri;
+    
     /** Stores the complete URL of the calling page including eventual request parameter appendings.<p> */
     private String m_pageUrl;
+    
     /** Stores the URI of the page containing the texts for the form.<p> */
     private String m_textsUri;
 
@@ -161,7 +166,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
         String uri = getRequestContext().getUri();
         // set uri to page uri to obtain configuration path
         getRequestContext().setUri(getPageUri(true));
-        String path = property(C_PROPERTY_CONFIGPATH, "search", "");
+        String path = property(PROPERTY_CONFIGPATH, "search", "");
         // reset uri to form uri
         getRequestContext().setUri(uri);
         return path;
@@ -346,18 +351,18 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
         // call initialization of super class
         super.init(context, req, res);
         // set site root
-        String siteRoot = req.getParameter(CmsTemplateBean.C_PARAM_SITE);
+        String siteRoot = req.getParameter(CmsTemplateBean.PARAM_SITE);
         if (CmsStringUtil.isNotEmpty(siteRoot)) {
             getRequestContext().setSiteRoot(siteRoot);
         }
         // store the form uri
         m_formUri = getRequestContext().getUri();
         // get the page uri from request parameter
-        m_pageUri = req.getParameter(CmsTemplateBean.C_PARAM_URI);
+        m_pageUri = req.getParameter(CmsTemplateBean.PARAM_URI);
         if (m_pageUri == null) {
             m_pageUri = m_formUri;
         }
-        messages(C_MESSAGE_BUNDLE_FORM);
+        messages(MESSAGE_BUNDLE_FORM);
     }
 
     /**
@@ -401,7 +406,7 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
      */
     public boolean isSubmitted() {
 
-        return getRequest().getParameter(C_PARAM_ACTION) != null;
+        return getRequest().getParameter(PARAM_ACTION) != null;
     }
 
     /**

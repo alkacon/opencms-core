@@ -3,15 +3,15 @@
 // initialize action element to access the API
 CmsTemplateBean cms = new CmsTemplateBean(pageContext, request, response);
 
-String systemUri = cms.link(I_CmsWpConstants.C_VFS_PATH_MODULES + CmsTemplateBean.C_MODULE_NAME + "/pages/");
+String systemUri = cms.link(CmsWorkplace.VFS_PATH_MODULES + CmsTemplateBean.MODULE_NAME + "/pages/");
 String linkUri = cms.link(cms.getRequestContext().getUri());
 
 String siteRoot = cms.getRequestContext().getSiteRoot();
 
-String loginUri = request.getParameter(CmsTemplateBean.C_PARAM_LOGINURI);
+String loginUri = request.getParameter(CmsTemplateBean.PARAM_LOGINURI);
 boolean showLogin = !"none".equals(loginUri);
 
-String helpUri = request.getParameter(CmsTemplateBean.C_PARAM_HELPURI);
+String helpUri = request.getParameter(CmsTemplateBean.PARAM_HELPURI);
 boolean showHelp = !"none".equals(helpUri);
 
 String loginText = cms.key("link.login");
@@ -20,7 +20,7 @@ if (!currUser.isGuestUser()) {
    loginText = cms.key("link.login.loggedin") + " " + currUser.getName();   
 }
 
-if (CmsTemplateBean.C_PARAM_ACCESSIBLE.equals(cms.getLayout())) {
+if (CmsTemplateBean.PARAM_ACCESSIBLE.equals(cms.getLayout())) {
 	%><!-- Beginn Footer-Links -->
 	<div class="linksfoot">
 	<a class="linksheadfoot" href="#top" title="<%= cms.key("link.top") %>"><%= cms.key("link.top") %></a>
@@ -38,7 +38,7 @@ if (CmsTemplateBean.C_PARAM_ACCESSIBLE.equals(cms.getLayout())) {
 	</div>
 	<!-- Ende Footer-Links -->
 	<%
-} else if (CmsTemplateBean.C_PARAM_COMMON.equals(cms.getLayout())) {
+} else if (CmsTemplateBean.PARAM_COMMON.equals(cms.getLayout())) {
 	%><!-- Beginn Footer-Links -->
 	<div class="linksfoot">
 	<a href="#top" title="<%= cms.key("link.top") %>"><img src="<%= cms.getResourcePath() %>up.gif" height="12" alt="<%= cms.key("link.top") %>" width="10" align="middle" border="0" /></a>

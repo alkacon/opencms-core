@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -114,7 +114,7 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
      */
     public int getLoaderId() {
 
-        return CmsDumpLoader.C_RESOURCE_LOADER_ID;
+        return CmsDumpLoader.RESOURCE_LOADER_ID;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,7 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
     public static final String PARAM_IMPORTFILE = "importFile";
 
     /** The import JSP report workplace URI. */
-    protected static final String IMPORT_ACTION_REPORT = C_PATH_WORKPLACE + "admin/database/reports/import.html";
+    protected static final String IMPORT_ACTION_REPORT = PATH_WORKPLACE + "admin/database/reports/import.html";
 
     /** Name of the manifest file used in upload files. */
     private static final String FILE_MANIFEST = "manifest.xml";

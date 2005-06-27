@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,12 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.IOException;
@@ -80,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,7 +267,7 @@ public class CmsNewResource extends CmsDialog {
      */
     public void actionSelect() throws IOException {
 
-        String nextUri = C_PATH_DIALOGS + getParamNewResourceUri();
+        String nextUri = PATH_DIALOGS + getParamNewResourceUri();
         if (nextUri.indexOf("initial=true") == -1) {
             setParamAction(DIALOG_NEWFORM);
             String paramSep = "?";
@@ -285,7 +284,7 @@ public class CmsNewResource extends CmsDialog {
                     LOG.info(e);
                 }
                 // JSP dialog not present, display legacy XMLTemplate dialog
-                nextUri = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
+                nextUri = CmsWorkplace.VFS_PATH_WORKPLACE + "action/" + getParamNewResourceUri();
                 sendCmsRedirect(nextUri);
             }
         }
@@ -536,13 +535,13 @@ public class CmsNewResource extends CmsDialog {
             // set current folder to root folder
             try {
                 currentFolder = getCms().getSitePath(
-                    getCms().readFolder(I_CmsConstants.C_ROOT, CmsResourceFilter.IGNORE_EXPIRATION));
+                    getCms().readFolder("/", CmsResourceFilter.IGNORE_EXPIRATION));
             } catch (CmsException e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
-                currentFolder = I_CmsConstants.C_ROOT;
+                currentFolder = "/";
             }
         }
         if (!currentFolder.endsWith("/")) {

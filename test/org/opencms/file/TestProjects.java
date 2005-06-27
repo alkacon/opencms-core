@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2005/06/23 18:06:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,9 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.Collections;
@@ -52,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -113,7 +112,7 @@ public class TestProjects extends OpenCmsTestCase {
             "Unit test project 2", 
             OpenCms.getDefaultUsers().getGroupUsers(), 
             OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
-            I_CmsConstants.C_PROJECT_TYPE_NORMAL
+            CmsProject.PROJECT_TYPE_NORMAL
         );
         
         // some basic project tests
@@ -175,7 +174,7 @@ public class TestProjects extends OpenCmsTestCase {
             "Unit test project 3", 
             OpenCms.getDefaultUsers().getGroupUsers(), 
             OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
-            I_CmsConstants.C_PROJECT_TYPE_NORMAL
+            CmsProject.PROJECT_TYPE_NORMAL
         );
         
         // use the main folder as start folder for the project
@@ -196,8 +195,8 @@ public class TestProjects extends OpenCmsTestCase {
         
         // do some changes to the project
         cms.lockResource(resource);
-        cms.touch("/folder1/", System.currentTimeMillis(), I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
-        cms.deleteResource("/folder2/", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);        
+        cms.touch("/folder1/", System.currentTimeMillis(), CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, true);
+        cms.deleteResource("/folder2/", CmsResource.DELETE_REMOVE_SIBLINGS);        
         cms.createResource("/folder3/", CmsResourceTypeFolder.getStaticTypeId(), null, Collections.EMPTY_LIST);
         cms.createResource("/folder3/test.txt", CmsResourceTypePlain.getStaticTypeId(), "".getBytes(), Collections.EMPTY_LIST);
         cms.unlockResource(resource);
@@ -243,7 +242,7 @@ public class TestProjects extends OpenCmsTestCase {
                 "Unit test project 1", 
                 OpenCms.getDefaultUsers().getGroupUsers(), 
                 OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
-                I_CmsConstants.C_PROJECT_TYPE_NORMAL
+                CmsProject.PROJECT_TYPE_NORMAL
             );
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/index.html");
@@ -290,7 +289,7 @@ public class TestProjects extends OpenCmsTestCase {
                 "Unit test project 4", 
                 OpenCms.getDefaultUsers().getGroupUsers(), 
                 OpenCms.getDefaultUsers().getGroupProjectmanagers(), 
-                I_CmsConstants.C_PROJECT_TYPE_NORMAL
+                CmsProject.PROJECT_TYPE_NORMAL
             );
             cms.getRequestContext().setCurrentProject(project);
             cms.copyResourceToProject("/sites/default/index.html");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.administration.A_CmsImportFromHttp;
 import org.opencms.workplace.tools.CmsToolManager;
@@ -53,14 +53,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
     /** The dialog URI. */
-    public static final String DIALOG_URI = C_PATH_WORKPLACE + "admin/modules/modules_import.html";
+    public static final String DIALOG_URI = PATH_WORKPLACE + "admin/modules/modules_import.html";
 
     /** Modulename parameter. */
     public static final String PARAM_MODULE = "module";
@@ -95,7 +95,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
         try {
             copyFileToServer(OpenCms.getSystemInfo().getPackagesRfsPath()
                 + File.separator
-                + I_CmsConstants.C_MODULE_PATH);
+                + CmsSystemInfo.FOLDER_MODULES);
         } catch (CmsException e) {
             // error copying the file to the OpenCms server
             setException(e);

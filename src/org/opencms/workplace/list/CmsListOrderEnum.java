@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListOrderEnum.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,10 +68,10 @@ public final class CmsListOrderEnum {
     public static final CmsListOrderEnum ORDER_NONE = new CmsListOrderEnum("none");
 
     /** Array constant for column sorting. */
-    private static final CmsListOrderEnum[] C_VALUES = {ORDER_ASCENDING, ORDER_DESCENDING, ORDER_NONE};
+    private static final CmsListOrderEnum[] VALUE_ARRAY = {ORDER_ASCENDING, ORDER_DESCENDING, ORDER_NONE};
 
     /** List of ordering constants.     */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_order;

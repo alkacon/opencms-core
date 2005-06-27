@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleDelete.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,10 +29,10 @@
 package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleDependency;
@@ -114,7 +114,7 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
             
         } else if(C_DELETE.equals(step)) {  
             CmsModule module = OpenCms.getModuleManager().getModule(moduleName);            
-            List dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_DELETE);
+            List dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_DELETE);
             if(!dependencies.isEmpty()) {
                 // don't delete; send message error
                 xmlTemplateDocument.setData("name", module.getName());
@@ -133,17 +133,17 @@ public class CmsAdminModuleDelete extends CmsWorkplaceDefault {
                 Vector wrongChecksum = new Vector();
                 Vector filesInUse = new Vector();
                 Vector resourcesForProject = new Vector();
-                reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                reqCont.setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                 session.putValue(C_SESSION_MODULENAME, moduleName);
-                session.putValue(C_SESSION_MODULE_PROJECTFILES, resourcesForProject);
+                session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_PROJECTFILES, resourcesForProject);
                 if(filesWithProperty.isEmpty() && missingFiles.isEmpty() && wrongChecksum.isEmpty() && filesInUse.isEmpty()) {
                     step = "fromerrorpage";
                 } else {
-                    session.putValue(C_SESSION_MODULE_DELETE_STEP, "0");
-                    session.putValue(C_SESSION_MODULE_CHECKSUM, wrongChecksum);
-                    session.putValue(C_SESSION_MODULE_PROPFILES, filesWithProperty);
-                    session.putValue(C_SESSION_MODULE_INUSE, filesInUse);
-                    session.putValue(C_SESSION_MODULE_MISSFILES, missingFiles);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_DELETE_STEP, "0");
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_CHECKSUM, wrongChecksum);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_PROPFILES, filesWithProperty);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_INUSE, filesInUse);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_MISSFILES, missingFiles);
                     templateSelector = C_WARNING;
                 }
             }

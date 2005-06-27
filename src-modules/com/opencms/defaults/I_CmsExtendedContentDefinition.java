@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/I_CmsExtendedContentDefinition.java,v $
-* Date   : $Date: 2005/05/17 13:47:32 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:23 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,9 +27,8 @@
 */
 package com.opencms.defaults;
 
-import org.opencms.util.CmsUUID;
-
 import org.opencms.file.CmsObject;
+import org.opencms.util.CmsUUID;
 
 import java.util.Vector;
 

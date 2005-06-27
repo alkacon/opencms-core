@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorageEntry.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,6 @@
  
 package org.opencms.test;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
@@ -44,11 +40,15 @@ import org.opencms.main.CmsException;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.util.CmsUUID;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * A single entry of the OpenCmsTestResourceStorage.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class OpenCmsTestResourceStorageEntry {
 
@@ -348,7 +348,7 @@ public class OpenCmsTestResourceStorageEntry {
     /**
      * Returns the state of this resource.<p>
      *
-     * This may be C_STATE_UNCHANGED, C_STATE_CHANGED, C_STATE_NEW or C_STATE_DELETED.<p>
+     * This may be STATE_UNCHANGED, STATE_CHANGED, STATE_NEW or STATE_DELETED.<p>
      *
      * @return the state of this resource
      */

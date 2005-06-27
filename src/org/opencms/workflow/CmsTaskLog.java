@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTaskLog.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workflow;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -49,7 +49,7 @@ public class CmsTaskLog {
     private String m_comment;
 
     /** The id of the task log. */
-    private int m_id = I_CmsConstants.C_UNKNOWN_ID;
+    private int m_id = CmsDbUtil.UNKNOWN_ID;
 
     /** The start time for this task log. */
     private java.sql.Timestamp m_startTime;

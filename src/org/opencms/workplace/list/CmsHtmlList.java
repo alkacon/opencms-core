@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,14 +51,14 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlList {
 
     /** Constant for item separator char used for coding/encoding multiselection. */
-    public static final String C_ITEM_SEPARATOR = "|";
+    public static final String ITEM_SEPARATOR = "|";
 
     /** Standard list button location. */
     public static final String ICON_LEFT = "list/leftarrow.png";

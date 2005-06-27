@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,41 +58,41 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsWorkplaceEditorConfiguration {
 
     /** Name of the root document node. */
-    public static final String C_DOCUMENT_NODE = "editor";
+    public static final String DOCUMENT_NODE = "editor";
 
     /** Name of the single user agent node. */
-    protected static final String C_NODE_AGENT = "agent";
+    protected static final String N_AGENT = "agent";
 
     /** Name of the resource type class node. */
-    protected static final String C_NODE_CLASS = "class";
+    protected static final String N_CLASS = "class";
 
     /** Name of the editor label node. */
-    protected static final String C_NODE_EDITORLABEL = "label";
+    protected static final String N_LABEL = "label";
 
     /** Name of the resource type subnode mapto. */
-    protected static final String C_NODE_MAPTO = "mapto";
+    protected static final String N_MAPTO = "mapto";
 
     /** Name of the resource type subnode name. */
-    protected static final String C_NODE_NAME = "name";
+    protected static final String N_NAME = "name";
 
     /** Name of the resource type subnode ranking. */
-    protected static final String C_NODE_RANKING = "ranking";
+    protected static final String N_RANKING = "ranking";
 
     /** Name of the resourcetypes node. */
-    protected static final String C_NODE_RESOURCETYPES = "resourcetypes";
+    protected static final String N_RESOURCETYPES = "resourcetypes";
 
     /** Name of the resource type node. */
-    protected static final String C_NODE_TYPE = "type";
+    protected static final String N_TYPE = "type";
 
     /** Name of the useragents node. */
-    protected static final String C_NODE_USERAGENTS = "useragents";
+    protected static final String N_USERAGENTS = "useragents";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorConfiguration.class);
@@ -263,39 +263,39 @@ public class CmsWorkplaceEditorConfiguration {
     private void initialize(Document document, String editorUri) {
 
         // set the label of the editor
-        setEditorLabel(document.getRootElement().elementText(C_NODE_EDITORLABEL));
+        setEditorLabel(document.getRootElement().elementText(N_LABEL));
 
         // set the URI of the editor
         setEditorUri(editorUri);
 
         // create the map of valid resource types
-        Iterator i = document.getRootElement().element(C_NODE_RESOURCETYPES).elementIterator(C_NODE_TYPE);
+        Iterator i = document.getRootElement().element(N_RESOURCETYPES).elementIterator(N_TYPE);
         Map resTypes = new HashMap();
         while (i.hasNext()) {
             Element currentType = (Element)i.next();
             float ranking;
-            String name = currentType.elementText(C_NODE_NAME);
+            String name = currentType.elementText(N_NAME);
             if (name == null || "".equals(name.trim())) {
                 logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_NAME_0), null);
                 continue;
             }
             try {
-                ranking = Float.parseFloat(currentType.elementText(C_NODE_RANKING));
+                ranking = Float.parseFloat(currentType.elementText(N_RANKING));
             } catch (Throwable t) {
                 logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
                 continue;
             }
-            String mapTo = currentType.elementText(C_NODE_MAPTO);
+            String mapTo = currentType.elementText(N_MAPTO);
             if ("".equals(mapTo)) {
                 mapTo = null;
             }
             resTypes.put(name, new String[] {"" + ranking, mapTo});
         }
         // add the additional resource types
-        i = document.getRootElement().element(C_NODE_RESOURCETYPES).elementIterator(C_NODE_CLASS);
+        i = document.getRootElement().element(N_RESOURCETYPES).elementIterator(N_CLASS);
         while (i.hasNext()) {
             Element currentClass = (Element)i.next();
-            String name = currentClass.elementText(C_NODE_NAME);
+            String name = currentClass.elementText(N_NAME);
             List assignedTypes = new ArrayList();
             try {
                 // get the editor type matcher class
@@ -307,12 +307,12 @@ public class CmsWorkplaceEditorConfiguration {
             }
             float ranking;
             try {
-                ranking = Float.parseFloat(currentClass.elementText(C_NODE_RANKING));
+                ranking = Float.parseFloat(currentClass.elementText(N_RANKING));
             } catch (Throwable t) {
                 logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
                 continue;
             }
-            String mapTo = currentClass.elementText(C_NODE_MAPTO);
+            String mapTo = currentClass.elementText(N_MAPTO);
             if ("".equals(mapTo)) {
                 mapTo = null;
             }
@@ -327,7 +327,7 @@ public class CmsWorkplaceEditorConfiguration {
         setResourceTypes(resTypes);
 
         // create the list of user agents & compiled patterns for editor
-        i = document.getRootElement().element(C_NODE_USERAGENTS).elementIterator(C_NODE_AGENT);
+        i = document.getRootElement().element(N_USERAGENTS).elementIterator(N_AGENT);
         List pattern = new ArrayList();
         List userAgents = new ArrayList();
         while (i.hasNext()) {

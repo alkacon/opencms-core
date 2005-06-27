@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSite.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.site;
 
 import org.opencms.util.CmsUUID;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Describes a configured site in OpenCms.<p>
@@ -42,15 +42,12 @@ import java.util.ArrayList;
  * @author  Alexander Kandzior 
  * @author  Jan Baudisch 
  *
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsSite implements Cloneable {
-
-    /** Name of the property to use for defining directories as site roots. */
-    public static final String C_PROPERTY_SITE = "siteroot";
-
+    
     /** The aliases for this site, a vector of CmsSiteMatcher Objects. */
     private List m_aliases;
 

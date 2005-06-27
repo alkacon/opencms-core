@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/widgetdemo/Attic/CmsAdminWidgetDemo7.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,17 @@ package org.opencms.workplace.tools.widgetdemo;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.scheduler.CmsScheduledJobInfo;
-import org.opencms.widgets.*;
+import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.CmsCheckboxWidget;
+import org.opencms.widgets.CmsDownloadGalleryWidget;
+import org.opencms.widgets.CmsHtmlGalleryWidget;
+import org.opencms.widgets.CmsImageGalleryWidget;
+import org.opencms.widgets.CmsInputWidget;
+import org.opencms.widgets.CmsLinkGalleryWidget;
+import org.opencms.widgets.CmsTableGalleryWidget;
+import org.opencms.widgets.CmsTextareaWidget;
+import org.opencms.widgets.CmsVfsFileWidget;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -53,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */

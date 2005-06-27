@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 6.0.0
  */
@@ -68,9 +68,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The "autosettitle" attribute. */
     public static final String A_AUTOSETTITLE = "autosettitle";
-
-    /** The "isxml" attribute. */
-    public static final String A_ISXML = "isxml";
 
     /** The "page" attribute. */
     public static final String A_PAGE = "page";
@@ -343,10 +340,10 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
 
     /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
+    private static final String CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";
+    private static final String DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -356,7 +353,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public CmsWorkplaceConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_0));
         }
@@ -430,7 +427,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
             "addContextMenuEntry",
-            6);
+            5);
         digester.addCallParam(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
             0,
@@ -451,10 +448,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
             4,
             A_ORDER);
-        digester.addCallParam(
-            "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
-            5,
-            A_ISXML);
 
         digester.addCallMethod(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_SEPARATOR,
@@ -542,14 +535,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     while (m.hasNext()) {
                         CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)m.next();
                         Element itemElement;
-                        if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
+                        if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                             // create an <entry> node
                             itemElement = contextMenuElement.addElement(N_ENTRY);
                             itemElement.addAttribute(A_KEY, item.getKey());
                             itemElement.addAttribute(A_URI, item.getUri());
-                            if (item.isXml()) {
-                                itemElement.addAttribute(A_ISXML, "" + item.isXml());
-                            }
                             if (item.getTarget() != null) {
                                 itemElement.addAttribute(A_TARGET, item.getTarget());
                             }
@@ -1432,7 +1422,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsChannelBackoffice.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:25 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,12 +28,13 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.defaults.A_CmsBackoffice;
@@ -44,7 +45,6 @@ import com.opencms.workplace.CmsXmlWpTemplateFile;
 
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -72,22 +72,22 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
 
     public String getCreateUrl(CmsObject cms, String tagcontent,
                              A_CmsXmlContent doc, Object userObject) throws Exception{
-        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/EditBackoffice.html";
+        return CmsWorkplace.VFS_PATH_WORKPLACE.substring(1) + "administration/channels/EditBackoffice.html";
     }
 
     public String getBackofficeUrl(CmsObject cms, String tagcontent,
                                  A_CmsXmlContent doc, Object userObject) throws Exception {
-        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/Backoffice.html";
+        return CmsWorkplace.VFS_PATH_WORKPLACE.substring(1) + "administration/channels/Backoffice.html";
     }
 
     public String getEditUrl(CmsObject cms, String tagcontent,
                            A_CmsXmlContent doc, Object userObject) throws Exception {
-        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/EditBackoffice.html";
+        return CmsWorkplace.VFS_PATH_WORKPLACE.substring(1) + "administration/channels/EditBackoffice.html";
     }
 
     public String getPublishUrl(CmsObject cms, String tagcontent,
                                  A_CmsXmlContent doc, Object userObject) throws Exception {
-        return C_VFS_PATH_WORKPLACE.substring(1) + "administration/channels/Backoffice.html";
+        return CmsWorkplace.VFS_PATH_WORKPLACE.substring(1) + "administration/channels/Backoffice.html";
     }
 
     // removed for testing
@@ -207,7 +207,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
         }else if(m_channel==null){            
             //create a new ouputchannels content definition.
             m_channel = new CmsChannelContent(cms);
-            m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
+            m_channelId = CmsDbUtil.UNKNOWN_ID+"";
             m_folderId = CmsUUID.getNullUUID();
         }
         //put parentId in session for user method
@@ -237,7 +237,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
 //            template.setData("value",groupId.toString());
 //            if (!group.equals("") && (cms.readGroup(new CmsUUID(group)).getName()).equals(groupName)) {
 //                template.setData("check","selected");
-//            }else if(m_channelId.equals(I_CmsConstants.C_UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
+//            }else if(m_channelId.equals(I_CmsConstants.UNKNOWN_ID+"") && groupName.equals(defaultGroup)){
 //                template.setData("check","selected");
 //            }else{
 //                template.setData("check","");
@@ -255,7 +255,7 @@ public class CmsChannelBackoffice extends A_CmsBackoffice{
             template.setData("value",userId.toString());
             if (!owner.equals("") && (cms.readUser(new CmsUUID(owner)).getName()).equals(userName)) {
                 template.setData("check","selected");
-            }else if(m_channelId.equals(I_CmsConstants.C_UNKNOWN_ID+"") && userName.equals(defaultUser)){
+            }else if(m_channelId.equals(CmsDbUtil.UNKNOWN_ID+"") && userName.equals(defaultUser)){
                 template.setData("check","selected");
             }else{
                 template.setData("check","");

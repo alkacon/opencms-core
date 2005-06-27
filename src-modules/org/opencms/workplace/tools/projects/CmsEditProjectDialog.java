@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,14 +60,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditProjectDialog extends A_CmsProjectDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "project";
+    public static final String KEY_PREFIX = "project";
 
     /** Request parameter name for the project id. */
     public static final String PARAM_PROJECTID = "projectid";
@@ -251,7 +251,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
         // initialize the project object to use for the dialog
         initProjectObject();
 
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
         if (isNewProject()) {

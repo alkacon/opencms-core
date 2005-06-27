@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/26 15:54:25 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
@@ -63,17 +63,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModuleManager {
 
     /** Indicates dependency check for module deletion. */
-    public static final int C_DEPENDENCY_MODE_DELETE = 0;
+    public static final int DEPENDENCY_MODE_DELETE = 0;
 
     /** Indicates dependency check for module import. */
-    public static final int C_DEPENDENCY_MODE_IMPORT = 1;
+    public static final int DEPENDENCY_MODE_IMPORT = 1;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleManager.class);
@@ -163,10 +163,10 @@ public class CmsModuleManager {
      * Checks if a modules depedencies are fulfilled.<p> 
      * 
      * The possible values for the <code>mode</code> parameter are:<dl>
-     * <dt>{@link #C_DEPENDENCY_MODE_DELETE}</dt>
+     * <dt>{@link #DEPENDENCY_MODE_DELETE}</dt>
      *      <dd>Check for module deleting, i.e. are other modules dependent on the 
      *          given module?</dd>
-     * <dt>{@link #C_DEPENDENCY_MODE_IMPORT}</dt>
+     * <dt>{@link #DEPENDENCY_MODE_IMPORT}</dt>
      *      <dd>Check for module importing, i.e. are all dependencies required by the given
      *          module available?</dd></dl>
      * 
@@ -178,7 +178,7 @@ public class CmsModuleManager {
 
         List result = new ArrayList();
 
-        if (mode == C_DEPENDENCY_MODE_DELETE) {
+        if (mode == DEPENDENCY_MODE_DELETE) {
             // delete mode, check if other modules depend on this module
             Iterator i = m_modules.values().iterator();
             while (i.hasNext()) {
@@ -190,7 +190,7 @@ public class CmsModuleManager {
                 }
             }
 
-        } else if (mode == C_DEPENDENCY_MODE_IMPORT) {
+        } else if (mode == DEPENDENCY_MODE_IMPORT) {
             // import mode, check if all module dependencies are fulfilled            
             Iterator i = m_modules.values().iterator();
             // add all dependencies that must be found
@@ -256,7 +256,7 @@ public class CmsModuleManager {
             }
 
             // perform dependency check
-            List dependencies = checkDependencies(module, C_DEPENDENCY_MODE_DELETE);
+            List dependencies = checkDependencies(module, DEPENDENCY_MODE_DELETE);
             if (!dependencies.isEmpty()) {
                 throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MOD_DEPENDENCIES_0));
             }
@@ -285,10 +285,10 @@ public class CmsModuleManager {
                 // lock the resource
                 cms.lockResource(currentResource);
                 // delete the resource
-                cms.deleteResource(currentResource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 // update the report
 
-                report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.C_FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
                 report.println(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     currentResource));

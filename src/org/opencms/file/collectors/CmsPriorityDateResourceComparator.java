@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityDateResourceComparator.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,14 +49,14 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
 public class CmsPriorityDateResourceComparator implements Comparator {
 
     /** The name of the date property to read. */
-    public static final String C_PROPERTY_DATE = "collector.date";
+    public static final String PROPERTY_DATE = "collector.date";
 
     /** The date sort order. */
     private boolean m_asc;
@@ -196,13 +196,13 @@ public class CmsPriorityDateResourceComparator implements Comparator {
         }
 
         try {
-            m_priority = Integer.parseInt((String)properties.get(CmsPriorityResourceCollector.C_PROPERTY_PRIORITY));
+            m_priority = Integer.parseInt((String)properties.get(CmsPriorityResourceCollector.PROPERTY_PRIORITY));
         } catch (NumberFormatException e) {
-            m_priority = CmsPriorityResourceCollector.C_PRIORITY_STANDARD;
+            m_priority = CmsPriorityResourceCollector.PRIORITY_STANDARD;
         }
 
         try {
-            m_date = Long.parseLong((String)properties.get(C_PROPERTY_DATE));
+            m_date = Long.parseLong((String)properties.get(PROPERTY_DATE));
         } catch (NumberFormatException e) {
             m_date = 0;
         }

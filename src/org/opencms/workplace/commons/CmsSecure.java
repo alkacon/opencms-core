@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +122,7 @@ public class CmsSecure extends CmsDialog {
     public void actionChangeSecureExport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
 
         String filename = getParamResource();
 
@@ -139,9 +138,9 @@ public class CmsSecure extends CmsDialog {
             // change the flag of the resource so that it is internal            
             CmsResource resource = getCms().readResource(filename);
             if (resource.isInternal() && !Boolean.valueOf(getParamIntern()).booleanValue()) {
-                getCms().chflags(filename, resource.getFlags() & (~I_CmsConstants.C_RESOURCEFLAG_INTERNAL));
+                getCms().chflags(filename, resource.getFlags() & (~CmsResource.FLAG_INTERNAL));
             } else if (!resource.isInternal() && Boolean.valueOf(getParamIntern()).booleanValue()) {
-                getCms().chflags(filename, resource.getFlags() | I_CmsConstants.C_RESOURCEFLAG_INTERNAL);
+                getCms().chflags(filename, resource.getFlags() | CmsResource.FLAG_INTERNAL);
             }
 
             actionCloseDialog();
@@ -430,7 +429,7 @@ public class CmsSecure extends CmsDialog {
     protected void writeProperty(String propertyName, String propertyValue) throws CmsException {
 
         if (CmsStringUtil.isEmpty(propertyValue)) {
-            propertyValue = CmsProperty.C_DELETE_VALUE;
+            propertyValue = CmsProperty.DELETE_VALUE;
         }
 
         CmsProperty newProp = new CmsProperty();
@@ -457,19 +456,19 @@ public class CmsSecure extends CmsDialog {
         String oldStructureValue = oldProp.getStructureValue();
         String newStructureValue = newProp.getStructureValue();
         if (CmsStringUtil.isEmpty(oldStructureValue)) {
-            oldStructureValue = CmsProperty.C_DELETE_VALUE;
+            oldStructureValue = CmsProperty.DELETE_VALUE;
         }
         if (CmsStringUtil.isEmpty(newStructureValue)) {
-            newStructureValue = CmsProperty.C_DELETE_VALUE;
+            newStructureValue = CmsProperty.DELETE_VALUE;
         }
 
         String oldResourceValue = oldProp.getResourceValue();
         String newResourceValue = newProp.getResourceValue();
         if (CmsStringUtil.isEmpty(oldResourceValue)) {
-            oldResourceValue = CmsProperty.C_DELETE_VALUE;
+            oldResourceValue = CmsProperty.DELETE_VALUE;
         }
         if (CmsStringUtil.isEmpty(newResourceValue)) {
-            newResourceValue = CmsProperty.C_DELETE_VALUE;
+            newResourceValue = CmsProperty.DELETE_VALUE;
         }
 
         // change property only if it has been changed            

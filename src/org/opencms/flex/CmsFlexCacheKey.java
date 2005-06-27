@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.flex;
 
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,7 +176,7 @@ public class CmsFlexCacheKey {
      */
     public static String getKeyName(String resourcename, boolean online) {
 
-        return resourcename.concat(online ? CmsFlexCache.C_CACHE_ONLINESUFFIX : CmsFlexCache.C_CACHE_OFFLINESUFFIX);
+        return resourcename.concat(online ? CmsFlexCache.CACHE_ONLINESUFFIX : CmsFlexCache.CACHE_OFFLINESUFFIX);
     }
 
     /**
@@ -485,7 +485,7 @@ public class CmsFlexCacheKey {
                 Iterator i = m_params.iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
-                    if (I_CmsConstants.C_PARAMETER_ELEMENT.equals(o)) {
+                    if (I_CmsResourceLoader.PARAMETER_ELEMENT.equals(o)) {
                         continue;
                     }
                     str.append(o);
@@ -640,10 +640,10 @@ public class CmsFlexCacheKey {
                         break;
                     case 4: // params
                         m_params = parseValueList(v);
-                        if (m_params.contains(I_CmsConstants.C_PARAMETER_ELEMENT)) {
+                        if (m_params.contains(I_CmsResourceLoader.PARAMETER_ELEMENT)) {
                             // workaround for element setting by parameter in OpenCms < 6.0
                             m_element = IS_USED;
-                            m_params.remove(I_CmsConstants.C_PARAMETER_ELEMENT);
+                            m_params.remove(I_CmsResourceLoader.PARAMETER_ELEMENT);
                             if (m_params.size() == 0) {
                                 m_params = null;
                             }

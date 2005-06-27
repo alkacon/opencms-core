@@ -51,7 +51,7 @@ case CmsXmlContentEditor.ACTION_SAVEEXIT:
 		</script>
 		</head>
 		<body class="buttons-head" unselectable="on">
-		<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.C_PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
+		<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
 		<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="">
 		<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 		<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
@@ -166,7 +166,7 @@ function exitEditor() {
 </head>
 <body class="buttons-head" unselectable="on" onload="init();" onunload="exitEditor();">
 
-<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.C_PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
 <input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 <input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">

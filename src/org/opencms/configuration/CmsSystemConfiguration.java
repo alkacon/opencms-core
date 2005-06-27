@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0
  */
@@ -102,10 +102,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     protected static final String A_SERVER = "server";
 
     /** The name of the DTD for this configuration. */
-    protected static final String C_CONFIGURATION_DTD_NAME = "opencms-system.dtd";
+    protected static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
 
     /** The name of the default XML file for this configuration. */
-    protected static final String C_DEFAULT_XML_FILE_NAME = "opencms-system.xml";
+    protected static final String DEFAULT_XML_FILE_NAME = "opencms-system.xml";
 
     /** The node name for the job "active" value. */
     protected static final String N_ACTIVE = "active";
@@ -417,7 +417,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public CmsSystemConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         m_versionHistoryEnabled = true;
         m_versionHistoryMaxCount = 10;
         m_resourceInitHandlers = new ArrayList();
@@ -576,7 +576,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_SCHEDULER + "/" + N_JOB + "/" + N_CONTEXT, "setContextInfo");        
         
         // add generic parameter rules (used for jobs, password handler)
-        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
         
@@ -590,7 +590,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // add password handler creation rule
         digester.addObjectCreate("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_PASSWORDENCODING, "inputEncoding");
         digester.addBeanPropertySetter("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER + "/" + N_DIGESTTYPE, "digestType");
         digester.addSetNext("*/" + N_SYSTEM + "/" + N_PASSWORDHANDLER, "setPasswordHandler");
@@ -626,7 +626,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_SITES + "/" + N_SITE + "/" + N_ALIAS, 0, A_SERVER);
         
         // add compatibility parameter rules 
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam ("*/" + N_SYSTEM + "/" + N_RUNTIMEPROPERTIES + "/" + N_PARAM, 1);   
         
@@ -1027,7 +1027,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 
     /**

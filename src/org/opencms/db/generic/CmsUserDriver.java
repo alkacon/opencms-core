@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.103 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.104 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.db.CmsDbEntryAlreadyExistsException;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbIoException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsUserDriver;
@@ -49,10 +50,10 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPasswordEncryptionException;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -83,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.103 $
+ * @version $Revision: 1.104 $
  * 
  * @since 6.0.0 
  */
@@ -295,7 +296,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 stmt.setString(1, groupid.toString());
                 stmt.setString(2, userid.toString());
                 // flag field is not used yet
-                stmt.setInt(3, I_CmsConstants.C_UNKNOWN_INT);
+                stmt.setInt(3, CmsDbUtil.UNKNOWN_ID);
                 stmt.executeUpdate();
 
             } catch (SQLException e) {
@@ -321,7 +322,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc, project.getId());
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_SETFLAGS_ALL");
 
-            stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+            stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
             stmt.setString(2, resource.toString());
 
             stmt.executeUpdate();
@@ -598,7 +599,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         String poolUrl = config.get("db.user.pool").toString();
         String classname = config.get("db.user.sqlmanager").toString();
         m_sqlManager = this.initSqlManager(classname);
-        m_sqlManager.init(I_CmsUserDriver.C_DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsUserDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
 
@@ -613,7 +614,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         m_digestFileEncoding = config.getString(
             CmsDriverManager.CONFIGURATION_DB + ".user.digest.encoding",
-            CmsEncoder.C_UTF8_ENCODING);
+            CmsEncoder.ENCODING_UTF_8);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
         }
@@ -690,7 +691,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res, onlineId);
-                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) == 0) {
+                if ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_DELETED) == 0) {
                     writeAccessControlEntry(dbc, onlineProject, ace);
                 }
             }
@@ -727,16 +728,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             // create new CmsAccessControlEntry and add to list
             while (res.next()) {
                 CmsAccessControlEntry ace = internalCreateAce(res);
-                if ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_DELETED) > 0) {
+                if ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_DELETED) > 0) {
                     continue;
                 }
 
-                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) == 0)) {
+                if (inheritedOnly && ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_INHERIT) == 0)) {
                     continue;
                 }
 
-                if (inheritedOnly && ((ace.getFlags() & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0)) {
-                    ace.setFlags(I_CmsConstants.C_ACCESSFLAGS_INHERITED);
+                if (inheritedOnly && ((ace.getFlags() & CmsAccessControlEntry.ACCESS_FLAGS_INHERIT) > 0)) {
+                    ace.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_INHERITED);
                 }
 
                 aceList.add(ace);
@@ -1313,7 +1314,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_RESETFLAGS_ALL");
 
-            stmt.setInt(1, I_CmsConstants.C_ACCESSFLAGS_DELETED);
+            stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
             stmt.setString(2, resource.toString());
 
             stmt.executeUpdate();
@@ -1621,7 +1622,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsUUID.getConstantUUID(guestGroup),
             guestGroup,
             "The guest group",
-            I_CmsConstants.C_FLAG_ENABLED,
+            I_CmsPrincipal.FLAG_ENABLED,
             null,
             null);
         administrators = createGroup(
@@ -1629,7 +1630,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsUUID.getConstantUUID(administratorsGroup),
             administratorsGroup,
             "The administrators group",
-            I_CmsConstants.C_FLAG_ENABLED | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER,
+            I_CmsPrincipal.FLAG_ENABLED | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER,
             null,
             null);
         users = createGroup(
@@ -1637,9 +1638,9 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsUUID.getConstantUUID(usersGroup),
             usersGroup,
             "The users group",
-            I_CmsConstants.C_FLAG_ENABLED
-                | I_CmsConstants.C_FLAG_GROUP_ROLE
-                | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER,
+            I_CmsPrincipal.FLAG_ENABLED
+                | I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER,
             null,
             null);
         projectmanager = createGroup(
@@ -1647,10 +1648,10 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             CmsUUID.getConstantUUID(projectmanagersGroup),
             projectmanagersGroup,
             "The projectmanager group",
-            I_CmsConstants.C_FLAG_ENABLED
-                | I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER
-                | I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER
-                | I_CmsConstants.C_FLAG_GROUP_ROLE,
+            I_CmsPrincipal.FLAG_ENABLED
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER
+                | I_CmsPrincipal.FLAG_GROUP_PROJECT_USER
+                | I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE,
             users.getName(),
             null);
 
@@ -1664,7 +1665,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             " ",
             " ",
             0,
-            I_CmsConstants.C_FLAG_ENABLED,
+            I_CmsPrincipal.FLAG_ENABLED,
             new Hashtable(),
             " ",
             CmsUser.USER_TYPE_SYSTEMUSER,
@@ -1679,7 +1680,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             " ",
             " ",
             0,
-            I_CmsConstants.C_FLAG_ENABLED,
+            I_CmsPrincipal.FLAG_ENABLED,
             new Hashtable(),
             " ",
             CmsUser.USER_TYPE_SYSTEMUSER,
@@ -1701,7 +1702,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
                 " ",
                 " ",
                 0,
-                I_CmsConstants.C_FLAG_ENABLED,
+                I_CmsPrincipal.FLAG_ENABLED,
                 Collections.EMPTY_MAP,
                 " ",
                 CmsUser.USER_TYPE_SYSTEMUSER,

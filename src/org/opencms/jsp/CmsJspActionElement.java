@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,7 +83,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /** Error message in case bean was not properly initialized. */
     // cannot use a string: At class-loading time the 
     // user request context for localization is not at hand. 
-    public static final CmsMessageContainer C_NOT_INITIALIZED = Messages.get().container(
+    public static final CmsMessageContainer NOT_INITIALIZED = Messages.get().container(
         Messages.GUI_ERR_ACTIONELEM_NOT_INIT_0);
 
     /** JSP navigation builder. */
@@ -526,7 +526,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String label(String label) {
 
         if (isNotInitialized()) {
-            return getMessage(C_NOT_INITIALIZED);
+            return getMessage(NOT_INITIALIZED);
         }
         try {
             return CmsJspTagLabel.wpLabelTagAction(label, getRequest());
@@ -552,7 +552,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String link(String link) {
 
         if (isNotInitialized()) {
-            return getMessage(C_NOT_INITIALIZED);
+            return getMessage(NOT_INITIALIZED);
         }
         try {
             return CmsJspTagLink.linkTagAction(link, getRequest());
@@ -701,7 +701,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String property(String name, String file, String defaultValue, boolean escapeHtml) {
 
         if (isNotInitialized()) {
-            return getMessage(C_NOT_INITIALIZED);
+            return getMessage(NOT_INITIALIZED);
         }
         try {
             if (file == null) {
@@ -789,7 +789,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String toAbsolute(String target) {
 
         if (isNotInitialized()) {
-            return getMessage(C_NOT_INITIALIZED);
+            return getMessage(NOT_INITIALIZED);
         }
         return CmsLinkManager.getAbsoluteUri(target, getController().getCurrentRequest().getElementUri());
     }
@@ -807,7 +807,7 @@ public class CmsJspActionElement extends CmsJspBean {
     public String user(String property) {
 
         if (isNotInitialized()) {
-            return getMessage(C_NOT_INITIALIZED);
+            return getMessage(NOT_INITIALIZED);
         }
         try {
             return CmsJspTagUser.userTagAction(property, getRequest());

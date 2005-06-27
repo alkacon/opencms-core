@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnAlignEnum.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,10 +68,10 @@ public final class CmsListColumnAlignEnum {
     public static final CmsListColumnAlignEnum ALIGN_RIGHT = new CmsListColumnAlignEnum("right");
 
     /** Array constant for all available align types. */
-    private static final CmsListColumnAlignEnum[] C_VALUES = {ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT};
+    private static final CmsListColumnAlignEnum[] VALUE_ARRAY = {ALIGN_LEFT, ALIGN_CENTER, ALIGN_RIGHT};
 
     /** List of mode constants. */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_align;

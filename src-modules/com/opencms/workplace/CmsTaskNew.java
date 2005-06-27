@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskNew.java,v $
-* Date   : $Date: 2005/06/25 11:19:03 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2005/06/25 11:19:03 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -152,10 +152,10 @@ public class CmsTaskNew extends CmsWorkplaceDefault {
             paraAll = "";
         }
 
-        xmlTemplateDocument.setData(C_TASKPARA_ACCEPTATION, paraAcceptation);
-        xmlTemplateDocument.setData(C_TASKPARA_ALL, paraAll);
-        xmlTemplateDocument.setData(C_TASKPARA_COMPLETION, paraCompletion);
-        xmlTemplateDocument.setData(C_TASKPARA_DELIVERY, paraDelivery);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION, paraAcceptation);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_ALL, paraAll);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_COMPLETION, paraCompletion);
+        xmlTemplateDocument.setData(CmsWorkplaceDefault.C_TASKPARA_DELIVERY, paraDelivery);
 
         // are the constants read from the cms already?
         if (C_ROLE == null) {

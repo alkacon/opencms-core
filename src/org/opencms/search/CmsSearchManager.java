@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.lucene.search.Similarity;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -423,7 +423,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         boolean writeLog = Boolean.valueOf((String)parameters.get("writeLog")).booleanValue();
 
         if (writeLog) {
-            report = new CmsLogReport(I_CmsReport.C_BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
+            report = new CmsLogReport(I_CmsReport.BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
         }
 
         long startTime = System.currentTimeMillis();
@@ -526,7 +526,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             CmsSearchIndex searchIndex = (CmsSearchIndex)m_indexes.get(i);
 
-            if (CmsSearchIndex.C_AUTO_REBUILD.equals(searchIndex.getRebuildMode())) {
+            if (CmsSearchIndex.AUTO_REBUILD.equals(searchIndex.getRebuildMode())) {
                 updateIndex(searchIndex.getName(), report, wait);
             }
         }
@@ -585,13 +585,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             report = new CmsLogReport();
         }
 
-        report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.print(Messages.get().container(Messages.RPT_SEARCH_INDEXING_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         report.print(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_ARGUMENT_1, indexName),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
         report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         // get the search index by name
         index = getIndex(indexName);
@@ -645,7 +645,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (report != null) {
                     report.println(
                         Messages.get().container(Messages.RPT_SEARCH_INDEXING_FAILED_0),
-                        I_CmsReport.C_FORMAT_WARNING);
+                        I_CmsReport.FORMAT_WARNING);
                 }
 
                 LOG.error(Messages.get().key(Messages.LOG_REBUILD_INDEX_FAILED_1, index.getName()), e);

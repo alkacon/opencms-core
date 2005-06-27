@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,7 +437,7 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         // the schema definition is located in a separate file for easier editing
         String schemaDefinition;
         try {
-            schemaDefinition = CmsFileUtil.readFile(schemaUri, CmsEncoder.C_UTF8_ENCODING);
+            schemaDefinition = CmsFileUtil.readFile(schemaUri, CmsEncoder.ENCODING_UTF_8);
         } catch (Exception e) {
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1, schemaUri), e);
         }

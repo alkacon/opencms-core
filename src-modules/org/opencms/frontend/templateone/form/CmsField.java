@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsField.java,v $
- * Date   : $Date: 2005/06/23 11:11:55 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,29 +42,35 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsField {
 
     /** HTML field type: checkbox. */
-    public static final String C_TYPE_CHECKBOX = "checkbox";
+    public static final String TYPE_CHECKBOX = "checkbox";
+    
     /** HTML field type: email field. */
-    public static final String C_TYPE_EMAIL = "email";
+    public static final String TYPE_EMAIL = "email";
+    
     /** HTML field type: hidden field. */
-    public static final String C_TYPE_HIDDEN = "hidden";
+    public static final String TYPE_HIDDEN = "hidden";
+    
     /** HTML field type: radio button. */
-    public static final String C_TYPE_RADIO = "radio";
+    public static final String TYPE_RADIO = "radio";
+    
     /** HTML field type: selectbox. */
-    public static final String C_TYPE_SELECT = "select";
+    public static final String TYPE_SELECT = "select";
+    
     /** HTML field type: text input. */
-    public static final String C_TYPE_TEXT = "text";
+    public static final String TYPE_TEXT = "text";
+    
     /** HTML field type: textarea. */
-    public static final String C_TYPE_TEXTAREA = "textarea";
+    public static final String TYPE_TEXTAREA = "textarea";
 
     /** Regular expression to validate email addresses. */
-    public static final String C_VALIDATION_EMAIL = "(\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,4})";
+    public static final String VALIDATION_EMAIL = "(\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,4})";
 
     private List m_items;
     private String m_label;
@@ -169,7 +175,7 @@ public class CmsField {
      */
     public boolean needsItems() {
 
-        return (C_TYPE_CHECKBOX.equals(getType()) || C_TYPE_SELECT.equals(getType()) || C_TYPE_RADIO.equals(this.getType()));
+        return (TYPE_CHECKBOX.equals(getType()) || TYPE_SELECT.equals(getType()) || TYPE_RADIO.equals(this.getType()));
     }
 
     /**

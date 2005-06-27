@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdministration.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -59,7 +59,7 @@ import java.util.Map;
  *
  * Creation date: (09.08.00 14:01:21)
  * @author Hanjo Riege
- * @version $Name:  $ $Revision: 1.6 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Name:  $ $Revision: 1.7 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -87,7 +87,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
         boolean hasAccessVisible = (new Boolean(accessVisible)).booleanValue();
         String iconPicPath = (String)resourcesUri(cms, "", null, null);
         // change the iconPicPath if the point is from a module
-        if(sender.startsWith(C_VFS_PATH_SYSTEM + "modules")) {
+        if(sender.startsWith(CmsWorkplace.VFS_PATH_SYSTEM + "modules")) {
             if (picName.startsWith("/")) {
                 iconPicPath = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + sender.substring(0, sender.indexOf("/administration/"));
             }
@@ -186,7 +186,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
                         + className + " was found but could not be invoked. " + exc2);
             }
         }
-        templateDocument.setData("linkTo", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + C_VFS_PATH_WORKPLACE 
+        templateDocument.setData("linkTo", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + CmsWorkplace.VFS_PATH_WORKPLACE 
                 + "action/administration_content_top.html?sender=" + sender);
         StringBuffer iconLabelBuffer = new StringBuffer(lang.getLanguageValue(languageKey));
 
@@ -260,7 +260,7 @@ public class CmsAdministration extends CmsWorkplaceDefault {
             iconVector = cms.getSubFolders(sentBy);
             List modules = (List) new ArrayList();
 
-            modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
+            modules = cms.getSubFolders(CmsWorkplace.VFS_PATH_MODULES);
 
             for(int i = 0;i < modules.size();i++) {
                 List moduleAdminPoints = (List) new ArrayList();                

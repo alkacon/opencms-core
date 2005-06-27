@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.db;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -54,11 +53,14 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
 public final class CmsDbUtil {
+
+    /** Indicates an unknown (or not set) id. */
+    public static final int UNKNOWN_ID = -1;
 
     /** Hashtable with border id's. */
     private static Hashtable c_borderId;
@@ -70,7 +72,7 @@ public final class CmsDbUtil {
     private static String c_dbPoolUrl;
 
     /** Grow value. */
-    private static final int C_GROW_VALUE = 10;
+    private static final int GROW_VALUE = 10;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDbUtil.class);
@@ -227,8 +229,8 @@ public final class CmsDbUtil {
         int borderId;
 
         try {
-            if (!dbPoolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
-                dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+            if (!dbPoolUrl.startsWith(CmsDbPool.DBCP_JDBC_URL_PREFIX)) {
+                dbPoolUrl = CmsDbPool.DBCP_JDBC_URL_PREFIX + dbPoolUrl;
             }
 
             con = DriverManager.getConnection(dbPoolUrl);
@@ -237,14 +239,14 @@ public final class CmsDbUtil {
             do {
                 id = readId(con, tableName);
 
-                if (id == I_CmsConstants.C_UNKNOWN_ID) {
+                if (id == CmsDbUtil.UNKNOWN_ID) {
                     // there was no entry - set it to 0
                     // EF: set id to 1 because the table contains
                     // the next available id
                     id = 1;
                     createId(con, tableName, id);
                 }
-                borderId = id + C_GROW_VALUE;
+                borderId = id + GROW_VALUE;
                 // save the next id for future requests
             } while (!writeId(con, tableName, id, borderId));
             // store the generated values in the cache
@@ -271,7 +273,7 @@ public final class CmsDbUtil {
      * @param conn the connection to access the database
      * @param tableName the name of the table to read the primary key ID
      * 
-     * @return the primary key ID or C_UNKNOWN_ID if there is no entry for the given table
+     * @return the primary key ID or UNKNOWN_ID if there is no entry for the given table
      * @throws CmsException if something gows wrong
      */
     private static int readId(Connection conn, String tableName) throws CmsDbSqlException {
@@ -286,7 +288,7 @@ public final class CmsDbUtil {
             if (res.next()) {
                 return res.getInt(1);
             } else {
-                return I_CmsConstants.C_UNKNOWN_ID;
+                return CmsDbUtil.UNKNOWN_ID;
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(org.opencms.db.generic.Messages.get().container(

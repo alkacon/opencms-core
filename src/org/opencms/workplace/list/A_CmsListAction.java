@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public abstract class A_CmsListAction extends A_CmsHtmlIconButton implements I_C
     public void setConfirmationMessage(CmsMessageContainer confirmationMsg) {
 
         if (confirmationMsg == null) {
-            confirmationMsg = C_EMPTY_MESSAGE;
+            confirmationMsg = EMPTY_MESSAGE;
         }
         m_confirmationMsg = confirmationMsg;
     }

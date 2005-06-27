@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupProject.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
 import java.sql.Timestamp;
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -118,7 +118,7 @@ public class CmsBackupProject extends CmsProject implements Cloneable {
         if (datePublished != null) {
             m_datePublished = datePublished.getTime();
         } else {
-            m_datePublished = I_CmsConstants.C_UNKNOWN_LONG;
+            m_datePublished = CmsDbUtil.UNKNOWN_ID;
         }
         m_userPublished = userPublished;
         m_namePublisher = namePublisher;

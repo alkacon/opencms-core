@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/06/24 09:55:32 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,9 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +122,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
     public void actionEdit(HttpServletRequest request) throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             // save the changes only if resource is properly locked
             if (isEditable()) {
@@ -509,7 +509,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             try {
                 includeErrorpage(this, e);
             } catch (JspException exc) {
-                LOG.error(Messages.get().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, C_FILE_DIALOG_SCREEN_ERRORPAGE));
+                LOG.error(Messages.get().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, FILE_DIALOG_SCREEN_ERRORPAGE));
             }
         }
     }
@@ -556,7 +556,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         } else {
             setAction(ACTION_EDIT);
             String resName = CmsResource.getName(getParamResource());
-            if (resName.startsWith(I_CmsConstants.C_TEMP_PREFIX)) {
+            if (resName.startsWith(CmsWorkplace.TEMP_FILE_PREFIX)) {
                 resName = resName.substring(1);
             }
             setParamTitle(key("title.property") + ": " + resName);
@@ -651,10 +651,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 checkLock(getParamResource());
                 // determine the value to delete
                 if (currentProperty.getStructureValue() != null) {
-                    currentProperty.setStructureValue(CmsProperty.C_DELETE_VALUE);
+                    currentProperty.setStructureValue(CmsProperty.DELETE_VALUE);
                     currentProperty.setResourceValue(null);
                 } else {
-                    currentProperty.setResourceValue(CmsProperty.C_DELETE_VALUE);
+                    currentProperty.setResourceValue(CmsProperty.DELETE_VALUE);
                     currentProperty.setStructureValue(null);
                 }
                 // write the updated property object

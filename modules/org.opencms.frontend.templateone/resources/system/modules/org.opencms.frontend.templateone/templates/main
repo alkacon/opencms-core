@@ -16,13 +16,13 @@ if (cms.template("head")) {
 
 	if (!cms.showPrintVersion()) {
     	// set background image information for head image
-	    headImgUri = (String)cms.getProperties().get(CmsTemplateBean.C_PROPERTY_HEAD_IMGURI);
+	    headImgUri = (String)cms.getProperties().get(CmsTemplateBean.PROPERTY_HEAD_IMGURI);
 	    if (headImgUri == null || "none".equals(headImgUri)) {
 	        headImgUri = "";    
 	    } else {
 	        headImgUri = cms.link(headImgUri);    
 	    }
-	    headImgHeight = (String)cms.getProperties().get(CmsTemplateBean.C_PROPERTY_HEAD_IMGHEIGHT);
+	    headImgHeight = (String)cms.getProperties().get(CmsTemplateBean.PROPERTY_HEAD_IMGHEIGHT);
 	    if (headImgHeight == null) {
 	    	headImgHeight = "0";
 	    } else {
@@ -30,7 +30,7 @@ if (cms.template("head")) {
 	    }
 	} 
 	
-	if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_COMMON)) {
+	if (cms.getLayout().equals(CmsTemplateBean.PARAM_COMMON)) {
 		%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 		<html lang="<%= cms.getRequestContext().getLocale() %>">
 		<head>
@@ -74,16 +74,16 @@ if (cms.template("head")) {
 		<%
 		if (cms.showHeadLinks()) {
             // include head links row
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_links.jsp");
+            cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_links.jsp");
         }
         if (cms.showHeadImage()) {
             // include head image row
-            cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK, "search", ""));
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
+            cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, "search", ""));
+            cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
         }
         if (cms.showHeadNavigation()) {
             // include head navigation row
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_head.jsp", null, cms.getProperties());
+            cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "nav_head.jsp", null, cms.getProperties());
         }        
 		%><div class="main">
 		<table class="main" border="0" cellpadding="0" cellspacing="0">	
@@ -91,14 +91,14 @@ if (cms.template("head")) {
 			<td class="navleft">
 		<%
 		// include left navigation          
-        cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_left.jsp", null, cms.getProperties());
+        cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "nav_left.jsp", null, cms.getProperties());
 		%></td>
 			<td class="content">
 		<%
-		cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_breadcrumb.jsp", null, cms.getProperties());
+		cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "nav_breadcrumb.jsp", null, cms.getProperties());
 		
 		
-	} else if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_ACCESSIBLE)) {
+	} else if (cms.getLayout().equals(CmsTemplateBean.PARAM_ACCESSIBLE)) {
 		%><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 		<html lang="<%= cms.getRequestContext().getLocale() %>">
 		<head>
@@ -143,29 +143,29 @@ if (cms.template("head")) {
 		<%
 		if (cms.showHeadLinks()) {
             // include head links row
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_links.jsp");
+            cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_links.jsp");
         }
         if (cms.showHeadImage()) {
             // include head image row
-            cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK, "search", ""));
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
+            cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, "search", ""));
+            cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
         }
         if (cms.showHeadNavigation()) {
             // include head navigation row
-            cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_head.jsp", "navrow", cms.getProperties());
+            cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "nav_head.jsp", "navrow", cms.getProperties());
         }        
 		%><div class="main">
 		<div class="navleft">
 		<%
 		// include left navigation          
-        cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_left.jsp", null, cms.getProperties());
+        cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "nav_left.jsp", null, cms.getProperties());
 		%></div>
 	    <div class="content">
 	    <%
-	    cms.include(CmsTemplateBean.C_FOLDER_ELEMENTS + "nav_breadcrumb.jsp", null, cms.getProperties());
+	    cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "nav_breadcrumb.jsp", null, cms.getProperties());
 	    
 	    
-	} else if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_PRINT)) {
+	} else if (cms.getLayout().equals(CmsTemplateBean.PARAM_PRINT)) {
 		%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 		<html lang="<%= cms.getRequestContext().getLocale() %>">
 		<head>
@@ -194,7 +194,7 @@ if (cms.template("content")) {
 }
 
 if (cms.template("foot")) {
-	if (cms.getLayout().equals(CmsTemplateBean.C_PARAM_PRINT)) { %>
+	if (cms.getLayout().equals(CmsTemplateBean.PARAM_PRINT)) { %>
 		</td></tr></table>
 	<%
 	}

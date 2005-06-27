@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/26 10:56:53 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,14 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
 
     /** Constant for an empty message. */
-    public static final CmsMessageContainer C_EMPTY_MESSAGE = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
+    public static final CmsMessageContainer EMPTY_MESSAGE = Messages.get().container(Messages.GUI_EMPTY_MESSAGE_0);
 
     /** unique id. */
     protected String m_id;
@@ -308,7 +308,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     public CmsMessageContainer getHelpText() {
 
         if (m_helpText == null) {
-            m_helpText = C_EMPTY_MESSAGE;
+            m_helpText = EMPTY_MESSAGE;
         }
         return m_helpText;
     }
@@ -359,7 +359,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     public void setHelpText(CmsMessageContainer helpText) {
 
         if (helpText == null) {
-            helpText = C_EMPTY_MESSAGE;
+            helpText = EMPTY_MESSAGE;
         }
         m_helpText = helpText;
     }
@@ -378,7 +378,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     public void setName(CmsMessageContainer name) {
 
         if (name == null) {
-            name = C_EMPTY_MESSAGE;
+            name = EMPTY_MESSAGE;
         }
         m_name = name;
     }

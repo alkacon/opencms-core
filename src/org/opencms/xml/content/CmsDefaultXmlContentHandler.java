@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/27 10:27:15 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -380,18 +380,18 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     // get the string value of the current node
                     String stringValue = value.getStringValue(cms);
 
-                    if (mapping.startsWith(C_MAPTO_PROPERTY)) {
+                    if (mapping.startsWith(MAPTO_PROPERTY)) {
 
                         // this is a property mapping
-                        String property = mapping.substring(C_MAPTO_PROPERTY.length());
+                        String property = mapping.substring(MAPTO_PROPERTY.length());
                         // just store the string value in the selected property
                         cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
 
-                    } else if (mapping.startsWith(C_MAPTO_ATTRIBUTE)) {
+                    } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
                         // this is an attribute mapping                        
-                        String attribute = mapping.substring(C_MAPTO_ATTRIBUTE.length());
-                        switch (C_ATTRIBUTES_LIST.indexOf(attribute)) {
+                        String attribute = mapping.substring(MAPTO_ATTRIBUTE.length());
+                        switch (ATTRIBUTES.indexOf(attribute)) {
                             case 0: // datereleased
                                 long date;
                                 date = Long.valueOf(stringValue).longValue();

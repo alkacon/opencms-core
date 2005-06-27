@@ -64,47 +64,47 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlImportConverter {
 
     /** defintition of the alt attribute. */
-    private static final String C_ATTRIB_ALT = "alt";
+    private static final String ATTRIB_ALT = "alt";
 
     /** defintition of the content attribute. */
-    private static final String C_ATTRIB_CONTENT = "content";
+    private static final String ATTRIB_CONTENT = "content";
 
     /** defintition of the href attribute.  */
-    private static final String C_ATTRIB_HREF = "href";
+    private static final String ATTRIB_HREF = "href";
 
     /** defintition of the name attribute. */
-    private static final String C_ATTRIB_NAME = "name";
+    private static final String ATTRIB_NAME = "name";
 
     /** defintition of the src attribute. */
-    private static final String C_ATTRIB_SRC = "src";
+    private static final String ATTRIB_SRC = "src";
 
-    /** defintition of the <BODY></BODY> node. */
-    private static final String C_NODE_BODY = "body";
+    /** defintition of the &lt;BODY&gt;&lt;/BODY&gt; node. */
+    private static final String NODE_BODY = "body";
 
-    /** defintition of the <HEAD></HEAD> node. */
-    private static final String C_NODE_HEAD = "head";
+    /** defintition of the &lt;HEAD&gt;&lt;/HEAD&gt; node. */
+    private static final String NODE_HEAD = "head";
 
-    /** defintition of the <A></A> node. */
-    private static final String C_NODE_HREF = "a";
+    /** defintition of the &lt;A&gt;&lt;/A&gt; node. */
+    private static final String NODE_HREF = "a";
 
-    /** defintition of the <HTML></HTML> node. */
-    private static final String C_NODE_HTML = "html";
+    /** defintition of the &lt;HTML&gt;&lt;/HTML&gt; node. */
+    private static final String NODE_HTML = "html";
 
-    /** defintition of the <IMG></IMG> node. */
-    private static final String C_NODE_IMG = "img";
+    /** defintition of the &lt;IMG&gt;&lt;/IMG&gt; node. */
+    private static final String NODE_IMG = "img";
 
-    /** defintition of the <META></META> node. */
-    private static final String C_NODE_META = "meta";
+    /** defintition of the &lt;META&gt;&lt;/META&gt; node. */
+    private static final String NODE_META = "meta";
 
-    /** defintition of the <TITLE></TITLE>  node. */
-    private static final String C_NODE_TITLE = "title";
+    /** defintition of the &lt;TITLE&gt;&lt;/TITLE&gt;  node. */
+    private static final String NODE_TITLE = "title";
 
     /**
      * HashMap stores tag names, after the end-tag, a "\n" is added to the output.<p>
@@ -223,7 +223,7 @@ public class CmsHtmlImportConverter {
         if (CmsStringUtil.isNotEmpty(startPattern) && CmsStringUtil.isNotEmpty(endPattern)) {
             String extractMain = extractHtml(outString, startPattern, endPattern);
             if (extractMain.length() != outString.length()) {
-                String extractHead = extractHtml(outString, "<html>", CmsStringUtil.C_BODY_START_REGEX);
+                String extractHead = extractHtml(outString, "<html>", CmsStringUtil.BODY_START_REGEX);
                 //String extractHead = extractHtml(extractMain, "<html>", CmsStringUtil.C_BODY_START_REGEX);     
                 StringBuffer buffer = new StringBuffer(extractHead.length() + extractMain.length() + 255);
                 buffer.append("<html>");
@@ -238,13 +238,13 @@ public class CmsHtmlImportConverter {
         /* convert htmlString in InputStream for parseDOM */
         InputStream in;
         try {
-            in = new ByteArrayInputStream(outString.getBytes(CmsEncoder.C_UTF8_ENCODING));
+            in = new ByteArrayInputStream(outString.getBytes(CmsEncoder.ENCODING_UTF_8));
         } catch (UnsupportedEncodingException e) {
             // this should never happen since UTF-8 is always supported
             in = new ByteArrayInputStream(outString.getBytes());
         }
-        m_tidy.setInputEncoding(CmsEncoder.C_UTF8_ENCODING);
-        m_tidy.setOutputEncoding(CmsEncoder.C_UTF8_ENCODING);
+        m_tidy.setInputEncoding(CmsEncoder.ENCODING_UTF_8);
+        m_tidy.setOutputEncoding(CmsEncoder.ENCODING_UTF_8);
 
         // hold tidy error information into a new PrintWriter Object
         PrintWriter errorLog = new PrintWriter(new ByteArrayOutputStream(), true);
@@ -343,7 +343,7 @@ public class CmsHtmlImportConverter {
                 // part of the output, but we must scan the content of this
                 // node to get all
                 // <meta> tags
-                if (name.equals(C_NODE_HEAD)) {
+                if (name.equals(NODE_HEAD)) {
                     m_write = false;
                 }
                 // scan element node; if a block has to be removed or replaced,
@@ -374,7 +374,7 @@ public class CmsHtmlImportConverter {
             case Node.ELEMENT_NODE:
                 // analyse endtags and add them to output
                 transformEndElement(node);
-                if (node.getNodeName().equals(C_NODE_HEAD)) {
+                if (node.getNodeName().equals(NODE_HEAD)) {
                     m_write = true;
                 }
                 break;
@@ -396,7 +396,7 @@ public class CmsHtmlImportConverter {
         String nodeName = node.getNodeName();
 
         // the <HTML> and <BODY> node must be skipped
-        if (nodeName.equals(C_NODE_HTML) || nodeName.equals(C_NODE_BODY)) {
+        if (nodeName.equals(NODE_HTML) || nodeName.equals(NODE_BODY)) {
             // do nothing here
         } else {
             // only do some output if we are in writing mode
@@ -425,19 +425,19 @@ public class CmsHtmlImportConverter {
         String nodeName = node.getNodeName();
 
         // the <HTML> and <BODY> node must be skipped
-        if (nodeName.equals(C_NODE_HTML) || nodeName.equals(C_NODE_BODY)) {
+        if (nodeName.equals(NODE_HTML) || nodeName.equals(NODE_BODY)) {
             // the <TITLE> node must be read and its value set as properties to
             // the imported file
 
-        } else if (nodeName.equals(C_NODE_TITLE)) {
+        } else if (nodeName.equals(NODE_TITLE)) {
 
             writeTitleProperty(node, properties);
 
-        } else if (nodeName.equals(C_NODE_META)) {
+        } else if (nodeName.equals(NODE_META)) {
 
             writeMetaTagProperty(node, properties);
 
-        } else if (nodeName.equals(C_NODE_HREF)) {
+        } else if (nodeName.equals(NODE_HREF)) {
 
             // only do some output if we are in writing mode
             if (m_write) {
@@ -449,7 +449,7 @@ public class CmsHtmlImportConverter {
                     String name = attrs.item(i).getNodeName();
                     String value = attrs.item(i).getNodeValue();
 
-                    if (name.equals(C_ATTRIB_HREF)) {
+                    if (name.equals(ATTRIB_HREF)) {
 
                         // check if this is an external link
                         if (value.indexOf("://") > 0) {
@@ -481,7 +481,7 @@ public class CmsHtmlImportConverter {
             }
 
             // this is a imasge, its reference must be converted
-        } else if (nodeName.equals(C_NODE_IMG)) {
+        } else if (nodeName.equals(NODE_IMG)) {
 
             // only do some output if we are in writing mode
             if (m_write) {
@@ -494,7 +494,7 @@ public class CmsHtmlImportConverter {
                 for (int i = attrs.getLength() - 1; i >= 0; i--) {
                     String name = attrs.item(i).getNodeName();
                     String value = attrs.item(i).getNodeValue();
-                    if (name.equals(C_ATTRIB_SRC)) {
+                    if (name.equals(ATTRIB_SRC)) {
                         // we found the src. now check if it refers to an
                         // external image.
                         // if not, we must get the correct location in the VFS
@@ -504,7 +504,7 @@ public class CmsHtmlImportConverter {
                                 m_filename.lastIndexOf("/") + 1));
                             value = m_htmlImport.translateLink(imagename);
                         }
-                    } else if (name.equals(C_ATTRIB_ALT)) {
+                    } else if (name.equals(ATTRIB_ALT)) {
                         altText = value;
                     }
 
@@ -567,9 +567,9 @@ public class CmsHtmlImportConverter {
         for (int i = attrs.getLength() - 1; i >= 0; i--) {
             String name = attrs.item(i).getNodeName();
             String value = attrs.item(i).getNodeValue();
-            if (name.equals(C_ATTRIB_NAME)) {
+            if (name.equals(ATTRIB_NAME)) {
                 metaName = value;
-            } else if (name.equals(C_ATTRIB_CONTENT)) {
+            } else if (name.equals(ATTRIB_CONTENT)) {
                 metaContent = value;
             }
         }

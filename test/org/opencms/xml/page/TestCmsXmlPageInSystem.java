@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/06/27 13:21:37 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,13 +57,13 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0
  */
 public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
-    private static final String UTF8 = CmsEncoder.C_UTF8_ENCODING;
+    private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
 
     /**
      * Default JUnit constructor.<p>
@@ -188,7 +188,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         List properties = new ArrayList();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
-        properties.add(new CmsProperty(CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));
+        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));
         cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
 
         CmsFile file = cms.readFile(filename);
@@ -239,7 +239,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         List properties = new ArrayList();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
-        properties.add(new CmsProperty(CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));
+        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));
         cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
 
         CmsFile file = cms.readFile(filename);

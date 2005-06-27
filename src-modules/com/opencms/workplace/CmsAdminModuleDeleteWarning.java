@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleDeleteWarning.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -87,12 +87,12 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
         //      CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);        
         //      CmsXmlLanguageFile lang=new CmsXmlLanguageFile(cms);   
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        String step = (String)session.getValue(C_SESSION_MODULE_DELETE_STEP);
+        String step = (String)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_DELETE_STEP);
         if(step != null) {
             if(C_STEP_0.equals(step)) {
                 
                 // first call
-                Vector files = (Vector)session.getValue(C_SESSION_MODULE_CHECKSUM);
+                Vector files = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_CHECKSUM);
                 if(files.isEmpty()) {
                     step = C_STEP_PROPFILES_1;
                 }
@@ -107,13 +107,13 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
                         output += xmlTemplateDocument.getProcessedDataValue(C_CBENTRY);
                     }
                     xmlTemplateDocument.setData(C_WINCONTENT, output);
-                    session.putValue(C_SESSION_MODULE_DELETE_STEP, C_STEP_CHECKSUM_2);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_DELETE_STEP, C_STEP_CHECKSUM_2);
                 }
             }
             if(C_STEP_CHECKSUM_2.equals(step)) {
                 
                 // ok, get the files that should not deleted and put them in the session.
-                Vector files = (Vector)session.getValue(C_SESSION_MODULE_CHECKSUM);
+                Vector files = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_CHECKSUM);
                 Vector outFiles = new Vector();
                 for(int i = 0;i < files.size();i++) {
                     String file = (String)files.elementAt(i);
@@ -122,13 +122,13 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
                         outFiles.addElement(file);
                     }
                 }
-                session.putValue(C_SESSION_MODULE_EXCLUSION, outFiles);
+                session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_EXCLUSION, outFiles);
                 step = C_STEP_PROPFILES_1;
             }
             if(C_STEP_PROPFILES_1.equals(step)) {
                 
                 // now we take care about the filesWithProperty vector.The same way like the wrong ChecksumVector.
-                Vector files = (Vector)session.getValue(C_SESSION_MODULE_PROPFILES);
+                Vector files = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_PROPFILES);
                 if(files.isEmpty()) {
                     step = C_STEP_INUSE;
                 }
@@ -143,15 +143,15 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
                         output += xmlTemplateDocument.getProcessedDataValue(C_CBENTRY);
                     }
                     xmlTemplateDocument.setData(C_WINCONTENT, output);
-                    session.putValue(C_SESSION_MODULE_DELETE_STEP, C_STEP_PROPFILES_2);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_DELETE_STEP, C_STEP_PROPFILES_2);
                 }
             }
             if(C_STEP_PROPFILES_2.equals(step)) {
                 
                 // ok, get the files that should not deleted and put them in the session.                
                 // first look if there is already a exclusionVector in the session.
-                Vector files = (Vector)session.getValue(C_SESSION_MODULE_PROPFILES);
-                Vector outFiles = (Vector)session.getValue(C_SESSION_MODULE_EXCLUSION);
+                Vector files = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_PROPFILES);
+                Vector outFiles = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_EXCLUSION);
                 if(outFiles == null) {
                     outFiles = new Vector();
                 }
@@ -162,13 +162,13 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
                         outFiles.addElement(file);
                     }
                 }
-                session.putValue(C_SESSION_MODULE_EXCLUSION, outFiles);
+                session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_EXCLUSION, outFiles);
                 step = C_STEP_INUSE;
             }
             if(C_STEP_INUSE.equals(step)) {
                 
                 // the files that are in use. if there are any, just show them to the user.
-                Vector files = (Vector)session.getValue(C_SESSION_MODULE_INUSE);
+                Vector files = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_INUSE);
                 if(files.isEmpty()) {
                     step = C_STEP_MISSFILES;
                 }
@@ -181,13 +181,13 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
                         output += xmlTemplateDocument.getProcessedDataValue(C_FILELISTENTRY);
                     }
                     xmlTemplateDocument.setData(C_WINCONTENT, output);
-                    session.putValue(C_SESSION_MODULE_DELETE_STEP, C_STEP_MISSFILES);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_DELETE_STEP, C_STEP_MISSFILES);
                 }
             }
             if(C_STEP_MISSFILES.equals(step)) {
                 
                 // they are already gone, just inform the user
-                Vector files = (Vector)session.getValue(C_SESSION_MODULE_MISSFILES);
+                Vector files = (Vector)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_MISSFILES);
                 if(files.isEmpty()) {
                     templateSelector = C_READY;
                 }
@@ -200,7 +200,7 @@ public class CmsAdminModuleDeleteWarning extends CmsWorkplaceDefault {
                         output += xmlTemplateDocument.getProcessedDataValue(C_FILELISTENTRY);
                     }
                     xmlTemplateDocument.setData(C_WINCONTENT, output);
-                    session.putValue(C_SESSION_MODULE_DELETE_STEP, C_READY);
+                    session.putValue(CmsWorkplaceDefault.C_SESSION_MODULE_DELETE_STEP, C_READY);
                 }
             }
             if(C_READY.equals(step)) {

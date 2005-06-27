@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Iterator;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +79,7 @@ public class CmsFieldValue {
             m_value = field.getValue();
         }
 
-        if (CmsField.C_TYPE_HIDDEN.equals(field.getType())) {
+        if (CmsField.TYPE_HIDDEN.equals(field.getType())) {
             // for hidden fields, set show field flag to false
             m_show = false;
         } else {

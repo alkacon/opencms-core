@@ -24,10 +24,10 @@
 
 package com.opencms.defaults;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import com.opencms.core.I_CmsSession;
@@ -199,12 +199,12 @@ public abstract class A_CmsChannelBackoffice extends A_CmsBackoffice {
                 pos = (String) parameters.get("posEdit");
                 pos=(pos!=null?pos.trim():"");
             }
-            int posInt=I_CmsConstants.C_UNKNOWN_ID;
+            int posInt=CmsDbUtil.UNKNOWN_ID;
             if (!pos.equals("")) {
                 try {
                     posInt=Integer.parseInt(pos);
                 } catch (Exception e) {
-                    posInt=I_CmsConstants.C_UNKNOWN_ID;
+                    posInt=CmsDbUtil.UNKNOWN_ID;
                 }
             }
             // get the media_position

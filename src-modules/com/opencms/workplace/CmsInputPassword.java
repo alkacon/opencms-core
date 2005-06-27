@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsInputPassword.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PASSWORD&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -71,10 +71,10 @@ public class CmsInputPassword extends A_CmsWpElement {
     
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc, 
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        String styleClass = n.getAttribute(C_INPUT_CLASS);
-        String name = n.getAttribute(C_INPUT_NAME);
-        String size = n.getAttribute(C_INPUT_SIZE);
-        String length = n.getAttribute(C_INPUT_LENGTH);
+        String styleClass = n.getAttribute(CmsWorkplaceDefault.C_INPUT_CLASS);
+        String name = n.getAttribute(CmsWorkplaceDefault.C_INPUT_NAME);
+        String size = n.getAttribute(CmsWorkplaceDefault.C_INPUT_SIZE);
+        String length = n.getAttribute(CmsWorkplaceDefault.C_INPUT_LENGTH);
         CmsXmlWpInputDefFile inputdef = getInputDefinitions(cms);
         String result = inputdef.getPassword(styleClass, name, size, length);
         return result;

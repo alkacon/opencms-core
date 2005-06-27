@@ -17,8 +17,8 @@
 </head>
 
 <frameset rows="24,*" border="0" frameborder="0" framespacing="0">
-    <frame src="<%= wp.getJsp().link(CmsEditor.C_PATH_EDITORS + "xmlcontent/editor_buttons.jsp?" + params + "&" + wp.PARAM_ACTION + "=" + CmsEditor.EDITOR_SHOW) %>" name="buttonbar" noresize scrolling="no">
-    <frame src="<%= wp.getJsp().link(CmsEditor.C_PATH_EDITORS + "xmlcontent/editor_form.jsp?" + params) %>" name="editform" noresize scrolling="auto">
+    <frame src="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_buttons.jsp?" + params + "&" + wp.PARAM_ACTION + "=" + CmsEditor.EDITOR_SHOW) %>" name="buttonbar" noresize scrolling="no">
+    <frame src="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp?" + params) %>" name="editform" noresize scrolling="auto">
 </frameset>
 
 </html>

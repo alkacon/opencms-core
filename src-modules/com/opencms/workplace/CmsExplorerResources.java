@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsExplorerResources.java,v $
- * Date   : $Date: 2005/06/21 15:49:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
@@ -51,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
 
 public class CmsExplorerResources extends CmsWorkplaceDefault {
 
-    private final static String C_RESTYPES_FOLDER = C_VFS_PATH_WORKPLACE + "restypes/";
+    private final static String C_RESTYPES_FOLDER = CmsWorkplace.VFS_PATH_WORKPLACE + "restypes/";
 
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
@@ -161,7 +162,7 @@ public class CmsExplorerResources extends CmsWorkplaceDefault {
         if (explorerSettings != null) {
             filelist = new Integer(explorerSettings).intValue();
         } else {
-            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
+            filelist = CmsUserSettings.FILELIST_NAME + CmsUserSettings.FILELIST_TITLE + CmsUserSettings.FILELIST_TYPE + CmsUserSettings.FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
     }

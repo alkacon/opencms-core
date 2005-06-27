@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,14 +61,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditUserDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "user";
+    public static final String KEY_PREFIX = "user";
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -77,10 +77,10 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
     public static final String PARAM_USERID = "userid";
 
     /** Session parameter name for the pwd info object. */
-    private static final Object C_PWD_OBJECT = "PWD_INFO";
+    private static final Object PWD_OBJECT = "PWD_INFO";
 
     /** Session parameter name for the user object. */
-    private static final Object C_USER_OBJECT = "USER";
+    private static final Object USER_OBJECT = "USER";
 
     /** The user object that is edited on this dialog. */
     protected CmsUser m_user;
@@ -234,7 +234,7 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
         // initialize the user object to use for the dialog
         initUserObject();
 
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
         if (m_user.getId() == null) {
@@ -297,8 +297,8 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
                 // this is not the initial call, get the user object from session            
                 o = getDialogObject();
                 Map dialogObject = (Map)o;
-                m_user = (CmsUser)dialogObject.get(C_USER_OBJECT);
-                m_pwdInfo = (CmsPasswordInfo)dialogObject.get(C_PWD_OBJECT);
+                m_user = (CmsUser)dialogObject.get(USER_OBJECT);
+                m_pwdInfo = (CmsPasswordInfo)dialogObject.get(PWD_OBJECT);
                 // test
                 m_user.getId();
                 return;
@@ -321,8 +321,8 @@ public class CmsEditUserDialog extends CmsWidgetDialog {
 
         // save the current state of the user and pwd (may be changed because of the widget values)
         Map dialogObject = new HashMap();
-        dialogObject.put(C_USER_OBJECT, m_user);
-        dialogObject.put(C_PWD_OBJECT, m_pwdInfo);
+        dialogObject.put(USER_OBJECT, m_user);
+        dialogObject.put(PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
     }
 

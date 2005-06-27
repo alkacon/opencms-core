@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,14 +48,14 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
     /** The indentation to use. */
-    private static final String C_INDENT_STR = "\t";
+    private static final String INDENT_STR = "\t";
 
     /** The file encoding to use. */
     private String m_encoding;
@@ -299,7 +299,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
             m_writer.write('\n');
             // write indentation
             for (int i = 1; i < m_indentLevel; i++) {
-                m_writer.write(C_INDENT_STR);
+                m_writer.write(INDENT_STR);
             }
             // flush the stream
             m_writer.flush();

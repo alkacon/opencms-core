@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Attic/CmsWorkflowDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ package org.opencms.db.generic;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsWorkflowDriver;
 import org.opencms.file.CmsDataAccessException;
@@ -44,7 +44,6 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
@@ -68,23 +67,23 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.54 $
+ * @version $Revision: 1.55 $
  * 
  * @since 6.0.0 
  */
 public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
     /** Table key for tasks. */
-    protected static final String C_TABLE_TASK = "CMS_TASKS";
+    protected static final String TABLE_TASK = "CMS_TASKS";
 
     /** Table key for task logs. */
-    protected static final String C_TABLE_TASKLOG = "CMS_TASKLOG";
+    protected static final String TABLE_TASKLOG = "CMS_TASKLOG";
 
     /** Table key for task par(ameter). */
-    protected static final String C_TABLE_TASKPAR = "CMS_TASKPAR";
+    protected static final String TABLE_TASKPAR = "CMS_TASKPAR";
 
     /** Table key for task type. */
-    protected static final String C_TABLE_TASKTYPE = "CMS_TASKTYPE";
+    protected static final String TABLE_TASKTYPE = "CMS_TASKTYPE";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsWorkflowDriver.class);
@@ -112,7 +111,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         int priority) throws CmsDataAccessException {
 
         // fetch new task id
-        int newId = m_sqlManager.nextId(C_TABLE_TASK);
+        int newId = m_sqlManager.nextId(TABLE_TASK);
         // create the task id entry in the DB                 
         PreparedStatement stmt = null;
         Connection conn = null;
@@ -238,7 +237,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         String poolUrl = (String)configuration.get("db.workflow.pool");
         String classname = (String)configuration.get("db.workflow.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);
-        m_sqlManager.init(I_CmsWorkflowDriver.C_DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsWorkflowDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
 
@@ -341,9 +340,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
-        int id = I_CmsConstants.C_UNKNOWN_ID;
+        int id = CmsDbUtil.UNKNOWN_ID;
         CmsUUID user = CmsUUID.getNullUUID();
-        int type = I_CmsConstants.C_UNKNOWN_ID;
+        int type = CmsDbUtil.UNKNOWN_ID;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -453,9 +452,9 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         PreparedStatement stmt = null;
         String comment = null;
         java.sql.Timestamp starttime = null;
-        int id = I_CmsConstants.C_UNKNOWN_ID;
+        int id = CmsDbUtil.UNKNOWN_ID;
         CmsUUID user = CmsUUID.getNullUUID();
-        int type = I_CmsConstants.C_UNKNOWN_ID;
+        int type = CmsDbUtil.UNKNOWN_ID;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
@@ -721,7 +720,7 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKLOG_WRITE");
 
-            stmt.setInt(1, m_sqlManager.nextId(C_TABLE_TASKLOG));
+            stmt.setInt(1, m_sqlManager.nextId(TABLE_TASKLOG));
             stmt.setInt(2, taskId);
             if (!userId.isNullUUID()) {
                 stmt.setString(3, userId.toString());
@@ -1003,11 +1002,11 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
 
         PreparedStatement stmt = null;
         Connection conn = null;
-        int newId = I_CmsConstants.C_UNKNOWN_ID;
+        int newId = CmsDbUtil.UNKNOWN_ID;
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKPAR_INSERT");
-            newId = m_sqlManager.nextId(C_TABLE_TASKPAR);
+            newId = m_sqlManager.nextId(TABLE_TASKPAR);
             stmt.setInt(1, newId);
             stmt.setInt(2, taskId);
             stmt.setString(3, m_sqlManager.validateEmpty(parname));
@@ -1101,12 +1100,12 @@ public class CmsWorkflowDriver implements I_CmsDriver, I_CmsWorkflowDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        int newId = I_CmsConstants.C_UNKNOWN_ID;
+        int newId = CmsDbUtil.UNKNOWN_ID;
 
         try {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_TASKTYPE_INSERT");
-            newId = m_sqlManager.nextId(C_TABLE_TASKPAR);
+            newId = m_sqlManager.nextId(TABLE_TASKPAR);
             stmt.setInt(1, autofinish);
             stmt.setInt(2, escalationtyperef);
             stmt.setString(3, htmllink);

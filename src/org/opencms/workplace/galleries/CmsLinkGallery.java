@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/24 13:24:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,14 +60,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLinkGallery extends A_CmsGallery {
 
     /** URI of the image gallery popup dialog. */
-    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "link_fs.jsp";
+    public static final String URI_GALLERY = PATH_GALLERIES + "link_fs.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);
@@ -219,12 +219,12 @@ public class CmsLinkGallery extends A_CmsGallery {
 
         StringBuffer wizardUrl = new StringBuffer(8);
         wizardUrl.append(getJsp().link(
-            C_PATH_DIALOGS
+            PATH_DIALOGS
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePointer.getStaticTypeName()).getNewResourceUri()));
         wizardUrl.append("?action=newform&");
         wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);
         wizardUrl.append("=");
-        wizardUrl.append(C_PATH_GALLERIES);
+        wizardUrl.append(PATH_GALLERIES);
         wizardUrl.append("gallery_list.jsp&");
         wizardUrl.append(CmsNewResourceUpload.PARAM_TARGETFRAME);
         wizardUrl.append("=gallery_list&");

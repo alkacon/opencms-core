@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,10 +187,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     }
 
     /** The cache delimiter char. */
-    public static final char C_FLEX_CACHE_DELIMITER = (char)0;
+    public static final char FLEX_CACHE_DELIMITER = (char)0;
 
     /** Static string to indicate a header is "set" in the header maps. */
-    public static final String C_SETHEADER = "[setHeader]";
+    public static final String SET_HEADER = "[setHeader]";
 
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsFlexResponse.class);
@@ -315,9 +315,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 String key = (String)i.next();
                 ArrayList l = (ArrayList)headers.get(key);
                 for (int j = 0; j < l.size(); j++) {
-                    if ((j == 0) && (((String)l.get(0)).startsWith(C_SETHEADER))) {
+                    if ((j == 0) && (((String)l.get(0)).startsWith(SET_HEADER))) {
                         String s = (String)l.get(0);
-                        res.setHeader(key, s.substring(C_SETHEADER.length()));
+                        res.setHeader(key, s.substring(SET_HEADER.length()));
                     } else {
                         res.addHeader(key, (String)l.get(j));
                     }
@@ -972,13 +972,13 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * So in this case, we don't actually write output of
      * include calls to the stream.
-     * Where there are include calls we write a C_FLEX_CACHE_DELIMITER char on the stream to indicate
+     * Where there are include calls we write a FLEX_CACHE_DELIMITER char on the stream to indicate
      * that at this point the output of the include must be placed later.
      * The include targets (resource names) are then saved in the m_includeList.<p>
      *
      * This method must be called after the complete page has been processed.
      * It will contain the output of the page only (no includes), 
-     * with C_FLEX_CACHE_DELIMITER chars were the include calls should be placed. 
+     * with FLEX_CACHE_DELIMITER chars were the include calls should be placed. 
      * What we do here is analyze the output and cut it in parts 
      * of byte[] arrays which then are saved in the resulting cache entry.
      * For the includes, we just save the name of the resource in
@@ -1006,10 +1006,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             int j = 0;
             while (i < m_includeList.size() && (pos < max)) {
                 // Look for the first C_FLEX_CACHE_DELIMITER char
-                while ((pos < max) && (result[pos] != C_FLEX_CACHE_DELIMITER)) {
+                while ((pos < max) && (result[pos] != FLEX_CACHE_DELIMITER)) {
                     pos++;
                 }
-                if (result[pos] == C_FLEX_CACHE_DELIMITER) {
+                if (result[pos] == FLEX_CACHE_DELIMITER) {
                     count++;
                     // A byte value of C_FLEX_CACHE_DELIMITER in our (string) output list indicates that the next include call
                     // must be placed here
@@ -1059,7 +1059,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     private void setHeaderList(Map headers, String name, String value) {
 
         ArrayList values = new ArrayList();
-        values.add(C_SETHEADER + value);
+        values.add(SET_HEADER + value);
         headers.put(name, values);
     }
 

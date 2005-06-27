@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,15 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPasswordInfo;
@@ -48,7 +49,8 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.CmsTabDialog;
-import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.CmsWorkplaceView;
 import org.opencms.workplace.editors.CmsWorkplaceEditorConfiguration;
@@ -66,6 +68,7 @@ import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
 
@@ -82,7 +85,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,11 +238,11 @@ public class CmsPreferences extends CmsTabDialog {
     /** Request parameter name for the workplace view. */
     public static final String PARAM_WORKPLACE_VIEW = "tabwpview";
 
-    /** Constant for filter. */
-    private static final String C_SPACER = "------------------------------------------------";
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPreferences.class);
+
+    /** Constant for filter. */
+    private static final String SPACER = "------------------------------------------------";
 
     private String m_paramNewPassword;
     private String m_paramOldPassword;
@@ -277,7 +280,7 @@ public class CmsPreferences extends CmsTabDialog {
     public void actionChangePassword() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         String newPwd = getParamNewPassword();
         String oldPwd = getParamOldPassword();
         // set the action parameter, reset the password parameters
@@ -305,7 +308,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         HttpServletRequest request = getJsp().getRequest();
         // save initialized instance of this class in request attribute for included sub-elements
-        request.setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        request.setAttribute(SESSION_WORKPLACE_CLASS, this);
 
         // special case: set the preferred editor settings the user settings object      
         Enumeration en = request.getParameterNames();
@@ -337,7 +340,7 @@ public class CmsPreferences extends CmsTabDialog {
         }
 
         // update the preferences and project after saving
-        CmsWorkplaceAction.updatePreferences(getCms(), getJsp().getRequest());
+        updatePreferences(getCms(), getJsp().getRequest());
 
         try {
             String projectName = m_userSettings.getStartProject();
@@ -385,8 +388,8 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key("preferences.workplace.default.copy.file.sibling"));
         options.add(key("preferences.workplace.default.copy.file.asnew"));
         List values = new ArrayList(2);
-        values.add("" + I_CmsConstants.C_COPY_AS_SIBLING);
-        values.add("" + I_CmsConstants.C_COPY_AS_NEW);
+        values.add("" + CmsResource.COPY_AS_SIBLING);
+        values.add("" + CmsResource.COPY_AS_NEW);
         int selectedIndex = values.indexOf(getParamTabDiCopyFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -404,9 +407,9 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key("preferences.workplace.default.copy.folder.preserve"));
         options.add(key("preferences.workplace.default.copy.folder.asnew"));
         List values = new ArrayList(3);
-        values.add("" + I_CmsConstants.C_COPY_AS_SIBLING);
-        values.add("" + I_CmsConstants.C_COPY_PRESERVE_SIBLING);
-        values.add("" + I_CmsConstants.C_COPY_AS_NEW);
+        values.add("" + CmsResource.COPY_AS_SIBLING);
+        values.add("" + CmsResource.COPY_PRESERVE_SIBLING);
+        values.add("" + CmsResource.COPY_AS_NEW);
         int selectedIndex = values.indexOf(getParamTabDiCopyFolderMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -423,8 +426,8 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key("preferences.workplace.default.delete.deletesibling"));
         options.add(key("preferences.workplace.default.delete.preservesibling"));
         List values = new ArrayList(2);
-        values.add("" + I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-        values.add("" + I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        values.add("" + CmsResource.DELETE_REMOVE_SIBLINGS);
+        values.add("" + CmsResource.DELETE_PRESERVE_SIBLINGS);
         int selectedIndex = values.indexOf(getParamTabDiDeleteFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -508,7 +511,7 @@ public class CmsPreferences extends CmsTabDialog {
                 }
                 counter++;
             }
-            options.add(C_SPACER);
+            options.add(SPACER);
             values.add("");
             counter++;
         }
@@ -764,7 +767,7 @@ public class CmsPreferences extends CmsTabDialog {
                 visible = false;
             }
             if (visible) {
-                String localizedKey =  resolveMacros(view.getKey());
+                String localizedKey = resolveMacros(view.getKey());
                 options.add(localizedKey);
                 values.add(view.getUri());
 
@@ -1797,6 +1800,25 @@ public class CmsPreferences extends CmsTabDialog {
     }
 
     /**
+     * Updates the user preferences after changes have been made.<p>
+     * 
+     * @param cms the current cms context
+     * @param req the current http request
+     */
+    protected void updatePreferences(CmsObject cms, HttpServletRequest req) {
+
+        HttpSession session = req.getSession(false);
+        if (session == null) {
+            return;
+        }
+        CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
+        if (settings == null) {
+            return;
+        }
+        settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
+    }
+
+    /**
      * Builds the html for a common button style select box.<p>
      * 
      * @param htmlAttributes optional html attributes for the &lgt;select&gt; tag
@@ -1858,5 +1880,4 @@ public class CmsPreferences extends CmsTabDialog {
         }
         return "";
     }
-
 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterMedia.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:25 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,20 +28,16 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
-
-import org.opencms.file.CmsObject;
-import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.main.OpenCms;
 
 /**
  * An instance of this module describes a modulemedia entry in the database.
  * It carries a set of data to read and write.
  *
  * @author A. Schouten $
- * $Revision: 1.1 $
- * $Date: 2005/05/17 13:47:28 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/27 23:22:25 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -97,14 +93,14 @@ public class CmsMasterMedia {
      * Constructs a new instance with some default values.
      */
     public CmsMasterMedia() {
-        m_id = I_CmsConstants.C_UNKNOWN_ID;
+        m_id = CmsDbUtil.UNKNOWN_ID;
         m_masterId = CmsUUID.getNullUUID();
-        m_position = I_CmsConstants.C_UNKNOWN_ID;
-        m_width = I_CmsConstants.C_UNKNOWN_ID;
-        m_height = I_CmsConstants.C_UNKNOWN_ID;
-        m_size = I_CmsConstants.C_UNKNOWN_ID;
+        m_position = CmsDbUtil.UNKNOWN_ID;
+        m_width = CmsDbUtil.UNKNOWN_ID;
+        m_height = CmsDbUtil.UNKNOWN_ID;
+        m_size = CmsDbUtil.UNKNOWN_ID;
         m_mimetype = C_DEFAULT_MIMETYPE;
-        m_type = I_CmsConstants.C_UNKNOWN_ID;
+        m_type = CmsDbUtil.UNKNOWN_ID;
         m_title = "";
         m_name = "";
         m_description ="";

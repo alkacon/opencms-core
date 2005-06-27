@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.importexport;
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.page.CmsXmlPage;
@@ -51,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,7 +138,7 @@ public final class CmsXmlPageConverter {
 
             bodyContent = CmsStringUtil.substitute(
                 bodyContent,
-                I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT,
+                CmsStringUtil.MACRO_OPENCMS_CONTEXT,
                 OpenCms.getSystemInfo().getOpenCmsContext());
 
             if (!"".equals(bodyContent.trim())) {

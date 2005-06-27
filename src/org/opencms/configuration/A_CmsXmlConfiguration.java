@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
@@ -82,7 +82,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
      */
     public String getDtdSystemLocation() {
 
-        return CmsConfigurationManager.C_DEFAULT_DTD_LOCATION;
+        return CmsConfigurationManager.DEFAULT_DTD_LOCATION;
     }
 
     /**
@@ -90,7 +90,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
      */
     public String getDtdUrlPrefix() {
 
-        return CmsConfigurationManager.C_DEFAULT_DTD_PREFIX;
+        return CmsConfigurationManager.DEFAULT_DTD_PREFIX;
     }
 
     /**

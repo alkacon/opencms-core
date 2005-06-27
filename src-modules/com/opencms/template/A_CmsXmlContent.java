@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/A_CmsXmlContent.java,v $
-* Date   : $Date: 2005/06/21 15:49:58 $
-* Version: $Revision: 1.7 $
+* Date   : $Date: 2005/06/27 23:22:20 $
+* Version: $Revision: 1.8 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,10 +33,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
+import com.opencms.workplace.CmsWorkplaceDefault;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -87,7 +87,7 @@ import org.w3c.dom.Text;
  * getXmlDocumentTagName() and getContentDescription().
  *
  * @author Alexander Lucas
- * @version $Revision: 1.7 $ $Date: 2005/06/21 15:49:58 $
+ * @version $Revision: 1.8 $ $Date: 2005/06/27 23:22:20 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -1028,7 +1028,7 @@ public abstract class A_CmsXmlContent implements I_CmsXmlContent {
         }
 
         if (C_PRINTNODES) {
-            if (filename.indexOf(I_CmsWpConstants.C_VFS_DIR_LOCALES) != -1) {
+            if (filename.indexOf(CmsWorkplaceDefault.C_VFS_DIR_LOCALES) != -1) {
                 System.err.println("\n" + filename);
                 this.printNode(parsedContent, 0, "");
             }

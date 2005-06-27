@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacyModuleAction.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,10 +35,10 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbPool;
 import org.opencms.db.CmsPublishList;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.module.A_CmsModuleAction;
 import org.opencms.module.CmsModule;
@@ -46,7 +46,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.genericsql.*;
+import com.opencms.defaults.master.genericsql.CmsDbAccess;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -122,7 +122,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
         
         Map config = adminCms.getConfigurations();
-        String dbName = config.get(CmsDbPool.C_KEY_DATABASE_NAME).toString().toLowerCase();
+        String dbName = config.get(CmsDbPool.KEY_DATABASE_NAME).toString().toLowerCase();
         String poolUrl = config.get("db.cos.pool").toString();
         
         CmsDbAccess dbAccess = new CmsDbAccess(poolUrl);
@@ -183,7 +183,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
         CmsRequestContext context = cms.getRequestContext();
 
         if (!publishList.isDirectPublish()
-            && context.currentProject().getType() != I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
+            && context.currentProject().getType() != CmsProject.PROJECT_TYPE_TEMPORARY) {
             
             List legacyPublishClasses = getLegacyModulePublishClasses();
             if (legacyPublishClasses.isEmpty()) {
@@ -239,7 +239,7 @@ public class CmsLegacyModuleAction extends A_CmsModuleAction {
                             changedModuleMasters});
                 } catch (ClassNotFoundException ec) {      
                     report.println(Messages.get().container(Messages.RPT_NONEXISTENT_PUBLISH_CLASS_FOR_MODULE_1, 
-                        legacyPublishClasses.get(i)), I_CmsReport.C_FORMAT_WARNING);
+                        legacyPublishClasses.get(i)), I_CmsReport.FORMAT_WARNING);
                     if (CmsLog.getLog(this).isErrorEnabled()) {
                         CmsLog.getLog(this).error(
                             "Error calling publish class of module " + (String)legacyPublishClasses.get(i),

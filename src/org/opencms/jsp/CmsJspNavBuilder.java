@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  * 
@@ -82,7 +81,7 @@ public class CmsJspNavBuilder {
             m_res = res;
             try {
                 cms.getRequestContext().saveSiteRoot();
-                cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+                cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
                 m_title = cms.readPropertyObject(
                     res,
                     org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE,
@@ -160,7 +159,7 @@ public class CmsJspNavBuilder {
         List subChannels = new ArrayList();
         cms.getRequestContext().saveSiteRoot();
         try {
-            cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+            cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             subChannels = cms.getSubFolders(channel);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {

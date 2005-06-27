@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.security;
 
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.StringTokenizer;
@@ -44,17 +43,17 @@ import java.util.StringTokenizer;
  * Since the principal is identified by its UUID, any other entity may act as principal also.
  * 
  * <p>Additionally, the entry stores various flags:<br>
- * <code>C_ACCESSFLAGS_DELETED</code> indicates that this entry is deleted<br>
- * <code>C_ACCESSFLAGS_INHERIT</code> indicates that this entry should be inherited<br>
- * <code>C_ACCESSFLAGS_OVERWRITE</code> indicates that this entry overwrites inherited settings<br>
- * <code>C_ACCESSFLAGS_INHERITED</code> indicates that this entry is inherited<br>
- * <code>C_ACCESSFLAGS_USER</code> indicates that the principal is a single user<br>
- * <code>C_ACCESSFLAGS_GROUP</code> indicates that the principal is a group
+ * <code>ACCESS_FLAGS_DELETED</code> indicates that this entry is deleted<br>
+ * <code>ACCESS_FLAGS_INHERIT</code> indicates that this entry should be inherited<br>
+ * <code>ACCESS_FLAGS_OVERWRITE</code> indicates that this entry overwrites inherited settings<br>
+ * <code>ACCESS_FLAGS_INHERITED</code> indicates that this entry is inherited<br>
+ * <code>ACCESS_FLAGS_USER</code> indicates that the principal is a single user<br>
+ * <code>ACCESS_FLAGS_GROUP</code> indicates that the principal is a group
  * </p>
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,6 +78,24 @@ public class CmsAccessControlEntry {
      * Id of the resource.
      */
     private CmsUUID m_resource;
+
+    /** Flag to indicate that an access control entry is currently deleted. */
+    public static final int ACCESS_FLAGS_DELETED = 1;
+
+    /** Flag to indicate the pricipal type group. */
+    public static final int ACCESS_FLAGS_GROUP = 32;
+
+    /** Flag to indicate the principal type user. */
+    public static final int ACCESS_FLAGS_USER = 16;
+
+    /** Flag to indicate that an access control entry should be inherited. */
+    public static final int ACCESS_FLAGS_INHERIT = 2;
+
+    /** Flag to indicate that an access control entry was inherited (read only). */
+    public static final int ACCESS_FLAGS_INHERITED = 8;
+
+    /** Flag to indicate that an access control entry overwrites inherited entries. */
+    public static final int ACCESS_FLAGS_OVERWRITE = 4;
 
     /**
      * Constructor to create a new access control entry for a given resource
@@ -156,19 +173,19 @@ public class CmsAccessControlEntry {
                 case 'I':
                 case 'i':
                     if (prefix.charAt(0) == '+') {
-                        m_flags |= I_CmsConstants.C_ACCESSFLAGS_INHERIT;
+                        m_flags |= CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
                     }
                     if (prefix.charAt(0) == '-') {
-                        m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERIT;
+                        m_flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
                     }
                     break;
                 case 'O':
                 case 'o':
                     if (prefix.charAt(0) == '+') {
-                        m_flags |= I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
+                        m_flags |= CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
                     }
                     if (prefix.charAt(0) == '-') {
-                        m_flags &= ~I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
+                        m_flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
                     }
                     break;
                 default:
@@ -311,7 +328,7 @@ public class CmsAccessControlEntry {
      */
     public boolean isInherited() {
 
-        return ((m_flags & I_CmsConstants.C_ACCESSFLAGS_INHERITED) > 0);
+        return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERITED) > 0);
     }
 
     /**

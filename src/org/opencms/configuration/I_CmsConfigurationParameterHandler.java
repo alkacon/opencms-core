@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/I_CmsConfigurationParameterHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,17 +43,17 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsConfigurationParameterHandler {
     
     /** The name of the addConfigurationParameter() method. */
-    String C_ADD_PARAMETER_METHOD = "addConfigurationParameter";
+    String ADD_PARAMETER_METHOD = "addConfigurationParameter";
     
     /** The name of the initConfiguration() method. */
-    String C_INIT_CONFIGURATION_METHOD = "initConfiguration";    
+    String INIT_CONFIGURATION_METHOD = "initConfiguration";    
     
     /**
      * Adds a configuration parameter to this parameter configurable class instance.<p>

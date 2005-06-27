@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/27 09:30:20 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,11 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsFrameset;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,10 +94,10 @@ public abstract class CmsEditor extends CmsDialog {
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
 
     /** Stores the VFS editor path. */
-    public static final String C_PATH_EDITORS = C_PATH_WORKPLACE + "editors/";
+    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
 
     /** Constant for the Editor special "save error" confirmation dialog. */
-    public static final String C_FILE_DIALOG_EDITOR_CONFIRM = C_PATH_EDITORS + "dialogs/confirm.jsp";
+    public static final String FILE_DIALOG_EDITOR_CONFIRM = PATH_EDITORS + "dialogs/confirm.jsp";
 
     /** Value for the action parameter: change the element. */
     public static final String EDITOR_CHANGE_ELEMENT = "changeelement";
@@ -294,7 +294,7 @@ public abstract class CmsEditor extends CmsDialog {
             }
         } else {
             // in workplace mode, show explorer view
-            target = OpenCms.getLinkManager().substituteLink(getCms(), CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            target = OpenCms.getLinkManager().substituteLink(getCms(), CmsFrameset.JSP_WORKPLACE_URI);
         }
         return "onclick=\"top.location.href='" + getJsp().link(target) + "';\"";
     }
@@ -621,12 +621,12 @@ public abstract class CmsEditor extends CmsDialog {
                 setParamCloseLink(getJsp().link(getParamResource()));
             }
             // save initialized instance of this class in request attribute for included sub-elements
-            getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+            getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
             // load the common JSP close dialog
-            getJsp().include(C_FILE_DIALOG_CLOSE);
+            getJsp().include(FILE_DIALOG_CLOSE);
         } else {
             // redirect to the workplace explorer view 
-            sendCmsRedirect(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            sendCmsRedirect(CmsFrameset.JSP_WORKPLACE_URI);
         }
     }
 
@@ -668,7 +668,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         // create the filename of the temporary file
         String temporaryFilename = CmsResource.getFolderPath(getCms().getSitePath(file))
-            + I_CmsConstants.C_TEMP_PREFIX
+            + CmsWorkplace.TEMP_FILE_PREFIX
             + file.getName();
 
         // check if the temporary file is already present
@@ -681,7 +681,7 @@ public abstract class CmsEditor extends CmsDialog {
                 // lock resource to current user
                 getCms().lockResource(temporaryFilename);
             }
-            getCms().deleteResource(temporaryFilename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            getCms().deleteResource(temporaryFilename, CmsResource.DELETE_PRESERVE_SIBLINGS);
         }
 
         // switch to the temporary file project
@@ -689,7 +689,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         // copy the file to edit to a temporary file
         try {
-            getCms().copyResource(getCms().getSitePath(file), temporaryFilename, I_CmsConstants.C_COPY_AS_NEW);
+            getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
             getCms().touch(
                 temporaryFilename,
                 System.currentTimeMillis(),
@@ -698,8 +698,8 @@ public abstract class CmsEditor extends CmsDialog {
                 false);
             // set the internal read flag
             int flags = getCms().readResource(temporaryFilename).getFlags();
-            if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) == 0) {
-                flags += I_CmsConstants.C_ACCESS_INTERNAL_READ;
+            if ((flags & CmsResource.FLAG_INTERNAL) == 0) {
+                flags += CmsResource.FLAG_INTERNAL;
             }            
             getCms().chflags(temporaryFilename, flags);
         } catch (CmsException e) {
@@ -724,7 +724,7 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String decodeContent(String content) {
 
-        return CmsEncoder.unescape(content, CmsEncoder.C_UTF8_ENCODING);
+        return CmsEncoder.unescape(content, CmsEncoder.ENCODING_UTF_8);
     }
 
     /**
@@ -743,7 +743,7 @@ public abstract class CmsEditor extends CmsDialog {
         if ((paramName != null) && (paramValue != null)) {
             if (PARAM_CONTENT.equals(paramName)) {
                 // content will be always encoded in UTF-8 unicode by the editor client
-                return CmsEncoder.decode(paramValue, CmsEncoder.C_UTF8_ENCODING);
+                return CmsEncoder.decode(paramValue, CmsEncoder.ENCODING_UTF_8);
             } else if (PARAM_RESOURCE.equals(paramName) || PARAM_TEMPFILE.equals(paramName)) {
                 String filename = CmsEncoder.decode(paramValue, getCms().getRequestContext().getEncoding());
                 if (PARAM_TEMPFILE.equals(paramName) || CmsStringUtil.isEmpty(getParamTempfile())) {
@@ -768,7 +768,7 @@ public abstract class CmsEditor extends CmsDialog {
             // switch to the temporary file project
             switchToTempProject();
             // delete the temporary file
-            getCms().deleteResource(getParamTempfile(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            getCms().deleteResource(getParamTempfile(), CmsResource.DELETE_PRESERVE_SIBLINGS);
             // switch back to the current project
             switchToCurrentProject();
         } catch (CmsException e) {
@@ -790,7 +790,7 @@ public abstract class CmsEditor extends CmsDialog {
      */
     protected String encodeContent(String content) {
 
-        return CmsEncoder.escapeWBlanks(content, CmsEncoder.C_UTF8_ENCODING);
+        return CmsEncoder.escapeWBlanks(content, CmsEncoder.ENCODING_UTF_8);
     }
 
     /**
@@ -862,7 +862,7 @@ public abstract class CmsEditor extends CmsDialog {
     protected void showErrorPage(Object editor, Exception exception) throws JspException {
 
         // save initialized instance of the editor class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, editor);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, editor);
 
         // reading of file contents failed, show error dialog
         setAction(ACTION_SHOW_ERRORMESSAGE);
@@ -874,6 +874,6 @@ public abstract class CmsEditor extends CmsDialog {
             }
         }
         // include the common error dialog
-        getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+        getJsp().include(FILE_DIALOG_SCREEN_ERRORPAGE);
     }
 }

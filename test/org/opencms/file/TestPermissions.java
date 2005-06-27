@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPermissions.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,12 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsUUID;
 
 import java.util.Collections;
@@ -56,7 +55,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -121,11 +120,11 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.lockResource(resource);
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow read and write for user "test1"
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow read and write and direct publish for user "test2"
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         cms.unlockResource(resource);
         
         cms.loginUser("test1", "test1");
@@ -151,7 +150,7 @@ public class TestPermissions extends OpenCmsTestCase {
         
         cms.loginUser("test1", "test1");
         // first check in "online" project
-        assertEquals(I_CmsConstants.C_PROJECT_ONLINE_ID, cms.getRequestContext().currentProject().getId());
+        assertEquals(CmsProject.ONLINE_PROJECT_ID, cms.getRequestContext().currentProject().getId());
         if (cms.hasPublishPermissions(resource)) {
             fail("Publish permissions available but should not be available for user test1 in online project");
         }
@@ -172,13 +171,13 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.lockResource(folder);
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow only read and write for user "test1"
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow read, write and and direct publish for user "test2"
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_WRITE + CmsPermissionSet.PERMISSION_DIRECT_PUBLISH, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         cms.unlockResource(folder); 
         
         resource = "/newfolder/newpage.html";
@@ -247,7 +246,7 @@ public class TestPermissions extends OpenCmsTestCase {
         // create a user
         cms.createUser(username, "deleteMe", "", null);
         // add a permission for this user
-        cms.chacc(resourcename, I_CmsPrincipal.C_PRINCIPAL_USER, username, "+r+w+v+c+d");
+        cms.chacc(resourcename, I_CmsPrincipal.PRINCIPAL_USER, username, "+r+w+v+c+d");
         // now delete the user again
         cms.deleteUser(username);
         
@@ -283,10 +282,10 @@ public class TestPermissions extends OpenCmsTestCase {
         
         assertEquals("+r+w+v+c", cms.getPermissions(foldername, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "Users", "+o");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
         assertEquals("", cms.getPermissions(foldername, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "Users", "-r");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "-r");
         assertEquals("-r+w+v+c", cms.getPermissions(foldername, "testUser").getPermissionString());
     }
     
@@ -314,13 +313,13 @@ public class TestPermissions extends OpenCmsTestCase {
         assertEquals("+r+w+v+c", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("+r+w+v+c", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "Users", "+o");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o");
         
         assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+w+v+c", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("+r+w+v+c", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "Users", "+o+i");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "Users", "+o+i");
         assertEquals("", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
@@ -335,42 +334,42 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.addUserToGroup("testUser", "GroupC");
         cms.addUserToGroup("testUser", "GroupD");
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupA", "+r");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupA", "+r");
         assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupA", "+r+i");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupA", "+r+i");
         assertEquals("+r", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupB", "+w");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupB", "+w");
         assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("+r", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupB", "+w+i");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupB", "+w+i");
         assertEquals("+r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupC", "-r");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupC", "-r");
         assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("+r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("+r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupC", "-r+i");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupC", "-r+i");
         assertEquals("-r+w", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("-r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupD", "-w");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupD", "-w");
         assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("-r+w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("-r+w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
         
-        cms.chacc(foldername, I_CmsPrincipal.C_PRINCIPAL_GROUP, "GroupD", "-w+i");
+        cms.chacc(foldername, I_CmsPrincipal.PRINCIPAL_GROUP, "GroupD", "-w+i");
         assertEquals("-r-w", cms.getPermissions(resourcename, "testUser").getPermissionString());
         assertEquals("-r-w", cms.getPermissions(subfoldername, "testUser").getPermissionString());
         assertEquals("-r-w", cms.getPermissions(subresourcename, "testUser").getPermissionString());
@@ -422,13 +421,13 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.lockResource(folder);
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow only read for user "test1"
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         // allow read and visible for user "test2"
-        cms.chacc(folder, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_VIEW, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE + I_CmsConstants.C_ACCESSFLAGS_INHERIT);
+        cms.chacc(folder, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_VIEW, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE + CmsAccessControlEntry.ACCESS_FLAGS_INHERIT);
         cms.unlockResource(folder); 
         
         List resultList;
@@ -470,13 +469,13 @@ public class TestPermissions extends OpenCmsTestCase {
         cms.lockResource(resource);
         // modify the resource permissions for the tests
         // remove all "Users" group permissions 
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupUsers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // also for "Project managers" to avoid conflicts with other tests in this suite
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_GROUP, OpenCms.getDefaultUsers().getGroupProjectmanagers(), 0, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow only read for user "test1"
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test1", CmsPermissionSet.PERMISSION_READ, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         // allow read and visible for user "test2"
-        cms.chacc(resource, I_CmsPrincipal.C_PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_VIEW, 0, I_CmsConstants.C_ACCESSFLAGS_OVERWRITE);
+        cms.chacc(resource, I_CmsPrincipal.PRINCIPAL_USER, "test2", CmsPermissionSet.PERMISSION_READ + CmsPermissionSet.PERMISSION_VIEW, 0, CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE);
         cms.unlockResource(resource);
         
         cms.loginUser("test1", "test1");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.A_CmsIndexResource;
@@ -51,7 +50,8 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -63,7 +63,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2005/06/23 14:01:14 $
+ * @version $Revision: 1.10 $ $Date: 2005/06/27 23:22:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -182,7 +182,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                 
                 if (m_report != null && !channelReported) {
                     
-                    m_report.print(Messages.get().container(Messages.RPT_INDEX_CHANNEL_0), I_CmsReport.C_FORMAT_NOTE);                   
+                    m_report.print(Messages.get().container(Messages.RPT_INDEX_CHANNEL_0), I_CmsReport.FORMAT_NOTE);                   
                     m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1, channel));
                     channelReported = true;
@@ -190,8 +190,8 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
                 
                 if (m_report != null) {
                     m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SUCCESSION_1, 
-                        String.valueOf(m_threadManager.getCounter()+1)), I_CmsReport.C_FORMAT_NOTE);  
-                    m_report.print(org.opencms.search.Messages.get().container(org.opencms.search.Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.C_FORMAT_NOTE);  
+                        String.valueOf(m_threadManager.getCounter()+1)), I_CmsReport.FORMAT_NOTE);  
+                    m_report.print(org.opencms.search.Messages.get().container(org.opencms.search.Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0), I_CmsReport.FORMAT_NOTE);  
                     if (ds.m_title != null) {
                         String title = ds.m_title;
                         title = CmsStringUtil.substitute(title, "'", "\\'");
@@ -213,7 +213,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
             
             if (m_report != null) {
                 m_report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
+                    org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_WARNING);
             }
             if (CmsLog.getLog(this).isWarnEnabled()) {
                 CmsLog.getLog(this).warn("Failed to index " + channel, exc);
@@ -238,7 +238,7 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
     protected CmsUUID getChannelId(CmsObject cms, String channelName) throws CmsIndexException {
 
         String siteRoot = cms.getRequestContext().getSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);        
+        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);        
         CmsUUID id = null;
         try {         
             CmsResource channel = cms.readFolder(channelName, CmsResourceFilter.IGNORE_EXPIRATION);

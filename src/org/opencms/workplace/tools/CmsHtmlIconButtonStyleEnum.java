@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsHtmlIconButtonStyleEnum.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,10 +69,10 @@ public final class CmsHtmlIconButtonStyleEnum {
     public static final CmsHtmlIconButtonStyleEnum SMALL_ICON_TEXT = new CmsHtmlIconButtonStyleEnum("smallicontext");
 
     /** Array constant for column sorting. */
-    private static final CmsHtmlIconButtonStyleEnum[] C_VALUES = {BIG_ICON_TEXT, SMALL_ICON_TEXT, SMALL_ICON_ONLY};
+    private static final CmsHtmlIconButtonStyleEnum[] VALUE_ARRAY = {BIG_ICON_TEXT, SMALL_ICON_TEXT, SMALL_ICON_ONLY};
 
     /** List of ordering constants.     */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */
     private final String m_style;

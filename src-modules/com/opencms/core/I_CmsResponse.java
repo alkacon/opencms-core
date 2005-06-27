@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/core/Attic/I_CmsResponse.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:30 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,7 +28,8 @@
 
 package com.opencms.core;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -43,7 +44,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Michael Emmerich
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $  
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:30 $  
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

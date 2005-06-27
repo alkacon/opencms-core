@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/27 09:31:09 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  * 
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
 public class CmsModule implements Comparable {
 
     /** The default date for module created / installed if not provided. */
-    public static final long C_DEFAULT_DATE = 0L;
+    public static final long DEFAULT_DATE = 0L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModule.class);

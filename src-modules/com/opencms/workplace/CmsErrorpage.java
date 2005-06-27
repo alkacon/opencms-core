@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsErrorpage.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,8 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
@@ -47,7 +46,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ERRORPAGE&gt;</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -77,11 +76,11 @@ public class CmsErrorpage extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         // collect all required data
-        String errorTitle = n.getAttribute(C_ERROR_TITLE);
-        String errorMessage = n.getAttribute(C_ERROR_MESSAGE);
-        String errorReason = n.getAttribute(C_ERROR_REASON);
-        String errorSuggestion = n.getAttribute(C_ERROR_SUGGESTION);
-        String errorLink = n.getAttribute(C_ERROR_LINK);
+        String errorTitle = n.getAttribute(CmsWorkplaceDefault.C_ERROR_TITLE);
+        String errorMessage = n.getAttribute(CmsWorkplaceDefault.C_ERROR_MESSAGE);
+        String errorReason = n.getAttribute(CmsWorkplaceDefault.C_ERROR_REASON);
+        String errorSuggestion = n.getAttribute(CmsWorkplaceDefault.C_ERROR_SUGGESTION);
+        String errorLink = n.getAttribute(CmsWorkplaceDefault.C_ERROR_LINK);
         if ("explorer_files.html".equals(errorLink)) {
             errorLink = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         }
@@ -109,19 +108,19 @@ public class CmsErrorpage extends A_CmsWpElement {
         errorSuggestion = lang.getLanguageValue(errorSuggestion);
         reason = lang.getLanguageValue("message.reason");
         button = lang.getLanguageValue("button.ok");
-        errordef.setData("stylesheetpath", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS);
-        errordef.setData("jspath", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SCRIPTS);
-        errordef.setData(C_ERROR_MSG_BUTTON, button);
-        errordef.setData(C_ERROR_TITLE, errorTitle);
-        errordef.setData(C_ERROR_MESSAGE, errorMessage);
-        errordef.setData(C_ERROR_REASON, errorReason);
-        errordef.setData(C_ERROR_SUGGESTION, errorSuggestion);
-        errordef.setData(C_ERROR_LINK, errorLink);
-        errordef.setData(C_ERROR_MSG_REASON, reason);
-        errordef.setData(C_ERROR_MSG_DETAILS, details);
+        errordef.setData("stylesheetpath", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + CmsWorkplace.VFS_PATH_RESOURCES);
+        errordef.setData("jspath", CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + CmsWorkplaceDefault.C_VFS_PATH_SCRIPTS);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_MSG_BUTTON, button);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_TITLE, errorTitle);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_MESSAGE, errorMessage);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_REASON, errorReason);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_SUGGESTION, errorSuggestion);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_LINK, errorLink);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_MSG_REASON, reason);
+        errordef.setData(CmsWorkplaceDefault.C_ERROR_MSG_DETAILS, details);
 
         // build errorpage
-        String result = errordef.getProcessedDataValue(C_TAG_ERRORPAGE, callingObject, null);
+        String result = errordef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_ERRORPAGE, callingObject, null);
         return result;
     }
 

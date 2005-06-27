@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/27 17:24:18 $
- * Version: $Revision: 1.76 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.77 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,6 @@ import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -58,7 +57,7 @@ import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileOutputStream;
@@ -94,13 +93,13 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.76 $ 
+ * @version $Revision: 1.77 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExport implements Serializable {
 
-    private static final int C_SUB_LENGTH = 4096;
+    private static final int SUB_LENGTH = 4096;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExport.class);
@@ -219,7 +218,7 @@ public class CmsExport implements Serializable {
         m_exportCount = 0;
 
         // clear all caches
-        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.C_FORMAT_NOTE);
+        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
 
         try {
@@ -366,9 +365,9 @@ public class CmsExport implements Serializable {
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
-                    || state == I_CmsConstants.C_STATE_NEW
-                    || state == I_CmsConstants.C_STATE_CHANGED) {
-                    if ((state != I_CmsConstants.C_STATE_DELETED)
+                    || state == CmsResource.STATE_NEW
+                    || state == CmsResource.STATE_CHANGED) {
+                    if ((state != CmsResource.STATE_DELETED)
                         && (!file.getName().startsWith("~"))
                         && (age >= m_contentAge)) {
                         String export = getCms().getSitePath(file);
@@ -386,7 +385,7 @@ public class CmsExport implements Serializable {
             // walk through all subfolders and export them
             for (int i = 0; i < subFolders.size(); i++) {
                 CmsResource folder = (CmsResource)subFolders.get(i);
-                if (folder.getState() != I_CmsConstants.C_STATE_DELETED) {
+                if (folder.getState() != CmsResource.STATE_DELETED) {
                     // check if this is a system-folder and if it should be included.
                     String export = getCms().getSitePath(folder);
                     if (checkExportResource(export)) {
@@ -443,13 +442,13 @@ public class CmsExport implements Serializable {
 
         // complex substring operation is required to ensure handling for very large export manifest files
         StringBuffer result = ((StringWriter)xmlSaxWriter.getWriter()).getBuffer();
-        int steps = result.length() / C_SUB_LENGTH;
-        int rest = result.length() % C_SUB_LENGTH;
+        int steps = result.length() / SUB_LENGTH;
+        int rest = result.length() % SUB_LENGTH;
         int pos = 0;
         for (int i = 0; i < steps; i++) {
-            String sub = result.substring(pos, pos + C_SUB_LENGTH);
+            String sub = result.substring(pos, pos + SUB_LENGTH);
             getExportZipStream().write(sub.getBytes(OpenCms.getSystemInfo().getDefaultEncoding()));
-            pos += C_SUB_LENGTH;
+            pos += SUB_LENGTH;
         }
         if (rest > 0) {
             String sub = result.substring(pos, pos + rest);
@@ -729,7 +728,7 @@ public class CmsExport implements Serializable {
 
                 try {
                     CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
-                    if ((file.getState() != I_CmsConstants.C_STATE_DELETED) && (!file.getName().startsWith("~"))) {
+                    if ((file.getState() != CmsResource.STATE_DELETED) && (!file.getName().startsWith("~"))) {
                         if (checkExportResource(fileName)) {
                             addParentFolders(fileName);
                             exportFile(file);
@@ -765,9 +764,9 @@ public class CmsExport implements Serializable {
         Iterator i;
 
         List bodyFileNames = new ArrayList();
-        String bodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES.substring(
+        String bodyPath = CmsCompatibleCheck.VFS_PATH_BODIES.substring(
             0,
-            I_CmsWpConstants.C_VFS_PATH_BODIES.lastIndexOf("/"));
+            CmsCompatibleCheck.VFS_PATH_BODIES.lastIndexOf("/"));
 
         // check all exported page files if their body has already been exported
         i = m_exportedPageFiles.iterator();
@@ -776,8 +775,8 @@ public class CmsExport implements Serializable {
             // check if the site path is within the filename. If so,this export is
             // started from the root site and the path to the bodies must be modifed
             // this is not nice, but it works.
-            if (filename.startsWith(I_CmsConstants.VFS_FOLDER_SITES)) {
-                filename = filename.substring(I_CmsConstants.VFS_FOLDER_SITES.length() + 1, filename.length());
+            if (filename.startsWith(CmsResource.VFS_FOLDER_SITES)) {
+                filename = filename.substring(CmsResource.VFS_FOLDER_SITES.length() + 1, filename.length());
                 filename = filename.substring(filename.indexOf("/"), filename.length());
             }
             String body = bodyPath + filename;
@@ -811,13 +810,13 @@ public class CmsExport implements Serializable {
             ArrayList superFolders = new ArrayList();
 
             // Check, if the path is really a folder
-            if (resourceName.lastIndexOf(I_CmsConstants.C_ROOT) != (resourceName.length() - 1)) {
-                resourceName = resourceName.substring(0, resourceName.lastIndexOf(I_CmsConstants.C_ROOT) + 1);
+            if (resourceName.lastIndexOf("/") != (resourceName.length() - 1)) {
+                resourceName = resourceName.substring(0, resourceName.lastIndexOf("/") + 1);
             }
-            while (resourceName.length() > I_CmsConstants.C_ROOT.length()) {
+            while (resourceName.length() > "/".length()) {
                 superFolders.add(resourceName);
                 resourceName = resourceName.substring(0, resourceName.length() - 1);
-                resourceName = resourceName.substring(0, resourceName.lastIndexOf(I_CmsConstants.C_ROOT) + 1);
+                resourceName = resourceName.substring(0, resourceName.lastIndexOf("/") + 1);
             }
             for (int i = superFolders.size() - 1; i >= 0; i--) {
                 String addFolder = (String)superFolders.get(i);
@@ -876,15 +875,15 @@ public class CmsExport implements Serializable {
                 // output something to the report for the folder
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_1,
-                    String.valueOf(m_exportCount)), I_CmsReport.C_FORMAT_NOTE);
-                report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.C_FORMAT_NOTE);
+                    String.valueOf(m_exportCount)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     getCms().getSitePath(resource)));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
 
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().key(
@@ -940,7 +939,7 @@ public class CmsExport implements Serializable {
             }
             // <flags>
             int resFlags = resource.getFlags();
-            resFlags &= ~I_CmsConstants.C_RESOURCEFLAG_LABELLINK;
+            resFlags &= ~CmsResource.FLAG_LABELED;
             fileElement.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(resFlags));
 
             // write the properties to the manifest
@@ -992,14 +991,14 @@ public class CmsExport implements Serializable {
                 int flags = ace.getFlags();
                 String acePrincipalName = "";
                 CmsUUID acePrincipal = ace.getPrincipal();
-                if ((flags & I_CmsConstants.C_ACCESSFLAGS_GROUP) > 0) {
+                if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
                     // the principal is a group
-                    acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_GROUP
+                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_GROUP
                         + '.'
                         + getCms().readGroup(acePrincipal).getName();
                 } else {
                     // the principal is a user
-                    acePrincipalName = I_CmsPrincipal.C_PRINCIPAL_USER
+                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER
                         + '.'
                         + getCms().readUser(acePrincipal).getName();
                 }
@@ -1041,12 +1040,12 @@ public class CmsExport implements Serializable {
     private boolean checkExportResource(String resourcename) {
 
         return (// other folder than "/system/" will be exported
-        !resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/"
-            || resourcename.equalsIgnoreCase(I_CmsWpConstants.C_VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
-            || resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES) // OR always export "/system/galleries/"
-            || resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_GALLERIES) // OR option "include system folder" selected
+        !resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM) // OR always export "/system/"
+            || resourcename.equalsIgnoreCase(CmsWorkplace.VFS_PATH_SYSTEM) // OR always export "/system/bodies/"                                  
+            || resourcename.startsWith(CmsCompatibleCheck.VFS_PATH_BODIES) // OR always export "/system/galleries/"
+            || resourcename.startsWith(CmsWorkplace.VFS_PATH_GALLERIES) // OR option "include system folder" selected
         || (m_includeSystem // AND export folder is a system folder
-        && resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)));
+        && resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)));
     }
 
     /**
@@ -1066,8 +1065,8 @@ public class CmsExport implements Serializable {
         m_exportCount++;
         report.print(org.opencms.report.Messages.get().container(
             org.opencms.report.Messages.RPT_SUCCESSION_1,
-            String.valueOf(m_exportCount)), I_CmsReport.C_FORMAT_NOTE);
-        report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.C_FORMAT_NOTE);
+            String.valueOf(m_exportCount)), I_CmsReport.FORMAT_NOTE);
+        report.print(Messages.get().container(Messages.RPT_EXPORT_0), I_CmsReport.FORMAT_NOTE);
         report.print(org.opencms.report.Messages.get().container(
             org.opencms.report.Messages.RPT_ARGUMENT_1,
             getCms().getSitePath(file)));
@@ -1100,7 +1099,7 @@ public class CmsExport implements Serializable {
         }
         report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-            I_CmsReport.C_FORMAT_OK);
+            I_CmsReport.FORMAT_OK);
     }
 
     /**
@@ -1159,8 +1158,8 @@ public class CmsExport implements Serializable {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
                     String.valueOf(i + 1),
-                    String.valueOf(l)), I_CmsReport.C_FORMAT_NOTE);
-                report.print(Messages.get().container(Messages.RPT_EXPORT_GROUP_0), I_CmsReport.C_FORMAT_NOTE);
+                    String.valueOf(l)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_EXPORT_GROUP_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     group.getName()));
@@ -1168,7 +1167,7 @@ public class CmsExport implements Serializable {
                 exportGroup(parent, group);
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
             }
         } catch (CmsImportExportException e) {
 
@@ -1271,8 +1270,8 @@ public class CmsExport implements Serializable {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
                     String.valueOf(i + 1),
-                    String.valueOf(l)), I_CmsReport.C_FORMAT_NOTE);
-                report.print(Messages.get().container(Messages.RPT_EXPORT_USER_0), I_CmsReport.C_FORMAT_NOTE);
+                    String.valueOf(l)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_EXPORT_USER_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     user.getName()));
@@ -1280,7 +1279,7 @@ public class CmsExport implements Serializable {
                 exportUser(parent, user);
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
             }
         } catch (CmsImportExportException e) {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.workplace.CmsDialog;
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,7 +78,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
     public static final String DIALOG_TYPE = "delete";
 
     /** The delete dialog URI. */
-    public static final String URI_DELETE_DIALOG = C_PATH_DIALOGS + "delete_standard.jsp";
+    public static final String URI_DELETE_DIALOG = PATH_DIALOGS + "delete_standard.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDelete.class);
@@ -124,7 +123,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
     public void actionDelete() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             boolean isFolder = resource.isFolder();
@@ -139,7 +138,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             // prepare common message part
@@ -161,14 +160,14 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
             result.append(key("messagebox.siblings"));
             result.append("<p>");
             result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"false\"");
-            if (defaultMode == I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS) {
+            if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
             result.append(key("messagebox.option.siblingsPreserve"));
             result.append("<br>");
             result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"true\"");
-            if (defaultMode == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
+            if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
@@ -227,7 +226,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         int type = lock.getType();
         // check if autolock feature is enabled
         boolean autoLockFeature = lock.isNullLock() && OpenCms.getWorkplaceManager().autoLockResources();
-        return (autoLockFeature || type == CmsLock.C_TYPE_EXCLUSIVE || type == CmsLock.C_TYPE_INHERITED);
+        return (autoLockFeature || type == CmsLock.TYPE_EXCLUSIVE || type == CmsLock.TYPE_INHERITED);
     }
 
     /**
@@ -264,8 +263,8 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         }
 
         // determine the correct delete option
-        deleteOption = Boolean.valueOf(getParamDeleteVfsLinks()).booleanValue() ? I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS
-        : I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
+        deleteOption = Boolean.valueOf(getParamDeleteVfsLinks()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
+        : CmsResource.DELETE_PRESERVE_SIBLINGS;
 
         // lock resource if autolock is enabled
         checkLock(getParamResource());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestResourceStorage.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.test;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -43,7 +42,7 @@ import java.util.Map;
  * Storage object for storing all attributes of vfs resources.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class OpenCmsTestResourceStorage {
 
@@ -238,23 +237,23 @@ public class OpenCmsTestResourceStorage {
      */
     private Integer preCalculateState(CmsResource res) {
         
-        int newState = I_CmsConstants.C_STATE_UNCHANGED;
+        int newState = CmsResource.STATE_UNCHANGED;
         int state = res.getState();
         switch (state) {
-            case I_CmsConstants.C_STATE_UNCHANGED:
-                newState = I_CmsConstants.C_STATE_CHANGED;
+            case CmsResource.STATE_UNCHANGED:
+                newState = CmsResource.STATE_CHANGED;
                 break;
-            case I_CmsConstants.C_STATE_CHANGED:
-                newState = I_CmsConstants.C_STATE_CHANGED;
+            case CmsResource.STATE_CHANGED:
+                newState = CmsResource.STATE_CHANGED;
                 break;
-            case I_CmsConstants.C_STATE_NEW:
-                newState = I_CmsConstants.C_STATE_NEW;
+            case CmsResource.STATE_NEW:
+                newState = CmsResource.STATE_NEW;
                 break;  
-            case I_CmsConstants.C_STATE_DELETED:
-                newState = I_CmsConstants.C_STATE_DELETED;
+            case CmsResource.STATE_DELETED:
+                newState = CmsResource.STATE_DELETED;
                 break;   
             default:
-                newState = I_CmsConstants.C_STATE_UNCHANGED;
+                newState = CmsResource.STATE_UNCHANGED;
                 break;
         }        
         return new Integer(newState);

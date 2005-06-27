@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,15 +39,15 @@ import org.opencms.flex.CmsFlexRequestContextInfo;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsRequestUtil;
 
 /**
  * Warps context information to access the OpenCms database.<p> 
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0
  */
@@ -77,7 +77,7 @@ public class CmsDbContext {
         m_requestContext = context;
 
         if (m_requestContext != null) {
-            m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(I_CmsConstants.C_HEADER_LAST_MODIFIED);
+            m_flexRequestContextInfo = (CmsFlexRequestContextInfo)m_requestContext.getAttribute(CmsRequestUtil.HEADER_LAST_MODIFIED);
         }
     }
 
@@ -187,7 +187,7 @@ public class CmsDbContext {
 
         if (report != null) {
             if (message != null) {
-                report.println(message, I_CmsReport.C_FORMAT_ERROR);
+                report.println(message, I_CmsReport.FORMAT_ERROR);
             }
             if (throwable != null) {
                 report.println(throwable);

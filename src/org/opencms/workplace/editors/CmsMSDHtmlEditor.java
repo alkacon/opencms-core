@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -57,7 +56,7 @@ import java.util.regex.Pattern;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,12 +66,18 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     public static final String EDITOR_TYPE = "msdhtml";
 
     /** The button number to start the galleries with. */
-    private static final int C_JS_GALLERY_ACTION_START = 60;
+    private static final int JS_GALLERY_ACTION_START = 60;
 
     /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags. */
-    private static final Pattern C_REGEX_LINKS = Pattern.compile(
+    private static final Pattern REGEX_LINKS = Pattern.compile(
         "<(img|a)(\\s+)(.*?)(src|href)=(\"|\')(.*?)(\"|\')(.*?)>",
         Pattern.CASE_INSENSITIVE | Pattern.MULTILINE | Pattern.DOTALL);
+
+    /** Option values for editor view select boxes. */
+    public static final String[] SELECTBOX_EDITORVIEWS = {"edithtml", "edit"};
+
+    /** values for editor view select boxes. */
+    public static final int[] SELECTBOX_EDITORVIEWS_ALLOWED = {3, 2};
 
     /**
      * Public constructor.<p>
@@ -93,7 +98,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         List l = new ArrayList(OpenCms.getWorkplaceManager().getGalleries().keySet());
         Collections.sort(l);
         Iterator galleries = l.iterator();
-        for (int i = C_JS_GALLERY_ACTION_START; galleries.hasNext(); i++) {
+        for (int i = JS_GALLERY_ACTION_START; galleries.hasNext(); i++) {
             String galleryType = ((String)galleries.next()).replaceFirst("gallery", "");
             if (options.showElement("gallery." + galleryType, displayOptions)) {
                 result.append(button("javascript:doEditHTML(" + i + ");", null, galleryType + "gallery", "button."
@@ -115,7 +120,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         Vector names = new Vector();
         Vector values = new Vector();
         // get the available views fron the constant
-        String[] contents = I_CmsWpConstants.C_SELECTBOX_EDITORVIEWS;
+        String[] contents = CmsMSDHtmlEditor.SELECTBOX_EDITORVIEWS;
         for (int i = 0; i < contents.length; i++) {
             String value = contents[i];
             values.addElement(value);
@@ -124,7 +129,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         }
         int browserId = 0;
         int loop = 1;
-        int allowedEditors = I_CmsWpConstants.C_SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
+        int allowedEditors = CmsMSDHtmlEditor.SELECTBOX_EDITORVIEWS_ALLOWED[browserId];
         if ("script".equals(getParamElementname())) {
             allowedEditors = allowedEditors & 510;
         }
@@ -156,7 +161,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         String result = CmsStringUtil.substitute(getParamContent(), "\r\n", "\n");
         result = CmsStringUtil.substitute(result, "=\n\"", "=\"");
         // escape the content
-        result = CmsEncoder.escapeWBlanks(result, CmsEncoder.C_UTF8_ENCODING);
+        result = CmsEncoder.escapeWBlanks(result, CmsEncoder.ENCODING_UTF_8);
         setParamContent(result);
     }
 
@@ -233,7 +238,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         String newAnchor = null;
 
         // don't forget to update the group index on the matcher after changing the regex below!      
-        Matcher matcher = C_REGEX_LINKS.matcher(content);
+        Matcher matcher = REGEX_LINKS.matcher(content);
         while (matcher.find()) {
             anchor = matcher.group(6);
             newAnchor = CmsStringUtil.substitute(anchor, "&amp;", "&");

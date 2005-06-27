@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/26 11:23:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
@@ -58,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0
  */
@@ -230,12 +229,12 @@ public class TestSynchronize extends OpenCmsTestCase {
                     || (type == CmsResourceTypeJsp.getStaticTypeId())
                     || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
-                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);
+                    assertState(cms, vfsname, CmsResource.STATE_CHANGED);
                     // assert the modification date
                     File rfsResource = new File(getRfsPath(cms, vfsResource, syncSettings));
                     assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());
                 } else {
-                    assertState(cms, vfsname, I_CmsConstants.C_STATE_UNCHANGED);
+                    assertState(cms, vfsname, CmsResource.STATE_UNCHANGED);
                 }
             }
 
@@ -319,12 +318,12 @@ public class TestSynchronize extends OpenCmsTestCase {
                     || (type == CmsResourceTypeJsp.getStaticTypeId())
                     || (type == CmsResourceTypeXmlPage.getStaticTypeId())) {
                     // assert the resource state
-                    assertState(cms, vfsname, I_CmsConstants.C_STATE_CHANGED);
+                    assertState(cms, vfsname, CmsResource.STATE_CHANGED);
                     // assert the modification date
                     File rfsResource = new File(getRfsPath(cms, vfsResource, syncSettings));
                     assertDateLastModifiedAfter(cms, vfsname, rfsResource.lastModified());
                 } else {
-                    assertState(cms, vfsname, I_CmsConstants.C_STATE_UNCHANGED);
+                    assertState(cms, vfsname, CmsResource.STATE_UNCHANGED);
                 }
             }
 

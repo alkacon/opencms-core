@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
@@ -106,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  * 
@@ -114,23 +113,23 @@ import org.apache.commons.logging.Log;
  */
 public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledLoader {
 
-    /** Special JSP directive tag start (<code>%&gt;</code>). */
-    public static final String C_DIRECTIVE_END = "%>";
-
-    /** Special JSP directive tag start (<code>&lt;%&#0040;</code>). */
-    public static final String C_DIRECTIVE_START = "<%@";
-
-    /** Extension for JSP managed by OpenCms (<code>.jsp</code>). */
-    public static final String C_JSP_EXTENSION = ".jsp";
-
-    /** The id of this loader. */
-    public static final int C_RESOURCE_LOADER_ID = 6;
-
     /** Property value for "cache" that indicates that the FlexCache should be bypassed. */
     public static final String CACHE_PROPERTY_BYPASS = "bypass";
 
     /** Property value for "cache" that indicates that the ouput should be streamed. */
     public static final String CACHE_PROPERTY_STREAM = "stream";
+
+    /** Special JSP directive tag start (<code>%&gt;</code>). */
+    public static final String DIRECTIVE_END = "%>";
+
+    /** Special JSP directive tag start (<code>&lt;%&#0040;</code>). */
+    public static final String DIRECTIVE_START = "<%@";
+
+    /** Extension for JSP managed by OpenCms (<code>.jsp</code>). */
+    public static final String JSP_EXTENSION = ".jsp";
+
+    /** The id of this loader. */
+    public static final int RESOURCE_LOADER_ID = 6;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspLoader.class);
@@ -214,7 +213,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             if (element != null) {
                 // add the element parameter to the included request
                 String[] value = new String[] {element};
-                Map parameters = Collections.singletonMap(I_CmsConstants.C_PARAMETER_ELEMENT, value);
+                Map parameters = Collections.singletonMap(I_CmsResourceLoader.PARAMETER_ELEMENT, value);
                 controller.getCurrentRequest().addParameterMap(parameters);
             }
             // dispatch to the JSP
@@ -266,7 +265,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public int getLoaderId() {
 
-        return C_RESOURCE_LOADER_ID;
+        return RESOURCE_LOADER_ID;
     }
 
     /**
@@ -467,16 +466,16 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
                     // get the result byte array
                     result = f_res.getWriterBytes();
-                    if (controller.getTopRequest().getHeader(I_CmsConstants.C_HEADER_OPENCMS_EXPORT) != null) {
+                    if (controller.getTopRequest().getHeader(CmsRequestUtil.HEADER_OPENCMS_EXPORT) != null) {
                         // this is a non "on-demand" static export request, don't write to the response stream
                         controller.getTopRequest().setAttribute(
-                            I_CmsConstants.C_HEADER_OPENCMS_EXPORT,
+                            CmsRequestUtil.HEADER_OPENCMS_EXPORT,
                             new Long(controller.getDateLastModified()));
                     } else if (controller.isTop()) {
                         // process headers and write output if this is the "top" request/response                                  
                         res.setContentLength(result.length);
                         if (isWorkplaceUser) {
-                            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
+                            res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
                             CmsRequestUtil.setNoCacheHeaders(res);
                         } else {
                             // set date last modified header                        
@@ -629,18 +628,18 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private String parseJspCmsTag(String content, CmsFlexController controller, Set includes) {
 
         // check if a JSP directive occurs in the file
-        int i1 = content.indexOf(C_DIRECTIVE_START);
+        int i1 = content.indexOf(DIRECTIVE_START);
         if (i1 < 0) {
             // no directive occurs
             return content;
         }
 
         StringBuffer buf = new StringBuffer(content.length());
-        int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length(), elen = C_DIRECTIVE_END.length();
+        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length(), elen = DIRECTIVE_END.length();
 
         while (i1 >= 0) {
             // parse the file and replace JSP filename references 
-            i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
+            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
             if (i2 < 0) {
                 // wrong syntax (missing end directive) - let the JSP compiler produce the error message
                 return content;
@@ -649,9 +648,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DIRECTIVE_DETECTED_3,
-                        C_DIRECTIVE_START,
+                        DIRECTIVE_START,
                         directive,
-                        C_DIRECTIVE_END));
+                        DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -693,22 +692,22 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(
                                 Messages.LOG_DIRECTIVE_CHANGED_3,
-                                C_DIRECTIVE_START,
+                                DIRECTIVE_START,
                                 directive,
-                                C_DIRECTIVE_END));
+                                DIRECTIVE_END));
                         }
                     }
                     // cms directive was found
                     buf.append(content.substring(p0, i1));
                     buf.append(directive);
                     p0 = i2 + elen;
-                    i1 = content.indexOf(C_DIRECTIVE_START, p0);
+                    i1 = content.indexOf(DIRECTIVE_START, p0);
                 } else {
                     // cms directive was not found
                     buf.append(content.substring(p0, i1 + slen));
                     buf.append(directive);
                     p0 = i2;
-                    i1 = content.indexOf(C_DIRECTIVE_START, p0);
+                    i1 = content.indexOf(DIRECTIVE_START, p0);
                 }
             }
         }
@@ -733,19 +732,19 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private String parseJspEncoding(String content, String encoding, boolean isHardInclude) {
 
         // check if a JSP directive occurs in the file
-        int i1 = content.indexOf(C_DIRECTIVE_START);
+        int i1 = content.indexOf(DIRECTIVE_START);
         if (i1 < 0) {
             // no directive occurs
             return content;
         }
 
         StringBuffer buf = new StringBuffer(content.length());
-        int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length();
+        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
         boolean found = false;
 
         while (i1 >= 0) {
             // parse the file and set/replace page encoding
-            i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
+            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
             if (i2 < 0) {
                 // wrong syntax (missing end directive) - let the JSP compiler produce the error message
                 return content;
@@ -754,9 +753,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DIRECTIVE_DETECTED_3,
-                        C_DIRECTIVE_START,
+                        DIRECTIVE_START,
                         directive,
-                        C_DIRECTIVE_END));
+                        DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -802,16 +801,16 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(
                             Messages.LOG_DIRECTIVE_CHANGED_3,
-                            C_DIRECTIVE_START,
+                            DIRECTIVE_START,
                             directive,
-                            C_DIRECTIVE_END));
+                            DIRECTIVE_END));
                     }
                 }
 
                 buf.append(content.substring(p0, i1 + slen));
                 buf.append(directive);
                 p0 = i2;
-                i1 = content.indexOf(C_DIRECTIVE_START, p0);
+                i1 = content.indexOf(DIRECTIVE_START, p0);
             }
         }
         if (i2 > 0) {
@@ -848,18 +847,18 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private String parseJspIncludes(String content, CmsFlexController controller, Set includes) {
 
         // check if a JSP directive occurs in the file
-        int i1 = content.indexOf(C_DIRECTIVE_START);
+        int i1 = content.indexOf(DIRECTIVE_START);
         if (i1 < 0) {
             // no directive occurs
             return content;
         }
 
         StringBuffer buf = new StringBuffer(content.length());
-        int p0 = 0, i2 = 0, slen = C_DIRECTIVE_START.length();
+        int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
 
         while (i1 >= 0) {
             // parse the file and replace JSP filename references 
-            i2 = content.indexOf(C_DIRECTIVE_END, i1 + slen);
+            i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
             if (i2 < 0) {
                 // wrong syntax (missing end directive) - let the JSP compiler produce the error message
                 return content;
@@ -868,9 +867,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DIRECTIVE_DETECTED_3,
-                        C_DIRECTIVE_START,
+                        DIRECTIVE_START,
                         directive,
-                        C_DIRECTIVE_END));
+                        DIRECTIVE_END));
                 }
 
                 int t1 = 0, t2 = 0, t3 = 0, t4 = 0, t5 = 0;
@@ -922,9 +921,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         if (LOG.isDebugEnabled()) {
                             LOG.debug(Messages.get().key(
                                 Messages.LOG_DIRECTIVE_CHANGED_3,
-                                C_DIRECTIVE_START,
+                                DIRECTIVE_START,
                                 directive,
-                                C_DIRECTIVE_END));
+                                DIRECTIVE_END));
                         }
                     }
                 }
@@ -932,7 +931,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 buf.append(content.substring(p0, i1 + slen));
                 buf.append(directive);
                 p0 = i2;
-                i1 = content.indexOf(C_DIRECTIVE_START, p0);
+                i1 = content.indexOf(DIRECTIVE_START, p0);
             }
         }
         if (i2 > 0) {
@@ -975,15 +974,15 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             String extension;
             boolean isHardInclude;
             int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
-            if ((loaderId == CmsJspLoader.C_RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(C_JSP_EXTENSION))) {
+            if ((loaderId == CmsJspLoader.RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(JSP_EXTENSION))) {
                 // this is a true JSP resource that does not end with ".jsp"
-                extension = C_JSP_EXTENSION;
+                extension = JSP_EXTENSION;
                 isHardInclude = false;
             } else {
                 // not a JSP resource or already ends with ".jsp"
                 extension = "";
                 // if this is a JSP we don't treat it as hard include
-                isHardInclude = (loaderId != CmsJspLoader.C_RESOURCE_LOADER_ID);
+                isHardInclude = (loaderId != CmsJspLoader.RESOURCE_LOADER_ID);
             }
 
             String jspTargetName = getJspUri(

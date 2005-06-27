@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLinkVfsManagementThread.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,15 @@
 
 package com.opencms.workplace;
 
-import org.opencms.report.A_CmsReportThread;
-
 import org.opencms.file.CmsObject;
+import org.opencms.report.A_CmsReportThread;
 
 /**
  * Joins all VFS links with their target resources.<p>
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 5.1.10
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.

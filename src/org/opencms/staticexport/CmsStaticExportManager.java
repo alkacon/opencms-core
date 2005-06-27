@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/06/27 11:51:26 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.113 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -54,6 +53,7 @@ import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsMacroResolver;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.112 $ 
+ * @version $Revision: 1.113 $ 
  * 
  * @since 6.0.0 
  */
@@ -314,7 +314,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         String remoteAddr = m_remoteAddr;
         if (remoteAddr == null) {
-            remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
+            remoteAddr = CmsContextInfo.LOCALHOST;
         }
         CmsContextInfo contextInfo = new CmsContextInfo(
             cms.getRequestContext().currentUser(),
@@ -421,7 +421,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 }
                 // update the file with the modification date from the server
                 if (req != null) {
-                    Long dateLastModified = (Long)req.getAttribute(I_CmsConstants.C_HEADER_OPENCMS_EXPORT);
+                    Long dateLastModified = (Long)req.getAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT);
                     if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
                         exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
                         if (LOG.isDebugEnabled()) {
@@ -523,7 +523,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_BEGIN_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         // loop through all resources
         Iterator i = publishedResources.iterator();
@@ -550,7 +550,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(exportData.getResource());
                         if (!loader.isStaticExportProcessable()) {
                             // this resource must not be process, so export it if its not marked as deleted
-                            if (pupRes.getState() != I_CmsConstants.C_STATE_DELETED) {
+                            if (pupRes.getState() != CmsResource.STATE_DELETED) {
                                 // mark the resource for export to the real file system                  
                                 resourcesToExport.add(exportData);
                             }
@@ -587,8 +587,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
                 new Integer(count++),
-                new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
-            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+                new Integer(size)), I_CmsReport.FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 exportData.getVfsName()));
@@ -597,11 +597,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (status == HttpServletResponse.SC_OK) {
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
             } else {
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_IGNORED_0),
-                    I_CmsReport.C_FORMAT_NOTE);
+                    I_CmsReport.FORMAT_NOTE);
             }
 
             if (LOG.isInfoEnabled()) {
@@ -617,7 +617,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_NONTEMPLATE_RESOURCES_END_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         return templatesFound;
 
@@ -639,7 +639,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_BEGIN_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         // now loop through all of them and request them from the server
         Iterator i = publishedTemplateResources.iterator();
@@ -650,8 +650,8 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
                 new Integer(count++),
-                new Integer(size)), I_CmsReport.C_FORMAT_NOTE);
-            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+                new Integer(size)), I_CmsReport.FORMAT_NOTE);
+            report.print(Messages.get().container(Messages.RPT_EXPORTING_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
                 rfsName));
@@ -671,17 +671,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // set request type to GET
                 urlcon.setRequestMethod("GET");
                 // add special export header
-                urlcon.setRequestProperty(I_CmsConstants.C_HEADER_OPENCMS_EXPORT, "true");
+                urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, "true");
                 // add additional headers if available
                 if (getAcceptLanguageHeader() != null) {
-                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_LANGUAGE, getAcceptLanguageHeader());
+                    urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_LANGUAGE, getAcceptLanguageHeader());
                 } else {
-                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_LANGUAGE, m_defaultAcceptLanguageHeader);
+                    urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_LANGUAGE, m_defaultAcceptLanguageHeader);
                 }
                 if (getAcceptCharsetHeader() != null) {
-                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_CHARSET, getAcceptCharsetHeader());
+                    urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_CHARSET, getAcceptCharsetHeader());
                 } else {
-                    urlcon.setRequestProperty(I_CmsConstants.C_HEADER_ACCEPT_CHARSET, m_defaultAcceptCharsetHeader);
+                    urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_CHARSET, m_defaultAcceptCharsetHeader);
                 }
 
                 // get the last modified date and add it to the request
@@ -714,17 +714,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (status == HttpServletResponse.SC_OK) {
                     report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.C_FORMAT_OK);
+                        I_CmsReport.FORMAT_OK);
                 } else if (status == HttpServletResponse.SC_NOT_MODIFIED) {
                     report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.C_FORMAT_NOTE);
+                        org.opencms.report.Messages.RPT_SKIPPED_0), I_CmsReport.FORMAT_NOTE);
                 } else if (status == HttpServletResponse.SC_SEE_OTHER) {
                     report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.C_FORMAT_NOTE);
+                        org.opencms.report.Messages.RPT_IGNORED_0), I_CmsReport.FORMAT_NOTE);
                 } else {
                     report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        new Integer(status)), I_CmsReport.C_FORMAT_OK);
+                        new Integer(status)), I_CmsReport.FORMAT_OK);
                 }
             } catch (IOException e) {
                 report.println(e);
@@ -732,7 +732,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         report.println(
             Messages.get().container(Messages.RPT_STATICEXPORT_TEMPLATE_RESOURCES_END_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
     }
 
@@ -848,7 +848,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             rfsName = (String)request.getAttribute(EXPORT_ATTRIBUTE_ERROR_REQUEST_URI);
         }
 
-        if (request.getHeader(I_CmsConstants.C_HEADER_OPENCMS_EXPORT) != null) {
+        if (request.getHeader(CmsRequestUtil.HEADER_OPENCMS_EXPORT) != null) {
             // this is a request created by the static export and directly send to 404 handler
             // so remove the leading handler identification
             int prefix = rfsName.indexOf(getRfsPrefix());

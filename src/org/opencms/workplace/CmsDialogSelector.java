@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  * 
@@ -89,7 +89,7 @@ public class CmsDialogSelector {
 
         setJsp(jsp);
         setHandler(handler);
-        setParamResource(CmsEncoder.decode(jsp.getRequest().getParameter(I_CmsWpConstants.C_PARA_RESOURCE)));
+        setParamResource(CmsEncoder.decode(jsp.getRequest().getParameter(CmsDialog.PARAM_RESOURCE)));
     }
 
     /**
@@ -108,7 +108,7 @@ public class CmsDialogSelector {
             getHandler());
         if (dialogClass == null) {
             // error getting the dialog class, return to file list
-            return CmsWorkplace.C_FILE_EXPLORER_FILELIST;
+            return CmsWorkplace.FILE_EXPLORER_FILELIST;
         }
         // get the dialog URI from the class defined in the configuration 
         return dialogClass.getDialogUri(getParamResource(), getJsp());

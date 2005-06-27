@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,8 +41,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.BufferedReader;
@@ -84,7 +84,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,7 +115,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     public static final char TEXT_DELIMITER = '"';
 
     /** the delimiters, the csv data can be separated with.*/
-    static final String[] C_DELIMITERS = {";", ",", "\t"};
+    static final String[] DELIMITERS = {";", ",", "\t"};
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewCsvFile.class);
@@ -469,10 +469,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         String bestMatch = "";
         int bestMatchCount = 0;
         // find for each delimiter, how often it occures in the String csvData
-        for (int i = 0; i < C_DELIMITERS.length; i++) {
-            int currentCount = csvData.split(C_DELIMITERS[i]).length;
+        for (int i = 0; i < DELIMITERS.length; i++) {
+            int currentCount = csvData.split(DELIMITERS[i]).length;
             if (currentCount > bestMatchCount) {
-                bestMatch = C_DELIMITERS[i];
+                bestMatch = DELIMITERS[i];
                 bestMatchCount = currentCount;
             }
         }
@@ -491,7 +491,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             int resourceTypeGenericXmlContent = OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId();
             // find all files of generic xmlcontent in the modules folder
             Iterator xmlFiles = getCms().readResources(
-                I_CmsWpConstants.C_VFS_PATH_MODULES,
+                CmsWorkplace.VFS_PATH_MODULES,
                 CmsResourceFilter.DEFAULT_FILES.addRequireType(resourceTypeGenericXmlContent),
                 true).iterator();
             while (xmlFiles.hasNext()) {

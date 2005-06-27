@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.db;
 
 import org.opencms.file.CmsResource;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
@@ -48,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0
  * 
@@ -228,7 +227,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public boolean isChanged() {
 
-        return getState() == I_CmsConstants.C_STATE_CHANGED;
+        return getState() == CmsResource.STATE_CHANGED;
     }
 
     /**
@@ -238,7 +237,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public boolean isDeleted() {
 
-        return getState() == I_CmsConstants.C_STATE_DELETED;
+        return getState() == CmsResource.STATE_DELETED;
     }
 
     /**
@@ -268,7 +267,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public boolean isNew() {
 
-        return getState() == I_CmsConstants.C_STATE_NEW;
+        return getState() == CmsResource.STATE_NEW;
     }
 
     /**
@@ -278,7 +277,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public boolean isUnChanged() {
 
-        return getState() == I_CmsConstants.C_STATE_UNCHANGED;
+        return getState() == CmsResource.STATE_UNCHANGED;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,7 +145,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      */
     public synchronized void print(CmsMessageContainer container) {
 
-        print(container.key(getLocale()), C_FORMAT_DEFAULT);
+        print(container.key(getLocale()), FORMAT_DEFAULT);
     }
 
     /**
@@ -161,7 +161,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      */
     public synchronized void println(CmsMessageContainer container) {
 
-        println(container.key(getLocale()), C_FORMAT_DEFAULT);
+        println(container.key(getLocale()), FORMAT_DEFAULT);
     }
 
     /**
@@ -177,7 +177,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      */
     public synchronized void printMessageWithParam(CmsMessageContainer container, Object param) {
 
-        print(container, I_CmsReport.C_FORMAT_NOTE);
+        print(container, I_CmsReport.FORMAT_NOTE);
         print(Messages.get().container(Messages.RPT_ARGUMENT_1, param));
         print(Messages.get().container(Messages.RPT_DOTS_0));
     }
@@ -189,7 +189,7 @@ public abstract class A_CmsReport implements I_CmsReport {
 
         print(
             Messages.get().container(Messages.RPT_SUCCESSION_2, String.valueOf(m), String.valueOf(n)),
-            I_CmsReport.C_FORMAT_NOTE);
+            I_CmsReport.FORMAT_NOTE);
         printMessageWithParam(container, param);
     }
 
@@ -220,13 +220,13 @@ public abstract class A_CmsReport implements I_CmsReport {
      */
     protected synchronized void print(String value) {
 
-        print(value, C_FORMAT_DEFAULT);
+        print(value, FORMAT_DEFAULT);
     }
 
     /**
      * Prints a String to the report, using the indicated formatting.<p>
      * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * Use the contants starting with <code>FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
      * @param value the message container to add
@@ -241,7 +241,7 @@ public abstract class A_CmsReport implements I_CmsReport {
      */
     protected synchronized void println(String value) {
 
-        println(value, C_FORMAT_DEFAULT);
+        println(value, FORMAT_DEFAULT);
     }
 
     /**

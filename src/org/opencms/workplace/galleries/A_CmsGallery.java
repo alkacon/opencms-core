@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/24 11:57:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,13 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.explorer.CmsNewResource;
 import org.opencms.workplace.explorer.CmsNewResourceUpload;
 
@@ -72,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,80 +79,109 @@ public abstract class A_CmsGallery extends CmsDialog {
 
     /** Value for the action: delete the gallery item. */
     public static final int ACTION_DELETE = 101;
+
     /** Value for the action: list gallery items. */
     public static final int ACTION_LIST = 102;
+
     /** Value for the action: search gallery items. */
     public static final int ACTION_SEARCH = 103;
+
     /** Value for the action: upload a new gallery item. */
     public static final int ACTION_UPLOAD = 104;
 
     /** The CSS filename used in the galleries. */
-    public static final String C_CSS_FILENAME = "gallery.css";
-    /** The uri suffix for the gallery start page. */
-    public static final String C_OPEN_URI_SUFFIX = "gallery_fs.jsp";
-    /** The galleries path in the workplace containing the JSPs. */
-    public static final String C_PATH_GALLERIES = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "galleries/";
+    public static final String CSS_FILENAME = "gallery.css";
 
     /** Request parameter value for the action: delete the gallery item. */
     public static final String DIALOG_DELETE = "delete";
+
     /** Request parameter value for the action: edit property value. */
     public static final String DIALOG_EDITPROPERTY = "editproperty";
+
     /** Request parameter value for the action: list gallery items. */
     public static final String DIALOG_LIST = "list";
+
     /** Request parameter value for the action: search gallery items. */
     public static final String DIALOG_SEARCH = "search";
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "gallery";
+
     /** Request parameter value for the action: upload a new gallery item. */
     public static final String DIALOG_UPLOAD = "upload";
 
     /** Request parameter value for the dialog mode: editor. */
     public static final String MODE_EDITOR = "editor";
+
     /** Request parameter value for the dialog mode: view. */
     public static final String MODE_VIEW = "view";
+
     /** Request parameter value for the dialog mode: widget. */
     public static final String MODE_WIDGET = "widget";
 
+    /** The uri suffix for the gallery start page. */
+    public static final String OPEN_URI_SUFFIX = "gallery_fs.jsp";
+
     /** Request parameter name for the dialog mode (widget or editor). */
     public static final String PARAM_DIALOGMODE = "dialogmode";
+
     /** Request parameter name for the input field id. */
     public static final String PARAM_FIELDID = "fieldid";
+
     /** Request parameter name for the gallery type. */
     public static final String PARAM_GALLERY_TYPENAME = "gallerytypename";
+
     /** Request parameter name for the gallery path. */
     public static final String PARAM_GALLERYPATH = "gallerypath";
+
     /** Request parameter name for the gallery list page. */
     public static final String PARAM_PAGE = "page";
+
     /** Request parameter name for the property value. */
     public static final String PARAM_PROPERTYVALUE = "propertyvalue";
+
     /** Request parameter name for the resourcepath. */
     public static final String PARAM_RESOURCEPATH = "resourcepath";
+
     /** Request parameter name for the search word. */
     public static final String PARAM_SEARCHWORD = "searchword";
+
+    /** The galleries path in the workplace containing the JSPs. */
+    public static final String PATH_GALLERIES = CmsWorkplace.VFS_PATH_WORKPLACE + "galleries/";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsGallery.class);
 
     /** The currently displayed gallery resource. */
     private CmsResource m_currentResource;
+
     /** Thed gallery items to display. */
     private List m_galleryItems;
+
     /** The resource type id of this gallery instance. */
     private int m_galleryTypeId;
+
     /** The resource type name of this gallery instance. */
     private String m_galleryTypeName;
+
     /** The dialog mode the gallery is running in. */
     private String m_paramDialogMode;
+
     /** The input field id that is required when in widget mode. */
     private String m_paramFieldId;
+
     /** The current gallery path. */
     private String m_paramGalleryPath;
+
     /** The page number to display. */
     private String m_paramPage;
+
     /** The value of the property (current propertydefinition: Title). */
     private String m_paramPropertyValue;
+
     /** The resource path parameter. */
     private String m_paramResourcePath;
+
     /** The search word parameter. */
     private String m_paramSearchWord;
 
@@ -206,7 +234,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             // must have a valid JSP in order to read from the user session
             HttpSession session = jsp.getRequest().getSession();
             // lookup the workplace settings 
-            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+            CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
             if (CmsStringUtil.isEmpty(galleryTypeName)) {
                 // look up the gallery type from the settings
                 galleryTypeName = settings.getGalleryType();
@@ -373,7 +401,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 // no resource to display, create empty row
                 buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
                 buttonBar.append("<img height=\"22\" border=\"0\" src=\"");
-                buttonBar.append(getJsp().link(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + "empty.gif"));
+                buttonBar.append(getJsp().link(CmsWorkplace.VFS_PATH_RESOURCES + "empty.gif"));
                 buttonBar.append("\">");
                 buttonBar.append("</td></tr></table>");
             }
@@ -381,7 +409,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             // resource is deleted, display empty table
             buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
             buttonBar.append("<img height=\"22\" border=\"0\" src=\"");
-            buttonBar.append(getJsp().link(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + "empty.gif"));
+            buttonBar.append(getJsp().link(CmsWorkplace.VFS_PATH_RESOURCES + "empty.gif"));
             buttonBar.append("\">");
             buttonBar.append("</td></tr></table>");
         }
@@ -429,10 +457,10 @@ public abstract class A_CmsGallery extends CmsDialog {
                     int state = res.getState();
                     String tdClass;
                     switch (state) {
-                        case I_CmsConstants.C_STATE_CHANGED:
+                        case CmsResource.STATE_CHANGED:
                             tdClass = "fc";
                             break;
-                        case I_CmsConstants.C_STATE_NEW:
+                        case CmsResource.STATE_NEW:
                             tdClass = "fn";
                             break;
                         default:
@@ -723,7 +751,7 @@ public abstract class A_CmsGallery extends CmsDialog {
      */
     public String getCssPath() {
 
-        return getJsp().link(C_PATH_GALLERIES + C_CSS_FILENAME);
+        return getJsp().link(PATH_GALLERIES + CSS_FILENAME);
     }
 
     /**
@@ -748,7 +776,7 @@ public abstract class A_CmsGallery extends CmsDialog {
         try {
             // get the galleries of the current site
             galleries = getCms().readResources(
-                I_CmsConstants.C_ROOT,
+                "/",
                 CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
         } catch (CmsException e) {
             // error reading resources with filter
@@ -761,7 +789,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             try {
                 // get the galleries in the /system/ folder
                 systemGalleries = getCms().readResources(
-                    I_CmsWpConstants.C_VFS_PATH_SYSTEM,
+                    CmsWorkplace.VFS_PATH_SYSTEM,
                     CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(galleryTypeId));
             } catch (CmsException e) {
                 // error reading resources with filter
@@ -986,11 +1014,11 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         StringBuffer wizardUrl = new StringBuffer(16);
         wizardUrl.append(getJsp().link(
-            C_PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()));
+            PATH_DIALOGS + OpenCms.getWorkplaceManager().getExplorerTypeSetting("upload").getNewResourceUri()));
         wizardUrl.append("?");
         wizardUrl.append(CmsNewResourceUpload.PARAM_REDIRECTURL);
         wizardUrl.append("=");
-        wizardUrl.append(C_PATH_GALLERIES);
+        wizardUrl.append(PATH_GALLERIES);
         wizardUrl.append("gallery_list.jsp&");
         wizardUrl.append(CmsNewResourceUpload.PARAM_TARGETFRAME);
         wizardUrl.append("=gallery_list&");
@@ -1372,7 +1400,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 currentProperty.setResourceValue(currentPropertyValue);
             }
             CmsLock lock = getCms().getLock(res);
-            if (lock.getType() == CmsLock.C_TYPE_UNLOCKED) {
+            if (lock.getType() == CmsLock.TYPE_UNLOCKED) {
                 // lock resource before operation
                 getCms().lockResource(resPath);
             }

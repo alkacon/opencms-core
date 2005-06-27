@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/24 14:07:22 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,21 +32,21 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.db.CmsPublishList;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.threads.CmsXmlDocumentLinkValidatorThread;
 import org.opencms.workplace.threads.CmsPublishThread;
+import org.opencms.workplace.threads.CmsXmlDocumentLinkValidatorThread;
 
 import java.text.DateFormat;
 import java.util.Date;
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,14 +135,14 @@ public class CmsPublishProject extends CmsReport {
     public void actionReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_END:
                 actionCloseDialog();
                 break;
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
 
                 break;
             case ACTION_REPORT_BEGIN:
@@ -162,7 +162,7 @@ public class CmsPublishProject extends CmsReport {
                             getCms().unlockResource(getParamResource());
                         }
                     } else {
-                        if (getCms().getRequestContext().currentProject().getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
+                        if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                             // set the flag that this is a temporary project
                             setParamRefreshWorkplace("true");
                         }
@@ -197,7 +197,7 @@ public class CmsPublishProject extends CmsReport {
                     setParamThreadHasNext("true");
                     // set the key name for the continue checkbox
                     setParamReportContinueKey("label.button.continue.brokenlinks");
-                    getJsp().include(C_FILE_REPORT_OUTPUT);
+                    getJsp().include(FILE_REPORT_OUTPUT);
 
                 } catch (Throwable e) {
                     // error while unlocking resources, show error screen
@@ -496,7 +496,7 @@ public class CmsPublishProject extends CmsReport {
             if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
                 // direct publish: check sub resources of a folder
                 CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-                if ((res.getState() != I_CmsConstants.C_STATE_DELETED) && res.isFolder()) {
+                if ((res.getState() != CmsResource.STATE_DELETED) && res.isFolder()) {
                     return (getCms().countLockedResources(getParamResource()) > 0);
                 }
             } else {
@@ -520,7 +520,7 @@ public class CmsPublishProject extends CmsReport {
         // create a publish thread from the current publish list
         CmsPublishList publishList = getSettings().getPublishList();
         CmsWorkplaceSettings settings = (CmsWorkplaceSettings)getJsp().getRequest().getSession().getAttribute(
-            CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+            CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         CmsPublishThread thread = new CmsPublishThread(getCms(), publishList, settings);
 
         // set the new thread id and flag that no thread is following

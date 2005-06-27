@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,22 +46,22 @@ import java.util.TimeZone;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsDateUtil {
 
     /** The "GMT" time zone, used when formatting http headers. */
-    protected static final TimeZone C_GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
+    protected static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
 
     /** The default format to use when formatting http headers. */
-    protected static final DateFormat C_HEADER_DEFAULT = new SimpleDateFormat(
+    protected static final DateFormat HEADER_DEFAULT = new SimpleDateFormat(
         "EEE, dd MMM yyyy HH:mm:ss zzz",
         Locale.US);
 
     /** The default format to use when formatting old cookies. */
-    protected static final DateFormat C_OLD_COOKIE = new SimpleDateFormat("EEE, dd-MMM-yyyy HH:mm:ss z", Locale.US);
+    protected static final DateFormat OLD_COOKIE = new SimpleDateFormat("EEE, dd-MMM-yyyy HH:mm:ss z", Locale.US);
 
     /**
      * Hides the public constructor.<p>
@@ -141,12 +141,12 @@ public final class CmsDateUtil {
      */
     public static String getHeaderDate(long time) {
 
-        if (C_HEADER_DEFAULT.getTimeZone() != C_GMT_TIMEZONE) {
+        if (HEADER_DEFAULT.getTimeZone() != GMT_TIMEZONE) {
             // ensure GMT is used as time zone for the header generation
-            C_HEADER_DEFAULT.setTimeZone(C_GMT_TIMEZONE);
+            HEADER_DEFAULT.setTimeZone(GMT_TIMEZONE);
         }
 
-        return C_HEADER_DEFAULT.format(new Date(time));
+        return HEADER_DEFAULT.format(new Date(time));
     }
 
     /**
@@ -158,12 +158,12 @@ public final class CmsDateUtil {
      */
     public static String getOldCookieDate(long time) {
 
-        if (C_OLD_COOKIE.getTimeZone() != C_GMT_TIMEZONE) {
+        if (OLD_COOKIE.getTimeZone() != GMT_TIMEZONE) {
             // ensure GMT is used as time zone for the header generation
-            C_OLD_COOKIE.setTimeZone(C_GMT_TIMEZONE);
+            OLD_COOKIE.setTimeZone(GMT_TIMEZONE);
         }
 
-        return C_OLD_COOKIE.format(new Date(time));
+        return OLD_COOKIE.format(new Date(time));
     }
 
     /**
@@ -176,7 +176,7 @@ public final class CmsDateUtil {
      */
     public static long parseHeaderDate(String timestamp) throws ParseException {
 
-        return C_HEADER_DEFAULT.parse(timestamp).getTime();
+        return HEADER_DEFAULT.parse(timestamp).getTime();
     }
 
 }

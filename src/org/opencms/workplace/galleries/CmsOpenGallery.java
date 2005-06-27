@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/CmsOpenGallery.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,8 +111,8 @@ public class CmsOpenGallery extends CmsDialog {
                 }
                 // get the matching gallery type name
                 galleryType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-                String galleryUri = A_CmsGallery.C_PATH_GALLERIES
-                    + A_CmsGallery.C_OPEN_URI_SUFFIX
+                String galleryUri = A_CmsGallery.PATH_GALLERIES
+                    + A_CmsGallery.OPEN_URI_SUFFIX
                     + "?"
                     + A_CmsGallery.PARAM_GALLERY_TYPENAME
                     + "="

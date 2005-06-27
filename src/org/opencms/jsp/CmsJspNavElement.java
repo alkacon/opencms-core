@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/06/25 15:37:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,20 +42,11 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspNavElement implements Comparable {
-
-    /** Property constant for <code>"locale"</code>. */
-    public static final String C_PROPERTY_LOCALE = "locale";
-    
-    /** Property constant for <code>"NavImage"</code>. */
-    public static final String C_PROPERTY_NAVIMAGE = "NavImage";
-    
-    /** Property constant for <code>"NavInfo"</code>. */
-    public static final String C_PROPERTY_NAVINFO = "NavInfo";
 
     private String m_fileName;
     private Boolean m_hasNav;
@@ -180,39 +171,36 @@ public class CmsJspNavElement implements Comparable {
     }
 
     /**
-     * Returns the value of the property C_PROPERTY_NAVINFO of this nav element,
+     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_NAVINFO}</code> of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property C_PROPERTY_NAVINFO of this nav element
-     * or <code>null</code> if this property is not set
+     * @return the value of the property or <code>null</code> if this property is not set
      */
     public String getInfo() {
 
-        return (String)m_properties.get(C_PROPERTY_NAVINFO);
+        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVINFO);
     }
 
     /**
-     * Returns the value of the property C_PROPERTY_LOCALE of this nav element,
+     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property C_PROPERTY_LOCALE of this nav element
-     * or <code>null</code> if this property is not set
+     * @return the value of the property or <code>null</code> if this property is not set
      */
     public String getLocale() {
 
-        return (String)m_properties.get(C_PROPERTY_LOCALE);
+        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_LOCALE);
     }
 
     /**
-     * Returns the value of the property C_PROPERTY_NAVIMAGE of this nav element,
+     * Returns the value of the property <code>{@link CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> of this nav element,
      * or <code>null</code> if this property is not set.<p> 
      * 
-     * @return the value of the property C_PROPERTY_NAVIMAGE of this nav element
-     * or <code>null</code> if this property is not set
+     * @return the value of the property or <code>null</code> if this property is not set
      */
     public String getNavImage() {
 
-        return (String)m_properties.get(C_PROPERTY_NAVIMAGE);
+        return (String)m_properties.get(CmsPropertyDefinition.PROPERTY_NAVIMAGE);
     }
 
     /**

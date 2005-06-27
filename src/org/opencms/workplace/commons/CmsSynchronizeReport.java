@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,11 +85,11 @@ public class CmsSynchronizeReport extends CmsReport {
     public void actionReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
                 break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
@@ -98,7 +98,7 @@ public class CmsSynchronizeReport extends CmsReport {
                 CmsSynchronizeThread thread = new CmsSynchronizeThread(getCms());
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
                 break;
         }
     }

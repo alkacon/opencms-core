@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -59,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,9 +126,8 @@ public class CmsExplorerContextMenu {
             CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
             // entries not yet in Map, so generate them
             StringBuffer result = new StringBuffer(3072);
-            String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.C_PATH_WORKPLACE);  
-            String xmlWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_PATH_XML_WORKPLACE);
-            
+            String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.PATH_WORKPLACE);  
+
             // create the JS for the resource object
             result.append("\nvi.resource[" + resTypeId + "]=new res(\"" + settings.getName() + "\", ");
             result.append("\"" + messages.key(settings.getKey()) + "\", vi.skinPath + \"filetypes/" + settings.getIcon() + "\", \"" + settings.getNewResourceUri() + "\", true);\n");
@@ -139,22 +137,10 @@ public class CmsExplorerContextMenu {
                 // create the context menu items
                 CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
                 result.append("addMenuEntry(" + resTypeId + ", ");
-                if (CmsExplorerContextMenuItem.C_TYPE_ENTRY.equals(item.getType())) {
+                if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                     // create a menu entry
                     result.append("\"" + messages.key(item.getKey()) + "\", ");
-                    if (item.isXml()) {
-                        // legacy XMLTemplate based entry
-                        result.append("\"" + xmlWorkplaceUri + item.getUri());
-                        String paramPrefix = "?";
-                        if (item.getUri().indexOf("?") != -1) {
-                            paramPrefix = "&";
-                        }
-                        result.append(paramPrefix + "initial=true");
-                        result.append("\", ");
-                    } else {
-                        // JSP entry
-                        result.append("\"" + jspWorkplaceUri + item.getUri() + "\", ");
-                    }
+                    result.append("\"" + jspWorkplaceUri + item.getUri() + "\", ");
                     // check the item target
                     String target = item.getTarget();
                     if (target == null) {

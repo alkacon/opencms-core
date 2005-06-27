@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,14 +54,14 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.50 $
  * 
  * @since 6.0.0
  */
 public interface I_CmsBackupDriver {
 
     /** The type ID to identify backup driver implementations. */
-    int C_DRIVER_TYPE_ID = 0;
+    int DRIVER_TYPE_ID = 0;
 
     /**
      * Creates a new property defintion in the database.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/26 12:49:12 $
- * Version: $Revision: 1.250 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.251 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,10 @@ package org.opencms.db.generic;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.db.I_CmsVfsDriver;
 import org.opencms.file.CmsDataAccessException;
@@ -51,7 +52,6 @@ import org.opencms.file.CmsVfsResourceAlreadyExistsException;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
@@ -75,20 +75,20 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.250 $
+ * @version $Revision: 1.251 $
  * 
  * @since 6.0.0 
  */
 public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
     /** Operator to concatenate exclude conditions. */
-    static String C_BEGIN_EXCLUDE_CONDITION = " AND NOT (";
+    protected static final String BEGIN_EXCLUDE_CONDITION = " AND NOT (";
 
     /** Operator to concatenate include conditions. */
-    static String C_BEGIN_INCLUDE_CONDITION = " AND (";
+    protected static final String BEGIN_INCLUDE_CONDITION = " AND (";
 
     /** String to end a single condition. */
-    static String C_END_CONDITION = ") ";
+    protected static final String END_CONDITION = ") ";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(org.opencms.db.generic.CmsVfsDriver.class);
@@ -220,7 +220,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         byte[] content = null;
 
-        int resProjectId = I_CmsConstants.C_UNKNOWN_ID;
+        int resProjectId = CmsDbUtil.UNKNOWN_ID;
 
         CmsUUID structureId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_STRUCTURE_ID")));
         CmsUUID resourceId = new CmsUUID(res.getString(m_sqlManager.readQuery("C_RESOURCES_RESOURCE_ID")));
@@ -362,18 +362,18 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         // check the resource path
         String resourcePath = removeTrailingSeparator(resource.getRootPath());
-        if (resourcePath.length() > I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME) {
+        if (resourcePath.length() > CmsDriverManager.MAX_VFS_RESOURCE_PATH_LENGTH) {
             throw new CmsDataAccessException(Messages.get().container(
                 Messages.ERR_RESOURCENAME_TOO_LONG_2,
                 resourcePath,
-                new Integer(I_CmsConstants.C_MAX_LENGTH_RESOURCE_NAME)));
+                new Integer(CmsDriverManager.MAX_VFS_RESOURCE_PATH_LENGTH)));
         }
 
         // check if the parent folder of the resource exists and is not deleted
         if (!resource.getRootPath().equals("/")) {
             String parentFolderName = CmsResource.getParentFolder(resource.getRootPath());
             CmsFolder parentFolder = readFolder(dbc, project.getId(), parentFolderName);
-            if (parentFolder.getState() == I_CmsConstants.C_STATE_DELETED) {
+            if (parentFolder.getState() == CmsResource.STATE_DELETED) {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_PARENT_FOLDER_DELETED_1,
                     resource.getRootPath()));
@@ -388,12 +388,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         long dateModified;
         long dateCreated;
 
-        if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            newState = I_CmsConstants.C_STATE_UNCHANGED;
+        if (project.getId() == CmsProject.ONLINE_PROJECT_ID) {
+            newState = CmsResource.STATE_UNCHANGED;
             dateCreated = resource.getDateCreated();
             dateModified = resource.getDateLastModified();
         } else {
-            newState = I_CmsConstants.C_STATE_NEW;
+            newState = CmsResource.STATE_NEW;
             if (resource.isTouched()) {
                 dateCreated = resource.getDateCreated();
                 dateModified = resource.getDateLastModified();
@@ -410,17 +410,17 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             existingResource = readResource(dbc, project.getId(), resourcePath, true);
 
-            if (existingResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+            if (existingResource.getState() == CmsResource.STATE_DELETED) {
 
                 // if an existing resource is deleted, it will be finally removed now.
                 // but we have to reuse its id in order to avoid orphanes in the online project
                 newStructureId = existingResource.getStructureId();
-                newState = I_CmsConstants.C_STATE_CHANGED;
+                newState = CmsResource.STATE_CHANGED;
 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(dbc, project, existingResource, false);
-                int propertyDeleteOption = (existingResource.getSiblingCount() > 1) ? CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
-                : CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
+                int propertyDeleteOption = (existingResource.getSiblingCount() > 1) ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
+                : CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
                 deletePropertyObjects(dbc, project.getId(), existingResource, propertyDeleteOption);
                 removeFile(dbc, project, existingResource, true);
 
@@ -435,7 +435,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // that's what we want in the best case- anything else should be thrown
         }
 
-        if (existingResource != null && existingResource.getState() != I_CmsConstants.C_STATE_DELETED) {
+        if (existingResource != null && existingResource.getState() != CmsResource.STATE_DELETED) {
             // we have a collision: there exists already a resource with the same path/name which cannot be removed
             throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
                 Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
@@ -484,14 +484,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
             } else {
 
-                if ((content != null) || (resource.getState() != I_CmsConstants.C_STATE_KEEP)) {
+                if ((content != null) || (resource.getState() != CmsResource.STATE_KEEP)) {
                     // update the resource record only if state has changed or new content is provided
                     stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCES");
                     stmt.setInt(1, resource.getTypeId());
                     stmt.setInt(2, resource.getFlags());
                     stmt.setLong(3, dateModified);
                     stmt.setString(4, resource.getUserLastModified().toString());
-                    stmt.setInt(5, I_CmsConstants.C_STATE_CHANGED);
+                    stmt.setInt(5, CmsResource.STATE_CHANGED);
                     stmt.setInt(6, resource.getLength());
                     stmt.setInt(7, project.getId());
                     stmt.setInt(8, internalCountSiblings(dbc, project.getId(), resource.getResourceId()));
@@ -506,7 +506,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         // update the file content
                         writeContent(dbc, project, resource.getResourceId(), content);
 
-                    } else if (resource.getState() == I_CmsConstants.C_STATE_KEEP) {
+                    } else if (resource.getState() == CmsResource.STATE_KEEP) {
 
                         // special case sibling creation - update the link Count
                         stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_SIBLING_COUNT");
@@ -601,10 +601,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         int newState = 0;
 
         // force some attribs when creating or publishing a file 
-        if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            newState = I_CmsConstants.C_STATE_UNCHANGED;
+        if (project.getId() == CmsProject.ONLINE_PROJECT_ID) {
+            newState = CmsResource.STATE_UNCHANGED;
         } else {
-            newState = I_CmsConstants.C_STATE_NEW;
+            newState = CmsResource.STATE_NEW;
         }
 
         // check if the resource already exists
@@ -614,16 +614,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             existingSibling = readResource(dbc, project.getId(), resource.getRootPath(), true);
 
-            if (existingSibling.getState() == I_CmsConstants.C_STATE_DELETED) {
+            if (existingSibling.getState() == CmsResource.STATE_DELETED) {
                 // if an existing resource is deleted, it will be finally removed now.
                 // but we have to reuse its id in order to avoid orphanes in the online project.
                 newStructureId = existingSibling.getStructureId();
-                newState = I_CmsConstants.C_STATE_CHANGED;
+                newState = CmsResource.STATE_CHANGED;
 
                 // remove the existing file and it's properties
                 List modifiedResources = readSiblings(dbc, project, existingSibling, false);
-                int propertyDeleteOption = (existingSibling.getSiblingCount() > 1) ? CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
-                : CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
+                int propertyDeleteOption = (existingSibling.getSiblingCount() > 1) ? CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES
+                : CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES;
                 deletePropertyObjects(dbc, project.getId(), existingSibling, propertyDeleteOption);
                 removeFile(dbc, project, existingSibling, true);
 
@@ -638,7 +638,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // that's what we want in the best case- anything else should be thrown
         }
 
-        if (existingSibling != null && existingSibling.getState() != I_CmsConstants.C_STATE_DELETED) {
+        if (existingSibling != null && existingSibling.getState() != CmsResource.STATE_DELETED) {
             // we have a collision: there exists already a resource with the same path/name which could not be removed
             throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(
                 Messages.ERR_RESOURCE_WITH_NAME_ALREADY_EXISTS_1,
@@ -704,7 +704,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
 
         try {
-            if (internalCountProperties(dbc, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
+            if (internalCountProperties(dbc, metadef, CmsProject.ONLINE_PROJECT_ID) != 0
                 || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
 
                 throw new CmsDataAccessException(Messages.get().container(
@@ -720,10 +720,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     stmt = m_sqlManager.getPreparedStatement(conn, Integer.MAX_VALUE, "C_PROPERTYDEF_DELETE");
                 } else if (i == 1) {
                     // delete the online propertydef
-                    stmt = m_sqlManager.getPreparedStatement(
-                        conn,
-                        I_CmsConstants.C_PROJECT_ONLINE_ID,
-                        "C_PROPERTYDEF_DELETE");
+                    stmt = m_sqlManager.getPreparedStatement(conn, CmsProject.ONLINE_PROJECT_ID, "C_PROPERTYDEF_DELETE");
                 }
 
                 stmt.setString(1, metadef.getId().toString());
@@ -757,32 +754,32 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc, projectId);
 
-            if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES) {
+            if (deleteOption == CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES) {
                 // delete both the structure and resource property values mapped to the specified resource
                 stmt = m_sqlManager.getPreparedStatement(
                     conn,
                     projectId,
                     "C_PROPERTIES_DELETE_ALL_STRUCTURE_AND_RESOURCE_VALUES");
                 stmt.setString(1, resource.getResourceId().toString());
-                stmt.setInt(2, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+                stmt.setInt(2, CmsProperty.RESOURCE_RECORD_MAPPING);
                 stmt.setString(3, resource.getStructureId().toString());
-                stmt.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
-            } else if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_STRUCTURE_VALUES) {
+                stmt.setInt(4, CmsProperty.STRUCTURE_RECORD_MAPPING);
+            } else if (deleteOption == CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES) {
                 // delete the structure values mapped to the specified resource
                 stmt = m_sqlManager.getPreparedStatement(
                     conn,
                     projectId,
                     "C_PROPERTIES_DELETE_ALL_VALUES_FOR_MAPPING_TYPE");
                 stmt.setString(1, resource.getStructureId().toString());
-                stmt.setInt(2, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
-            } else if (deleteOption == CmsProperty.C_DELETE_OPTION_DELETE_RESOURCE_VALUES) {
+                stmt.setInt(2, CmsProperty.STRUCTURE_RECORD_MAPPING);
+            } else if (deleteOption == CmsProperty.DELETE_OPTION_DELETE_RESOURCE_VALUES) {
                 // delete the resource property values mapped to the specified resource
                 stmt = m_sqlManager.getPreparedStatement(
                     conn,
                     projectId,
                     "C_PROPERTIES_DELETE_ALL_VALUES_FOR_MAPPING_TYPE");
                 stmt.setString(1, resource.getResourceId().toString());
-                stmt.setInt(2, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+                stmt.setInt(2, CmsProperty.RESOURCE_RECORD_MAPPING);
             }
 
             stmt.executeUpdate();
@@ -827,7 +824,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String poolUrl = (String)configuration.get("db.vfs.pool");
         String classname = (String)configuration.get("db.vfs.sqlmanager");
         m_sqlManager = this.initSqlManager(classname);
-        m_sqlManager.init(I_CmsVfsDriver.C_DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsVfsDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
 
@@ -891,7 +888,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setInt(2, offlineResource.getFlags());
                 stmt.setLong(3, offlineResource.getDateLastModified());
                 stmt.setString(4, offlineResource.getUserLastModified().toString());
-                stmt.setInt(5, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.setInt(5, CmsResource.STATE_UNCHANGED);
                 stmt.setInt(6, resourceSize);
                 stmt.setInt(7, offlineResource.getProjectLastModified());
                 stmt.setInt(8, this.internalCountSiblings(dbc, onlineProject.getId(), onlineResource.getResourceId()));
@@ -907,7 +904,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt = m_sqlManager.getPreparedStatement(conn, onlineProject, "C_RESOURCES_UPDATE_STRUCTURE");
                 stmt.setString(1, offlineResource.getResourceId().toString());
                 stmt.setString(2, resourcePath);
-                stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.setInt(3, CmsResource.STATE_UNCHANGED);
                 stmt.setLong(4, offlineResource.getDateReleased());
                 stmt.setLong(5, offlineResource.getDateExpired());
                 stmt.setString(6, parentId);
@@ -937,7 +934,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setString(5, offlineResource.getUserCreated().toString());
                 stmt.setLong(6, offlineResource.getDateLastModified());
                 stmt.setString(7, offlineResource.getUserLastModified().toString());
-                stmt.setInt(8, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.setInt(8, CmsResource.STATE_UNCHANGED);
                 stmt.setInt(9, resourceSize);
                 stmt.setInt(10, offlineResource.getProjectLastModified());
                 stmt.setInt(11, 1);
@@ -953,7 +950,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 stmt.setString(1, offlineResource.getStructureId().toString());
                 stmt.setString(2, offlineResource.getResourceId().toString());
                 stmt.setString(3, resourcePath);
-                stmt.setInt(4, I_CmsConstants.C_STATE_UNCHANGED);
+                stmt.setInt(4, CmsResource.STATE_UNCHANGED);
                 stmt.setLong(5, offlineResource.getDateReleased());
                 stmt.setLong(6, offlineResource.getDateExpired());
                 stmt.setString(7, parentId);
@@ -1065,7 +1062,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
-        if (file != null && file.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
+        if (file != null && file.getState() == org.opencms.file.CmsResource.STATE_DELETED && !includeDeleted) {
             throw new CmsVfsException(Messages.get().container(
                 Messages.ERR_READ_DELETED_FILE_1,
                 dbc.removeSiteRoot(file.getRootPath())));
@@ -1358,9 +1355,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 propertyValue = res.getString(1);
                 mappingType = res.getInt(2);
 
-                if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
+                if (mappingType == CmsProperty.STRUCTURE_RECORD_MAPPING) {
                     property.setStructureValue(propertyValue);
-                } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
+                } else if (mappingType == CmsProperty.RESOURCE_RECORD_MAPPING) {
                     property.setResourceValue(propertyValue);
                 } else {
                     throw new CmsDbConsistencyException(Messages.get().container(
@@ -1426,10 +1423,10 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     propertyMap.put(propertyKey, property);
                 }
 
-                if (mappingType == CmsProperty.C_STRUCTURE_RECORD_MAPPING) {
+                if (mappingType == CmsProperty.STRUCTURE_RECORD_MAPPING) {
                     // this property value is mapped to a structure record
                     property.setStructureValue(propertyValue);
-                } else if (mappingType == CmsProperty.C_RESOURCE_RECORD_MAPPING) {
+                } else if (mappingType == CmsProperty.RESOURCE_RECORD_MAPPING) {
                     // this property value is mapped to a resource record
                     property.setResourceValue(propertyValue);
                 } else {
@@ -1488,9 +1485,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
-        if (resource != null
-            && resource.getState() == org.opencms.main.I_CmsConstants.C_STATE_DELETED
-            && !includeDeleted) {
+        if (resource != null && resource.getState() == org.opencms.file.CmsResource.STATE_DELETED && !includeDeleted) {
             throw new CmsVfsException(Messages.get().container(
                 Messages.ERR_READ_DELETED_RESOURCE_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
@@ -1539,7 +1534,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // check if this resource is marked as deleted and if we are allowed to return a deleted resource
-        if (resource != null && resource.getState() == I_CmsConstants.C_STATE_DELETED && !includeDeleted) {
+        if (resource != null && resource.getState() == CmsResource.STATE_DELETED && !includeDeleted) {
             throw new CmsVfsResourceNotFoundException(Messages.get().container(
                 Messages.ERR_READ_DELETED_RESOURCE_1,
                 dbc.removeSiteRoot(resource.getRootPath())));
@@ -2138,9 +2133,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 propertyDefinition = createPropertyDefinition(dbc, project.getId(), property.getName());
 
                 try {
-                    readPropertyDefinition(dbc, property.getName(), I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    readPropertyDefinition(dbc, property.getName(), CmsProject.ONLINE_PROJECT_ID);
                 } catch (CmsDataAccessException e) {
-                    createPropertyDefinition(dbc, I_CmsConstants.C_PROJECT_ONLINE_ID, property.getName());
+                    createPropertyDefinition(dbc, CmsProject.ONLINE_PROJECT_ID, property.getName());
                 }
 
                 try {
@@ -2197,7 +2192,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     }
 
                     // set the vars to be written to the database
-                    mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
+                    mappingType = CmsProperty.STRUCTURE_RECORD_MAPPING;
                     id = resource.getStructureId();
                     existsPropertyValue = existingProperty.getStructureValue() != null;
                 } else if (i == 1) {
@@ -2215,7 +2210,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     }
 
                     // set the vars to be written to the database
-                    mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
+                    mappingType = CmsProperty.RESOURCE_RECORD_MAPPING;
                     id = resource.getResourceId();
                     existsPropertyValue = existingProperty.getResourceValue() != null;
                 }
@@ -2300,15 +2295,15 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         int resourceState = resource.getState();
         int projectId = project.getId();
 
-        if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE) {
-            resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
-        } else if (changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE) {
-            structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
-        } else if (changed == CmsDriverManager.C_NOTHING_CHANGED) {
+        if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE) {
+            resourceState = org.opencms.file.CmsResource.STATE_CHANGED;
+        } else if (changed == CmsDriverManager.UPDATE_STRUCTURE_STATE) {
+            structureState = org.opencms.file.CmsResource.STATE_CHANGED;
+        } else if (changed == CmsDriverManager.NOTHING_CHANGED) {
             projectId = resource.getProjectLastModified();
         } else {
-            resourceState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
-            structureState = org.opencms.main.I_CmsConstants.C_STATE_CHANGED;
+            resourceState = org.opencms.file.CmsResource.STATE_CHANGED;
+            structureState = org.opencms.file.CmsResource.STATE_CHANGED;
         }
 
         try {
@@ -2358,7 +2353,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         PreparedStatement stmt = null;
         Connection conn = null;
 
-        if (project.getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+        if (project.getId() == CmsProject.ONLINE_PROJECT_ID) {
             return;
         }
 
@@ -2368,7 +2363,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // Refactor I_CmsRuntimeInfo in signature to Object
             // rename 'runtimeInfo' to 'param'
 
-            if (changed == CmsDriverManager.C_UPDATE_RESOURCE) {
+            if (changed == CmsDriverManager.UPDATE_RESOURCE) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCE_STATELASTMODIFIED");
                 stmt.setInt(1, resource.getState());
                 stmt.setLong(2, resource.getDateLastModified());
@@ -2386,7 +2381,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             }
 
-            if (changed == CmsDriverManager.C_UPDATE_RESOURCE_STATE || changed == CmsDriverManager.C_UPDATE_ALL) {
+            if (changed == CmsDriverManager.UPDATE_RESOURCE_STATE || changed == CmsDriverManager.UPDATE_ALL) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCE_STATE");
                 stmt.setInt(1, resource.getState());
                 stmt.setInt(2, project.getId());
@@ -2395,9 +2390,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 m_sqlManager.closeAll(dbc, null, stmt, null);
             }
 
-            if (changed == CmsDriverManager.C_UPDATE_STRUCTURE
-                || changed == CmsDriverManager.C_UPDATE_STRUCTURE_STATE
-                || changed == CmsDriverManager.C_UPDATE_ALL) {
+            if (changed == CmsDriverManager.UPDATE_STRUCTURE
+                || changed == CmsDriverManager.UPDATE_STRUCTURE_STATE
+                || changed == CmsDriverManager.UPDATE_ALL) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_STRUCTURE_STATE");
                 stmt.setInt(1, resource.getState());
                 stmt.setString(2, resource.getStructureId().toString());
@@ -2631,16 +2626,16 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     private void preparePathCondition(int projectId, String parent, int mode, StringBuffer conditions, List params) {
 
-        if (parent == I_CmsConstants.C_READ_IGNORE_PARENT) {
+        if (parent == CmsDriverManager.READ_IGNORE_PARENT) {
             // parent can be ignored
             return;
         }
 
         if ((mode & CmsDriverManager.READMODE_EXCLUDE_TREE) > 0) {
             // only return immediate children - use UUID optimization            
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PARENT_UUID"));
-            conditions.append(C_END_CONDITION);
+            conditions.append(END_CONDITION);
             params.add(parent);
             return;
         }
@@ -2651,9 +2646,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         // add condition to read path subtree        
-        conditions.append(C_BEGIN_INCLUDE_CONDITION);
+        conditions.append(BEGIN_INCLUDE_CONDITION);
         conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
-        conditions.append(C_END_CONDITION);
+        conditions.append(END_CONDITION);
         params.add(addTrailingSeparator(parent) + "%");
     }
 
@@ -2669,9 +2664,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         if ((mode & CmsDriverManager.READMODE_INCLUDE_PROJECT) > 0) {
             // C_READMODE_INCLUDE_PROJECT: add condition to match the PROJECT_ID
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_LASTMODIFIED"));
-            conditions.append(C_END_CONDITION);
+            conditions.append(END_CONDITION);
             params.add(String.valueOf(projectId));
         }
     }
@@ -2680,14 +2675,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         if ((mode & CmsDriverManager.READMODE_ONLY_FOLDERS) > 0) {
             // C_READMODE_ONLY_FOLDERS: add condition to match only folders
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_ONLY_FOLDERS"));
-            conditions.append(C_END_CONDITION);
+            conditions.append(END_CONDITION);
         } else if ((mode & CmsDriverManager.READMODE_ONLY_FILES) > 0) {
             // C_READMODE_ONLY_FILES: add condition to match only files
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_ONLY_FILES"));
-            conditions.append(C_END_CONDITION);
+            conditions.append(END_CONDITION);
         }
     }
 
@@ -2702,19 +2697,19 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     private void prepareStateCondition(int projectId, int state, int mode, StringBuffer conditions, List params) {
 
-        if (state != I_CmsConstants.C_READ_IGNORE_STATE) {
+        if (state != CmsDriverManager.READ_IGNORE_STATE) {
             if ((mode & CmsDriverManager.READMODE_EXCLUDE_STATE) > 0) {
                 // C_READ_MODIFIED_STATES: add condition to match against any state but not given state
-                conditions.append(C_BEGIN_EXCLUDE_CONDITION);
+                conditions.append(BEGIN_EXCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_STATE"));
-                conditions.append(C_END_CONDITION);
+                conditions.append(END_CONDITION);
                 params.add(String.valueOf(state));
                 params.add(String.valueOf(state));
             } else {
                 // otherwise add condition to match against given state if neccessary
-                conditions.append(C_BEGIN_INCLUDE_CONDITION);
+                conditions.append(BEGIN_INCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_STATE"));
-                conditions.append(C_END_CONDITION);
+                conditions.append(END_CONDITION);
                 params.add(String.valueOf(state));
                 params.add(String.valueOf(state));
             }
@@ -2738,18 +2733,18 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         List params) {
 
         if (startTime > 0L) {
-            // C_READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against startTime
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            // READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against startTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_AFTER"));
-            conditions.append(C_END_CONDITION);
+            conditions.append(END_CONDITION);
             params.add(String.valueOf(startTime));
         }
 
         if (endTime > 0L) {
-            // C_READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against endTime
-            conditions.append(C_BEGIN_INCLUDE_CONDITION);
+            // READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against endTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
-            conditions.append(C_END_CONDITION);
+            conditions.append(END_CONDITION);
             params.add(String.valueOf(endTime));
         }
     }
@@ -2765,18 +2760,18 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
      */
     private void prepareTypeCondition(int projectId, int type, int mode, StringBuffer conditions, List params) {
 
-        if (type != I_CmsConstants.C_READ_IGNORE_TYPE) {
+        if (type != CmsDriverManager.READ_IGNORE_TYPE) {
             if ((mode & CmsDriverManager.READMODE_EXCLUDE_TYPE) > 0) {
                 // C_READ_FILE_TYPES: add condition to match against any type, but not given type
-                conditions.append(C_BEGIN_EXCLUDE_CONDITION);
+                conditions.append(BEGIN_EXCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
-                conditions.append(C_END_CONDITION);
+                conditions.append(END_CONDITION);
                 params.add(String.valueOf(type));
             } else {
                 //otherwise add condition to match against given type if neccessary
-                conditions.append(C_BEGIN_INCLUDE_CONDITION);
+                conditions.append(BEGIN_INCLUDE_CONDITION);
                 conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_RESOURCE_TYPE"));
-                conditions.append(C_END_CONDITION);
+                conditions.append(END_CONDITION);
                 params.add(String.valueOf(type));
             }
         }

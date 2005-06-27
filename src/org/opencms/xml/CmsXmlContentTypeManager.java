@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -498,14 +498,14 @@ public class CmsXmlContentTypeManager {
             // this helps in debugging the auto-generated schema includes
             // since it makes them more human-readable
             Document doc = CmsXmlUtils.unmarshalHelper(schemaStr, null);
-            schemaStr = CmsXmlUtils.marshal(doc, CmsEncoder.C_UTF8_ENCODING);
+            schemaStr = CmsXmlUtils.marshal(doc, CmsEncoder.ENCODING_UTF_8);
         } catch (CmsXmlException e) {
             // should not ever happen
             LOG.error(Messages.get().key(Messages.LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0), e);
         }
 
         try {
-            return schemaStr.getBytes(CmsEncoder.C_UTF8_ENCODING);
+            return schemaStr.getBytes(CmsEncoder.ENCODING_UTF_8);
         } catch (UnsupportedEncodingException e) {
             // should not happen since the default encoding of UTF-8 is always valid
             LOG.error(Messages.get().key(Messages.LOG_CONVERTING_SCHEMA_BYTES_ERROR_0), e);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,14 +97,14 @@ public class CmsUndelete extends CmsDialog {
     public void actionUndelete() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             if (performUndeleteOperation()) {
                 // if no exception is caused and "true" is returned delete operation was successful
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             // error during deletion, show error dialog

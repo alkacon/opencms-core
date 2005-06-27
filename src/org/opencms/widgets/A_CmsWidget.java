@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+
 import java.util.Map;
 
 /**
@@ -40,7 +41,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */

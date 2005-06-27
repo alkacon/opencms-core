@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2005/06/23 15:39:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,7 +179,7 @@ public class CmsPropertyChange extends CmsDialog {
     public void actionChange() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             boolean recursive = Boolean.valueOf(getParamRecursive()).booleanValue();
             if (performChangeOperation(recursive)) {
@@ -187,7 +187,7 @@ public class CmsPropertyChange extends CmsDialog {
                 setAction(ACTION_SHOWRESULT);
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             // error while changing property values, show error dialog

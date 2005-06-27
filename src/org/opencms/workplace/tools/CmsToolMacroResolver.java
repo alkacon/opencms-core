@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolMacroResolver.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 6.0.0 
  */
 public class CmsToolMacroResolver implements I_CmsMacroResolver {
@@ -76,10 +76,10 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
     public static final String KEY_PROJECTNAME = "projectName.";
 
     /** Identified for admin parameter commands. */
-    public static final String[] C_VALUE_NAMES_ARRAY_ADMIN = {KEY_USERNAME, KEY_GROUPNAME, KEY_JOBNAME, KEY_PROJECTNAME};
+    public static final String[] VALUE_NAME_ARRAY = {KEY_USERNAME, KEY_GROUPNAME, KEY_JOBNAME, KEY_PROJECTNAME};
 
     /** The admin commands wrapped in a List. */
-    public static final List VALUE_NAMES_ADMIN = Collections.unmodifiableList(Arrays.asList(C_VALUE_NAMES_ARRAY_ADMIN));
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
 
     /** The workplace class for falling back, and use the cms context. */
     private CmsWorkplace m_wp;
@@ -126,7 +126,7 @@ public class CmsToolMacroResolver implements I_CmsMacroResolver {
         macro = macro.substring(CmsToolMacroResolver.PREFIX_ADMIN.length());
         String id = null;
         // validate macro command
-        Iterator it = VALUE_NAMES_ADMIN.iterator();
+        Iterator it = VALUE_NAMES.iterator();
         while (it.hasNext()) {
             String cmd = it.next().toString();
             if (macro.startsWith(cmd)) {

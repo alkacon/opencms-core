@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypePointer.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,17 +40,17 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypePointer extends A_CmsResourceType {
 
     /** The type id of this resource type. */
-    private static final int C_RESOURCE_TYPE_ID = 5;
+    private static final int RESOURCE_TYPE_ID = 5;
 
     /** The name of this resource type. */
-    private static final String C_RESOURCE_TYPE_NAME = "pointer";
+    private static final String RESOURCE_TYPE_NAME = "pointer";
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
@@ -64,8 +64,8 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
     public CmsResourceTypePointer() {
 
         super();
-        m_typeId = C_RESOURCE_TYPE_ID;
-        m_typeName = C_RESOURCE_TYPE_NAME;
+        m_typeId = RESOURCE_TYPE_ID;
+        m_typeName = RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -85,7 +85,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      */
     public static String getStaticTypeName() {
 
-        return C_RESOURCE_TYPE_NAME;
+        return RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -93,7 +93,7 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
      */
     public int getLoaderId() {
 
-        return CmsPointerLoader.C_RESOURCE_LOADER_ID;
+        return CmsPointerLoader.RESOURCE_LOADER_ID;
     }
 
     /**
@@ -110,19 +110,19 @@ public class CmsResourceTypePointer extends A_CmsResourceType {
                 new Integer(getStaticTypeId())));
         }
 
-        if (!C_RESOURCE_TYPE_NAME.equals(name)) {
+        if (!RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
                 this.getClass().getName(),
-                C_RESOURCE_TYPE_NAME,
+                RESOURCE_TYPE_NAME,
                 name));
         }
 
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
     }

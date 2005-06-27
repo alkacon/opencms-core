@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLock.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.lock;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -48,7 +48,7 @@ import org.opencms.util.CmsUUID;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  * 
@@ -57,28 +57,24 @@ import org.opencms.util.CmsUUID;
  */
 public class CmsLock implements Cloneable {
 
-    /**
-     * Indicates that the lock is a common lock and doesn't expire.
-     */
-    public static final int C_MODE_COMMON = 0;
+    /** Indicates that the lock is a common lock and doesn't expire. */
+    public static final int COMMON = 0;
 
-    /**
-     * Indicates that the lock is a temporary lock that expires is the user was logged out.
-     */
-    public static final int C_MODE_TEMP = 1;
+    /** Indicates that the lock is a temporary lock that expires is the user was logged out. */
+    public static final int TEMPORARY = 1;
 
     /** 
      * A lock that allows the user to edit the resource’s structure record, 
      * it’s resource record, and its content record.<p>
-     * 
+     *
      * This lock is assigned to files that are locked via the context menu.
      */
-    public static final int C_TYPE_EXCLUSIVE = 4;
+    public static final int TYPE_EXCLUSIVE = 4;
 
     /**
      * A lock that is inherited from a locked parent folder.
      */
-    public static final int C_TYPE_INHERITED = 3;
+    public static final int TYPE_INHERITED = 3;
 
     /**
      * A lock that allows the user to edit the resource’s structure record only, 
@@ -87,7 +83,7 @@ public class CmsLock implements Cloneable {
      * This lock is assigned to files if a sibling of the resource record has
      * already an exclusive lock. 
      */
-    public static final int C_TYPE_SHARED_EXCLUSIVE = 2;
+    public static final int TYPE_SHARED_EXCLUSIVE = 2;
 
     /**
      * A lock that allows the user to edit the resource’s structure record only, 
@@ -96,19 +92,19 @@ public class CmsLock implements Cloneable {
      * This lock is assigned to resources that already have a shared exclusive lock,
      * and then inherit a lock because one if it's parent folders gets locked.
      */
-    public static final int C_TYPE_SHARED_INHERITED = 1;
+    public static final int TYPE_SHARED_INHERITED = 1;
 
     /**
      * Reserved for the Null CmsLock.
      */
-    public static final int C_TYPE_UNLOCKED = 0;
+    public static final int TYPE_UNLOCKED = 0;
 
     /** The shared null lock object. */
-    private static final CmsLock C_NULL_LOCK = new CmsLock(
+    private static final CmsLock NULL_LOCK = new CmsLock(
         "",
         CmsUUID.getNullUUID(),
-        I_CmsConstants.C_UNKNOWN_ID,
-        CmsLock.C_TYPE_UNLOCKED);
+        CmsDbUtil.UNKNOWN_ID,
+        CmsLock.TYPE_UNLOCKED);
 
     /** Flag to indicate if the lock is a temporary lock. */
     private int m_mode;
@@ -139,7 +135,7 @@ public class CmsLock implements Cloneable {
         m_userId = userId;
         m_projectId = projectId;
         m_type = type;
-        m_mode = C_MODE_COMMON;
+        m_mode = COMMON;
     }
 
     /**
@@ -167,7 +163,7 @@ public class CmsLock implements Cloneable {
      */
     public static CmsLock getNullLock() {
 
-        return CmsLock.C_NULL_LOCK;
+        return CmsLock.NULL_LOCK;
     }
 
     /**
@@ -255,7 +251,7 @@ public class CmsLock implements Cloneable {
      */
     public boolean isNullLock() {
 
-        return this.equals(CmsLock.C_NULL_LOCK);
+        return this.equals(CmsLock.NULL_LOCK);
     }
 
     /**
@@ -271,16 +267,16 @@ public class CmsLock implements Cloneable {
         buf.append(this.getResourceName());
         buf.append(" type: ");
         switch (this.getType()) {
-            case CmsLock.C_TYPE_EXCLUSIVE:
+            case CmsLock.TYPE_EXCLUSIVE:
                 buf.append("exclusive");
                 break;
-            case CmsLock.C_TYPE_SHARED_EXCLUSIVE:
+            case CmsLock.TYPE_SHARED_EXCLUSIVE:
                 buf.append("shared exclusive");
                 break;
-            case CmsLock.C_TYPE_INHERITED:
+            case CmsLock.TYPE_INHERITED:
                 buf.append("inherited");
                 break;
-            case CmsLock.C_TYPE_SHARED_INHERITED:
+            case CmsLock.TYPE_SHARED_INHERITED:
                 buf.append("shared inherited");
                 break;
             default:

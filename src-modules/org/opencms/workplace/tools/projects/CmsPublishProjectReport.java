@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsPublishProjectReport.java,v $
- * Date   : $Date: 2005/06/25 10:35:46 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.workplace.list.A_CmsListReport;
 import org.opencms.workplace.threads.CmsPublishThread;
@@ -51,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,7 +135,7 @@ public class CmsPublishProjectReport extends A_CmsListReport {
             case ACTION_DEFAULT:
             default:
                 try {
-                    if (getCms().readProject(new Integer(getParamProjectid()).intValue()).getType() == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY) {
+                    if (getCms().readProject(new Integer(getParamProjectid()).intValue()).getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                         // set the flag that this is a temporary project
                         setParamRefreshWorkplace("true");
                     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsUndelete.java,v $
-* Date   : $Date: 2005/05/19 08:57:22 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -46,7 +45,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -71,19 +70,19 @@ public class CmsUndelete extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             session.removeValue("lasturl");
         }
 
         String lasturl = getLastUrl(cms, parameters);
-        String filename = (String)parameters.get(C_PARA_RESOURCE);
+        String filename = (String)parameters.get(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_RESOURCE);
+        filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
         CmsResource file = null;
         if (filename.endsWith("/")){
             file = cms.readFolder(filename, CmsResourceFilter.ALL);
@@ -92,7 +91,7 @@ public class CmsUndelete extends CmsWorkplaceDefault {
         }
         try{
             cms.undeleteResource(cms.getSitePath(file));
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             //template = "done";
             // return to filelist
             try {
@@ -109,7 +108,7 @@ public class CmsUndelete extends CmsWorkplaceDefault {
             }
             return null;
         } catch(CmsException e){
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
             xmlTemplateDocument.setData("lasturl", lasturl);
             return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");

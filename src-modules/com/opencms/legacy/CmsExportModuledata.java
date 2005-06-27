@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,19 +37,21 @@ package com.opencms.legacy;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImportExportException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.CmsMasterMedia;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -79,7 +81,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.9 $ $Date: 2005/06/23 14:01:14 $
+ * @version $Revision: 1.10 $ $Date: 2005/06/27 23:22:15 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -237,14 +239,14 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
             // first export the cos folders (ie. channels)               
             getReport().println(
                 Messages.get().container(Messages.RPT_EXPORT_CHANNELS_BEGIN_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
 
-            getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+            getCms().getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             // export all the resources
             exportAllResources(exportNode, resourcesToExport);
             getReport().println(
                 Messages.get().container(Messages.RPT_EXPORT_CHANNELS_END_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
 
             // get the modules to export
             Vector modules = new Vector();
@@ -413,7 +415,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         // output something to the report for the data
         getReport().println(
             Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_1, classname),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         Iterator keys = exportedChannelIds.iterator();
         // get the subId of the module
@@ -481,7 +483,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
         getReport().println(
             Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0, classname),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -503,7 +505,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
         getReport().print(
             Messages.get().container(Messages.RPT_EXPORT_WITH_ID_2, dataset.m_title, dataset.m_masterId),
-            I_CmsReport.C_FORMAT_NOTE);
+            I_CmsReport.FORMAT_NOTE);
 
         // the name of the XML-file where the dataset is stored
         String dataSetFile = "dataset_" + subId + "_" + masterNr + ".xml";
@@ -541,7 +543,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
         digestElement(parent, master);
         getReport().println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-            I_CmsReport.C_FORMAT_OK);
+            I_CmsReport.FORMAT_OK);
     }
 
     /**

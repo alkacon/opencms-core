@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClearThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,18 @@
 package org.opencms.workplace.tools.history;
 
 import org.opencms.file.CmsObject;
-
-import java.util.Map;
-
 import org.opencms.main.CmsException;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
+
+import java.util.Map;
 
 /**
  * Clears the file history of the OpenCms database.<p>
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,7 +92,7 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
 
         getReport().println(
             Messages.get().container(Messages.RPT_DELETE_HISTORY_BEGIN_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
 
         // get the necessary parameters from the map
         int versions = Integer.parseInt((String)m_params.get("versions"));
@@ -105,6 +104,6 @@ public class CmsAdminHistoryClearThread extends A_CmsReportThread {
         } catch (CmsException e) {
             getReport().println(e);
         }
-        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        getReport().println(Messages.get().container(Messages.RPT_DELETE_HISTORY_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2005/06/27 09:15:41 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
@@ -58,7 +57,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0
  */
@@ -211,7 +210,7 @@ public class CmsImportFolder {
 
             if (currentFile.isDirectory()) {
                 // create directory in cms
-                m_cms.createResource(importPath + currentFile.getName(), CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                m_cms.createResource(importPath + currentFile.getName(), CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                 importResources(currentFile, importPath + currentFile.getName() + "/");
             } else {
                 // import file into cms
@@ -280,7 +279,7 @@ public class CmsImportFolder {
             // now write the folders ...
             for (r = 0; r < stop; r++) {
                 try {
-                    m_cms.createResource(actImportPath + path[r], CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    m_cms.createResource(actImportPath + path[r], CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                 } catch (CmsException e) {
                     // of course some folders did already exist!
                 }
@@ -378,7 +377,7 @@ public class CmsImportFolder {
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, delete file
                         m_cms.lockResource(newResName);
-                        m_cms.deleteResource(newResName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                        m_cms.deleteResource(newResName, CmsResource.DELETE_PRESERVE_SIBLINGS);
                         throw sqlExc;
                     }
                 }

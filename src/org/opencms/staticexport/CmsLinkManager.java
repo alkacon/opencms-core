@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.site.CmsSiteMatcher;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.validation.CmsPointerLinkValidationResult;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
@@ -455,7 +455,7 @@ public class CmsLinkManager {
 
             // read only properties, if the current site and the target site both do have a secure server
             if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
-                if (!link.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+                if (!link.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
 
                     int linkType = -1;
                     // check the secure property of the link

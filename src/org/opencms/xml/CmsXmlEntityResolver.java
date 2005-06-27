@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,7 +273,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
             // permanent cache contains system id
             return new InputSource(new ByteArrayInputStream(content));
-        } else if (systemId.equals(CmsXmlPage.C_XMLPAGE_XSD_SYSTEM_ID)) {
+        } else if (systemId.equals(CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID)) {
 
             // XML page XSD reference
             try {
@@ -334,13 +334,13 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cms.getRequestContext().restoreSiteRoot();
             }
         } else if (systemId.substring(0, systemId.lastIndexOf("/") + 1).equalsIgnoreCase(
-            CmsConfigurationManager.C_DEFAULT_DTD_PREFIX)) {
+            CmsConfigurationManager.DEFAULT_DTD_PREFIX)) {
 
             // default DTD location in the org.opencms.configuration package
             String location = null;
             try {
                 String dtdFilename = systemId.substring(systemId.lastIndexOf("/") + 1);
-                location = CmsConfigurationManager.C_DEFAULT_DTD_LOCATION + dtdFilename;
+                location = CmsConfigurationManager.DEFAULT_DTD_LOCATION + dtdFilename;
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
                 ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
                 for (int b = stream.read(); b > -1; b = stream.read()) {

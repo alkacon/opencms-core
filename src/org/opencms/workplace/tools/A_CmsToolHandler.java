@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,29 +49,29 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Property for the params arg.<p> */
-    public static final String C_ARG_PARAM_NAME = "params";
+    public static final String ARG_PARAM_NAME = "params";
 
     /** Property for the path arg.<p> */
-    public static final String C_ARG_PATH_NAME = "path";
+    public static final String ARG_PATH_NAME = "path";
 
     /** Property for the args.<p> */
-    public static final String C_ARGS_PROPERTY_DEFINITION = "admintoolhandler-args";
+    public static final String ARGS_PROPERTY_DEFINITION = "admintoolhandler-args";
 
     /** Argument separator.<p> */
-    public static final String C_ARGUMENT_SEPARATOR = "|";
+    public static final String ARGUMENT_SEPARATOR = "|";
 
     /** Default disabled help text constant.<p> */
-    public static final String C_DEFAULT_DISABLED_HELPTEXT = "${key." + Messages.GUI_TOOLS_DISABLED_HELP_0 + "}";
+    public static final String DEFAULT_DISABLED_HELPTEXT = "${key." + Messages.GUI_TOOLS_DISABLED_HELP_0 + "}";
 
     /** Argument name and value separator.<p> */
-    public static final String C_VALUE_SEPARATOR = ":";
+    public static final String VALUE_SEPARATOR = ":";
 
     /** Help text or description if disabled. */
     private String m_disabledHelpText;
@@ -309,23 +309,23 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /**
      * Default implementation.
      * 
-     * It takes the icon path from <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVIMAGE}</code> property, 
+     * It takes the icon path from <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVIMAGE}</code> property, 
      * or uses a default icon if undefined, the name is taken from the 
      * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVTEXT}</code> property, 
      * or uses the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_TITLE}</code> property if undefined, 
      * or an default text, if still undefined. if you want 2 different names, one for the big icon tools and one for 
-     * the menu/navbar entries, use a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> to separate them in the property.
+     * the menu/navbar entries, use a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> to separate them in the property.
      * (if you do so, the first one is for big icons and the second one for menu/navbar entries). the help text is taken from the 
      * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_DESCRIPTION}</code> property or a
      * default text if undefined, if you want to custumize a help text while disabled, use a 
-     * <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
+     * <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
      * 
-     * The group is taken from the <code>{@link org.opencms.jsp.CmsJspNavElement#C_PROPERTY_NAVINFO}</code> property,
+     * The group is taken from the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVINFO}</code> property,
      * the position from the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVPOS}</code>
-     * and the install path is given by the folder structure if the <code>{@link #C_ARGS_PROPERTY_DEFINITION}</code>
+     * and the install path is given by the folder structure if the <code>{@link #ARGS_PROPERTY_DEFINITION}</code>
      * property does not include path information.<p>
      * 
-     * For the icon path you can specify 2 paths separated by a <code>{@link A_CmsToolHandler#C_VALUE_SEPARATOR}</code>, 
+     * For the icon path you can specify 2 paths separated by a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code>, 
      * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). <p>
      * 
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
@@ -342,9 +342,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             name = "${key." + Messages.GUI_TOOLS_DEFAULT_NAME_0 + "}";
         }
         String shortName = name;
-        if (name.indexOf(C_VALUE_SEPARATOR) >= 0) {
-            shortName = name.substring(name.indexOf(C_VALUE_SEPARATOR) + 1);
-            name = name.substring(0, name.indexOf(C_VALUE_SEPARATOR));
+        if (name.indexOf(VALUE_SEPARATOR) >= 0) {
+            shortName = name.substring(name.indexOf(VALUE_SEPARATOR) + 1);
+            name = name.substring(0, name.indexOf(VALUE_SEPARATOR));
         }
         setName(name);
         setShortName(shortName);
@@ -354,9 +354,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             iconPath = "admin/images/default_tool_big.png:admin/images/default_tool_small.png";
         }
         String smallIconPath = iconPath;
-        if (iconPath.indexOf(C_VALUE_SEPARATOR) >= 0) {
-            smallIconPath = iconPath.substring(iconPath.indexOf(C_VALUE_SEPARATOR) + 1);
-            iconPath = iconPath.substring(0, iconPath.indexOf(C_VALUE_SEPARATOR));
+        if (iconPath.indexOf(VALUE_SEPARATOR) >= 0) {
+            smallIconPath = iconPath.substring(iconPath.indexOf(VALUE_SEPARATOR) + 1);
+            iconPath = iconPath.substring(0, iconPath.indexOf(VALUE_SEPARATOR));
         }
         setIconPath(iconPath);
         setSmallIconPath(smallIconPath);
@@ -365,10 +365,10 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(helpText)) {
             helpText = "${key." + Messages.GUI_TOOLS_DEFAULT_HELP_0 + "}";
         }
-        String disabledHelpText = C_DEFAULT_DISABLED_HELPTEXT;
-        if (helpText.indexOf(C_VALUE_SEPARATOR) >= 0) {
-            disabledHelpText = helpText.substring(helpText.indexOf(C_VALUE_SEPARATOR) + 1);
-            helpText = helpText.substring(0, helpText.indexOf(C_VALUE_SEPARATOR));
+        String disabledHelpText = DEFAULT_DISABLED_HELPTEXT;
+        if (helpText.indexOf(VALUE_SEPARATOR) >= 0) {
+            disabledHelpText = helpText.substring(helpText.indexOf(VALUE_SEPARATOR) + 1);
+            helpText = helpText.substring(0, helpText.indexOf(VALUE_SEPARATOR));
         }
         setHelpText(helpText);
         setDisabledHelpText(disabledHelpText);
@@ -388,12 +388,12 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             isFolder = true;
 
             // adjust the path
-            if (path.endsWith(CmsToolManager.C_TOOLPATH_SEPARATOR)) {
-                path = path.substring(0, path.lastIndexOf(CmsToolManager.C_TOOLPATH_SEPARATOR));
+            if (path.endsWith(CmsToolManager.TOOLPATH_SEPARATOR)) {
+                path = path.substring(0, path.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
             }
 
             // set admin page as link
-            link = CmsToolManager.C_VIEW_JSPPAGE_LOCATION;
+            link = CmsToolManager.VIEW_JSPPAGE_LOCATION;
 
             // try to use the folder def file as link
             CmsProperty prop = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DEFAULT_FILE, true);
@@ -401,9 +401,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
             if (!prop.isNullProperty()) {
                 defFile = prop.getValue();
             }
-            if (!defFile.startsWith(CmsToolManager.C_TOOLPATH_SEPARATOR)) {
+            if (!defFile.startsWith(CmsToolManager.TOOLPATH_SEPARATOR)) {
                 // try to use this relative link
-                defFile = path + CmsToolManager.C_TOOLPATH_SEPARATOR + defFile;
+                defFile = path + CmsToolManager.TOOLPATH_SEPARATOR + defFile;
             }
             cms.readResource(defFile);
             link = defFile;
@@ -415,29 +415,29 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
         setLink(link);
         if (isFolder) {
             path = resourcePath.substring(
-                CmsToolManager.C_ADMINTOOLS_ROOT_LOCATION.length(),
-                resourcePath.lastIndexOf(CmsToolManager.C_TOOLPATH_SEPARATOR));
+                CmsToolManager.ADMINTOOLS_ROOT_LOCATION.length(),
+                resourcePath.lastIndexOf(CmsToolManager.TOOLPATH_SEPARATOR));
         } else {
             path = resourcePath.substring(
-                CmsToolManager.C_ADMINTOOLS_ROOT_LOCATION.length(),
+                CmsToolManager.ADMINTOOLS_ROOT_LOCATION.length(),
                 resourcePath.lastIndexOf('.'));
         }
 
         try {
-            CmsProperty prop = cms.readPropertyObject(resourcePath, C_ARGS_PROPERTY_DEFINITION, false);
+            CmsProperty prop = cms.readPropertyObject(resourcePath, ARGS_PROPERTY_DEFINITION, false);
             if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(prop.getValue())) {
                 Map argsMap = new HashMap();
-                Iterator itArgs = CmsStringUtil.splitAsList(prop.getValue(), C_ARGUMENT_SEPARATOR).iterator();
+                Iterator itArgs = CmsStringUtil.splitAsList(prop.getValue(), ARGUMENT_SEPARATOR).iterator();
                 while (itArgs.hasNext()) {
                     String arg = (String)itArgs.next();
-                    int pos = arg.indexOf(C_VALUE_SEPARATOR);
+                    int pos = arg.indexOf(VALUE_SEPARATOR);
                     argsMap.put(arg.substring(0, pos), arg.substring(pos + 1));
                 }
-                if (argsMap.get(C_ARG_PATH_NAME) != null) {
-                    path = (String)argsMap.get(C_ARG_PATH_NAME);
+                if (argsMap.get(ARG_PATH_NAME) != null) {
+                    path = (String)argsMap.get(ARG_PATH_NAME);
                 }
-                if (argsMap.get(C_ARG_PARAM_NAME) != null) {
-                    setParameters((String)argsMap.get(C_ARG_PARAM_NAME));
+                if (argsMap.get(ARG_PARAM_NAME) != null) {
+                    setParameters((String)argsMap.get(ARG_PARAM_NAME));
                 }
             }
         } catch (CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/25 14:28:53 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,7 +96,7 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
     public String defaultActionHtml() {
 
         String titleSrc = getFrameSource("tool_title", getJsp().link(
-            CmsToolManager.C_ADMINVIEW_ROOT_LOCATION + "/tool-title.html")
+            CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/tool-title.html")
             + "?"
             + allParamsAsRequest());
         String contentSrc = getFrameSource("tool_content", getJsp().link(
@@ -139,7 +139,7 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
      */
     public void displayExplorerView() throws IOException, ServletException {
 
-        getSettings().setExplorerMode(CmsExplorer.C_VIEW_PROJECT);
+        getSettings().setExplorerMode(CmsExplorer.VIEW_PROJECT);
         try {
             getSettings().setExplorerProjectId(new Integer(getParamProjectid()).intValue());
         } catch (Exception e) {
@@ -164,9 +164,9 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
             getSettings().setExplorerProjectFilter(CmsProjectResourcesDisplayMode.ALL_CHANGES.toString());
         }
         Map params = new HashMap();
-        params.put(CmsExplorer.C_PARAMETER_PROJECTFILTER, getSettings().getExplorerProjectFilter());
-        params.put(CmsExplorer.C_PARAMETER_PROJECTID, new Integer(getSettings().getExplorerProjectId()));
-        getToolManager().jspForwardPage(this, C_FILE_EXPLORER_FILELIST, params);
+        params.put(CmsExplorer.PARAMETER_PROJECTFILTER, getSettings().getExplorerProjectFilter());
+        params.put(CmsExplorer.PARAMETER_PROJECTID, new Integer(getSettings().getExplorerProjectId()));
+        getToolManager().jspForwardPage(this, FILE_EXPLORER_FILELIST, params);
     }
 
     /**

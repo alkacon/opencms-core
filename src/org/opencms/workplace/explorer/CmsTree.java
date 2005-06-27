@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/06/26 13:20:23 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
@@ -73,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,19 +100,19 @@ public class CmsTree extends CmsWorkplace {
     public static final String PARAM_TYPE = "type";
 
     /** Type name for showing the tree when copying resources. */
-    private static final String C_TYPE_COPY = "copy";
+    private static final String TYPE_COPY = "copy";
 
     /** Type name for showing the tree when creating page links in the editor. */
-    private static final String C_TYPE_PAGELINK = "pagelink";
+    private static final String TYPE_PAGELINK = "pagelink";
 
     /** Type name for showing the tree in preferences dialog. */
-    private static final String C_TYPE_PREFERENCES = "preferences";
+    private static final String TYPE_PREFERENCES = "preferences";
 
     /** Type name for showing the tree when creating siblings. */
-    private static final String C_TYPE_SIBLING = "sibling";
+    private static final String TYPE_SIBLING = "sibling";
 
     /** Type name for showing the tree in a widget dialog. */
-    private static final String C_TYPE_VFSWIDGET = "vfswidget";
+    private static final String TYPE_VFSWIDGET = "vfswidget";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTree.class);
@@ -171,7 +170,7 @@ public class CmsTree extends CmsWorkplace {
         retValue.append("\tinitResources(\"");
         retValue.append(encoding);
         retValue.append("\", \"");
-        retValue.append(C_PATH_WORKPLACE);
+        retValue.append(PATH_WORKPLACE);
         retValue.append("\", \"");
         retValue.append(skinUri);
         retValue.append("\", \"");
@@ -273,7 +272,7 @@ public class CmsTree extends CmsWorkplace {
 
         boolean includeRootSite = true;
         boolean showSiteUrls = false;
-        if (C_TYPE_PAGELINK.equals(getTreeType())) {
+        if (TYPE_PAGELINK.equals(getTreeType())) {
             // in wysiwyg editor link dialog, don't show root site, but show site URLs
             includeRootSite = false;
             showSiteUrls = true;
@@ -345,7 +344,7 @@ public class CmsTree extends CmsWorkplace {
                     // change the site root for channel tree window
                     restoreSiteRoot = true;
                     getCms().getRequestContext().saveSiteRoot();
-                    getCms().getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+                    getCms().getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
                 } else if (getSettings().getTreeSite(getTreeType()) != null) {
                     // change the site root for popup window with site selector
                     restoreSiteRoot = true;
@@ -613,10 +612,10 @@ public class CmsTree extends CmsWorkplace {
      */
     private void computeSiteSelector(HttpServletRequest request) {
 
-        boolean selectorForType = C_TYPE_SIBLING.equals(getTreeType())
-            || C_TYPE_COPY.equals(getTreeType())
-            || C_TYPE_PAGELINK.equals(getTreeType())
-            || C_TYPE_PREFERENCES.equals(getTreeType());
+        boolean selectorForType = TYPE_SIBLING.equals(getTreeType())
+            || TYPE_COPY.equals(getTreeType())
+            || TYPE_PAGELINK.equals(getTreeType())
+            || TYPE_PREFERENCES.equals(getTreeType());
         boolean showFromRequest = Boolean.valueOf(request.getParameter(PARAM_SHOWSITESELECTOR)).booleanValue();
         if (selectorForType || showFromRequest) {
             // get all available sites
@@ -713,7 +712,7 @@ public class CmsTree extends CmsWorkplace {
      */
     private String getSitePrefix(String prefix, String storedSiteRoot) {
 
-        if (C_TYPE_PAGELINK.equals(getTreeType())) {
+        if (TYPE_PAGELINK.equals(getTreeType())) {
             // in editor link dialog, create a special prefix for internal links
             if (!storedSiteRoot.equals(prefix)) {
                 // stored site is not selected site, create complete URL as prefix
@@ -725,14 +724,14 @@ public class CmsTree extends CmsWorkplace {
                 prefix = "";
             }
 
-        } else if (C_TYPE_COPY.equals(getTreeType())
-            || C_TYPE_SIBLING.equals(getTreeType())
-            || C_TYPE_VFSWIDGET.equals(getTreeType())) {
+        } else if (TYPE_COPY.equals(getTreeType())
+            || TYPE_SIBLING.equals(getTreeType())
+            || TYPE_VFSWIDGET.equals(getTreeType())) {
             // in vfs copy|move|link or vfs widget mode, don't add the prefix for the current workplace site
             if (storedSiteRoot.equals(prefix)) {
                 prefix = "";
             }
-        } else if (C_TYPE_PREFERENCES.equals(getTreeType())) {
+        } else if (TYPE_PREFERENCES.equals(getTreeType())) {
             prefix = "";
         }
 

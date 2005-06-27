@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -397,7 +397,7 @@ public class TestCmsScheduler extends TestCase {
         jobInfo.setClassName(TestScheduledJob.class.getName());  
         
         JobDataMap jobData = new JobDataMap();      
-        jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_INFO, jobInfo);
+        jobData.put(CmsScheduleManager.SCHEDULER_JOB_INFO, jobInfo);
         
         jobDetail.setJobDataMap(jobData);
         

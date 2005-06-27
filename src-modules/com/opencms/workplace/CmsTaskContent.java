@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContent.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
@@ -48,7 +49,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -76,10 +77,10 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
             CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
         }
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        String taskid = (String)session.getValue(C_PARA_STARTTASKID);
-        if(session.getValue(C_PARA_STARTTASKID) != null) {
-            session.removeValue(C_PARA_STARTTASKID);
-            session.removeValue(C_PARA_VIEW);
+        String taskid = (String)session.getValue(CmsWorkplaceDefault.C_PARA_STARTTASKID);
+        if(session.getValue(CmsWorkplaceDefault.C_PARA_STARTTASKID) != null) {
+            session.removeValue(CmsWorkplaceDefault.C_PARA_STARTTASKID);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_VIEW);
             CmsXmlWpConfigFile conf = new CmsXmlWpConfigFile(cms);
             String actionPath = conf.getWorkplaceActionPath();
             try {
@@ -155,14 +156,14 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
         String orderBy = "";
         String groupBy = "";
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
+        Object allProjects = session.getValue(CmsWorkplaceDefault.C_SESSION_TASK_ALLPROJECTS);
         int project = cms.getRequestContext().currentProject().getId();
-        String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
+        String filter = (String)session.getValue(CmsWorkplaceDefault.C_SESSION_TASK_FILTER);
         List retValue;
         
         // was the allprojects checkbox checked?
         if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
-            project = C_UNKNOWN_ID;
+            project = CmsDbUtil.UNKNOWN_ID;
         }
         if(filter == null) {
             filter = "a1";
@@ -243,7 +244,7 @@ public class CmsTaskContent extends CmsWorkplaceDefault {
         // workaround to display the task id
         if ((parameters != null) && (parameters.size() > 0) && (parameters.containsKey("taskid"))) {
             I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-            session.putValue(C_PARA_STARTTASKID, parameters.get("taskid"));
+            session.putValue(CmsWorkplaceDefault.C_PARA_STARTTASKID, parameters.get("taskid"));
         }
      
         return super.startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);

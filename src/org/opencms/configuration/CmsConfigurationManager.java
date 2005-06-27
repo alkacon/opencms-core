@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,17 +68,17 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0
  */
 public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /** The location of the OpenCms configuration DTD if the default prefix is the system ID. */
-    public static final String C_DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
+    public static final String DEFAULT_DTD_LOCATION = "org/opencms/configuration/";
 
     /** The default prefix for the OpenCms configuration DTD. */
-    public static final String C_DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
+    public static final String DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
 
     /** The config node. */
     protected static final String N_CONFIG = "config";
@@ -93,13 +93,13 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     private static final SimpleDateFormat BACKUP_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms.xml";
+    private static final String DEFAULT_XML_FILE_NAME = "opencms.xml";
 
     /** The name of the DTD file for this configuration. */
-    private static final String C_DTD_FILE_NAME = "opencms-configuration.dtd";
+    private static final String DTD_FILE_NAME = "opencms-configuration.dtd";
 
     /** The number of days to keep old backups for. */
-    private static final long C_MAX_BACKUP_DAYS = 15;
+    private static final long MAX_BACKUP_DAYS = 15;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsConfigurationManager.class);
@@ -282,7 +282,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public String getDtdFilename() {
 
-        return C_DTD_FILE_NAME;
+        return DTD_FILE_NAME;
     }
 
     /**
@@ -290,7 +290,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public String getDtdSystemLocation() {
 
-        return C_DEFAULT_DTD_LOCATION;
+        return DEFAULT_DTD_LOCATION;
     }
 
     /**
@@ -298,7 +298,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public String getDtdUrlPrefix() {
 
-        return C_DEFAULT_DTD_PREFIX;
+        return DEFAULT_DTD_PREFIX;
     }
 
     /**
@@ -306,7 +306,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      */
     public String getXmlFileName() {
 
-        return C_DEFAULT_XML_FILE_NAME;
+        return DEFAULT_XML_FILE_NAME;
     }
 
     /**
@@ -344,7 +344,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
 
         // remove the old backups
-        removeOldBackups(C_MAX_BACKUP_DAYS);
+        removeOldBackups(MAX_BACKUP_DAYS);
     }
 
     /**
@@ -441,10 +441,10 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         if (configuration.getDtdSystemLocation() != null) {
             try {
                 String file = CmsFileUtil.readFile(configuration.getDtdSystemLocation()
-                    + configuration.getDtdFilename(), CmsEncoder.C_UTF8_ENCODING);
+                    + configuration.getDtdFilename(), CmsEncoder.ENCODING_UTF_8);
                 CmsXmlEntityResolver.cacheSystemId(
                     configuration.getDtdUrlPrefix() + configuration.getDtdFilename(),
-                    file.getBytes(CmsEncoder.C_UTF8_ENCODING));
+                    file.getBytes(CmsEncoder.ENCODING_UTF_8));
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_CACHE_DTD_SYSTEM_ID_1,

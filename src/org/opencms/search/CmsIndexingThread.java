@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,7 +153,7 @@ public class CmsIndexingThread extends Thread {
                 if (m_report != null && !isInterrupted()) {
                     m_report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.C_FORMAT_OK);
+                        I_CmsReport.FORMAT_OK);
                     if (DEBUG && LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.LOG_WRITE_SUCCESS_0));
                     }
@@ -171,13 +171,13 @@ public class CmsIndexingThread extends Thread {
                         org.opencms.search.documents.Messages.ERR_NO_CONTENT_1))) {
                     m_report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.C_FORMAT_OK);
+                        I_CmsReport.FORMAT_OK);
                     m_threadManager.finished();
                 } else {
                     if (m_report != null) {
                         m_report.println();
                         m_report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.C_FORMAT_WARNING);
+                            org.opencms.report.Messages.RPT_FAILED_0), I_CmsReport.FORMAT_WARNING);
                         m_report.println(exc);
 
                     }
@@ -191,7 +191,7 @@ public class CmsIndexingThread extends Thread {
             if (m_report != null) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
-                    I_CmsReport.C_FORMAT_NOTE);
+                    I_CmsReport.FORMAT_NOTE);
             }
 
             if (LOG.isDebugEnabled()) {

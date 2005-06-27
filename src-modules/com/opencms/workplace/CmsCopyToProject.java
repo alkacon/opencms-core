@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsCopyToProject.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -72,10 +72,10 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
         String template = null;
 
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             session.removeValue("copy");
             session.removeValue("lasturl");
         }
@@ -86,11 +86,11 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
             session.putValue("copy", copy);
         }
         copy = (String)session.getValue("copy");
-        String filename = (String)parameters.get(C_PARA_RESOURCE);
+        String filename = (String)parameters.get(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_RESOURCE);
+        filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
         String action = (String)parameters.get("action");
 
         CmsResource file = null;
@@ -107,13 +107,13 @@ public class CmsCopyToProject extends CmsWorkplaceDefault {
                 try {
                     if (cms.isManagerOfProject()) {
                         cms.copyResourceToProject(cms.getSitePath(file));
-                        session.removeValue(C_PARA_RESOURCE);
+                        session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
                         template = "done";
                     } else {
                         throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED_0));
                     }
                 } catch (CmsException e) {
-                    session.removeValue(C_PARA_RESOURCE);
+                    session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
                     xmlTemplateDocument.setData("details", CmsException.getStackTraceAsString(e));
                     return startProcessing(cms, xmlTemplateDocument, "", parameters, "error");
                 }

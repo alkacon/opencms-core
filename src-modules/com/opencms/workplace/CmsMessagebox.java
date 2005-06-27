@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsMessagebox.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -30,7 +30,6 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 import com.opencms.template.A_CmsXmlContent;
@@ -46,7 +45,7 @@ import org.w3c.dom.Node;
  * 
  * @author Michael Emmerich
  * @author Michaela Schleich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -78,13 +77,13 @@ public class CmsMessagebox extends A_CmsWpElement {
         // collect all required data
         Node helpfilename = null;
         String helpname = null;
-        String messageTitle = n.getAttribute(C_MESSAGE_TITLE);
-        String messageMessage1 = n.getAttribute(C_MESSAGE_MESSAGE1);
-        String messageMessage2 = n.getAttribute(C_MESSAGE_MESSAGE2);
-        String messageButton1 = n.getAttribute(C_MESSAGE_BUTTON1);
-        String messageButton2 = n.getAttribute(C_MESSAGE_BUTTON2);
-        String messageLink1 = n.getAttribute(C_MESSAGE_LINK1);
-        String messageLink2 = n.getAttribute(C_MESSAGE_LINK2);
+        String messageTitle = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_TITLE);
+        String messageMessage1 = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_MESSAGE1);
+        String messageMessage2 = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_MESSAGE2);
+        String messageButton1 = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_BUTTON1);
+        String messageButton2 = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_BUTTON2);
+        String messageLink1 = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_LINK1);
+        String messageLink2 = n.getAttribute(CmsWorkplaceDefault.C_MESSAGE_LINK2);
         if ("explorer_files.html".equals(messageLink1)) {
             messageLink1 = CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -153,7 +153,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Testing search with large result set");
 
         // create test folder
-        cms.createResource("/test/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+        cms.createResource("/test/", CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
         cms.unlockResource("/test/");
 
         // create master resource
@@ -189,9 +189,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("With Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.C_PERMISSIONS,
+            CmsSearchIndex.PERMISSIONS,
             "true");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "true");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "true");
 
         cmsSearchBean.setPage(1);
         long duration = -System.currentTimeMillis();
@@ -217,9 +217,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("With Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.C_PERMISSIONS,
+            CmsSearchIndex.PERMISSIONS,
             "true");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "false");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "false");
 
         cmsSearchBean.setPage(1);
         duration = -System.currentTimeMillis();
@@ -235,9 +235,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("Without Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.C_PERMISSIONS,
+            CmsSearchIndex.PERMISSIONS,
             "false");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "true");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "true");
 
         cmsSearchBean.setPage(1);
         duration = -System.currentTimeMillis();
@@ -253,9 +253,9 @@ public class TestCmsSearch extends OpenCmsTestCase {
 
         echo("Without Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
-            CmsSearchIndex.C_PERMISSIONS,
+            CmsSearchIndex.PERMISSIONS,
             "false");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.C_EXCERPT, "false");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "false");
 
         cmsSearchBean.setPage(1);
         duration = -System.currentTimeMillis();
@@ -316,7 +316,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         searchIndex.setProjectName("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN.toString());
-        searchIndex.setRebuildMode(CmsSearchIndex.C_AUTO_REBUILD);
+        searchIndex.setRebuildMode(CmsSearchIndex.AUTO_REBUILD);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 

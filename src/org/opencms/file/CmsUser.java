@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
@@ -49,20 +49,16 @@ import java.util.Map;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0 
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 
-    /**
-     * A user-type system user.
-     */
+    /** A user-type system user. */
     public static final int USER_TYPE_SYSTEMUSER = 0;
 
-    /**
-     * A user-type web user.
-     */
+    /** A user-type web user. */
     public static final int USER_TYPE_WEBUSER = 2;
 
     /** A storage for additional user information. */
@@ -122,11 +118,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_address = "";
         m_email = "";
         m_firstname = "";
-        m_flags = I_CmsConstants.C_FLAG_ENABLED;
-        m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;
+        m_flags = I_CmsPrincipal.FLAG_ENABLED;
+        m_lastlogin = CmsDbUtil.UNKNOWN_ID;
         m_lastname = "";
         m_password = "";
-        m_type = I_CmsConstants.C_UNKNOWN_INT;
+        m_type = CmsDbUtil.UNKNOWN_ID;
         m_isTouched = false;
     }
 
@@ -146,11 +142,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         m_address = "";
         m_email = "";
         m_firstname = "";
-        m_flags = I_CmsConstants.C_FLAG_ENABLED;
-        m_lastlogin = I_CmsConstants.C_UNKNOWN_LONG;
+        m_flags = I_CmsPrincipal.FLAG_ENABLED;
+        m_lastlogin = CmsDbUtil.UNKNOWN_ID;
         m_lastname = "";
         m_password = "";
-        m_type = I_CmsConstants.C_UNKNOWN_INT;
+        m_type = CmsDbUtil.UNKNOWN_ID;
         m_isTouched = false;
     }
 
@@ -206,7 +202,10 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public static void checkEmail(String email) {
 
-        if (!CmsStringUtil.validateRegex(email, "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$", false)) {
+        if (!CmsStringUtil.validateRegex(
+            email,
+            "^([a-zA-Z0-9_\\.\\-])+\\@(([a-zA-Z0-9\\-])+\\.)+([a-zA-Z0-9]{2,4})+$",
+            false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_EMAIL_VALIDATION_1, email));
         }
     }
@@ -396,11 +395,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Decides if this user is disabled.<p>
      *
-     * @return USER_FLAGS == C_FLAG_DISABLED
+     * @return USER_FLAGS == FLAG_DISABLED
      */
     public boolean getDisabled() {
 
-        return (getFlags() == I_CmsConstants.C_FLAG_DISABLED);
+        return (getFlags() == I_CmsPrincipal.FLAG_DISABLED);
     }
 
     /**
@@ -470,7 +469,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /**
      * Returns the time of the last login of this user.<p>
      *
-     * @return the time of the last login of this user, or C_UNKNOWN_LONG
+     * @return the time of the last login of this user
      */
     public long getLastlogin() {
 
@@ -508,11 +507,13 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the type of the user (webuser or a systemuser).
-     * C_USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
-     * C_USER_TYPE_WEBUSER for webuser.<p>
+     * Returns the type of the user.<p>
+     * 
+     * Possible options are
+     * <code>{@link #USER_TYPE_SYSTEMUSER}</code> for a system user (incliding the "Guest" user),
+     * or <code>{@link #USER_TYPE_WEBUSER}</code> for a webuser.<p>
      *
-     * @return the type, or C_UNKNOWN_INT
+     * @return the type
      */
     public int getType() {
 
@@ -549,7 +550,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean isEnabled() {
 
-        return (getFlags() == I_CmsConstants.C_FLAG_ENABLED);
+        return (getFlags() == I_CmsPrincipal.FLAG_ENABLED);
     }
 
     /**
@@ -647,11 +648,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Disables the user flags by setting them to C_FLAG_DISABLED.<p>
+     * Disables the user flags by setting them to FLAG_DISABLED.<p>
      */
     public void setDisabled() {
 
-        setFlags(I_CmsConstants.C_FLAG_DISABLED);
+        setFlags(I_CmsPrincipal.FLAG_DISABLED);
     }
 
     /**
@@ -666,11 +667,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Enables the user flags by setting them to C_FLAG_ENABLED.<p>
+     * Enables the user flags by setting them to FLAG_ENABLED.<p>
      */
     public void setEnabled() {
 
-        setFlags(I_CmsConstants.C_FLAG_ENABLED);
+        setFlags(I_CmsPrincipal.FLAG_ENABLED);
     }
 
     /**
@@ -684,9 +685,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     public void setEnabled(boolean enabled) {
 
         if (enabled) {
-            setFlags(I_CmsConstants.C_FLAG_ENABLED);
+            setFlags(I_CmsPrincipal.FLAG_ENABLED);
         } else {
-            setFlags(I_CmsConstants.C_FLAG_DISABLED);
+            setFlags(I_CmsPrincipal.FLAG_DISABLED);
         }
     }
 

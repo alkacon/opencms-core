@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagIncludeTEI.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,17 +40,17 @@ import javax.servlet.jsp.tagext.TagExtraInfo;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagIncludeTEI extends TagExtraInfo {
 
-    private static final String C_ATTR_ATTRIBUTE = "attribute";
-    private static final String C_ATTR_FILE = "file";
-    private static final String C_ATTR_PAGE = "page";
-    private static final String C_ATTR_PROPERTY = "property";
-    private static final String C_ATTR_SUFFIX = "suffix";
+    private static final String ATTR_ATTRIBUTE = "attribute";
+    private static final String ATTR_FILE = "file";
+    private static final String ATTR_PAGE = "page";
+    private static final String ATTR_PROPERTY = "property";
+    private static final String ATTR_SUFFIX = "suffix";
 
     /**
      * Returns true if the given attribute name is specified, false otherwise.<p>
@@ -79,10 +79,10 @@ public class CmsJspTagIncludeTEI extends TagExtraInfo {
      */
     public boolean isValid(TagData data) {
 
-        boolean hasFile = isSpecified(data, C_ATTR_FILE) || isSpecified(data, C_ATTR_PAGE);
-        boolean hasSuffix = isSpecified(data, C_ATTR_SUFFIX);
-        boolean hasProperty = isSpecified(data, C_ATTR_PROPERTY);
-        boolean hasAttribute = isSpecified(data, C_ATTR_ATTRIBUTE);
+        boolean hasFile = isSpecified(data, ATTR_FILE) || isSpecified(data, ATTR_PAGE);
+        boolean hasSuffix = isSpecified(data, ATTR_SUFFIX);
+        boolean hasProperty = isSpecified(data, ATTR_PROPERTY);
+        boolean hasAttribute = isSpecified(data, ATTR_ATTRIBUTE);
         // boolean hasElement = isSpecified(data, C_ATTR_ELEMENT);
 
         if (hasFile && (hasSuffix || hasProperty || hasAttribute)) {

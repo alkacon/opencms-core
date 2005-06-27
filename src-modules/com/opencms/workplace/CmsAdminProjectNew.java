@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectNew.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,8 +36,8 @@ import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Andreas Schouten
  * @author Michael Emmerich
  * @author Mario Stanke
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -160,7 +160,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         CmsRequestContext reqCont = cms.getRequestContext();
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if(initial != null) {
 
             // remove all session values
@@ -174,7 +174,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             session.removeValue(C_NEWTYPE);
             session.removeValue("lasturl");
             session.removeValue("newProjectCallingFrom");
-            reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+            reqCont.setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
         }
         String newName, newGroup, newDescription, newManagerGroup;
         int projectType = 0;
@@ -185,7 +185,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                 elementName, parameters, templateSelector);
 
         //look if we come from the explorer view
-        String fileToGo = (String)parameters.get(C_PARA_RESOURCE);
+        String fileToGo = (String)parameters.get(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if (fileToGo == null){
             fileToGo = (String)session.getValue("newProjectCallingFrom");
         } else {
@@ -198,7 +198,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         if (lasturl == null){
             lasturl = (String)session.getValue("lasturl");
         }
-        newName = (String)parameters.get(C_PROJECTNEW_NAME);
+        newName = (String)parameters.get(CmsWorkplaceDefault.C_PROJECTNEW_NAME);
         if(newName == null) {
             newName = (String)session.getValue(C_NEWNAME);
         }
@@ -223,17 +223,17 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
         }else{
             // this is from the administration view
             xmlTemplateDocument.setData("pathCorrection","../../");
-            xmlTemplateDocument.setData("backButton","../../../action/administration_content_top.html?sender=" + C_VFS_PATH_WORKPLACE + "administration/project/");
+            xmlTemplateDocument.setData("backButton","../../../action/administration_content_top.html?sender=" + CmsWorkplace.VFS_PATH_WORKPLACE + "administration/project/");
             xmlTemplateDocument.setData("myUrl","index.html");
             xmlTemplateDocument.setData("dontDoIt", "");
             xmlTemplateDocument.setData("doThis","");
         }
 
-        xmlTemplateDocument.setData("onlineId", "" + I_CmsConstants.C_PROJECT_ONLINE_ID);
+        xmlTemplateDocument.setData("onlineId", "" + CmsProject.ONLINE_PROJECT_ID);
 
-        newGroup = (String)parameters.get(C_PROJECTNEW_GROUP);
-        newDescription = (String)parameters.get(C_PROJECTNEW_DESCRIPTION);
-        newManagerGroup = (String)parameters.get(C_PROJECTNEW_MANAGERGROUP);
+        newGroup = (String)parameters.get(CmsWorkplaceDefault.C_PROJECTNEW_GROUP);
+        newDescription = (String)parameters.get(CmsWorkplaceDefault.C_PROJECTNEW_DESCRIPTION);
+        newManagerGroup = (String)parameters.get(CmsWorkplaceDefault.C_PROJECTNEW_MANAGERGROUP);
         String allResources = (String)parameters.get(C_NEWRESOURCES);
         String allChannels = (String)parameters.get(C_NEWCHANNELS);
         newType = (String)parameters.get(C_NEWTYPE);
@@ -276,10 +276,10 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
             allChannels = "";
         }
         if(newType == null || "".equals(newType)) {
-            projectType = I_CmsConstants.C_PROJECT_TYPE_NORMAL;
+            projectType = CmsProject.PROJECT_TYPE_NORMAL;
             newType = "";
         } else {
-            projectType = I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
+            projectType = CmsProject.PROJECT_TYPE_TEMPORARY;
         }
 
         if(parameters.get("submitform") != null) {
@@ -350,7 +350,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                     }
                     //now copy the channels to the project
                     cms.getRequestContext().saveSiteRoot();
-                    cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+                    cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
                     for(int j = 0; j < channels.size(); j++){
                         cms.copyResourceToProject((String)channels.elementAt(j));
                     }
@@ -361,7 +361,7 @@ public class CmsAdminProjectNew extends CmsWorkplaceDefault {
                     List projectResources = cms.readProjectResources(project);
                     if(projectResources == null || projectResources == Collections.EMPTY_LIST || projectResources.size() == 0){
                         cms.deleteProject(project.getId());
-                        reqCont.setCurrentProject(cms.readProject(C_PROJECT_ONLINE_ID));
+                        reqCont.setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
                     }
                     if(CmsLog.getLog(this).isWarnEnabled() ) {
                         CmsLog.getLog(this).warn(e.getMessage(), e);

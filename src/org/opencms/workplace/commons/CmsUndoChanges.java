@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,14 +110,14 @@ public class CmsUndoChanges extends CmsDialog {
     public void actionUndoChanges() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             if (performUndoChangesOperation()) {
                 // if no exception is caused undo changes operation was successful
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             // error during deletion, show error dialog

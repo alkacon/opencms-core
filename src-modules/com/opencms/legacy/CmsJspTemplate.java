@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsJspTemplate.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
-import com.opencms.template.*;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsDumpTemplate;
 
 import java.util.Hashtable;
 
@@ -52,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * @since 5.0 beta 1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -87,7 +88,7 @@ public class CmsJspTemplate extends CmsDumpTemplate {
         byte[] s = null;
         try {
             CmsFile file = cms.readFile(jspFile);
-            CmsJspLoader loader = (CmsJspLoader)OpenCms.getResourceManager().getLoader(CmsJspLoader.C_RESOURCE_LOADER_ID);
+            CmsJspLoader loader = (CmsJspLoader)OpenCms.getResourceManager().getLoader(CmsJspLoader.RESOURCE_LOADER_ID);
 
             HttpServletRequest req = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest();
             HttpServletResponse res = CmsXmlTemplateLoader.getResponse(cms.getRequestContext()).getOriginalResponse();             

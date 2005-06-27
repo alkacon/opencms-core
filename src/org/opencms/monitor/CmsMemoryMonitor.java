@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,17 +78,17 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Set interval for clearing the caches to 10 minutes. */
-    private static final int C_INTERVAL_CLEAR = 1000 * 60 * 10;
+    private static final int INTERVAL_CLEAR = 1000 * 60 * 10;
 
     /** Maximum depth for object size recursion. */
-    private static final int C_MAX_DEPTH = 5;
+    private static final int MAX_DEPTH = 5;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMemoryMonitor.class);
@@ -412,7 +412,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
      */
     private void clearCaches() {
 
-        if ((m_lastClearCache + C_INTERVAL_CLEAR) > System.currentTimeMillis()) {
+        if ((m_lastClearCache + INTERVAL_CLEAR) > System.currentTimeMillis()) {
             // if the cache has already been cleared less then 15 minutes ago we skip this because 
             // clearing the caches to often will hurt system performance and the 
             // setup seems to be in trouble anyway
@@ -481,7 +481,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
                 Object obj = values[i];
 
-                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                if (obj instanceof Map && depth < MAX_DEPTH) {
                     keySize += getKeySize((Map)obj, depth + 1);
                     continue;
                 }
@@ -569,12 +569,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     obj = ((CmsFlexCacheVariation)obj).m_map;
                 }
 
-                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                if (obj instanceof Map && depth < MAX_DEPTH) {
                     totalSize += getValueSize((Map)obj, depth + 1);
                     continue;
                 }
 
-                if (obj instanceof List && depth < C_MAX_DEPTH) {
+                if (obj instanceof List && depth < MAX_DEPTH) {
                     totalSize += getValueSize((List)obj, depth + 1);
                     continue;
                 }
@@ -617,12 +617,12 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
                     obj = ((CmsFlexCacheVariation)obj).m_map;
                 }
 
-                if (obj instanceof Map && depth < C_MAX_DEPTH) {
+                if (obj instanceof Map && depth < MAX_DEPTH) {
                     totalSize += getValueSize((Map)obj, depth + 1);
                     continue;
                 }
 
-                if (obj instanceof List && depth < C_MAX_DEPTH) {
+                if (obj instanceof List && depth < MAX_DEPTH) {
                     totalSize += getValueSize((List)obj, depth + 1);
                     continue;
                 }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsChannelContent.java,v $
-* Date   : $Date: 2005/06/21 15:50:00 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:25 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 // TODO: remove group/user
 package com.opencms.defaults.master;
 
+import org.opencms.db.CmsDbUtil;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
@@ -38,7 +39,6 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
@@ -62,8 +62,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author E. Falkenhan $
- * $Revision: 1.4 $
- * $Date: 2005/06/21 15:50:00 $
+ * $Revision: 1.5 $
+ * $Date: 2005/06/27 23:22:25 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -162,7 +162,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * a unique id.
      */
     public CmsChannelContent(CmsObject cms, CmsResource resource) {
-        String channelId = I_CmsConstants.C_UNKNOWN_ID+"";
+        String channelId = CmsDbUtil.UNKNOWN_ID+"";
         String fullName = cms.getSitePath(resource);
         m_cms = cms;
         m_channel = resource;
@@ -176,10 +176,10 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
             channelId = (String)m_properties.get(CmsPropertyDefinition.PROPERTY_CHANNELID);
         } catch (CmsException exc){
             m_properties = new Hashtable();
-            m_properties.put(CmsPropertyDefinition.PROPERTY_CHANNELID, I_CmsConstants.C_UNKNOWN_ID+"");
+            m_properties.put(CmsPropertyDefinition.PROPERTY_CHANNELID, CmsDbUtil.UNKNOWN_ID+"");
         } finally {
             if(channelId == null || "".equals(channelId)){
-                channelId = I_CmsConstants.C_UNKNOWN_ID+"";
+                channelId = CmsDbUtil.UNKNOWN_ID+"";
             }
             m_channelId = channelId;
         }
@@ -189,13 +189,13 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * This method initialises all needed members with default-values.
      */
     protected void initValues() {
-        m_channelId = I_CmsConstants.C_UNKNOWN_ID+"";
+        m_channelId = CmsDbUtil.UNKNOWN_ID+"";
         m_channelname = "";
         m_parentchannel = "";
         m_accessflags = com.opencms.core.I_CmsConstants.C_ACCESS_DEFAULT_FLAGS;
         // create the resource object for the channel:
         m_channel = new CmsResource(CmsUUID.getNullUUID(), CmsUUID.getNullUUID(),
-                                     "", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, true, 0,
+                                     "", CmsResourceTypeFolder.RESOURCE_TYPE_ID, true, 0,
                                      m_cms.getRequestContext().currentProject().getId(),
                                      1, System.currentTimeMillis(),
                                      m_cms.getRequestContext().currentUser().getId(), System.currentTimeMillis(),
@@ -211,9 +211,9 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      */
     public void delete(CmsObject cms) throws Exception {
         cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         try{
-            cms.deleteResource(cms.getSitePath(m_channel), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+            cms.deleteResource(cms.getSitePath(m_channel), CmsResource.DELETE_PRESERVE_SIBLINGS);
         } catch (CmsException exc){
             throw exc;
             /*
@@ -233,7 +233,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      */
     public void undelete(CmsObject cms) throws Exception {
         cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         try{
             cms.undeleteResource(cms.getSitePath(m_channel));
         } catch (CmsException exc){
@@ -326,13 +326,13 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         CmsLock lock = null;
         // is this a new row or an existing row?
         cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         try{
-            if((I_CmsConstants.C_UNKNOWN_ID+"").equals(m_channelId)) {
+            if((CmsDbUtil.UNKNOWN_ID+"").equals(m_channelId)) {
                 // this is a new row - call the create statement
                 // first set the new channelId
                 setNewChannelId();
-                newChannel = cms.createResource(m_parentchannel + m_channelname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, CmsProperty.toList(m_properties));
+                newChannel = cms.createResource(m_parentchannel + m_channelname, CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, CmsProperty.toList(m_properties));
                 cms.lockResource(cms.getSitePath(newChannel));
             } else {
                 if (!"".equals(m_channel.getName())) {
@@ -427,7 +427,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         try {
             return m_cms.getLock(m_channel).getProjectId();
         } catch (CmsException e) {
-            return I_CmsConstants.C_UNKNOWN_ID;
+            return CmsDbUtil.UNKNOWN_ID;
         }
     }
 
@@ -640,7 +640,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      * Gets the version id of version the channel
      */
     public int getVersionId(){
-        return I_CmsConstants.C_UNKNOWN_ID;
+        return CmsDbUtil.UNKNOWN_ID;
     }
 
     /**
@@ -721,7 +721,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      */
     public boolean isReadable() {
         m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         try {
             return m_cms.hasPermissions(m_channel, CmsPermissionSet.ACCESS_READ); 
             // TODO: remove this later
@@ -740,7 +740,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
      */
     public boolean isWriteable() {
         m_cms.getRequestContext().saveSiteRoot();
-        m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         try {
             // return m_cms.accessWrite(cms.readPath(m_channel));
             return m_cms.hasPermissions(m_channel, CmsPermissionSet.ACCESS_WRITE);
@@ -792,7 +792,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
         buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_READ) > 0 ? "r" : "-"));
         buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_WRITE) > 0 ? "w" : "-"));
         buf.append(((accessFlags & com.opencms.core.I_CmsConstants.C_ACCESS_PUBLIC_VISIBLE) > 0 ? "v" : "-"));
-        buf.append(((accessFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0 ? "i" : "-"));
+        buf.append(((accessFlags & CmsResource.FLAG_INTERNAL) > 0 ? "i" : "-"));
 
         return buf.toString();
     }
@@ -890,7 +890,7 @@ public class CmsChannelContent extends A_CmsContentDefinition implements I_CmsEx
     public static Vector getChannelList(CmsObject cms) throws CmsException {
         Vector content = new Vector();
         cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         try {
             getAllResources(cms, "/", content);
         } catch(CmsException e) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/cache/Attic/A_CmsElement.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 
@@ -286,7 +285,7 @@ public abstract class A_CmsElement {
                         && (!m_cacheDirectives.isUserPartOfKey())) {
                         CmsResource templ = cms.readResource(m_templateName);
                         int accessflags = templ.getFlags();
-                        if (!((accessflags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0)) {
+                        if (!((accessflags & CmsResource.FLAG_INTERNAL) > 0)) {
                             // internal flag not set
                             proxyPrivate = true;
                             if ((!m_cacheDirectives.isParameterPartOfKey())

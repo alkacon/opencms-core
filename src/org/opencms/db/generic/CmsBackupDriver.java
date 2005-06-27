@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.138 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,10 +34,10 @@ package org.opencms.db.generic;
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.db.CmsDbConsistencyException;
 import org.opencms.db.CmsDbContext;
-import org.opencms.db.CmsDbUtil;
-import org.opencms.db.CmsDriverManager;
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsDbSqlException;
+import org.opencms.db.CmsDbUtil;
+import org.opencms.db.CmsDriverManager;
 import org.opencms.db.I_CmsBackupDriver;
 import org.opencms.db.I_CmsDriver;
 import org.opencms.file.CmsBackupProject;
@@ -51,7 +51,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -77,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.137 $
+ * @version $Revision: 1.138 $
  * 
  * @since 6.0.0 
  */
@@ -256,7 +255,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         PreparedStatement stmt = null;
 
         try {
-            if (internalCountProperties(dbc, metadef, I_CmsConstants.C_PROJECT_ONLINE_ID) != 0
+            if (internalCountProperties(dbc, metadef, CmsProject.ONLINE_PROJECT_ID) != 0
                 || internalCountProperties(dbc, metadef, Integer.MAX_VALUE) != 0) {
 
                 throw new CmsDbConsistencyException(Messages.get().container(
@@ -312,9 +311,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 stmt4.setString(1, currentResource.getBackupId().toString());
                 stmt4.setInt(2, currentResource.getTagId());
                 stmt4.setString(3, currentResource.getStructureId().toString());
-                stmt4.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+                stmt4.setInt(4, CmsProperty.STRUCTURE_RECORD_MAPPING);
                 stmt4.setString(5, currentResource.getResourceId().toString());
-                stmt4.setInt(6, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+                stmt4.setInt(6, CmsProperty.RESOURCE_RECORD_MAPPING);
                 stmt4.addBatch();
             }
 
@@ -367,7 +366,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
         String poolUrl = configuration.get("db.backup.pool").toString();
         String classname = configuration.get("db.backup.sqlmanager").toString();
         m_sqlManager = this.initSqlManager(classname);
-        m_sqlManager.init(I_CmsBackupDriver.C_DRIVER_TYPE_ID, poolUrl);
+        m_sqlManager.init(I_CmsBackupDriver.DRIVER_TYPE_ID, poolUrl);
 
         m_driverManager = driverManager;
 
@@ -757,11 +756,11 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     // there exists already a property for this key in the result
 
                     switch (mappingType) {
-                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING:
+                        case CmsProperty.STRUCTURE_RECORD_MAPPING:
                             // this property value is mapped to a structure record
                             property.setStructureValue(propertyValue);
                             break;
-                        case CmsProperty.C_RESOURCE_RECORD_MAPPING:
+                        case CmsProperty.RESOURCE_RECORD_MAPPING:
                             // this property value is mapped to a resource record
                             property.setResourceValue(propertyValue);
                             break;
@@ -778,12 +777,12 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     property.setName(propertyKey);
 
                     switch (mappingType) {
-                        case CmsProperty.C_STRUCTURE_RECORD_MAPPING:
+                        case CmsProperty.STRUCTURE_RECORD_MAPPING:
                             // this property value is mapped to a structure record
                             property.setStructureValue(propertyValue);
                             property.setResourceValue(null);
                             break;
-                        case CmsProperty.C_RESOURCE_RECORD_MAPPING:
+                        case CmsProperty.RESOURCE_RECORD_MAPPING:
                             // this property value is mapped to a resource record
                             property.setStructureValue(null);
                             property.setResourceValue(propertyValue);
@@ -1040,7 +1039,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     if (i == 0) {
                         // write the structure value on the first cycle
                         value = property.getStructureValue();
-                        mappingType = CmsProperty.C_STRUCTURE_RECORD_MAPPING;
+                        mappingType = CmsProperty.STRUCTURE_RECORD_MAPPING;
                         id = resource.getStructureId();
 
                         if (value == null || "".equals(value)) {
@@ -1049,7 +1048,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                     } else {
                         // write the resource value on the second cycle
                         value = property.getResourceValue();
-                        mappingType = CmsProperty.C_RESOURCE_RECORD_MAPPING;
+                        mappingType = CmsProperty.RESOURCE_RECORD_MAPPING;
                         id = resource.getResourceId();
 
                         if (value == null || "".equals(value)) {

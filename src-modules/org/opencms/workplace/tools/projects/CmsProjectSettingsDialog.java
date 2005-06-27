@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "settings";
+    public static final String KEY_PREFIX = "settings";
 
     /** aux property for mapping the projectFilesMode property of an user project settings object. */
     private String m_mode;
@@ -170,7 +170,7 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
         // initialize the project object to use for the dialog
         initSettingsObject();
 
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
         addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsSelectWidget(

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,50 +74,50 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** Request parameter name for the head navigation start folder. */
-    public static final String C_PARAM_HEADNAV_FOLDER = "headnavfolder";
+    public static final String PARAM_HEADNAV_FOLDER = "headnavfolder";
 
     /** Request parameter name for the head navigation flag to use images on 1st level. */
-    public static final String C_PARAM_HEADNAV_IMAGES = "headnavimages";
+    public static final String PARAM_HEADNAV_IMAGES = "headnavimages";
 
     /** Request parameter name for the head navigation flag to mark the current top level folder. */
-    public static final String C_PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
+    public static final String PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
 
     /** Request parameter name for the head navigation flag to expand the submenus on click (true) or mouseover (false). */
-    public static final String C_PARAM_HEADNAV_MENUCLICK = "headnavmenuclick";
+    public static final String PARAM_HEADNAV_MENUCLICK = "headnavmenuclick";
 
     /** Request parameter name for the head navigation sub menu depth. */
-    public static final String C_PARAM_HEADNAV_MENUDEPTH = "headnavmenudepth";
+    public static final String PARAM_HEADNAV_MENUDEPTH = "headnavmenudepth";
 
     /** Request parameter name for the current locale. */
-    public static final String C_PARAM_LOCALE = "locale";
+    public static final String PARAM_LOCALE = "locale";
 
     /** Request parameter name for the left navigation editable include element uri. */
-    public static final String C_PARAM_NAVLEFT_ELEMENTURI = "navleftelementuri";
+    public static final String PARAM_NAVLEFT_ELEMENTURI = "navleftelementuri";
 
     /** Request parameter name for the flag if the left navigation should display only the selected resources. */
-    public static final String C_PARAM_NAVLEFT_SHOWSELECTED = "navleftselected";
+    public static final String PARAM_NAVLEFT_SHOWSELECTED = "navleftselected";
 
     /** Request parameter name for the flag if the left navigation tree should be displayed. */
-    public static final String C_PARAM_NAVLEFT_SHOWTREE = "navleftshowtree";
+    public static final String PARAM_NAVLEFT_SHOWTREE = "navleftshowtree";
 
     /** Request parameter name for the current resource path. */
-    public static final String C_PARAM_RESPATH = "respath";
+    public static final String PARAM_RESPATH = "respath";
 
     /** Request parameter name for the flag if the head navigation menus should be shown. */
-    public static final String C_PARAM_SHOWMENUS = "showmenus";
+    public static final String PARAM_SHOWMENUS = "showmenus";
 
     /** Request parameter name for the current start folder. */
-    public static final String C_PARAM_STARTFOLDER = "startfolder";
+    public static final String PARAM_STARTFOLDER = "startfolder";
 
     /** Name of the property key to determine if the current element is shown in headnav. */
-    public static final String C_PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
+    public static final String PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
 
     /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
@@ -303,7 +303,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         for (int i = 0; i < navElements.size(); i++) {
             CmsJspNavElement nav = (CmsJspNavElement)navElements.get(i);
             showItemProperty = property(
-                C_PROPERTY_HEADNAV_USE,
+                PROPERTY_HEADNAV_USE,
                 nav.getResourceName(),
                 getHeadNavItemDefaultStringValue());
             boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
@@ -435,7 +435,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             for (int i = 0; i < navElements.size(); i++) {
                 CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
                 showItemProperty = property(
-                    C_PROPERTY_HEADNAV_USE,
+                    PROPERTY_HEADNAV_USE,
                     foldernav.getResourceName(),
                     getHeadNavItemDefaultStringValue());
                 boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
@@ -657,7 +657,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             for (int i = 0; i < navSize; i++) {
                 CmsJspNavElement ne = (CmsJspNavElement)curNav.get(i);
                 String resName = ne.getResourceName();
-                showItemProperty = property(C_PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
+                showItemProperty = property(PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
                 boolean showEntry = Boolean.valueOf(showItemProperty).booleanValue();
                 if (showEntry) {
                     entryPresent = true;
@@ -697,7 +697,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             if ("menu0".equals(prefix) && showAccessibleVersion()) {
                 // create div that is displayed for accessible version
                 CmsMessages messages = new CmsMessages(
-                    CmsTemplateBean.C_MESSAGE_BUNDLE,
+                    CmsTemplateBean.MESSAGE_BUNDLE,
                     getRequestContext().getLocale());
                 openTag.append("<div style=\"visibility: hidden; display:none;\">");
                 openTag.append("<h3>").append(messages.key("headline.accessible.nav.headline")).append("</h3>");
@@ -777,23 +777,23 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         // call initialization of super class
         super.init(context, req, res);
         // initialize members from request
-        m_locale = req.getParameter(C_PARAM_LOCALE);
+        m_locale = req.getParameter(PARAM_LOCALE);
         if (m_locale == null) {
             m_locale = property(CmsPropertyDefinition.PROPERTY_LOCALE, "search", "en").toLowerCase();
         }
-        m_showAccessibleVersion = Boolean.valueOf(req.getParameter(CmsTemplateBean.C_PARAM_ACCESSIBLE)).booleanValue();
-        m_headNavFolder = req.getParameter(C_PARAM_HEADNAV_FOLDER);
-        m_showHeadNavImages = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_IMAGES)).booleanValue();
+        m_showAccessibleVersion = Boolean.valueOf(req.getParameter(CmsTemplateBean.PARAM_ACCESSIBLE)).booleanValue();
+        m_headNavFolder = req.getParameter(PARAM_HEADNAV_FOLDER);
+        m_showHeadNavImages = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_IMAGES)).booleanValue();
         m_headNavItemDefaultValue = true;
-        m_headNavMarkCurrent = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_MARKCURRENT)).booleanValue();
-        m_headNavMenuClick = Boolean.valueOf(req.getParameter(C_PARAM_HEADNAV_MENUCLICK)).booleanValue();
-        m_menuDepth = Integer.parseInt(req.getParameter(C_PARAM_HEADNAV_MENUDEPTH));
-        m_navLeftElementUri = req.getParameter(C_PARAM_NAVLEFT_ELEMENTURI);
-        m_navLeftShowSelected = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWSELECTED)).booleanValue();
-        m_navLeftShowTree = Boolean.valueOf(req.getParameter(C_PARAM_NAVLEFT_SHOWTREE)).booleanValue();
-        m_resPath = req.getParameter(C_PARAM_RESPATH);
-        m_startFolder = req.getParameter(C_PARAM_STARTFOLDER);
-        m_showMenus = Boolean.valueOf(req.getParameter(C_PARAM_SHOWMENUS)).booleanValue();
+        m_headNavMarkCurrent = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MARKCURRENT)).booleanValue();
+        m_headNavMenuClick = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MENUCLICK)).booleanValue();
+        m_menuDepth = Integer.parseInt(req.getParameter(PARAM_HEADNAV_MENUDEPTH));
+        m_navLeftElementUri = req.getParameter(PARAM_NAVLEFT_ELEMENTURI);
+        m_navLeftShowSelected = Boolean.valueOf(req.getParameter(PARAM_NAVLEFT_SHOWSELECTED)).booleanValue();
+        m_navLeftShowTree = Boolean.valueOf(req.getParameter(PARAM_NAVLEFT_SHOWTREE)).booleanValue();
+        m_resPath = req.getParameter(PARAM_RESPATH);
+        m_startFolder = req.getParameter(PARAM_STARTFOLDER);
+        m_showMenus = Boolean.valueOf(req.getParameter(PARAM_SHOWMENUS)).booleanValue();
     }
 
     /**
@@ -819,7 +819,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
     public CmsMessages messages() {
 
         if (m_messages == null) {
-            m_messages = getMessages(CmsTemplateBean.C_MESSAGE_BUNDLE, getLocale());
+            m_messages = getMessages(CmsTemplateBean.MESSAGE_BUNDLE, getLocale());
         }
         return m_messages;
     }
@@ -871,7 +871,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      */
     public boolean showNavLeftElement() {
 
-        return (getNavLeftElementUri() != null && !CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(getNavLeftElementUri()));
+        return (getNavLeftElementUri() != null && !CmsTemplateBean.PROPERTY_VALUE_NONE.equals(getNavLeftElementUri()));
     }
 
     /**
@@ -915,7 +915,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         for (int i = navEntries.size() - 1; i >= 0; i--) {
             CmsJspNavElement nav = (CmsJspNavElement)navEntries.get(i);
             String showItemProperty = property(
-                C_PROPERTY_HEADNAV_USE,
+                PROPERTY_HEADNAV_USE,
                 nav.getResourceName(),
                 getHeadNavItemDefaultStringValue());
             if (Boolean.valueOf(showItemProperty).booleanValue()) {

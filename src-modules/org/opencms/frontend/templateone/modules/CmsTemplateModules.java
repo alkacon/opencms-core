@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,22 +60,26 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateModules extends CmsJspActionElement {
 
     /** Request parameter name for the category folder. */
-    public static final String C_PARAM_CATEGORYFOLDER = "categoryfolder";
+    public static final String PARAM_CATEGORYFOLDER = "categoryfolder";
+    
     /** Request parameter name for the collector. */
-    public static final String C_PARAM_COLLECTOR = "collector";
+    public static final String PARAM_COLLECTOR = "collector";
+    
     /** Request parameter name for the list count. */
-    public static final String C_PARAM_COUNT = "count";
+    public static final String PARAM_COUNT = "count";
+    
     /** Request parameter name maximum number of elements to show. */
-    public static final String C_PARAM_ELEMENTCOUNT = "elementcount";
+    public static final String PARAM_ELEMENTCOUNT = "elementcount";
+    
     /** Request parameter name for the xmlcontent folder. */
-    public static final String C_PARAM_FOLDER = "folder";
+    public static final String PARAM_FOLDER = "folder";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyTemplateOne.class);
@@ -105,7 +109,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         StringBuffer result = new StringBuffer(16);
         // get the value of the start folder request parameter
-        String startfolder = getRequest().getParameter(C_PARAM_FOLDER);
+        String startfolder = getRequest().getParameter(PARAM_FOLDER);
         // calculate levels to go down
         int displayLevels = -(CmsResource.getPathLevel(getCategoryFolder()) - CmsResource.getPathLevel(startfolder) + 1);
         // get the navigation list
@@ -127,7 +131,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
             // generate the link for the navigation element
             String faqUri = link(getRequestContext().getUri()
                 + "?"
-                + C_PARAM_CATEGORYFOLDER
+                + PARAM_CATEGORYFOLDER
                 + "="
                 + navElement.getResourceName());
 
@@ -170,7 +174,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
         }
 
         // read the resource tree
-        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         List resourceTree = getCmsObject().readResources(startfolder, filter, true);
 
         String indent = "&nbsp;&nbsp;";
@@ -237,7 +241,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
                     result.append(indent);
                 }
 
-                String faqUri = link(getRequestContext().getUri() + "?" + C_PARAM_CATEGORYFOLDER + "=" + resourceName);
+                String faqUri = link(getRequestContext().getUri() + "?" + PARAM_CATEGORYFOLDER + "=" + resourceName);
 
                 String title = getCmsObject().readPropertyObject(
                     resourceName,
@@ -340,10 +344,10 @@ public class CmsTemplateModules extends CmsJspActionElement {
 
         if (m_categoryFolder == null) {
             // get the category folder from request
-            m_categoryFolder = getRequest().getParameter(C_PARAM_CATEGORYFOLDER);
+            m_categoryFolder = getRequest().getParameter(PARAM_CATEGORYFOLDER);
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_categoryFolder)) {
                 // no folder found in request, use folder parameter
-                m_categoryFolder = getRequest().getParameter(C_PARAM_FOLDER);
+                m_categoryFolder = getRequest().getParameter(PARAM_FOLDER);
             }
         }
         return m_categoryFolder;
@@ -415,6 +419,6 @@ public class CmsTemplateModules extends CmsJspActionElement {
      */
     public boolean showNavBreadCrumb() {
 
-        return hasCategoryFolders() || !getRequest().getParameter(C_PARAM_FOLDER).equals(getCategoryFolder());
+        return hasCategoryFolders() || !getRequest().getParameter(PARAM_FOLDER).equals(getCategoryFolder());
     }
 }

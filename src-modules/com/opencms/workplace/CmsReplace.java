@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsReplace.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -47,7 +45,7 @@ import java.util.Vector;
  * This class is invoked for the workplace "replace" function in the context menu.
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -135,16 +133,16 @@ public final class CmsReplace extends CmsWorkplaceDefault {
         //////////////////////////////////////////////////////////////////////
 
         // clear session values on the first load
-        if (theParameters.get(I_CmsWpConstants.C_PARA_INITIAL) != null) {
+        if (theParameters.get(CmsWorkplaceDefault.C_PARA_INITIAL) != null) {
             this.clearSessionValues(session);
         }
 
         //////////////////////////////////////////////////////////////////////      
 
         // save the name of the old resource in the session
-        m_OldResourceName = (String)theParameters.get(I_CmsWpConstants.C_PARA_RESOURCE);
+        m_OldResourceName = (String)theParameters.get(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if (m_OldResourceName != null) {
-            session.putValue(I_CmsWpConstants.C_PARA_RESOURCE, m_OldResourceName);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, m_OldResourceName);
 
             // preserve the type of the old resource depending on the file extension as well
             Map fileExtensions = OpenCms.getResourceManager().getExtensionMapping();
@@ -161,7 +159,7 @@ public final class CmsReplace extends CmsWorkplaceDefault {
 
             session.putValue("OLD_TYPE", m_OldResourceType);
         } else {
-            m_OldResourceName = (String)session.getValue(I_CmsWpConstants.C_PARA_RESOURCE);
+            m_OldResourceName = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             m_OldResourceType = (String)session.getValue("OLD_TYPE");
         }
 
@@ -182,21 +180,21 @@ public final class CmsReplace extends CmsWorkplaceDefault {
             session.putValue("NEW_RESOURCE", m_UploadResourceName);
 
             m_UploadResourceContent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(m_UploadResourceName);
-            session.putValue(I_CmsWpConstants.C_PARA_FILECONTENT, m_UploadResourceContent);
+            session.putValue(CmsWorkplaceDefault.C_PARA_FILECONTENT, m_UploadResourceContent);
         } else {
             m_UploadResourceName = (String)session.getValue("NEW_RESOURCE");
-            m_UploadResourceContent = (byte[])session.getValue(I_CmsWpConstants.C_PARA_FILECONTENT);
+            m_UploadResourceContent = (byte[])session.getValue(CmsWorkplaceDefault.C_PARA_FILECONTENT);
         }
         m_XmlTemplateDocument.setData("NEW_RESOURCE", m_UploadResourceName);
 
         //////////////////////////////////////////////////////////////////////
 
         // get the type of the new resource
-        m_UploadResourceType = (String)theParameters.get(I_CmsWpConstants.C_PARA_NEWTYPE);
+        m_UploadResourceType = (String)theParameters.get(CmsWorkplaceDefault.C_PARA_NEWTYPE);
         if (m_UploadResourceType != null) {
-            session.putValue(I_CmsWpConstants.C_PARA_NEWTYPE, m_UploadResourceType);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NEWTYPE, m_UploadResourceType);
         } else {
-            m_UploadResourceType = (String)session.getValue(I_CmsWpConstants.C_PARA_NEWTYPE);
+            m_UploadResourceType = (String)session.getValue(CmsWorkplaceDefault.C_PARA_NEWTYPE);
         }
 
         //////////////////////////////////////////////////////////////////////      
@@ -224,10 +222,10 @@ public final class CmsReplace extends CmsWorkplaceDefault {
      */
     private void clearSessionValues(I_CmsSession theSession) {
         // remove all session values
-        theSession.removeValue(I_CmsWpConstants.C_PARA_RESOURCE); // name of the old resource
+        theSession.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE); // name of the old resource
         theSession.removeValue("OLD_TYPE"); // type of the old resource
         theSession.removeValue("NEW_RESOURCE"); // name of the new resource
-        theSession.removeValue(I_CmsWpConstants.C_PARA_FILECONTENT); // content of the new resource        
+        theSession.removeValue(CmsWorkplaceDefault.C_PARA_FILECONTENT); // content of the new resource        
     }
 
     /**

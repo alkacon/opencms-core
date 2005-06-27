@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,7 @@ package org.opencms.flex;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.util.CmsRequestUtil;
 
 import java.util.List;
 import java.util.Vector;
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,7 +248,7 @@ public class CmsFlexController {
     public static boolean isNotModifiedSince(HttpServletRequest req, long dateLastModified) {
 
         // check if the request contains a last modified header
-        long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);
+        long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
         // if last modified header is set (> -1), compare it to the requested resource                           
         return ((lastModifiedHeader > -1) && (((dateLastModified / 1000) * 1000) == lastModifiedHeader));
     }
@@ -296,7 +296,7 @@ public class CmsFlexController {
                 // set "Expires" header max one day into the future
                 dateExpires = now + 86400000;
             }
-            res.setDateHeader(I_CmsConstants.C_HEADER_EXPIRES, dateExpires);
+            res.setDateHeader(CmsRequestUtil.HEADER_EXPIRES, dateExpires);
         }
     }
 
@@ -310,10 +310,10 @@ public class CmsFlexController {
 
         if (dateLastModified > -1) {
             // set date last modified header (precision is only second, not millisecond
-            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, (dateLastModified / 1000) * 1000);
+            res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, (dateLastModified / 1000) * 1000);
         } else {
             // this resource can not be optimized for "last modified", use current time as header
-            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
+            res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
         }
     }
 
@@ -639,7 +639,7 @@ public class CmsFlexController {
 
         if (m_flexContextInfoList.size() > 0) {
             m_cmsObject.getRequestContext().setAttribute(
-                I_CmsConstants.C_HEADER_LAST_MODIFIED,
+                CmsRequestUtil.HEADER_LAST_MODIFIED,
                 m_flexContextInfoList.get(m_flexContextInfoList.size() - 1));
         }
     }

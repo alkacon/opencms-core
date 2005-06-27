@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -45,7 +44,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0 
  */
@@ -156,11 +155,62 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
         }
     };
 
+    /** Copy mode for copy resources as new resource. */
+    public static final int COPY_AS_NEW = 1;
+
+    /** Copy mode for copy resources as sibling. */
+    public static final int COPY_AS_SIBLING = 2;
+
+    /** Copy mode to preserve siblings during copy. */
+    public static final int COPY_PRESERVE_SIBLING = 3;
+
     /** The default expiration date of a resource (which is: never expires). */
     public static final long DATE_EXPIRED_DEFAULT = Long.MAX_VALUE;
 
     /** The default release date of a resource (which is: always released). */
     public static final long DATE_RELEASED_DEFAULT = 0;
+
+    /** Signals that siblings of this resource should not be deleted. */
+    public static final int DELETE_PRESERVE_SIBLINGS = 0;
+
+    /** Signals that siblings of this resource should be deleted. */
+    public static final int DELETE_REMOVE_SIBLINGS = 1;
+
+    /** Flag to indicate that this is an internal resource, that can't be accessed directly. */
+    public static final int FLAG_INTERNAL = 512;
+
+    /** The resource is linked inside a site folder specified in the OpenCms configuration. */
+    public static final int FLAG_LABELED = 2;
+
+    /** Indicates if a resource has been changed in the offline version when compared to the online version. */
+    public static final int STATE_CHANGED = 1;
+
+    /** Indicates if a resource has been deleted in the offline version when compared to the online version. */
+    public static final int STATE_DELETED = 3;
+
+    /**
+     * Special state value that indicates the current state must be kept on a resource,
+     * this value must never be written to the database.
+     */
+    public static final int STATE_KEEP = 99;
+
+    /** Indicates if a resource in new in the offline version when compared to the online version. */
+    public static final int STATE_NEW = 2;
+
+    /** Indicates if a resource is unchanged in the offline version when compared to the online version. */
+    public static final int STATE_UNCHANGED = 0;
+
+    /** Flag for leaving a date unchanged during a touch operation. */
+    public static final long TOUCH_DATE_UNCHANGED = -1;
+
+    /** The vfs path of the channel folder. */
+    public static final String VFS_FOLDER_CHANNELS = "/channels";
+
+    /** The vfs path of the sites master folder. */
+    public static final String VFS_FOLDER_SITES = "/sites";
+
+    /** The vfs path of the system folder. */
+    public static final String VFS_FOLDER_SYSTEM = "/system";
 
     /** The size of the content. */
     protected int m_length;
@@ -305,8 +355,8 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static String getName(String resource) {
 
-        if (I_CmsConstants.C_ROOT.equals(resource)) {
-            return I_CmsConstants.C_ROOT;
+        if ("/".equals(resource)) {
+            return "/";
         }
         // remove the last char, for a folder this will be "/", for a file it does not matter
         String parent = (resource.substring(0, resource.length() - 1));
@@ -328,7 +378,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static String getParentFolder(String resource) {
 
-        if (I_CmsConstants.C_ROOT.equals(resource)) {
+        if ("/".equals(resource)) {
             return null;
         }
         // remove the last char, for a folder this will be "/", for a file it does not matter
@@ -601,7 +651,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     /**
      * Returns the state of this resource.<p>
      *
-     * This may be C_STATE_UNCHANGED, C_STATE_CHANGED, C_STATE_NEW or C_STATE_DELETED.<p>
+     * This may be STATE_UNCHANGED, STATE_CHANGED, STATE_NEW or STATE_DELETED.<p>
      *
      * @return the state of this resource
      */
@@ -691,7 +741,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean isInternal() {
 
-        return ((m_flags & I_CmsConstants.C_RESOURCEFLAG_INTERNAL) > 0);
+        return ((m_flags & FLAG_INTERNAL) > 0);
     }
 
     /**
@@ -703,7 +753,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public boolean isLabeled() {
 
-        return ((m_flags & I_CmsConstants.C_RESOURCEFLAG_LABELLINK) > 0);
+        return ((m_flags & CmsResource.FLAG_LABELED) > 0);
     }
 
     /**

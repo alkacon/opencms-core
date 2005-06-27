@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,14 +49,14 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.56 $
+ * @version $Revision: 1.57 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsUserDriver extends I_CmsDriver {
 
     /** The type ID to identify user driver implementations. */
-    int C_DRIVER_TYPE_ID = 2;
+    int DRIVER_TYPE_ID = 2;
 
     /**
      * Creates an access control entry.<p>
@@ -247,7 +247,7 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @param lastname the lastname of the user
      * @param email the email of the user
      * @param lastlogin the user lastlogin time
-     * @param flags the flags for a user (e.g. <code>{@link org.opencms.main.I_CmsConstants#C_FLAG_ENABLED}</code>)
+     * @param flags the flags for a user (e.g. <code>{@link org.opencms.security.I_CmsPrincipal#FLAG_ENABLED}</code>)
      * @param additionalInfos a <code>{@link Map}</code> with additional infos for the user. These
      *                      infos may be stored into the Usertables (depending on the implementation).
      * @param address the address of the user

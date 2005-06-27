@@ -1,12 +1,12 @@
 <%
 		// ############ hidden field ############
-		if (fieldType.equals(CmsField.C_TYPE_HIDDEN)) {
+		if (fieldType.equals(CmsField.TYPE_HIDDEN)) {
 		%><input type="hidden" name="<%= field.getName() %>" value="<%= field.getValue() %>">
 		<%
 		}
 		
 		// ############ text or email field ############
-		else if (fieldType.equals(CmsField.C_TYPE_TEXT) || fieldType.equals(CmsField.C_TYPE_EMAIL)) {
+		else if (fieldType.equals(CmsField.TYPE_TEXT) || fieldType.equals(CmsField.TYPE_EMAIL)) {
 		%><%= messages.key("form.html.row.start") %>
 			<%= messages.key("form.html.label.start") %><%= fieldLabel %><%= mandatory %><%= messages.key("form.html.label.end") %>
 			<%= messages.key("form.html.field.start") %><input type="text" name="<%= field.getName() %>" value="<%= field.getValue() %>"<%= formConfiguration.getFormFieldAttributes() %>><%= errorMessage %><%= messages.key("form.html.field.end") %>
@@ -15,7 +15,7 @@
 		}
 		
 		// ############ textarea ############
-		else if (fieldType.equals(CmsField.C_TYPE_TEXTAREA)) {
+		else if (fieldType.equals(CmsField.TYPE_TEXTAREA)) {
 		%><%= messages.key("form.html.row.start") %>
 			<%= messages.key("form.html.label.start") %><%= fieldLabel %><%= mandatory %><%= messages.key("form.html.label.end") %>
 			<%= messages.key("form.html.field.start") %><textarea name="<%= field.getName() %>"<%= formConfiguration.getFormFieldAttributes() %>><%= field.getValue() %></textarea><%= errorMessage %><%= messages.key("form.html.field.end") %>
@@ -24,7 +24,7 @@
 		}
 		
 		// ############ selectbox ############
-		else if (fieldType.equals(CmsField.C_TYPE_SELECT)) { 
+		else if (fieldType.equals(CmsField.TYPE_SELECT)) { 
 		%><%= messages.key("form.html.row.start") %>
 			<%= messages.key("form.html.label.start") %><%= fieldLabel %><%= mandatory %><%= messages.key("form.html.label.end") %>
 			<%= messages.key("form.html.field.start") %>
@@ -49,7 +49,7 @@
 		}
 		
 		// ############ checkbox ############
-		else if (fieldType.equals(CmsField.C_TYPE_CHECKBOX)) {
+		else if (fieldType.equals(CmsField.TYPE_CHECKBOX)) {
 		%><%= messages.key("form.html.row.start") %>
 			<%= messages.key("form.html.label.start") %><%= fieldLabel %><%= mandatory %><%= messages.key("form.html.label.end") %>
 			<%= messages.key("form.html.field.start") %>
@@ -75,7 +75,7 @@
 		}
 		
 		// ############ radio buttons ############
-		else if (fieldType.equals(CmsField.C_TYPE_RADIO)) {
+		else if (fieldType.equals(CmsField.TYPE_RADIO)) {
 		%><%= messages.key("form.html.row.start") %>
 			<%= messages.key("form.html.label.start") %><%= fieldLabel %><%= mandatory %><%= messages.key("form.html.label.end") %>
 			<%= messages.key("form.html.field.start") %>

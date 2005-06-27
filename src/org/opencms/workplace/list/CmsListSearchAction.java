@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListSearchAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,7 @@ public class CmsListSearchAction extends A_CmsListSearchAction implements I_CmsS
     public String buttonHtml(CmsWorkplace wp) {
 
         // delay the composition of the help text as much as possible
-        if (getHelpText() == C_EMPTY_MESSAGE) {
+        if (getHelpText() == EMPTY_MESSAGE) {
             String columns = "";
             Iterator it = m_columns.iterator();
             while (it.hasNext()) {

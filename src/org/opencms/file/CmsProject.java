@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
 import java.sql.ResultSet;
@@ -44,11 +43,29 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0 
  */
 public class CmsProject implements Cloneable {
+
+    /** The id of the online project. */
+    public static final int ONLINE_PROJECT_ID = 1;
+
+    /** The name of the online project. */
+    public static final String ONLINE_PROJECT_NAME = "Online";
+
+    /** Indicates that a project is invisible in the workplace. */
+    public static final int PROJECT_STATE_INVISIBLE = 3;
+
+    /** Indicates an unlocked project. */
+    public static final int PROJECT_STATE_UNLOCKED = 0;
+
+    /** Indicates a normal project. */
+    public static final int PROJECT_TYPE_NORMAL = 0;
+
+    /** Indicates a temporary project that is deleted after it is published. */
+    public static final int PROJECT_TYPE_TEMPORARY = 1;
 
     /** The creation date of this project. */
     private long m_dateCreated;
@@ -198,7 +215,7 @@ public class CmsProject implements Cloneable {
      */
     public static boolean isOnlineProject(int projectId) {
 
-        return projectId == I_CmsConstants.C_PROJECT_ONLINE_ID;
+        return projectId == CmsProject.ONLINE_PROJECT_ID;
     }
 
     /**
@@ -355,7 +372,7 @@ public class CmsProject implements Cloneable {
      */
     public boolean isDeleteAfterPublishing() {
 
-        return m_type == I_CmsConstants.C_PROJECT_TYPE_TEMPORARY;
+        return m_type == CmsProject.PROJECT_TYPE_TEMPORARY;
     }
 
     /**
@@ -377,7 +394,7 @@ public class CmsProject implements Cloneable {
      */
     public void setDeleteAfterPublishing(boolean deleteAfterPublishing) {
 
-        m_type = deleteAfterPublishing ? I_CmsConstants.C_PROJECT_TYPE_TEMPORARY : I_CmsConstants.C_PROJECT_TYPE_NORMAL;
+        m_type = deleteAfterPublishing ? CmsProject.PROJECT_TYPE_TEMPORARY : CmsProject.PROJECT_TYPE_NORMAL;
     }
 
     /**

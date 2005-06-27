@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportVersion1.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,11 +37,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
-import com.opencms.template.*;
+import com.opencms.template.CmsXmlTemplateLinkConverter;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -133,7 +132,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
             fileContent = scanFrameTemplate(fileContent);
         }
         // scan content/bodys
-        if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(I_CmsWpConstants.C_VFS_PATH_BODIES) != -1) {
+        if (filename.indexOf(C_VFS_PATH_OLD_BODIES) != -1 || filename.indexOf(CmsCompatibleCheck.VFS_PATH_BODIES) != -1) {
             if (DEBUG > 0) {
                 System.err.println("[" + this.getClass().getName() + ".convertFile()]: Starting scan of body page.");
             }
@@ -277,7 +276,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                         editString = CmsStringUtil.substitute(
                             editString,
                             (String)m_webAppNames.get(k),
-                            I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/");
+                            CmsStringUtil.MACRO_OPENCMS_CONTEXT + "/");
                     }
 
                     // There is a setText(String) but no corresponding setCDATA in dom4j.
@@ -375,7 +374,7 @@ public class CmsImportVersion1 extends CmsImportVersion2 {
                 // ok, a (very) old system exported this, check if the file is ok
                 if (!(new CmsCompatibleCheck()).isTemplateCompatible(m_importPath + destination, content, resType)) {
                     resType = CmsResourceTypeCompatiblePlain.getStaticTypeName();
-                    m_report.print(Messages.get().container(Messages.RPT_MUST_SET_TO_1, resType), I_CmsReport.C_FORMAT_WARNING);
+                    m_report.print(Messages.get().container(Messages.RPT_MUST_SET_TO_1, resType), I_CmsReport.FORMAT_WARNING);
                 }
             }
         }

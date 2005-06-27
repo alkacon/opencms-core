@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.5 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.6 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -221,7 +221,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                                                             // add comment
                                                             String comment = (String)parameters.get("DESCRIPTION");
                                                             if((comment != null) && (comment.length() != 0)) {
-                                                                taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_COMMENT);
+                                                                taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_COMMENT);
                                                             }
                                                         }
                                                         else {

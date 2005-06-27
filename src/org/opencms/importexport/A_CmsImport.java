@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.I_CmsMessageBundle;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -82,7 +81,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  * 
@@ -244,8 +243,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_SUCCESSION_2,
                         String.valueOf(++i),
-                        String.valueOf(linksSize)), I_CmsReport.C_FORMAT_NOTE);
-                    m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.C_FORMAT_NOTE);
+                        String.valueOf(linksSize)), I_CmsReport.FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_CONVERT_LINK_0), I_CmsReport.FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         key + " "));
@@ -265,7 +264,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                             target.isFolder(),
                             0,
                             m_cms.getRequestContext().currentProject().getId(), // TODO: pass flags from import 
-                            I_CmsConstants.C_STATE_NEW,
+                            CmsResource.STATE_NEW,
                             target.getDateCreated(),
                             target.getUserCreated(),
                             target.getDateLastModified(),
@@ -277,7 +276,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
                         m_cms.importResource(key, resource, null, properties);
                         m_report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
                             LOG.info(Messages.get().key(
@@ -291,7 +290,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
                         m_cms.createResource(key, CmsResourceTypePointer.getStaticTypeId(), link.getBytes(), properties);
                         m_report.println(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.C_FORMAT_OK);
+                            org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
                             LOG.info(Messages.get().key(
@@ -306,7 +305,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_report.println();
                     m_report.print(
                         Messages.get().container(Messages.RPT_CONVERT_LINK_NOTFOUND_1, link),
-                        I_CmsReport.C_FORMAT_WARNING);
+                        I_CmsReport.FORMAT_WARNING);
 
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2, key, link), e);
@@ -453,7 +452,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
             m_report.println(
                 Messages.get().container(Messages.RPT_IMPORT_ACL_DATA_FAILED_0),
-                I_CmsReport.C_FORMAT_WARNING);
+                I_CmsReport.FORMAT_WARNING);
         }
     }
 
@@ -494,7 +493,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_groupsToCreate.push(groupData);
             } else {
                 try {
-                    m_report.print(Messages.get().container(Messages.RPT_IMPORT_GROUP_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_IMPORT_GROUP_0), I_CmsReport.FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         name));
@@ -502,10 +501,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                     m_cms.createGroup(name, description, Integer.parseInt(flags), parentgroupName);
                     m_report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.C_FORMAT_OK);
+                        I_CmsReport.FORMAT_OK);
                 } catch (CmsException exc) {
 
-                    m_report.println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.C_FORMAT_OK);
+                    m_report.println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.FORMAT_OK);
                 }
             }
 
@@ -615,7 +614,7 @@ public abstract class A_CmsImport implements I_CmsImport {
         String id = new CmsUUID().toString();
         try {
             try {
-                m_report.print(Messages.get().container(Messages.RPT_IMPORT_USER_0), I_CmsReport.C_FORMAT_NOTE);
+                m_report.print(Messages.get().container(Messages.RPT_IMPORT_USER_0), I_CmsReport.FORMAT_NOTE);
                 m_report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     name));
@@ -642,9 +641,9 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
             } catch (CmsException exc) {
-                m_report.println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.C_FORMAT_OK);
+                m_report.println(Messages.get().container(Messages.RPT_NOT_CREATED_0), I_CmsReport.FORMAT_OK);
             }
         } catch (Exception e) {
 

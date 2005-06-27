@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/24 16:27:52 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.dbcp.DelegatingResultSet;
  * @author Michael Emmerich   
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.55 $
+ * @version $Revision: 1.56 $
  * 
  * @since 6.0.0 
  */
@@ -107,9 +107,9 @@ public class CmsBackupDriver extends org.opencms.db.generic.CmsBackupDriver {
                 stmt4.setString(1, currentResource.getBackupId().toString());
                 stmt4.setInt(2, currentResource.getTagId());
                 stmt4.setString(3, currentResource.getStructureId().toString());
-                stmt4.setInt(4, CmsProperty.C_STRUCTURE_RECORD_MAPPING);
+                stmt4.setInt(4, CmsProperty.STRUCTURE_RECORD_MAPPING);
                 stmt4.setString(5, currentResource.getResourceId().toString());
-                stmt4.setInt(6, CmsProperty.C_RESOURCE_RECORD_MAPPING);
+                stmt4.setInt(6, CmsProperty.RESOURCE_RECORD_MAPPING);
                 stmt4.addBatch();
             }
 

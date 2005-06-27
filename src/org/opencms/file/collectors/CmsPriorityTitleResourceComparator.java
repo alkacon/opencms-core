@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */
@@ -170,9 +170,9 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
         }
 
         try {
-            m_priority = Integer.parseInt((String)properties.get(CmsPriorityResourceCollector.C_PROPERTY_PRIORITY));
+            m_priority = Integer.parseInt((String)properties.get(CmsPriorityResourceCollector.PROPERTY_PRIORITY));
         } catch (NumberFormatException e) {
-            m_priority = CmsPriorityResourceCollector.C_PRIORITY_STANDARD;
+            m_priority = CmsPriorityResourceCollector.PRIORITY_STANDARD;
         }
 
         m_title = (String)properties.get(CmsPropertyDefinition.PROPERTY_TITLE);

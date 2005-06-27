@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,12 +86,12 @@ public class CmsAdminDialog extends CmsDialog {
         Map params = initAdminTool();
 
         // explorer view dialogs
-        if (CmsExplorerDialog.C_EXPLORER_TOOLS.contains(getCurrentToolPath())) {
+        if (CmsExplorerDialog.EXPLORER_TOOLS.contains(getCurrentToolPath())) {
             if (getAction() == CmsDialog.ACTION_CANCEL) {
                 actionCloseDialog();
                 return;
             }
-            getToolManager().jspForwardPage(this, CmsToolManager.C_ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
+            getToolManager().jspForwardPage(this, CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/tool-fs.html", params);
             return;
         }
 

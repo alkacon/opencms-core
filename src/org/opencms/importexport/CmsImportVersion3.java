@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/06/26 15:35:13 $
- * Version: $Revision: 1.68 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.69 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
@@ -69,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.68 $ 
+ * @version $Revision: 1.69 $ 
  * 
  * @since 6.0.0 
  * 
@@ -78,7 +77,7 @@ import org.dom4j.Element;
 public class CmsImportVersion3 extends A_CmsImport {
 
     /** The version number of this import implementation.<p> */
-    private static final int C_IMPORT_VERSION = 3;
+    private static final int IMPORT_VERSION = 3;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportVersion3.class);
@@ -97,7 +96,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      */
     public int getVersion() {
 
-        return CmsImportVersion3.C_IMPORT_VERSION;
+        return CmsImportVersion3.IMPORT_VERSION;
     }
 
     /**
@@ -203,7 +202,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         }
         // get list of unwanted properties
         List deleteProperties = OpenCms.getImportExportManager().getIgnoredProperties();
@@ -274,7 +273,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 flags = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_FLAGS);
 
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
-                if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
+                if (CmsResourceTypeFolder.RESOURCE_TYPE_NAME.equals(type)) {
                     translatedName += "/";
                 }
                 // translate the name during import
@@ -285,7 +284,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable) {
                     // print out the information to the report
-                    m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
@@ -336,14 +335,14 @@ public class CmsImportVersion3 extends A_CmsImport {
 
                     } else {
                         // resource import failed, since no CmsResource was created
-                        m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
                     }
                 } else {
                     // skip the file import, just print out the information to the report
-                    m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
                     m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
@@ -407,11 +406,11 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // try to read an existing channel to get the channel id
                 String channelId = null;
                 try {
-                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME))
+                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.RESOURCE_TYPE_NAME))
                         && (!destination.endsWith("/"))) {
                         destination += "/";
                     }
-                    CmsResource channel = m_cms.readResource(I_CmsConstants.C_ROOT + destination);
+                    CmsResource channel = m_cms.readResource("/" + destination);
                     channelId = m_cms.readPropertyObject(
                         m_cms.getSitePath(channel),
                         CmsPropertyDefinition.PROPERTY_CHANNELID,
@@ -487,7 +486,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                 resType.isFolder(),
                 new Integer(flags).intValue(),
                 m_cms.getRequestContext().currentProject().getId(),
-                I_CmsConstants.C_STATE_NEW,
+                CmsResource.STATE_NEW,
                 datelastmodified,
                 newUserlastmodified,
                 datecreated,
@@ -502,7 +501,7 @@ public class CmsImportVersion3 extends A_CmsImport {
 
             m_report.println(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                I_CmsReport.C_FORMAT_OK);
+                I_CmsReport.FORMAT_OK);
         } catch (Exception exc) {
             // an error while importing the file
             m_report.println(exc);

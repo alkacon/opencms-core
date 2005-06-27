@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionInfo.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import org.apache.commons.collections.buffer.BoundedFifoBuffer;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSessionInfo implements Comparable {
 
     /** Maximum size of the broadcast queue for one user. */
-    public static final int C_QUEUE_SIZE = 10;
+    public static final int QUEUE_SIZE = 10;
 
     /** The broadcast queue buffer for the user of this session info. */
     private Buffer m_broadcastQueue;
@@ -99,7 +99,7 @@ public class CmsSessionInfo implements Comparable {
         m_maxInactiveInterval = maxInactiveInterval;
         m_user = context.currentUser();
         update(context);
-        m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(C_QUEUE_SIZE));
+        m_broadcastQueue = BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(QUEUE_SIZE));
     }
 
     /**

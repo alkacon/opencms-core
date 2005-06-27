@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminGallery.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,7 @@
 
 package com.opencms.workplace;
 
+import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -37,7 +38,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -53,7 +54,7 @@ import java.util.Vector;
  * workplace gallery implementations.
  *
  * @author  Alexander Kandzior 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -67,10 +68,10 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
       */           
      public String getInitial(I_CmsSession session, Hashtable parameters) {
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if(initial != null) {
             // remove all session values
-            session.removeValue(C_PARA_FOLDER);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_FOLDER);
             session.removeValue("lasturl");
             session.removeValue("lastgallery");
             session.removeValue("galleryRootFolder");
@@ -89,7 +90,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      */
     public String getGalleryPath(CmsObject cms, I_CmsSession session, Hashtable parameters) {          
         // read the parameters
-        String foldername = (String)parameters.get(C_PARA_FOLDER);
+        String foldername = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FOLDER);
         String galleryPath = getGalleryPath();
 
         if (foldername != null) {
@@ -99,7 +100,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
                 if (!(parent.equals(galleryPath))) {
                     foldername = galleryPath;
                 }
-                if (fold.getState() == C_STATE_DELETED) {
+                if (fold.getState() == CmsResource.STATE_DELETED) {
                     foldername = galleryPath;
                 }
             } catch (CmsException exc) {
@@ -107,9 +108,9 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
                 foldername = galleryPath;
             }
             session.putValue("lastgallery", foldername);
-            parameters.put(C_PARA_FOLDER, foldername);            
+            parameters.put(CmsWorkplaceDefault.C_PARA_FOLDER, foldername);            
         } else {
-            foldername = (String) session.getValue(C_PARA_FOLDER);
+            foldername = (String) session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
             String tmpFolder = (String) session.getValue("lastgallery");
 
             if (foldername == null) {
@@ -129,7 +130,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
         }
 
         // need the foldername in the session in case of an exception in the dialog
-        session.putValue(C_PARA_FOLDER, foldername); 
+        session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, foldername); 
         return foldername;              
     }
     
@@ -165,10 +166,10 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      */
 
     public int modifyDisplayedColumns(CmsObject cms, int prefs) {
-        prefs = ((prefs & C_FILELIST_NAME) == 0) ? prefs : (prefs - C_FILELIST_NAME);
-        prefs = ((prefs & C_FILELIST_TITLE) == 0) ? prefs : (prefs - C_FILELIST_TITLE);
-        prefs = ((prefs & C_FILELIST_TYPE) == 0) ? prefs : (prefs - C_FILELIST_TYPE);
-        prefs = ((prefs & C_FILELIST_SIZE) == 0) ? prefs : (prefs - C_FILELIST_SIZE);
+        prefs = ((prefs & CmsUserSettings.FILELIST_NAME) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_NAME);
+        prefs = ((prefs & CmsUserSettings.FILELIST_TITLE) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_TITLE);
+        prefs = ((prefs & CmsUserSettings.FILELIST_TYPE) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_TYPE);
+        prefs = ((prefs & CmsUserSettings.FILELIST_SIZE) == 0) ? prefs : (prefs - CmsUserSettings.FILELIST_SIZE);
         return prefs;
     }       
 
@@ -216,8 +217,6 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
      * the I_CmsWpConstants interface.
      * 
      * @return The path to the gallery root folder
-     * 
-     * @see I_CmsWpConstants
      */ 
     public abstract String getGalleryPath();
     
@@ -252,7 +251,7 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
 
         if(folder != null) {
             String servletUrl = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
-            return "window.top.body.admin_content.location.href='" + servletUrl + C_VFS_PATH_WORKPLACE + "action/explorer_files.html?mode=listonly&folder=" + folder + "'";
+            return "window.top.body.admin_content.location.href='" + servletUrl + CmsWorkplace.VFS_PATH_WORKPLACE + "action/explorer_files.html?mode=listonly&folder=" + folder + "'";
         } else {
             return "";
         }
@@ -284,10 +283,10 @@ public abstract class CmsAdminGallery extends CmsWorkplaceDefault implements I_C
     public void getCustomizedColumnValues(CmsObject cms, CmsXmlWpTemplateFile filelistTemplate,
             CmsResource res, CmsXmlLanguageFile lang) throws CmsException {
         getConfigFile(cms);
-        filelistTemplate.fastSetXmlData(C_FILELIST_ICON_VALUE,          
+        filelistTemplate.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_ICON_VALUE,          
             CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + getGalleryIconPath(cms) );
-        filelistTemplate.setData(C_FILELIST_NAME_VALUE, res.getName());
-        filelistTemplate.setData(C_FILELIST_TITLE_VALUE, cms.readProperty(cms.getSitePath(res),
+        filelistTemplate.setData(CmsWorkplaceDefault.C_FILELIST_NAME_VALUE, res.getName());
+        filelistTemplate.setData(CmsWorkplaceDefault.C_FILELIST_TITLE_VALUE, cms.readProperty(cms.getSitePath(res),
                 CmsPropertyDefinition.PROPERTY_TITLE));
     }    
                     

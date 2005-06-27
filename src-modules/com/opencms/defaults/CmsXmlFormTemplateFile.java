@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/Attic/CmsXmlFormTemplateFile.java,v $
-* Date   : $Date: 2005/05/17 16:13:36 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:23 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@ package com.opencms.defaults;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.CmsXmlTemplateFile;
+import com.opencms.workplace.CmsWorkplaceDefault;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -50,11 +50,11 @@ import org.w3c.dom.Element;
  * See the handleXxxTag Methods for more details.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/17 16:13:36 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
-public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsWpConstants {
+public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile {
 
     /**
      * Default constructor.
@@ -141,10 +141,10 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
         Integer returnObject = null;
 
         // Read radiobutton parameters
-        String radioClass = n.getAttribute(C_SELECTBOX_CLASS);
-        String radioName = n.getAttribute(C_RADIO_NAME);
-        String radioMethod = n.getAttribute(C_RADIO_METHOD);
-        String radioOrder = n.getAttribute(C_RADIO_ORDER);
+        String radioClass = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_CLASS);
+        String radioName = n.getAttribute(CmsWorkplaceDefault.C_RADIO_NAME);
+        String radioMethod = n.getAttribute(CmsWorkplaceDefault.C_RADIO_METHOD);
+        String radioOrder = n.getAttribute(CmsWorkplaceDefault.C_RADIO_ORDER);
         if (radioOrder == null || ((!"row".equals(radioOrder)) && (!"col".equals(radioOrder)))) {
             radioOrder = "col";
         }
@@ -192,36 +192,36 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
 
         // process the vectors with the elelmetns of the radio buttons to be displayed.
         int numValues = values.size();
-        CmsXmlTemplateFile radiodef = new CmsXmlTemplateFile(m_cms, I_CmsWpConstants.C_VFS_PATH_DEFAULT_INTERNAL + "HTMLFormDefs");
+        CmsXmlTemplateFile radiodef = new CmsXmlTemplateFile(m_cms, CmsWorkplaceDefault.C_VFS_PATH_DEFAULT_INTERNAL + "HTMLFormDefs");
         if (radioClass == null || "".equals(radioClass)) {
-            radiodef.setData(C_RADIO_CLASS, "");
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_CLASS, "");
         } else {
-            radiodef.setData(C_RADIO_CLASSNAME, radioClass);
-            radiodef.setData(C_RADIO_CLASS, radiodef.getProcessedData(C_TAG_RADIO_CLASS));
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_CLASSNAME, radioClass);
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_CLASS, radiodef.getProcessedData(CmsWorkplaceDefault.C_TAG_RADIO_CLASS));
         }
         for (int i = 0; i < numValues; i++) {
 
             // Set values for this radiobutton entry
-            radiodef.setData(C_RADIO_RADIONAME, radioName);
-            radiodef.setData(C_RADIO_NAME, (String)names.elementAt(i));
-            radiodef.setData(C_RADIO_LINK, (String)values.elementAt(i));
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_RADIONAME, radioName);
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_NAME, (String)names.elementAt(i));
+            radiodef.setData(CmsWorkplaceDefault.C_RADIO_LINK, (String)values.elementAt(i));
 
             // Check, if this should be the preselected option
             if (i == selectedOption) {
-                radiodef.setData(C_RADIO_SELECTEDENTRY, radiodef.getDataValue("radiobuttons." + C_RADIO_SELECTEDOPTION));
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_SELECTEDENTRY, radiodef.getDataValue("radiobuttons." + CmsWorkplaceDefault.C_RADIO_SELECTEDOPTION));
             } else {
-                radiodef.setData(C_RADIO_SELECTEDENTRY, "");
+                radiodef.setData(CmsWorkplaceDefault.C_RADIO_SELECTEDENTRY, "");
             }
 
             // Now get output for this option
             if (radioOrder.equals("col")) {
 
                 // Buttons should be displayed in one column
-                result.append(radiodef.getProcessedDataValue(C_TAG_RADIO_COLENTRY, callingObject));
+                result.append(radiodef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_RADIO_COLENTRY, callingObject));
             } else {
 
                 // Buttons should be displayed in a row.
-                result.append(radiodef.getProcessedDataValue(C_TAG_RADIO_ROWENTRY, callingObject));
+                result.append(radiodef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_RADIO_ROWENTRY, callingObject));
             }
         }
         return result.toString();
@@ -268,38 +268,38 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
         StringBuffer result = new StringBuffer();
 
         // Read selectbox parameters
-        String selectClass = n.getAttribute(C_SELECTBOX_CLASS);
-        String selectName = n.getAttribute(C_SELECTBOX_NAME);
-        String selectMethod = n.getAttribute(C_SELECTBOX_METHOD);
-        String selectWidth = n.getAttribute(C_SELECTBOX_WIDTH);
-        String selectOnchange = n.getAttribute(C_SELECTBOX_ONCHANGE);
-        String selectSize = n.getAttribute(C_SELECTBOX_SIZE);
+        String selectClass = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_CLASS);
+        String selectName = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_NAME);
+        String selectMethod = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_METHOD);
+        String selectWidth = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_WIDTH);
+        String selectOnchange = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_ONCHANGE);
+        String selectSize = n.getAttribute(CmsWorkplaceDefault.C_SELECTBOX_SIZE);
         if ((selectSize == null) || (selectSize.length() == 0)) {
             selectSize = "1";
         }
 
         // Get input definition file
-        CmsXmlTemplateFile inputdef = new CmsXmlTemplateFile(m_cms, I_CmsWpConstants.C_VFS_PATH_DEFAULT_INTERNAL + "HTMLFormDefs");
+        CmsXmlTemplateFile inputdef = new CmsXmlTemplateFile(m_cms, CmsWorkplaceDefault.C_VFS_PATH_DEFAULT_INTERNAL + "HTMLFormDefs");
 
         // Set the prefix string of the select box
         if (selectClass == null || "".equals(selectClass)) {
-            inputdef.setData(C_SELECTBOX_CLASS, "");
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_CLASS, "");
         } else {
-            inputdef.setData(C_SELECTBOX_CLASSNAME, selectClass);
-            inputdef.setData(C_SELECTBOX_CLASS, inputdef.getProcessedData(C_TAG_SELECTBOX_CLASS));
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_CLASSNAME, selectClass);
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_CLASS, inputdef.getProcessedData(CmsWorkplaceDefault.C_TAG_SELECTBOX_CLASS));
         }
         if (selectWidth == null || "".equals(selectWidth)) {
-            inputdef.setData(C_SELECTBOX_WIDTH, "");
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_WIDTH, "");
         } else {
-            inputdef.setData(C_SELECTBOX_WIDTHNAME, selectWidth);
-            inputdef.setData(C_SELECTBOX_WIDTH, inputdef.getProcessedData(C_TAG_SELECTBOX_WIDTH));
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_WIDTHNAME, selectWidth);
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_WIDTH, inputdef.getProcessedData(CmsWorkplaceDefault.C_TAG_SELECTBOX_WIDTH));
         }
-        inputdef.setData(C_SELECTBOX_NAME, selectName);
-        inputdef.setData(C_SELECTBOX_ONCHANGE, selectOnchange);
-        inputdef.setData(C_SELECTBOX_SIZE, selectSize);
+        inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_NAME, selectName);
+        inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_ONCHANGE, selectOnchange);
+        inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_SIZE, selectSize);
 
         // move the prefix string of the select box to the result StringBuffer
-        result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_START));
+        result.append(inputdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_START));
 
         // call the method for generating listbox elements
         Method groupsMethod = null;
@@ -341,17 +341,17 @@ public class CmsXmlFormTemplateFile extends CmsXmlTemplateFile implements I_CmsW
         // The element with index "selectedOption" has to get the "selected" tag.
         int numValues = values.size();
         for (int i = 0; i < numValues; i++) {
-            inputdef.setData(C_SELECTBOX_OPTIONNAME, (String)names.elementAt(i));
-            inputdef.setData(C_SELECTBOX_OPTIONVALUE, (String)values.elementAt(i));
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_OPTIONNAME, (String)names.elementAt(i));
+            inputdef.setData(CmsWorkplaceDefault.C_SELECTBOX_OPTIONVALUE, (String)values.elementAt(i));
             if (i == selectedOption) {
-                result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_SELOPTION));
+                result.append(inputdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_SELOPTION));
             } else {
-                result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_OPTION));
+                result.append(inputdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_OPTION));
             }
         }
 
         // get the processed selectbox end sequence.
-        result.append(inputdef.getProcessedDataValue(C_TAG_SELECTBOX_END));
+        result.append(inputdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_END));
         return result.toString();
     }
 

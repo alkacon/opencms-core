@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,8 +44,6 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.CmsFrameset;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.legacy.CmsLegacyException;
 
@@ -64,13 +62,13 @@ import javax.mail.internet.InternetAddress;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
-public class CmsTaskAction implements I_CmsWpConstants {
+public class CmsTaskAction {
 
 
     /**
@@ -90,12 +88,12 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsTaskService taskService = cms.getTaskService();
         taskService.acceptTask(taskid);
         String comment = "";
-        taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_ACCEPTED);
+        taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_ACCEPTED);
 
         // send an email if "Benachrichtigung bei Annahme" was selected.
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = taskService.readTask(taskid);
-        if(taskService.getTaskPar(task.getId(), C_TASKPARA_ACCEPTATION) != null) {
+        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION) != null) {
             StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.accept.content"));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.project"));
@@ -171,14 +169,14 @@ public class CmsTaskAction implements I_CmsWpConstants {
         long timeout = cal.getTime().getTime();
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.createTask(agentName, roleName, taskName, timeout, priority);
-        taskService.setTaskPar(task.getId(), C_TASKPARA_ACCEPTATION, paraAcceptation);
-        taskService.setTaskPar(task.getId(), C_TASKPARA_ALL, paraAll);
-        taskService.setTaskPar(task.getId(), C_TASKPARA_COMPLETION, paraCompletion);
-        taskService.setTaskPar(task.getId(), C_TASKPARA_DELIVERY, paraDelivery);
+        taskService.setTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION, paraAcceptation);
+        taskService.setTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL, paraAll);
+        taskService.setTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION, paraCompletion);
+        taskService.setTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY, paraDelivery);
         String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
         comment += lang.getLanguageValue("task.label.editor") + ": " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + "\n";
         comment += taskcomment;
-        taskService.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_CREATED);
+        taskService.writeTaskLog(task.getId(), comment, CmsWorkplaceDefault.C_TASKLOGTYPE_CREATED);
 
         // send an email
         // per default send a mail from task's organizer to task's recipient.
@@ -222,10 +220,10 @@ public class CmsTaskAction implements I_CmsWpConstants {
         }
 
         // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
-        if(taskService.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
+        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL) != null) {
 
             // the news deliver always "checked" or ""
-            if(taskService.getTaskPar(task.getId(), C_TASKPARA_ALL).equals("checked")) {
+            if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL).equals("checked")) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
                     List groupUser = cms.getUsersOfGroup(group.getName());
@@ -357,7 +355,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         comment += CmsDateUtil.getDateShort(task.getTimeOut().getTime()) + " ";
         comment += lang.getLanguageValue("task.dialog.due.logmessage2") + " ";
         comment += CmsDateUtil.getDateShort(timeout);
-        taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_DUECHANGED);
+        taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_DUECHANGED);
     }
 
     /**
@@ -372,12 +370,12 @@ public class CmsTaskAction implements I_CmsWpConstants {
         CmsTaskService taskService = cms.getTaskService();
         taskService.endTask(taskid);
         String comment = "";
-        taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_OK);
+        taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_OK);
 
         // send an email if "Benachrichtigung bei Abhacken" was selected.
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = taskService.readTask(taskid);
-        if(taskService.getTaskPar(task.getId(), C_TASKPARA_COMPLETION) != null) {
+        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION) != null) {
             StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.end.content"));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.project"));
@@ -445,11 +443,11 @@ public class CmsTaskAction implements I_CmsWpConstants {
         taskService.forwardTask(taskid, oldRole.getName(), newEditor.getName());
         String comment = lang.getLanguageValue("task.dialog.forward.logmessage");
         comment += " " + CmsUser.getFullName(newEditor);
-        taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_FORWARDED);
+        taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_FORWARDED);
 
         // send an email if "Benachrichtigung bei Weiterleitung" was selected.
         CmsTask task = taskService.readTask(taskid);
-        if(taskService.getTaskPar(task.getId(), C_TASKPARA_DELIVERY) != null) {
+        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY) != null) {
             StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.forward.content"));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.project"));
@@ -485,7 +483,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             String subject = lang.getLanguageValue("task.email.forward.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + newRoleName;
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
-            String sendToAll = taskService.getTaskPar(task.getId(), C_TASKPARA_ALL);
+            String sendToAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
             if(CmsStringUtil.isEmpty(sendToAll)) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
@@ -556,7 +554,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             int type = tasklog.getType();
 
             // check if this is a type "created" or "new"
-            if((type == C_TASKLOGTYPE_CREATED) || (type == C_TASKLOGTYPE_REACTIVATED)) {
+            if((type == CmsWorkplaceDefault.C_TASKLOGTYPE_CREATED) || (type == CmsWorkplaceDefault.C_TASKLOGTYPE_REACTIVATED)) {
                 String comment[] = CmsStringUtil.splitAsArray(tasklog.getComment(), '\n');
                 for(int j = 2;j < comment.length;j++) {
                     retValue.append(comment[j] + "\n");
@@ -584,7 +582,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         if((message != null) && (message.length() != 0)) {
             comment += CmsUser.getFullName(taskService.readAgent(task)) + "\n";
             comment += message;
-            taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_CALL);
+            taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_CALL);
         }
 
         // send an email
@@ -650,7 +648,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         comment += lang.getLanguageValue("task.dialog.priority.logmessageprio" + task.getPriority()) + " ";
         comment += lang.getLanguageValue("task.dialog.priority.logmessage2") + " ";
         comment += lang.getLanguageValue("task.dialog.priority.logmessageprio" + priority) + " ";
-        taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_PRIORITYCHANGED);
+        taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_PRIORITYCHANGED);
     }
 
     /**
@@ -670,7 +668,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         if((message != null) && (message.length() != 0)) {
             comment += CmsUser.getFullName(taskService.readOwner(task)) + "\n";
             comment += message;
-            taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_CALL);
+            taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_CALL);
         }
 
         // send an email.
@@ -757,15 +755,15 @@ public class CmsTaskAction implements I_CmsWpConstants {
                 Integer.parseInt(splittetDate[0]), 0, 0, 0);
         long timeout = cal.getTime().getTime();
         taskService.setTimeout(taskid, timeout);
-        taskService.setTaskPar(taskid, C_TASKPARA_ACCEPTATION, paraAcceptation);
-        taskService.setTaskPar(taskid, C_TASKPARA_ALL, paraAll);
-        taskService.setTaskPar(taskid, C_TASKPARA_COMPLETION, paraCompletion);
-        taskService.setTaskPar(taskid, C_TASKPARA_DELIVERY, paraDelivery);
+        taskService.setTaskPar(taskid, CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION, paraAcceptation);
+        taskService.setTaskPar(taskid, CmsWorkplaceDefault.C_TASKPARA_ALL, paraAll);
+        taskService.setTaskPar(taskid, CmsWorkplaceDefault.C_TASKPARA_COMPLETION, paraCompletion);
+        taskService.setTaskPar(taskid, CmsWorkplaceDefault.C_TASKPARA_DELIVERY, paraDelivery);
         taskService.forwardTask(taskid, roleName, agentName);
         String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
         comment += lang.getLanguageValue("task.label.editor") + ": " + CmsUser.getFullName(cms.readUser(agentName)) + "\n";
         comment += taskcomment;
-        taskService.writeTaskLog(task.getId(), comment, C_TASKLOGTYPE_REACTIVATED);
+        taskService.writeTaskLog(task.getId(), comment, CmsWorkplaceDefault.C_TASKLOGTYPE_REACTIVATED);
 
         // send an email
         StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.reakt.content"));
@@ -796,7 +794,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
         mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
 
         // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
-        if(taskService.getTaskPar(task.getId(), C_TASKPARA_ALL) != null) {
+        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL) != null) {
             CmsGroup group = taskService.readGroup(task);
             List groupUsers = cms.getUsersOfGroup(group.getName());
             mail = createMail(taskService.readOwner(task), groupUsers,
@@ -834,7 +832,7 @@ public class CmsTaskAction implements I_CmsWpConstants {
             taskService.acceptTask(taskid);
             String comment = lang.getLanguageValue("task.dialog.take.logmessage");
             comment += " " + CmsUser.getFullName(newEditor);
-            taskService.writeTaskLog(taskid, comment, C_TASKLOGTYPE_TAKE);
+            taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_TAKE);
         }
 
         // send an email
@@ -880,8 +878,8 @@ public class CmsTaskAction implements I_CmsWpConstants {
 
     public static String getTaskUrl(CmsObject cms, int taskid, int projectid) {
 
-       String frameLink = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-       String taskViewLink = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_PATH_XML_WORKPLACE + "tasks.html") + "%3Ftaskid%3D" + taskid;
+       String frameLink = OpenCms.getLinkManager().substituteLink(cms, CmsFrameset.JSP_WORKPLACE_URI);
+       String taskViewLink = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.PATH_XML_WORKPLACE + "tasks.html") + "%3Ftaskid%3D" + taskid;
         
        return OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString() + frameLink + "?" + CmsFrameset.PARAM_WP_VIEW + "=" + taskViewLink; 
     }

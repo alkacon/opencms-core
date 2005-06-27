@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2005/06/26 12:51:32 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,16 +55,16 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
 public class TestCmsXmlPage extends TestCase {
 
-    private static final String C_XMLPAGE_SCHEMA_SYSTEM_ID = CmsConfigurationManager.C_DEFAULT_DTD_PREFIX
+    private static final String XMLPAGE_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
         + "xmlpage.xsd";
 
-    private static final String UTF8 = CmsEncoder.C_UTF8_ENCODING;
+    private static final String UTF8 = CmsEncoder.ENCODING_UTF_8;
 
     /**
      * Default JUnit constructor.<p>
@@ -165,7 +165,7 @@ public class TestCmsXmlPage extends TestCase {
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage.xsd", UTF8);
 
         // store schema in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(C_XMLPAGE_SCHEMA_SYSTEM_ID, content.getBytes(UTF8));
+        CmsXmlEntityResolver.cacheSystemId(XMLPAGE_SCHEMA_SYSTEM_ID, content.getBytes(UTF8));
 
         // validate the minimal xmlpage
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-minimal.xml", UTF8);
@@ -196,10 +196,10 @@ public class TestCmsXmlPage extends TestCase {
 
         // unmarshal content definition
         content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage.xsd", UTF8);
-        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, C_XMLPAGE_SCHEMA_SYSTEM_ID, resolver);
+        CmsXmlContentDefinition cd1 = CmsXmlContentDefinition.unmarshal(content, XMLPAGE_SCHEMA_SYSTEM_ID, resolver);
 
         // create new content definition form objects
-        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("page", C_XMLPAGE_SCHEMA_SYSTEM_ID);
+        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("page", XMLPAGE_SCHEMA_SYSTEM_ID);
         cd2.addType(new CmsXmlHtmlValue("element", "0", String.valueOf(Integer.MAX_VALUE)));
 
         // ensure content definitions are equal

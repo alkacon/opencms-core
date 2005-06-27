@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProjectResourcesDisplayMode.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -74,10 +74,10 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
     public static final CmsProjectResourcesDisplayMode NEW_FILES = new CmsProjectResourcesDisplayMode("new");
 
     /** Array constant for all available align types. */
-    private static final CmsProjectResourcesDisplayMode[] C_VALUES = {ALL_CHANGES, NEW_FILES, DELETED_FILES, MODIFIED_FILES};
+    private static final CmsProjectResourcesDisplayMode[] VALUE_ARRAY = {ALL_CHANGES, NEW_FILES, DELETED_FILES, MODIFIED_FILES};
 
     /** List of mode constants. */
-    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(C_VALUES));
+    public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** Internal representation. */    
     private final String m_mode;

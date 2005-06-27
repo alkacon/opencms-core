@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/24 15:40:02 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +75,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     throws CmsException {
 
         m_cms.lockResource(resourceName);
-        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType.trim())) {
+        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType.trim())) {
             principalName = OpenCms.getImportExportManager().translateGroup(principalName);
         } else {
             principalName = OpenCms.getImportExportManager().translateUser(principalName);
@@ -207,7 +207,7 @@ class CmsShellCommands implements I_CmsShellCommands {
                 description,
                 OpenCms.getDefaultUsers().getGroupUsers(),
                 OpenCms.getDefaultUsers().getGroupProjectmanagers(),
-                I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+                CmsProject.PROJECT_TYPE_NORMAL);
             m_cms.getRequestContext().setCurrentProject(project);
             m_cms.copyResourceToProject("/");
         } finally {
@@ -225,7 +225,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsResource createFolder(String targetFolder, String folderName) throws Exception {
 
-        return m_cms.createResource(targetFolder + folderName, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        return m_cms.createResource(targetFolder + folderName, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
     }
 
     /**
@@ -239,7 +239,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public CmsGroup createGroup(String name, String description) throws Exception {
 
-        return m_cms.createGroup(name, description, I_CmsConstants.C_FLAG_ENABLED, null);
+        return m_cms.createGroup(name, description, I_CmsPrincipal.FLAG_ENABLED, null);
     }
 
     /**
@@ -363,7 +363,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void exportAllResources(String exportFile) throws Exception {
 
         List exportPaths = new ArrayList(1);
-        exportPaths.add(I_CmsConstants.C_ROOT);
+        exportPaths.add("/");
 
         CmsVfsImportExportHandler vfsExportHandler = new CmsVfsImportExportHandler();
         vfsExportHandler.setFileName(exportFile);
@@ -392,7 +392,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             OpenCms.getSystemInfo().getPackagesRfsPath()
-                + I_CmsConstants.C_MODULE_PATH
+                + CmsSystemInfo.FOLDER_MODULES
                 + moduleName
                 + "_"
                 + OpenCms.getModuleManager().getModule(moduleName).getVersion().toString());
@@ -431,8 +431,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             exportPaths.add(tok.nextToken());
         }
         boolean includeSystem = false;
-        if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)
-            || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
+        if (pathList.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+            || (pathList.indexOf(";" + CmsWorkplace.VFS_PATH_SYSTEM) > -1)) {
             includeSystem = true;
         }
 
@@ -463,8 +463,8 @@ class CmsShellCommands implements I_CmsShellCommands {
             exportPaths.add(tok.nextToken());
         }
         boolean includeSystem = false;
-        if (pathList.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)
-            || (pathList.indexOf(";" + I_CmsWpConstants.C_VFS_PATH_SYSTEM) > -1)) {
+        if (pathList.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)
+            || (pathList.indexOf(";" + CmsWorkplace.VFS_PATH_SYSTEM) > -1)) {
             includeSystem = true;
         }
 
@@ -566,7 +566,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            exportPath + I_CmsConstants.C_MODULE_PATH + importFile);
+            exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
     }
 
@@ -608,11 +608,11 @@ class CmsShellCommands implements I_CmsShellCommands {
             Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0, null),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
-            I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+            CmsProject.PROJECT_TYPE_TEMPORARY);
         int id = project.getId();
         m_cms.getRequestContext().setCurrentProject(project);
-        m_cms.copyResourceToProject(I_CmsConstants.C_ROOT);
-        OpenCms.getImportExportManager().importData(m_cms, importFile, I_CmsConstants.C_ROOT, new CmsShellReport());
+        m_cms.copyResourceToProject("/");
+        OpenCms.getImportExportManager().importData(m_cms, importFile, "/", new CmsShellReport());
         m_cms.unlockProject(id);
         m_cms.publishProject();
     }

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsNewResourceExternallink.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,8 +36,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.workplace.CmsWorkplaceAction;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import com.opencms.core.I_CmsSession;
@@ -61,7 +59,7 @@ import javax.servlet.http.HttpSession;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  */
 
 public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
@@ -99,14 +97,14 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
 
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if(initial != null){
             // remove all session values
-            session.removeValue(C_PARA_RESOURCE);
-            session.removeValue(C_PARA_LINK);
-            session.removeValue(C_PARA_VIEWFILE);
-            session.removeValue(C_PARA_NAVPOS);
-            session.removeValue(C_PARA_NAVTEXT);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_LINK);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_VIEWFILE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_NAVPOS);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_NAVTEXT);
             session.removeValue("lasturl");
         }
         // get the lasturl from parameters or from session
@@ -115,36 +113,36 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
             session.putValue("lasturl", lastUrl);
         }
         // get the linkname and the linkurl
-        filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_RESOURCE);
+        filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
         }  else {
             // try to get the value from the session, e.g. after an error
-            filename = (String)session.getValue(C_PARA_RESOURCE)!=null?(String)session.getValue(C_PARA_RESOURCE):"";
+            filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE)!=null?(String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE):"";
         }
-        targetName = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_LINK);
+        targetName = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(CmsWorkplaceDefault.C_PARA_LINK);
         if(targetName != null) {
-            session.putValue(C_PARA_LINK, targetName);
+            session.putValue(CmsWorkplaceDefault.C_PARA_LINK, targetName);
         } else {
             // try to get the value from the session, e.g. after an error
-            targetName = (String)session.getValue(C_PARA_LINK)!=null?(String)session.getValue(C_PARA_LINK):"";
+            targetName = (String)session.getValue(CmsWorkplaceDefault.C_PARA_LINK)!=null?(String)session.getValue(CmsWorkplaceDefault.C_PARA_LINK):"";
         }
         
         // get the parameters
-        String navtitle = (String)parameters.get(C_PARA_NAVTEXT);
+        String navtitle = (String)parameters.get(CmsWorkplaceDefault.C_PARA_NAVTEXT);
         if(navtitle != null) {
-            session.putValue(C_PARA_NAVTEXT, navtitle);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NAVTEXT, navtitle);
         } else {
             // try to get the value from the session, e.g. after an error
-            navtitle = (String)session.getValue(C_PARA_NAVTEXT)!=null?(String)session.getValue(C_PARA_NAVTEXT):"";
+            navtitle = (String)session.getValue(CmsWorkplaceDefault.C_PARA_NAVTEXT)!=null?(String)session.getValue(CmsWorkplaceDefault.C_PARA_NAVTEXT):"";
         }
         
-        String navpos = (String)parameters.get(C_PARA_NAVPOS);
+        String navpos = (String)parameters.get(CmsWorkplaceDefault.C_PARA_NAVPOS);
         if(navpos != null) {
-            session.putValue(C_PARA_NAVPOS, navpos);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NAVPOS, navpos);
         } else {
             // try to get the value from the session, e.g. after an error
-            navpos = (String)session.getValue(C_PARA_NAVPOS)!=null?(String)session.getValue(C_PARA_NAVPOS):"";
+            navpos = (String)session.getValue(CmsWorkplaceDefault.C_PARA_NAVPOS)!=null?(String)session.getValue(CmsWorkplaceDefault.C_PARA_NAVPOS):"";
         }
         
         String dummy = (String)parameters.get(CmsNewResourceExternallink.C_PARA_KEEP_PROPERTIES);
@@ -207,7 +205,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                     foldername = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
 
                     if(foldername == null) {
-                        foldername = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+                        foldername = cms.getSitePath(cms.readFolder("/"));
                     }
 
                     String title = lang.getLanguageValue("explorer.linkto") + " " + targetName;
@@ -261,11 +259,11 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                     }
 
                     // remove values from session
-                    session.removeValue(C_PARA_RESOURCE);
-                    session.removeValue(C_PARA_VIEWFILE);
-                    session.removeValue(C_PARA_LINK);
-                    session.removeValue(C_PARA_NAVTEXT);
-                    session.removeValue(C_PARA_NAVPOS);
+                    session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
+                    session.removeValue(CmsWorkplaceDefault.C_PARA_VIEWFILE);
+                    session.removeValue(CmsWorkplaceDefault.C_PARA_LINK);
+                    session.removeValue(CmsWorkplaceDefault.C_PARA_NAVTEXT);
+                    session.removeValue(CmsWorkplaceDefault.C_PARA_NAVPOS);
 
                     // now return to appropriate filelist
                 } catch (CmsException e){
@@ -288,10 +286,10 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                 }
             }
         } else {
-            session.removeValue(C_PARA_RESOURCE);
-            session.removeValue(C_PARA_VIEWFILE);
-            session.removeValue(C_PARA_LINK);
-            session.removeValue(C_PARA_NAVTEXT);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_VIEWFILE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_LINK);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_NAVTEXT);
         }
         // set lasturl
         if(lastUrl == null) {
@@ -302,18 +300,18 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         if(!checkurl){
             xmlTemplateDocument.setData("folder", foldername);
             xmlTemplateDocument.setData("newlink", notChange);
-            session.putValue(C_PARA_LINK, targetName);
-            session.putValue(C_PARA_RESOURCE, filename);
-            session.putValue(C_PARA_NAVTEXT, navtitle);
-            session.putValue(C_PARA_NAVPOS, navpos);
+            session.putValue(CmsWorkplaceDefault.C_PARA_LINK, targetName);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NAVTEXT, navtitle);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NAVPOS, navpos);
             templateSelector = "errorcheckurl";
         }
         if(!"".equals(error.trim())){
             xmlTemplateDocument.setData("errordetails", error);
-            session.putValue(C_PARA_LINK, targetName);
-            session.putValue(C_PARA_RESOURCE, filename);
-            session.putValue(C_PARA_NAVTEXT, navtitle);
-            session.putValue(C_PARA_NAVPOS, navpos);
+            session.putValue(CmsWorkplaceDefault.C_PARA_LINK, targetName);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NAVTEXT, navtitle);
+            session.putValue(CmsWorkplaceDefault.C_PARA_NAVPOS, navpos);
             templateSelector = "error";
         }
         // process the selected template
@@ -373,7 +371,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get a previous value from the session
-        String filename = (String)session.getValue(C_PARA_RESOURCE);
+        String filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if(filename == null) {
             filename = "";
         }
@@ -394,7 +392,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
             Vector values, Hashtable parameters) throws CmsException {
         int retValue = -1;
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        String preselect = (String)session.getValue(C_PARA_NAVPOS);
+        String preselect = (String)session.getValue(CmsWorkplaceDefault.C_PARA_NAVPOS);
         // get the nav information
         Hashtable storage = getNavData(cms);
         if(storage.size() > 0) {
@@ -448,7 +446,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
-            currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+            currentFilelist = cms.getSitePath(cms.readFolder("/"));
         }
 
         // get all files and folders in the current filelist.
@@ -484,7 +482,7 @@ public class CmsNewResourceExternallink extends CmsWorkplaceDefault {
                 CmsResource res = (CmsResource)en.next();
 
                 // check if the resource is not marked as deleted
-                if(res.getState() != C_STATE_DELETED) {
+                if(res.getState() != CmsResource.STATE_DELETED) {
                     String navpos = cms.readProperty(cms.getSitePath(res), CmsPropertyDefinition.PROPERTY_NAVPOS);
 
                     // check if there is a navpos for this file/folder

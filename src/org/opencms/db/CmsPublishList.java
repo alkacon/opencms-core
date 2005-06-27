@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.db;
 
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -54,7 +53,7 @@ import java.util.List;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0
  * 
@@ -205,7 +204,7 @@ public class CmsPublishList {
                 resource.getRootPath()));
         }
 
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
                 resource.getRootPath()));
@@ -251,13 +250,13 @@ public class CmsPublishList {
                 resource.getRootPath()));
         }
 
-        if (resource.getState() == I_CmsConstants.C_STATE_UNCHANGED) {
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_PUBLISH_UNCHANGED_RESOURCE_1,
                 resource.getRootPath()));
         }
 
-        if (resource.getState() == I_CmsConstants.C_STATE_DELETED) {
+        if (resource.getState() == CmsResource.STATE_DELETED) {
             m_deletedFolderList.add(resource);
         } else {
             m_folderList.add(resource);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2005/06/23 15:39:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,7 +114,7 @@ public class CmsPropertyDelete extends CmsDialog {
     public void actionDelete() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             getCms().deletePropertyDefinition(getParamPropertyName());
             // close the dialog
@@ -133,7 +133,7 @@ public class CmsPropertyDelete extends CmsDialog {
     public void actionDeleteCascade() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             // list of all resources containing this propertydefinition
             List resourcesWithProperty = getCms().readResourcesWithProperty(getParamPropertyName());
@@ -155,12 +155,12 @@ public class CmsPropertyDelete extends CmsDialog {
                             getParamPropertyName(),
                             false);
                         CmsLock lock = getCms().getLock(resource);
-                        if (lock.getType() == CmsLock.C_TYPE_UNLOCKED) {
+                        if (lock.getType() == CmsLock.TYPE_UNLOCKED) {
                             // lock the resource for the current (Admin) user
                             getCms().lockResource(resource.getRootPath());
                         }
-                        property.setStructureValue(CmsProperty.C_DELETE_VALUE);
-                        property.setResourceValue(CmsProperty.C_DELETE_VALUE);
+                        property.setStructureValue(CmsProperty.DELETE_VALUE);
+                        property.setResourceValue(CmsProperty.DELETE_VALUE);
                         // write the property with the null value to the resource and cascade it from the definition
                         getCms().writePropertyObject(resource.getRootPath(), property);
                         // unlock the resource
@@ -370,7 +370,7 @@ public class CmsPropertyDelete extends CmsDialog {
             // get the lock state for the resource
             CmsLock lock = getCms().getLock(resource);
             // add this resource to the list if this is locked by another user
-            if (lock.getType() != CmsLock.C_TYPE_UNLOCKED
+            if (lock.getType() != CmsLock.TYPE_UNLOCKED
                 && !lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                 lockedResourcesByOtherUser.add(resource);
             }

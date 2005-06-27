@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,90 +57,116 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsForm {
 
     /** Mail type: html mail. */
-    public static final String C_MAILTYPE_HTML = "html";
+    public static final String MAILTYPE_HTML = "html";
+    
     /** Mail type: text mail. */
-    public static final String C_MAILTYPE_TEXT = "text";
+    public static final String MAILTYPE_TEXT = "text";
 
     /** Configuration node name for the confirmation mail checkbox label text. */
-    public static final String C_NODE_CONFIRMATIONMAILCHECKBOXLABEL = "ConfirmationCheckboxLabel";
+    public static final String NODE_CONFIRMATIONMAILCHECKBOXLABEL = "ConfirmationCheckboxLabel";
+    
     /** Configuration node name for the confirmation mail enabled node. */
-    public static final String C_NODE_CONFIRMATIONMAILENABLED = "ConfirmationMailEnabled";
+    public static final String NODE_CONFIRMATIONMAILENABLED = "ConfirmationMailEnabled";
+    
     /** Configuration node name for the confirmation mail input field node. */
-    public static final String C_NODE_CONFIRMATIONMAILFIELD = "ConfirmationField";
+    public static final String NODE_CONFIRMATIONMAILFIELD = "ConfirmationField";
+    
     /** Configuration node name for the confirmation mail optional flag node. */
-    public static final String C_NODE_CONFIRMATIONMAILOPTIONAL = "ConfirmationMailOptional";
+    public static final String NODE_CONFIRMATIONMAILOPTIONAL = "ConfirmationMailOptional";
+    
     /** Configuration node name for the confirmation mail subject node. */
-    public static final String C_NODE_CONFIRMATIONMAILSUBJECT = "ConfirmationMailSubject";
+    public static final String NODE_CONFIRMATIONMAILSUBJECT = "ConfirmationMailSubject";
+    
     /** Configuration node name for the confirmation mail text node. */
-    public static final String C_NODE_CONFIRMATIONMAILTEXT = "ConfirmationMailText";
+    public static final String NODE_CONFIRMATIONMAILTEXT = "ConfirmationMailText";
 
     /** Configuration node name for the Email node. */
-    public static final String C_NODE_EMAIL = "Email";
+    public static final String NODE_EMAIL = "Email";
+    
     /** Configuration node name for the field value node. */
-    public static final String C_NODE_FIELDDEFAULTVALUE = "FieldDefault";
+    public static final String NODE_FIELDDEFAULTVALUE = "FieldDefault";
+    
     /** Configuration node name for the field item node. */
-    public static final String C_NODE_FIELDITEM = "FieldItem";
+    public static final String NODE_FIELDITEM = "FieldItem";
 
     /** Configuration node name for the field description node. */
-    public static final String C_NODE_FIELDLABEL = "FieldLabel";
+    public static final String NODE_FIELDLABEL = "FieldLabel";
+    
     /** Configuration node name for the field mandatory node. */
-    public static final String C_NODE_FIELDMANDATORY = "FieldMandatory";
+    public static final String NODE_FIELDMANDATORY = "FieldMandatory";
+    
     /** Configuration node name for the field type node. */
-    public static final String C_NODE_FIELDTYPE = "FieldType";
+    public static final String NODE_FIELDTYPE = "FieldType";
+    
     /** Configuration node name for the field validation node. */
-    public static final String C_NODE_FIELDVALIDATION = "FieldValidation";
+    public static final String NODE_FIELDVALIDATION = "FieldValidation";
 
     /** Configuration node name for the form attributes node. */
-    public static final String C_NODE_FORMATTRIBUTES = "FormAttributes";
+    public static final String NODE_FORMATTRIBUTES = "FormAttributes";
+    
     /** Configuration node name for the form check page text node. */
-    public static final String C_NODE_FORMCHECKTEXT = "CheckText";
+    public static final String NODE_FORMCHECKTEXT = "CheckText";
+    
     /** Configuration node name for the form confirmation text node. */
-    public static final String C_NODE_FORMCONFIRMATION = "FormConfirmation";
+    public static final String NODE_FORMCONFIRMATION = "FormConfirmation";
+    
     /** Configuration node name for the form field attributes node. */
-    public static final String C_NODE_FORMFIELDATTRIBUTES = "FormFieldAttributes";
+    public static final String NODE_FORMFIELDATTRIBUTES = "FormFieldAttributes";
+    
     /** Configuration node name for the form text node. */
-    public static final String C_NODE_FORMTEXT = "FormText";
+    public static final String NODE_FORMTEXT = "FormText";
 
     /** Configuration node name for the input field node. */
-    public static final String C_NODE_INPUTFIELD = "InputField";
+    public static final String NODE_INPUTFIELD = "InputField";
 
     /** Configuration node name for the item description node. */
-    public static final String C_NODE_ITEMDESCRIPTION = "ItemDescription";
+    public static final String NODE_ITEMDESCRIPTION = "ItemDescription";
+    
     /** Configuration node name for the item selected node. */
-    public static final String C_NODE_ITEMSELECTED = "ItemSelected";
+    public static final String NODE_ITEMSELECTED = "ItemSelected";
+    
     /** Configuration node name for the item value node. */
-    public static final String C_NODE_ITEMVALUE = "ItemValue";
+    public static final String NODE_ITEMVALUE = "ItemValue";
 
     /** Configuration node name for the Email bcc recipient(s) node. */
-    public static final String C_NODE_MAILBCC = "MailBCC";
+    public static final String NODE_MAILBCC = "MailBCC";
+    
     /** Configuration node name for the Email cc recipient(s) node. */
-    public static final String C_NODE_MAILCC = "MailCC";
+    public static final String NODE_MAILCC = "MailCC";
+    
     /** Configuration node name for the Email sender address node. */
-    public static final String C_NODE_MAILFROM = "MailFrom";
+    public static final String NODE_MAILFROM = "MailFrom";
+    
     /** Configuration node name for the Email subject node. */
-    public static final String C_NODE_MAILSUBJECT = "MailSubject";
+    public static final String NODE_MAILSUBJECT = "MailSubject";
+    
     /** Configuration node name for the Email text node. */
-    public static final String C_NODE_MAILTEXT = "MailText";
+    public static final String NODE_MAILTEXT = "MailText";
+    
     /** Configuration node name for the Email recipient(s) node. */
-    public static final String C_NODE_MAILTO = "MailTo";
+    public static final String NODE_MAILTO = "MailTo";
+    
     /** Configuration node name for the Email type node. */
-    public static final String C_NODE_MAILTYPE = "MailType";
+    public static final String NODE_MAILTYPE = "MailType";
+    
     /** Configuration node name for the optional form configuration. */
-    public static final String C_NODE_OPTIONALCONFIGURATION = "OptionalFormConfiguration";
+    public static final String NODE_OPTIONALCONFIGURATION = "OptionalFormConfiguration";
+    
     /** Configuration node name for the optional confirmation mail configuration. */
-    public static final String C_NODE_OPTIONALCONFIRMATION = "OptionalConfirmationMail";
+    public static final String NODE_OPTIONALCONFIRMATION = "OptionalConfirmationMail";
+    
     /** Configuration node name for the Show check page node. */
-    public static final String C_NODE_SHOWCHECK = "ShowCheck";
+    public static final String NODE_SHOWCHECK = "ShowCheck";
 
     /** Request parameter name for the optional send confirmation email checkbox. */
-    public static final String C_PARAM_SENDCONFIRMATION = "sendconfirmation";
+    public static final String PARAM_SENDCONFIRMATION = "sendconfirmation";
 
     private List m_configurationErrors;
 
@@ -508,7 +534,7 @@ public class CmsForm {
     public String readSelectedFromRequest(HttpServletRequest request, String fieldType, String fieldName, String value) {
 
         String result = "";
-        if (CmsField.C_TYPE_CHECKBOX.equals(fieldType)) {
+        if (CmsField.TYPE_CHECKBOX.equals(fieldType)) {
             // this is a checkbox
             String[] values = request.getParameterValues(fieldName);
             if (values != null) {
@@ -793,12 +819,12 @@ public class CmsForm {
     private CmsField createConfirmationMailCheckbox(CmsJspActionElement jsp, CmsMessages messages, boolean initial) {
 
         CmsField field = new CmsField();
-        field.setType(CmsField.C_TYPE_CHECKBOX);
-        field.setName(C_PARAM_SENDCONFIRMATION);
+        field.setType(CmsField.TYPE_CHECKBOX);
+        field.setName(PARAM_SENDCONFIRMATION);
         field.setLabel(messages.key("form.confirmation.label"));
         // check the field status
         boolean isChecked = false;
-        if (!initial && "true".equals(jsp.getRequest().getParameter(C_PARAM_SENDCONFIRMATION))) {
+        if (!initial && "true".equals(jsp.getRequest().getParameter(PARAM_SENDCONFIRMATION))) {
             // checkbox is checked by user
             isChecked = true;
         }
@@ -838,19 +864,19 @@ public class CmsForm {
     throws Exception {
 
         // get the form text
-        String stringValue = content.getStringValue(cms, C_NODE_FORMTEXT, locale);
+        String stringValue = content.getStringValue(cms, NODE_FORMTEXT, locale);
         setFormText(getConfigurationValue(stringValue, ""));
         // get the form confirmation text
-        stringValue = content.getStringValue(cms, C_NODE_FORMCONFIRMATION, locale);
+        stringValue = content.getStringValue(cms, NODE_FORMCONFIRMATION, locale);
         setFormConfirmationText(getConfigurationValue(stringValue, ""));
         // get the mail from address
-        stringValue = content.getStringValue(cms, C_NODE_MAILFROM, locale);
+        stringValue = content.getStringValue(cms, NODE_MAILFROM, locale);
         setMailFrom(getConfigurationValue(stringValue, ""));
         // get the mail to address(es)
-        stringValue = content.getStringValue(cms, C_NODE_MAILTO, locale);
+        stringValue = content.getStringValue(cms, NODE_MAILTO, locale);
         setMailTo(getConfigurationValue(stringValue, ""));
         // get the mail subject
-        stringValue = content.getStringValue(cms, C_NODE_MAILSUBJECT, locale);
+        stringValue = content.getStringValue(cms, NODE_MAILSUBJECT, locale);
         setMailSubject(getConfigurationValue(stringValue, ""));
         // get the optional mail subject prefix from localized messages
         stringValue = messages.key("form.mailsubject.prefix");
@@ -862,7 +888,7 @@ public class CmsForm {
             setMailSubjectPrefix("");
         }
         // get the mail text as plain text
-        CmsXmlHtmlValue mailTextValue = (CmsXmlHtmlValue)content.getValue(C_NODE_MAILTEXT, locale);
+        CmsXmlHtmlValue mailTextValue = (CmsXmlHtmlValue)content.getValue(NODE_MAILTEXT, locale);
         stringValue = mailTextValue.getPlainText(cms);
         setMailTextPlain(getConfigurationValue(stringValue, ""));
         // get the mail text
@@ -870,30 +896,30 @@ public class CmsForm {
         setMailText(getConfigurationValue(stringValue, ""));
 
         // optional configuration options
-        String pathPrefix = C_NODE_OPTIONALCONFIGURATION + "/";
+        String pathPrefix = NODE_OPTIONALCONFIGURATION + "/";
 
         // get the mail type
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_MAILTYPE, locale);
-        setMailType(getConfigurationValue(stringValue, C_MAILTYPE_HTML));
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_MAILTYPE, locale);
+        setMailType(getConfigurationValue(stringValue, MAILTYPE_HTML));
         // get the mail CC recipient(s)
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_MAILCC, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_MAILCC, locale);
         setMailCC(getConfigurationValue(stringValue, ""));
         // get the mail BCC recipient(s)
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_MAILBCC, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_MAILBCC, locale);
         setMailBCC(getConfigurationValue(stringValue, ""));
         // get the form check page flag
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_SHOWCHECK, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_SHOWCHECK, locale);
         setShowCheck(Boolean.valueOf(stringValue).booleanValue());
         // get the check page text
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_FORMCHECKTEXT, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_FORMCHECKTEXT, locale);
         setFormCheckText(getConfigurationValue(stringValue, ""));
         // get the form attributes
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_FORMATTRIBUTES, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_FORMATTRIBUTES, locale);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setFormAttributes(" " + stringValue);
         }
         // get the field attributes
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_FORMFIELDATTRIBUTES, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_FORMFIELDATTRIBUTES, locale);
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             setFormFieldAttributes(" " + stringValue);
         } else {
@@ -905,24 +931,24 @@ public class CmsForm {
         }
 
         // optional confirmation mail nodes
-        pathPrefix = C_NODE_OPTIONALCONFIRMATION + "/";
+        pathPrefix = NODE_OPTIONALCONFIRMATION + "/";
 
         // get the confirmation mail enabled flag
-        stringValue = content.getStringValue(cms, pathPrefix + C_NODE_CONFIRMATIONMAILENABLED, locale);
+        stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILENABLED, locale);
         setConfirmationMailEnabled(Boolean.valueOf(stringValue).booleanValue());
         // get other confirmation mail nodes only if confirmation mail is enabled
         if (isConfirmationMailEnabled()) {
             // get the confirmation mail subject
-            stringValue = content.getStringValue(cms, pathPrefix + C_NODE_CONFIRMATIONMAILSUBJECT, locale);
+            stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILSUBJECT, locale);
             setConfirmationMailSubject(getConfigurationValue(stringValue, ""));
             // get the confirmation mail text
-            mailTextValue = (CmsXmlHtmlValue)content.getValue(pathPrefix + C_NODE_CONFIRMATIONMAILTEXT, locale);
+            mailTextValue = (CmsXmlHtmlValue)content.getValue(pathPrefix + NODE_CONFIRMATIONMAILTEXT, locale);
             stringValue = mailTextValue.getPlainText(cms);
             setConfirmationMailTextPlain(getConfigurationValue(stringValue, ""));
             stringValue = mailTextValue.getStringValue(cms);
             setConfirmationMailText(getConfigurationValue(stringValue, ""));
             // get the confirmation mail field index number
-            stringValue = content.getStringValue(cms, pathPrefix + C_NODE_CONFIRMATIONMAILFIELD, locale);
+            stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILFIELD, locale);
             int fieldIndex = 1;
             try {
                 fieldIndex = Integer.parseInt(getConfigurationValue(stringValue, "1")) - 1;
@@ -931,10 +957,10 @@ public class CmsForm {
             }
             setConfirmationMailField(fieldIndex);
             // get the confirmation mail optional flag
-            stringValue = content.getStringValue(cms, pathPrefix + C_NODE_CONFIRMATIONMAILOPTIONAL, locale);
+            stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILOPTIONAL, locale);
             setConfirmationMailOptional(Boolean.valueOf(stringValue).booleanValue());
             // get the confirmation mail checkbox label text
-            stringValue = content.getStringValue(cms, pathPrefix + C_NODE_CONFIRMATIONMAILCHECKBOXLABEL, locale);
+            stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILCHECKBOXLABEL, locale);
             setConfirmationMailCheckboxLabel(getConfigurationValue(
                 stringValue,
                 messages.key("form.confirmation.checkbox")));
@@ -959,7 +985,7 @@ public class CmsForm {
         boolean initial) throws CmsConfigurationException {
 
         CmsObject cms = jsp.getCmsObject();
-        List fieldValues = content.getValues(C_NODE_INPUTFIELD, locale);
+        List fieldValues = content.getValues(NODE_INPUTFIELD, locale);
         int fieldValueSize = fieldValues.size();
         List fields = new ArrayList(fieldValueSize);
         for (int i = 0; i < fieldValueSize; i++) {
@@ -968,17 +994,17 @@ public class CmsForm {
             CmsField field = new CmsField();
 
             // get the field type
-            String stringValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDTYPE, locale);
-            field.setType(getConfigurationValue(stringValue, CmsField.C_TYPE_TEXT));
+            String stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDTYPE, locale);
+            field.setType(getConfigurationValue(stringValue, CmsField.TYPE_TEXT));
             // create the field name
             field.setName(inputFieldPath.substring(0, inputFieldPath.length() - 1));
             // get the field label
-            stringValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDLABEL, locale);
+            stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDLABEL, locale);
             field.setLabel(getConfigurationValue(stringValue, ""));
             // get the field value
             if (initial) {
                 // only fill in values from configuration file if called initially
-                String fieldValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDDEFAULTVALUE, locale);
+                String fieldValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDDEFAULTVALUE, locale);
                 if (CmsStringUtil.isNotEmpty(fieldValue)) {
                     CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms).setJspPageContext(
                         jsp.getJspContext());
@@ -986,7 +1012,7 @@ public class CmsForm {
                 }
             } else {
                 // get field value from request for standard fields
-                if (!field.getType().equals(CmsField.C_TYPE_CHECKBOX)) {
+                if (!field.getType().equals(CmsField.TYPE_CHECKBOX)) {
                     String fieldValue = jsp.getRequest().getParameter(field.getName());
                     if (fieldValue == null) {
                         // set empty String as value for non present request parameters
@@ -997,17 +1023,17 @@ public class CmsForm {
             }
 
             // fill object members in case this is no hidden field
-            if (!CmsField.C_TYPE_HIDDEN.equals(field.getType())) {
+            if (!CmsField.TYPE_HIDDEN.equals(field.getType())) {
                 // get the field validation regular expression
-                stringValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDVALIDATION, locale);
-                if (CmsField.C_TYPE_EMAIL.equals(field.getType()) && CmsStringUtil.isEmpty(stringValue)) {
+                stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDVALIDATION, locale);
+                if (CmsField.TYPE_EMAIL.equals(field.getType()) && CmsStringUtil.isEmpty(stringValue)) {
                     // set default email validation expression for confirmation email address input field
-                    field.setValidationExpression(CmsField.C_VALIDATION_EMAIL);
+                    field.setValidationExpression(CmsField.VALIDATION_EMAIL);
                 } else {
                     field.setValidationExpression(getConfigurationValue(stringValue, ""));
                 }
                 // get the field mandatory flag
-                stringValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDMANDATORY, locale);
+                stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDMANDATORY, locale);
                 boolean isMandatory = Boolean.valueOf(stringValue).booleanValue();
                 field.setMandatory(isMandatory);
                 if (isMandatory) {
@@ -1017,7 +1043,7 @@ public class CmsForm {
 
                 if (field.needsItems()) {
                     // create items for checkboxes, radio buttons and selectboxes
-                    String fieldValue = content.getStringValue(cms, inputFieldPath + C_NODE_FIELDDEFAULTVALUE, locale);
+                    String fieldValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDDEFAULTVALUE, locale);
                     if (CmsStringUtil.isNotEmpty(fieldValue)) {
                         // get items from String                       
                         StringTokenizer T = new StringTokenizer(fieldValue, "|");
@@ -1105,7 +1131,7 @@ public class CmsForm {
         setMailText("");
         setMailTextPlain("");
         setMailTo("");
-        setMailType(C_MAILTYPE_HTML);
+        setMailType(MAILTYPE_HTML);
         setConfirmationMailSubject("");
         setConfirmationMailText("");
         setConfirmationMailTextPlain("");
@@ -1130,7 +1156,7 @@ public class CmsForm {
                 setConfirmationMailEnabled(false);
                 return;
             }
-            if (!CmsField.C_TYPE_EMAIL.equals(confirmField.getType())) {
+            if (!CmsField.TYPE_EMAIL.equals(confirmField.getType())) {
                 // specified confirmation mail input field has wrong field type
                 getConfigurationErrors().add(messages.key("form.configuration.error.emailfield.type"));
             }

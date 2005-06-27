@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlWpTemplateFile.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.template.CmsTemplateClassManager;
 import com.opencms.template.CmsXmlTemplateFile;
@@ -47,7 +46,7 @@ import org.w3c.dom.Element;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -97,7 +96,7 @@ public class CmsXmlWpTemplateFile extends CmsXmlTemplateFile {
      * Clears the startup tag that can be used in workplace documents.
      */
     public void clearStartup() {
-        setData(I_CmsWpConstants.C_TAG_STARTUP, "");
+        setData(CmsWorkplaceDefault.C_TAG_STARTUP, "");
     }
 
     /**

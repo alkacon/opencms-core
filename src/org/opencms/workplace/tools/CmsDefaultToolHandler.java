@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,7 +66,7 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
                 return true;
             }
         }
-        return !getLink().equals(CmsToolManager.C_VIEW_JSPPAGE_LOCATION);
+        return !getLink().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION);
     }
 
     /**
@@ -85,6 +85,6 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
                 return true;
             }
         }
-        return !getLink().equals(CmsToolManager.C_VIEW_JSPPAGE_LOCATION);
+        return !getLink().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION);
     }
 }

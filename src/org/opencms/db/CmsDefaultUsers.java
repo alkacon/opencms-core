@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,32 +41,32 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0
  */
 public class CmsDefaultUsers {
 
     /** Default name for the "Administrators" group. */
-    public static final String C_DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
+    public static final String DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
 
     /** Default name for the "Guests" group. */
-    public static final String C_DEFAULT_GROUP_GUESTS = "Guests";
+    public static final String DEFAULT_GROUP_GUESTS = "Guests";
 
     /** Default name for the "Projectmanagers" group. */
-    public static final String C_DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
+    public static final String DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
 
     /** Default name for the "Users" group. */
-    public static final String C_DEFAULT_GROUP_USERS = "Users";
+    public static final String DEFAULT_GROUP_USERS = "Users";
 
     /** Default name for the "Admin" user. */
-    public static final String C_DEFAULT_USER_ADMIN = "Admin";
+    public static final String DEFAULT_USER_ADMIN = "Admin";
 
     /** Default name for the "Export" user. */
-    public static final String C_DEFAULT_USER_EXPORT = "Export";
+    public static final String DEFAULT_USER_EXPORT = "Export";
 
     /** Default name for the "Guest" user. */
-    public static final String C_DEFAULT_USER_GUEST = "Guest";
+    public static final String DEFAULT_USER_GUEST = "Guest";
 
     // member variables    
     private String m_groupAdministrators;
@@ -84,13 +84,13 @@ public class CmsDefaultUsers {
      */
     public CmsDefaultUsers() {
 
-        m_userAdmin = C_DEFAULT_USER_ADMIN;
-        m_userGuest = C_DEFAULT_USER_GUEST;
-        m_userExport = C_DEFAULT_USER_EXPORT;
-        m_groupAdministrators = C_DEFAULT_GROUP_ADMINISTRATORS;
-        m_groupProjectmanagers = C_DEFAULT_GROUP_PROJECTMANAGERS;
-        m_groupUsers = C_DEFAULT_GROUP_USERS;
-        m_groupGuests = C_DEFAULT_GROUP_GUESTS;
+        m_userAdmin = DEFAULT_USER_ADMIN;
+        m_userGuest = DEFAULT_USER_GUEST;
+        m_userExport = DEFAULT_USER_EXPORT;
+        m_groupAdministrators = DEFAULT_GROUP_ADMINISTRATORS;
+        m_groupProjectmanagers = DEFAULT_GROUP_PROJECTMANAGERS;
+        m_groupUsers = DEFAULT_GROUP_USERS;
+        m_groupGuests = DEFAULT_GROUP_GUESTS;
     }
 
     /**

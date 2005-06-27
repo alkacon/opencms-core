@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlContent.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,14 +54,14 @@ import java.util.TreeMap;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
     /** Configuration key for the (optional) schema. */
-    public static final String C_CONFIGURATION_SCHEMA = "schema";
+    public static final String CONFIGURATION_SCHEMA = "schema";
 
     /** The (optional) schema of this resource. */
     private String m_schema;
@@ -72,7 +72,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
-        if (C_CONFIGURATION_SCHEMA.equalsIgnoreCase(paramName)) {
+        if (CONFIGURATION_SCHEMA.equalsIgnoreCase(paramName)) {
             m_schema = paramValue.trim();
         }
     }
@@ -125,7 +125,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
 
         Map result = new TreeMap();
         if (m_schema != null) {
-            result.put(C_CONFIGURATION_SCHEMA, m_schema);
+            result.put(CONFIGURATION_SCHEMA, m_schema);
         }
         Map additional = super.getConfiguration();
         if (additional != null) {
@@ -139,7 +139,7 @@ public class CmsResourceTypeXmlContent extends A_CmsResourceType {
      */
     public int getLoaderId() {
 
-        return CmsXmlContentLoader.C_RESOURCE_LOADER_ID;
+        return CmsXmlContentLoader.RESOURCE_LOADER_ID;
     }
 
     /**

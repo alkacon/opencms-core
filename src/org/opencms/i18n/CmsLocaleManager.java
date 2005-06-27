@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/06/25 12:03:55 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsUser;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.monitor.CmsMemoryMonitor;
@@ -65,14 +64,14 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLocaleManager implements I_CmsEventListener {
 
     /** Runtime property name for locale handler. */
-    public static final String C_LOCALE_HANDLER = "class_locale_handler";
+    public static final String LOCALE_HANDLER = "class_locale_handler";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
@@ -94,6 +93,12 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
     /** The configured locale handler. */
     private I_CmsLocaleHandler m_localeHandler;
+
+    /** Request parameter to force encoding selection. */
+    public static final String PARAMETER_ENCODING = "__encoding";
+
+    /** Request parameter to force locale selection. */
+    public static final String PARAMETER_LOCALE = "__locale";
 
     /**
      * Initializes a new CmsLocaleManager, called from the configuration.<p>
@@ -603,12 +608,12 @@ public class CmsLocaleManager implements I_CmsEventListener {
         if (req != null) {
             String localeParam;
             // check request for parameters
-            if ((localeParam = req.getParameter(I_CmsConstants.C_PARAMETER_LOCALE)) != null) {
+            if ((localeParam = req.getParameter(CmsLocaleManager.PARAMETER_LOCALE)) != null) {
                 // "__locale" parameter found in request
                 locale = CmsLocaleManager.getLocale(localeParam);
             }
             // check for "__encoding" parameter in request
-            encoding = req.getParameter(I_CmsConstants.C_PARAMETER_ENCODING);
+            encoding = req.getParameter(CmsLocaleManager.PARAMETER_ENCODING);
         }
 
         // merge values from request with values from locale handler

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.135 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.136 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -70,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.135 $
+ * @version $Revision: 1.136 $
  * 
  * @since 6.0.0 
  */
@@ -154,8 +153,8 @@ public class CmsObject {
      * @param resourceName name of the resource
      * @param principalType the type of the principal (currently group or user):
      *      <ul>
-     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_USER}</code></li>
-     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_GROUP}</code></li>
+     *          <li><code>{@link I_CmsPrincipal#PRINCIPAL_USER}</code></li>
+     *          <li><code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}</code></li>
      *      </ul>
      * @param principalName name of the principal
      * @param allowedPermissions bitset of allowed permissions
@@ -176,7 +175,7 @@ public class CmsObject {
         CmsAccessControlEntry acEntry = null;
         I_CmsPrincipal principal = null;
 
-        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
+        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
             principal = readGroup(principalName);
             acEntry = new CmsAccessControlEntry(
                 res.getResourceId(),
@@ -184,8 +183,8 @@ public class CmsObject {
                 allowedPermissions,
                 deniedPermissions,
                 flags);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
-        } else if (I_CmsPrincipal.C_PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
+        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
             principal = readUser(principalName);
             acEntry = new CmsAccessControlEntry(
                 res.getResourceId(),
@@ -193,7 +192,7 @@ public class CmsObject {
                 allowedPermissions,
                 deniedPermissions,
                 flags);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_USER);
         }
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
@@ -205,8 +204,8 @@ public class CmsObject {
      * @param resourceName name of the resource
      * @param principalType the type of the principal (group or user):
      *      <ul>
-     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_USER}</code></li>
-     *          <li><code>{@link I_CmsPrincipal#C_PRINCIPAL_GROUP}</code></li>
+     *          <li><code>{@link I_CmsPrincipal#PRINCIPAL_USER}</code></li>
+     *          <li><code>{@link I_CmsPrincipal#PRINCIPAL_GROUP}</code></li>
      *      </ul>
      * @param principalName name of the principal
      * @param permissionString the permissions in the format ((+|-)(r|w|v|c|i|o))*
@@ -223,11 +222,11 @@ public class CmsObject {
         if ("group".equals(principalType.toLowerCase())) {
             principal = readGroup(principalName);
             acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_GROUP);
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
         } else if ("user".equals(principalType.toLowerCase())) {
             principal = readUser(principalName);
             acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(I_CmsConstants.C_ACCESSFLAGS_USER);
+            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_USER);
         }
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
@@ -383,7 +382,7 @@ public class CmsObject {
      * after the copy operation.<p>
      * 
      * Siblings will be treated according to the
-     * <code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code> mode.<p>
+     * <code>{@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}</code> mode.<p>
      * 
      * @param source the name of the resource to copy (full path)
      * @param destination the name of the copy destination (full path)
@@ -395,7 +394,7 @@ public class CmsObject {
      */
     public void copyResource(String source, String destination) throws CmsException, CmsIllegalArgumentException {
 
-        copyResource(source, destination, I_CmsConstants.C_COPY_PRESERVE_SIBLING);
+        copyResource(source, destination, CmsResource.COPY_PRESERVE_SIBLING);
     }
 
     /**
@@ -408,9 +407,9 @@ public class CmsObject {
      * during the copy operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_NEW}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
      * @param source the name of the resource to copy (full path)
@@ -528,7 +527,7 @@ public class CmsObject {
             description,
             groupname,
             managergroupname,
-            I_CmsConstants.C_PROJECT_TYPE_NORMAL);
+            CmsProject.PROJECT_TYPE_NORMAL);
     }
 
     /**
@@ -728,7 +727,7 @@ public class CmsObject {
 
         CmsProperty property = new CmsProperty();
         property.setName(key);
-        property.setStructureValue(CmsProperty.C_DELETE_VALUE);
+        property.setStructureValue(CmsProperty.DELETE_VALUE);
 
         writePropertyObject(resourcename, property);
     }
@@ -752,8 +751,8 @@ public class CmsObject {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param resourcename the name of the resource to delete (full path)
@@ -1562,7 +1561,7 @@ public class CmsObject {
      * @param lastname the lastname of the user
      * @param email the email of the user
      * @param address the address of the user
-     * @param flags the flags for a user (for example <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
+     * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
      * @param type the type of the user
      * @param additionalInfos the additional user infos
      * 
@@ -1640,7 +1639,7 @@ public class CmsObject {
     /**
      * Locks a resource.<p>
      *
-     * The mode for the lock is <code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code>.<p>
+     * The mode for the lock is <code>{@link org.opencms.lock.CmsLock#COMMON}</code>.<p>
      *
      * @param resourcename the name of the resource to lock (full path)
      * 
@@ -1650,7 +1649,7 @@ public class CmsObject {
      */
     public void lockResource(String resourcename) throws CmsException {
 
-        lockResource(resourcename, CmsLock.C_MODE_COMMON);
+        lockResource(resourcename, CmsLock.COMMON);
     }
 
     /**
@@ -1659,8 +1658,8 @@ public class CmsObject {
      * The <code>mode</code> parameter controls what kind of lock is used.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
      * </ul><p>
      * 
      * @param resourcename the name of the resource to lock (full path)
@@ -1722,7 +1721,7 @@ public class CmsObject {
         // login the user
         CmsUser newUser = m_securityManager.loginUser(m_context, username, password, remoteAddress, type);
         // set the project back to the "Online" project
-        CmsProject newProject = m_securityManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+        CmsProject newProject = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
         // switch the cms context to the new user and project
         m_context.switchUser(newUser, newProject);
         // init this CmsObject with the new user
@@ -2259,10 +2258,10 @@ public class CmsObject {
      * 
      * Possible values for the <code>state</code> parameter are:<br>
      * <ul>
-     * <li><code>{@link I_CmsConstants#C_STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
-     * <li><code>{@link I_CmsConstants#C_STATE_NEW}</code>: Read all "new" resources in the project</li>
-     * <li><code>{@link I_CmsConstants#C_STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
-     * <li><code>{@link I_CmsConstants#C_STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li>
+     * <li><code>{@link CmsResource#STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
+     * <li><code>{@link CmsResource#STATE_NEW}</code>: Read all "new" resources in the project</li>
+     * <li><code>{@link CmsResource#STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
+     * <li><code>{@link CmsResource#STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li>
      * </ul><p>
      * 
      * @param projectId the id of the project to read the file resources for
@@ -2887,9 +2886,9 @@ public class CmsObject {
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         I_CmsPrincipal principal = null;
 
-        if (I_CmsPrincipal.C_PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
+        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
             principal = readGroup(principalName);
-        } else if (I_CmsPrincipal.C_PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
+        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
             principal = readUser(principalName);
         }
 
@@ -2948,9 +2947,9 @@ public class CmsObject {
      * @param resourcename the name of the resource to change (full path)
      * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource, 
-     *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource. 
-     *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
      * @throws CmsException if something goes wrong

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListExportReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.I_CmsReportThread;
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,7 +146,7 @@ public class CmsModulesListExportReport extends A_CmsListReport {
 
         String filename = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             OpenCms.getSystemInfo().getPackagesRfsPath()
-                + I_CmsConstants.C_MODULE_PATH
+                + CmsSystemInfo.FOLDER_MODULES
                 + moduleName
                 + "_"
                 + OpenCms.getModuleManager().getModule(moduleName).getVersion().toString());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.text.ParseException;
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -244,7 +244,7 @@ public class CmsModuleXmlHandler {
         // generic <param> parameter rules
         digester.addCallMethod(
             "*/" + I_CmsXmlConfiguration.N_PARAM,
-            I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
             2);
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
@@ -301,7 +301,7 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_AUTHOREMAIL);
         }
-        if (module.getDateCreated() != CmsModule.C_DEFAULT_DATE) {
+        if (module.getDateCreated() != CmsModule.DEFAULT_DATE) {
             moduleElement.addElement(N_DATECREATED).setText(CmsDateUtil.getHeaderDate(module.getDateCreated()));
         } else {
             moduleElement.addElement(N_DATECREATED);
@@ -312,7 +312,7 @@ public class CmsModuleXmlHandler {
         } else {
             moduleElement.addElement(N_USERINSTALLED);
         }
-        if (module.getDateInstalled() != CmsModule.C_DEFAULT_DATE) {
+        if (module.getDateInstalled() != CmsModule.DEFAULT_DATE) {
             moduleElement.addElement(N_DATEINSTALLED).setText(CmsDateUtil.getHeaderDate(module.getDateInstalled()));
         } else {
             moduleElement.addElement(N_DATEINSTALLED);
@@ -523,7 +523,7 @@ public class CmsModuleXmlHandler {
      *
      * @param resourceType the resource type to add
      * 
-     * @see I_CmsResourceType#C_ADD_RESOURCE_TYPE_METHOD
+     * @see I_CmsResourceType#ADD_RESOURCE_TYPE_METHOD
      */
     public void addResourceType(I_CmsResourceType resourceType) {
 
@@ -574,7 +574,7 @@ public class CmsModuleXmlHandler {
         CmsModuleVersion moduleVersion = new CmsModuleVersion(version);
 
         // parse date created
-        long moduleDateCreated = CmsModule.C_DEFAULT_DATE;
+        long moduleDateCreated = CmsModule.DEFAULT_DATE;
         if (dateCreated != null) {
             try {
                 moduleDateCreated = CmsDateUtil.parseHeaderDate(dateCreated);
@@ -584,7 +584,7 @@ public class CmsModuleXmlHandler {
         }
 
         // parse date installed
-        long moduleDateInstalled = CmsModule.C_DEFAULT_DATE;
+        long moduleDateInstalled = CmsModule.DEFAULT_DATE;
         if (dateInstalled != null) {
             try {
                 moduleDateInstalled = CmsDateUtil.parseHeaderDate(dateInstalled);
@@ -595,7 +595,7 @@ public class CmsModuleXmlHandler {
 
         if (m_oldModule) {
             // make sure module path is added to resources for "old" (5.0.x) modules
-            String modulePath = I_CmsWpConstants.C_VFS_PATH_MODULES + name + "/";
+            String modulePath = CmsWorkplace.VFS_PATH_MODULES + name + "/";
             m_resources.add(modulePath);
         }
 

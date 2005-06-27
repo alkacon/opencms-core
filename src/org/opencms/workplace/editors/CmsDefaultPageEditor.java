@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
@@ -64,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +94,16 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
 
     private String m_paramElementname;
     private String m_paramOldelementname;
+
+    /** option values for font select boxes. */
+    public static final String[] SELECTBOX_FONTS = {
+        "Arial",
+        "Arial Narrow",
+        "System",
+        "Times New Roman",
+        "Verdana",
+        "Monospace",
+        "SansSerif"};
 
     /**
      * Public constructor.<p>
@@ -233,7 +242,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         }
 
         // redirect to the temporary file with current active element language
-        String param = "?" + org.opencms.main.I_CmsConstants.C_PARAMETER_LOCALE + "=" + getParamElementlanguage();
+        String param = "?" + org.opencms.i18n.CmsLocaleManager.PARAMETER_LOCALE + "=" + getParamElementlanguage();
         sendCmsRedirect(getParamTempfile() + param);
     }
 
@@ -331,8 +340,8 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public String buildSelectFonts(String attributes) {
 
         List names = new ArrayList();
-        for (int i = 0; i < I_CmsWpConstants.C_SELECTBOX_FONTS.length; i++) {
-            String value = I_CmsWpConstants.C_SELECTBOX_FONTS[i];
+        for (int i = 0; i < CmsDefaultPageEditor.SELECTBOX_FONTS.length; i++) {
+            String value = CmsDefaultPageEditor.SELECTBOX_FONTS[i];
             names.add(value);
         }
         return buildSelect(attributes, names, names, -1, false);
@@ -346,7 +355,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
     public void escapeParams() {
 
         // escape the content
-        setParamContent(CmsEncoder.escapeWBlanks(getParamContent(), CmsEncoder.C_UTF8_ENCODING));
+        setParamContent(CmsEncoder.escapeWBlanks(getParamContent(), CmsEncoder.ENCODING_UTF_8));
     }
 
     /**
@@ -599,12 +608,12 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
         String contentConversion = m_page.getConversion();
         // check if cleanup was selected in the editor, we have to add the cleanup parameter
         if (EDITOR_CLEANUP.equals(getParamAction())) {
-            if ((contentConversion == null) || (contentConversion.equals(CmsHtmlConverter.C_PARAM_DISABLED))) {
+            if ((contentConversion == null) || (contentConversion.equals(CmsHtmlConverter.PARAM_DISABLED))) {
                 // if the current conversion mode is "false" only, we have to remove the "false" value and set it to "cleanup", as "false" will be stronger than all other values
-                contentConversion = CmsHtmlConverter.C_PARAM_WORD;
+                contentConversion = CmsHtmlConverter.PARAM_WORD;
             } else {
                 // add "cleanup" to the already existing values
-                contentConversion += ";" + CmsHtmlConverter.C_PARAM_WORD;
+                contentConversion += ";" + CmsHtmlConverter.PARAM_WORD;
             }
         }
         m_page.setConversion(contentConversion);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,14 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTextareaWidget extends A_CmsWidget {
 
     /** Default number of rows to display. */
-    private static final int C_DEFAULT_ROWS_NUMBER = 4;
+    private static final int DEFAULT_ROWS_NUMBER = 4;
 
     /**
      * Creates a new textarea widget.<p>
@@ -56,7 +56,7 @@ public class CmsTextareaWidget extends A_CmsWidget {
     public CmsTextareaWidget() {
 
         // default configuration is to display 4 rows
-        this(C_DEFAULT_ROWS_NUMBER);
+        this(DEFAULT_ROWS_NUMBER);
     }
 
     /**
@@ -86,7 +86,7 @@ public class CmsTextareaWidget extends A_CmsWidget {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
-        int rows = C_DEFAULT_ROWS_NUMBER;
+        int rows = DEFAULT_ROWS_NUMBER;
         try {
             rows = new Integer(getConfiguration()).intValue();
         } catch (Exception e) {

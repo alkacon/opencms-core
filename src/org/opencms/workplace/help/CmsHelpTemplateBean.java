@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,17 +36,17 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.io.IOException;
 import java.util.Iterator;
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     public static final String PARAM_WORKPLACERESOURCE = "workplaceresource";
 
     /** VFS path to the help folder, contains a macro for the Locale which has to be resolved. */
-    public static final String PATH_HELP = I_CmsWpConstants.C_VFS_PATH_LOCALES
+    public static final String PATH_HELP = CmsWorkplace.VFS_PATH_LOCALES
         + "${"
         + CmsMacroResolver.KEY_REQUEST_LOCALE
         + "}/help/";
@@ -107,7 +107,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         + HELPMAPPINGS_FILENAME;
 
     /** Absolute path to used JSP templates. */
-    public static final String TEMPLATEPATH = I_CmsWpConstants.C_VFS_PATH_MODULES + MODULE_NAME + "/jsptemplates/";
+    public static final String TEMPLATEPATH = CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/jsptemplates/";
 
     /** Request parameter for the help build frameset flag. */
     private String m_paramBuildframe;
@@ -205,7 +205,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         CmsProject project = getJsp().getRequestContext().currentProject();
         try {
             // change to online project to increase display performance
-            getJsp().getRequestContext().setCurrentProject(getCms().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+            getJsp().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
         } catch (CmsException e) {
             // failed to switch to project
         } finally {
@@ -254,7 +254,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         CmsProject project = getJsp().getRequestContext().currentProject();
         try {
             // change to online project to increase display performance
-            getJsp().getRequestContext().setCurrentProject(getCms().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+            getJsp().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
         } catch (CmsException e) {
             // failed to switch to project
         } finally {
@@ -349,7 +349,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         CmsProject project = getJsp().getRequestContext().currentProject();
         try {
             // change to online project to increase display performance
-            getJsp().getRequestContext().setCurrentProject(getCms().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+            getJsp().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
         } catch (CmsException e) {
             // failed to switch to project
         } finally {
@@ -368,7 +368,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 bodyLink.append("=");
                 bodyLink.append(getJsp().getRequestContext().getUri());
                 bodyLink.append("&");
-                bodyLink.append(I_CmsConstants.C_PARAMETER_LOCALE);
+                bodyLink.append(CmsLocaleManager.PARAMETER_LOCALE);
                 bodyLink.append("=");
                 bodyLink.append(getLocale());
                 String redirectLink = getJsp().link(bodyLink.toString());
@@ -489,7 +489,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         String startFolder = CmsResource.getFolderPath(currentUri);
         while (CmsStringUtil.isNotEmptyOrWhitespaceOnly(startFolder)) {
             try {
-                String prop = getCms().readPropertyObject(startFolder, CmsJspNavElement.C_PROPERTY_NAVINFO, false).getValue(
+                String prop = getCms().readPropertyObject(startFolder, CmsPropertyDefinition.PROPERTY_NAVINFO, false).getValue(
                     null);
                 if (PROPERTY_VALUE_HELPSTART.equals(prop)) {
                     helpLevel = CmsResource.getPathLevel(startFolder);
@@ -606,7 +606,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         StringBuffer headLink = new StringBuffer(8);
         headLink.append(TEMPLATEPATH);
         headLink.append("help_head.jsp?");
-        headLink.append(I_CmsConstants.C_PARAMETER_LOCALE);
+        headLink.append(CmsLocaleManager.PARAMETER_LOCALE);
         headLink.append("=");
         headLink.append(getLocale());
         headLink.append("&");
@@ -623,7 +623,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         bodyLink.append("=");
         bodyLink.append(getJsp().getRequestContext().getUri());
         bodyLink.append("&");
-        bodyLink.append(I_CmsConstants.C_PARAMETER_LOCALE);
+        bodyLink.append(CmsLocaleManager.PARAMETER_LOCALE);
         bodyLink.append("=");
         bodyLink.append(getLocale());
         result.append(getJsp().link(bodyLink.toString()));

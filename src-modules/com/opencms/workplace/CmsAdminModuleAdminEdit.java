@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleAdminEdit.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -150,13 +150,13 @@ public class CmsAdminModuleAdminEdit extends CmsWorkplaceDefault {
         }
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        Hashtable sessionData = (Hashtable)session.getValue(C_SESSION_MODULE_ADMIN_DATA);
-        String module = (String)sessionData.get(C_MODULE_PACKETNAME);
+        Hashtable sessionData = (Hashtable)session.getValue(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_DATA);
+        String module = (String)sessionData.get(CmsWorkplaceDefault.C_MODULE_PACKETNAME);
         xmlTemplateDocument.setData("packetname", module);
-        Vector paraNames = (Vector)sessionData.get(C_SESSION_MODULE_ADMIN_PROP_NAMES);
-        Vector paraDescr = (Vector)sessionData.get(C_SESSION_MODULE_ADMIN_PROP_DESCR);
-        Vector paraTyp = (Vector)sessionData.get(C_SESSION_MODULE_ADMIN_PROP_TYP);
-        Vector paraVal = (Vector)sessionData.get(C_SESSION_MODULE_ADMIN_PROP_VAL);
+        Vector paraNames = (Vector)sessionData.get(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_NAMES);
+        Vector paraDescr = (Vector)sessionData.get(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_DESCR);
+        Vector paraTyp = (Vector)sessionData.get(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_TYP);
+        Vector paraVal = (Vector)sessionData.get(CmsWorkplaceDefault.C_SESSION_MODULE_ADMIN_PROP_VAL);
         String prop = (String)parameters.get("prop");
         String delete = (String)parameters.get("delete");
         String ok = (String)parameters.get("ok");

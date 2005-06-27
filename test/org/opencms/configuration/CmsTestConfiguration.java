@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/CmsTestConfiguration.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,17 +42,17 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
 public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-tests.dtd";
+    private static final String CONFIGURATION_DTD_NAME = "opencms-tests.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-tests.xml";
+    private static final String DEFAULT_XML_FILE_NAME = "opencms-tests.xml";
 
     /** Test content 1. */
     private String m_content1;
@@ -65,7 +65,7 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      */
     public CmsTestConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.getLog(this).isDebugEnabled()) {
             CmsLog.getLog(this).debug("Empty constructor called on " + this);
         }
@@ -118,6 +118,6 @@ public class CmsTestConfiguration extends A_CmsXmlConfiguration implements I_Cms
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,23 +72,23 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditorDisplayOptions {
 
     /** The name of the configuration folder.<p> */
-    public static final String C_FOLDER_EDITORCONFIGURATION = CmsEditor.C_PATH_EDITORS + "configuration/";
+    public static final String FOLDER_EDITORCONFIGURATION = CmsEditor.PATH_EDITORS + "configuration/";
 
     /** Mapping entry name that is used if no mapping is available for the user.<p> */
-    public static final String C_NO_MAPPING_FOR_USER = "na";
+    public static final String NO_MAPPING_FOR_USER = "na";
 
     /** Maximum size of the stored editor configurations.<p> */
-    public static final int C_SIZE_CONFIGURATIONFILES = 12;
+    public static final int SIZE_CONFIGURATIONFILES = 12;
 
     /** Maximum size of the user editor configuration mappings.<p> */
-    public static final int C_SIZE_USERENTRIES = 100;
+    public static final int SIZE_USERENTRIES = 100;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEditorDisplayOptions.class);
@@ -105,8 +105,8 @@ public class CmsEditorDisplayOptions {
     public CmsEditorDisplayOptions() {
 
         // initialize members
-        m_userMappings = new LRUMap(C_SIZE_USERENTRIES);
-        m_loadedConfigurations = new LRUMap(C_SIZE_CONFIGURATIONFILES);
+        m_userMappings = new LRUMap(SIZE_USERENTRIES);
+        m_loadedConfigurations = new LRUMap(SIZE_CONFIGURATIONFILES);
     }
 
     /**
@@ -128,7 +128,7 @@ public class CmsEditorDisplayOptions {
         Properties displayOptions = null;
         if (mappedConfigFile == null) {
             // no configuration file name stored for user, get the navigation items of the configuration folder
-            List items = jsp.getNavigation().getNavigationForFolder(C_FOLDER_EDITORCONFIGURATION);
+            List items = jsp.getNavigation().getNavigationForFolder(FOLDER_EDITORCONFIGURATION);
             if (items.size() > 0) {
                 // get first found configuration file
                 CmsJspNavElement nav = (CmsJspNavElement)items.get(0);
@@ -151,19 +151,19 @@ public class CmsEditorDisplayOptions {
                         if (LOG.isInfoEnabled()) {
                             LOG.info(e);
                         }
-                        mappedConfigFile = C_NO_MAPPING_FOR_USER;
+                        mappedConfigFile = NO_MAPPING_FOR_USER;
                     } catch (IOException e) {
                         // set configuration to not available
                         if (LOG.isInfoEnabled()) {
                             LOG.info(e);
                         }
-                        mappedConfigFile = C_NO_MAPPING_FOR_USER;
+                        mappedConfigFile = NO_MAPPING_FOR_USER;
                         displayOptions = null;
                     }
                 }
             } else {
                 // no configuration available for current user, store this in mapping
-                mappedConfigFile = C_NO_MAPPING_FOR_USER;
+                mappedConfigFile = NO_MAPPING_FOR_USER;
             }
             // store the file name of the configuration file for the current user
             m_userMappings.put(jsp.getRequestContext().currentUser().getName(), mappedConfigFile);

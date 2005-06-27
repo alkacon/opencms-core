@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -58,14 +57,14 @@ import javax.servlet.http.HttpServletResponse;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
     /** The id of this loader. */
-    public static final int C_RESOURCE_LOADER_ID = 9;
+    public static final int RESOURCE_LOADER_ID = 9;
 
     /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -141,7 +140,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
      */
     public int getLoaderId() {
 
-        return C_RESOURCE_LOADER_ID;
+        return RESOURCE_LOADER_ID;
     }
 
     /**
@@ -224,7 +223,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, resource, req);
 
         // get the element selector
-        String element = req.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
+        String element = req.getParameter(I_CmsResourceLoader.PARAMETER_ELEMENT);
 
         // check the current locales
         List locales = page.getLocales(element);

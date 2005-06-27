@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2005/06/26 15:07:07 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,8 +35,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
   

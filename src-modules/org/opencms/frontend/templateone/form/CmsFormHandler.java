@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,26 +65,29 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFormHandler extends CmsJspActionElement {
 
     /** Request parameter value for the form action parameter: correct the input. */
-    public static final String C_ACTION_CONFIRMED = "confirmed";
+    public static final String ACTION_CONFIRMED = "confirmed";
+    
     /** Request parameter value for the form action parameter: correct the input. */
-    public static final String C_ACTION_CORRECT_INPUT = "correct";
+    public static final String ACTION_CORRECT_INPUT = "correct";
+    
     /** Request parameter value for the form action parameter: form submitted. */
-    public static final String C_ACTION_SUBMIT = "submit";
+    public static final String ACTION_SUBMIT = "submit";
 
     /** Form error: mandatory field not filled out. */
-    public static final String C_ERROR_MANDATORY = "mandatory";
+    public static final String ERROR_MANDATORY = "mandatory";
+    
     /** Form error: validation error of input. */
-    public static final String C_ERROR_VALIDATION = "validation";
+    public static final String ERROR_VALIDATION = "validation";
 
     /** Request parameter name for the hidden form action parameter to determine the action. */
-    public static final String C_PARAM_FORMACTION = "formaction";
+    public static final String PARAM_FORMACTION = "formaction";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
@@ -198,7 +201,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             Iterator i = getFormConfiguration().getFields().iterator();
             while (i.hasNext()) {
                 CmsField currentField = (CmsField)i.next();
-                if (CmsField.C_TYPE_CHECKBOX.equals(currentField.getType())) {
+                if (CmsField.TYPE_CHECKBOX.equals(currentField.getType())) {
                     // special case: checkbox, can have more than one value
                     Iterator k = currentField.getItems().iterator();
                     while (k.hasNext()) {
@@ -319,7 +322,7 @@ public class CmsFormHandler extends CmsJspActionElement {
 
         setErrors(new HashMap());
         m_fieldValues = null;
-        setInitial(CmsStringUtil.isEmpty(req.getParameter(C_PARAM_FORMACTION)));
+        setInitial(CmsStringUtil.isEmpty(req.getParameter(PARAM_FORMACTION)));
         // get the localized messages
         setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
         // get the form configuration
@@ -349,7 +352,7 @@ public class CmsFormHandler extends CmsJspActionElement {
         String mailTo = mailField.getValue();
 
         // create the new confirmation mail message depending on the configured email type
-        if (getFormConfiguration().getMailType().equals(CmsForm.C_MAILTYPE_HTML)) {
+        if (getFormConfiguration().getMailType().equals(CmsForm.MAILTYPE_HTML)) {
             // create a HTML email
             CmsHtmlMail theMail = new CmsHtmlMail();
             theMail.setCharset(getCmsObject().getRequestContext().getEncoding());
@@ -392,12 +395,12 @@ public class CmsFormHandler extends CmsJspActionElement {
             // send optional confirmation mail
             if (getFormConfiguration().isConfirmationMailEnabled()) {
                 if (!getFormConfiguration().isConfirmationMailOptional()
-                    || "true".equals(getRequest().getParameter(CmsForm.C_PARAM_SENDCONFIRMATION))) {
+                    || "true".equals(getRequest().getParameter(CmsForm.PARAM_SENDCONFIRMATION))) {
                     sendConfirmationMail();
                 }
             }
             // create the new mail message depending on the configured email type
-            if (getFormConfiguration().getMailType().equals(CmsForm.C_MAILTYPE_HTML)) {
+            if (getFormConfiguration().getMailType().equals(CmsForm.MAILTYPE_HTML)) {
                 // create a HTML email
                 CmsHtmlMail theMail = new CmsHtmlMail();
                 theMail.setCharset(getCmsObject().getRequestContext().getEncoding());
@@ -448,7 +451,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     public boolean showCheck() {
 
         return getFormConfiguration().getShowCheck()
-            && C_ACTION_SUBMIT.equals(getRequest().getParameter(C_PARAM_FORMACTION));
+            && ACTION_SUBMIT.equals(getRequest().getParameter(PARAM_FORMACTION));
     }
 
     /**
@@ -460,7 +463,7 @@ public class CmsFormHandler extends CmsJspActionElement {
 
         return isInitial()
             || !validate()
-            || C_ACTION_CORRECT_INPUT.equals(getRequest().getParameter(C_PARAM_FORMACTION));
+            || ACTION_CORRECT_INPUT.equals(getRequest().getParameter(PARAM_FORMACTION));
     }
 
     /**
@@ -494,14 +497,14 @@ public class CmsFormHandler extends CmsJspActionElement {
                     }
                     if (!isSelected) {
                         // no item has been selected, create an error message
-                        getErrors().put(currentField.getName(), C_ERROR_MANDATORY);
+                        getErrors().put(currentField.getName(), ERROR_MANDATORY);
                         allOk = false;
                         continue;
                     }
                 } else {
                     // check if the field has been filled out
                     if (CmsStringUtil.isEmpty(currentField.getValue())) {
-                        getErrors().put(currentField.getName(), C_ERROR_MANDATORY);
+                        getErrors().put(currentField.getName(), ERROR_MANDATORY);
                         allOk = false;
                         continue;
                     }
@@ -515,7 +518,7 @@ public class CmsFormHandler extends CmsJspActionElement {
                 try {
                     pattern = Pattern.compile(currentField.getValidationExpression());
                     if (!pattern.matcher(currentField.getValue()).matches()) {
-                        getErrors().put(currentField.getName(), C_ERROR_VALIDATION);
+                        getErrors().put(currentField.getName(), ERROR_VALIDATION);
                         allOk = false;
                     }
                 } catch (PatternSyntaxException e) {

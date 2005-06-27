@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,11 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.util.CmsTemplateContentListItem;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.I_CmsDialogHandler;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.workplace.commons.CmsPropertyCustom;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
@@ -71,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,61 +81,61 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      *  
      * Loop this to get the HTTP request data and set the property values.<p>
      */
-    private static final String[] C_ALL_PROPERTIES = {
+    private static final String[] ALL_PROPERTIES = {
 
-        CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE,
-        CmsTemplateBean.C_PROPERTY_SHOWHEADIMAGE,
-        CmsTemplateBean.C_PROPERTY_HEAD_IMGURI,
-        CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK,
-        CmsTemplateBean.C_PROPERTY_SHOW_HEADNAV,
-        CmsTemplateBean.C_PROPERTY_SHOW_NAVLEFT,
-        CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI,
-        CmsTemplateBean.C_PROPERTY_SIDE_URI,
-        CmsTemplateBean.C_PROPERTY_CONFIGPATH,
-        CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER,
-        CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT};
+        CmsTemplateNavigation.PROPERTY_HEADNAV_USE,
+        CmsTemplateBean.PROPERTY_SHOWHEADIMAGE,
+        CmsTemplateBean.PROPERTY_HEAD_IMGURI,
+        CmsTemplateBean.PROPERTY_HEAD_IMGLINK,
+        CmsTemplateBean.PROPERTY_SHOW_HEADNAV,
+        CmsTemplateBean.PROPERTY_SHOW_NAVLEFT,
+        CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI,
+        CmsTemplateBean.PROPERTY_SIDE_URI,
+        CmsTemplateBean.PROPERTY_CONFIGPATH,
+        CmsTemplateBean.PROPERTY_LAYOUT_CENTER,
+        CmsTemplateBean.PROPERTY_LAYOUT_RIGHT};
 
     /** 
      * String Array with default properties.<p>
      *  
      * Loop this to create form fields or get HTTP request data and set the property values.<p>
      */
-    private static final String[] C_DEFAULT_PROPERTIES = {
+    private static final String[] DEFAULT_PROPERTIES = {
 
     CmsPropertyDefinition.PROPERTY_TITLE, CmsPropertyDefinition.PROPERTY_DESCRIPTION};
 
     /** Mode used for switching between different radio types. */
-    private static final String C_ENABLE = "enable";
+    private static final String ENABLE = "enable";
 
     /** Mode used for switching between different radio types. */
-    private static final String C_INDIVIDUAL = "individual";
+    private static final String INDIVIDUAL = "individual";
 
     /** Prefix for the localized keys of the dialog. */
-    private static final String C_KEY_PREFIX = "templateonedialog.";
+    private static final String KEY_PREFIX = "templateonedialog.";
 
     /** The module path. */
-    private static final String C_MODULE_PATH = "/system/modules/org.opencms.frontend.templateone/";
+    private static final String MODULE_PATH = "/system/modules/org.opencms.frontend.templateone/";
 
     /** The default parameter value. */
-    private static final String C_PARAM_DEFAULT = "";
+    private static final String PARAM_DEFAULT = "";
 
     /** The false parameter value. */
-    private static final String C_PARAM_FALSE = "false";
+    private static final String PARAM_FALSE = "false";
 
     /** The true parameter value. */
-    private static final String C_PARAM_TRUE = "true";
+    private static final String PARAM_TRUE = "true";
 
     /** The path of the "template one" template. */
-    private static final String C_TEMPLATE_ONE = "/system/modules/org.opencms.frontend.templateone/templates/main";
+    private static final String TEMPLATE_ONE = "/system/modules/org.opencms.frontend.templateone/templates/main";
 
     /** The VFS path to the global configuration files for content lists. */
-    private static final String C_VFS_PATH_CONFIGFILES = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "shared/templateone/";
+    private static final String VFS_PATH_CONFIGFILES = CmsWorkplace.VFS_PATH_SYSTEM + "shared/templateone/";
 
     /** The VFS path to the global configuration files for center content lists. */
-    private static final String C_VFS_PATH_CONFIGFILES_CENTER = C_VFS_PATH_CONFIGFILES + "center/";
+    private static final String VFS_PATH_CONFIGFILES_CENTER = VFS_PATH_CONFIGFILES + "center/";
 
     /** The VFS path to the global configuration files for right content lists. */
-    private static final String C_VFS_PATH_CONFIGFILES_RIGHT = C_VFS_PATH_CONFIGFILES + "right/";
+    private static final String VFS_PATH_CONFIGFILES_RIGHT = VFS_PATH_CONFIGFILES + "right/";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyTemplateOne.class);
@@ -182,7 +181,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     public void actionEdit(HttpServletRequest request) throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             // save the changes only if resource is properly locked
             if (isEditable()) {
@@ -222,7 +221,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
         } else {
             // check radio if param value is the default
-            if (propertyValue.equals(C_PARAM_DEFAULT)) {
+            if (propertyValue.equals(PARAM_DEFAULT)) {
                 checked = " checked=\"checked\"";
             }
         }
@@ -267,10 +266,10 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
 
         // create the text property input rows from m_defaultProperties
-        for (int i = 0; i < C_DEFAULT_PROPERTIES.length; i++) {
+        for (int i = 0; i < DEFAULT_PROPERTIES.length; i++) {
             result.append(buildPropertyEntry(
-                C_DEFAULT_PROPERTIES[i],
-                key(C_KEY_PREFIX + C_DEFAULT_PROPERTIES[i]),
+                DEFAULT_PROPERTIES[i],
+                key(KEY_PREFIX + DEFAULT_PROPERTIES[i]),
                 editable));
         }
 
@@ -278,52 +277,52 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(buildNavigationProperties(editable));
 
         // build head nav checkbox
-        result.append(buildCheckBox(CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE, C_PARAM_TRUE, C_KEY_PREFIX
-            + CmsTemplateNavigation.C_PROPERTY_HEADNAV_USE));
+        result.append(buildCheckBox(CmsTemplateNavigation.PROPERTY_HEADNAV_USE, PARAM_TRUE, KEY_PREFIX
+            + CmsTemplateNavigation.PROPERTY_HEADNAV_USE));
 
         // build head image radio buttons        
         result.append(buildRadioButtons(
-            CmsTemplateBean.C_PROPERTY_SHOWHEADIMAGE,
-            C_INDIVIDUAL,
+            CmsTemplateBean.PROPERTY_SHOWHEADIMAGE,
+            INDIVIDUAL,
             "toggleHeadImageProperties",
             editable));
 
         // build image uri search input 
-        result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_HEAD_IMGURI, C_KEY_PREFIX
-            + CmsTemplateBean.C_PROPERTY_HEAD_IMGURI, editable));
+        result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_IMGURI, KEY_PREFIX
+            + CmsTemplateBean.PROPERTY_HEAD_IMGURI, editable));
         // build image link search input 
-        result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK, C_KEY_PREFIX
-            + CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK, editable));
+        result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, KEY_PREFIX
+            + CmsTemplateBean.PROPERTY_HEAD_IMGLINK, editable));
 
         // build head navigation radio buttons   
-        result.append(buildRadioButtons(CmsTemplateBean.C_PROPERTY_SHOW_HEADNAV, C_ENABLE, null, editable));
+        result.append(buildRadioButtons(CmsTemplateBean.PROPERTY_SHOW_HEADNAV, ENABLE, null, editable));
 
         // build navigation tree radio buttons   
-        result.append(buildRadioButtons(CmsTemplateBean.C_PROPERTY_SHOW_NAVLEFT, C_ENABLE, null, editable));
+        result.append(buildRadioButtons(CmsTemplateBean.PROPERTY_SHOW_NAVLEFT, ENABLE, null, editable));
 
         // build navleft element search input 
-        result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI, C_KEY_PREFIX
-            + CmsTemplateBean.C_PROPERTY_NAVLEFT_ELEMENTURI, editable));
+        result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI, KEY_PREFIX
+            + CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI, editable));
         // build side uri search input 
-        result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_SIDE_URI, C_KEY_PREFIX
-            + CmsTemplateBean.C_PROPERTY_SIDE_URI, editable));
+        result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_SIDE_URI, KEY_PREFIX
+            + CmsTemplateBean.PROPERTY_SIDE_URI, editable));
 
         // build center layout selector
         result.append(buildPropertySelectbox(
             CmsTemplateContentListItem.DISPLAYAREA_CENTER,
-            CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER,
-            C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_CENTER,
+            CmsTemplateBean.PROPERTY_LAYOUT_CENTER,
+            KEY_PREFIX + CmsTemplateBean.PROPERTY_LAYOUT_CENTER,
             editable));
         // build right layout selector
         result.append(buildPropertySelectbox(
             CmsTemplateContentListItem.DISPLAYAREA_RIGHT,
-            CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT,
-            C_KEY_PREFIX + CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT,
+            CmsTemplateBean.PROPERTY_LAYOUT_RIGHT,
+            KEY_PREFIX + CmsTemplateBean.PROPERTY_LAYOUT_RIGHT,
             editable));
 
         // build configuration path search input 
-        result.append(buildPropertySearchEntry(CmsTemplateBean.C_PROPERTY_CONFIGPATH, C_KEY_PREFIX
-            + CmsTemplateBean.C_PROPERTY_CONFIGPATH, editable));
+        result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_CONFIGPATH, KEY_PREFIX
+            + CmsTemplateBean.PROPERTY_CONFIGPATH, editable));
 
         result.append("</table>");
 
@@ -346,8 +345,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         StringBuffer result = new StringBuffer(1024);
         // loop over the default properties
-        for (int i = 0; i < C_DEFAULT_PROPERTIES.length; i++) {
-            String curProperty = C_DEFAULT_PROPERTIES[i];
+        for (int i = 0; i < DEFAULT_PROPERTIES.length; i++) {
+            String curProperty = DEFAULT_PROPERTIES[i];
             // determine the shown value
             String shownValue = "";
             try {
@@ -418,19 +417,19 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 && res.getTypeId() != CmsResourceTypePlain.getStaticTypeId()
                 && res.getTypeId() != CmsResourceTypeImage.getStaticTypeId()) {
                 // file is no plain text, binary or image type, check "template" property
-                if (C_TEMPLATE_ONE.equals(template)) {
+                if (TEMPLATE_ONE.equals(template)) {
                     // display special property dialog for files with "template one" as template
-                    return C_MODULE_PATH + "dialogs/property.jsp";
+                    return MODULE_PATH + "dialogs/property.jsp";
                 } else if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
                     // show xmlpage property dialog for xmlpages not using "template one" as template
-                    return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
+                    return PATH_WORKPLACE + "editors/dialogs/property.jsp";
                 }
             }
             if (res.isFolder()
-                && C_TEMPLATE_ONE.equals(template)
-                && !res.getRootPath().startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM)) {
+                && TEMPLATE_ONE.equals(template)
+                && !res.getRootPath().startsWith(CmsResource.VFS_FOLDER_SYSTEM)) {
                 // display special property dialog also for folders but exclude the system folders
-                return C_MODULE_PATH + "dialogs/property.jsp";
+                return MODULE_PATH + "dialogs/property.jsp";
             }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
@@ -462,16 +461,16 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 switchToTempProject();
             }
             // loop over the default properties
-            for (int i = 0; i < C_DEFAULT_PROPERTIES.length; i++) {
-                String curProperty = C_DEFAULT_PROPERTIES[i];
+            for (int i = 0; i < DEFAULT_PROPERTIES.length; i++) {
+                String curProperty = DEFAULT_PROPERTIES[i];
                 String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
                 writeProperty(curProperty, paramValue, oldValue);
             }
 
             // loop over all properties
-            for (int i = 0; i < C_ALL_PROPERTIES.length; i++) {
-                String curProperty = C_ALL_PROPERTIES[i];
+            for (int i = 0; i < ALL_PROPERTIES.length; i++) {
+                String curProperty = ALL_PROPERTIES[i];
                 String paramValue = request.getParameter(PREFIX_VALUE + curProperty);
                 String oldValue = request.getParameter(PREFIX_HIDDEN + curProperty);
                 writeProperty(curProperty, paramValue, oldValue);
@@ -546,7 +545,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
         } else {
             // check radio if param value is the default
-            if (propertyValue.equals(C_PARAM_DEFAULT)) {
+            if (propertyValue.equals(PARAM_DEFAULT)) {
                 checked = " checked=\"checked\"";
             }
         }
@@ -596,8 +595,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         if (currentProperty != null) {
             propValue = currentProperty.getValue();
             if (CmsStringUtil.isEmpty(propValue)) {
-                if (CmsTemplateBean.C_PROPERTY_HEAD_IMGURI.equals(propertyName)
-                    || CmsTemplateBean.C_PROPERTY_HEAD_IMGLINK.equals(propertyName)) {
+                if (CmsTemplateBean.PROPERTY_HEAD_IMGURI.equals(propertyName)
+                    || CmsTemplateBean.PROPERTY_HEAD_IMGLINK.equals(propertyName)) {
                     String tmp = getDefault(propertyName);
                     if (!CmsStringUtil.isEmpty(tmp)) {
                         propValue = tmp;
@@ -696,14 +695,14 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         int selectedIndex = 0;
 
         // add the "none" option manually to selectbox
-        options.add(key(C_KEY_PREFIX + "nolayout"));
+        options.add(key(KEY_PREFIX + "nolayout"));
         if ("".equals(propValue)
             || ("".equals(inheritedValue))
-            || (CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(inheritedValue))) {
+            || (CmsTemplateBean.PROPERTY_VALUE_NONE.equals(inheritedValue))) {
             // value is not set anywhere or is inherited from ancestor folder
             values.add("");
         } else {
-            values.add(CmsTemplateBean.C_PROPERTY_VALUE_NONE);
+            values.add(CmsTemplateBean.PROPERTY_VALUE_NONE);
         }
 
         for (int i = 0; i < resources.size(); i++) {
@@ -723,7 +722,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             }
             // try to find a localized key for the description property value
             String localized = key(description);
-            if (localized.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+            if (localized.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
                 localized = description;
             }
             options.add(localized);
@@ -783,30 +782,30 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         StringBuffer result = new StringBuffer(256);
         // propertyName will be translated in workplace.properties
-        result.append(buildTableRowStart(key(C_KEY_PREFIX + propertyName), 2));
+        result.append(buildTableRowStart(key(KEY_PREFIX + propertyName), 2));
         result.append("\t<table border=\"0\">\n");
         result.append("\t<tr>\n");
         result.append("\t<td>\n");
         result.append(buildPropertyRadioEntry(
             propertyName,
-            C_PARAM_DEFAULT,
-            key(C_KEY_PREFIX + "radio.default"),
+            PARAM_DEFAULT,
+            key(KEY_PREFIX + "radio.default"),
             JSToggleFunction,
             editable));
         result.append("</td>\n");
         result.append("\t<td>\n");
         result.append(buildPropertyRadioEntry(
             propertyName,
-            C_PARAM_TRUE,
-            key(C_KEY_PREFIX + "radio." + mode),
+            PARAM_TRUE,
+            key(KEY_PREFIX + "radio." + mode),
             JSToggleFunction,
             editable));
         result.append("</td>\n");
         result.append("\t<td>\n");
         result.append(buildPropertyRadioEntry(
             propertyName,
-            C_PARAM_FALSE,
-            key(C_KEY_PREFIX + "radio.disable"),
+            PARAM_FALSE,
+            key(KEY_PREFIX + "radio.disable"),
             JSToggleFunction,
             editable));
         result.append("</td>\n");
@@ -851,9 +850,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         List result = new ArrayList();
         String configFolder;
         if (listType.equals(CmsTemplateContentListItem.DISPLAYAREA_CENTER)) {
-            configFolder = C_VFS_PATH_CONFIGFILES_CENTER;
+            configFolder = VFS_PATH_CONFIGFILES_CENTER;
         } else {
-            configFolder = C_VFS_PATH_CONFIGFILES_RIGHT;
+            configFolder = VFS_PATH_CONFIGFILES_RIGHT;
         }
         try {
             result = getCms().readResources(configFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);

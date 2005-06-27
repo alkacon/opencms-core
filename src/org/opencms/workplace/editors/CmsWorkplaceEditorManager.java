@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,17 +67,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsWorkplaceEditorManager {
 
     /** The filename of the editor configuration XML file. */
-    public static final String C_EDITOR_CONFIGURATION_FILENAME = "editor_configuration.xml";
+    public static final String EDITOR_CONFIGURATION_FILENAME = "editor_configuration.xml";
 
     /** The filename of the editor JSP. */
-    public static final String C_EDITOR_FILENAME = "editor.jsp";
+    public static final String EDITOR_FILENAME = "editor.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorManager.class);
@@ -95,9 +95,9 @@ public class CmsWorkplaceEditorManager {
         // get all subfolders of the workplace editor folder
         List editorFolders = new ArrayList();
         try {
-            editorFolders = cms.getSubFolders(CmsEditor.C_PATH_EDITORS);
+            editorFolders = cms.getSubFolders(CmsEditor.PATH_EDITORS);
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_READ_EDITIR_FOLDER_FAILED_1, CmsEditor.C_PATH_EDITORS));
+            LOG.error(Messages.get().key(Messages.LOG_READ_EDITIR_FOLDER_FAILED_1, CmsEditor.PATH_EDITORS));
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             editorFolders = new ArrayList();
         }
@@ -108,14 +108,14 @@ public class CmsWorkplaceEditorManager {
         Iterator i = editorFolders.iterator();
         while (i.hasNext()) {
             CmsFolder currentFolder = (CmsFolder)i.next();
-            String folderName = CmsEditor.C_PATH_EDITORS + currentFolder.getName();
+            String folderName = CmsEditor.PATH_EDITORS + currentFolder.getName();
             if (!folderName.endsWith("/")) {
                 folderName += "/";
             }
             CmsFile configFile = null;
             try {
                 configFile = cms.readFile(
-                    folderName + C_EDITOR_CONFIGURATION_FILENAME,
+                    folderName + EDITOR_CONFIGURATION_FILENAME,
                     CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 // no configuration file present, ignore this folder
@@ -127,7 +127,7 @@ public class CmsWorkplaceEditorManager {
             // get the file contents
             byte[] xmlData = configFile.getContents();
             CmsWorkplaceEditorConfiguration editorConfig = new CmsWorkplaceEditorConfiguration(xmlData, folderName
-                + C_EDITOR_FILENAME);
+                + EDITOR_FILENAME);
             if (editorConfig.isValidConfiguration()) {
                 m_editorConfigurations.add(editorConfig);
             }

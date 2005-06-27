@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  * 
@@ -123,12 +123,12 @@ public class CmsImportExportManager {
     public static final String N_ACCESSCONTROL_PRINCIPAL = "uuidprincipal";
 
     /**
-     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     * A tag in the export manifest-file, used as subtag of EXPORT_TAG_INFO.
      */
     public static final String N_CREATOR = "creator";
 
     /**
-     * A tag in the export manifest-file, used as subtag of C_EXPORT_TAG_INFO.
+     * A tag in the export manifest-file, used as subtag of EXPORT_TAG_INFO.
      */
     public static final String N_DATE = "createdate";
 
@@ -497,12 +497,12 @@ public class CmsImportExportManager {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_PRINCIPAL_TRANSLATION_3, type, from, to));
         }
-        if (type.equalsIgnoreCase(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
+        if (type.equalsIgnoreCase(I_CmsPrincipal.PRINCIPAL_GROUP)) {
             m_importGroupTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
             }
-        } else if (type.equalsIgnoreCase(I_CmsPrincipal.C_PRINCIPAL_USER)) {
+        } else if (type.equalsIgnoreCase(I_CmsPrincipal.PRINCIPAL_USER)) {
             m_importUserTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_USER_TRANSLATION_2, from, to));

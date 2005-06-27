@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/A_CmsTemplate.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:20 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@ package com.opencms.template;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -46,7 +46,7 @@ import javax.servlet.http.HttpServletRequest;
  * Abstract template class. Contains all commonly used methods for handling cache properties.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:20 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -169,7 +169,7 @@ public abstract class A_CmsTemplate implements I_CmsTemplate {
             && (queryString == null || "".equals(queryString));
         try {
             CmsFile file = cms.readFile(templateFile);
-            result = result && (file.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) != I_CmsConstants.C_ACCESS_INTERNAL_READ;
+            result = result && (file.getFlags() & CmsResource.FLAG_INTERNAL) != CmsResource.FLAG_INTERNAL;
         } catch (Exception e) {
             result = false;
         }

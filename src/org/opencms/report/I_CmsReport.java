@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,32 +44,32 @@ import java.util.Locale;
  * @author Alexander Kandzior  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsReport {
 
     /** The name of the property file. */
-    String C_BUNDLE_NAME = "org.opencms.workplace.workplace";
+    String BUNDLE_NAME = "org.opencms.workplace.workplace";
 
     /** Indicates default formatting. */
-    int C_FORMAT_DEFAULT = 0;
+    int FORMAT_DEFAULT = 0;
 
     /** Indicates error formatting. */
-    int C_FORMAT_ERROR = 5;
+    int FORMAT_ERROR = 5;
 
     /** Indicates headline formatting. */
-    int C_FORMAT_HEADLINE = 2;
+    int FORMAT_HEADLINE = 2;
 
     /** Indicates note formatting. */
-    int C_FORMAT_NOTE = 3;
+    int FORMAT_NOTE = 3;
 
     /** Indicates OK formatting. */
-    int C_FORMAT_OK = 4;
+    int FORMAT_OK = 4;
 
     /** Indicates warning formatting. */
-    int C_FORMAT_WARNING = 1;
+    int FORMAT_WARNING = 1;
 
     /** Request parameter value that this report should create an "extended" output. */
     String REPORT_TYPE_EXTENDED = "extended";
@@ -160,7 +160,7 @@ public interface I_CmsReport {
     /**
      * Prints a localized message to the report, using the indicated formatting.<p>
      * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * Use the contants starting with <code>FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
      * @param container the String to add
@@ -183,7 +183,7 @@ public interface I_CmsReport {
     /**
      * Prints a localized message to the report, using the indicated formatting.<p>
      * 
-     * Use the contants starting with <code>C_FORMAT</code> from this interface
+     * Use the contants starting with <code>FORMAT</code> from this interface
      * to indicate which formatting to use.<p>
      *
      * @param container the message container to add

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  * 
@@ -85,7 +85,7 @@ import org.quartz.impl.StdSchedulerFactory;
 public class CmsScheduleManager implements Job {
 
     /** Key for the scheduled job description in the job data map. */
-    public static final String C_SCHEDULER_JOB_INFO = "org.opencms.scheduler.CmsScheduledJobInfo";
+    public static final String SCHEDULER_JOB_INFO = "org.opencms.scheduler.CmsScheduledJobInfo";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsScheduleManager.class);
@@ -143,7 +143,7 @@ public class CmsScheduleManager implements Job {
     public void execute(JobExecutionContext context) {
 
         JobDataMap jobData = context.getJobDetail().getJobDataMap();
-        CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(C_SCHEDULER_JOB_INFO);
+        CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(SCHEDULER_JOB_INFO);
 
         if (jobInfo == null) {
             LOG.error(Messages.get().key(Messages.LOG_INVALID_JOB_1, context.getJobDetail().getFullName()));
@@ -399,7 +399,7 @@ public class CmsScheduleManager implements Job {
 
             // now set the job data
             JobDataMap jobData = new JobDataMap();
-            jobData.put(CmsScheduleManager.C_SCHEDULER_JOB_INFO, jobInfo);
+            jobData.put(CmsScheduleManager.SCHEDULER_JOB_INFO, jobInfo);
             jobDetail.setJobDataMap(jobData);
 
             // finally add the job to the Quartz scheduler

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,13 @@
 
 package org.opencms.util;
 
-import org.opencms.workplace.I_CmsWpConstants;
-
 import junit.framework.TestCase;
 
 /** 
  * Test cases for {@link org.opencms.util.CmsStringUtil}.<p>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -152,19 +150,19 @@ public class TestCmsStringUtil extends TestCase {
             "<html><body>\n"
             + "See <a href=\"http://www.opencms.org/opencms/opencms/opencms/index.html\">\n"
             + "http://www.opencms.org/opencms/opencms/opencms/index.html</a>\n"
-            + "or <a href=\"" + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/opencms/index.html\">\n"
-            + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/opencms/index.html</a>\n"
-            + "<img src=\"" + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/system/galleries/pics/test/test.gif\">\n"
+            + "or <a href=\"" + CmsStringUtil.MACRO_OPENCMS_CONTEXT + "/opencms/index.html\">\n"
+            + CmsStringUtil.MACRO_OPENCMS_CONTEXT + "/opencms/index.html</a>\n"
+            + "<img src=\"" + CmsStringUtil.MACRO_OPENCMS_CONTEXT + "/system/galleries/pics/test/test.gif\">\n"
             + "<img src=\"http://www.othersite.org/opencms/opencms/system/galleries/pics/test/test.gif\">\n"
             + "Some URL in the Text: http://www.thirdsite.org/opencms/opencms/some/url.html.\n"
-            + "Another URL in the Text: " + I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT + "/some/url.html.\n"
+            + "Another URL in the Text: " + CmsStringUtil.MACRO_OPENCMS_CONTEXT + "/some/url.html.\n"
             + "</body></html>\n";       
         
         context = "/opencms/opencms/";        
         
         // search = "([>\"']\\s*)" + context;
         search = "([^\\w/])" + context;
-        replace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
+        replace = "$1" + CmsStringUtil.escapePattern(CmsStringUtil.MACRO_OPENCMS_CONTEXT) + "/";
         
         String test = CmsStringUtil.substitutePerl(content, search, replace, "g");
         

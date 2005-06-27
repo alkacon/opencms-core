@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,14 +35,13 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.I_CmsWpConstants;
 
 /**
  * Provides a OpenCms VFS file selection widget, for use on a widget dialog.<p>
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +124,7 @@ public class CmsVfsFileWidget extends A_CmsWidget {
         result.append("\tinitResources(\"");
         result.append(OpenCms.getWorkplaceManager().getEncoding());
         result.append("\", \"");
-        result.append(I_CmsWpConstants.C_VFS_PATH_WORKPLACE);
+        result.append(CmsWorkplace.VFS_PATH_WORKPLACE);
         result.append("\", \"");
         result.append(CmsWorkplace.getSkinUri());
         result.append("\", \"");

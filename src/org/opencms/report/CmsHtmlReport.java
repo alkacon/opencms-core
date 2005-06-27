@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,20 +48,20 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlReport extends A_CmsReport {
 
     /** Constant for a HTML linebreak with added "real" line break. */
-    private static final String C_LINEBREAK = "<br>";
+    private static final String LINEBREAK = "<br>";
 
     /** 
      * Constant for a HTML linebreak with added "real" line break- 
      * traditional style for report threads that still use XML templates for their output.
      */
-    private static final String C_LINEBREAK_TRADITIONAL = "<br>\\n";
+    private static final String LINEBREAK_TRADITIONAL = "<br>\\n";
 
     /** The list of report objects e.g. String, CmsPageLink, Exception ... */
     private List m_content;
@@ -83,11 +83,11 @@ public class CmsHtmlReport extends A_CmsReport {
      * workplace resource bundle for the output language.<p>
      * 
      * @param locale a locale to use for the output language
-     * @see I_CmsReport#C_BUNDLE_NAME 
+     * @see I_CmsReport#BUNDLE_NAME 
      */
     public CmsHtmlReport(Locale locale) {
 
-        this(C_BUNDLE_NAME, locale, false);
+        this(BUNDLE_NAME, locale, false);
     }
 
     /**
@@ -100,11 +100,11 @@ public class CmsHtmlReport extends A_CmsReport {
      * 
      * @param locale the locale to use for the report output messages
      * @param writeHtml true, if this report should generate HTML instead of JavaScript output
-     * @see I_CmsReport#C_BUNDLE_NAME 
+     * @see I_CmsReport#BUNDLE_NAME 
      */
     public CmsHtmlReport(Locale locale, boolean writeHtml) {
 
-        this(C_BUNDLE_NAME, locale, writeHtml);
+        this(BUNDLE_NAME, locale, writeHtml);
     }
 
     /**
@@ -171,21 +171,21 @@ public class CmsHtmlReport extends A_CmsReport {
 
         if (!m_writeHtml) {
             switch (format) {
-                case C_FORMAT_HEADLINE:
+                case FORMAT_HEADLINE:
                     buf = new StringBuffer();
                     buf.append("aH('");
                     buf.append(value);
                     buf.append("'); ");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_WARNING:
+                case FORMAT_WARNING:
                     buf = new StringBuffer();
                     buf.append("aW('");
                     buf.append(value);
                     buf.append("'); ");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_ERROR:
+                case FORMAT_ERROR:
                     buf = new StringBuffer();
                     buf.append("aE('");
                     buf.append(value);
@@ -193,21 +193,21 @@ public class CmsHtmlReport extends A_CmsReport {
                     m_content.add(buf);
                     addError(value);
                     break;
-                case C_FORMAT_NOTE:
+                case FORMAT_NOTE:
                     buf = new StringBuffer();
                     buf.append("aN('");
                     buf.append(value);
                     buf.append("'); ");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_OK:
+                case FORMAT_OK:
                     buf = new StringBuffer();
                     buf.append("aO('");
                     buf.append(value);
                     buf.append("'); ");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_DEFAULT:
+                case FORMAT_DEFAULT:
                 default:
                     buf = new StringBuffer();
                     buf.append("a('");
@@ -225,21 +225,21 @@ public class CmsHtmlReport extends A_CmsReport {
         } else {
             // TODO remove this code when all reports are switched from XML templates to JSP pages
             switch (format) {
-                case C_FORMAT_HEADLINE:
+                case FORMAT_HEADLINE:
                     buf = new StringBuffer();
                     buf.append("<span class='head'>");
                     buf.append(value);
                     buf.append("</span>");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_WARNING:
+                case FORMAT_WARNING:
                     buf = new StringBuffer();
                     buf.append("<span class='warn'>");
                     buf.append(value);
                     buf.append("</span>");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_ERROR:
+                case FORMAT_ERROR:
                     buf = new StringBuffer();
                     buf.append("<span class='err'>");
                     buf.append(value);
@@ -247,21 +247,21 @@ public class CmsHtmlReport extends A_CmsReport {
                     m_content.add(buf);
                     addError(value);
                     break;
-                case C_FORMAT_NOTE:
+                case FORMAT_NOTE:
                     buf = new StringBuffer();
                     buf.append("<span class='note'>");
                     buf.append(value);
                     buf.append("</span>");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_OK:
+                case FORMAT_OK:
                     buf = new StringBuffer();
                     buf.append("<span class='ok'>");
                     buf.append(value);
                     buf.append("</span>");
                     m_content.add(buf);
                     break;
-                case C_FORMAT_DEFAULT:
+                case FORMAT_DEFAULT:
                 default:
                     m_content.add(value);
             }
@@ -291,7 +291,7 @@ public class CmsHtmlReport extends A_CmsReport {
      */
     protected String getLineBreak() {
 
-        return m_writeHtml ? C_LINEBREAK_TRADITIONAL : C_LINEBREAK;
+        return m_writeHtml ? LINEBREAK_TRADITIONAL : LINEBREAK;
     }
 
     /**

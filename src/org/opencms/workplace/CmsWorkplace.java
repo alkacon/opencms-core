@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/27 16:38:36 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsBroadcast;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
@@ -89,21 +88,21 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.142 $ 
+ * @version $Revision: 1.143 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class CmsWorkplace {
 
     /** Constant for the JSP explorer filelist file. */
-    public static final String C_FILE_EXPLORER_FILELIST = I_CmsWpConstants.C_VFS_PATH_WORKPLACE
+    public static final String FILE_EXPLORER_FILELIST = CmsWorkplace.VFS_PATH_WORKPLACE
         + "views/explorer/explorer_files.jsp";
 
     /** Constant for the JSP dialogs path. */
-    public static final String C_PATH_DIALOGS = I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "commons/";
+    public static final String PATH_DIALOGS = CmsWorkplace.VFS_PATH_WORKPLACE + "commons/";
 
     /** Constant for the JSP workplace path. */
-    public static final String C_PATH_WORKPLACE = I_CmsWpConstants.C_VFS_PATH_WORKPLACE;
+    public static final String PATH_WORKPLACE = CmsWorkplace.VFS_PATH_WORKPLACE;
 
     /** The debug flag. */
     public static final boolean DEBUG = false;
@@ -115,28 +114,28 @@ public abstract class CmsWorkplace {
     public static final int HTML_START = 0;
 
     /** Constant for the JSP common files (e.g. error page) path. */
-    protected static final String C_DIALOG_PATH_COMMON = C_PATH_DIALOGS + "includes/";
+    protected static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
 
     /** Constant for the JSP common close dialog page. */
-    protected static final String C_FILE_DIALOG_CLOSE = C_DIALOG_PATH_COMMON + "closedialog.jsp";
+    protected static final String FILE_DIALOG_CLOSE = DIALOG_PATH_COMMON + "closedialog.jsp";
 
     /** Constant for the JSP common confirmation dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_CONFIRM = C_DIALOG_PATH_COMMON + "confirmation.jsp";
+    protected static final String FILE_DIALOG_SCREEN_CONFIRM = DIALOG_PATH_COMMON + "confirmation.jsp";
 
     /** Constant for the JSP common error dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_ERROR = C_DIALOG_PATH_COMMON + "error.jsp";
+    protected static final String FILE_DIALOG_SCREEN_ERROR = DIALOG_PATH_COMMON + "error.jsp";
 
     /** Constant for the JSP common error dialog. */
-    protected static final String C_FILE_DIALOG_SCREEN_ERRORPAGE = C_DIALOG_PATH_COMMON + "errorpage.jsp";
+    protected static final String FILE_DIALOG_SCREEN_ERRORPAGE = DIALOG_PATH_COMMON + "errorpage.jsp";
 
     /** Constant for the JSP common wait screen. */
-    protected static final String C_FILE_DIALOG_SCREEN_WAIT = C_DIALOG_PATH_COMMON + "wait.jsp";
+    protected static final String FILE_DIALOG_SCREEN_WAIT = DIALOG_PATH_COMMON + "wait.jsp";
 
     /** Constant for the JSP common report page. */
-    protected static final String C_FILE_REPORT_OUTPUT = C_DIALOG_PATH_COMMON + "report.jsp";
+    protected static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
 
     /** Key name for the session workplace class. */
-    protected static final String C_SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
+    protected static final String SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
     
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
@@ -199,6 +198,45 @@ public abstract class CmsWorkplace {
 
     /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
+
+    /** Prefix for temporary files in the VFS. */
+    public static final String TEMP_FILE_PREFIX = "~";
+
+    /** Path to exported system image folder. */
+    public static final String RFS_PATH_RESOURCES = "/resources/";
+
+    /** Directory name of content default_bodies folder. */
+    public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
+
+    /** Directory name of content templates folder. */
+    public static final String VFS_DIR_TEMPLATES = "templates/";
+
+    /** Path to system folder. */
+    public static final String VFS_PATH_SYSTEM = "/system/";
+
+    /** Path to the galleries. */
+    public static final String VFS_PATH_GALLERIES = VFS_PATH_SYSTEM + "galleries/";
+
+    /** Path to modules folder. */
+    public static final String VFS_PATH_MODULES = VFS_PATH_SYSTEM + "modules/";
+
+    /** Path to the workplace. */
+    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
+
+    /** Path to locales. */
+    public static final String VFS_PATH_LOCALES = VFS_PATH_WORKPLACE + "locales/";
+
+    /** Path to system image folder. */
+    public static final String VFS_PATH_RESOURCES = VFS_PATH_WORKPLACE + "resources/";
+
+    /** Path to workplace views. */
+    public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
+
+    /** Parameter for the default locale. */
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+
+    /** Parameter for the default language. */
+    public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
 
     /**
      * Public constructor.<p>
@@ -357,7 +395,7 @@ public abstract class CmsWorkplace {
             CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
             try {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(
-                    jsp.getCmsObject().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                    jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID));
                 m_styleUri = jsp.link("/system/workplace/commons/style/");
             } catch (CmsException e) {
                 LOG.error(e.getLocalizedMessage());
@@ -382,7 +420,7 @@ public abstract class CmsWorkplace {
             CmsProject project = jsp.getCmsObject().getRequestContext().currentProject();
             try {
                 jsp.getCmsObject().getRequestContext().setCurrentProject(
-                    jsp.getCmsObject().readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
+                    jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID));
                 m_styleUri = jsp.link("/system/workplace/commons/style/");
             } catch (CmsException e) {
                 // ins log schreiben
@@ -519,7 +557,7 @@ public abstract class CmsWorkplace {
     static synchronized void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
 
         // save the workplace settings in the session
-        session.setAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS, settings);
+        session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);
     }
 
     /**
@@ -1132,7 +1170,7 @@ public abstract class CmsWorkplace {
      */
     public void checkLock(String resource) throws CmsException {
 
-        checkLock(resource, org.opencms.lock.CmsLock.C_MODE_COMMON);
+        checkLock(resource, org.opencms.lock.CmsLock.COMMON);
     }
 
     /**
@@ -1327,7 +1365,7 @@ public abstract class CmsWorkplace {
             return m_file_explorer_filelist;
         }
         synchronized (this) {
-            m_file_explorer_filelist = OpenCms.getLinkManager().substituteLink(getCms(), C_FILE_EXPLORER_FILELIST);
+            m_file_explorer_filelist = OpenCms.getLinkManager().substituteLink(getCms(), FILE_EXPLORER_FILELIST);
         }
         return m_file_explorer_filelist;
     }
@@ -1427,7 +1465,7 @@ public abstract class CmsWorkplace {
     public String getResourceUri() {
 
         if (m_resourceUri == null) {
-            m_resourceUri = OpenCms.getSystemInfo().getContextPath() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
+            m_resourceUri = OpenCms.getSystemInfo().getContextPath() + CmsWorkplace.RFS_PATH_RESOURCES;
         }
         return m_resourceUri;
     }
@@ -1616,7 +1654,7 @@ public abstract class CmsWorkplace {
                 if (parameters == null) {
                     result.append(" onLoad=\"window.top.body.admin_head.location.href='");
                     result.append(getJsp().link(
-                        I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/administration_head.html"));
+                        CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
                     result.append("';\"");
                 }
             }
@@ -1817,7 +1855,7 @@ public abstract class CmsWorkplace {
      */
     public String shortKey(String keyName) {
 
-        String value = key(keyName + CmsMessages.C_KEY_SHORT_SUFFIX, (String)null);
+        String value = key(keyName + CmsMessages.KEY_SHORT_SUFFIX, (String)null);
         if (value == null) {
             // short key value not found, return "long" key value
             return key(keyName);
@@ -1937,7 +1975,7 @@ public abstract class CmsWorkplace {
             m_session = m_jsp.getRequest().getSession();
 
             // get / create the workplace settings 
-            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+            m_settings = (CmsWorkplaceSettings)m_session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
 
             if (m_settings == null) {
                 // create the settings object
@@ -2052,8 +2090,8 @@ public abstract class CmsWorkplace {
             } catch (CmsDbEntryNotFoundException e) {
                 try {
                     // project not found, set current project and settings to online project
-                    reqCont.setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));
-                    settings.setProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+                    reqCont.setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+                    settings.setProject(CmsProject.ONLINE_PROJECT_ID);
                 } catch (CmsException ex) {
                     // log error
                     if (LOG.isInfoEnabled()) {

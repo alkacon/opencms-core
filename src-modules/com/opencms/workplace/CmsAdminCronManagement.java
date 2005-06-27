@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminCronManagement.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,10 +28,9 @@
 
 package com.opencms.workplace;
 
-import org.opencms.i18n.CmsEncoder;
+import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 
-import org.opencms.file.CmsObject;
 import com.opencms.template.CmsXmlTemplateFile;
 
 import java.util.Hashtable;

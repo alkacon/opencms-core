@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsDbAccess.java,v $
-* Date   : $Date: 2005/06/21 15:50:00 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/27 23:22:23 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.setup.CmsSetupDb;
@@ -247,7 +246,7 @@ public class CmsDbAccess {
 
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;
-        dataset.m_state = I_CmsConstants.C_STATE_NEW;
+        dataset.m_state = CmsResource.STATE_NEW;
         dataset.m_lockedBy = currentUserId;
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateCreated = currentTime;
@@ -286,7 +285,7 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT_0));
         }
-        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != CmsDbUtil.UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't write it!
             throw new CmsLegacySecurityException("Can't update a cd with a backup cd ", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
@@ -303,7 +302,7 @@ public class CmsDbAccess {
         dataset.m_masterId = newMasterId;
         dataset.m_projectId = projectId;
         dataset.m_lockedInProject = projectId;
-        dataset.m_state = I_CmsConstants.C_STATE_NEW;
+        dataset.m_state = CmsResource.STATE_NEW;
         dataset.m_lockedBy = currentUserId;
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateCreated = currentTime;
@@ -377,7 +376,7 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT_0));
         }
-        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != CmsDbUtil.UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't write it!
             throw new CmsLegacySecurityException("Can't update a cd with a backup cd", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
@@ -400,9 +399,9 @@ public class CmsDbAccess {
         long currentTime = new java.util.Date().getTime();
         CmsUUID currentUserId = cms.getRequestContext().currentUser().getId();
         // updateing some values for updated dataset
-        if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
+        if (dataset.m_state != CmsResource.STATE_NEW) {
             // if the state is not new then set the state to changed
-            dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
+            dataset.m_state = CmsResource.STATE_CHANGED;
         }
         dataset.m_lastModifiedBy = currentUserId;
         dataset.m_dateLastModified = currentTime;
@@ -627,7 +626,7 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT_0));
         }
-        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != CmsDbUtil.UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
             throw new CmsLegacySecurityException("Can't delete a backup cd", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
@@ -647,7 +646,7 @@ public class CmsDbAccess {
             throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
 
-        if (dataset.m_state == I_CmsConstants.C_STATE_NEW) {
+        if (dataset.m_state == CmsResource.STATE_NEW) {
             // this is a new line in this project and can be deleted
             String statement_key = "delete_offline";
             PreparedStatement stmt = null;
@@ -671,7 +670,7 @@ public class CmsDbAccess {
             }
         } else {
             // set state to deleted and update the line
-            dataset.m_state = I_CmsConstants.C_STATE_DELETED;
+            dataset.m_state = CmsResource.STATE_DELETED;
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             PreparedStatement stmt = null;
             Connection conn = null;
@@ -702,7 +701,7 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT_0));
         }
-        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != CmsDbUtil.UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
             throw new CmsLegacySecurityException("Can't undelete a backup cd ", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
@@ -712,7 +711,7 @@ public class CmsDbAccess {
             throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
         // set state to deleted and update the line
-        dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
+        dataset.m_state = CmsResource.STATE_CHANGED;
         dataset.m_lockedBy = cms.getRequestContext().currentUser().getId();
         dataset.m_lockedInProject = cms.getRequestContext().currentProject().getId();
         PreparedStatement stmt = null;
@@ -743,7 +742,7 @@ public class CmsDbAccess {
             // this is the onlineproject - don't write into this project directly
             throw new CmsSecurityException(Messages.get().container(Messages.ERR_SECURITY_NO_MODIFY_IN_ONLINE_PROJECT_0));
         }
-        if (dataset.m_versionId != I_CmsConstants.C_UNKNOWN_ID) {
+        if (dataset.m_versionId != CmsDbUtil.UNKNOWN_ID) {
             // this is not the online row - it was read from history
             // don't delete it!
             throw new CmsLegacySecurityException("Can't change permissions of a backup cd ", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
@@ -762,8 +761,8 @@ public class CmsDbAccess {
             // no write access
             throw new CmsLegacySecurityException("Not writeable", CmsLegacySecurityException.C_SECURITY_NO_PERMISSIONS);
         }
-        if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
-            dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
+        if (dataset.m_state != CmsResource.STATE_NEW) {
+            dataset.m_state = CmsResource.STATE_CHANGED;
         }
         dataset.m_dateLastModified = System.currentTimeMillis();
         dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
@@ -905,11 +904,11 @@ public class CmsDbAccess {
      * @throws SQLException if something goes wrong
      */
     protected int computeProjectId(CmsObject cms, CmsMasterDataSet dataset) throws SQLException {
-        //int onlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
-        int offlineProjectId = I_CmsConstants.C_UNKNOWN_ID;
+        //int onlineProjectId = I_CmsConstants.UNKNOWN_ID;
+        int offlineProjectId = CmsDbUtil.UNKNOWN_ID;
 
         offlineProjectId = cms.getRequestContext().currentProject().getId();
-        //onlineProjectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        //onlineProjectId = I_CmsConstants.ONLINE_PROJECT_ID;
 
         if (!isOnlineProject(cms)) {
             // this is an offline project -> compute if we have to return the
@@ -1299,7 +1298,7 @@ public class CmsDbAccess {
         PreparedStatement stmt = null;
         Connection conn = null;
         cms.getRequestContext().saveSiteRoot();
-        cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+        cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
            conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_channel_offline");
             for (int i = 0; i < channelToAdd.size(); i++) {
@@ -1531,8 +1530,8 @@ public class CmsDbAccess {
         dataset.m_mediaToUpdate = new Vector();
         dataset.m_mediaToDelete = new Vector();
         dataset.m_lastModifiedBy = cms.getRequestContext().currentUser().getId();
-        if (dataset.m_state != I_CmsConstants.C_STATE_NEW) {
-            dataset.m_state = I_CmsConstants.C_STATE_CHANGED;
+        if (dataset.m_state != CmsResource.STATE_NEW) {
+            dataset.m_state = CmsResource.STATE_CHANGED;
         }
         // check if the group exists
         CmsUUID groupId = CmsUUID.getNullUUID();
@@ -1635,7 +1634,7 @@ public class CmsDbAccess {
             stmt = m_sqlManager.getPreparedStatement(conn, statement_key);
             stmt.setInt(1, subId);
             stmt.setInt(2, projectId);
-            stmt.setInt(3, I_CmsConstants.C_STATE_UNCHANGED);
+            stmt.setInt(3, CmsResource.STATE_UNCHANGED);
             // gets all ressources that are changed int this project
             // and that belongs to this subId
             res = stmt.executeQuery();
@@ -1690,7 +1689,7 @@ public class CmsDbAccess {
         // delete the online data
         publishDeleteData(dataset.m_masterId, subId, "online");
 
-        if (state == I_CmsConstants.C_STATE_DELETED) {
+        if (state == CmsResource.STATE_DELETED) {
             // delete the data from offline
             // the state was DELETED
             publishDeleteData(dataset.m_masterId, subId, "offline");
@@ -1706,7 +1705,7 @@ public class CmsDbAccess {
         try {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "update_state_offline");
-            stmt.setInt(1, I_CmsConstants.C_STATE_UNCHANGED);
+            stmt.setInt(1, CmsResource.STATE_UNCHANGED);
             stmt.setString(2, CmsUUID.getNullUUID().toString());
             stmt.setString(3, dataset.m_masterId.toString());
             stmt.setInt(4, subId);
@@ -1732,7 +1731,7 @@ public class CmsDbAccess {
             new CmsPublishedResource(
                 CmsUUID.getNullUUID(),
                 dataset.m_masterId, 
-                I_CmsConstants.C_UNKNOWN_ID,
+                CmsDbUtil.UNKNOWN_ID,
                 contentDefinitionName,
                 subId, 
                 false,
@@ -1814,9 +1813,9 @@ public class CmsDbAccess {
             conn = m_sqlManager.getConnection();
             stmt = m_sqlManager.getPreparedStatement(conn, "insert_online");
             // correct the data in the dataset
-            dataset.m_projectId = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            dataset.m_lockedInProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
-            dataset.m_state = I_CmsConstants.C_STATE_UNCHANGED;
+            dataset.m_projectId = CmsProject.ONLINE_PROJECT_ID;
+            dataset.m_lockedInProject = CmsProject.ONLINE_PROJECT_ID;
+            dataset.m_state = CmsResource.STATE_UNCHANGED;
             dataset.m_lockedBy = CmsUUID.getNullUUID();
             sqlFillValues(stmt, subId, dataset);
             stmt.executeUpdate();

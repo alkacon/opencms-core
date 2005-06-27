@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleNew.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -126,7 +126,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             xmlTemplateDocument.setData("data", doTheWork.getReportUpdate());
             return startProcessing(cms, xmlTemplateDocument, elementName, parameters, "updateReport");         
         } else if ("server".equals(step)) {
-            File modulefolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + I_CmsConstants.C_MODULE_PATH));
+            File modulefolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsSystemInfo.FOLDER_MODULES));
             if (!modulefolder.exists()) {
                 boolean success = modulefolder.mkdir();
                 if (CmsLog.getLog(this).isWarnEnabled()
@@ -156,9 +156,9 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 filename = (String) files.nextElement();
             }
             if (filename != null) {
-                session.putValue(C_PARA_RESOURCE, filename);
+                session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
             }
-            filename = (String) session.getValue(C_PARA_RESOURCE);
+            filename = (String) session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
 
             // get the filecontent
             byte[] filecontent = new byte[0];
@@ -166,12 +166,12 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 filecontent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(filename);
             }
             if (filecontent != null) {
-                session.putValue(C_PARA_FILECONTENT, filecontent);
+                session.putValue(CmsWorkplaceDefault.C_PARA_FILECONTENT, filecontent);
             }
-            filecontent = (byte[]) session.getValue(C_PARA_FILECONTENT);
+            filecontent = (byte[]) session.getValue(CmsWorkplaceDefault.C_PARA_FILECONTENT);
 
             // first create the folder if it doesnt exists
-            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + I_CmsConstants.C_MODULE_PATH));
+            File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator + CmsSystemInfo.FOLDER_MODULES));
             if (!discFolder.exists()) {
                 boolean success = discFolder.mkdir();
                 if (CmsLog.getLog(this).isWarnEnabled()
@@ -182,7 +182,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
 
             // now write the file into the modules dierectory in the exportpaht
             File discFile =
-                new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath()+ File.separator + I_CmsConstants.C_MODULE_PATH + filename));
+                new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath()+ File.separator + CmsSystemInfo.FOLDER_MODULES + filename));
             try {
 
                 // write the new file to disk
@@ -193,7 +193,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 throw new CmsLegacyException("[" + this.getClass().getName() + "] " + e.getMessage());
             }
             session.removeValue(C_MODULE_NAV);
-            templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + I_CmsConstants.C_MODULE_PATH + filename));
+            templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES + filename));
                         
         } else if ("serverupload".equals(step)) {
             String filename = (String) parameters.get("moduleselect");
@@ -201,7 +201,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
             if ((filename == null) || ("".equals(filename))) {
                 templateSelector = C_DONE;
             } else {
-                templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + I_CmsConstants.C_MODULE_PATH + filename));
+                templateSelector = importModule(cms, xmlTemplateDocument, session, OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + CmsSystemInfo.FOLDER_MODULES + filename));
             }
         }
 
@@ -244,7 +244,7 @@ public class CmsAdminModuleNew extends CmsWorkplaceDefault {
                 session.putValue(C_MODULE, module);                    
                 importNewModule = false;
             }
-            List dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+            List dependencies = OpenCms.getModuleManager().checkDependencies(module, CmsModuleManager.DEPENDENCY_MODE_IMPORT);
             if(!dependencies.isEmpty()) {
                 // there are dependences not fulfilled
                 xmlDocument.setData("name", module.getName());

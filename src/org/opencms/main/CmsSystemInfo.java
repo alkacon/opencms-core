@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,23 +51,23 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSystemInfo {
 
+    /** The name of the module folder in the package path. */
+    public static final String FOLDER_MODULES = "modules/";
+
     /** Path to the "packages" folder relative to the "WEB-INF" directory of the application. */
-    public static final String PACKAGES_FOLDER = "packages/";
+    public static final String FOLDER_PACKAGES = "packages/";
 
     /** Default encoding. */
-    private static final String C_DEFAULT_ENCODING = CmsEncoder.C_UTF8_ENCODING;
-
-    /** Static version name to use if version.properties can not be read. */
-    private static final String C_DEFAULT_VERSION_NAME = "Corrin";
+    private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
     /** Static version number to use if version.properties can not be read. */
-    private static final String C_DEFAULT_VERSION_NUMBER = "6.0 development";
+    private static final String DEFAULT_VERSION_NUMBER = "6.0 development";
 
     /** The abolute path to the "opencms.properties" configuration file (in the "real" file system). */
     private String m_configurationFileRfsPath;
@@ -111,9 +111,6 @@ public class CmsSystemInfo {
     /** The maximum number of entries in the version history (per resource). */
     private int m_versionHistoryMaxCount;
 
-    /** The version name (including version number) of this OpenCms installation. */
-    private String m_versionName;
-
     /** The version number of this OpenCms installation. */
     private String m_versionNumber;
 
@@ -136,7 +133,7 @@ public class CmsSystemInfo {
         // init version onformation
         initVersion();
         // set default encoding (will be changed again later when properties have been read)
-        m_defaultEncoding = C_DEFAULT_ENCODING.intern();
+        m_defaultEncoding = DEFAULT_ENCODING.intern();
     }
 
     /**
@@ -306,7 +303,7 @@ public class CmsSystemInfo {
     public String getPackagesRfsPath() {
 
         if (m_packagesRfsPath == null) {
-            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.PACKAGES_FOLDER);
+            m_packagesRfsPath = getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_PACKAGES);
         }
         return m_packagesRfsPath;
     }
@@ -391,21 +388,11 @@ public class CmsSystemInfo {
     }
 
     /**
-     * Returns the version name (including version number) of this OpenCms system.<p>
+     * Returns the version name (that is the version number) of this OpenCms system.<p>
      *
-     * @return the version name (including version number) of this OpenCms system
+     * @return the version name (that is the version number) of this OpenCms system
      */
     public String getVersionName() {
-
-        return m_versionName;
-    }
-
-    /**
-     * Returns the version number of this OpenCms system.<p>
-     *
-     * @return the version number of this OpenCms system
-     */
-    public String getVersionNumber() {
 
         return m_versionNumber;
     }
@@ -615,8 +602,7 @@ public class CmsSystemInfo {
     private void initVersion() {
 
         // init version information with static defaults
-        m_versionName = C_DEFAULT_VERSION_NUMBER + " " + C_DEFAULT_VERSION_NAME;
-        m_versionNumber = C_DEFAULT_VERSION_NUMBER;
+        m_versionNumber = DEFAULT_VERSION_NUMBER;
         // set OpenCms version identifier with default values
         m_version = "OpenCms/" + m_versionNumber;
         // read the version-informations from properties
@@ -627,8 +613,7 @@ public class CmsSystemInfo {
             // ignore this exception - no properties found
             return;
         }
-        m_versionNumber = props.getProperty("version.number", C_DEFAULT_VERSION_NUMBER);
-        m_versionName = m_versionNumber + " " + props.getProperty("version.name", C_DEFAULT_VERSION_NAME);
+        m_versionNumber = props.getProperty("version.number", DEFAULT_VERSION_NUMBER);
         // set OpenCms version identifier with propery values
         m_version = "OpenCms/" + m_versionNumber;
     }

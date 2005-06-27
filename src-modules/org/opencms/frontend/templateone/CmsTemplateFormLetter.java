@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.HashMap;
 
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -579,7 +579,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
                 // file not found, use default texts page file
             }
         }
-        return I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/letter_content.html";
+        return CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/pages/letter_content.html";
     }
 
 }

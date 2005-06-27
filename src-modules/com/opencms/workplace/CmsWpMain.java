@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsWpMain.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Vector;
  *
  * @author Alexander Lucas
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -103,7 +103,7 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		CmsRequestContext reqCont = cms.getRequestContext();
 //		String newGroup = (String) parameters.get("group");
 		String newProject = (String) parameters.get("project");
-		String newView = (String) parameters.get(C_PARA_VIEW);
+		String newView = (String) parameters.get(CmsWorkplaceDefault.C_PARA_VIEW);
 		CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
 
 		// Check if the user requested a group change
@@ -123,11 +123,11 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 		// Check if the user requested a new view
 		if (newView != null && !("".equals(newView))) {
 			session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-			session.putValue(C_PARA_VIEW, newView);
+			session.putValue(CmsWorkplaceDefault.C_PARA_VIEW, newView);
 		}
 
 		// set the publishProject Button to enable if user has the right to publish the project
-		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "head")) {
+		if (templateFile.equalsIgnoreCase(CmsWorkplaceDefault.C_VFS_PATH_DEFAULT_INTERNAL + "head")) {
 			if ((cms.isAdmin() || cms.isManagerOfProject()) && (!reqCont.currentProject().isOnlineProject())) {
 				xmlTemplateDocument.setData("publish", xmlTemplateDocument.getProcessedDataValue("PUBLISH_ENABLED", this));
 			}
@@ -159,12 +159,12 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// test if the "help"- button has to be displayed for the user's 
 		// current language in case we process the head template
-		if (templateFile.equalsIgnoreCase(C_VFS_PATH_DEFAULT_INTERNAL + "head")) {
+		if (templateFile.equalsIgnoreCase(CmsWorkplaceDefault.C_VFS_PATH_DEFAULT_INTERNAL + "head")) {
 			String userLanguage = CmsXmlLanguageFile.getCurrentUserLanguage(cms);
 			xmlTemplateDocument.setData("LOCALE", "" + userLanguage);
 
 			try {
-				cms.readFolder(C_VFS_PATH_HELP + userLanguage);
+				cms.readFolder(CmsWorkplaceDefault.C_VFS_PATH_HELP + userLanguage);
 				// the localized help- folder exists
 				xmlTemplateDocument.setData("HELP", xmlTemplateDocument.getProcessedDataValue("HELP_ENABLED", this));
 			}
@@ -350,8 +350,8 @@ public class CmsWpMain extends CmsWorkplaceDefault {
 
 		// If there is a session, let's see if it has a view stored
 		if (session != null) {
-			if (session.getValue(C_PARA_VIEW) != null) {
-				currentView = (String) session.getValue(C_PARA_VIEW);
+			if (session.getValue(CmsWorkplaceDefault.C_PARA_VIEW) != null) {
+				currentView = (String) session.getValue(CmsWorkplaceDefault.C_PARA_VIEW);
 			}
 		}
 		if (currentView == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,14 +47,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDownloadGallery extends A_CmsGallery {
 
     /** URI of the download gallery popup dialog. */
-    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "download_fs.jsp";
+    public static final String URI_GALLERY = PATH_GALLERIES + "download_fs.jsp";
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>

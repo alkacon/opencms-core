@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
@@ -76,7 +76,7 @@ public class CmsSqlManager {
      */
     public Connection getConnection(String dbPoolName) throws SQLException {
 
-        return getConnectionByUrl(CmsDbPool.C_DBCP_JDBC_URL_PREFIX + CmsDbPool.C_OPENCMS_URL_PREFIX + dbPoolName);
+        return getConnectionByUrl(CmsDbPool.DBCP_JDBC_URL_PREFIX + CmsDbPool.OPENCMS_URL_PREFIX + dbPoolName);
     }
 
     /**

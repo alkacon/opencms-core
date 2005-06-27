@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestChflags.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -44,7 +43,7 @@ import junit.framework.TestSuite;
  * Unit test for the "chflags" method of the CmsObject.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * @since 6.0 alpha 2
  */
 public class TestChflags extends OpenCmsTestCase {
@@ -121,11 +120,11 @@ public class TestChflags extends OpenCmsTestCase {
         long timestamp = System.currentTimeMillis();
 
         // the "internal" flag is not set
-        assertEquals((existingFlags & I_CmsConstants.C_ACCESS_INTERNAL_READ), 0);
+        assertEquals((existingFlags & CmsResource.FLAG_INTERNAL), 0);
 
         // add the "internal" flag
-        if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) == 0) {
-            flags += I_CmsConstants.C_ACCESS_INTERNAL_READ;
+        if ((flags & CmsResource.FLAG_INTERNAL) == 0) {
+            flags += CmsResource.FLAG_INTERNAL;
         } else {
             fail("Resource " + resource1 + " has the \"internal\" flag already set!");
         }
@@ -138,9 +137,9 @@ public class TestChflags extends OpenCmsTestCase {
         // check the status of the changed file
         tc.assertFilter(cms, resource1, OpenCmsTestResourceFilter.FILTER_CHFLAGS);
         tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
-        tc.assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+        tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
         tc.assertUserLastModified(cms, resource1, cms.getRequestContext().currentUser());
-        tc.assertFlags(cms, resource1, I_CmsConstants.C_ACCESS_INTERNAL_READ);
+        tc.assertFlags(cms, resource1, CmsResource.FLAG_INTERNAL);
         tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
     }
 

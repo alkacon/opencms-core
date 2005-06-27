@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public class CmsReport extends CmsDialog {
      */
     public static CmsReport initCmsReport(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        CmsReport wp = (CmsReport)req.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_CLASS);
+        CmsReport wp = (CmsReport)req.getAttribute(CmsWorkplace.SESSION_WORKPLACE_CLASS);
         if (wp == null) {
             // ensure that we don't get null pointers if the page is directly called
             wp = new CmsReport(new CmsJspActionElement(context, req, res));

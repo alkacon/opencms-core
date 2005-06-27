@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,23 +65,20 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsEncoder {
 
     /** Default encoding for JavaScript decodeUriComponent methods is <code>UTF-8</code> by w3c standard. */
-    public static final String C_UTF8_ENCODING = "UTF-8";
+    public static final String ENCODING_UTF_8 = "UTF-8";
 
     /** Constant for the standard <code>ISO-8859-1</code> encoding. */
     public static final String ENCODING_ISO_8859_1 = "ISO-8859-1";
 
-    /** Constant for the standard <code>UTF-8</code> encoding. */
-    public static final String ENCODING_UTF_8 = C_UTF8_ENCODING;
-
     /** The regex pattern to match HTML entities. */
-    private static final Pattern C_ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
+    private static final Pattern ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEncoder.class);
@@ -235,7 +232,7 @@ public final class CmsEncoder {
      */
     public static String decodeHtmlEntities(String input, String encoding) {
 
-        Matcher matcher = C_ENTITIY_PATTERN.matcher(input);
+        Matcher matcher = ENTITIY_PATTERN.matcher(input);
         StringBuffer result = new StringBuffer(input.length());
         Charset charset = Charset.forName(encoding);
         CharsetEncoder encoder = charset.newEncoder();

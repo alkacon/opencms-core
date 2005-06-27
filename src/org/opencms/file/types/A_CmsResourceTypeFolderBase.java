@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
@@ -53,7 +52,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,7 +191,7 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         for (int i = 0; i < resources.size(); i++) {
             CmsResource childResource = (CmsResource)resources.get(i);
 
-            if (siblingMode == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS
+            if (siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS
                 && deletedResources.contains(childResource.getResourceId())) {
                 // sibling mode is "delete all siblings" and another sibling of the current child resource has already
                 // been deleted- do nothing and continue with the next child resource.
@@ -271,9 +270,9 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
             true,
             CmsResourceFilter.IGNORE_EXPIRATION);
 
-        copyResource(cms, securityManager, resource, destination, I_CmsConstants.C_COPY_AS_SIBLING);
+        copyResource(cms, securityManager, resource, destination, CmsResource.COPY_AS_SIBLING);
 
-        deleteResource(cms, securityManager, resource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        deleteResource(cms, securityManager, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
     }
 
     /**

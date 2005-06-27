@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterDataSet.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:25 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,9 +28,8 @@
 
 package com.opencms.defaults.master;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
-
 
 import java.io.Serializable;
 import java.util.Vector;
@@ -41,8 +40,8 @@ import java.util.Vector;
  * should only be used within this mastermodule.
  *
  * @author A. Schouten $
- * $Revision: 1.1 $
- * $Date: 2005/05/17 13:47:28 $
+ * $Revision: 1.2 $
+ * $Date: 2005/06/27 23:22:25 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -114,7 +113,7 @@ public class CmsMasterDataSet implements Serializable {
     //// data members for history ////
 
     /** The version-number of this record in history */
-    public int m_versionId = I_CmsConstants.C_UNKNOWN_ID;
+    public int m_versionId = CmsDbUtil.UNKNOWN_ID;
 
     /** The owner as String */
     public String m_userName;

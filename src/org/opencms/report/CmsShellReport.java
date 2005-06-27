@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.report;
 
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Locale;
 
@@ -43,7 +43,7 @@ import java.util.Locale;
  * @author Alexander Kandzior  
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,7 +57,7 @@ public class CmsShellReport extends A_CmsReport {
     public CmsShellReport() {
 
         // generate a message object with the default (english) locale
-        this(C_BUNDLE_NAME, I_CmsWpConstants.C_DEFAULT_LOCALE);
+        this(BUNDLE_NAME, CmsWorkplace.DEFAULT_LOCALE);
     }
 
     /**
@@ -88,28 +88,28 @@ public class CmsShellReport extends A_CmsReport {
 
         StringBuffer buf;
         switch (format) {
-            case C_FORMAT_HEADLINE:
+            case FORMAT_HEADLINE:
                 buf = new StringBuffer();
                 buf.append("------ ");
                 buf.append(value);
                 System.out.print(buf);
                 break;
-            case C_FORMAT_WARNING:
+            case FORMAT_WARNING:
                 buf = new StringBuffer();
                 buf.append("!!! ");
                 buf.append(value);
                 System.out.print(buf);
                 break;
-            case C_FORMAT_ERROR:
+            case FORMAT_ERROR:
                 buf = new StringBuffer();
                 buf.append("!!! ");
                 buf.append(value);
                 System.out.print(buf);
                 addError(value);
                 break;
-            case C_FORMAT_NOTE:
-            case C_FORMAT_OK:
-            case C_FORMAT_DEFAULT:
+            case FORMAT_NOTE:
+            case FORMAT_OK:
+            case FORMAT_DEFAULT:
             default:
                 System.out.print(value);
         }
@@ -131,7 +131,7 @@ public class CmsShellReport extends A_CmsReport {
         StringBuffer buf = new StringBuffer();
         buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
         buf.append(t.getMessage());
-        this.println(new String(buf), C_FORMAT_WARNING);
+        this.println(new String(buf), FORMAT_WARNING);
         t.printStackTrace(System.out);
     }
 }

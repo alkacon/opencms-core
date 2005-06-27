@@ -9,8 +9,8 @@ boolean showSideUri = CmsStringUtil.isNotEmpty(sideUri) && !"none".equals(sideUr
 String xmlDemo = cms.property("xmlcontent-side-uri", "search");
 boolean showXmlDemo = CmsStringUtil.isNotEmpty(xmlDemo) && !"none".equals(xmlDemo);
 
-String newsList = cms.property(CmsTemplateBean.C_PROPERTY_LAYOUT_RIGHT, "search", CmsTemplateBean.C_PROPERTY_VALUE_NONE);
-boolean showList = ! CmsTemplateBean.C_PROPERTY_VALUE_NONE.equals(newsList);
+String newsList = cms.property(CmsTemplateBean.PROPERTY_LAYOUT_RIGHT, "search", CmsTemplateBean.PROPERTY_VALUE_NONE);
+boolean showList = ! CmsTemplateBean.PROPERTY_VALUE_NONE.equals(newsList);
 
 boolean showSide = showSideUri || showList || showXmlDemo;
 

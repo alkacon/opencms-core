@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlWpConfigFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,8 +31,7 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.legacy.CmsXmlTemplateLoader;
 
@@ -45,7 +44,7 @@ import java.util.Vector;
  * @author Alexander Lucas
  * @author Michael Emmerich
  * @author Andreas Schouten
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -77,7 +76,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for download galleries.
      */
     public String getDownGalleryPath(){
-        return I_CmsWpConstants.C_VFS_GALLERY_DOWNLOAD;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_DOWNLOAD;
     }
 
     /**
@@ -85,7 +84,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for html galleries.
      */
     public String getHtmlGalleryPath(){
-        return I_CmsWpConstants.C_VFS_GALLERY_HTML;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_HTML;
     }
 
     /**
@@ -93,7 +92,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for picture galleries.
      */
     public String getPicGalleryPath(){
-        return I_CmsWpConstants.C_VFS_GALLERY_PICS;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_PICS;
     }
 
     /**
@@ -101,7 +100,7 @@ public class CmsXmlWpConfigFile {
      * @return Path for externallink galleries.
      */
     public String getLinkGalleryPath() {
-        return I_CmsWpConstants.C_VFS_GALLERY_EXTERNALLINKS;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS;
     }
     
     /**
@@ -111,7 +110,7 @@ public class CmsXmlWpConfigFile {
      * @deprecated Use the constant value I_CmsWpConstants.C_VFS_PATH_LOCALES instead
      */
     public String getLanguagePath() throws CmsException {
-        return I_CmsWpConstants.C_VFS_PATH_LOCALES;
+        return CmsWorkplace.VFS_PATH_LOCALES;
     }
 
     /**
@@ -120,7 +119,7 @@ public class CmsXmlWpConfigFile {
      * @throws CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWorkplaceActionPath() throws CmsException {
-        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "action/";
+        return CmsWorkplace.VFS_PATH_WORKPLACE + "action/";
     }
 
     /**
@@ -129,7 +128,7 @@ public class CmsXmlWpConfigFile {
      * @throws CmsException if the corresponding XML tag doesn't exist in the workplace definition file.
      */
     public String getWorkplaceAdministrationPath() throws CmsException {
-        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE + "administration/";
+        return CmsWorkplace.VFS_PATH_WORKPLACE + "administration/";
     }
     
     /** Flag to indicate what setting the value of "UseWpPicturesFromVFS" in the registry.xml is */    
@@ -148,11 +147,11 @@ public class CmsXmlWpConfigFile {
         if (m_useWpPicturesFromVFSPath == null) {
             // Check registry for setting of workplace images
             m_useWpPicturesFromVFS = false;
-            m_useWpPicturesFromVFSPath = CmsXmlTemplateLoader.getRequest(m_cms.getRequestContext()).getServletUrl() + I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS;
+            m_useWpPicturesFromVFSPath = CmsXmlTemplateLoader.getRequest(m_cms.getRequestContext()).getServletUrl() + CmsWorkplace.VFS_PATH_RESOURCES;
             if (m_useWpPicturesFromVFS) {
                 m_resourceUri = m_useWpPicturesFromVFSPath;
             } else {
-                m_resourceUri = CmsXmlTemplateLoader.getRequest(m_cms.getRequestContext()).getWebAppUrl() + I_CmsWpConstants.C_SYSTEM_PICS_EXPORT_PATH;
+                m_resourceUri = CmsXmlTemplateLoader.getRequest(m_cms.getRequestContext()).getWebAppUrl() + CmsWorkplace.RFS_PATH_RESOURCES;
             }
         }
         return m_resourceUri;

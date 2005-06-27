@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestUndoChanges.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,8 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.test.OpenCmsTestResourceStorage;
 
@@ -50,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "undoChanges" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestUndoChanges extends OpenCmsTestCase {
 
@@ -114,7 +113,7 @@ public class TestUndoChanges extends OpenCmsTestCase {
 
         // create a new, plain resource
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
 
         try {
             cms.undoChanges(source, false);
@@ -147,10 +146,10 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.lockResource(destination);
 
         // delete and owerwrite
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertState(cms, destination, CmsResource.STATE_DELETED);
 
-        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_NEW);
+        cms.copyResource(source, destination, CmsResource.COPY_AS_NEW);
 
         // now undo all changes on the resource
         cms.undoChanges(destination, false);
@@ -183,10 +182,10 @@ public class TestUndoChanges extends OpenCmsTestCase {
         cms.lockResource(destination);
 
         // delete and owerwrite with a sibling
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertState(cms, destination, CmsResource.STATE_DELETED);
 
-        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.copyResource(source, destination, CmsResource.COPY_AS_SIBLING);
 
         // now undo all changes on the resource
         cms.undoChanges(destination, false);

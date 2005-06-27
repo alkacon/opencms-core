@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/06/27 13:21:37 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,29 +55,29 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLinkProcessor {
 
     /** HTML end. */
-    public static final String C_HTML_END = "</body></html>";
+    public static final String HTML_END = "</body></html>";
 
     /** HTML start. */
-    public static final String C_HTML_START = "<html><body>";
+    public static final String HTML_START = "<html><body>";
 
     /** End of a macro. */
-    private static final String C_MACRO_END = "}";
+    private static final String MACRO_END = "}";
 
     /** Start of a macro. */
-    private static final String C_MACRO_START = "${";
+    private static final String MACRO_START = "${";
 
     /** Processing mode "process links". */
-    private static final int C_PROCESS_LINKS = 1;
+    private static final int PROCESS_LINKS = 1;
 
     /** Processing mode "replace links". */
-    private static final int C_REPLACE_LINKS = 0;
+    private static final int REPLACE_LINKS = 0;
 
     /** The current cms instance. */
     private CmsObject m_cms;
@@ -137,7 +137,7 @@ public class CmsLinkProcessor {
      */
     public String processLinks(String content) throws ParserException {
 
-        m_mode = C_PROCESS_LINKS;
+        m_mode = PROCESS_LINKS;
 
         String result = processContent(content, m_encoding);
         return result;
@@ -155,7 +155,7 @@ public class CmsLinkProcessor {
      */
     public String replaceLinks(String content) throws ParserException {
 
-        m_mode = C_REPLACE_LINKS;
+        m_mode = REPLACE_LINKS;
 
         String result = processContent(content, m_encoding);
         return result;
@@ -170,7 +170,7 @@ public class CmsLinkProcessor {
 
         switch (m_mode) {
 
-            case C_REPLACE_LINKS:
+            case REPLACE_LINKS:
                 if (imageTag.getAttribute("src") != null) {
 
                     String targetUri = imageTag.getImageURL();
@@ -204,7 +204,7 @@ public class CmsLinkProcessor {
                 }
                 break;
 
-            case C_PROCESS_LINKS:
+            case PROCESS_LINKS:
                 if (imageTag.getAttribute("src") != null) {
                     String imageUrl = imageTag.getImageURL();
                     CmsLink link = m_linkTable.getLink(getLinkName(imageUrl));
@@ -284,7 +284,7 @@ public class CmsLinkProcessor {
 
         switch (m_mode) {
 
-            case C_PROCESS_LINKS:
+            case PROCESS_LINKS:
                 if (linkTag.getAttribute("href") != null) {
                     CmsLink link = m_linkTable.getLink(getLinkName(linkTag.getLink()));
                     if (link != null) {
@@ -293,7 +293,7 @@ public class CmsLinkProcessor {
                 }
                 break;
 
-            case C_REPLACE_LINKS:
+            case REPLACE_LINKS:
                 if (linkTag.getAttribute("href") != null) {
                     String targetUri = linkTag.extractLink();
 
@@ -324,9 +324,9 @@ public class CmsLinkProcessor {
     private String getLinkName(String macro) {
 
         if (CmsStringUtil.isNotEmpty(macro)) {
-            if (macro.startsWith(C_MACRO_START) && macro.endsWith(C_MACRO_END)) {
+            if (macro.startsWith(MACRO_START) && macro.endsWith(MACRO_END)) {
                 // make sure the macro really is a macro
-                return macro.substring(C_MACRO_START.length(), macro.length() - C_MACRO_END.length());
+                return macro.substring(MACRO_START.length(), macro.length() - MACRO_END.length());
             }
         }
         return "";
@@ -342,9 +342,9 @@ public class CmsLinkProcessor {
     private String newMacro(String name) {
 
         StringBuffer result = new StringBuffer(name.length() + 4);
-        result.append(C_MACRO_START);
+        result.append(MACRO_START);
         result.append(name);
-        result.append(C_MACRO_END);
+        result.append(MACRO_END);
         return result.toString();
     }
 
@@ -364,9 +364,9 @@ public class CmsLinkProcessor {
         // otherwise you will get strange results for some specific HTML constructs
         StringBuffer newContent = new StringBuffer(content.length() + 32);
 
-        newContent.append(C_HTML_START);
+        newContent.append(HTML_START);
         newContent.append(content);
-        newContent.append(C_HTML_END);
+        newContent.append(HTML_END);
 
         // create the link visitor
         CmsLinkVisitor visitor = new CmsLinkVisitor(this);
@@ -388,7 +388,7 @@ public class CmsLinkProcessor {
         // remove the addition HTML  
         String result = visitor.getHtml();
         if (result.length() > 0) {
-            return result.substring(C_HTML_START.length(), result.length() - C_HTML_END.length());
+            return result.substring(HTML_START.length(), result.length() - HTML_END.length());
         } else {
             return result;
         }

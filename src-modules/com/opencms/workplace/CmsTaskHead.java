@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskHead.java,v $
-* Date   : $Date: 2005/06/25 11:19:03 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Vector;
  * <P>
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.4 $ $Date: 2005/06/25 11:19:03 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -72,7 +72,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
     
     public Object checked(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObj) throws CmsException {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        Object allProjects = session.getValue(C_SESSION_TASK_ALLPROJECTS);
+        Object allProjects = session.getValue(CmsWorkplaceDefault.C_SESSION_TASK_ALLPROJECTS);
         
         // was the allprojects checkbox checked?
         if((allProjects != null) && (((Boolean)allProjects).booleanValue())) {
@@ -106,7 +106,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
         CmsXmlTemplateFile xmlTemplateDocument = getOwnTemplateFile(cms, templateFile, elementName, parameters, templateSelector);
         
         // is this the first-time, this page is viewed?
-        if(session.getValue(C_SESSION_TASK_ALLPROJECTS) == null) {
+        if(session.getValue(CmsWorkplaceDefault.C_SESSION_TASK_ALLPROJECTS) == null) {
             
             // YES! read the relevant userproperties
             CmsUserSettings settings = new CmsUserSettings(cms);
@@ -114,8 +114,8 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
             boolean allProjects = settings.getTaskShowAllProjects();
                 
             // the tasksettings exists - use them
-            session.putValue(C_SESSION_TASK_ALLPROJECTS, new Boolean(allProjects));
-            session.putValue(C_SESSION_TASK_FILTER, startupFilter);
+            session.putValue(CmsWorkplaceDefault.C_SESSION_TASK_ALLPROJECTS, new Boolean(allProjects));
+            session.putValue(CmsWorkplaceDefault.C_SESSION_TASK_FILTER, startupFilter);
        
         }
         
@@ -124,16 +124,16 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
             
             // YES: get the checkbox-value
             if("OK".equals(parameters.get("ALL"))) {
-                session.putValue(C_SESSION_TASK_ALLPROJECTS, new Boolean(true));
+                session.putValue(CmsWorkplaceDefault.C_SESSION_TASK_ALLPROJECTS, new Boolean(true));
             }
             else {
-                session.putValue(C_SESSION_TASK_ALLPROJECTS, new Boolean(false));
+                session.putValue(CmsWorkplaceDefault.C_SESSION_TASK_ALLPROJECTS, new Boolean(false));
             }
         }
         
         // is the listbox chosen?
         if((parameters.get("filter") != null) && (!(parameters.get("filter").equals("-")))) {
-            session.putValue(C_SESSION_TASK_FILTER, parameters.get("filter"));
+            session.putValue(CmsWorkplaceDefault.C_SESSION_TASK_FILTER, parameters.get("filter"));
         }
         
         // Now load the template file and start the processing
@@ -166,7 +166,7 @@ public class CmsTaskHead extends CmsWorkplaceDefault {
         
         // Let's see if we have a session
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        String filter = (String)session.getValue(C_SESSION_TASK_FILTER);
+        String filter = (String)session.getValue(CmsWorkplaceDefault.C_SESSION_TASK_FILTER);
         int selected = 0;
         names.addElement("a1");
         values.addElement(lang.getLanguageValue(CmsTaskService.TASK_FILTER + "a1"));

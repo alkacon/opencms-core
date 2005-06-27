@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/06/23 14:01:13 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.importexport.CmsCompatibleCheck;
 import org.opencms.jsp.CmsJspTagInclude;
 import org.opencms.loader.I_CmsLoaderIncludeExtension;
 import org.opencms.loader.I_CmsResourceLoader;
@@ -44,12 +45,30 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsDefaultPageEditor;
 
-import com.opencms.core.*;
-import com.opencms.template.*;
-import com.opencms.template.cache.*;
+import com.opencms.core.CmsRequestHttpServlet;
+import com.opencms.core.CmsResponseHttpServlet;
+import com.opencms.core.CmsSession;
+import com.opencms.core.I_CmsRequest;
+import com.opencms.core.I_CmsResponse;
+import com.opencms.core.I_CmsSession;
+import com.opencms.template.A_CmsXmlContent;
+import com.opencms.template.CmsRootTemplate;
+import com.opencms.template.CmsTemplateCache;
+import com.opencms.template.CmsTemplateClassManager;
+import com.opencms.template.CmsXmlControlFile;
+import com.opencms.template.CmsXmlTemplate;
+import com.opencms.template.I_CmsTemplate;
+import com.opencms.template.I_CmsTemplateCache;
+import com.opencms.template.I_CmsXmlTemplate;
+import com.opencms.template.cache.CmsElementCache;
+import com.opencms.template.cache.CmsElementDefinition;
+import com.opencms.template.cache.CmsElementDefinitionCollection;
+import com.opencms.template.cache.CmsElementDescriptor;
+import com.opencms.template.cache.CmsUri;
+import com.opencms.template.cache.CmsUriDescriptor;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -89,7 +108,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -99,7 +118,7 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
     public static final String C_ELEMENT_REPLACE = "_CMS_ELEMENTREPLACE";
     
     /** URI of the bodyloader XML file in the OpenCms VFS. */    
-    public static final String C_BODYLOADER_URI = I_CmsWpConstants.C_VFS_PATH_SYSTEM + "shared/bodyloader.html";
+    public static final String C_BODYLOADER_URI = CmsWorkplace.VFS_PATH_SYSTEM + "shared/bodyloader.html";
             
     /** The id of this loader. */
     public static final int C_RESOURCE_LOADER_ID = 3;
@@ -885,8 +904,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             // no body attribute is set: this is NOT a sub-element in a XML mastertemplate
             if (isPageTarget) {
                 // add body file path to target 
-                if (! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
-                    target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
+                if (! target.startsWith(CmsCompatibleCheck.VFS_PATH_BODIES)) {
+                    target = CmsCompatibleCheck.VFS_PATH_BODIES + target.substring(1);
                 }
                 // save target as "element replace" parameter for body loader
                 CmsJspTagInclude.addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  
@@ -902,8 +921,8 @@ public class CmsXmlTemplateLoader implements I_CmsResourceLoader, I_CmsLoaderInc
             } else {
                 if (isPageTarget) {
                     // add body file path to target 
-                    if (isPageTarget && ! target.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
-                        target = I_CmsWpConstants.C_VFS_PATH_BODIES + target.substring(1);
+                    if (isPageTarget && ! target.startsWith(CmsCompatibleCheck.VFS_PATH_BODIES)) {
+                        target = CmsCompatibleCheck.VFS_PATH_BODIES + target.substring(1);
                     }           
                     // save target as "element replace" parameter  
                     CmsJspTagInclude.addParameter(parameterMap, CmsXmlTemplateLoader.C_ELEMENT_REPLACE, "body:" + target, true);  

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,17 +53,17 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsPointerLoader implements I_CmsResourceLoader {
 
     /** The id of this loader. */
-    public static final int C_RESOURCE_LOADER_ID = 4;
+    public static final int RESOURCE_LOADER_ID = 4;
 
     /** The html-code prefix for generating the export file for external links. */
-    private static String C_EXPORT_PREFIX = "<html>\n<head>\n<meta http-equiv="
+    private static String EXPORT_PREFIX = "<html>\n<head>\n<meta http-equiv="
         + '"'
         + "refresh"
         + '"'
@@ -72,7 +72,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         + "0; url=";
 
     /** The html-code suffix for generating the export file for external links. */
-    private static String C_EXPORT_SUFFIX = '"' + ">\n</head>\n<body></body>\n</html>";
+    private static String EXPORT_SUFFIX = '"' + ">\n</head>\n<body></body>\n</html>";
 
     /**
      * The constructor of the class is empty and does nothing.<p>
@@ -120,9 +120,9 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
 
         String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
         StringBuffer result = new StringBuffer(128);
-        result.append(C_EXPORT_PREFIX);
+        result.append(EXPORT_PREFIX);
         result.append(pointer);
-        result.append(C_EXPORT_SUFFIX);
+        result.append(EXPORT_SUFFIX);
         load(cms, resource, req, res);
         return result.toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding());
     }
@@ -143,7 +143,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      */
     public int getLoaderId() {
 
-        return C_RESOURCE_LOADER_ID;
+        return RESOURCE_LOADER_ID;
     }
 
     /**

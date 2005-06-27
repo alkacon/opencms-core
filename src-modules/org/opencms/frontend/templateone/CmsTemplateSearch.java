@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,13 @@ package org.opencms.frontend.templateone;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
 import org.opencms.search.Messages;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -57,14 +57,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateSearch extends CmsTemplateBean {
 
     /** Request parameter name for the search entire website flag.<p> */
-    public static final String C_PARAM_SEARCHALL = "entire";
+    public static final String PARAM_SEARCHALL = "entire";
 
     /** Stores the URI of the page calling the search result page.<p> */
     private String m_pageUri;
@@ -174,11 +174,11 @@ public class CmsTemplateSearch extends CmsTemplateBean {
             additionalParams.append("&uri=");
             additionalParams.append(CmsEncoder.encode(getRequestContext().getUri()));
             additionalParams.append("&");
-            additionalParams.append(I_CmsConstants.C_PARAMETER_LOCALE);
+            additionalParams.append(CmsLocaleManager.PARAMETER_LOCALE);
             additionalParams.append("=");
             additionalParams.append(getRequestContext().getLocale());
             additionalParams.append("&");
-            additionalParams.append(C_PARAM_SEARCHALL);
+            additionalParams.append(PARAM_SEARCHALL);
             additionalParams.append("=");
             additionalParams.append(isSearchAll());
         }
@@ -194,7 +194,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         Map pageLinks;
         try {
             // first set request context URI to form URI to obtain right page links
-            getRequestContext().setUri(I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/search.html");
+            getRequestContext().setUri(CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/pages/search.html");
             pageLinks = search.getPageLinks();
         } finally {
             // reset URI to page
@@ -312,8 +312,8 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         // get the file extension 
         if ((lastDot > 0) && (lastDot < (fileName.length() - 1))) {
             extension = fileName.substring(lastDot + 1).toLowerCase();
-            String iconPath = I_CmsWpConstants.C_VFS_PATH_MODULES
-                + C_MODULE_NAME
+            String iconPath = CmsWorkplace.VFS_PATH_MODULES
+                + MODULE_NAME
                 + "/resources/icons/ic_app_"
                 + extension
                 + ".gif";
@@ -385,7 +385,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
                 result = new ArrayList();
             } else {
                 // first set request context URI to form URI to obtain right page links
-                getRequestContext().setUri(I_CmsWpConstants.C_VFS_PATH_MODULES + C_MODULE_NAME + "/pages/search.html");
+                getRequestContext().setUri(CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/pages/search.html");
                 result = search.getSearchResult();
             }
         } finally {
@@ -425,11 +425,11 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         // call initialization of super class
         super.init(context, req, res);
         // initialize members from request
-        m_pageUri = req.getParameter(CmsTemplateBean.C_PARAM_URI);
+        m_pageUri = req.getParameter(CmsTemplateBean.PARAM_URI);
         if (m_pageUri == null) {
             m_pageUri = getRequestContext().getUri();
         }
-        m_searchAll = Boolean.valueOf(req.getParameter(C_PARAM_SEARCHALL)).booleanValue();
+        m_searchAll = Boolean.valueOf(req.getParameter(PARAM_SEARCHALL)).booleanValue();
         // change URI to point at page that called the search          
         getRequestContext().setUri(m_pageUri);
     }

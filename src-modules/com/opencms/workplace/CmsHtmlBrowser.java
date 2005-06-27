@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsHtmlBrowser.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Vector;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author magnus meurer
- * @version $Revision: 1.3 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -84,14 +84,14 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
 
         // test whether the links folder exists at all
         try {
-            cms.readResource(C_VFS_GALLERY_EXTERNALLINKS);
+            cms.readResource(CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS);
         } catch(CmsException e) {
             xmlTemplateDocument.setData("ERRORDETAILS", CmsException.getStackTraceAsString(e));
             templateSelector = "error";
         }
         if(!"error".equals(templateSelector)) {
-            if(parameters.get(C_PARA_INITIAL) != null) {
-                session.removeValue(C_PARA_FOLDER);
+            if(parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL) != null) {
+                session.removeValue(CmsWorkplaceDefault.C_PARA_FOLDER);
                 session.removeValue("htmlBrowser_for_ext_nav");
             }
             String setOnClick = (String)parameters.get("setonclick");
@@ -99,18 +99,18 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
                 session.putValue("htmlBrowser_for_ext_nav", setOnClick);
             }
             setOnClick = (String)session.getValue("htmlBrowser_for_ext_nav");
-            String folder = (String)parameters.get(C_PARA_FOLDER);
+            String folder = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FOLDER);
             if(folder != null) {
-                session.putValue(C_PARA_FOLDER, folder);
+                session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, folder);
             }
-            folder = (String)session.getValue(C_PARA_FOLDER);
+            folder = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
             if(folder == null || "".equals(folder)) {
                 List galleries = cms.getSubFolders(getConfigFile(cms).getHtmlGalleryPath());
                 if(galleries.size() > 0) {
 
                     // take the first gallery
                     folder = cms.getSitePath((CmsResource)galleries.get(0));
-                    session.putValue(C_PARA_FOLDER, folder);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, folder);
                 } else {
 
                     // there was a C_VFS_GALLERY_EXTERNALLINKS - folder but no galery in it
@@ -118,31 +118,31 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
                 }
             }
             if(!"error_no_gallery".equals(templateSelector)) {
-                String pageText = (String)parameters.get(C_PARA_PAGE);
-                String filter = (String)parameters.get(C_PARA_FILTER);
+                String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
+                String filter = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FILTER);
 
                 // Check if the user requested a special page
                 if(pageText == null || "".equals(pageText)) {
                     pageText = "1";
-                    parameters.put(C_PARA_PAGE, pageText);
+                    parameters.put(CmsWorkplaceDefault.C_PARA_PAGE, pageText);
                 }
 
                 // Check if the user requested a filter
                 if(filter == null) {
                     filter = "";
-                    parameters.put(C_PARA_FILTER, filter);
+                    parameters.put(CmsWorkplaceDefault.C_PARA_FILTER, filter);
                 }
 
                 // Compute the maximum page number
                 Vector filteredLinks = getFilteredHtmlList(cms, folder, filter);
-                int maxpage = ((filteredLinks.size() - 1) / C_PICBROWSER_MAXIMAGES) + 1;
+                int maxpage = ((filteredLinks.size() - 1) / CmsWorkplaceDefault.C_PICBROWSER_MAXIMAGES) + 1;
 
                 // Now set the appropriate datablocks
-                xmlTemplateDocument.setData(C_PARA_FOLDER, CmsEncoder.escape(folder,
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_FOLDER, CmsEncoder.escape(folder,
                     cms.getRequestContext().getEncoding()));
-                xmlTemplateDocument.setData(C_PARA_PAGE, pageText);
-                xmlTemplateDocument.setData(C_PARA_FILTER, filter);
-                xmlTemplateDocument.setData(C_PARA_MAXPAGE, "" + maxpage);
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_PAGE, pageText);
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_FILTER, filter);
+                xmlTemplateDocument.setData(CmsWorkplaceDefault.C_PARA_MAXPAGE, "" + maxpage);
                 if(setOnClick == null || !"true".equals(setOnClick)){
                     xmlTemplateDocument.setData("setonclick", "");
                 }else{
@@ -243,7 +243,7 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
         Hashtable parameters = (Hashtable)userObj;
         CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)doc;
         StringBuffer result = new StringBuffer();
-        String pageText = (String)parameters.get(C_PARA_PAGE);
+        String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
 
         // Filter the links
         Vector filteredLinks = (Vector)parameters.get("_HTMLLIST_");
@@ -251,15 +251,15 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
 
         // Get limits for the requested page
         int page = new Integer(pageText).intValue();
-        int from = (page - 1) * C_PICBROWSER_MAXIMAGES;
-        int to = ((from + C_PICBROWSER_MAXIMAGES) > numLinks) ? numLinks : (from + C_PICBROWSER_MAXIMAGES);
-        String folder = (String)parameters.get(C_PARA_FOLDER);
+        int from = (page - 1) * CmsWorkplaceDefault.C_PICBROWSER_MAXIMAGES;
+        int to = ((from + CmsWorkplaceDefault.C_PICBROWSER_MAXIMAGES) > numLinks) ? numLinks : (from + CmsWorkplaceDefault.C_PICBROWSER_MAXIMAGES);
+        String folder = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FOLDER);
         if(folder == null) {
-            folder = (String)session.getValue(C_PARA_FOLDER);
+            folder = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
         }
         if(folder == null || "".equals(folder)) {
             folder = getConfigFile(cms).getHtmlGalleryPath();
-            parameters.put(C_PARA_FOLDER, folder);
+            parameters.put(CmsWorkplaceDefault.C_PARA_FOLDER, folder);
         }
 
         String linkUrl = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + folder;
@@ -328,7 +328,7 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
     public Boolean showBackButton(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
 
         // Get the current page number
-        String pageText = (String)parameters.get(C_PARA_PAGE);
+        String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
         int page = new Integer(pageText).intValue();
         return new Boolean(page > 1);
     }
@@ -350,7 +350,7 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
     public Boolean showNextButton(CmsObject cms, CmsXmlLanguageFile lang, Hashtable parameters) {
 
         // Get the current page number
-        String pageText = (String)parameters.get(C_PARA_PAGE);
+        String pageText = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PAGE);
         int page = new Integer(pageText).intValue();
 
         // get the number of links
@@ -358,7 +358,7 @@ public class CmsHtmlBrowser extends A_CmsGalleryBrowser {
         int numLinks = filteredLinks.size();
 
         // Get the maximum page number
-        int maxpage = ((numLinks - 1) / C_PICBROWSER_MAXIMAGES) + 1;
+        int maxpage = ((numLinks - 1) / CmsWorkplaceDefault.C_PICBROWSER_MAXIMAGES) + 1;
         return new Boolean(page < maxpage);
     }
 }

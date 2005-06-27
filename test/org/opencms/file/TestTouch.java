@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
  
 package org.opencms.file;
 
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.test.OpenCmsTestResourceFilter;
+
 import java.util.Iterator;
 import java.util.List;
 
@@ -38,16 +42,11 @@ import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
 
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
-import org.opencms.test.OpenCmsTestCase;
-import org.opencms.test.OpenCmsTestResourceFilter;
-
 /**
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -102,7 +101,7 @@ public class TestTouch extends OpenCmsTestCase {
 
         long timestamp = System.currentTimeMillis();
         cms.lockResource(resource1);
-        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.touch(resource1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
         cms.unlockResource(resource1);
 
         // now evaluate the result
@@ -130,7 +129,7 @@ public class TestTouch extends OpenCmsTestCase {
          
         long timestamp = System.currentTimeMillis();
         cms.lockResource(resource1);
-        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, false);
+        cms.touch(resource1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
         cms.unlockResource(resource1);
 
         // now evaluate the result
@@ -170,7 +169,7 @@ public class TestTouch extends OpenCmsTestCase {
         
         long timestamp = System.currentTimeMillis();
         cms.lockResource(resource1);
-        cms.touch(resource1, timestamp, I_CmsConstants.C_DATE_UNCHANGED, I_CmsConstants.C_DATE_UNCHANGED, true);
+        cms.touch(resource1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, true);
         cms.unlockResource(resource1);
 
         // now evaluate the result

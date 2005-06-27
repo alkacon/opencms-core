@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlWpInputDefFile.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.workplace.*;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -41,12 +40,12 @@ import com.opencms.template.A_CmsXmlContent;
  * 
  * @author Michael Emmerich
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
-public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsWpConstants {
+public class CmsXmlWpInputDefFile extends A_CmsXmlContent {
     
     /**
      * Default constructor.
@@ -105,13 +104,13 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsWpCons
     
     public String getInput(String styleClass, String name, String size, String length, 
             String value, String action) throws CmsException {
-        setData(C_INPUT_CLASS, styleClass);
-        setData(C_INPUT_NAME, name);
-        setData(C_INPUT_SIZE, size);
-        setData(C_INPUT_LENGTH, length);
-        setData(C_INPUT_VALUE, value);
-        setData(C_INPUT_ACTION, action);
-        return getProcessedDataValue(C_TAG_INPUTFIELD);
+        setData(CmsWorkplaceDefault.C_INPUT_CLASS, styleClass);
+        setData(CmsWorkplaceDefault.C_INPUT_NAME, name);
+        setData(CmsWorkplaceDefault.C_INPUT_SIZE, size);
+        setData(CmsWorkplaceDefault.C_INPUT_LENGTH, length);
+        setData(CmsWorkplaceDefault.C_INPUT_VALUE, value);
+        setData(CmsWorkplaceDefault.C_INPUT_ACTION, action);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_INPUTFIELD);
     }
     
     /**
@@ -125,59 +124,59 @@ public class CmsXmlWpInputDefFile extends A_CmsXmlContent implements I_CmsWpCons
      */
     
     public String getPassword(String styleClass, String name, String size, String length) throws CmsException {
-        setData(C_INPUT_CLASS, styleClass);
-        setData(C_INPUT_NAME, name);
-        setData(C_INPUT_SIZE, size);
-        setData(C_INPUT_LENGTH, length);
-        return getProcessedDataValue(C_TAG_PASSWORD);
+        setData(CmsWorkplaceDefault.C_INPUT_CLASS, styleClass);
+        setData(CmsWorkplaceDefault.C_INPUT_NAME, name);
+        setData(CmsWorkplaceDefault.C_INPUT_SIZE, size);
+        setData(CmsWorkplaceDefault.C_INPUT_LENGTH, length);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PASSWORD);
     }
     
     public String getSelectBoxEnd() throws CmsException {
-        return getProcessedDataValue(C_TAG_SELECTBOX_END);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_END);
     }
     
     public String getSelectBoxOption(String name, String value) throws CmsException {
-        setData(C_SELECTBOX_OPTIONNAME, name);
-        setData(C_SELECTBOX_OPTIONVALUE, value);
-        return getProcessedDataValue(C_TAG_SELECTBOX_OPTION);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_OPTIONNAME, name);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_OPTIONVALUE, value);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_OPTION);
     }
     
     public String getSelectBoxSelOption(String name, String value) throws CmsException {
-        setData(C_SELECTBOX_OPTIONNAME, name);
-        setData(C_SELECTBOX_OPTIONVALUE, value);
-        return getProcessedDataValue(C_TAG_SELECTBOX_SELOPTION);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_OPTIONNAME, name);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_OPTIONVALUE, value);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_SELOPTION);
     }
     
     public String getSelectBoxStart(String classname, String name, String width, 
             String onchange, String size) throws CmsException {
         if(classname == null || "".equals(classname)) {
-            setData(C_SELECTBOX_CLASS, "");
+            setData(CmsWorkplaceDefault.C_SELECTBOX_CLASS, "");
         }
         else {
-            setData(C_SELECTBOX_CLASSNAME, classname);
-            setData(C_SELECTBOX_CLASS, getProcessedData(C_TAG_SELECTBOX_CLASS));
+            setData(CmsWorkplaceDefault.C_SELECTBOX_CLASSNAME, classname);
+            setData(CmsWorkplaceDefault.C_SELECTBOX_CLASS, getProcessedData(CmsWorkplaceDefault.C_TAG_SELECTBOX_CLASS));
         }
-        setData(C_SELECTBOX_NAME, name);
-        setData(C_SELECTBOX_WIDTH, width);
-        setData(C_SELECTBOX_ONCHANGE, onchange);
-        setData(C_SELECTBOX_SIZE, size);
-        return getProcessedDataValue(C_TAG_SELECTBOX_START);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_NAME, name);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_WIDTH, width);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_ONCHANGE, onchange);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_SIZE, size);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_START);
     }
     
     public String getSelectBoxStartDiv(String classname, String name, String width, 
             String onchange, String size) throws CmsException {
         if(classname == null || "".equals(classname)) {
-            setData(C_SELECTBOX_CLASS, "");
+            setData(CmsWorkplaceDefault.C_SELECTBOX_CLASS, "");
         }
         else {
-            setData(C_SELECTBOX_CLASSNAME, classname);
-            setData(C_SELECTBOX_CLASS, getProcessedData(C_TAG_SELECTBOX_CLASS));
+            setData(CmsWorkplaceDefault.C_SELECTBOX_CLASSNAME, classname);
+            setData(CmsWorkplaceDefault.C_SELECTBOX_CLASS, getProcessedData(CmsWorkplaceDefault.C_TAG_SELECTBOX_CLASS));
         }
-        setData(C_SELECTBOX_NAME, name);
-        setData(C_SELECTBOX_WIDTH, width);
-        setData(C_SELECTBOX_ONCHANGE, onchange);
-        setData(C_SELECTBOX_SIZE, size);
-        return getProcessedDataValue(C_TAG_SELECTBOX_START_DIV);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_NAME, name);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_WIDTH, width);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_ONCHANGE, onchange);
+        setData(CmsWorkplaceDefault.C_SELECTBOX_SIZE, size);
+        return getProcessedDataValue(CmsWorkplaceDefault.C_TAG_SELECTBOX_START_DIV);
     }
     
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResourceTree.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.List;
@@ -47,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestReadResourceTree extends OpenCmsTestCase {
 
@@ -294,16 +293,16 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
         resourcename = path + "/subfolder22/subsubfolder221/page1.html";
         cms.lockResource(resourcename);
-        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
 
         resourcename = path + "/newpage.html";
-        cms.createResource(resourcename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+        cms.createResource(resourcename, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
 
         // store all resources of the expected result
         storeResources(cms, path + "/newpage.html", false);
 
         // read new resources
-        List result = cms.readResources("/", CmsResourceFilter.ALL.addRequireState(I_CmsConstants.C_STATE_NEW));
+        List result = cms.readResources("/", CmsResourceFilter.ALL.addRequireState(CmsResource.STATE_NEW));
 
         // check each resource in the result
         int i;

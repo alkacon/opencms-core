@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -258,8 +258,8 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         CmsProperty descripion = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, query, null, true);
         CmsProperty delete = new CmsProperty(
             CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY,
-            CmsProperty.C_DELETE_VALUE,
-            CmsProperty.C_DELETE_VALUE);
+            CmsProperty.DELETE_VALUE,
+            CmsProperty.DELETE_VALUE);
 
         List resources = cms.getFilesInFolder(path);
 
@@ -385,7 +385,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         echo("Testing search index generation with different resource types");
 
         // create test folder
-        cms.createResource("/search/", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID, null, null);
+        cms.createResource("/search/", CmsResourceTypeFolder.RESOURCE_TYPE_ID, null, null);
         cms.unlockResource("/search/");
 
         // import the sample documents to the VFS

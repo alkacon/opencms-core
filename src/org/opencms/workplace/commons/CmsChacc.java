@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
@@ -70,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +133,7 @@ public class CmsChacc extends CmsDialog {
     private String[] m_types = {"group", "user"};
 
     /** The possible type values of access control entries. */
-    private int[] m_typesInt = {I_CmsConstants.C_ACCESSFLAGS_GROUP, I_CmsConstants.C_ACCESSFLAGS_USER};
+    private int[] m_typesInt = {CmsAccessControlEntry.ACCESS_FLAGS_GROUP, CmsAccessControlEntry.ACCESS_FLAGS_USER};
 
     /** The possible localized types of new access control entries. */
     private String[] m_typesLocalized = new String[2];
@@ -221,12 +220,12 @@ public class CmsChacc extends CmsDialog {
             int flags = resource.getFlags();
 
             if (internalValue) {
-                if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) == 0) {
-                    flags += I_CmsConstants.C_ACCESS_INTERNAL_READ;
+                if ((flags & CmsResource.FLAG_INTERNAL) == 0) {
+                    flags += CmsResource.FLAG_INTERNAL;
                 }
             } else {
-                if ((flags & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
-                    flags -= I_CmsConstants.C_ACCESS_INTERNAL_READ;
+                if ((flags & CmsResource.FLAG_INTERNAL) > 0) {
+                    flags -= CmsResource.FLAG_INTERNAL;
                 }
             }
 
@@ -308,16 +307,16 @@ public class CmsChacc extends CmsDialog {
 
             // modify the ace flags to determine inheritance of the current ace
             if ("true".equals(inherit)) {
-                flags |= I_CmsConstants.C_ACCESSFLAGS_INHERIT;
+                flags |= CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
             } else {
-                flags &= ~I_CmsConstants.C_ACCESSFLAGS_INHERIT;
+                flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
             }
 
             // modify the ace flags to determine overwriting of inherited ace
             if ("true".equals(overWriteInherited)) {
-                flags |= I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
+                flags |= CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
             } else {
-                flags &= ~I_CmsConstants.C_ACCESSFLAGS_OVERWRITE;
+                flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
             }
 
             // lock resource if autolock is enabled
@@ -892,7 +891,7 @@ public class CmsChacc extends CmsDialog {
      */
     protected boolean isInheriting(int flags) {
 
-        if ((flags & I_CmsConstants.C_ACCESSFLAGS_INHERIT) > 0) {
+        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERIT) > 0) {
             return true;
         }
         return false;
@@ -906,7 +905,7 @@ public class CmsChacc extends CmsDialog {
      */
     protected boolean isOverWritingInherited(int flags) {
 
-        if ((flags & I_CmsConstants.C_ACCESSFLAGS_OVERWRITE) > 0) {
+        if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE) > 0) {
             return true;
         }
         return false;
@@ -1064,7 +1063,7 @@ public class CmsChacc extends CmsDialog {
         // try to read the internal flag from the resource
         try {
             resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-            internal = ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0);
+            internal = ((resource.getFlags() & CmsResource.FLAG_INTERNAL) > 0);
         } catch (CmsException e) {
             // an error occured reading the resource 
             LOG.error(e.getLocalizedMessage());
@@ -1320,11 +1319,11 @@ public class CmsChacc extends CmsDialog {
             // TODO: a more elegant way to determine user/group of current id
             try {
                 getCms().readGroup(id);
-                flags = I_CmsConstants.C_ACCESSFLAGS_GROUP;
+                flags = CmsAccessControlEntry.ACCESS_FLAGS_GROUP;
             } catch (CmsException e) {
                 try {
                     getCms().readUser(id);
-                    flags = I_CmsConstants.C_ACCESSFLAGS_USER;
+                    flags = CmsAccessControlEntry.ACCESS_FLAGS_USER;
                 } catch (CmsException exc) {
                     // can usually be ignored
                     if (LOG.isInfoEnabled()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDeletion.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
  
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -102,7 +102,7 @@ public class TestDeletion extends OpenCmsTestCase {
         List expected = cms.getGroups();
         
         // create group
-        cms.createGroup(groupname, "deleteMe", I_CmsConstants.C_FLAG_ENABLED, "Users");
+        cms.createGroup(groupname, "deleteMe", I_CmsPrincipal.FLAG_ENABLED, "Users");
 
         // now delete the group again
         cms.deleteGroup(groupname);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/26 10:56:53 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,29 +63,29 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsToolManager {
 
     /**  Root location for the tools. */
-    public static final String C_ADMINTOOLS_ROOT_LOCATION = CmsWorkplace.C_PATH_WORKPLACE + "admin";
+    public static final String ADMINTOOLS_ROOT_LOCATION = CmsWorkplace.PATH_WORKPLACE + "admin";
 
     /**  Root location of the administration view. */
-    public static final String C_ADMINVIEW_ROOT_LOCATION = CmsWorkplace.C_PATH_WORKPLACE + "views/admin";
+    public static final String ADMINVIEW_ROOT_LOCATION = CmsWorkplace.PATH_WORKPLACE + "views/admin";
 
     /**  Property definition name to look for. */
-    public static final String C_HANDLERCLASS_PROPERTY = "admintoolhandler-class";
+    public static final String HANDLERCLASS_PROPERTY = "admintoolhandler-class";
 
     /**  Navegation bar separator (html code). */
-    public static final String C_NAVBAR_SEPARATOR = "\n&nbsp;&gt;&nbsp;\n";
+    public static final String NAVBAR_SEPARATOR = "\n&nbsp;&gt;&nbsp;\n";
 
     /**  Tool path separator. */
-    public static final String C_TOOLPATH_SEPARATOR = "/";
+    public static final String TOOLPATH_SEPARATOR = "/";
 
     /** Location of the admin view jsp page. */
-    public static final String C_VIEW_JSPPAGE_LOCATION = C_ADMINVIEW_ROOT_LOCATION + "/admin-main.html";
+    public static final String VIEW_JSPPAGE_LOCATION = ADMINVIEW_ROOT_LOCATION + "/admin-main.html";
 
     /** The static log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsToolManager.class);
@@ -103,7 +103,7 @@ public class CmsToolManager {
      */
     public CmsToolManager(CmsObject cms) {
 
-        if (!cms.existsResource(C_VIEW_JSPPAGE_LOCATION)) {
+        if (!cms.existsResource(VIEW_JSPPAGE_LOCATION)) {
             if (CmsLog.INIT.isInfoEnabled()) {
                 CmsLog.INIT.info(Messages.get().key(Messages.INIT_TOOLMANAGER_NOT_CREATED_0));
             }
@@ -116,16 +116,16 @@ public class CmsToolManager {
             List handlers = new ArrayList();
 
             I_CmsToolHandler rootHandler = new CmsRootToolHandler();
-            rootHandler.setup(cms, C_VIEW_JSPPAGE_LOCATION);
+            rootHandler.setup(cms, VIEW_JSPPAGE_LOCATION);
             handlers.add(rootHandler);
 
             // look in every file under C_ADMINTOOLS_ROOT_LOCATION for valid
             // admin tools and register them
-            List resources = cms.readResourcesWithProperty(C_ADMINTOOLS_ROOT_LOCATION, C_HANDLERCLASS_PROPERTY);
+            List resources = cms.readResourcesWithProperty(ADMINTOOLS_ROOT_LOCATION, HANDLERCLASS_PROPERTY);
             Iterator itRes = resources.iterator();
             while (itRes.hasNext()) {
                 CmsResource res = (CmsResource)itRes.next();
-                CmsProperty prop = cms.readPropertyObject(res.getRootPath(), C_HANDLERCLASS_PROPERTY, false);
+                CmsProperty prop = cms.readPropertyObject(res.getRootPath(), HANDLERCLASS_PROPERTY, false);
                 if (!prop.isNullProperty()) {
                     try {
                         // instantiate the handler
@@ -137,7 +137,7 @@ public class CmsToolManager {
                         handlers.add(handler);
                         // log success
                         if (CmsLog.INIT.isDebugEnabled()) {
-                            if (!handler.getLink().equals(C_VIEW_JSPPAGE_LOCATION)) {
+                            if (!handler.getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                                 CmsLog.INIT.debug(Messages.get().key(
                                     Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
                                     handler.getLink()));
@@ -178,7 +178,7 @@ public class CmsToolManager {
     public static String linkForToolPath(CmsJspActionElement jsp, String toolPath) {
 
         StringBuffer result = new StringBuffer();
-        result.append(jsp.link(C_VIEW_JSPPAGE_LOCATION));
+        result.append(jsp.link(VIEW_JSPPAGE_LOCATION));
         result.append('?');
         result.append(CmsToolDialog.PARAM_PATH);
         result.append('=');
@@ -206,7 +206,7 @@ public class CmsToolManager {
             return linkForToolPath(jsp, toolPath);
         }
         params.put(CmsToolDialog.PARAM_PATH, toolPath);
-        return CmsRequestUtil.appendParameters(jsp.link(C_VIEW_JSPPAGE_LOCATION), params, true);
+        return CmsRequestUtil.appendParameters(jsp.link(VIEW_JSPPAGE_LOCATION), params, true);
     }
 
     /**
@@ -248,7 +248,7 @@ public class CmsToolManager {
                 true,
                 null,
                 onClic);
-            html = buttonHtml + C_NAVBAR_SEPARATOR + html;
+            html = buttonHtml + NAVBAR_SEPARATOR + html;
         }
 
         return CmsToolMacroResolver.resolveMacros("<div class='pathbar'>\n" + html + "&nbsp;</div>\n", wp);
@@ -298,8 +298,8 @@ public class CmsToolManager {
         if (toolPath.equals(getRootToolPath(wp))) {
             return toolPath;
         }
-        int pos = toolPath.lastIndexOf(C_TOOLPATH_SEPARATOR);
-        return pos <= 0 ? C_TOOLPATH_SEPARATOR : toolPath.substring(0, pos);
+        int pos = toolPath.lastIndexOf(TOOLPATH_SEPARATOR);
+        return pos <= 0 ? TOOLPATH_SEPARATOR : toolPath.substring(0, pos);
     }
 
     /**
@@ -312,7 +312,7 @@ public class CmsToolManager {
     public String getRootToolPath(CmsWorkplace wp) {
 
         CmsToolUserData userData = getUserData(wp);
-        String path = C_TOOLPATH_SEPARATOR;
+        String path = TOOLPATH_SEPARATOR;
         if (userData != null) {
             path = userData.getRootTool();
         }
@@ -356,13 +356,13 @@ public class CmsToolManager {
         Iterator itTools = m_tools.elementList().iterator();
         while (itTools.hasNext()) {
             String tool = ((CmsTool)itTools.next()).getHandler().getPath();
-            if (tool.equals(C_TOOLPATH_SEPARATOR)) {
+            if (tool.equals(TOOLPATH_SEPARATOR)) {
                 continue;
             }
             // filter for path
-            if (toolPath.equals(C_TOOLPATH_SEPARATOR) || tool.startsWith(toolPath + C_TOOLPATH_SEPARATOR)) {
+            if (toolPath.equals(TOOLPATH_SEPARATOR) || tool.startsWith(toolPath + TOOLPATH_SEPARATOR)) {
                 // filter sub tree
-                if (includeSubtools || tool.indexOf(C_TOOLPATH_SEPARATOR, toolPath.length() + 1) < 0) {
+                if (includeSubtools || tool.indexOf(TOOLPATH_SEPARATOR, toolPath.length() + 1) < 0) {
                     toolList.add(tool);
                 }
             }
@@ -382,8 +382,8 @@ public class CmsToolManager {
         CmsToolUserData userData = wp.getSettings().getToolUserData();
         if (userData == null) {
             userData = new CmsToolUserData();
-            userData.setCurrentToolPath(C_TOOLPATH_SEPARATOR);
-            userData.setRootTool(C_TOOLPATH_SEPARATOR);
+            userData.setCurrentToolPath(TOOLPATH_SEPARATOR);
+            userData.setRootTool(TOOLPATH_SEPARATOR);
             wp.getSettings().setToolUserData(userData);
         }
         return userData;
@@ -474,7 +474,7 @@ public class CmsToolManager {
         wp.setForwarded(true);
         // forward to the requested tool uri
         CmsRequestUtil.forwardRequest(
-            wp.getJsp().link(C_VIEW_JSPPAGE_LOCATION),
+            wp.getJsp().link(VIEW_JSPPAGE_LOCATION),
             CmsRequestUtil.createParameterMap(newParams),
             wp.getJsp().getRequest(),
             wp.getJsp().getResponse());
@@ -574,9 +574,9 @@ public class CmsToolManager {
         Iterator it = handlers.iterator();
         while (it.hasNext()) {
             I_CmsToolHandler handler = (I_CmsToolHandler)it.next();
-            int myLen = CmsStringUtil.splitAsArray(handler.getPath(), C_TOOLPATH_SEPARATOR).length;
-            if ((len == myLen && !handler.getPath().equals(C_TOOLPATH_SEPARATOR))
-                || (len == 1 && handler.getPath().equals(C_TOOLPATH_SEPARATOR))) {
+            int myLen = CmsStringUtil.splitAsArray(handler.getPath(), TOOLPATH_SEPARATOR).length;
+            if ((len == myLen && !handler.getPath().equals(TOOLPATH_SEPARATOR))
+                || (len == 1 && handler.getPath().equals(TOOLPATH_SEPARATOR))) {
                 found = true;
                 registerAdminTool(cms, handler);
             }
@@ -615,7 +615,7 @@ public class CmsToolManager {
         // navegate until to reach a visible path
         CmsTool aTool = resolveAdminTool(path);
         while (!aTool.getHandler().isEnabled(wp.getCms())) {
-            if (aTool.getHandler().getLink().equals(C_VIEW_JSPPAGE_LOCATION)) {
+            if (aTool.getHandler().getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                 // just grouping
                 break;
             }
@@ -636,19 +636,19 @@ public class CmsToolManager {
      */
     private boolean validatePath(String toolPath, boolean full) {
 
-        if (toolPath.equals(C_TOOLPATH_SEPARATOR)) {
+        if (toolPath.equals(TOOLPATH_SEPARATOR)) {
             return true;
         }
-        if (!toolPath.startsWith(C_TOOLPATH_SEPARATOR)) {
+        if (!toolPath.startsWith(TOOLPATH_SEPARATOR)) {
             return false;
         }
-        List groups = CmsStringUtil.splitAsList(toolPath, C_TOOLPATH_SEPARATOR);
+        List groups = CmsStringUtil.splitAsList(toolPath, TOOLPATH_SEPARATOR);
         Iterator itGroups = groups.iterator();
         String subpath = "";
         while (itGroups.hasNext()) {
             String group = (String)itGroups.next();
-            if (subpath.length() != C_TOOLPATH_SEPARATOR.length()) {
-                subpath += C_TOOLPATH_SEPARATOR + group;
+            if (subpath.length() != TOOLPATH_SEPARATOR.length()) {
+                subpath += TOOLPATH_SEPARATOR + group;
             } else {
                 subpath += group;
             }

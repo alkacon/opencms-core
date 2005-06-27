@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsFileList.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -37,12 +37,10 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsUUID;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -69,7 +67,7 @@ import org.w3c.dom.Element;
  * @author Michael Emmerich
  * @author Alexander Lucas
  * @author Mario Stanke
- * @version $Revision: 1.2 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -190,35 +188,35 @@ public class CmsFileList extends A_CmsWpElement {
 
     private CmsXmlWpTemplateFile checkDisplayedColumns(int filelist,
             CmsXmlWpTemplateFile template, String suffix) {
-        if((filelist & C_FILELIST_NAME) == 0) {
-            template.setData(C_FILELIST_COLUMN_NAME + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_NAME) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_NAME + suffix, "");
         }
-        if((filelist & C_FILELIST_TITLE) == 0) {
-            template.setData(C_FILELIST_COLUMN_TITLE + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_TITLE) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_TITLE + suffix, "");
         }
-        if((filelist & C_FILELIST_TYPE) == 0) {
-            template.setData(C_FILELIST_COLUMN_TYPE + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_TYPE) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_TYPE + suffix, "");
         }
-        if((filelist & C_FILELIST_STATE) == 0) {
-            template.setData(C_FILELIST_COLUMN_STATE + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_STATE) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_STATE + suffix, "");
         }
-        if((filelist & C_FILELIST_DATE_LASTMODIFIED) == 0) {
-            template.setData(C_FILELIST_COLUMN_CHANGED + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_DATE_LASTMODIFIED) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_CHANGED + suffix, "");
         }
-        if((filelist & C_FILELIST_SIZE) == 0) {
-            template.setData(C_FILELIST_COLUMN_SIZE + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_SIZE) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_SIZE + suffix, "");
         }
-        if((filelist & C_FILELIST_USER_CREATED) == 0) {
-            template.setData(C_FILELIST_COLUMN_OWNER + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_USER_CREATED) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_OWNER + suffix, "");
         }
-        if((filelist & C_FILELIST_GROUP) == 0) {
-            template.setData(C_FILELIST_COLUMN_GROUP + suffix, "");
+        if((filelist & CmsWorkplaceDefault.C_FILELIST_GROUP) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_GROUP + suffix, "");
         }
-        if((filelist & C_FILELIST_PERMISSIONS) == 0) {
-            template.setData(C_FILELIST_COLUMN_ACCESS + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_PERMISSIONS) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_ACCESS + suffix, "");
         }
-        if((filelist & C_FILELIST_LOCKEDBY) == 0) {
-            template.setData(C_FILELIST_COLUMN_LOCKED + suffix, "");
+        if((filelist & CmsUserSettings.FILELIST_LOCKEDBY) == 0) {
+            template.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_LOCKED + suffix, "");
         }
         return template;
     }
@@ -308,7 +306,7 @@ public class CmsFileList extends A_CmsWpElement {
     private String getContextMenue(CmsObject cms, CmsResource res,
             CmsXmlWpTemplateFile template) throws CmsException {
         String contextMenu = null;
-        if(res.getState() != I_CmsConstants.C_STATE_DELETED) {
+        if(res.getState() != CmsResource.STATE_DELETED) {
 
             // test if the resource is in the project or if the online project is displayed
             if((cms.getRequestContext().currentProject().isOnlineProject())
@@ -360,7 +358,7 @@ public class CmsFileList extends A_CmsWpElement {
             filelist = new Integer(explorerSettings).intValue();
         }
         else {
-            filelist = C_FILELIST_NAME + C_FILELIST_TITLE + C_FILELIST_TYPE + C_FILELIST_DATE_LASTMODIFIED;
+            filelist = CmsUserSettings.FILELIST_NAME + CmsUserSettings.FILELIST_TITLE + CmsUserSettings.FILELIST_TYPE + CmsUserSettings.FILELIST_DATE_LASTMODIFIED;
         }
         return filelist;
     }
@@ -385,12 +383,12 @@ public class CmsFileList extends A_CmsWpElement {
         String title = null;
         int contextNumber = 0;
         String[] tagList =  {
-            C_CONTEXT_LINK, C_CONTEXT_MENU, C_CONTEXT_NUMBER, C_FILELIST_ICON_VALUE,
-            C_FILELIST_LINK_VALUE, C_FILELIST_LOCK_VALUE, C_FILELIST_NAME_VALUE,
-            C_FILELIST_TITLE_VALUE, C_FILELIST_TYPE_VALUE, C_FILELIST_CHANGED_VALUE,
-            C_FILELIST_SIZE_VALUE, C_FILELIST_STATE_VALUE, C_FILELIST_OWNER_VALUE,
-            C_FILELIST_GROUP_VALUE, C_FILELIST_ACCESS_VALUE, C_FILELIST_LOCKED_VALUE,
-            C_NAME_FILEFOLDER, C_LOCKEDBY, C_FILELIST_CLASS_VALUE
+            C_CONTEXT_LINK, C_CONTEXT_MENU, C_CONTEXT_NUMBER, CmsWorkplaceDefault.C_FILELIST_ICON_VALUE,
+            CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, CmsWorkplaceDefault.C_FILELIST_LOCK_VALUE, CmsWorkplaceDefault.C_FILELIST_NAME_VALUE,
+            CmsWorkplaceDefault.C_FILELIST_TITLE_VALUE, CmsWorkplaceDefault.C_FILELIST_TYPE_VALUE, CmsWorkplaceDefault.C_FILELIST_CHANGED_VALUE,
+            CmsWorkplaceDefault.C_FILELIST_SIZE_VALUE, CmsWorkplaceDefault.C_FILELIST_STATE_VALUE, CmsWorkplaceDefault.C_FILELIST_OWNER_VALUE,
+            CmsWorkplaceDefault.C_FILELIST_GROUP_VALUE, CmsWorkplaceDefault.C_FILELIST_ACCESS_VALUE, CmsWorkplaceDefault.C_FILELIST_LOCKED_VALUE,
+            C_NAME_FILEFOLDER, C_LOCKEDBY, CmsWorkplaceDefault.C_FILELIST_CLASS_VALUE
         };
         String servlets = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl();
         // I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
@@ -419,7 +417,7 @@ public class CmsFileList extends A_CmsWpElement {
         // The calling object may now modify this pattern
         filelist = callingObject.modifyDisplayedColumns(cms, filelist);
         template = checkDisplayedColumns(filelist, template, "");
-        template = checkDisplayedColumns(filelist, template, C_FILELIST_SUFFIX_VALUE);
+        template = checkDisplayedColumns(filelist, template, CmsWorkplaceDefault.C_FILELIST_SUFFIX_VALUE);
 
         // add the list header to the output.
         output.append(template.getProcessedDataValue(C_LIST_HEAD, callingObject));
@@ -438,7 +436,7 @@ public class CmsFileList extends A_CmsWpElement {
                 if(res.isFolder()) {
 
                     // Set output style class according to the project and state of the file.
-                    template.setData(C_FILELIST_CLASS_VALUE, getStyle(cms, res));
+                    template.setData(CmsWorkplaceDefault.C_FILELIST_CLASS_VALUE, getStyle(cms, res));
 
                     // set the icon
                     template.fastSetXmlData(C_CONTEXT_LINK, cms.getSitePath(res));
@@ -446,25 +444,25 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(res.getTypeId());
                     String icon = getIcon(cms, type, config);
-                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + config.getWpPicturePath() + icon);
+                    template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_ICON_VALUE, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getServletUrl() + config.getWpPicturePath() + icon);
 
                     // set the link, but only if the folder is not deleted
-                    if(res.getState() != I_CmsConstants.C_STATE_DELETED) {
-                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, cms.getSitePath(res));
+                    if(res.getState() != CmsResource.STATE_DELETED) {
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, cms.getSitePath(res));
                     }
                     else {
-                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, "#");
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, "#");
                     }
 
                     // set the lock icon if nescessary
-                    template.fastSetXmlData(C_FILELIST_LOCK_VALUE, template.getProcessedDataValue(getLock(cms,
+                    template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LOCK_VALUE, template.getProcessedDataValue(getLock(cms,
                             res, template, lang), callingObject));
-                    if((filelist & C_FILELIST_NAME) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_NAME) != 0) {
 
                         // set the folder name
-                        template.fastSetXmlData(C_FILELIST_NAME_VALUE, res.getName());
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_NAME_VALUE, res.getName());
                     }
-                    if((filelist & C_FILELIST_TITLE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_TITLE) != 0) {
 
                         // set the folder title
                         title = "";
@@ -477,28 +475,28 @@ public class CmsFileList extends A_CmsWpElement {
                         if(title == null) {
                             title = "";
                         }
-                        template.fastSetXmlData(C_FILELIST_TITLE_VALUE, title);
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_TITLE_VALUE, title);
                     }
-                    if((filelist & C_FILELIST_TYPE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_TYPE) != 0) {
                         String typename = type.getTypeName();
                         typename = lang.getLanguageValue("fileicon." + typename);
-                        template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_TYPE_VALUE, typename);
                     }
-                    if((filelist & C_FILELIST_DATE_LASTMODIFIED) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_DATE_LASTMODIFIED) != 0) {
 
                         // get the folder date
                         long time = res.getDateLastModified();
-                        template.fastSetXmlData(C_FILELIST_CHANGED_VALUE, getNiceDate(time));
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_CHANGED_VALUE, getNiceDate(time));
                     }
-                    if((filelist & C_FILELIST_SIZE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_SIZE) != 0) {
 
                         // get the folder size
-                        template.fastSetXmlData(C_FILELIST_SIZE_VALUE, "");
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_SIZE_VALUE, "");
                     }
-                    if((filelist & C_FILELIST_STATE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_STATE) != 0) {
 
                         // get the folder state
-                        template.fastSetXmlData(C_FILELIST_STATE_VALUE, getState(cms, res, lang));
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_STATE_VALUE, getState(cms, res, lang));
                     }
                     // TODO: Check if this is still needed
                     /*
@@ -527,15 +525,15 @@ public class CmsFileList extends A_CmsWpElement {
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     */
-                    if((filelist & C_FILELIST_LOCKEDBY) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_LOCKEDBY) != 0) {
 
                         // get the locked by
                         CmsLock lock = cms.getLock(res);
                         if(lock.isNullLock()) {
-                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LOCKED_VALUE, "");
                     }
                         else {
-                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, cms.readUser(lock.getUserId()).getName());
+                            template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LOCKED_VALUE, cms.readUser(lock.getUserId()).getName());
                         }
                     }
 
@@ -549,7 +547,7 @@ public class CmsFileList extends A_CmsWpElement {
                     file = res;
 
                     // Set output style class according to the project and state of the file.
-                    template.fastSetXmlData(C_FILELIST_CLASS_VALUE, getStyle(cms, file));
+                    template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_CLASS_VALUE, getStyle(cms, file));
 
                     // set the icon
                     template.fastSetXmlData(C_CONTEXT_LINK, cms.getSitePath(res));
@@ -557,24 +555,24 @@ public class CmsFileList extends A_CmsWpElement {
                     template.fastSetXmlData(C_CONTEXT_NUMBER, new Integer(contextNumber++).toString());
                     I_CmsResourceType type = OpenCms.getResourceManager().getResourceType(file.getTypeId());
                     String icon = getIcon(cms, type, config);
-                    template.fastSetXmlData(C_FILELIST_ICON_VALUE, config.getWpPicturePath() + icon);
+                    template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_ICON_VALUE, config.getWpPicturePath() + icon);
 
                     // set the link, but only if the resource is not deleted
-                    if(res.getState() != I_CmsConstants.C_STATE_DELETED) {
-                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, servlets + cms.getSitePath(file));
+                    if(res.getState() != CmsResource.STATE_DELETED) {
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, servlets + cms.getSitePath(file));
                     }
                     else {
-                        template.fastSetXmlData(C_FILELIST_LINK_VALUE, "#");
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LINK_VALUE, "#");
                     }
 
                     // set the lock icon if nescessary
-                    template.fastSetXmlData(C_FILELIST_LOCK_VALUE, template.getProcessedDataValue(getLock(cms, file, template, lang), callingObject));
-                    if((filelist & C_FILELIST_NAME) != 0) {
+                    template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LOCK_VALUE, template.getProcessedDataValue(getLock(cms, file, template, lang), callingObject));
+                    if((filelist & CmsUserSettings.FILELIST_NAME) != 0) {
 
                         // set the filename
-                        template.fastSetXmlData(C_FILELIST_NAME_VALUE, file.getName());
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_NAME_VALUE, file.getName());
                     }
-                    if((filelist & C_FILELIST_TITLE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_TITLE) != 0) {
 
                         // set the file title
                         title = "";
@@ -587,30 +585,30 @@ public class CmsFileList extends A_CmsWpElement {
                         if(title == null) {
                             title = "";
                         }
-                        template.fastSetXmlData(C_FILELIST_TITLE_VALUE, title);
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_TITLE_VALUE, title);
                     }
-                    if((filelist & C_FILELIST_TYPE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_TYPE) != 0) {
 
                         // set the file type
                         String typename = type.getTypeName();
                         typename = lang.getLanguageValue("fileicon." + typename);
-                        template.fastSetXmlData(C_FILELIST_TYPE_VALUE, typename);
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_TYPE_VALUE, typename);
                     }
-                    if((filelist & C_FILELIST_DATE_LASTMODIFIED) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_DATE_LASTMODIFIED) != 0) {
 
                         // get the file date
                         long time = file.getDateLastModified();
-                        template.fastSetXmlData(C_FILELIST_CHANGED_VALUE, getNiceDate(time));
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_CHANGED_VALUE, getNiceDate(time));
                     }
-                    if((filelist & C_FILELIST_SIZE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_SIZE) != 0) {
 
                         // get the file size
-                        template.fastSetXmlData(C_FILELIST_SIZE_VALUE, new Integer(file.getLength()).toString());
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_SIZE_VALUE, new Integer(file.getLength()).toString());
                     }
-                    if((filelist & C_FILELIST_STATE) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_STATE) != 0) {
 
                         // get the file state
-                        template.fastSetXmlData(C_FILELIST_STATE_VALUE, getState(cms, file, lang));
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_STATE_VALUE, getState(cms, file, lang));
                     }
                     // TODO: check if this is still needed
                     /*
@@ -639,15 +637,15 @@ public class CmsFileList extends A_CmsWpElement {
                         template.fastSetXmlData(C_FILELIST_ACCESS_VALUE, cms.getPermissionString(res.getName()));
                     }
                     */
-                    if((filelist & C_FILELIST_PERMISSIONS) != 0) {
+                    if((filelist & CmsUserSettings.FILELIST_PERMISSIONS) != 0) {
 
                         // get the locked by
                         CmsLock lock = cms.getLock(file);
                         if(lock.isNullLock()) {
-                        template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, "");
+                        template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LOCKED_VALUE, "");
                     }
                         else {
-                            template.fastSetXmlData(C_FILELIST_LOCKED_VALUE, cms.readUser(lock.getUserId()).getName());
+                            template.fastSetXmlData(CmsWorkplaceDefault.C_FILELIST_LOCKED_VALUE, cms.readUser(lock.getUserId()).getName());
                         }
                     }
 
@@ -676,17 +674,17 @@ public class CmsFileList extends A_CmsWpElement {
         String icon = (String)m_iconCache.get(type.getTypeName());
         // no icon was found, so check if there is a icon file in the filesystem
         if(icon == null) {
-            String filename = C_ICON_PREFIX + type.getTypeName().toLowerCase() + C_ICON_EXTENSION;
+            String filename = CmsWorkplaceDefault.C_ICON_PREFIX + type.getTypeName().toLowerCase() + CmsWorkplaceDefault.C_ICON_EXTENSION;
             try {
                 // read the icon file
-                cms.readResource(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
+                cms.readResource(CmsWorkplace.VFS_PATH_RESOURCES + filename);
                 // add the icon to the cache
                 icon = filename;
                 m_iconCache.put(type.getTypeName(), icon);
             }
             catch(CmsException e) {
                 // no icon was found, so use the default
-                icon = C_ICON_DEFAULT;
+                icon = CmsWorkplaceDefault.C_ICON_DEFAULT;
                 m_iconCache.put(type.getTypeName(), icon);
             }
         }
@@ -867,11 +865,11 @@ public class CmsFileList extends A_CmsWpElement {
 
     public Object handleSpecialWorkplaceTag(CmsObject cms, Element n, A_CmsXmlContent doc,
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
-        String template = n.getAttribute(C_FILELIST_TEMPLATE);
-        String customizedTemplate = n.getAttribute(C_FILELIST_CUSTOMTEMPLATE);
+        String template = n.getAttribute(CmsWorkplaceDefault.C_FILELIST_TEMPLATE);
+        String customizedTemplate = n.getAttribute(CmsWorkplaceDefault.C_FILELIST_CUSTOMTEMPLATE);
         CmsXmlWpTemplateFile filelistTemplate = new CmsXmlWpTemplateFile(cms, template);
-        filelistTemplate.setData(C_FILELIST_COLUMN_CUSTOMIZED, "");
-        filelistTemplate.setData(C_FILELIST_COLUMN_CUSTOMIZED_VALUE, "");
+        filelistTemplate.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_CUSTOMIZED, "");
+        filelistTemplate.setData(CmsWorkplaceDefault.C_FILELIST_COLUMN_CUSTOMIZED_VALUE, "");
 
         // Include the template file for the customized columns
         if(customizedTemplate != null && !"".equals(customizedTemplate)) {

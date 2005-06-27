@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsI18nInfo;
 import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
@@ -91,18 +92,17 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
 
     /** The default encoding for the workplace (UTF-8). */
-    // TODO: Encoding feature of the workplace is not active 
-    public static final String C_DEFAULT_WORKPLACE_ENCODING = "UTF-8";
+    public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
     /** Key name for the session workplace settings. */
-    public static final String C_SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
+    public static final String SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
 
     /** The id of the "requestedResource" parameter for the OpenCms login form. */
     public static final String PARAM_LOGIN_REQUESTED_RESOURCE = "requestedResource";
@@ -237,7 +237,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         HttpSession session = req.getSession(false);
         if (session != null) {
             // if a session is available, check for a workplace configuration
-            return null != session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+            return null != session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
         }
         // no session means no workplace use
         return false;
@@ -565,7 +565,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             // read workplace settings
             HttpSession session = req.getSession(false);
             if (session != null) {
-                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.C_SESSION_WORKPLACE_SETTINGS);
+                CmsWorkplaceSettings settings = (CmsWorkplaceSettings)session.getAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS);
                 if (settings != null) {
                     locale = settings.getUserSettings().getLocale();
                 }
@@ -750,7 +750,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
             try {
                 // read the temporary file project
-                m_tempFileProject = cms.readProject(I_CmsProjectDriver.C_TEMP_FILE_PROJECT_NAME);
+                m_tempFileProject = cms.readProject(I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME);
             } catch (CmsException e) {
                 // during initial setup of OpenCms the temp file project does not yet exist...
                 LOG.error(Messages.get().key(Messages.LOG_NO_TEMP_FILE_PROJECT_0));
@@ -1090,9 +1090,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         Set locales = new HashSet();
         List localeFolders;
         try {
-            localeFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_LOCALES);
+            localeFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_LOCALES);
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, I_CmsWpConstants.C_VFS_PATH_LOCALES));
+            LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_LOCALES_1, CmsWorkplace.VFS_PATH_LOCALES));
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             localeFolders = new ArrayList();
         }
@@ -1130,11 +1130,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         List viewFolders = new ArrayList();
         try {
             // get the subfolders of the "views" folder
-            viewFolders = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_VIEWS);
+            viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING && LOG.isErrorEnabled()) {
                 LOG.error(
-                    Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, I_CmsWpConstants.C_VFS_PATH_VIEWS),
+                    Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
                     e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)

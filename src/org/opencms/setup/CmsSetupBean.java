@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsShell;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.I_CmsShellCommands;
 import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
@@ -90,23 +90,23 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
 
     /** DB provider constant. */
-    public static final String C_GENERIC_PROVIDER = "generic";
+    public static final String GENERIC_PROVIDER = "generic";
 
     /** DB provider constant. */
-    public static final String C_MYSQL_PROVIDER = "mysql";
+    public static final String MYSQL_PROVIDER = "mysql";
 
     /** DB provider constant. */
-    public static final String C_ORACLE_PROVIDER = "oracle";
+    public static final String ORACLE_PROVIDER = "oracle";
 
     /** DB provider constant. */
-    public static final String C_POSTGRESQL_PROVIDER = "postgresql";
+    public static final String POSTGRESQL_PROVIDER = "postgresql";
 
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
@@ -561,7 +561,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public String getDbWorkConStr() {
 
-        String str = getExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + ".jdbcUrl");
+        String str = getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".jdbcUrl");
         return str;
     }
 
@@ -572,7 +572,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public String getDbWorkPwd() {
 
-        return getExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + ".password");
+        return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".password");
     }
 
     /** 
@@ -582,7 +582,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public String getDbWorkUser() {
 
-        return getExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + ".user");
+        return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".user");
     }
 
     /** 
@@ -1250,12 +1250,12 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         String conStr = request.getParameter("dbCreateConStr");
         boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
         String database = "";
-        if (provider.equals(C_MYSQL_PROVIDER)) {
+        if (provider.equals(MYSQL_PROVIDER)) {
             database = request.getParameter("db");
-        } else if (provider.equals(C_POSTGRESQL_PROVIDER)) {
+        } else if (provider.equals(POSTGRESQL_PROVIDER)) {
             database = request.getParameter("dbName");
         }
-        if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+        if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
             isFormSubmitted = (isFormSubmitted && (database != null));
         }
 
@@ -1271,7 +1271,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
             }
 
             if (isFormSubmitted) {
-                if (provider.equals(C_POSTGRESQL_PROVIDER)) {
+                if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
 
                     String templateDb = request.getParameter("templateDb");
@@ -1280,14 +1280,14 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                         conStr += "/";
                     }
                     setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".templateDb"));
-                } else if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                } else if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
                     if (!conStr.endsWith("/")) {
                         conStr += "/";
                     }
                     conStr += database;
                 }
                 setDbWorkConStr(conStr);
-                if (provider.equals(C_POSTGRESQL_PROVIDER)) {
+                if (provider.equals(POSTGRESQL_PROVIDER)) {
                     setDb(database);
                 }
                 String dbCreateUser = request.getParameter("dbCreateUser");
@@ -1311,7 +1311,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                 setDbWorkUser(dbWorkUser);
                 setDbWorkPwd(dbWorkPwd);
 
-                if (provider.equals(C_ORACLE_PROVIDER)) {
+                if (provider.equals(ORACLE_PROVIDER)) {
                     String dbDefaultTablespace = request.getParameter("dbDefaultTablespace");
                     String dbTemporaryTablespace = request.getParameter("dbTemporaryTablespace");
                     String dbIndexTablespace = request.getParameter("dbIndexTablespace");
@@ -1321,21 +1321,21 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                     setDbProperty(getDatabase() + ".indexTablespace", dbIndexTablespace);
                 }
                 Map replacer = new HashMap();
-                if (!provider.equals(C_MYSQL_PROVIDER)) {
+                if (!provider.equals(MYSQL_PROVIDER)) {
                     replacer.put("${user}", dbWorkUser);
                     replacer.put("${password}", dbWorkPwd);
                 }
-                if (provider.equals(C_MYSQL_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
                     replacer.put("${database}", database);
                 }
-                if (provider.equals(C_ORACLE_PROVIDER)) {
+                if (provider.equals(ORACLE_PROVIDER)) {
                     replacer.put("${defaultTablespace}", getDbProperty(getDatabase() + ".defaultTablespace"));
                     replacer.put("${indexTablespace}", getDbProperty(getDatabase() + ".indexTablespace"));
                     replacer.put("${temporaryTablespace}", getDbProperty(getDatabase() + ".temporaryTablespace"));
                 }
                 setReplacer(replacer);
 
-                if (provider.equals(C_GENERIC_PROVIDER) || provider.equals(C_ORACLE_PROVIDER)) {
+                if (provider.equals(GENERIC_PROVIDER) || provider.equals(ORACLE_PROVIDER)) {
                     request.getSession().setAttribute("createTables", createTables);
                 }
                 request.getSession().setAttribute("createDb", createDb);
@@ -1345,7 +1345,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
                     dbName = request.getContextPath().substring(1);
                 }
-                if (provider.equals(C_ORACLE_PROVIDER) || provider.equals(C_POSTGRESQL_PROVIDER)) {
+                if (provider.equals(ORACLE_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
                     setDbWorkUser(dbName);
                 } else {
                     setDb(dbName);
@@ -1378,13 +1378,13 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
         String driver = getDbProperty(m_databaseKey + ".driver");
 
-        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.C_KEY_JDBC_DRIVER, driver);
-        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.C_KEY_JDBC_URL, dbWorkConStr);
+        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_JDBC_DRIVER, driver);
+        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_JDBC_URL, dbWorkConStr);
         setExtProperty(
-            CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.C_KEY_TEST_QUERY,
+            CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_TEST_QUERY,
             getDbTestQuery());
         setExtProperty(
-            CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.C_KEY_JDBC_URL_PARAMS,
+            CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_JDBC_URL_PARAMS,
             getDbConStrParams());
     }
 
@@ -1395,7 +1395,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public void setDbWorkPwd(String dbWorkPwd) {
 
-        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.C_KEY_PASSWORD, dbWorkPwd);
+        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_PASSWORD, dbWorkPwd);
     }
 
     /** 
@@ -1405,7 +1405,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
      */
     public void setDbWorkUser(String dbWorkUser) {
 
-        setExtProperty(CmsDbPool.C_KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.C_KEY_POOL_USER, dbWorkUser);
+        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_POOL_USER, dbWorkUser);
     }
 
     /** 
@@ -1526,7 +1526,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            exportPath + I_CmsConstants.C_MODULE_PATH + importFile);
+            exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
     }
 

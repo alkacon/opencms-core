@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -47,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -117,7 +116,7 @@ public class TestBackup extends OpenCmsTestCase {
                 
                 // delete the resource again
                 cms.lockResource(filename);
-                cms.deleteResource(filename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                cms.deleteResource(filename, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 cms.unlockResource(filename);
                 cms.publishResource(filename);
             }

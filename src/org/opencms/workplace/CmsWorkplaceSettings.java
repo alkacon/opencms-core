@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,9 @@ package org.opencms.workplace;
 
 import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.tools.CmsToolUserData;
 
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
@@ -405,7 +405,7 @@ public class CmsWorkplaceSettings {
      */
     public boolean isViewExplorer() {
 
-        return getViewUri().endsWith(CmsWorkplace.C_FILE_EXPLORER_FILELIST);
+        return getViewUri().endsWith(CmsWorkplace.FILE_EXPLORER_FILELIST);
     }
 
     /**
@@ -503,7 +503,7 @@ public class CmsWorkplaceSettings {
         }
 
         // set the resource for the given mode
-        if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/")
+        if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/")
             && (!value.startsWith(m_currentSite))
             && (!"galleryview".equals(getExplorerMode()))) {
             // restrict access to /system/ 
@@ -645,7 +645,7 @@ public class CmsWorkplaceSettings {
         if (value == null) {
             return;
         }
-        if (value.startsWith(I_CmsConstants.VFS_FOLDER_SYSTEM + "/") && (!value.startsWith(m_currentSite))) {
+        if (value.startsWith(CmsResource.VFS_FOLDER_SYSTEM + "/") && (!value.startsWith(m_currentSite))) {
             // restrict access to /system/ 
             value = "/";
         }

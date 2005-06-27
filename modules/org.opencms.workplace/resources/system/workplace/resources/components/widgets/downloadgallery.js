@@ -33,7 +33,7 @@
  * When using this script to open the download gallery dialog, be sure to
  * initialize the context path (e.g. "/opencms/opencms") and gallery path in the opener properly:
  *
- * - downloadGalleryPath= "<%= A_CmsGallery.C_PATH_GALLERIES + A_CmsGallery.C_OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=downloadgallery" %>";
+ * - downloadGalleryPath= "<%= A_CmsGallery.PATH_GALLERIES + A_CmsGallery.OPEN_URI_SUFFIX + "?" + A_CmsGallery.PARAM_GALLERY_TYPENAME + "=downloadgallery" %>";
  */
 
 var downloadGalleryPath;

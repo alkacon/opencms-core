@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.util;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.nio.charset.Charset;
 import java.util.ArrayList;
@@ -54,49 +53,49 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsStringUtil {
 
     /** Regular expression that matches the HTML body end tag. */
-    public static final String C_BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
+    public static final String BODY_END_REGEX = "<\\s*/\\s*body[^>]*>";
 
     /** Regular expression that matches the HTML body start tag. */
-    public static final String C_BODY_START_REGEX = "<\\s*body[^>]*>";
+    public static final String BODY_START_REGEX = "<\\s*body[^>]*>";
 
     /** a convienient shorthand to the line separator constant. */
-    public static final String C_LINE_SEPARATOR = System.getProperty("line.separator");
+    public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
     /** a convienient shorthand for tabulations.  */
-    public static final String C_TABULATOR = "  ";
+    public static final String TABULATOR = "  ";
 
     /** Regex pattern that matches an end body tag. */
-    private static final Pattern C_BODY_END_PATTERN = Pattern.compile(C_BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
+    private static final Pattern BODY_END_PATTERN = Pattern.compile(BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
 
     /** Regex pattern that matches a start body tag. */
-    private static final Pattern C_BODY_START_PATTERN = Pattern.compile(C_BODY_START_REGEX, Pattern.CASE_INSENSITIVE);
+    private static final Pattern BODY_START_PATTERN = Pattern.compile(BODY_START_REGEX, Pattern.CASE_INSENSITIVE);
 
     /** Day constant. */
-    private static final long C_DAYS = 1000 * 60 * 60 * 24;
+    private static final long DAYS = 1000 * 60 * 60 * 24;
 
     /** Hour constant. */
-    private static final long C_HOURS = 1000 * 60 * 60;
+    private static final long HOURS = 1000 * 60 * 60;
 
     /** Minute constant. */
-    private static final long C_MINUTES = 1000 * 60;
+    private static final long MINUTES = 1000 * 60;
 
     /** Second constant. */
-    private static final long C_SECONDS = 1000;
+    private static final long SECONDS = 1000;
 
     /** Regex that matches an encoding String in an xml head. */
-    private static final Pattern C_XML_ENCODING_REGEX = Pattern.compile(
+    private static final Pattern XML_ENCODING_REGEX = Pattern.compile(
         "encoding\\s*=\\s*[\"'].+[\"']",
         Pattern.CASE_INSENSITIVE);
 
     /** Regex that matches an xml head. */
-    private static final Pattern C_XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
+    private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
@@ -106,6 +105,9 @@ public final class CmsStringUtil {
 
     /** OpenCms context search String, static for performance reasons. */
     private static String m_contextSearch;
+
+    /** Context macro. */
+    public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
 
     /** 
      * Default constructor (empty), private because this class has only 
@@ -300,8 +302,8 @@ public final class CmsStringUtil {
      */
     public static String extractHtmlBody(String content) {
 
-        Matcher startMatcher = C_BODY_START_PATTERN.matcher(content);
-        Matcher endMatcher = C_BODY_END_PATTERN.matcher(content);
+        Matcher startMatcher = BODY_START_PATTERN.matcher(content);
+        Matcher endMatcher = BODY_END_PATTERN.matcher(content);
 
         int start = 0;
         int end = content.length();
@@ -337,10 +339,10 @@ public final class CmsStringUtil {
     public static String extractXmlEncoding(String content) {
 
         String result = null;
-        Matcher xmlHeadMatcher = C_XML_HEAD_REGEX.matcher(content);
+        Matcher xmlHeadMatcher = XML_HEAD_REGEX.matcher(content);
         if (xmlHeadMatcher.find()) {
             String xmlHead = xmlHeadMatcher.group();
-            Matcher encodingMatcher = C_XML_ENCODING_REGEX.matcher(xmlHead);
+            Matcher encodingMatcher = XML_ENCODING_REGEX.matcher(xmlHead);
             if (encodingMatcher.find()) {
                 String encoding = encodingMatcher.group();
                 int pos1 = encoding.indexOf('=') + 2;
@@ -363,10 +365,10 @@ public final class CmsStringUtil {
      */
     public static String formatRuntime(long runtime) {
 
-        long seconds = (runtime / C_SECONDS) % 60;
-        long minutes = (runtime / C_MINUTES) % 60;
-        long hours = (runtime / C_HOURS) % 24;
-        long days = runtime / C_DAYS;
+        long seconds = (runtime / SECONDS) % 60;
+        long minutes = (runtime / MINUTES) % 60;
+        long hours = (runtime / HOURS) % 24;
+        long days = runtime / DAYS;
         StringBuffer strBuf = new StringBuffer();
 
         if (days > 0) {
@@ -708,7 +710,7 @@ public final class CmsStringUtil {
 
         if (m_contextSearch == null) {
             m_contextSearch = "([^\\w/])" + context;
-            m_contextReplace = "$1" + CmsStringUtil.escapePattern(I_CmsWpConstants.C_MACRO_OPENCMS_CONTEXT) + "/";
+            m_contextReplace = "$1" + CmsStringUtil.escapePattern(CmsStringUtil.MACRO_OPENCMS_CONTEXT) + "/";
         }
         return substitutePerl(htmlContent, m_contextSearch, m_contextReplace, "g");
     }

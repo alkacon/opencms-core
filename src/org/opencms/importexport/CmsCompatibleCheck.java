@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/Attic/CmsCompatibleCheck.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.importexport;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.List;
 
@@ -48,7 +48,7 @@ import org.dom4j.Node;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,6 +56,12 @@ public class CmsCompatibleCheck {
 
     /** Default class for templates. */
     public static final String XML_CONTROL_DEFAULT_CLASS = "com.opencms.template.CmsXmlTemplate";
+    /** Parameter for default module. */
+    public static final String VFS_PATH_DEFAULTMODULE = CmsWorkplace.VFS_PATH_MODULES + "default/";
+    /** Path to content templates folder. */
+    public static final String VFS_PATH_DEFAULT_TEMPLATES = VFS_PATH_DEFAULTMODULE + CmsWorkplace.VFS_DIR_TEMPLATES;
+    /** Parameter for content body folder. */
+    public static final String VFS_PATH_BODIES = "/system/bodies/";
 
     /**
      * Constructor, does nothing.<p> 
@@ -76,13 +82,13 @@ public class CmsCompatibleCheck {
     public boolean isTemplateCompatible(String name, byte[] content, String type) {
 
         // dont check folders
-        if (CmsResourceTypeFolder.C_RESOURCE_TYPE_NAME.equals(type)) {
+        if (CmsResourceTypeFolder.RESOURCE_TYPE_NAME.equals(type)) {
             return true;
         }
         if (name == null) {
             return false;
         }
-        if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_BODIES)) {
+        if (name.startsWith(CmsCompatibleCheck.VFS_PATH_BODIES)) {
             // this is a body file
             if (!CmsResourceTypePlain.getStaticTypeName().equals(type)) {
                 // only plain files allowed in content/bodys
@@ -108,9 +114,9 @@ public class CmsCompatibleCheck {
                 return false;
             }
 
-        } else if (name.startsWith(I_CmsWpConstants.C_VFS_PATH_DEFAULT_TEMPLATES)
-            || (name.startsWith(I_CmsWpConstants.C_VFS_PATH_MODULES) && name.indexOf("/"
-                + I_CmsWpConstants.C_VFS_DIR_TEMPLATES) > -1)) {
+        } else if (name.startsWith(CmsCompatibleCheck.VFS_PATH_DEFAULT_TEMPLATES)
+            || (name.startsWith(CmsWorkplace.VFS_PATH_MODULES) && name.indexOf("/"
+                + CmsWorkplace.VFS_DIR_TEMPLATES) > -1)) {
             // this is a template file
             if (!CmsResourceTypePlain.getStaticTypeName().equals(type)) {
                 // only plain templates are allowed

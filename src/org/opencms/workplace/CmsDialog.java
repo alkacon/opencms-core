@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/24 13:48:35 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.87 $ 
+ * @version $Revision: 1.88 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,7 +187,7 @@ public class CmsDialog extends CmsToolDialog {
     public static final String PARAM_MESSAGE = "message";
 
     /** Request parameter name for the resource. */
-    public static final String PARAM_RESOURCE = I_CmsWpConstants.C_PARA_RESOURCE;
+    public static final String PARAM_RESOURCE = "resource";
 
     /** Request parameter name for the target. */
     public static final String PARAM_TARGET = "target";
@@ -267,7 +267,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public static CmsDialog initCmsDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
-        CmsDialog wp = (CmsDialog)req.getAttribute(CmsWorkplace.C_SESSION_WORKPLACE_CLASS);
+        CmsDialog wp = (CmsDialog)req.getAttribute(CmsWorkplace.SESSION_WORKPLACE_CLASS);
         if (wp == null) {
             // ensure that we don't get null pointers if the page is directly called
             wp = new CmsDialog(new CmsJspActionElement(context, req, res));
@@ -300,7 +300,7 @@ public class CmsDialog extends CmsToolDialog {
                 out.write("</html>\n");
             } catch (IOException e) {
                 // error redirecting, include explorer file list
-                getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+                getJsp().include(FILE_EXPLORER_FILELIST, null, params);
             }
         } else if (getParamCloseLink() != null) {
             // close link parameter present, forward JSP
@@ -329,7 +329,7 @@ public class CmsDialog extends CmsToolDialog {
                     if ((wpPackage.endsWith("commons") || wpPackage.endsWith("gallery"))
                         && (!wpClass.endsWith("Report"))) {
                         // for returning from common workplace action, show explorer filelist again (i.e. gallery & project views)
-                        getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+                        getJsp().include(FILE_EXPLORER_FILELIST, null, params);
                     } else {
                         try {
                             // redirect to administration body frame with "sender" parameter
@@ -346,11 +346,11 @@ public class CmsDialog extends CmsToolDialog {
                 }
             } else {
                 // no URI found, include the explorer file list
-                getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+                getJsp().include(FILE_EXPLORER_FILELIST, null, params);
             }
         } else {
             // no framename parameter found, include the explorer file list
-            getJsp().include(C_FILE_EXPLORER_FILELIST, null, params);
+            getJsp().include(FILE_EXPLORER_FILELIST, null, params);
         }
     }
 
@@ -1082,9 +1082,9 @@ public class CmsDialog extends CmsToolDialog {
     public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
 
         CmsLog.getLog(wp).error(t);
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, wp);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, wp);
         getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
-        getJsp().include(C_FILE_DIALOG_SCREEN_ERRORPAGE);
+        getJsp().include(FILE_DIALOG_SCREEN_ERRORPAGE);
     }
 
     /**
@@ -1429,7 +1429,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     protected String getAdministrationBackLink() {
 
-        return I_CmsWpConstants.C_VFS_PATH_WORKPLACE
+        return CmsWorkplace.VFS_PATH_WORKPLACE
             + "action/administration_content_top.html"
             + "?sender="
             + CmsResource.getParentFolder(getJsp().getRequestContext().getFolderUri());

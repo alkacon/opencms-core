@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFileContent.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,10 +32,10 @@ package com.opencms.workplace;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.template.A_CmsXmlContent;
 
@@ -52,7 +52,7 @@ import java.util.List;
  * Support for XML-style locales will be removed in a future release.<p> 
  *
  * @author Alexander Lucas
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -74,7 +74,7 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
             mergeLanguageFiles(cms, locale);
         }
         catch(Exception e) {
-            throwException("Error while merging language files in folder " + I_CmsWpConstants.C_VFS_PATH_LOCALES + locale + "/.");
+            throwException("Error while merging language files in folder " + CmsWorkplace.VFS_PATH_LOCALES + locale + "/.");
         }
     }
 
@@ -132,15 +132,15 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         if ("uk".equals(language)) language = "en";
         
         try {
-            langFiles = cms.getFilesInFolder(I_CmsWpConstants.C_VFS_PATH_LOCALES + language + "/");
+            langFiles = cms.getFilesInFolder(CmsWorkplace.VFS_PATH_LOCALES + language + "/");
         } catch (CmsException e) {
             // noop
         }
 
         // get all modules-language Files
         List modules = (List) new ArrayList();
-        modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
-        String lang = I_CmsWpConstants.C_VFS_DIR_LOCALES + language + "/";
+        modules = cms.getSubFolders(CmsWorkplace.VFS_PATH_MODULES);
+        String lang = CmsWorkplaceDefault.C_VFS_DIR_LOCALES + language + "/";
         // make sure old modules language files still work
         String oldLang = "language/" + language + "/";
         for(int i = 0;i < modules.size();i++) {
@@ -165,7 +165,7 @@ public class CmsXmlLanguageFileContent extends A_CmsXmlContent {
         CmsFile file = null;
         for(int i = 0;i < langFiles.size();i++) {
             file = (CmsFile)langFiles.get(i);
-            if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != I_CmsConstants.C_STATE_DELETED) {
+            if(! file.getName().toLowerCase().endsWith(".txt") && file.getState() != CmsResource.STATE_DELETED) {
                 try {
                     init(cms, cms.getSitePath(file));
                 } catch(Exception exc) {

@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsIcon.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.3 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.4 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  * 
  * @author Andreas Schouten
- * @version $Revision: 1.3 $ $Date: 2005/05/19 07:15:14 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -76,13 +76,13 @@ public class CmsIcon extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // Read button parameters
-        String iconName = n.getAttribute(C_ICON_NAME);
-        String iconLabel = n.getAttribute(C_ICON_LABEL);
-        String iconAction = n.getAttribute(C_ICON_ACTION);
-        String iconHref = n.getAttribute(C_ICON_HREF);
-        String iconTarget = n.getAttribute(C_ICON_TARGET);
-        String iconActiveMethod = n.getAttribute(C_ICON_ACTIVE_METHOD);
-        String iconVisibleMethod = n.getAttribute(C_ICON_VISIBLE_METHOD);
+        String iconName = n.getAttribute(CmsWorkplaceDefault.C_ICON_NAME);
+        String iconLabel = n.getAttribute(CmsWorkplaceDefault.C_ICON_LABEL);
+        String iconAction = n.getAttribute(CmsWorkplaceDefault.C_ICON_ACTION);
+        String iconHref = n.getAttribute(CmsWorkplaceDefault.C_ICON_HREF);
+        String iconTarget = n.getAttribute(CmsWorkplaceDefault.C_ICON_TARGET);
+        String iconActiveMethod = n.getAttribute(CmsWorkplaceDefault.C_ICON_ACTIVE_METHOD);
+        String iconVisibleMethod = n.getAttribute(CmsWorkplaceDefault.C_ICON_VISIBLE_METHOD);
         if(iconHref == null || "".equals(iconHref)) {
             iconHref = "";
         }
@@ -178,7 +178,7 @@ public class CmsIcon extends A_CmsWpElement {
         
         // Get button definition and language values
         CmsXmlWpTemplateFile icondef = getIconDefinitions(cms);
-        StringBuffer iconLabelBuffer = new StringBuffer(lang.getLanguageValue(C_LANG_ICON + "." + iconLabel));
+        StringBuffer iconLabelBuffer = new StringBuffer(lang.getLanguageValue(CmsWorkplaceDefault.C_LANG_ICON + "." + iconLabel));
         
         // Insert a html-break, if needed
         if(iconLabelBuffer.toString().indexOf("- ") != -1) {
@@ -186,11 +186,11 @@ public class CmsIcon extends A_CmsWpElement {
         }
         
         // get the processed button.
-        icondef.setData(C_ICON_NAME, iconName);
-        icondef.setData(C_ICON_LABEL, iconLabelBuffer.toString());
-        icondef.setData(C_ICON_ACTION, iconAction);
-        icondef.setData(C_ICON_HREF, iconHref);
-        icondef.setData(C_ICON_TARGET, iconTarget);
+        icondef.setData(CmsWorkplaceDefault.C_ICON_NAME, iconName);
+        icondef.setData(CmsWorkplaceDefault.C_ICON_LABEL, iconLabelBuffer.toString());
+        icondef.setData(CmsWorkplaceDefault.C_ICON_ACTION, iconAction);
+        icondef.setData(CmsWorkplaceDefault.C_ICON_HREF, iconHref);
+        icondef.setData(CmsWorkplaceDefault.C_ICON_TARGET, iconTarget);
         if(visible) {
             if(activate) {
                 return icondef.getProcessedDataValue("defaulticon", callingObject);

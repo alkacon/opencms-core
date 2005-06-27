@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.main;
 
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 /**
  * Contains the settings to handle HTTP basic authentication.<p>
@@ -46,14 +46,14 @@ import org.opencms.workplace.I_CmsWpConstants;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHttpAuthenticationSettings {
 
     /** The URI of the default authentication form. */
-    public static final String C_DEFAULT_AUTHENTICATION_URI = I_CmsWpConstants.C_VFS_PATH_WORKPLACE
+    public static final String DEFAULT_AUTHENTICATION_URI = CmsWorkplace.VFS_PATH_WORKPLACE
         + "action/authenticate.html";
 
     /** The URI of the system wide login form if browser-based HTTP basic authentication is disabled. */

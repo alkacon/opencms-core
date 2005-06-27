@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestExportFile.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.staticexport;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.OpenCms;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */

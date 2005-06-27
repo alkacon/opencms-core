@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,9 +33,10 @@ package org.opencms.jsp;
 
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
-import org.opencms.main.I_CmsConstants;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 
@@ -53,7 +54,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,15 +75,15 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
         StringBuffer result = new StringBuffer(32);
         if (showEdit) {
-            result.append(I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_EDIT);
+            result.append(I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_EDIT);
         }
         result.append('|');
         if (showDelete) {
-            result.append(I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_DELETE);
+            result.append(I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_DELETE);
         }
         result.append('|');
         if (showNew) {
-            result.append(I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_NEW);
+            result.append(I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_NEW);
         }
         return result.toString();
     }
@@ -101,16 +102,16 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
         try {
             CmsObject cms = CmsFlexController.getCmsObject(req);
-            if (cms.getRequestContext().currentProject().getId() != I_CmsConstants.C_PROJECT_ONLINE_ID) {
-                if (context.getRequest().getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI) == null) {
+            if (cms.getRequestContext().currentProject().getId() != CmsProject.ONLINE_PROJECT_ID) {
+                if (context.getRequest().getAttribute(I_CmsEditorActionHandler.DIRECT_EDIT_INCLUDE_FILE_URI) == null) {
                     if (filename == null) {
-                        filename = I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
+                        filename = I_CmsEditorActionHandler.DIRECT_EDIT_INCLUDE_FILE_URI_DEFAULT;
                     }
-                    context.getRequest().setAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI, filename);
+                    context.getRequest().setAttribute(I_CmsEditorActionHandler.DIRECT_EDIT_INCLUDE_FILE_URI, filename);
                     CmsJspTagInclude.includeTagAction(
                         context,
                         filename,
-                        I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDES,
+                        I_CmsEditorActionHandler.DIRECT_EDIT_INCLUDES,
                         false,
                         null,
                         req,
@@ -155,7 +156,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
         String target = null;
 
         // get the include file where the direct edit HTML is stored in
-        target = (String)req.getAttribute(I_CmsEditorActionHandler.C_DIRECT_EDIT_INCLUDE_FILE_URI);
+        target = (String)req.getAttribute(I_CmsEditorActionHandler.DIRECT_EDIT_INCLUDE_FILE_URI);
         if ((target != null) && (editPermissions == null)) {
             // check the direct edit permissions of the current user if not provided                  
             editPermissions = OpenCms.getWorkplaceManager().getEditorActionHandler().getEditMode(
@@ -173,41 +174,41 @@ public class CmsJspTagEditable extends BodyTagSupport {
 
         // set request parameters required by the included direct edit JSP 
         Map parameterMap = new HashMap();
-        CmsJspTagInclude.addParameter(parameterMap, I_CmsConstants.C_PARAMETER_ELEMENT, element, true);
+        CmsJspTagInclude.addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
         CmsJspTagInclude.addParameter(
             parameterMap,
-            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_TARGET,
+            I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_TARGET,
             editTarget,
             true);
         CmsJspTagInclude.addParameter(
             parameterMap,
-            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_LOCALE,
+            I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_LOCALE,
             controller.getCmsObject().getRequestContext().getLocale().toString(),
             true);
         CmsUserSettings settings = new CmsUserSettings(controller.getCmsObject());
         CmsJspTagInclude.addParameter(
             parameterMap,
-            I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_BUTTONSTYLE,
+            I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_BUTTONSTYLE,
             String.valueOf(settings.getDirectEditButtonStyle()),
             true);
         if (editElement != null) {
             CmsJspTagInclude.addParameter(
                 parameterMap,
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_ELEMENT,
+                I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_ELEMENT,
                 editElement,
                 true);
         }
         if (editOptions != null) {
             CmsJspTagInclude.addParameter(
                 parameterMap,
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_OPTIONS,
+                I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_OPTIONS,
                 editOptions,
                 true);
         }
         if (createLink != null) {
             CmsJspTagInclude.addParameter(
                 parameterMap,
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_PARAM_NEWLINK,
+                I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_NEWLINK,
                 createLink,
                 true);
         }
@@ -218,7 +219,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
         try {
 
             controller.getCurrentRequest().addParameterMap(parameterMap);
-            context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
+            context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);
             controller.getCurrentRequest().getRequestDispatcher(target).include(req, res);
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  * 
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
 public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_CmsMemoryMonitorable {
 
     /** Initial size for lists. */
-    public static final int C_INITIAL_CAPACITY_LISTS = 10;
+    public static final int INITIAL_CAPACITY_LISTS = 10;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexCacheEntry.class);
@@ -126,7 +126,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      */
     public CmsFlexCacheEntry() {
 
-        m_elements = new ArrayList(C_INITIAL_CAPACITY_LISTS);
+        m_elements = new ArrayList(INITIAL_CAPACITY_LISTS);
         m_dateExpires = CmsResource.DATE_EXPIRED_DEFAULT;
         m_dateLastModified = -1;
         // base memory footprint of this object with all referenced objects

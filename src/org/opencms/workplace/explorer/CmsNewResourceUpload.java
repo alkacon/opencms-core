@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/06/27 09:15:41 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -69,7 +68,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,9 +161,9 @@ public class CmsNewResourceUpload extends CmsNewResource {
         if (getAction() == ACTION_CANCEL) {
             try {
                 CmsResource res = getCms().readResource(getParamResource());
-                if (res.getState() == I_CmsConstants.C_STATE_NEW) {
+                if (res.getState() == CmsResource.STATE_NEW) {
                     // only delete new resource
-                    getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                    getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
                 }
             } catch (Exception e) {
                 // file was not present
@@ -271,7 +270,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, delete file
                             getCms().lockResource(getParamResource());
-                            getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                            getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
                             throw sqlExc;
                         }
                     } else {
@@ -382,7 +381,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         applet.append(path);
         // check if the redirect url is given by request parameter. if not use the default
         if (CmsStringUtil.isEmpty(getParamRedirectUrl())) {
-            applet.append(CmsWorkplace.C_FILE_EXPLORER_FILELIST);
+            applet.append(CmsWorkplace.FILE_EXPLORER_FILELIST);
         } else {
             applet.append(getParamRedirectUrl());
         }

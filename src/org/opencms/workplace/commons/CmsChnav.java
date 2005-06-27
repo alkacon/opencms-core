@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/06/26 10:42:14 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,11 +79,9 @@ public class CmsChnav extends CmsDialog {
     /** Value for the action: change the navigation. */
     public static final int ACTION_CHNAV = 100;
 
-    /** The debug flag. */
-    public static final int C_DEBUG = 1;
-
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chnav";
+    
     /** Request parameter name for the navigation position. */
     public static final String PARAM_NAVPOS = "navpos";
 
@@ -92,6 +90,7 @@ public class CmsChnav extends CmsDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsChnav.class);
+    
     private String m_paramNavpos;
 
     private String m_paramNavtext;
@@ -228,7 +227,7 @@ public class CmsChnav extends CmsDialog {
     public void actionChangeNav() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
 
         // get request parameters
         String filename = getParamResource();
@@ -265,19 +264,19 @@ public class CmsChnav extends CmsDialog {
                 String oldStructureValue = oldNavText.getStructureValue();
                 String newStructureValue = newNavText.getStructureValue();
                 if (CmsStringUtil.isEmpty(oldStructureValue)) {
-                    oldStructureValue = CmsProperty.C_DELETE_VALUE;
+                    oldStructureValue = CmsProperty.DELETE_VALUE;
                 }
                 if (CmsStringUtil.isEmpty(newStructureValue)) {
-                    newStructureValue = CmsProperty.C_DELETE_VALUE;
+                    newStructureValue = CmsProperty.DELETE_VALUE;
                 }
 
                 String oldResourceValue = oldNavText.getResourceValue();
                 String newResourceValue = newNavText.getResourceValue();
                 if (CmsStringUtil.isEmpty(oldResourceValue)) {
-                    oldResourceValue = CmsProperty.C_DELETE_VALUE;
+                    oldResourceValue = CmsProperty.DELETE_VALUE;
                 }
                 if (CmsStringUtil.isEmpty(newResourceValue)) {
-                    newResourceValue = CmsProperty.C_DELETE_VALUE;
+                    newResourceValue = CmsProperty.DELETE_VALUE;
                 }
 
                 // change nav text only if it has been changed            

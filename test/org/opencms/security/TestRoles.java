@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/security/TestRoles.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ public class TestRoles extends OpenCmsTestCase {
             message = ex.getMessage();
             System.out.println(message);
             // check if a key could not be resolved
-            assertFalse(message.indexOf(CmsMessages.C_UNKNOWN_KEY_EXTENSION) >= 0);
+            assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
             // very simple check if message still containes unresolved '{n}'
             assertFalse(message.indexOf('{') >= 0);
         }
@@ -117,7 +117,7 @@ public class TestRoles extends OpenCmsTestCase {
         
         System.out.println(message);
         // check if a key could not be resolved
-        assertFalse(message.indexOf(CmsMessages.C_UNKNOWN_KEY_EXTENSION) >= 0);
+        assertFalse(message.indexOf(CmsMessages.UNKNOWN_KEY_EXTENSION) >= 0);
         // very simple check if message still containes unresolved '{n}'
         assertFalse(message.indexOf('{') >= 0);        
     }    

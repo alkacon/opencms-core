@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,14 +92,14 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
     public void actionReport() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         switch (getAction()) {
             case ACTION_REPORT_END:
                 actionCloseDialog();
                 break;
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
                 break;
             case ACTION_REPORT_BEGIN:
             case ACTION_CONFIRMED:
@@ -109,7 +109,7 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
                 setParamThread(thread.getUUID().toString());
                 Map params = new HashMap(1);
                 params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/linkchecking"));
-                getJsp().include(C_FILE_REPORT_OUTPUT, null, params);
+                getJsp().include(FILE_REPORT_OUTPUT, null, params);
                 break;
         }
     }

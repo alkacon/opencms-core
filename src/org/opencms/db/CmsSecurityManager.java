@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/26 12:54:27 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -92,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  * 
  * @since 6.0.0
  */
@@ -590,7 +589,7 @@ public final class CmsSecurityManager {
         checkOfflineProject(dbc);
 
         // check if the current project is unlocked
-        if (context.currentProject().getFlags() != I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
+        if (context.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
             CmsMessageContainer errMsg = org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_RESOURCE_LOCKED_1,
                 context.currentProject().getName());
@@ -603,14 +602,14 @@ public final class CmsSecurityManager {
             String parentFolder = CmsResource.getParentFolder(directPublishResource.getRootPath());
             if (parentFolder != null) {
                 CmsResource parent = readResource(context, parentFolder, CmsResourceFilter.ALL);
-                if (parent.getState() == I_CmsConstants.C_STATE_DELETED) {
+                if (parent.getState() == CmsResource.STATE_DELETED) {
                     // parent folder is deleted - direct publish not allowed
                     throw new CmsVfsException(Messages.get().container(
                         Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
                         dbc.getRequestContext().removeSiteRoot(directPublishResource.getRootPath()),
                         parentFolder));
                 }
-                if (parent.getState() == I_CmsConstants.C_STATE_NEW) {
+                if (parent.getState() == CmsResource.STATE_NEW) {
                     // parent folder is new - direct publish not allowed
                     throw new CmsVfsException(Messages.get().container(
                         Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
@@ -790,9 +789,9 @@ public final class CmsSecurityManager {
      * during the copy operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_NEW}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
      * @param context the current request context
@@ -843,7 +842,7 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkManagerOfProjectRole(dbc, context.currentProject());
 
-            if (dbc.currentProject().getFlags() != I_CmsConstants.C_PROJECT_STATE_UNLOCKED) {
+            if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
                 throw new CmsLockException(org.opencms.lock.Messages.get().container(
                     org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
                     dbc.currentProject().getName()));
@@ -1337,7 +1336,7 @@ public final class CmsSecurityManager {
      */
     public void deleteProject(CmsRequestContext context, int projectId) throws CmsException, CmsRoleViolationException {
 
-        if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+        if (projectId == CmsProject.ONLINE_PROJECT_ID) {
             // online project must not be deleted
             throw new CmsVfsException(org.opencms.file.Messages.get().container(
                 org.opencms.file.Messages.ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0));
@@ -1345,7 +1344,7 @@ public final class CmsSecurityManager {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsProject deleteProject = null;
-        try { 
+        try {
             // read the project that should be deleted
             deleteProject = m_driverManager.readProject(dbc, projectId);
             checkManagerOfProjectRole(dbc, deleteProject);
@@ -1390,8 +1389,8 @@ public final class CmsSecurityManager {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param context the current request context
@@ -2468,7 +2467,7 @@ public final class CmsSecurityManager {
      * @param lastname the lastname of the user
      * @param email the email of the user
      * @param address the address of the user
-     * @param flags the flags for a user (for example <code>{@link I_CmsConstants#C_FLAG_ENABLED}</code>)
+     * @param flags the flags for a user (for example <code>{@link I_CmsPrincipal#FLAG_ENABLED}</code>)
      * @param type the type of the user
      * @param additionalInfos the additional user infos
      * 
@@ -2619,8 +2618,8 @@ public final class CmsSecurityManager {
      * The <code>mode</code> parameter controls what kind of lock is used.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
      * </ul><p>
      * 
      * @param context the current request context
@@ -2643,7 +2642,7 @@ public final class CmsSecurityManager {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_LOCK_RESOURCE_2,
                 context.getSitePath(resource),
-                (mode == CmsLock.C_MODE_COMMON) ? "CmsLock.C_MODE_COMMON" : "CmsLock.C_MODE_TEMP"), e);
+                (mode == CmsLock.COMMON) ? "CmsLock.C_MODE_COMMON" : "CmsLock.C_MODE_TEMP"), e);
         } finally {
             dbc.clear();
         }
@@ -2896,7 +2895,7 @@ public final class CmsSecurityManager {
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
                 Messages.ERR_READ_ALL_PROPDEF_MAPPING_TYPE_1,
-                (mappingtype == CmsProperty.C_RESOURCE_RECORD_MAPPING) ? "CmsProperty.C_RESOURCE_RECORD_MAPPING"
+                (mappingtype == CmsProperty.RESOURCE_RECORD_MAPPING) ? "CmsProperty.C_RESOURCE_RECORD_MAPPING"
                 : "CmsProperty.C_STRUCTURE_RECORD_MAPPING"), e);
         } finally {
             dbc.clear();
@@ -3071,10 +3070,10 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readFile(dbc, resource, filter);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_FILE_2,
-                context.getSitePath(resource),
-                filter), e);
+            dbc.report(
+                null,
+                Messages.get().container(Messages.ERR_READ_FILE_2, context.getSitePath(resource), filter),
+                e);
         } finally {
             dbc.clear();
         }
@@ -3107,10 +3106,7 @@ public final class CmsSecurityManager {
         try {
             result = readFolder(dbc, resourcename, filter);
         } catch (Exception e) {
-            dbc.report(
-                null,
-                Messages.get().container(Messages.ERR_READ_FOLDER_2, resourcename, filter),
-                e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_FOLDER_2, resourcename, filter), e);
         } finally {
             dbc.clear();
         }
@@ -3548,10 +3544,10 @@ public final class CmsSecurityManager {
      * 
      * Possible values for the <code>state</code> parameter are:<br>
      * <ul>
-     * <li><code>{@link I_CmsConstants#C_STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
-     * <li><code>{@link I_CmsConstants#C_STATE_NEW}</code>: Read all "new" resources in the project</li>
-     * <li><code>{@link I_CmsConstants#C_STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
-     * <li><code>{@link I_CmsConstants#C_STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li>
+     * <li><code>{@link CmsResource#STATE_CHANGED}</code>: Read all "changed" resources in the project</li>
+     * <li><code>{@link CmsResource#STATE_NEW}</code>: Read all "new" resources in the project</li>
+     * <li><code>{@link CmsResource#STATE_DELETED}</code>: Read all "deleted" resources in the project</li>
+     * <li><code>{@link CmsResource#STATE_KEEP}</code>: Read all resources either "changed", "new" or "deleted" in the project</li>
      * </ul><p>
      * 
      * @param context the current request context
@@ -4578,9 +4574,9 @@ public final class CmsSecurityManager {
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource,
-     *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource, 
-     *              set it to <code>{@link I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
@@ -4946,7 +4942,7 @@ public final class CmsSecurityManager {
                 dbc,
                 context.currentProject(),
                 resource,
-                CmsDriverManager.C_UPDATE_RESOURCE_STATE);
+                CmsDriverManager.UPDATE_RESOURCE_STATE);
 
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_WRITE_PROPS_1, context.getSitePath(resource)), e);
@@ -5144,6 +5140,49 @@ public final class CmsSecurityManager {
         int permissions = hasPermissions(dbc, resource, requiredPermissions, checkLock, filter);
         if (permissions != 0) {
             checkPermissions(dbc.getRequestContext(), resource, requiredPermissions, permissions);
+        }
+    }
+
+    /**
+     * Applies the permission check result of a previous call 
+     * to {@link #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)}.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource on which permissions are required
+     * @param requiredPermissions the set of permissions required to access the resource
+     * @param permissions the permissions to check
+     * 
+     * @throws CmsSecurityException if the required permissions are not satisfied
+     * @throws CmsLockException if the lock status is not as required
+     * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
+     */
+    protected void checkPermissions(
+        CmsRequestContext context,
+        CmsResource resource,
+        CmsPermissionSet requiredPermissions,
+        int permissions) throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
+
+        switch (permissions) {
+            case PERM_FILTERED:
+                throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                    Messages.ERR_PERM_FILTERED_1,
+                    context.getSitePath(resource)));
+
+            case PERM_DENIED:
+                throw new CmsPermissionViolationException(Messages.get().container(
+                    Messages.ERR_PERM_DENIED_2,
+                    context.getSitePath(resource),
+                    requiredPermissions.getPermissionString()));
+
+            case PERM_NOTLOCKED:
+                throw new CmsLockException(Messages.get().container(
+                    Messages.ERR_PERM_NOTLOCKED_2,
+                    context.getSitePath(resource),
+                    context.currentUser().getName()));
+
+            case PERM_ALLOWED:
+            default:
+                return;
         }
     }
 
@@ -5351,49 +5390,6 @@ public final class CmsSecurityManager {
 
         // access was granted - return the resource
         return resource;
-    }
-
-    /**
-     * Applies the permission check result of a previous call 
-     * to {@link #hasPermissions(CmsRequestContext, CmsResource, CmsPermissionSet, boolean, CmsResourceFilter)}.<p>
-     * 
-     * @param context the current request context
-     * @param resource the resource on which permissions are required
-     * @param requiredPermissions the set of permissions required to access the resource
-     * @param permissions the permissions to check
-     * 
-     * @throws CmsSecurityException if the required permissions are not satisfied
-     * @throws CmsLockException if the lock status is not as required
-     * @throws CmsVfsResourceNotFoundException if the required resource has been filtered
-     */
-    protected void checkPermissions(
-        CmsRequestContext context,
-        CmsResource resource,
-        CmsPermissionSet requiredPermissions,
-        int permissions) throws CmsSecurityException, CmsLockException, CmsVfsResourceNotFoundException {
-
-        switch (permissions) {
-            case PERM_FILTERED:
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_PERM_FILTERED_1,
-                    context.getSitePath(resource)));
-
-            case PERM_DENIED:
-                throw new CmsPermissionViolationException(Messages.get().container(
-                    Messages.ERR_PERM_DENIED_2,
-                    context.getSitePath(resource),
-                    requiredPermissions.getPermissionString()));
-
-            case PERM_NOTLOCKED:
-                throw new CmsLockException(Messages.get().container(
-                    Messages.ERR_PERM_NOTLOCKED_2,
-                    context.getSitePath(resource),
-                    context.currentUser().getName()));
-
-            case PERM_ALLOWED:
-            default:
-                return;
-        }
     }
 
     /**

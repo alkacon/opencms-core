@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -177,7 +177,7 @@ public class CmsSetupWorkplaceImportThread extends Thread {
 
                     }
                     m_shell.start(new FileInputStream(new File(m_setupBean.getWebAppRfsPath()
-                        + CmsSetupDb.C_SETUP_DATA_FOLDER
+                        + CmsSetupDb.SETUP_DATA_FOLDER
                         + "cmssetup.txt")));
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(org.opencms.setup.Messages.get().key(

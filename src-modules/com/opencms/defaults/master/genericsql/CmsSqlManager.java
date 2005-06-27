@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/genericsql/Attic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/22 10:38:25 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
@@ -61,7 +60,7 @@ import java.util.Properties;
  * </ul>
  * 
  * @author Andreas Zahner 
- * @version $Revision: 1.3 $ $Date: 2005/06/22 10:38:25 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:23 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -75,8 +74,8 @@ public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
      */
     public CmsSqlManager(String dbPoolUrl, Class currentClass) {
         
-        if (!dbPoolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
-            dbPoolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + dbPoolUrl;
+        if (!dbPoolUrl.startsWith(CmsDbPool.DBCP_JDBC_URL_PREFIX)) {
+            dbPoolUrl = CmsDbPool.DBCP_JDBC_URL_PREFIX + dbPoolUrl;
         } 
         m_poolUrl = dbPoolUrl;
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/06/24 16:10:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -41,7 +42,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsStringUtil;
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,13 +141,13 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public static final String PREFIX_VALUE = "valprop";
 
     /** The URI to the customized property dialog. */
-    public static final String URI_PROPERTY_CUSTOM_DIALOG = C_PATH_DIALOGS + "property_custom.jsp";
+    public static final String URI_PROPERTY_CUSTOM_DIALOG = PATH_DIALOGS + "property_custom.jsp";
 
     /** The URI to the standard property dialog. */
-    public static final String URI_PROPERTY_DIALOG = C_PATH_DIALOGS + "property_advanced.jsp";
+    public static final String URI_PROPERTY_DIALOG = PATH_DIALOGS + "property_advanced.jsp";
 
     /** The URI to the property dialog handler. */
-    public static final String URI_PROPERTY_DIALOG_HANDLER = C_PATH_DIALOGS + "property.jsp";
+    public static final String URI_PROPERTY_DIALOG_HANDLER = PATH_DIALOGS + "property.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyAdvanced.class);
@@ -269,10 +269,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             newUri += "?" + PARAM_DIALOGMODE + "=" + MODE_WIZARD_CREATEINDEX;
             try {
                 // redirect to new xmlpage dialog
-                sendCmsRedirect(C_PATH_DIALOGS + newUri);
+                sendCmsRedirect(PATH_DIALOGS + newUri);
                 return;
             } catch (IOException e) {
-                LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, C_PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             }
         } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
@@ -308,7 +308,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public void actionDefine() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             performDefineOperation();
             // set the request parameters before returning to the overview
@@ -333,7 +333,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         if (getParamDialogmode() != null && getParamDialogmode().startsWith(MODE_WIZARD)) {
             // only delete resource if dialog mode is a wizard mode
             try {
-                getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
             } catch (Throwable e) {
                 // error deleting the resource, show error dialog
                 includeErrorpage(this, e);
@@ -350,7 +350,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public void actionEdit(HttpServletRequest request) throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             if (isEditable()) {
                 performEditOperation(request);
@@ -526,7 +526,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
             if (res.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
                 // display special property dialog for xmlpage types
-                return C_PATH_WORKPLACE + "editors/dialogs/property.jsp";
+                return PATH_WORKPLACE + "editors/dialogs/property.jsp";
             }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
             CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
@@ -757,7 +757,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
         if (m_isEditable == null) {
 
-            if (getCms().getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID
+            if (getCms().getRequestContext().currentProject().getId() == CmsProject.ONLINE_PROJECT_ID
                 || !getCms().isInsideCurrentProject(getParamResource())) {
                 // we are in the online project or resource does not belong to project, no editing allowed
                 m_isEditable = new Boolean(false);
@@ -802,8 +802,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
                 if (!lock.isNullLock()) {
                     // determine if resource is editable...
-                    if (lock.getType() != CmsLock.C_TYPE_SHARED_EXCLUSIVE
-                        && lock.getType() != CmsLock.C_TYPE_SHARED_INHERITED
+                    if (lock.getType() != CmsLock.TYPE_SHARED_EXCLUSIVE
+                        && lock.getType() != CmsLock.TYPE_SHARED_INHERITED
                         && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                         // lock is not shared and belongs to the current user
                         if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId()
@@ -1153,7 +1153,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // or if we want to write a value which is neither the delete value or an empty value
                 writeStructureValue |= !newValue.equals(oldValue)
                     && !"".equalsIgnoreCase(newValue)
-                    && !CmsProperty.C_DELETE_VALUE.equalsIgnoreCase(newValue);
+                    && !CmsProperty.DELETE_VALUE.equalsIgnoreCase(newValue);
                 // set the structure value explicitly to null to leave it as is in the database
                 if (!writeStructureValue) {
                     newProperty.setStructureValue(null);
@@ -1167,7 +1167,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 // or if we want to write a value which is neither the delete value or an empty value
                 writeResourceValue |= !newValue.equals(oldValue)
                     && !"".equalsIgnoreCase(newValue)
-                    && !CmsProperty.C_DELETE_VALUE.equalsIgnoreCase(newValue);
+                    && !CmsProperty.DELETE_VALUE.equalsIgnoreCase(newValue);
                 // set the resource value explicitly to null to leave it as is in the database
                 if (!writeResourceValue) {
                     newProperty.setResourceValue(null);

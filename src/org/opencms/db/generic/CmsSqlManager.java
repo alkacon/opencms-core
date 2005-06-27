@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
@@ -58,21 +57,21 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.61 $
+ * @version $Revision: 1.62 $
  * 
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
 
     /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
-    protected static final String C_QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";
+    protected static final String QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";
 
     /** The filename/path of the SQL query properties. */
-    private static final String C_QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
+    private static final String QUERY_PROPERTIES = "org/opencms/db/generic/query.properties";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);  
-    
+    private static final Log LOG = CmsLog.getLog(CmsSqlManager.class);
+
     /** A map to cache queries with replaced search patterns. */
     protected Map m_cachedQueries;
 
@@ -92,7 +91,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         m_cachedQueries = new HashMap();
         m_queries = new HashMap();
-        loadQueryProperties(C_QUERY_PROPERTIES);
+        loadQueryProperties(QUERY_PROPERTIES);
     }
 
     /**
@@ -133,9 +132,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     protected static String replaceProjectPattern(int projectId, String query) {
 
         // make the statement project dependent
-        String replacePattern = (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID || projectId < 0) ? "_ONLINE_"
-        : "_OFFLINE_";
-        query = CmsStringUtil.substitute(query, C_QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
+        String replacePattern = (projectId == CmsProject.ONLINE_PROJECT_ID || projectId < 0) ? "_ONLINE_" : "_OFFLINE_";
+        query = CmsStringUtil.substitute(query, QUERY_PROJECT_SEARCH_PATTERN, replacePattern);
 
         return query;
     }
@@ -315,8 +313,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public void init(int driverType, String poolUrl) {
 
-        if (!poolUrl.startsWith(CmsDbPool.C_DBCP_JDBC_URL_PREFIX)) {
-            poolUrl = CmsDbPool.C_DBCP_JDBC_URL_PREFIX + poolUrl;
+        if (!poolUrl.startsWith(CmsDbPool.DBCP_JDBC_URL_PREFIX)) {
+            poolUrl = CmsDbPool.DBCP_JDBC_URL_PREFIX + poolUrl;
         }
 
         m_driverType = driverType;
@@ -353,7 +351,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
     /**
      * Searches for the SQL query with the specified key and project-ID.<p>
      * 
-     * For projectIds &ne; 0, the pattern {@link #C_QUERY_PROJECT_SEARCH_PATTERN} in table names of queries is 
+     * For projectIds &ne; 0, the pattern {@link #QUERY_PROJECT_SEARCH_PATTERN} in table names of queries is 
      * replaced with "_ONLINE_" or "_OFFLINE_" to choose the right database 
      * tables for SQL queries that are project dependent!
      * 
@@ -368,7 +366,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             // id 0 is special, please see below
             StringBuffer buffer = new StringBuffer(128);
             buffer.append(queryKey);
-            if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            if (projectId == CmsProject.ONLINE_PROJECT_ID) {
                 buffer.append("_ONLINE");
             } else {
                 buffer.append("_OFFLINE");
@@ -377,29 +375,29 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
         } else {
             key = queryKey;
         }
-        
+
         // look up the query in the cache
-        String query = (String)m_cachedQueries.get(key);        
-        
-        if (query == null) {            
+        String query = (String)m_cachedQueries.get(key);
+
+        if (query == null) {
             // the query has not been cached yet
             // get the SQL statement from the properties hash
             query = readQuery(queryKey);
-            
+
             // replace control chars.
             query = CmsStringUtil.substitute(query, "\t", " ");
-            query = CmsStringUtil.substitute(query, "\n", " ");  
-            
+            query = CmsStringUtil.substitute(query, "\n", " ");
+
             if (projectId != 0) {
                 // a project ID = 0 is an internal indicator that a project-independent 
                 // query was requested - further regex operations are not required then
                 query = CmsSqlManager.replaceProjectPattern(projectId, query);
             }
-            
+
             // to minimize costs, all statements with replaced expressions are cached in a map
-            m_cachedQueries.put(key, query);         
+            m_cachedQueries.put(key, query);
         }
-        
+
         return query;
     }
 
@@ -499,7 +497,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
         if (projectId < 0) {
             throw new SQLException(Messages.get().key(
-                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1, new Integer(projectId)));
+                Messages.ERR_JDBC_CONN_INVALID_PROJECT_ID_1,
+                new Integer(projectId)));
         }
 
         // match the ID to a JDBC pool URL of the OpenCms JDBC pools {online|offline|backup}
@@ -549,7 +548,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
             while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
                 if ((endIndex = currentValue.indexOf('}', startIndex)) != -1
-                    && !currentValue.startsWith(C_QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
+                    && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
 
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);

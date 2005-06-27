@@ -27,7 +27,7 @@ cms.includeWithPageUri("head");
 <input type="hidden" name="query" value="" />
 <input type="hidden" name="index" value="<%= cms.getSearchIndexName() %>" />
 <input type="hidden" name="page" value="1" />
-<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getRequestContext().getUri() %>" />
+<input type="hidden" name="<%= CmsTemplateBean.PARAM_URI %>" value="<%= cms.getRequestContext().getUri() %>" />
 <input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>" />
 
 <span style="vertical-align: middle; padding-left: 4px;"><input type="text" name="query2" class="search" style="width: 350px" value="<%= search.getQuery() %>" /></span>
@@ -37,7 +37,7 @@ cms.includeWithPageUri("head");
 if (cms.isSearchAllDisplayed()) {
 
 %><br />
-<span style="vertical-align: middle;"><input type="checkbox" name="<%= CmsTemplateSearch.C_PARAM_SEARCHALL %>" value="true"<%= cms.getSearchAllChecked() %>></span>
+<span style="vertical-align: middle;"><input type="checkbox" name="<%= CmsTemplateSearch.PARAM_SEARCHALL %>" value="true"<%= cms.getSearchAllChecked() %>></span>
 <span style="vertical-align: middle;"><%= cms.key("search.text.all") %></span><%
 
 }

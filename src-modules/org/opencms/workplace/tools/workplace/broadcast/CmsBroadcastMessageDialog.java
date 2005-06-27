@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsBroadcastMessageDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "message";
+    public static final String KEY_PREFIX = "message";
 
     /**
      * Public constructor with JSP action element.<p>
@@ -94,7 +94,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
             if (isForAll()) {
                 OpenCms.getSessionManager().sendBroadcast(getCms(), m_msgInfo.getMsg());
             } else {
-                List ids = CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.C_ITEM_SEPARATOR);
+                List ids = CmsStringUtil.splitAsList(getParamSessionids(), CmsHtmlList.ITEM_SEPARATOR);
                 Iterator itIds = ids.iterator();
                 while (itIds.hasNext()) {
                     String id = itIds.next().toString();
@@ -145,7 +145,7 @@ public class CmsBroadcastMessageDialog extends A_CmsMessageDialog {
         // initialize the project object to use for the dialog
         initMessageObject();
 
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
 
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "from", PAGES[0], new CmsDisplayWidget()));
         addWidget(new CmsWidgetDialogParameter(m_msgInfo, "to", PAGES[0], new CmsDisplayWidget()));

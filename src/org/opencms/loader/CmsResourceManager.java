@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -820,7 +820,7 @@ public class CmsResourceManager {
             CmsLog.INIT.info(Messages.get().key(
                 Messages.INIT_ADD_RESTYPE_FROM_FILE_2,
                 new Integer(m_resourceTypesFromXml.size()),
-                CmsVfsConfiguration.C_DEFAULT_XML_FILE_NAME));
+                CmsVfsConfiguration.DEFAULT_XML_FILE_NAME));
         }
 
         // build a new resource type list from the resource types of the XML configuration

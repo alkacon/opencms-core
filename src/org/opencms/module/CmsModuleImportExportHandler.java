@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/26 15:35:13 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.importexport.CmsImportExportException;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsHtmlReport;
 import org.opencms.report.I_CmsReport;
@@ -75,14 +74,14 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
     /** The name of the module import project. */
-    public static final String C_IMPORT_MODULE_PROJECT_NAME = "ImportModule";
+    public static final String IMPORT_MODULE_PROJECT_NAME = "ImportModule";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleImportExportHandler.class);
@@ -194,7 +193,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         // check if the user has the required permissions
         cms.checkRole(CmsRole.MODULE_MANAGER);
 
-        report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.print(Messages.get().container(Messages.RPT_EXPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         if (report instanceof CmsHtmlReport) {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -229,7 +228,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         // export the module using the standard export        
         new CmsExport(cms, getFileName(), getAdditionalResources(), true, true, moduleElement, false, 0, report);
 
-        report.println(Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_EXPORT_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -311,18 +310,18 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
                 try {
                     // try to read a (leftover) module import project
-                    importProject = cms.readProject(C_IMPORT_MODULE_PROJECT_NAME);
+                    importProject = cms.readProject(IMPORT_MODULE_PROJECT_NAME);
                 } catch (CmsException e) {
                     // create a Project to import the module
                     importProject = cms.createProject(
-                        C_IMPORT_MODULE_PROJECT_NAME,
+                        IMPORT_MODULE_PROJECT_NAME,
                         Messages.get().key(
                             cms.getRequestContext().getLocale(),
                             Messages.GUI_PROJECT_NAME_IMPORT_MODULE_1,
                             new Object[] {modulePackageName}),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),
-                        I_CmsConstants.C_PROJECT_TYPE_TEMPORARY);
+                        CmsProject.PROJECT_TYPE_TEMPORARY);
                 }
 
                 cms.getRequestContext().setCurrentProject(importProject);
@@ -333,7 +332,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 cms.getRequestContext().restoreSiteRoot();
             }
 
-            report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+            report.print(Messages.get().container(Messages.RPT_IMPORT_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             if (report instanceof CmsHtmlReport) {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -349,13 +348,13 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
             report.println(
                 Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
             // now unlock and publish the project
             cms.unlockProject(importProject.getId());
             cms.publishProject(report);
 
-            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.C_FORMAT_HEADLINE);
-            report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_IMPORT_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
         } finally {
             cms.getRequestContext().setCurrentProject(previousProject);
         }
@@ -477,7 +476,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
         // check the module dependencies
         List dependencies = OpenCms.getModuleManager().checkDependencies(
             importedModule,
-            CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+            CmsModuleManager.DEPENDENCY_MODE_IMPORT);
         if (dependencies.size() > 0) {
             // some dependencies not fulfilled
             String missingModules = "";

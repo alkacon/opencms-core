@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.111 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,14 +51,14 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.110 $
+ * @version $Revision: 1.111 $
  * 
  * @since 6.0.0 
  */
 public interface I_CmsVfsDriver {
 
     /** The type ID to identify user driver implementations. */
-    int C_DRIVER_TYPE_ID = 3;
+    int DRIVER_TYPE_ID = 3;
 
     /**
      * Creates a resource content with the specified id.<p>
@@ -187,9 +187,9 @@ public interface I_CmsVfsDriver {
      * @param deleteOption determines which property values should be deleted
      * 
      * @throws CmsDataAccessException if something goes wrong
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_STRUCTURE_VALUES
-     * @see org.opencms.file.CmsProperty#C_DELETE_OPTION_DELETE_RESOURCE_VALUES
+     * @see org.opencms.file.CmsProperty#DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES
+     * @see org.opencms.file.CmsProperty#DELETE_OPTION_DELETE_STRUCTURE_VALUES
+     * @see org.opencms.file.CmsProperty#DELETE_OPTION_DELETE_RESOURCE_VALUES
      */
     void deletePropertyObjects(CmsDbContext dbc, int projectId, CmsResource resource, int deleteOption)
     throws CmsDataAccessException;
@@ -427,8 +427,7 @@ public interface I_CmsVfsDriver {
      * @param dbc the current database context
      * @param currentProject the current project
      * @param state the state to match
-     * @param mode flag signaling the read mode. Valid values are C_READMODE_IGNORESTATE,
-     *      C_READMODE_MATCHSTATE, C_READMODE_UNMATCHSTATE
+     * @param mode flag signaling the read mode
      *  
      * @return a list with all resources that where read
      * @throws CmsDataAccessException if somethong goes wrong
@@ -500,11 +499,11 @@ public interface I_CmsVfsDriver {
      * 
      * @param dbc the current database context
      * @param projectId the project id for matching resources or C_READ_OFFLINE_PROJECTS
-     * @param parent the path to the resource used as root of the searched subtree or C_READ_IGNORE_PARENT (C_READMODE_EXCLUDE_TREE means to read immidiate children only) 
+     * @param parent the path to the resource used as root of the searched subtree or READ_IGNORE_PARENT (C_READMODE_EXCLUDE_TREE means to read immidiate children only) 
      * @param type the resource type of matching resources or C_READ_IGNORE_TYPES (meaning inverted by C_READMODE_EXCLUDE_TYPE)
-     * @param state the state of matching resources or C_READ_IGNORE_STATE (meaning inverted by C_READMODE_EXCLUDE_STATE)
-     * @param startTime the start of the time range for the last modification date of matching resources or C_READ_IGNORE_TIME 
-     * @param endTime the end of the time range for the last modification date of mathcing resources or C_READ_IGNORE_TIME
+     * @param state the state of matching resources or READ_IGNORE_STATE (meaning inverted by C_READMODE_EXCLUDE_STATE)
+     * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
+     * @param endTime the end of the time range for the last modification date of mathcing resources or READ_IGNORE_TIME
      * @param mode additional mode flags:
      *  C_READMODE_INCLUDE_TREE 
      *  C_READMODE_EXCLUDE_TREE
@@ -695,9 +694,9 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if something goes wrong
      * 
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
-     * @see org.opencms.db.CmsDriverManager#C_NOTHING_CHANGED
+     * @see org.opencms.db.CmsDriverManager#UPDATE_RESOURCE_STATE
+     * @see org.opencms.db.CmsDriverManager#UPDATE_STRUCTURE_STATE
+     * @see org.opencms.db.CmsDriverManager#NOTHING_CHANGED
      * @see #writeResourceState(CmsDbContext, CmsProject, CmsResource, int)
      */
     void writeResource(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
@@ -725,9 +724,9 @@ public interface I_CmsVfsDriver {
      * 
      * @throws CmsDataAccessException if somethong goes wrong
      * 
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_RESOURCE_STATE
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_STRUCTURE_STATE
-     * @see org.opencms.db.CmsDriverManager#C_UPDATE_ALL
+     * @see org.opencms.db.CmsDriverManager#UPDATE_RESOURCE_STATE
+     * @see org.opencms.db.CmsDriverManager#UPDATE_STRUCTURE_STATE
+     * @see org.opencms.db.CmsDriverManager#UPDATE_ALL
      */
     void writeResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
     throws CmsDataAccessException;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/06/23 14:27:28 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,7 @@ package org.opencms.file;
 
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsResourceTranslator;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0 
  */
@@ -214,7 +214,7 @@ public class CmsRequestContext {
      */
     public String getAdjustedSiteRoot(String siteRoot, String resourcename) {
 
-        if (resourcename.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+        if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
             return "";
         } else {
             return siteRoot;

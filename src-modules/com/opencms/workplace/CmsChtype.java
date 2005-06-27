@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsChtype.java,v $
- * Date   : $Date: 2005/05/19 08:57:22 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -46,7 +45,7 @@ import java.util.Vector;
  * Template class for displaying the type screen of the OpenCms workplace.<p>
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.3 $ $Date: 2005/05/19 08:57:22 $
+ * @version $Revision: 1.4 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -82,24 +81,24 @@ public class CmsChtype extends CmsWorkplaceDefault {
         String template = null;
 
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if (initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             session.removeValue("lasturl");
         }
 
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
-        String newtype = (String)parameters.get(C_PARA_NEWTYPE);
+        String newtype = (String)parameters.get(CmsWorkplaceDefault.C_PARA_NEWTYPE);
 
         // get the filename
-        String filename = (String)parameters.get(C_PARA_RESOURCE);
+        String filename = (String)parameters.get(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if (filename != null) {
-            session.putValue(C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_RESOURCE);
+        filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
         CmsFile file = (CmsFile)cms.readResource(filename);
 
         // check if the newtype parameter is available. This parameter is set when
@@ -120,7 +119,7 @@ public class CmsChtype extends CmsWorkplaceDefault {
             
             // change the file type
             cms.chtype(cms.getSitePath(file), type);
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
 
             // return to filelist
             try {

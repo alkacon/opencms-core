@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsCacheKey.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,13 +44,13 @@ import org.opencms.security.CmsPermissionSet;
 public class CmsCacheKey implements I_CmsCacheKey {
 
     /** Cache key for a list of sub-resources (files and folders) of a folder. */
-    public static final String C_CACHE_KEY_SUBALL = "_all_";
+    public static final String CACHE_KEY_SUBALL = "_all_";
 
     /** Cache key for a list of sub-files of a folder. */
-    public static final String C_CACHE_KEY_SUBFILES = "_files_";
+    public static final String CACHE_KEY_SUBFILES = "_files_";
 
     /** Cache key for a list of sub-folders of a folder. */
-    public static final String C_CACHE_KEY_SUBFOLDERS = "_folders_";
+    public static final String CACHE_KEY_SUBFOLDERS = "_folders_";
 
     /**
      * Constructor to create a new instance of CmsCacheKey.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,17 +64,17 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXmlDocumentLinkValidatable {
 
     /** The type id of this resource type. */
-    private static final int C_RESOURCE_TYPE_ID = 6;
+    private static final int RESOURCE_TYPE_ID = 6;
 
     /** The name of this resource type. */
-    private static final String C_RESOURCE_TYPE_NAME = "xmlpage";
+    private static final String RESOURCE_TYPE_NAME = "xmlpage";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
@@ -91,8 +91,8 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
     public CmsResourceTypeXmlPage() {
 
         super();
-        m_typeId = C_RESOURCE_TYPE_ID;
-        m_typeName = C_RESOURCE_TYPE_NAME;
+        m_typeId = RESOURCE_TYPE_ID;
+        m_typeName = RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -112,7 +112,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
      */
     public static String getStaticTypeName() {
 
-        return C_RESOURCE_TYPE_NAME;
+        return RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -195,7 +195,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
      */
     public int getLoaderId() {
 
-        return CmsXmlPageLoader.C_RESOURCE_LOADER_ID;
+        return CmsXmlPageLoader.RESOURCE_LOADER_ID;
     }
 
     /**
@@ -212,19 +212,19 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
                 new Integer(getStaticTypeId())));
         }
 
-        if (!C_RESOURCE_TYPE_NAME.equals(name)) {
+        if (!RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
                 this.getClass().getName(),
-                C_RESOURCE_TYPE_NAME,
+                RESOURCE_TYPE_NAME,
                 name));
         }
 
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
     }

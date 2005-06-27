@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationCopyResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.configuration;
 
+import org.opencms.file.CmsResource;
 import org.opencms.file.types.A_CmsResourceType;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.util.CmsMacroResolver;
 
 /**
@@ -43,19 +43,19 @@ import org.opencms.util.CmsMacroResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
 public class CmsConfigurationCopyResource {
 
-    /** Indicates "copy resources" should be copied with type {@link I_CmsConstants#C_COPY_AS_NEW}. */
+    /** Indicates "copy resources" should be copied with type {@link CmsResource#COPY_AS_NEW}. */
     public static final String COPY_AS_NEW = "new";
 
-    /** Indicates "copy resources" should be copied with type {@link I_CmsConstants#C_COPY_PRESERVE_SIBLING}. */
+    /** Indicates "copy resources" should be copied with type {@link CmsResource#COPY_PRESERVE_SIBLING}. */
     public static final String COPY_AS_PRESERVE = "preserve";
 
-    /** Indicates "copy resources" should be copied with type {@link I_CmsConstants#C_COPY_AS_SIBLING}. */
+    /** Indicates "copy resources" should be copied with type {@link CmsResource#COPY_AS_SIBLING}. */
     public static final String COPY_AS_SIBLING = "sibling";
 
     /** The source resource. */
@@ -77,7 +77,7 @@ public class CmsConfigurationCopyResource {
      * Creates a new copy resource info container.<p>
      * 
      * If target is <code>null</code>, the macro {@link A_CmsResourceType#MACRO_RESOURCE_FOLDER_PATH} is used as default.
-     * If type is <code>null</code>, the copy type {@link I_CmsConstants#C_COPY_AS_NEW} is used as default.<p>
+     * If type is <code>null</code>, the copy type {@link CmsResource#COPY_AS_NEW} is used as default.<p>
      * 
      * @param source the source resource
      * @param target the target resource (may contain macros)
@@ -94,12 +94,12 @@ public class CmsConfigurationCopyResource {
             m_target = target;
         }
 
-        m_type = I_CmsConstants.C_COPY_AS_NEW;
+        m_type = CmsResource.COPY_AS_NEW;
         if (type != null) {
             if (type.equalsIgnoreCase(CmsConfigurationCopyResource.COPY_AS_SIBLING)) {
-                m_type = I_CmsConstants.C_COPY_AS_SIBLING;
+                m_type = CmsResource.COPY_AS_SIBLING;
             } else if (type.equalsIgnoreCase(CmsConfigurationCopyResource.COPY_AS_PRESERVE)) {
-                m_type = I_CmsConstants.C_COPY_PRESERVE_SIBLING;
+                m_type = CmsResource.COPY_PRESERVE_SIBLING;
             }
         } else {
             m_typeWasNull = true;
@@ -129,8 +129,8 @@ public class CmsConfigurationCopyResource {
     /**
      * Returns the type of the copy, for example "as new", "as sibling" etc.<p>
      * 
-     * Possible types are {@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}, {@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING},
-     * {@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}.<p>
+     * Possible types are {@link org.opencms.file.CmsResource#COPY_AS_NEW}, {@link org.opencms.file.CmsResource#COPY_AS_SIBLING},
+     * {@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}.<p>
      * 
      * @return the type of the copy, for example "as new", "as sibling" etc
      */
@@ -148,9 +148,9 @@ public class CmsConfigurationCopyResource {
      */
     public String getTypeString() {
 
-        if (I_CmsConstants.C_COPY_AS_SIBLING == m_type) {
+        if (CmsResource.COPY_AS_SIBLING == m_type) {
             return CmsConfigurationCopyResource.COPY_AS_SIBLING;
-        } else if (I_CmsConstants.C_COPY_PRESERVE_SIBLING == m_type) {
+        } else if (CmsResource.COPY_PRESERVE_SIBLING == m_type) {
             return CmsConfigurationCopyResource.COPY_AS_PRESERVE;
         }
         return CmsConfigurationCopyResource.COPY_AS_NEW;

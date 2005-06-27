@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsMove.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
@@ -67,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,7 +113,7 @@ public class CmsMove extends CmsDialog {
     public void actionMove() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         CmsResource sourceRes = null;
         try {
             sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
@@ -136,7 +135,7 @@ public class CmsMove extends CmsDialog {
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             // check if this exception requires a confirmation or error screen
@@ -175,7 +174,7 @@ public class CmsMove extends CmsDialog {
                         + "\n</p>\n";
                     // file type of target is the same as source, show confirmation dialog
                     setParamMessage(message + key("confirm.message.copy"));
-                    getJsp().include(C_FILE_DIALOG_SCREEN_CONFIRM);
+                    getJsp().include(FILE_DIALOG_SCREEN_CONFIRM);
                 } else {
                     // file type is different, create error message
                     includeErrorpage(this, e);
@@ -342,7 +341,7 @@ public class CmsMove extends CmsDialog {
                 if (DIALOG_CONFIRMED.equals(getParamAction())) {
                     // delete existing target resource if confirmed by the user
                     checkLock(target);
-                    getCms().deleteResource(target, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                    getCms().deleteResource(target, CmsResource.DELETE_PRESERVE_SIBLINGS);
                 } else {
                     // throw exception to indicate that the target exists
                     throw new CmsVfsResourceAlreadyExistsException(Messages.get().container(

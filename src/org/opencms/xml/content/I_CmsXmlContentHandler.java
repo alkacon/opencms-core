@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/27 10:27:15 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,23 +53,23 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsXmlContentHandler {
 
     /** Array of all allowed attribute mapping names. */
-    String[] C_ATTRIBUTES = {"datereleased", "dateexpired"};
+    String[] ATTRIBUTE_ARRAY = {"datereleased", "dateexpired"};
 
     /** List of all allowed attribute mapping names, for fast lookup. */
-    List C_ATTRIBUTES_LIST = Collections.unmodifiableList(Arrays.asList(C_ATTRIBUTES));
+    List ATTRIBUTES = Collections.unmodifiableList(Arrays.asList(ATTRIBUTE_ARRAY));
 
     /** Prefix for attribute mappings. */
-    String C_MAPTO_ATTRIBUTE = "attribute:";
+    String MAPTO_ATTRIBUTE = "attribute:";
 
     /** Prefix for property mappings. */
-    String C_MAPTO_PROPERTY = "property:";
+    String MAPTO_PROPERTY = "property:";
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p> 

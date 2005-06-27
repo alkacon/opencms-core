@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,19 +50,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
 
     /** Name of the runtime property to store the class instance.<p> */
-    public static final String C_RUNTIME_PROPERTY_NAME = "__templateone_parts";
+    public static final String RUNTIME_PROPERTY_NAME = "__templateone_parts";
 
     /** Key suffix for a stored object in the offline project.<p> */
-    private static final String C_PROJECT_OFFLINE = "off";
+    private static final String PROJECT_OFFLINE = "off";
+    
     /** Key suffix for a stored object in the online project.<p> */
-    private static final String C_PROJECT_ONLINE = "on";
+    private static final String PROJECT_ONLINE = "on";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateParts.class);
@@ -100,11 +101,11 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      */
     public static CmsTemplateParts getInstance(CmsJspActionElement jsp) {
 
-        CmsTemplateParts parts = (CmsTemplateParts)OpenCms.getRuntimeProperty(C_RUNTIME_PROPERTY_NAME);
+        CmsTemplateParts parts = (CmsTemplateParts)OpenCms.getRuntimeProperty(RUNTIME_PROPERTY_NAME);
         if (parts == null) {
             // instance not found in runtime properties, create new instance
             parts = new CmsTemplateParts();
-            OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, parts);
+            OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, parts);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_NOT_FOUND_0));
             }
@@ -113,9 +114,9 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         }
         // set the project String depending on the current project (offline or online)
         if (jsp.getRequestContext().currentProject().isOnlineProject()) {
-            parts.setProject(C_PROJECT_ONLINE);
+            parts.setProject(PROJECT_ONLINE);
         } else {
-            parts.setProject(C_PROJECT_OFFLINE);
+            parts.setProject(PROJECT_OFFLINE);
         }
         // set the jsp action element
         parts.setJsp(jsp);
@@ -136,7 +137,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                 // flush Map
                 m_parts.clear();
                 // set the new runtime property
-                OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
+                OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_CLEARED_0));
                 }
@@ -176,11 +177,11 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
                 part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());
-                if (part != null && !part.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                if (part != null && !part.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
                     // only add part to map if a valid content was found
                     m_parts.put(partKey, part);
                     // save modified class to runtime properties
-                    OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
+                    OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
                 } else {
                     // prevent displaying rubbish
                     part = "";
@@ -209,7 +210,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
 
         m_parts.put(partKey, value);
         // save modified class to runtime properties
-        OpenCms.setRuntimeProperty(C_RUNTIME_PROPERTY_NAME, this);
+        OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
     }
 
     /**

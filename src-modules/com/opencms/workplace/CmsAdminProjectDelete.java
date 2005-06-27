@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminProjectDelete.java,v $
-* Date   : $Date: 2005/05/31 15:51:19 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.workplace.threads.CmsProjectDeleteThread;
 
@@ -46,7 +45,7 @@ import java.util.Hashtable;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.2 $ $Date: 2005/05/31 15:51:19 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -110,9 +109,9 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
                     if(error == null) {
                         // clear the languagefile cache
                         templateSelector = "done";
-                        if (cms.getRequestContext().currentProject().getId() == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+                        if (cms.getRequestContext().currentProject().getId() == CmsProject.ONLINE_PROJECT_ID) {
                             // in online project, submit the head project selector with "Online" selected to avoid an infinite loop
-                            xmlTemplateDocument.setData("onlineId", "" + I_CmsConstants.C_PROJECT_ONLINE_ID);
+                            xmlTemplateDocument.setData("onlineId", "" + CmsProject.ONLINE_PROJECT_ID);
                             xmlTemplateDocument.setData("switchjavascript", xmlTemplateDocument.getProcessedDataValue("switchheadproject"));
                         } else {
                             // in an offline project, the javascript for setting the project is not needed
@@ -133,7 +132,7 @@ public class CmsAdminProjectDelete extends CmsWorkplaceDefault {
             
             // set project to online project if current project is the one which will be deleted 
             if (project.getId() == cms.getRequestContext().currentProject().getId()) {
-                cms.getRequestContext().setCurrentProject(cms.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID));                    
+                cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));                    
             }   
             
             CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();

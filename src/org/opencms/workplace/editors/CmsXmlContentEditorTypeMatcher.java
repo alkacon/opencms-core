@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditorTypeMatcher.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,14 +45,14 @@ import java.util.List;
  * 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
 
-    /** */
-    static final String C_TYPE_XMLCONTENT = "xmlcontent";
+    /** The name of the xmlcontent resource type. */
+    protected static final String TYPE_XMLCONTENT = "xmlcontent";
 
     /**
      * @see org.opencms.workplace.editors.I_CmsEditorTypeMatcher#getAdditionalResourceTypes()
@@ -66,8 +66,8 @@ public class CmsXmlContentEditorTypeMatcher implements I_CmsEditorTypeMatcher {
         // loop through all types and select those with reference to the type xmlcontent
         while (i.hasNext()) {
             CmsExplorerTypeSettings type = (CmsExplorerTypeSettings)i.next();
-            if ((type.getName().equalsIgnoreCase(C_TYPE_XMLCONTENT))
-                || (type.getReference() != null && type.getReference().equalsIgnoreCase(C_TYPE_XMLCONTENT))) {
+            if ((type.getName().equalsIgnoreCase(TYPE_XMLCONTENT))
+                || (type.getReference() != null && type.getReference().equalsIgnoreCase(TYPE_XMLCONTENT))) {
                 additionalTypes.add(type.getName());
             }
         }

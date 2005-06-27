@@ -34,6 +34,6 @@ var _context = "";
 <%    if (wp.withMenu()) { %>                
 		<frame <%= wp.getFrameSource("admin_menu", jsp.link("admin-menu.html") + params) %> frameborder="0" border="0" noresize scrolling="auto">
 <%    } %>
-		<frame <%= wp.getFrameSource("admin_content", jsp.link(CmsToolManager.C_VIEW_JSPPAGE_LOCATION) + params) %> frameborder="0" border="0" framespacing="0" marginheight="7" marginwidth="7" noresize scrolling="auto">
+		<frame <%= wp.getFrameSource("admin_content", jsp.link(CmsToolManager.VIEW_JSPPAGE_LOCATION) + params) %> frameborder="0" border="0" framespacing="0" marginheight="7" marginwidth="7" noresize scrolling="auto">
 	</frameset>
 </html>

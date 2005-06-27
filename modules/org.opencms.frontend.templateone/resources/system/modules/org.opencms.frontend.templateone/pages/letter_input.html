@@ -26,11 +26,11 @@ cms.includePopup("popuphead", cms.key("letter.title"));
 		</p>
 
 		<form name="letter" method="post" action="<%= cms.getFormUri() %>">
-		<input type="hidden" name="<%= CmsTemplateForm.C_PARAM_ACTION %>" value="submit">
+		<input type="hidden" name="<%= CmsTemplateForm.PARAM_ACTION %>" value="submit">
 		<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
-		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_URI %>" value="<%= cms.getPageUri() %>">
-		<input type="hidden" name="<%= CmsTemplateBean.C_PARAM_SITE %>" value="<%= cms.getRequestContext().getSiteRoot() %>">
-		<input type="hidden" name="<%= CmsTemplateStyleSheet.C_PARAM_CONFIGFILE %>" value="<%= cms.getStyleSheetConfigUri() %>">
+		<input type="hidden" name="<%= CmsTemplateBean.PARAM_URI %>" value="<%= cms.getPageUri() %>">
+		<input type="hidden" name="<%= CmsTemplateBean.PARAM_SITE %>" value="<%= cms.getRequestContext().getSiteRoot() %>">
+		<input type="hidden" name="<%= CmsTemplateStyleSheet.PARAM_CONFIGFILE %>" value="<%= cms.getStyleSheetConfigUri() %>">
 
 		<p style="padding: 2px;">
 		<%= cms.key("letter.form.concern.title") %>*<br />

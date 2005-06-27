@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchUtils.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import junit.framework.TestCase;
  * Tests some search utils that don't require an OpenCms context.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestCmsSearchUtils extends TestCase {
 
@@ -58,8 +58,8 @@ public class TestCmsSearchUtils extends TestCase {
      */
     public void testRootPathTokenizer() throws Exception {
 
-        String t = CmsSearchIndex.C_ROOT_PATH_TOKEN;
-        String s = CmsSearchIndex.C_ROOT_PATH_SUFFIX;
+        String t = CmsSearchIndex.ROOT_PATH_TOKEN;
+        String s = CmsSearchIndex.ROOT_PATH_SUFFIX;
 
         assertEquals(t, CmsSearchIndex.rootPathRewrite(null));
         assertEquals(t, CmsSearchIndex.rootPathRewrite(""));

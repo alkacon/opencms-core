@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenuItem.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,18 +38,17 @@ package org.opencms.workplace.explorer;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExplorerContextMenuItem implements Comparable {
 
     /** The name for an entry type. */
-    public static final String C_TYPE_ENTRY = "entry";
+    public static final String TYPE_ENTRY = "entry";
+    
     /** The name for a separator type. */
-    public static final String C_TYPE_SEPARATOR = "separator";
-
-    private boolean m_isXml;
+    public static final String TYPE_SEPARATOR = "separator";
 
     private String m_key;
     private Integer m_order;
@@ -60,14 +59,12 @@ public class CmsExplorerContextMenuItem implements Comparable {
 
     /**
      * Constructor that creates a single context menu entry with all necessary information.<p>
-     * 
      * @param type the item type (entry oder separator)
      * @param key the key for localization
      * @param uri the URI of the dialog
      * @param rules the set of display rules
      * @param target the frame target of the entry (e.g. "_top")
      * @param order the order of the item
-     * @param isXml if true, the dialog uses legacy XMLTemplate stuff
      */
     public CmsExplorerContextMenuItem(
         String type,
@@ -75,8 +72,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
         String uri,
         String rules,
         String target,
-        Integer order,
-        boolean isXml) {
+        Integer order) {
 
         m_type = type;
         m_key = key;
@@ -84,7 +80,6 @@ public class CmsExplorerContextMenuItem implements Comparable {
         m_rules = rules;
         m_order = order;
         m_target = target;
-        m_isXml = isXml;
     }
 
     /**
@@ -92,7 +87,7 @@ public class CmsExplorerContextMenuItem implements Comparable {
      */
     public Object clone() {
 
-        return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_target, m_order, m_isXml);
+        return new CmsExplorerContextMenuItem(m_type, m_key, m_uri, m_rules, m_target, m_order);
     }
 
     /**
@@ -189,26 +184,6 @@ public class CmsExplorerContextMenuItem implements Comparable {
     public int hashCode() {
 
         return getUri().hashCode();
-    }
-
-    /**
-     * Returns if the dialog is build with the legacy XMLTemplate.<p>
-     * 
-     * @return true, if the dialog is build with the legacy XMLTemplate
-     */
-    public boolean isXml() {
-
-        return m_isXml;
-    }
-
-    /**
-     * Sets if the dialog is build with the legacy XMLTemplate.<p>
-     * 
-     * @param isXml true, if the dialog is build with the legacy XMLTemplate
-     */
-    public void setIsXml(boolean isXml) {
-
-        m_isXml = isXml;
     }
 
     /**

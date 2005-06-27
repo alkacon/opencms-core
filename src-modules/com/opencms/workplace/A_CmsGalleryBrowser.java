@@ -1,7 +1,7 @@
 /*
  * File : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/A_CmsGalleryBrowser.java,v $ 
- * Date : $Date: 2005/06/22 10:38:24 $ 
- * Version: $Revision: 1.2 $
+ * Date : $Date: 2005/06/27 23:22:07 $ 
+ * Version: $Revision: 1.3 $
  * 
  * This library is part of OpenCms - the Open Source Content Mananagement
  * System
@@ -34,7 +34,6 @@ package com.opencms.workplace;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsPermissionSet;
 
 import com.opencms.core.I_CmsSession;
@@ -53,7 +52,7 @@ import java.util.Vector;
  * browser class.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.2 $ $Date: 2005/06/22 10:38:24 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -82,9 +81,9 @@ public abstract class A_CmsGalleryBrowser extends CmsWorkplaceDefault {
         String ident = "";
         int ret = -1;
         // which folder is the gallery?
-        String chosenFolder = (String) parameters.get(C_PARA_FOLDER);
+        String chosenFolder = (String) parameters.get(CmsWorkplaceDefault.C_PARA_FOLDER);
         if (chosenFolder == null) {
-            chosenFolder = (String) session.getValue(C_PARA_FOLDER);
+            chosenFolder = (String) session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
         }
         if (chosenFolder == null) {
             chosenFolder = "";

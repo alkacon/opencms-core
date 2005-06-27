@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsSynchronizeSettingsDialog.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,7 +63,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
     public static final String[] PAGES = {"page1"};
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "sync";
+    public static final String KEY_PREFIX = "sync";
     
     /** The synchronize settings which are edited on this dialog. */
     private CmsSynchronizeSettings m_synchronizeSettings;
@@ -160,7 +160,7 @@ public class CmsSynchronizeSettingsDialog extends CmsWidgetDialog {
 
         // initialize the object to use for the dialog
         initSynchronizeSettingsObject();
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
         addWidget(new CmsWidgetDialogParameter(m_synchronizeSettings, "enabled", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(
             m_synchronizeSettings,

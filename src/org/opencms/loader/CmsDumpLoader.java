@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -61,14 +60,14 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDumpLoader implements I_CmsResourceLoader {
 
     /** The id of this loader. */
-    public static final int C_RESOURCE_LOADER_ID = 1;
+    public static final int RESOURCE_LOADER_ID = 1;
 
     /**
      * The constructor of the class is empty and does nothing.<p>
@@ -151,7 +150,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public int getLoaderId() {
 
-        return C_RESOURCE_LOADER_ID;
+        return RESOURCE_LOADER_ID;
     }
 
     /**
@@ -219,10 +218,10 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
         if (!isWorkplaceUser) {
             // check if the request contains a last modified header
-            long lastModifiedHeader = req.getDateHeader(I_CmsConstants.C_HEADER_IF_MODIFIED_SINCE);
+            long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
             if (lastModifiedHeader > -1) {
                 // last modified header is set, compare it to the requested resource
-                if ((resource.getState() == I_CmsConstants.C_STATE_UNCHANGED)
+                if ((resource.getState() == CmsResource.STATE_UNCHANGED)
                     && (resource.getDateLastModified() == lastModifiedHeader)) {
                     long now = System.currentTimeMillis();
                     if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
@@ -244,14 +243,14 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
         if (isWorkplaceUser) {
             // prevent caching for Workplace users
-            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, System.currentTimeMillis());
+            res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
             CmsRequestUtil.setNoCacheHeaders(res);
         } else {
             // set date last modified header
-            res.setDateHeader(I_CmsConstants.C_HEADER_LAST_MODIFIED, file.getDateLastModified());
+            res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, file.getDateLastModified());
 
             // set "Expires" only if cache control is not already set
-            if (!res.containsHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL)) {
+            if (!res.containsHeader(CmsRequestUtil.HEADER_CACHE_CONTROL)) {
                 long expireTime = resource.getDateExpired();
                 if (expireTime == CmsResource.DATE_EXPIRED_DEFAULT) {
                     expireTime--;

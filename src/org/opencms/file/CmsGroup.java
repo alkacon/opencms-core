@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/06/25 08:43:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -43,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -76,7 +75,7 @@ public class CmsGroup implements I_CmsPrincipal {
      * Constructor, creates a new Cms group object.
      * 
      * @param id the id of the group
-     * @param parentId the parent group of the group (or C_UNKNOWN_ID)
+     * @param parentId the parent group of the group (or UNKNOWN_ID)
      * @param name the name of the group
      * @param description the description of the group
      * @param flags the flags of the group    
@@ -145,7 +144,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getDisabled() {
 
-        return (m_flags & I_CmsConstants.C_FLAG_DISABLED) != 0;
+        return (m_flags & I_CmsPrincipal.FLAG_DISABLED) != 0;
     }
 
     /**
@@ -179,7 +178,7 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Returns the parent id of this group, or C_UNKNOWN_ID.<p>
+     * Returns the parent id of this group, or UNKNOWN_ID.<p>
      * 
      * @return the parent id of this group
      */
@@ -195,7 +194,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getProjectCoWorker() {
 
-        return (m_flags & I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER) != 0;
+        return (m_flags & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) != 0;
     }
 
     /**
@@ -205,7 +204,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getProjectManager() {
 
-        return (m_flags & I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER) != 0;
+        return (m_flags & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) != 0;
     }
 
     /**
@@ -215,7 +214,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getRole() {
 
-        return (m_flags & I_CmsConstants.C_FLAG_GROUP_ROLE) != 0;
+        return (m_flags & I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE) != 0;
     }
 
     /**
@@ -238,7 +237,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean isEnabled() {
 
-        return (getFlags() & I_CmsConstants.C_FLAG_DISABLED) == 0;
+        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == 0;
     }
 
     /**
@@ -252,22 +251,22 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Disables this group by setting the C_FLAG_DISABLED flag.<p>
+     * Disables this group by setting the FLAG_DISABLED flag.<p>
      */
     public void setDisabled() {
 
         if (!getDisabled()) {
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_DISABLED);
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
         }
     }
 
     /**
-     * Enables this group by setting the C_FLAG_ENABLED flag.<p>
+     * Enables this group by setting the FLAG_ENABLED flag.<p>
      */
     public void setEnabled() {
 
         if (getDisabled()) {
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_DISABLED);
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
         }
     }
 
@@ -283,11 +282,11 @@ public class CmsGroup implements I_CmsPrincipal {
 
         if (enabled) {
             if (getDisabled()) {
-                setFlags(getFlags() ^ I_CmsConstants.C_FLAG_DISABLED);
+                setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
             }
         } else {
             if (!getDisabled()) {
-                setFlags(getFlags() ^ I_CmsConstants.C_FLAG_DISABLED);
+                setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
             }
         }
     }
@@ -321,7 +320,7 @@ public class CmsGroup implements I_CmsPrincipal {
     public void setProjectCoWorker(boolean value) {
 
         if (getProjectCoWorker() != value) {
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_PROJECTCOWORKER);
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_USER);
         }
     }
 
@@ -333,7 +332,7 @@ public class CmsGroup implements I_CmsPrincipal {
     public void setProjectManager(boolean value) {
 
         if (getProjectManager() != value) {
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_PROJECTMANAGER);
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER);
         }
     }
 
@@ -345,7 +344,7 @@ public class CmsGroup implements I_CmsPrincipal {
     public void setRole(boolean value) {
 
         if (getRole() != value) {
-            setFlags(getFlags() ^ I_CmsConstants.C_FLAG_GROUP_ROLE);
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE);
         }
     }
 

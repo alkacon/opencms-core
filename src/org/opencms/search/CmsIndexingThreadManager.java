@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.apache.lucene.index.IndexWriter;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,10 +118,10 @@ public class CmsIndexingThreadManager extends Thread {
                 m_report.println();
                 m_report.print(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                    I_CmsReport.C_FORMAT_WARNING);
+                    I_CmsReport.FORMAT_WARNING);
                 m_report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_TIMEOUT_1, res.getRootPath()),
-                    I_CmsReport.C_FORMAT_WARNING);
+                    I_CmsReport.FORMAT_WARNING);
 
                 m_abandonedCounter++;
                 thread.interrupt();
@@ -184,7 +184,7 @@ public class CmsIndexingThreadManager extends Thread {
 
             m_report.println(
                 Messages.get().container(Messages.RPT_SEARCH_INDEXING_END_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
             m_report.println(message);
         }
     }

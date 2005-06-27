@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,17 +52,17 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMessages {
 
     /** The suffix of a "short" localized key name. */
-    public static final String C_KEY_SHORT_SUFFIX = ".short";
+    public static final String KEY_SHORT_SUFFIX = ".short";
 
     /** Prefix / Suffix for unknown keys. */
-    public static final String C_UNKNOWN_KEY_EXTENSION = "???";
+    public static final String UNKNOWN_KEY_EXTENSION = "???";
 
     /** The resource bundle base name this object was initialized with. */
     protected String m_baseName;
@@ -163,11 +163,11 @@ public class CmsMessages {
     public static String formatUnknownKey(String keyName) {
 
         StringBuffer buf = new StringBuffer(64);
-        buf.append(C_UNKNOWN_KEY_EXTENSION);
+        buf.append(UNKNOWN_KEY_EXTENSION);
         buf.append(" ");
         buf.append(keyName);
         buf.append(" ");
-        buf.append(C_UNKNOWN_KEY_EXTENSION);
+        buf.append(UNKNOWN_KEY_EXTENSION);
         return buf.toString();
     }
 
@@ -184,7 +184,7 @@ public class CmsMessages {
      */
     public static boolean isUnknownKey(String value) {
 
-        return (value == null) || (value.startsWith(C_UNKNOWN_KEY_EXTENSION));
+        return (value == null) || (value.startsWith(UNKNOWN_KEY_EXTENSION));
     }
 
     /**

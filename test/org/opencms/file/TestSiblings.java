@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,10 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsResourceTranslator;
 
@@ -51,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -110,7 +109,7 @@ public class TestSiblings extends OpenCmsTestCase {
         tc.storeResources(cms, source);
         
         // copy source to target as a sibling, the new sibling should not be locked
-        cms.copyResource(source, target, I_CmsConstants.C_COPY_AS_SIBLING);
+        cms.copyResource(source, target, CmsResource.COPY_AS_SIBLING);
 
         // validate the source sibling
         
@@ -123,18 +122,18 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the sibling does not have a red flag
         tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
-        tc.assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        tc.assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
 
         // validate the target sibling
         
         // validate the fields that both in the existing and the new sibling have to be equal
         tc.assertFilter(cms, source, target, OpenCmsTestResourceFilter.FILTER_EXISTING_AND_NEW_SIBLING);
         // validate if the state of the new sibling is "new" (blue)
-        tc.assertState(cms, target, I_CmsConstants.C_STATE_NEW);
+        tc.assertState(cms, target, CmsResource.STATE_NEW);
         // validate if the new sibling has a red flag
         tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
-        tc.assertLock(cms, target, CmsLock.C_TYPE_EXCLUSIVE);        
+        tc.assertLock(cms, target, CmsLock.TYPE_EXCLUSIVE);        
     }
 
     /**
@@ -166,18 +165,18 @@ public class TestSiblings extends OpenCmsTestCase {
         // validate if the sibling does not have a red flag
         tc.assertModifiedInCurrentProject(cms, source, false);
         // validate if the lock is an exclusive shared lock for the current user
-        tc.assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);        
+        tc.assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);        
 
         // validate the target sibling
         
         // validate the fields that both in the existing and the new sibling have to be equal
         tc.assertFilter(cms, source, target, OpenCmsTestResourceFilter.FILTER_EXISTING_AND_NEW_SIBLING);
         // validate if the state of the new sibling is "new" (blue)
-        tc.assertState(cms, target, I_CmsConstants.C_STATE_NEW);
+        tc.assertState(cms, target, CmsResource.STATE_NEW);
         // validate if the new sibling has a red flag
         tc.assertModifiedInCurrentProject(cms, target, true);
         // validate if the lock is an exclusive lock for the current user
-        tc.assertLock(cms, target, CmsLock.C_TYPE_EXCLUSIVE);        
+        tc.assertLock(cms, target, CmsLock.TYPE_EXCLUSIVE);        
     }    
     
     /**
@@ -243,7 +242,7 @@ public class TestSiblings extends OpenCmsTestCase {
             cms.getRequestContext().setSiteRoot("/");
     
             // need to create the "galleries" folder manually
-            cms.createResource("/system/galleries", CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.createResource("/system/galleries", CmsResourceTypeFolder.RESOURCE_TYPE_ID);
             cms.unlockResource("/system/galleries");
             
             cms.getRequestContext().setSiteRoot("/sites/default");
@@ -257,10 +256,10 @@ public class TestSiblings extends OpenCmsTestCase {
             cms.lockResource("/sites/default");
             cms.lockResource("/system");       
             
-            // using the option "C_DELETE_OPTION_DELETE_SIBLINGS" caused an error here!
-            cms.deleteResource("/sites/default/importtest", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-            cms.deleteResource("/system/bodies", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
-            cms.deleteResource("/system/galleries/pics", I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS);
+            // using the option "DELETE_REMOVE_SIBLINGS" caused an error here!
+            cms.deleteResource("/sites/default/importtest", CmsResource.DELETE_REMOVE_SIBLINGS);
+            cms.deleteResource("/system/bodies", CmsResource.DELETE_REMOVE_SIBLINGS);
+            cms.deleteResource("/system/galleries/pics", CmsResource.DELETE_REMOVE_SIBLINGS);
             
             cms.unlockResource("/sites/default");
             cms.unlockResource("/system");               

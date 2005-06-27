@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/06/27 10:27:15 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,14 +78,14 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument {
 
     /** The property to set to enable xerces schema validation. */
-    public static final String C_XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
+    public static final String XERCES_SCHEMA_PROPERTY = "http://apache.org/xml/properties/schema/external-noNamespaceSchemaLocation";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsXmlContent.class);

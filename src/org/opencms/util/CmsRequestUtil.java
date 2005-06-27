@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.util;
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 
 import java.io.IOException;
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,6 +69,34 @@ public final class CmsRequestUtil {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsRequestUtil.class);
+    /** HTTP Accept-Charset Header for internal requests used during static export. */
+    public static final String HEADER_ACCEPT_CHARSET = "Accept-Charset";
+    /** HTTP Accept-Language Header for internal requests used during static export. */
+    public static final String HEADER_ACCEPT_LANGUAGE = "Accept-Language";
+    /** HTTP Header "Cache-Control". */
+    public static final String HEADER_CACHE_CONTROL = "Cache-Control";
+    /** HTTP Header "Expires". */
+    public static final String HEADER_EXPIRES = "Expires";
+    /** HTTP Header "If-Modified-Since". */
+    public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+    /** HTTP Header "Last-Modified". */
+    public static final String HEADER_LAST_MODIFIED = "Last-Modified";
+    /** HTTP Header for internal requests used during static export. */
+    public static final String HEADER_OPENCMS_EXPORT = "OpenCms-Export";
+    /** HTTP Header "Pragma". */
+    public static final String HEADER_PRAGMA = "Pragma";
+    /** HTTP Header "Server". */
+    public static final String HEADER_SERVER = "Server";
+    /** HTTP Header value "max-age=" (for "Cache-Control"). */
+    public static final String HEADER_VALUE_MAX_AGE = "max-age=";
+    /** HTTP Header value "must-revalidate" (for "Cache-Control"). */
+    public static final String HEADER_VALUE_MUST_REVALIDATE = "must-revalidate";
+    /** HTTP Header value "no-cache" (for "Cache-Control"). */
+    public static final String HEADER_VALUE_NO_CACHE = "no-cache";
+    /** HTTP Header "WWW-Authenticate". */
+    public static final String HEADER_WWW_AUTHENTICATE = "WWW-Authenticate";
+    /** Identifier for x-forwarded-for (i.e. proxied) request headers. */
+    public static final String HEADER_X_FORWARDED_FOR = "x-forwarded-for";
 
     /** 
      * Default constructor (empty), private because this class has only 
@@ -484,9 +511,9 @@ public final class CmsRequestUtil {
      */
     public static void setNoCacheHeaders(HttpServletResponse res) {
 
-        res.setHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MAX_AGE + "0");
-        res.addHeader(I_CmsConstants.C_HEADER_CACHE_CONTROL, I_CmsConstants.C_HEADER_VALUE_MUST_REVALIDATE);
-        res.setHeader(I_CmsConstants.C_HEADER_PRAGMA, I_CmsConstants.C_HEADER_VALUE_NO_CACHE);
+        res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + "0");
+        res.addHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MUST_REVALIDATE);
+        res.setHeader(CmsRequestUtil.HEADER_PRAGMA, CmsRequestUtil.HEADER_VALUE_NO_CACHE);
     }
 
     /**

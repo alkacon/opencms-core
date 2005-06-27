@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsEditLoginMessageDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,14 +54,14 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
 
     /** localized messages Keys prefix. */
-    public static final String C_KEY_PREFIX = "loginmsg";
+    public static final String KEY_PREFIX = "loginmsg";
     
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
@@ -157,7 +157,7 @@ public class CmsEditLoginMessageDialog extends CmsWidgetDialog {
         // initialize the object to use for the dialog
         initLoginMessageObject();
 
-        setKeyPrefix(C_KEY_PREFIX);
+        setKeyPrefix(KEY_PREFIX);
         
         // required to read the default values for the optional context parameters for the widgets
         CmsLoginMessage def = new CmsLoginMessage();

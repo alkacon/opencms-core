@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,11 +104,11 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
      */
     public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException, CmsRoleViolationException {
         
-        report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         String[] exportPaths = (String[])getExportPaths().toArray(new String[getExportPaths().size()]);
         new CmsExport(cms, getFileName(), exportPaths, isIncludeSystem(), isIncludeUnchanged(),
             null, isExportUserdata(), getContentAge(), report);
-        report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**
@@ -159,12 +159,12 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
         report.println(
             Messages.get().container(Messages.RPT_IMPORT_DB_BEGIN_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
         CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
         vfsImport.importResources();
         report.println(
             Messages.get().container(Messages.RPT_IMPORT_DB_END_0),
-            I_CmsReport.C_FORMAT_HEADLINE);
+            I_CmsReport.FORMAT_HEADLINE);
     }
 
     /**

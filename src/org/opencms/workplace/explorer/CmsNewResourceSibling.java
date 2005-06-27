@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +141,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
                         targetName = targetName.substring(0, targetName.length() - 1);
                     }
                     // copy the folder
-                    getCms().copyResource(targetName, fullResourceName, I_CmsConstants.C_COPY_AS_SIBLING);
+                    getCms().copyResource(targetName, fullResourceName, CmsResource.COPY_AS_SIBLING);
                 } else {
                     // link URL is a file, so create sibling of the link target
                     List targetProperties = null;
@@ -195,7 +194,7 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
         try {
             CmsLock lock = getCms().getLock(newRes);
             // if the new resource has no exclusive lock, set the editProps flag to false
-            if (lock.getType() != CmsLock.C_TYPE_EXCLUSIVE) {
+            if (lock.getType() != CmsLock.TYPE_EXCLUSIVE) {
                 editProps = false;
             }
         } catch (CmsException e) {

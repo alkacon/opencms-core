@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,7 +58,7 @@ public class CmsStringBufferReport extends A_CmsReport {
      */
     public CmsStringBufferReport(Locale locale) {
 
-        this(C_BUNDLE_NAME, locale);
+        this(BUNDLE_NAME, locale);
     }
 
     /**
@@ -90,11 +90,11 @@ public class CmsStringBufferReport extends A_CmsReport {
     public void print(String value, int format) {
 
         switch (format) {
-            case C_FORMAT_HEADLINE:
-            case C_FORMAT_WARNING:
-            case C_FORMAT_NOTE:
-            case C_FORMAT_OK:
-            case C_FORMAT_DEFAULT:
+            case FORMAT_HEADLINE:
+            case FORMAT_WARNING:
+            case FORMAT_NOTE:
+            case FORMAT_OK:
+            case FORMAT_DEFAULT:
             default:
                 m_strBuf.append(value);
         }
@@ -113,8 +113,8 @@ public class CmsStringBufferReport extends A_CmsReport {
      */
     public void println(Throwable t) {
 
-        print(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null), C_FORMAT_WARNING);
-        println(t.getMessage(), C_FORMAT_WARNING);
+        print(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null), FORMAT_WARNING);
+        println(t.getMessage(), FORMAT_WARNING);
 
         StackTraceElement[] stackTrace = t.getStackTrace();
         for (int i = 0; i < stackTrace.length; i++) {

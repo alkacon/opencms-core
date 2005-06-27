@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsExplorerHead.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@ package com.opencms.workplace;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -44,7 +42,7 @@ import java.util.Hashtable;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -154,7 +152,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
 
         // if the viewfile value is included in the request, exchange the explorer
         // read with a back button to the file list
-        viewfile = (String)parameters.get(C_PARA_VIEWFILE);
+        viewfile = (String)parameters.get(CmsWorkplaceDefault.C_PARA_VIEWFILE);
         if(viewfile != null) {
             template = "viewfile";
         }
@@ -162,7 +160,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
 
             // Check if the URL parameter was included in the request. It is set when
             // a folder or file is entered in the address input field.
-            url = (String)parameters.get(C_PARA_URL);
+            url = (String)parameters.get(CmsWorkplaceDefault.C_PARA_URL);
             if(url == null) {
                 xmlTemplateDocument.clearStartup();
             }
@@ -177,12 +175,12 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
                     // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
                     currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
                     if(currentFilelist == null) {
-                        currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+                        currentFilelist = cms.getSitePath(cms.readFolder("/"));
                     }
-                    session.putValue(C_PARA_PREVIOUSLIST, currentFilelist);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_PREVIOUSLIST, currentFilelist);
                     // session.putValue(C_PARA_FILELIST, url);
                     CmsWorkplaceAction.setCurrentFolder(url, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
-                    session.putValue(C_PARA_FOLDER, url);
+                    session.putValue(CmsWorkplaceDefault.C_PARA_FOLDER, url);
                 }
                 else {
 
@@ -196,17 +194,17 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
 
             // check if a previous filelist parameter was included in the request.
             // if a previous filelist was included, overwrite the value in the session for later use.
-            previous = (String)parameters.get(C_PARA_PREVIOUSLIST);
+            previous = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PREVIOUSLIST);
             if(previous != null) {
-                session.putValue(C_PARA_PREVIOUSLIST, previous);
+                session.putValue(CmsWorkplaceDefault.C_PARA_PREVIOUSLIST, previous);
             }
 
             // get the previous current filelist to calculate the link for the back button.
-            previousFilelist = (String)session.getValue(C_PARA_PREVIOUSLIST);
+            previousFilelist = (String)session.getValue(CmsWorkplaceDefault.C_PARA_PREVIOUSLIST);
 
             //check if a filelist  parameter was included in the request.
             //if a filelist was included, overwrite the value in the session for later use.
-            filelist = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_FILELIST);
+            filelist = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(CmsWorkplaceDefault.C_PARA_FILELIST);
             if(filelist != null) {
                 // session.putValue(C_PARA_FILELIST, filelist);
                 CmsWorkplaceAction.setCurrentFolder(filelist, CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
@@ -218,7 +216,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
             
             // if no filelist parameter was given, use the current folder
             if(currentFilelist == null) {
-                currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+                currentFilelist = cms.getSitePath(cms.readFolder("/"));
             }
             if(!currentFilelist.equals("/")) {
 
@@ -308,7 +306,7 @@ public class CmsExplorerHead extends CmsWorkplaceDefault {
 
         // if no filelist parameter was given, use the current folder
         if(currentFilelist == null) {
-            currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+            currentFilelist = cms.getSitePath(cms.readFolder("/"));
         }
         return currentFilelist;
     }

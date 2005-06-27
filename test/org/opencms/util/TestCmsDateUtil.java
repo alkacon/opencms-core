@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsDateUtil.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -69,7 +69,7 @@ public class TestCmsDateUtil extends TestCase {
         long dateLong = CmsDateUtil.parseHeaderDate(dateString);                
         String result = CmsDateUtil.getHeaderDate(dateLong);        
         assertEquals(dateString, result);
-        assertSame(CmsDateUtil.C_HEADER_DEFAULT.getTimeZone(), CmsDateUtil.C_GMT_TIMEZONE);
+        assertSame(CmsDateUtil.HEADER_DEFAULT.getTimeZone(), CmsDateUtil.GMT_TIMEZONE);
     }
     
     /**
@@ -83,21 +83,21 @@ public class TestCmsDateUtil extends TestCase {
     public void testHttpDateTimeZoneUsage() throws Exception {
 
         TimeZone wrongZone = TimeZone.getTimeZone("GMT+1");
-        CmsDateUtil.C_HEADER_DEFAULT.setTimeZone(wrongZone);
+        CmsDateUtil.HEADER_DEFAULT.setTimeZone(wrongZone);
         
         String dateString = "Mon, 12 Jul 2004 11:00:00 GMT";
         long dateLong = CmsDateUtil.parseHeaderDate(dateString);                
         String result = CmsDateUtil.getHeaderDate(dateLong);        
         assertEquals(dateString, result);
-        assertSame(CmsDateUtil.C_HEADER_DEFAULT.getTimeZone(), CmsDateUtil.C_GMT_TIMEZONE);
+        assertSame(CmsDateUtil.HEADER_DEFAULT.getTimeZone(), CmsDateUtil.GMT_TIMEZONE);
         
         wrongZone = TimeZone.getTimeZone("GMT+2");
-        CmsDateUtil.C_HEADER_DEFAULT.setTimeZone(wrongZone);
+        CmsDateUtil.HEADER_DEFAULT.setTimeZone(wrongZone);
         
         dateString = "Tue, 13 Jul 2004 12:00:00 GMT";
         dateLong = CmsDateUtil.parseHeaderDate(dateString);                
         result = CmsDateUtil.getHeaderDate(dateLong);        
         assertEquals(dateString, result);
-        assertSame(CmsDateUtil.C_HEADER_DEFAULT.getTimeZone(), CmsDateUtil.C_GMT_TIMEZONE);
+        assertSame(CmsDateUtil.HEADER_DEFAULT.getTimeZone(), CmsDateUtil.GMT_TIMEZONE);
     }
 }

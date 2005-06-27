@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2005/06/24 14:15:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,11 +86,11 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
     
     
     /** The lock dialog URI. */
-    public static final String URI_LOCK_DIALOG = C_PATH_DIALOGS + "lock_standard.jsp";
+    public static final String URI_LOCK_DIALOG = PATH_DIALOGS + "lock_standard.jsp";
     /** The steal lock dialog URI. */
-    public static final String URI_LOCKCHANGE_DIALOG = C_PATH_DIALOGS + "lockchange_standard.jsp";
+    public static final String URI_LOCKCHANGE_DIALOG = PATH_DIALOGS + "lockchange_standard.jsp";
     /** The unlock dialog URI. */
-    public static final String URI_UNLOCK_DIALOG = C_PATH_DIALOGS + "unlock_standard.jsp";
+    public static final String URI_UNLOCK_DIALOG = PATH_DIALOGS + "unlock_standard.jsp";
     
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -149,7 +149,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
      */
     public void actionToggleLock() throws JspException {
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
     
         try {
             String resName = getParamResource();

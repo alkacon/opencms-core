@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/template/Attic/CmsXmlControlFile.java,v $
- * Date   : $Date: 2005/06/21 15:49:58 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,7 @@ import org.opencms.importexport.CmsCompatibleCheck;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
-import org.opencms.workplace.I_CmsWpConstants;
 
-import com.opencms.core.I_CmsConstants;
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.cache.CmsElementDefinition;
 import com.opencms.template.cache.CmsElementDefinitionCollection;
@@ -56,7 +54,7 @@ import org.w3c.dom.NodeList;
  * Content definition for "clickable" and user requestable XML body files.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:58 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:20 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -478,7 +476,7 @@ public class CmsXmlControlFile extends A_CmsXmlContent {
             if ((e instanceof CmsLegacyException)
                 && (((CmsLegacyException)e).getType() == CmsLegacyException.C_NOT_FOUND)) {
 
-                String defaultBodyPath = I_CmsWpConstants.C_VFS_PATH_BODIES
+                String defaultBodyPath = CmsCompatibleCheck.VFS_PATH_BODIES
                     + CmsResource.getParentFolder(cms.getSitePath(page)).substring(1)
                     + page.getName();
                 try {

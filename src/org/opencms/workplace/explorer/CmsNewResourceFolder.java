@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/06/24 14:13:08 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,10 +173,10 @@ public class CmsNewResourceFolder extends CmsNewResource {
                     + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
                 try {
                     // redirect to new xmlpage dialog
-                    sendCmsRedirect(C_PATH_DIALOGS + newUri);
+                    sendCmsRedirect(PATH_DIALOGS + newUri);
                     return;
                 } catch (IOException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_REDIRECT_XMLPAGE_FAILED_1, C_PATH_DIALOGS + newUri));
+                    LOG.error(Messages.get().key(Messages.LOG_REDIRECT_XMLPAGE_FAILED_1, PATH_DIALOGS + newUri));
                 }
             }
         }

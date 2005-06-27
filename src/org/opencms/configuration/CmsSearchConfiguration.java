@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,17 +54,18 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-search.dtd";
+    private static final String CONFIGURATION_DTD_NAME = "opencms-search.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-search.xml";
+    private static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
+    
     private static final String N_ANALYZER = "analyzer";
     private static final String N_ANALYZERS = "analyzers";
     private static final String N_CACHE = "cache";
@@ -88,13 +89,13 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     private static final String N_RESOURCES = "resources";
     private static final String N_RESOURCETYPE = "resourcetype";
     private static final String N_RESOURCETYPES = "resourcetypes";
-
     private static final String N_SEARCH = "search";
-    private static final String C_XPATH_SEARCH = "*/" + N_SEARCH;
     private static final String N_SOURCE = "source";
     private static final String N_SOURCES = "sources";
     private static final String N_STEMMER = "stemmer";
     private static final String N_TIMEOUT = "timeout";
+    
+    private static final String XPATH_SEARCH = "*/" + N_SEARCH;
 
     /** The configured search manager. */
     private CmsSearchManager m_searchManager;
@@ -104,7 +105,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public CmsSearchConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
         }
@@ -118,31 +119,31 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         String xPath = null;
 
         // add finish rule
-        digester.addCallMethod(C_XPATH_SEARCH, "initializeFinished");
+        digester.addCallMethod(XPATH_SEARCH, "initializeFinished");
 
         // creation of the search manager        
-        digester.addObjectCreate(C_XPATH_SEARCH, CmsSearchManager.class);
+        digester.addObjectCreate(XPATH_SEARCH, CmsSearchManager.class);
 
         // search manager finished
-        digester.addSetNext(C_XPATH_SEARCH, "setSearchManager");
+        digester.addSetNext(XPATH_SEARCH, "setSearchManager");
 
         // result cache size rule
-        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_CACHE, "setResultCacheSize", 0);
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_CACHE, "setResultCacheSize", 0);
 
         // directory rule
-        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_DIRECTORY, "setDirectory", 0);
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_DIRECTORY, "setDirectory", 0);
 
         // timeout rule
-        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_TIMEOUT, "setTimeout", 0);
 
         // rule for the max. char. lenght of the search result excerpt
-        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_EXCERPT, "setMaxExcerptLength", 0);
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_EXCERPT, "setMaxExcerptLength", 0);
 
         // rule for the highlighter to highlight the search terms in the excerpt of the search result
-        digester.addCallMethod(C_XPATH_SEARCH + "/" + N_HIGHLIGHTER, "setHighlighter", 0);
+        digester.addCallMethod(XPATH_SEARCH + "/" + N_HIGHLIGHTER, "setHighlighter", 0);
 
         // document type rule
-        xPath = C_XPATH_SEARCH + "/" + N_DOCUMENTTYPES + "/" + N_DOCUMENTTYPE;
+        xPath = XPATH_SEARCH + "/" + N_DOCUMENTTYPES + "/" + N_DOCUMENTTYPE;
         digester.addObjectCreate(xPath, CmsSearchDocumentType.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_CLASS, "setClassName", 0);
@@ -151,7 +152,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext(xPath, "addDocumentTypeConfig");
 
         // analyzer rule
-        xPath = C_XPATH_SEARCH + "/" + N_ANALYZERS + "/" + N_ANALYZER;
+        xPath = XPATH_SEARCH + "/" + N_ANALYZERS + "/" + N_ANALYZER;
         digester.addObjectCreate(xPath, CmsSearchAnalyzer.class);
         digester.addCallMethod(xPath + "/" + N_CLASS, "setClassName", 0);
         digester.addCallMethod(xPath + "/" + N_STEMMER, "setStemmerAlgorithm", 0);
@@ -159,7 +160,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext(xPath, "addAnalyzer");
 
         // search index rule
-        xPath = C_XPATH_SEARCH + "/" + N_INDEXES + "/" + N_INDEX;
+        xPath = XPATH_SEARCH + "/" + N_INDEXES + "/" + N_INDEX;
         digester.addObjectCreate(xPath, CmsSearchIndex.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_REBUILD, "setRebuildMode", 0);
@@ -169,7 +170,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addSetNext(xPath, "addSearchIndex");
 
         // search index source rule
-        xPath = C_XPATH_SEARCH + "/" + N_INDEXSOURCES + "/" + N_INDEXSOURCE;
+        xPath = XPATH_SEARCH + "/" + N_INDEXSOURCES + "/" + N_INDEXSOURCE;
         digester.addObjectCreate(xPath, CmsSearchIndexSource.class);
         digester.addCallMethod(xPath + "/" + N_NAME, "setName", 0);
         digester.addCallMethod(xPath + "/" + N_INDEXER, "setIndexerClassName", 1);
@@ -181,7 +182,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
         // generic <param> parameter rules
         digester.addCallMethod(
             "*/" + I_CmsXmlConfiguration.N_PARAM,
-            I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
             2);
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
@@ -355,7 +356,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 
     /**

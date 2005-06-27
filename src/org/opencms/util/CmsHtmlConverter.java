@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,34 +60,35 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlConverter {
 
     /** param value for disabled mode. **/
-    public static final String C_PARAM_DISABLED = "false";
+    public static final String PARAM_DISABLED = "false";
 
     /** param value for enabled mode. **/
-    public static final String C_PARAM_ENABLED = "true";
+    public static final String PARAM_ENABLED = "true";
 
     /** param value for WORD mode. **/
-    public static final String C_PARAM_WORD = "cleanup";
+    public static final String PARAM_WORD = "cleanup";
 
     /** param value for XHTML mode. **/
-    public static final String C_PARAM_XHTML = "xhtml";
+    public static final String PARAM_XHTML = "xhtml";
 
     /** constant for disabled mode. */
-    static final int C_MODE_DISABLED = 0;
+    static final int MODE_DISABLED = 0;
 
     /** constant for enabled mode. */
-    static final int C_MODE_ENABLED = 1;
+    static final int MODE_ENABLED = 1;
+
     /** constant for WORD-removal parsing mode. */
-    static final int C_MODE_WORD = 3;
+    static final int MODE_WORD = 3;
 
     /** constant for XHTML parsing mode. */
-    static final int C_MODE_XHTML = 2;
+    static final int MODE_XHTML = 2;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlConverter.class);
@@ -131,15 +132,15 @@ public class CmsHtmlConverter {
     public CmsHtmlConverter() {
 
         m_tidy = new Tidy();
-        m_encoding = CmsEncoder.C_UTF8_ENCODING;
-        init(C_PARAM_ENABLED);
+        m_encoding = CmsEncoder.ENCODING_UTF_8;
+        init(PARAM_ENABLED);
     }
 
     /**
      * Constructor, creates a new CmsHtmlConverter.<p>
      * 
      * @param encoding the input encoding
-     * @param mode the conversion mode, possible values are C_MODE_XHTML, C_MODE_HTML, C_MODE_WORD
+     * @param mode the conversion mode, possible values are MODE_XHTML, MODE_HTML, MODE_WORD
      */
     public CmsHtmlConverter(String encoding, String mode) {
 
@@ -170,7 +171,7 @@ public class CmsHtmlConverter {
             contentConversion = contentConversionProperty.getValue();
         } catch (CmsException e) {
             // if there was an error reading the property, choose a default value
-            contentConversion = CmsHtmlConverter.C_PARAM_DISABLED;
+            contentConversion = CmsHtmlConverter.PARAM_DISABLED;
         }
         return contentConversion;
     }
@@ -184,7 +185,7 @@ public class CmsHtmlConverter {
     public static boolean isConversionEnabled(String conversionMode) {
 
         boolean value = true;
-        if ((conversionMode == null) || (conversionMode.indexOf(C_MODE_DISABLED) != -1)) {
+        if ((conversionMode == null) || (conversionMode.indexOf(MODE_DISABLED) != -1)) {
             value = false;
         }
         return value;
@@ -202,7 +203,7 @@ public class CmsHtmlConverter {
     public String adjustHtml(String htmlInput) {
 
         // we only have to do an adjustment id we are in WORD mode
-        if (m_mode.contains(C_PARAM_WORD)) {
+        if (m_mode.contains(PARAM_WORD)) {
             // check if we have some opening and closing html tags
             if ((htmlInput.toLowerCase().indexOf("<html>") == -1) && (htmlInput.toLowerCase().indexOf("</html>") == -1)) {
                 // add a correct <html> tag for word generated html
@@ -226,7 +227,7 @@ public class CmsHtmlConverter {
     public byte[] convertToByte(byte[] htmlInput) throws Exception {
 
         // only do some parsing if the parsing mode is not set to disabled
-        if (m_mode.size() > 0 && !m_mode.contains(C_PARAM_DISABLED)) {
+        if (m_mode.size() > 0 && !m_mode.contains(PARAM_DISABLED)) {
 
             int loop = 10;
             int count = 0;
@@ -491,14 +492,14 @@ public class CmsHtmlConverter {
         m_mode = extractModes(mode);
 
         // confiugurate the tidy depending on the operation mode
-        if (m_mode.contains(C_PARAM_ENABLED)) {
+        if (m_mode.contains(PARAM_ENABLED)) {
             m_tidy.setXHTML(false);
             m_tidy.setWord2000(false);
         }
-        if (m_mode.contains(C_PARAM_XHTML)) {
+        if (m_mode.contains(PARAM_XHTML)) {
             m_tidy.setXHTML(true);
         }
-        if (m_mode.contains(C_PARAM_WORD)) {
+        if (m_mode.contains(PARAM_WORD)) {
             m_tidy.setWord2000(true);
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -181,7 +181,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             // last element was direct editable, close it
             CmsJspTagEditable.includeDirectEditElement(
                 pageContext,
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END,
+                I_CmsEditorActionHandler.DIRECT_EDIT_AREA_END,
                 m_resourceName,
                 null,
                 null,
@@ -206,7 +206,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
                 m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
                     pageContext,
-                    I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
+                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
                     m_resourceName,
                     null,
                     m_directEditFollowOptions,
@@ -359,7 +359,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
             m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
                 pageContext,
-                I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
+                I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
                 m_resourceName,
                 null,
                 directEditOptions,

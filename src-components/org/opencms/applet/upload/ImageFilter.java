@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImageFilter.java,v $
- * Date   : $Date: 2005/06/27 14:21:17 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:30 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.applet.upload;
 
 import java.io.File;
+
 import javax.swing.filechooser.FileFilter;
 
 /**
@@ -43,7 +44,7 @@ import javax.swing.filechooser.FileFilter;
  * 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */

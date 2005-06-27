@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestRestoreFromHistory.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -47,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit tests for the history restore method.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestRestoreFromHistory extends OpenCmsTestCase {
     
@@ -290,7 +289,7 @@ public class TestRestoreFromHistory extends OpenCmsTestCase {
         
         // now delete and publish the resource
         cms.lockResource(resourcename);
-        cms.deleteResource(resourcename, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        cms.deleteResource(resourcename, CmsResource.DELETE_PRESERVE_SIBLINGS);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();
         

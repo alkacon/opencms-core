@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsSecurityException;
@@ -65,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +137,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * populate a newly created folder with some default resources.<p> 
      * 
      * If target is <code>null</code>, the macro {@link #MACRO_RESOURCE_FOLDER_PATH} is used as default.
-     * If type is <code>null</code>, the copy type {@link I_CmsConstants#C_COPY_AS_NEW} is used as default.<p>
+     * If type is <code>null</code>, the copy type {@link CmsResource#COPY_AS_NEW} is used as default.<p>
      * 
      * @param source the source resource
      * @param target the target resource (may contain macros)
@@ -407,7 +406,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         // and prevents the security manager from inserting the current time
         resource.setDateLastModified(resource.getDateLastModified());
         // ensure resource record is updated
-        resource.setState(I_CmsConstants.C_STATE_NEW);
+        resource.setState(CmsResource.STATE_NEW);
         return securityManager.importResource(
             cms.getRequestContext(),
             cms.getRequestContext().addSiteRoot(resourcename),
@@ -549,11 +548,11 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             CmsResourceFilter.IGNORE_EXPIRATION);
 
         // check if the resource to move is new or existing
-        boolean isNew = resource.getState() == I_CmsConstants.C_STATE_NEW;
+        boolean isNew = resource.getState() == CmsResource.STATE_NEW;
 
-        copyResource(cms, securityManager, resource, destination, I_CmsConstants.C_COPY_AS_SIBLING);
+        copyResource(cms, securityManager, resource, destination, CmsResource.COPY_AS_SIBLING);
 
-        deleteResource(cms, securityManager, resource, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+        deleteResource(cms, securityManager, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
 
         // make sure lock is switched
         CmsResource destinationResource = securityManager.readResource(
@@ -563,7 +562,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         if (isNew) {
             // if the source was new, destination must get a new lock
-            securityManager.lockResource(cms.getRequestContext(), destinationResource, CmsLock.C_MODE_COMMON);
+            securityManager.lockResource(cms.getRequestContext(), destinationResource, CmsLock.COMMON);
         } else {
             // if source existed, destination must "steal" the lock 
             securityManager.changeLock(cms.getRequestContext(), destinationResource);

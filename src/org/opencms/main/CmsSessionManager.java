@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public class CmsSessionManager {
 
         if (getSessionInfo(sessionId) == null) {
             // return empty message buffer if the session is gone
-            return BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(CmsSessionInfo.C_QUEUE_SIZE));
+            return BufferUtils.synchronizedBuffer(new BoundedFifoBuffer(CmsSessionInfo.QUEUE_SIZE));
         }
         return getSessionInfo(sessionId).getBroadcastQueue();
     }

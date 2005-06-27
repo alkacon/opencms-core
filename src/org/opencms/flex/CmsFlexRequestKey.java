@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestKey.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,8 +33,8 @@ package org.opencms.flex;
 
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 
 import java.util.Map;
 
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -104,7 +104,7 @@ public class CmsFlexRequestKey {
      */
     public String getElement() {
 
-        return m_request.getParameter(I_CmsConstants.C_PARAMETER_ELEMENT);
+        return m_request.getParameter(I_CmsResourceLoader.PARAMETER_ELEMENT);
     }
 
     /**

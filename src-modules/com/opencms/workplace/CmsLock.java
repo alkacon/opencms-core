@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLock.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.workplace.CmsWorkplaceAction;
 
 import com.opencms.core.I_CmsConstants;
 import com.opencms.core.I_CmsSession;
@@ -50,7 +49,7 @@ import java.util.Hashtable;
  * @author Michael Emmerich
  * @author Michaela Schleich
  * @author Alexander Lucas
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -77,25 +76,25 @@ public class CmsLock extends CmsWorkplaceDefault {
         CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
 
         // clear session values on first load
-        String initial = (String)parameters.get(C_PARA_INITIAL);
+        String initial = (String)parameters.get(CmsWorkplaceDefault.C_PARA_INITIAL);
         if(initial != null) {
 
             // remove all session values
-            session.removeValue(C_PARA_RESOURCE);
+            session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
             session.removeValue("lasturl");
         }
 
         // get the lasturl parameter
         String lasturl = getLastUrl(cms, parameters);
-        String lock = (String)parameters.get(C_PARA_LOCK);
-        String filename = (String)parameters.get(C_PARA_RESOURCE);
+        String lock = (String)parameters.get(CmsWorkplaceDefault.C_PARA_LOCK);
+        String filename = (String)parameters.get(CmsWorkplaceDefault.C_PARA_RESOURCE);
         if(filename != null) {
-            session.putValue(C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
         }
 
         //check if the user wants the lock dialog
         // if yes, the lock page is shown for the first time
-        filename = (String)session.getValue(C_PARA_RESOURCE);
+        filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
         CmsResource file = cms.readResource(filename);
 
         // select the template to be displayed
@@ -118,7 +117,7 @@ public class CmsLock extends CmsWorkplaceDefault {
         }
         if(lock != null) {
             if(lock.equals("true")) {
-                session.removeValue(C_PARA_RESOURCE);
+                session.removeValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
                 try{
                     cms.lockResource(filename);  
                 } catch(CmsException e){

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.jsp;
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.flex.CmsFlexResponse;
+import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
@@ -56,7 +56,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +164,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
         if (element != null) {
             // add template element selector for JSP templates
-            addParameter(parameterMap, I_CmsConstants.C_PARAMETER_ELEMENT, element, true);
+            addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
         }
 
         // resolve possible relative URI
@@ -194,7 +194,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             if (editable) {
                 directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
                     context,
-                    I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_START,
+                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
                     target,
                     element,
                     null,
@@ -206,7 +206,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             controller.getCurrentRequest().addParameterMap(parameterMap);
 
             // write out a C_FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
-            context.getOut().print(CmsFlexResponse.C_FLEX_CACHE_DELIMITER);
+            context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
 
             // add the target to the include list (the list will be initialized if it is currently empty)
             controller.getCurrentResponse().addToIncludeList(target, parameterMap);
@@ -218,7 +218,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             if (directEditPermissions != null) {
                 CmsJspTagEditable.includeDirectEditElement(
                     context,
-                    I_CmsEditorActionHandler.C_DIRECT_EDIT_AREA_END,
+                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_END,
                     target,
                     element,
                     null,

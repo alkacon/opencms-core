@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,8 @@ import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsHtmlExtractor;
 import org.opencms.util.CmsStringUtil;
 
-import com.opencms.defaults.master.*;
+import com.opencms.defaults.master.CmsMasterContent;
+import com.opencms.defaults.master.CmsMasterDataSet;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -56,7 +57,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.7 $ $Date: 2005/06/23 14:01:14 $
+ * @version $Revision: 1.8 $ $Date: 2005/06/27 23:22:15 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 

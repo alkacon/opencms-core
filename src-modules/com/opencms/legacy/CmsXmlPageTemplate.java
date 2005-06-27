@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlPageTemplate.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,8 @@ import org.opencms.main.OpenCms;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
-import com.opencms.template.*;
+import com.opencms.template.CmsCacheDirectives;
+import com.opencms.template.CmsDumpTemplate;
 
 import java.util.Hashtable;
 import java.util.Locale;
@@ -52,7 +53,7 @@ import java.util.Locale;
  *
  * @author  Carsten Weinholz
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * @since 5.1
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -87,7 +88,7 @@ public class CmsXmlPageTemplate extends CmsDumpTemplate {
         byte[] s = null;
         try {
             CmsFile file = cms.readFile(filename);
-            CmsXmlPageLoader loader = (CmsXmlPageLoader)OpenCms.getResourceManager().getLoader(CmsXmlPageLoader.C_RESOURCE_LOADER_ID);
+            CmsXmlPageLoader loader = (CmsXmlPageLoader)OpenCms.getResourceManager().getLoader(CmsXmlPageLoader.RESOURCE_LOADER_ID);
             // check the current locales
             CmsXmlPage page = CmsXmlPageFactory.unmarshal(cms, file);
             String absolutePath = cms.getSitePath(file);

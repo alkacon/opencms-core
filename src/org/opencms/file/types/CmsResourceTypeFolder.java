@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,17 +39,17 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
 
     /** The type id of this resource. */
-    public static final int C_RESOURCE_TYPE_ID = 0;
+    public static final int RESOURCE_TYPE_ID = 0;
 
     /** The name of this resource type. */
-    public static final String C_RESOURCE_TYPE_NAME = "folder";
+    public static final String RESOURCE_TYPE_NAME = "folder";
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
@@ -63,8 +63,8 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     public CmsResourceTypeFolder() {
 
         super();
-        m_typeId = C_RESOURCE_TYPE_ID;
-        m_typeName = C_RESOURCE_TYPE_NAME;
+        m_typeId = RESOURCE_TYPE_ID;
+        m_typeName = RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -84,7 +84,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
      */
     public static String getStaticTypeName() {
 
-        return C_RESOURCE_TYPE_NAME;
+        return RESOURCE_TYPE_NAME;
     }
 
     /**
@@ -101,19 +101,19 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
                 new Integer(getStaticTypeId())));
         }
 
-        if (!C_RESOURCE_TYPE_NAME.equals(name)) {
+        if (!RESOURCE_TYPE_NAME.equals(name)) {
             // default resource type MUST have default name
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_NAME_3,
                 this.getClass().getName(),
-                C_RESOURCE_TYPE_NAME,
+                RESOURCE_TYPE_NAME,
                 name));
         }
 
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
     }

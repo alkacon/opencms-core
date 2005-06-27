@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsButtonJavascript.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;JAVASCRIPTBUTTON&gt;</code>.
  * 
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -75,17 +75,17 @@ public class CmsButtonJavascript extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // Read button parameters
-        String buttonName = n.getAttribute(C_BUTTON_NAME);
-        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
-        String buttonAlt = n.getAttribute(C_BUTTON_ALT);
-        String buttonHref = n.getAttribute(C_BUTTON_HREF);
+        String buttonName = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_NAME);
+        String buttonAction = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_ACTION);
+        String buttonAlt = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_ALT);
+        String buttonHref = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_HREF);
         if(buttonHref == null || "".equals(buttonHref)) {
             buttonHref = "";
         }
         
         // Get button definition and language values
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        buttonAlt = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonAlt);
+        buttonAlt = lang.getLanguageValue(CmsWorkplaceDefault.C_LANG_BUTTON + "." + buttonAlt);
         
         // get the processed button.
         String result = buttondef.getJavascriptButton(buttonName, buttonAction, 

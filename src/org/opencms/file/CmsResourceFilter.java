@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/06/27 09:30:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
-
 /**
  * Provides filters for resource result sets obtained from requests to the VFS.<p>
  * 
@@ -46,7 +44,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0 
  */
@@ -67,7 +65,7 @@ public final class CmsResourceFilter {
     /**
      * Filter to display all modified (new/changed/deleted) resources.<p>
      */
-    public static final CmsResourceFilter ALL_MODIFIED = ALL.addExcludeState(I_CmsConstants.C_STATE_UNCHANGED);
+    public static final CmsResourceFilter ALL_MODIFIED = ALL.addExcludeState(CmsResource.STATE_UNCHANGED);
 
     /** 
      * Default filter to display resources for the online project.<p>
@@ -79,7 +77,7 @@ public final class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static final CmsResourceFilter DEFAULT = ALL.addExcludeState(I_CmsConstants.C_STATE_DELETED).addRequireTimerange();
+    public static final CmsResourceFilter DEFAULT = ALL.addExcludeState(CmsResource.STATE_DELETED).addRequireTimerange();
 
     /**
      * Default filter to display files for the online project.<p>
@@ -101,7 +99,7 @@ public final class CmsResourceFilter {
      * <li>Includes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static final CmsResourceFilter IGNORE_EXPIRATION = ALL.addExcludeState(I_CmsConstants.C_STATE_DELETED);
+    public static final CmsResourceFilter IGNORE_EXPIRATION = ALL.addExcludeState(CmsResource.STATE_DELETED);
 
     /** 
      * Filter to display only visible resources.<p>
@@ -125,7 +123,7 @@ public final class CmsResourceFilter {
      * <li>Excludes: Resources marked as 'invisible' using permissions.</li>
      * </ul> 
      */
-    public static final CmsResourceFilter ONLY_VISIBLE_NO_DELETED = ONLY_VISIBLE.addExcludeState(I_CmsConstants.C_STATE_DELETED);
+    public static final CmsResourceFilter ONLY_VISIBLE_NO_DELETED = ONLY_VISIBLE.addExcludeState(CmsResource.STATE_DELETED);
 
     private static final int EXCLUDED = 2;
 
@@ -537,8 +535,8 @@ public final class CmsResourceFilter {
     public boolean includeDeleted() {
 
         return (m_filterState == IGNORED)
-            || ((m_filterState == REQUIRED) && (m_state == I_CmsConstants.C_STATE_DELETED))
-            || ((m_filterState == EXCLUDED) && (m_state != I_CmsConstants.C_STATE_DELETED));
+            || ((m_filterState == REQUIRED) && (m_state == CmsResource.STATE_DELETED))
+            || ((m_filterState == EXCLUDED) && (m_state != CmsResource.STATE_DELETED));
     }
 
     /**

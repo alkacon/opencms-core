@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,32 +61,11 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsMacroResolver implements I_CmsMacroResolver {
-
-    /** Identifier for "magic" parameter names. */
-    public static final String C_KEY_OPENCMS = "opencms.";
-
-    /** The prefix indicating that the key represents a page context object. */
-    public static final String C_KEY_PAGE_CONTEXT = "pageContext.";
-
-    /** The prefix indicating that the key represents a Cms property to be read on the current request URI. */
-    public static final String C_KEY_PROPERTY = "property.";
-
-    /** The prefix indicating that the key represents a Cms property to be read on the current element. */
-    public static final String C_KEY_PROPERTY_ELEMENT = "elementProperty.";
-
-    /** The prefix indicating that the key represents a Http request parameter. */
-    public static final String C_KEY_REQUEST_PARAM = "param.";
-
-    /** Identified for "magic" parameter commands. */
-    public static final String[] C_VALUE_NAMES_ARRAY_OPENCMS = {"uri", "filename", "folder", "default.encoding"};
-
-    /** The "magic" commands wrapped in a List. */
-    public static final List C_VALUE_NAMES_OPENCMS = Collections.unmodifiableList(Arrays.asList(C_VALUE_NAMES_ARRAY_OPENCMS));
 
     /** Key used to specify the current time as macro value. */
     public static final String KEY_CURRENT_TIME = "currenttime";
@@ -118,6 +97,18 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
     /** Key prefix used to specify the value of a localized key as macro value. */
     public static final String KEY_LOCALIZED_PREFIX = "key.";
 
+    /** Identifier for "magic" parameter names. */
+    public static final String KEY_OPENCMS = "opencms.";
+
+    /** The prefix indicating that the key represents a page context object. */
+    public static final String KEY_PAGE_CONTEXT = "pageContext.";
+
+    /** The prefix indicating that the key represents a Cms property to be read on the current request URI. */
+    public static final String KEY_PROPERTY = "property.";
+
+    /** The prefix indicating that the key represents a Cms property to be read on the current element. */
+    public static final String KEY_PROPERTY_ELEMENT = "elementProperty.";
+
     /** Key used to specify the request encoding as macro value. */
     public static final String KEY_REQUEST_ENCODING = "request.encoding";
 
@@ -126,6 +117,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key user to specify the request locale as macro value. */
     public static final String KEY_REQUEST_LOCALE = "request.locale";
+
+    /** The prefix indicating that the key represents a Http request parameter. */
+    public static final String KEY_REQUEST_PARAM = "param.";
 
     /** Key used to specify the request uri as macro value. */
     public static final String KEY_REQUEST_URI = "request.uri";
@@ -138,6 +132,12 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specifiy the validation value as macro value. */
     public static final String KEY_VALIDATION_VALUE = "validation.value";
+
+    /** Identified for "magic" parameter commands. */
+    public static final String[] VALUE_NAME_ARRAY = {"uri", "filename", "folder", "default.encoding"};
+
+    /** The "magic" commands wrapped in a List. */
+    public static final List VALUE_NAMES = Collections.unmodifiableList(Arrays.asList(VALUE_NAME_ARRAY));
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsMacroResolver.class);
@@ -354,24 +354,24 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if (m_jspPageContext != null) {
 
-            if (macro.startsWith(CmsMacroResolver.C_KEY_REQUEST_PARAM)) {
+            if (macro.startsWith(CmsMacroResolver.KEY_REQUEST_PARAM)) {
                 // the key is a request parameter  
-                macro = macro.substring(CmsMacroResolver.C_KEY_REQUEST_PARAM.length());
+                macro = macro.substring(CmsMacroResolver.KEY_REQUEST_PARAM.length());
                 return m_jspPageContext.getRequest().getParameter(macro);
             }
 
-            if (macro.startsWith(CmsMacroResolver.C_KEY_PAGE_CONTEXT)) {
+            if (macro.startsWith(CmsMacroResolver.KEY_PAGE_CONTEXT)) {
                 // the key is a page context object
-                macro = macro.substring(CmsMacroResolver.C_KEY_PAGE_CONTEXT.length());
+                macro = macro.substring(CmsMacroResolver.KEY_PAGE_CONTEXT.length());
                 int scope = m_jspPageContext.getAttributesScope(macro);
                 return m_jspPageContext.getAttribute(macro, scope).toString();
             }
 
-            if ((m_cms != null) && macro.startsWith(CmsMacroResolver.C_KEY_PROPERTY_ELEMENT)) {
+            if ((m_cms != null) && macro.startsWith(CmsMacroResolver.KEY_PROPERTY_ELEMENT)) {
 
                 // the key is a cms property to be read on the current element
 
-                macro = macro.substring(CmsMacroResolver.C_KEY_PROPERTY_ELEMENT.length());
+                macro = macro.substring(CmsMacroResolver.KEY_PROPERTY_ELEMENT.length());
                 CmsFlexController controller = CmsFlexController.getController(m_jspPageContext.getRequest());
                 try {
                     CmsProperty property = m_cms.readPropertyObject(
@@ -394,9 +394,9 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
         if (m_cms != null) {
 
-            if (macro.startsWith(CmsMacroResolver.C_KEY_PROPERTY)) {
+            if (macro.startsWith(CmsMacroResolver.KEY_PROPERTY)) {
                 // the key is a cms property to be read on the current request URI
-                macro = macro.substring(CmsMacroResolver.C_KEY_PROPERTY.length());
+                macro = macro.substring(CmsMacroResolver.KEY_PROPERTY.length());
                 try {
                     CmsProperty property = m_cms.readPropertyObject(m_cms.getRequestContext().getUri(), macro, true);
                     if (property != CmsProperty.getNullProperty()) {
@@ -414,13 +414,13 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
             }
 
-            if (macro.startsWith(CmsMacroResolver.C_KEY_OPENCMS)) {
+            if (macro.startsWith(CmsMacroResolver.KEY_OPENCMS)) {
 
                 // the key is a shortcut for a cms runtime value
 
                 String originalKey = macro;
-                macro = macro.substring(CmsMacroResolver.C_KEY_OPENCMS.length());
-                int index = C_VALUE_NAMES_OPENCMS.indexOf(macro);
+                macro = macro.substring(CmsMacroResolver.KEY_OPENCMS.length());
+                int index = VALUE_NAMES.indexOf(macro);
                 String value = null;
 
                 switch (index) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/06/26 15:35:13 $
- * Version: $Revision: 1.83 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.84 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
@@ -69,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.83 $ 
+ * @version $Revision: 1.84 $ 
  * 
  * @since 6.0.0 
  * 
@@ -78,7 +77,7 @@ import org.dom4j.Element;
 public class CmsImportVersion4 extends A_CmsImport {
 
     /** The version number of this import implementation.<p> */
-    private static final int C_IMPORT_VERSION = 4;
+    private static final int IMPORT_VERSION = 4;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsImportVersion4.class);
@@ -97,7 +96,7 @@ public class CmsImportVersion4 extends A_CmsImport {
      */
     public int getVersion() {
 
-        return CmsImportVersion4.C_IMPORT_VERSION;
+        return CmsImportVersion4.IMPORT_VERSION;
     }
 
     /**
@@ -303,7 +302,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 type.isFolder(),
                 new Integer(flags).intValue(),
                 m_cms.getRequestContext().currentProject().getId(),
-                I_CmsConstants.C_STATE_NEW,
+                CmsResource.STATE_NEW,
                 datecreated,
                 newUsercreated,
                 datelastmodified,
@@ -319,7 +318,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             if (result != null) {
                 m_report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                    I_CmsReport.C_FORMAT_OK);
+                    I_CmsReport.FORMAT_OK);
             }
         } catch (Exception exc) {
             // an error while importing the file
@@ -351,7 +350,7 @@ public class CmsImportVersion4 extends A_CmsImport {
 
         if (m_importingChannelData) {
             m_cms.getRequestContext().saveSiteRoot();
-            m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+            m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
         }
 
         // get list of immutable resources
@@ -383,7 +382,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 m_report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
                     String.valueOf(i + 1),
-                    String.valueOf(importSize)), I_CmsReport.C_FORMAT_NOTE);
+                    String.valueOf(importSize)), I_CmsReport.FORMAT_NOTE);
                 currentElement = (Element)fileNodes.get(i);
 
                 // <source>
@@ -469,7 +468,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 // if the resource is not immutable and not on the exclude list, import it
                 if (resourceNotImmutable) {
                     // print out the information to the report
-                    m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_IMPORTING_0), I_CmsReport.FORMAT_NOTE);
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
@@ -512,7 +511,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             String principal = id.substring(id.indexOf('.') + 1, id.length());
 
                             try {
-                                if (id.startsWith(I_CmsPrincipal.C_PRINCIPAL_GROUP)) {
+                                if (id.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
                                     principal = OpenCms.getImportExportManager().translateGroup(principal);
                                     principalId = m_cms.readGroup(principal).getId().toString();
                                 } else {
@@ -562,7 +561,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         }
                     } else {
                         // resource import failed, since no CmsResource was created
-                        m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
+                        m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
@@ -579,7 +578,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                 } else {
                     // skip the file import, just print out the information to the report
 
-                    m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.C_FORMAT_NOTE);
+                    m_report.print(Messages.get().container(Messages.RPT_SKIPPING_0), I_CmsReport.FORMAT_NOTE);
                     m_report.println(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));

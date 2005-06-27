@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,25 +70,28 @@ public class CmsTouch extends CmsDialog {
     public static final int ACTION_TOUCH = 100;
 
     /** default value for release or expire date. */
-    public static final String C_RELEASE_EXPIRE_DEFAULT = "-";
+    public static final String RELEASE_EXPIRE_DEFAULT = "-";
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "touch";
+    
     /** Request parameter name for the expiredate. */
     public static final String PARAM_EXPIREDATE = "expiredate";
 
     /** Request parameter name for timestamp. */
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
+    
     /** Request parameter name for the recursive flag. */
     public static final String PARAM_RECURSIVE = "recursive";
+    
     /** Request parameter name for the releasedate. */
     public static final String PARAM_RELEASEDATE = "releasedate";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTouch.class);
+    
     private String m_paramExpiredate;
     private String m_paramNewtimestamp;
-
     private String m_paramRecursive;
     private String m_paramReleasedate;
 
@@ -122,14 +125,14 @@ public class CmsTouch extends CmsDialog {
     public void actionTouch() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             if (performTouchOperation()) {
                 // if no exception is caused and "true" is returned the touch operation was successful          
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
-                getJsp().include(C_FILE_DIALOG_SCREEN_WAIT);
+                getJsp().include(FILE_DIALOG_SCREEN_WAIT);
             }
         } catch (Throwable e) {
             includeErrorpage(this, e);
@@ -190,7 +193,7 @@ public class CmsTouch extends CmsDialog {
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
             if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
-                return C_RELEASE_EXPIRE_DEFAULT;
+                return RELEASE_EXPIRE_DEFAULT;
             } else {
                 return getCalendarLocalizedTime(res.getDateExpired());
             }
@@ -210,7 +213,7 @@ public class CmsTouch extends CmsDialog {
         try {
             CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
             if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
-                return C_RELEASE_EXPIRE_DEFAULT;
+                return RELEASE_EXPIRE_DEFAULT;
             } else {
                 return getCalendarLocalizedTime(res.getDateReleased());
             }
@@ -376,7 +379,7 @@ public class CmsTouch extends CmsDialog {
         // get the new releasedate for the resource(s) from request parameter
         long releasedate = CmsResource.DATE_RELEASED_DEFAULT;
         try {
-            if ((getParamReleasedate() != null) && (!getParamReleasedate().startsWith(C_RELEASE_EXPIRE_DEFAULT))) {
+            if ((getParamReleasedate() != null) && (!getParamReleasedate().startsWith(RELEASE_EXPIRE_DEFAULT))) {
                 releasedate = getCalendarDate(getParamReleasedate(), true);
             }
         } catch (ParseException e) {
@@ -386,7 +389,7 @@ public class CmsTouch extends CmsDialog {
         // get the new expire for the resource(s) from request parameter
         long expiredate = CmsResource.DATE_EXPIRED_DEFAULT;
         try {
-            if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(C_RELEASE_EXPIRE_DEFAULT))) {
+            if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(RELEASE_EXPIRE_DEFAULT))) {
                 expiredate = getCalendarDate(getParamExpiredate(), true);
             }
         } catch (ParseException e) {

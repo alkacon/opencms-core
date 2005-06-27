@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.staticexport.CmsStaticExportData;
 import org.opencms.staticexport.CmsStaticExportRequest;
+import org.opencms.util.CmsRequestUtil;
 
 import java.io.IOException;
 
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.52 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,7 +111,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
         int runlevel = OpenCmsCore.getInstance().getRunLevel();
 
         // write OpenCms server identification in the response header
-        res.setHeader(I_CmsConstants.C_HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
+        res.setHeader(CmsRequestUtil.HEADER_SERVER, OpenCmsCore.getInstance().getSystemInfo().getVersion());
 
         if (runlevel != OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
             if (runlevel == OpenCms.RUNLEVEL_3_SHELL_ACCESS) {

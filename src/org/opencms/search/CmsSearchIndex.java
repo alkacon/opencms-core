@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,52 +68,52 @@ import org.apache.lucene.search.TermQuery;
 /**
  * Implements the search within an index and the management of the index configuration.<p>
  *   
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.54 $
  * 
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** Automatic rebuild. */
-    public static final String C_AUTO_REBUILD = "auto";
+    public static final String AUTO_REBUILD = "auto";
 
     /** Manual rebuild as default value. */
-    public static final String C_DEFAULT_REBUILD = "manual";
+    public static final String DEFAULT_REBUILD = "manual";
 
     /** Constant for a field list that cointains only the "meta" field. */
-    public static final String[] C_DOC_META_FIELDS = new String[] {
+    public static final String[] DOC_META_FIELDS = new String[] {
         I_CmsDocumentFactory.DOC_META,
         I_CmsDocumentFactory.DOC_CONTENT};
 
     /** Constant for additional param to enable excerpt creation (default: true). */
-    public static final String C_EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
+    public static final String EXCERPT = CmsSearchIndex.class.getName() + ".createExcerpt";
 
     /** Constant for additional param to enable permission checks (default: true). */
-    public static final String C_PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
+    public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
 
     /** Contsnat for additional param to set the thread priority during search. */
-    public static final String C_PRIORITY = CmsSearchIndex.class.getName() + ".priority";
+    public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
 
     /** Special root path append token for optimized path queries. */
-    public static final String C_ROOT_PATH_SUFFIX = "@o.c";
+    public static final String ROOT_PATH_SUFFIX = "@o.c";
 
     /** Special root path start token for optimized path queries. */
-    public static final String C_ROOT_PATH_TOKEN = "root" + C_ROOT_PATH_SUFFIX;
+    public static final String ROOT_PATH_TOKEN = "root" + ROOT_PATH_SUFFIX;
 
     /** Separator for the search excerpt fragments. */
-    private static final String C_EXCERPT_FRAGMENT_SEPARATOR = " ... ";
+    private static final String EXCERPT_FRAGMENT_SEPARATOR = " ... ";
 
     /** Size of the excerpt fragments in byte. */
-    private static final int C_EXCERPT_FRAGMENT_SIZE = 60;
+    private static final int EXCERPT_FRAGMENT_SIZE = 60;
 
     /** Fragments required in excerpt. */
-    private static final int C_EXCERPT_REQUIRED_FRAGMENTS = 5;
+    private static final int EXCERPT_REQUIRED_FRAGMENTS = 5;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
@@ -165,7 +165,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Rewrites the a resource path for use in the {@link I_CmsDocumentFactory#DOC_ROOT} field.<p>
      * 
-     * All "/" chars in the path are replaced with the {@link #C_ROOT_PATH_SUFFIX} token.
+     * All "/" chars in the path are replaced with the {@link #ROOT_PATH_SUFFIX} token.
      * This is required in order to use a Lucene "phrase query" on the resource path.
      * Using a phrase query is much, much better for the search performance then using a straightforward 
      * "prefix query". With a "prefix query", Lucene would interally generate a huge list of boolean sub-queries,
@@ -210,7 +210,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public static String[] rootPathSplit(String path) {
 
         if (CmsStringUtil.isEmpty(path)) {
-            return new String[] {C_ROOT_PATH_TOKEN};
+            return new String[] {ROOT_PATH_TOKEN};
         }
 
         // split the path
@@ -221,10 +221,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             length--;
         }
         String[] result = new String[length];
-        result[0] = C_ROOT_PATH_TOKEN;
+        result[0] = ROOT_PATH_TOKEN;
         for (int i = 1; i < length; i++) {
             // append suffix to all path elements
-            result[i] = elements[i] + C_ROOT_PATH_SUFFIX;
+            result[i] = elements[i] + ROOT_PATH_SUFFIX;
 
         }
         return result;
@@ -238,11 +238,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public void addConfigurationParameter(String key, String value) {
 
-        if (C_PERMISSIONS.equals(key)) {
+        if (PERMISSIONS.equals(key)) {
             m_dontCheckPermissions = !Boolean.valueOf(value).booleanValue();
-        } else if (C_EXCERPT.equals(key)) {
+        } else if (EXCERPT.equals(key)) {
             m_createExcerpt = Boolean.valueOf(value).booleanValue();
-        } else if (C_PRIORITY.equals(key)) {
+        } else if (PRIORITY.equals(key)) {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
                 m_priority = Thread.MIN_PRIORITY;
@@ -279,13 +279,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         Map result = new TreeMap();
         if (m_priority > 0) {
-            result.put(C_PRIORITY, new Integer(m_priority));
+            result.put(PRIORITY, new Integer(m_priority));
         }
         if (!m_createExcerpt) {
-            result.put(C_EXCERPT, new Boolean(m_createExcerpt));
+            result.put(EXCERPT, new Boolean(m_createExcerpt));
         }
         if (m_dontCheckPermissions) {
-            result.put(C_PERMISSIONS, new Boolean(!m_dontCheckPermissions));
+            result.put(PERMISSIONS, new Boolean(!m_dontCheckPermissions));
         }
         return result;
     }
@@ -754,9 +754,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         String excerpt = highlighter.getBestFragments(
             content,
-            C_EXCERPT_FRAGMENT_SIZE,
-            C_EXCERPT_REQUIRED_FRAGMENTS,
-            C_EXCERPT_FRAGMENT_SEPARATOR);
+            EXCERPT_FRAGMENT_SIZE,
+            EXCERPT_REQUIRED_FRAGMENTS,
+            EXCERPT_FRAGMENT_SEPARATOR);
 
         // kill all unwanted chars in the excerpt
         excerpt = excerpt.replace('\t', ' ');

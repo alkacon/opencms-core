@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromHttp.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDatabaseImportFromHttp extends A_CmsImportFromHttp {
 
     /** The dialog URI. */
-    public static final String DIALOG_URI = C_PATH_WORKPLACE + "admin/database/importhttp.html";
+    public static final String DIALOG_URI = PATH_WORKPLACE + "admin/database/importhttp.html";
 
     /**
      * Public constructor with JSP action element.<p>

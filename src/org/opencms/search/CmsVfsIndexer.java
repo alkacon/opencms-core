@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     if (m_report != null && !folderReported) {
                         m_report.print(
                             Messages.get().container(Messages.RPT_SEARCH_INDEXING_FOLDER_0),
-                            I_CmsReport.C_FORMAT_NOTE);
+                            I_CmsReport.FORMAT_NOTE);
                         m_report.println(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             path));
@@ -150,15 +150,15 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     if (m_report != null) {
                         m_report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_SUCCESSION_1,
-                            String.valueOf(m_threadManager.getCounter() + 1)), I_CmsReport.C_FORMAT_NOTE);
+                            String.valueOf(m_threadManager.getCounter() + 1)), I_CmsReport.FORMAT_NOTE);
                         m_report.print(
                             Messages.get().container(Messages.RPT_SEARCH_INDEXING_FILE_BEGIN_0),
-                            I_CmsReport.C_FORMAT_NOTE);
+                            I_CmsReport.FORMAT_NOTE);
                         m_report.print(org.opencms.report.Messages.get().container(
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             res.getName()));
                         m_report.print(org.opencms.report.Messages.get().container(
-                            org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.C_FORMAT_DEFAULT);
+                            org.opencms.report.Messages.RPT_DOTS_0), I_CmsReport.FORMAT_DEFAULT);
                     }
 
                     A_CmsIndexResource ires = new CmsVfsIndexResource(res);
@@ -172,7 +172,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 m_report.println();
                 m_report.print(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_FAILED_0),
-                    I_CmsReport.C_FORMAT_WARNING);
+                    I_CmsReport.FORMAT_WARNING);
                 m_report.println(exc);
             }
             if (LOG.isWarnEnabled()) {
@@ -185,7 +185,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 m_report.println(Messages.get().container(
                     Messages.RPT_SEARCH_INDEXING_FOLDER_FAILED_2,
                     path,
-                    exc.getLocalizedMessage()), I_CmsReport.C_FORMAT_WARNING);
+                    exc.getLocalizedMessage()), I_CmsReport.FORMAT_WARNING);
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);
@@ -196,7 +196,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             if (m_report != null) {
                 m_report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_FOLDER_0),
-                    I_CmsReport.C_FORMAT_WARNING);
+                    I_CmsReport.FORMAT_WARNING);
             }
             if (LOG.isWarnEnabled()) {
                 LOG.warn(Messages.get().key(Messages.LOG_INDEXING_PATH_FAILED_1, path), exc);

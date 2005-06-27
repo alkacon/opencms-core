@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:15 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,14 +52,14 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlGallery extends A_CmsGallery {
 
     /** URI of the image gallery popup dialog. */
-    public static final String C_URI_GALLERY = C_PATH_GALLERIES + "html_fs.jsp";
+    public static final String URI_GALLERY = PATH_GALLERIES + "html_fs.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlGallery.class);

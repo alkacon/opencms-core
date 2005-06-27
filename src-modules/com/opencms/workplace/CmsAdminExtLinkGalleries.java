@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminExtLinkGalleries.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,9 +35,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -53,7 +51,7 @@ import java.util.List;
  * <p>
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -64,14 +62,9 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
     /**
      * This method must be implemented by all galleries. 
      * It must return the path to the gallery root folder.<p>
-     * 
-     * The root folder names are usually defined as constants in 
-     * the I_CmsWpConstants interface.
-     * 
-     * @see I_CmsWpConstants
      */ 
     public String getGalleryPath() {
-        return C_VFS_GALLERY_EXTERNALLINKS;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS;
     }
     
     /**
@@ -117,17 +110,17 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
         CmsFolder thefolder = cms.readFolder(foldername);        
         
         // Check if we must redirect to head_1
-        if(foldername.equals(C_VFS_GALLERY_EXTERNALLINKS) && templateFile.endsWith("administration_head_extlinkgalleries2")) {
+        if(foldername.equals(CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS) && templateFile.endsWith("administration_head_extlinkgalleries2")) {
             // we are in the wrong head - use the first one
-            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/externallinksgallery/administration_head_extlinkgalleries1", elementName, parameters, templateSelector);
+            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, CmsWorkplace.VFS_PATH_WORKPLACE + "administration/externallinksgallery/administration_head_extlinkgalleries1", elementName, parameters, templateSelector);
         }
         
         // Check if we must redirect to head_2
         try {
             String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
-            if(foldername.startsWith(C_VFS_GALLERY_EXTERNALLINKS) && (parent.equals(C_VFS_GALLERY_EXTERNALLINKS)) && templateFile.endsWith("administration_head_extlinkgalleries1")) {
+            if(foldername.startsWith(CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS) && (parent.equals(CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS)) && templateFile.endsWith("administration_head_extlinkgalleries1")) {
                 // we are in the wrong head - use the second one
-                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_extlinkgalleries2", elementName, parameters, templateSelector);
+                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, CmsWorkplace.VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_extlinkgalleries2", elementName, parameters, templateSelector);
             }
         }
         catch(Exception e) {}         
@@ -150,7 +143,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 try {
 
                     // create the folder
-                    CmsResource folder = cms.createResource(C_VFS_GALLERY_EXTERNALLINKS + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    CmsResource folder = cms.createResource(CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS + galleryname, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.getSitePath(folder), CmsPropertyDefinition.PROPERTY_TITLE, title);
                     }
@@ -210,14 +203,14 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                 }
 
                 // get the parameters for the link file
-                String filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_RESOURCE);
+                String filename = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(CmsWorkplaceDefault.C_PARA_RESOURCE);
                 if(filename != null) {
                     session.putValue("extlink.filename", filename);
                 } else {
                     // try to get the value from the session, e.g. after an error
                     filename = (String)session.getValue("extlink.filename")!=null?(String)session.getValue("extlink.filename"):"";
                 }
-                String link = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_LINK);
+                String link = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(CmsWorkplaceDefault.C_PARA_LINK);
                 if(link != null) {
                     session.putValue("extlink.linkurl", link);
                 } else {
@@ -236,9 +229,9 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
                         // step 1 - create the link
                         // step 2 - create the link without checking url
                         // get folder- and filename
-                        foldername = (String)session.getValue(C_PARA_FOLDER);
+                        foldername = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FOLDER);
                         if(foldername == null) {
-                            foldername = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+                            foldername = cms.getSitePath(cms.readFolder("/"));
                         }
                         CmsXmlLanguageFile lang = xmlTemplateDocument.getLanguageFile();
                         String firstTitlePart = lang.getLanguageValue("explorer.linkto") + " " + link;
@@ -311,7 +304,7 @@ public class CmsAdminExtLinkGalleries extends CmsAdminGallery  {
 
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
-        xmlTemplateDocument.setData("galleryRootFolder", C_VFS_GALLERY_EXTERNALLINKS);        
+        xmlTemplateDocument.setData("galleryRootFolder", CmsWorkplaceDefault.C_VFS_GALLERY_EXTERNALLINKS);        
         
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,

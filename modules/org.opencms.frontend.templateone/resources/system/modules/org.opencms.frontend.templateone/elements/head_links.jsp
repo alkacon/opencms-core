@@ -4,7 +4,7 @@
 CmsTemplateBean cms = new CmsTemplateBean(pageContext, request, response);
 
 List links = cms.getHeadLinks();
-String searchLink = cms.link(I_CmsWpConstants.C_VFS_PATH_MODULES + CmsTemplateBean.C_MODULE_NAME + "/pages/search.html");
+String searchLink = cms.link(CmsWorkplace.VFS_PATH_MODULES + CmsTemplateBean.MODULE_NAME + "/pages/search.html");
 String separator = "";
 
 %><div class="linkshead">
@@ -19,7 +19,7 @@ String separator = "";
 			targetAttr = "_self";
 		}
 		%><span class="headnavspacer">&nbsp;<%= separator %>&nbsp;</span><a class="linkshead" href="<%= link.getAnchor() %>" target="<%= targetAttr %>"><%= link.getText() %></a><%
-		if (CmsTemplateBean.C_PARAM_ACCESSIBLE.equals(cms.getLayout())) {
+		if (CmsTemplateBean.PARAM_ACCESSIBLE.equals(cms.getLayout())) {
 			separator = "|";
 		}
 	}

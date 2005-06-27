@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsFolderTree.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -36,11 +36,9 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.workplace.CmsWorkplaceAction;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -58,7 +56,7 @@ import java.util.Vector;
  *
  *
  * @author Michael Emmerich
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  */
 
 public class CmsFolderTree extends CmsWorkplaceDefault {
@@ -173,7 +171,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
     private boolean checkAccess(CmsObject cms, CmsResource res) throws CmsException {
         //boolean access = false;
-        if(res.getState() == C_STATE_DELETED){
+        if(res.getState() == CmsResource.STATE_DELETED){
             return false;
         }
         
@@ -210,27 +208,27 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
 
         // get the formname
-        String formname = (String)parameters.get(C_PARA_FORMNAME);
+        String formname = (String)parameters.get(CmsWorkplaceDefault.C_PARA_FORMNAME);
         if(formname != null) {
-            session.putValue(C_PARA_FORMNAME, formname);
+            session.putValue(CmsWorkplaceDefault.C_PARA_FORMNAME, formname);
         }
-        formname = (String)session.getValue(C_PARA_FORMNAME);
+        formname = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FORMNAME);
 
         // get the varname
-        String varname = (String)parameters.get(C_PARA_VARIABLE);
+        String varname = (String)parameters.get(CmsWorkplaceDefault.C_PARA_VARIABLE);
         if(varname != null) {
-            session.putValue(C_PARA_VARIABLE, varname);
+            session.putValue(CmsWorkplaceDefault.C_PARA_VARIABLE, varname);
         }
-        varname = (String)session.getValue(C_PARA_VARIABLE);
+        varname = (String)session.getValue(CmsWorkplaceDefault.C_PARA_VARIABLE);
 
         // check if the files should be displayed as well
-        String files = (String)parameters.get(C_PARA_VIEWFILE);
+        String files = (String)parameters.get(CmsWorkplaceDefault.C_PARA_VIEWFILE);
         if(files != null) {
             if(files.equals("yes")) {
-                session.putValue(C_PARA_VIEWFILE, files);
+                session.putValue(CmsWorkplaceDefault.C_PARA_VIEWFILE, files);
             }
             else {
-                session.removeValue(C_PARA_VIEWFILE);
+                session.removeValue(CmsWorkplaceDefault.C_PARA_VIEWFILE);
             }
         }
         // check if the oflinefiles are selectable
@@ -266,17 +264,17 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         String icon = (String)m_iconCache.get(type.getTypeName());
         // no icon was found, so check if there is a icon file in the filesystem
         if(icon == null) {
-            String filename = C_ICON_PREFIX + type.getTypeName().toLowerCase() + C_ICON_EXTENSION;
+            String filename = CmsWorkplaceDefault.C_ICON_PREFIX + type.getTypeName().toLowerCase() + CmsWorkplaceDefault.C_ICON_EXTENSION;
             try {
                 // read the icon file
-                cms.readResource(I_CmsWpConstants.C_VFS_PATH_SYSTEMPICS + filename);
+                cms.readResource(CmsWorkplace.VFS_PATH_RESOURCES + filename);
                 // add the icon to the cache
                 icon = filename;
                 m_iconCache.put(type.getTypeName(), icon);
             }
             catch(CmsException e) {
                 // no icon was found, so use the default
-                icon = C_ICON_DEFAULT;
+                icon = CmsWorkplaceDefault.C_ICON_DEFAULT;
                 m_iconCache.put(type.getTypeName(), icon);
             }
         }
@@ -302,29 +300,29 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         boolean enableOnlineFiles = false;
 
         // if a foldername was included, overwrite the value in the session for later use.
-        currentFolder = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(C_PARA_FOLDERTREE);       
+        currentFolder = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getParameter(CmsWorkplaceDefault.C_PARA_FOLDERTREE);       
         
         if (currentFolder.trim().equalsIgnoreCase("/")) {
-            currentFolder = (String)session.getValue(C_PARA_FOLDERTREE);
+            currentFolder = (String)session.getValue(CmsWorkplaceDefault.C_PARA_FOLDERTREE);
             
             if (currentFolder==null)  { 
                 currentFolder = "/";
-                session.putValue(C_PARA_FOLDERTREE, currentFolder);
+                session.putValue(CmsWorkplaceDefault.C_PARA_FOLDERTREE, currentFolder);
             }
         }  
         else if (currentFolder!=null) {
-            session.putValue(C_PARA_FOLDERTREE, currentFolder);
+            session.putValue(CmsWorkplaceDefault.C_PARA_FOLDERTREE, currentFolder);
         }
 
         // get the current folder to be displayed as maximum folder in the tree.
         // currentFilelist = (String)session.getValue(C_PARA_FILELIST);
         currentFilelist = CmsWorkplaceAction.getCurrentFolder(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest());
         if(currentFilelist == null) {
-            currentFilelist = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+            currentFilelist = cms.getSitePath(cms.readFolder("/"));
         }
 
         // check if the files must be displayed as well
-        files = (String)session.getValue(C_PARA_VIEWFILE);
+        files = (String)session.getValue(CmsWorkplaceDefault.C_PARA_VIEWFILE);
         if(files != null) {
             displayFiles = true;
         }
@@ -335,7 +333,7 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
         }
 
         // get current and root folder
-        rootFolder = cms.getSitePath(cms.readFolder(I_CmsConstants.C_ROOT));
+        rootFolder = cms.getSitePath(cms.readFolder("/"));
 
         //get the template
         CmsXmlWpTemplateFile template = (CmsXmlWpTemplateFile)doc;
@@ -474,13 +472,13 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(cms.getSitePath(res))) {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, CmsWorkplaceDefault.C_WP_FOLDER_TREE + "?" + CmsWorkplaceDefault.C_PARA_FOLDERTREE
                                     + "=" + CmsEncoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MEND, this);
                         }
                         else {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, CmsWorkplaceDefault.C_WP_FOLDER_TREE + "?" + CmsWorkplaceDefault.C_PARA_FOLDERTREE
                                     + "=" + CmsEncoder.escape(cms.getSitePath(res),
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PEND, this);
@@ -497,13 +495,13 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
 
                         // test if the + or minus must be displayed
                         if(endfolder.startsWith(cms.getSitePath(res))) {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, CmsWorkplaceDefault.C_WP_FOLDER_TREE + "?" + CmsWorkplaceDefault.C_PARA_FOLDERTREE
                                     + "=" + CmsEncoder.escape(curfolder,
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_MCROSS, this);
                         }
                         else {
-                            template.setData(C_TREELINK, C_WP_FOLDER_TREE + "?" + C_PARA_FOLDERTREE
+                            template.setData(C_TREELINK, CmsWorkplaceDefault.C_WP_FOLDER_TREE + "?" + CmsWorkplaceDefault.C_PARA_FOLDERTREE
                                     + "=" + CmsEncoder.escape(cms.getSitePath(res),
                                     cms.getRequestContext().getEncoding()));
                             treeswitch = template.getProcessedDataValue(C_TREEIMG_PCROSS, this);
@@ -530,9 +528,9 @@ public class CmsFolderTree extends CmsWorkplaceDefault {
                 }
 
                 // set all data for the treeline tag
-                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()) + "?" + C_PARA_FILELIST
+                template.setData(C_FILELIST, CmsWorkplaceAction.getExplorerFileUri(CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getOriginalRequest()) + "?" + CmsWorkplaceDefault.C_PARA_FILELIST
                         + "=" + cms.getSitePath(res));
-                template.setData(C_TREELIST, C_WP_EXPLORER_TREE + "?" + C_PARA_FILELIST
+                template.setData(C_TREELIST, CmsWorkplaceDefault.C_WP_EXPLORER_TREE + "?" + CmsWorkplaceDefault.C_PARA_FILELIST
                         + "=" + cms.getSitePath(res));
                 template.setData(C_TREEENTRY, res.getName());
                 template.setData(C_TREEVAR, cms.getSitePath(res));

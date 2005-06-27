@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsButtonText.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;TEXTBUTTON&gt;</code>.
  * 
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -74,15 +74,15 @@ public class CmsButtonText extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // Read button parameters
-        String buttonName = n.getAttribute(C_BUTTON_NAME);
-        String buttonAction = n.getAttribute(C_BUTTON_ACTION);
-        String buttonValue = n.getAttribute(C_BUTTON_VALUE);
-        String buttonStyle = n.getAttribute(C_BUTTON_STYLE);
-        String buttonWidth = n.getAttribute(C_BUTTON_WIDTH);
+        String buttonName = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_NAME);
+        String buttonAction = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_ACTION);
+        String buttonValue = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_VALUE);
+        String buttonStyle = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_STYLE);
+        String buttonWidth = n.getAttribute(CmsWorkplaceDefault.C_BUTTON_WIDTH);
         
         // Get button definition and language values
         CmsXmlWpButtonsDefFile buttondef = getButtonDefinitions(cms);
-        buttonValue = lang.getLanguageValue(C_LANG_BUTTON + "." + buttonValue);
+        buttonValue = lang.getLanguageValue(CmsWorkplaceDefault.C_LANG_BUTTON + "." + buttonValue);
         
         // get the processed button.
         String result = buttondef.getButtonText(buttonName, buttonAction, buttonValue, 

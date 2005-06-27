@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsLoginNew.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,10 @@ import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
-import org.opencms.workplace.CmsWorkplaceAction;
+import org.opencms.workplace.CmsFrameset;
 import org.opencms.workplace.CmsWorkplaceView;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -59,7 +57,7 @@ import java.util.Iterator;
  * Reads template files of the content type <code>CmsXmlWpTemplateFile</code>.
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -124,8 +122,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
         String name = (String)parameters.get("OPENCMSUSERNAME");
         String password = (String)parameters.get("OPENCMSPASSWORD");
         // get further startup parameters
-        String startTaskId = (String)parameters.get(I_CmsWpConstants.C_PARA_STARTTASKID);
-        String startProjectId = (String)parameters.get(I_CmsWpConstants.C_PARA_STARTPROJECTID);
+        String startTaskId = (String)parameters.get(CmsWorkplaceDefault.C_PARA_STARTTASKID);
+        String startProjectId = (String)parameters.get(CmsWorkplaceDefault.C_PARA_STARTPROJECTID);
 
         if (DEBUG > 1) System.err.println("CmsLoginNew: name=" + name + " password=" + password + " task=" + startTaskId + " project=" + startProjectId);
 
@@ -238,7 +236,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
     throws CmsException {
         // set current project to the default online project or to 
         // project specified in the users preferences
-        int currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+        int currentProject = CmsProject.ONLINE_PROJECT_ID;
         
         if ((startProjectId != null) && (! "".equals(startProjectId))) {
             // try to set project to id from parameters
@@ -256,7 +254,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
             } catch (CmsDbEntryNotFoundException e) {
                 // the project does not exist, maybe it was deleted
                 // set ID to online project
-                currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+                currentProject = CmsProject.ONLINE_PROJECT_ID;
             }           
         }
 
@@ -265,11 +263,11 @@ public class CmsLoginNew extends CmsXmlTemplate {
             CmsProject project = cms.readProject(currentProject);
             if (! cms.getAllAccessibleProjects().contains(project)) {
                 // user has no (more) access to the project
-                currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+                currentProject = CmsProject.ONLINE_PROJECT_ID;
             }
         } catch (Exception e) {
             // project will default to online project
-            currentProject = I_CmsConstants.C_PROJECT_ONLINE_ID;
+            currentProject = CmsProject.ONLINE_PROJECT_ID;
         }
         
         // set the current project id
@@ -295,8 +293,8 @@ public class CmsLoginNew extends CmsXmlTemplate {
                 break;
             }            
         }
-        session.putValue(I_CmsWpConstants.C_PARA_STARTTASKID, startTaskId);
-        session.putValue(I_CmsWpConstants.C_PARA_VIEW, link);
+        session.putValue(CmsWorkplaceDefault.C_PARA_STARTTASKID, startTaskId);
+        session.putValue(CmsWorkplaceDefault.C_PARA_VIEW, link);
     }
 
     private CmsMessages m_messages;
@@ -310,7 +308,7 @@ public class CmsLoginNew extends CmsXmlTemplate {
         Hashtable pref = new Hashtable();
         // set the default columns in the filelist
         int filelist = 4095 + 512;
-        pref.put(I_CmsWpConstants.C_USERPREF_FILELIST, new Integer(filelist));
+        pref.put(CmsWorkplaceDefault.C_USERPREF_FILELIST, new Integer(filelist));
         return pref;
     }
 
@@ -377,14 +375,14 @@ public class CmsLoginNew extends CmsXmlTemplate {
     public Object workplaceUri(CmsObject cms, String tagcontent, A_CmsXmlContent doc, Object userObject) 
     throws CmsException {
         try {
-            cms.readResource(CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
-            return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            cms.readResource(CmsFrameset.JSP_WORKPLACE_URI);
+            return OpenCms.getLinkManager().substituteLink(cms, CmsFrameset.JSP_WORKPLACE_URI);
         } catch (CmsSecurityException se) {
-            return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_JSP_WORKPLACE_URI);
+            return OpenCms.getLinkManager().substituteLink(cms, CmsFrameset.JSP_WORKPLACE_URI);
         } catch (CmsException ce) {
             // return default xml uri
         }
-        return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.C_XML_WORKPLACE_URI);
+        return OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.XML_WORKPLACE_URI);
     }    
 
     /**

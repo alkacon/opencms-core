@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public final class CmsXmlPageFactory {
         pages.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         pages.addAttribute(
             I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION,
-            CmsXmlPage.C_XMLPAGE_XSD_SYSTEM_ID);
+            CmsXmlPage.XMLPAGE_XSD_SYSTEM_ID);
 
         Element page = pages.addElement(CmsXmlPage.NODE_PAGE);
         page.addAttribute(CmsXmlPage.ATTRIBUTE_LANGUAGE, locale.toString());
@@ -181,7 +181,7 @@ public final class CmsXmlPageFactory {
         boolean allowRelative = false;
         try {
             allowRelative = Boolean.valueOf(
-                cms.readPropertyObject(fileName, CmsXmlPage.C_PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
+                cms.readPropertyObject(fileName, CmsXmlPage.PROPERTY_ALLOW_RELATIVE, false).getValue()).booleanValue();
         } catch (CmsException e) {
             // allowRelative will be false
         }

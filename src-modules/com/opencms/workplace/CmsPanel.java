@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsPanel.java,v $
-* Date   : $Date: 2005/05/17 13:47:28 $
-* Version: $Revision: 1.1 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.w3c.dom.NodeList;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;PANELBAR&gt;</code>.
  *
  * @author Alexander Lucas
- * @version $Revision: 1.1 $ $Date: 2005/05/17 13:47:28 $
+ * @version $Revision: 1.2 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -96,7 +96,7 @@ public class CmsPanel extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         // Currently requested panel
-        String selectedPanel = (String)parameters.get(C_PARA_PANEL);
+        String selectedPanel = (String)parameters.get(CmsWorkplaceDefault.C_PARA_PANEL);
         if(selectedPanel == null) {
             selectedPanel = "";
         }
@@ -153,24 +153,24 @@ public class CmsPanel extends A_CmsWpElement {
         // Panel background and text will be written separately
         for(int i = 0;i < panels.size();i++) {
             panelName = (String)panels.elementAt(i);
-            paneldef.setData(C_PANEL_LINK, panelName);
-            paneldef.setData(C_PANEL_NAME, lang.getLanguageValue("panel." + panelName));
+            paneldef.setData(CmsWorkplaceDefault.C_PANEL_LINK, panelName);
+            paneldef.setData(CmsWorkplaceDefault.C_PANEL_NAME, lang.getLanguageValue("panel." + panelName));
             if(i == currentPanelNo) {
-                resultBg.append(paneldef.getProcessedDataValue(C_TAG_PANEL_BGACTIVE, callingObject, null));
-                resultTxt.append(paneldef.getProcessedDataValue(C_TAG_PANEL_TEXTACTIVE));
+                resultBg.append(paneldef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PANEL_BGACTIVE, callingObject, null));
+                resultTxt.append(paneldef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PANEL_TEXTACTIVE));
             }
             else {
-                resultBg.append(paneldef.getProcessedDataValue(C_TAG_PANEL_BGINACTIVE, callingObject, null));
-                resultTxt.append(paneldef.getProcessedDataValue(C_TAG_PANEL_TEXTINACTIVE));
+                resultBg.append(paneldef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PANEL_BGINACTIVE, callingObject, null));
+                resultTxt.append(paneldef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PANEL_TEXTINACTIVE));
             }
         }
 
         // Now build the end result
-        resultAll.append(paneldef.getDataValue(C_TAG_PANEL_STARTSEQ));
+        resultAll.append(paneldef.getDataValue(CmsWorkplaceDefault.C_TAG_PANEL_STARTSEQ));
         resultAll.append(resultBg.toString());
-        resultAll.append(paneldef.getDataValue(C_TAG_PANEL_SEPBGTEXT));
+        resultAll.append(paneldef.getDataValue(CmsWorkplaceDefault.C_TAG_PANEL_SEPBGTEXT));
         resultAll.append(resultTxt.toString());
-        resultAll.append(paneldef.getDataValue(C_TAG_PANEL_ENDSEQ));
+        resultAll.append(paneldef.getDataValue(CmsWorkplaceDefault.C_TAG_PANEL_ENDSEQ));
         return resultAll.toString();
     }
 }

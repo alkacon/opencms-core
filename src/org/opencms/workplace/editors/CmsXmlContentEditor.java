@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/27 09:30:20 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,6 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +105,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public static final String EDITOR_ACTION_ELEMENT_REMOVE = "removeelement";
 
     /** Indicates a new file should be created. */
-    public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.C_DIRECT_EDIT_OPTION_NEW;
+    public static final String EDITOR_ACTION_NEW = I_CmsEditorActionHandler.DIRECT_EDIT_OPTION_NEW;
 
     /** Parameter name for the request parameter "elementindex". */
     public static final String PARAM_ELEMENTINDEX = "elementindex";
@@ -348,7 +347,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         } else {
             param.append("?");
         }
-        param.append(I_CmsConstants.C_PARAMETER_LOCALE);
+        param.append(CmsLocaleManager.PARAMETER_LOCALE);
         param.append("=");
         param.append(getParamElementlanguage());
 
@@ -931,7 +930,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 // lock resource if autolock is enabled in configuration
                 if ("true".equals(getParamDirectedit())) {
                     // set a temporary lock in direct edit mode
-                    checkLock(getParamResource(), CmsLock.C_MODE_TEMP);
+                    checkLock(getParamResource(), CmsLock.TEMPORARY);
                 } else {
                     // set common lock
                     checkLock(getParamResource());

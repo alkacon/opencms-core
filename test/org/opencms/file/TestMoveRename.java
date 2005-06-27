@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestMoveRename.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,8 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import junit.extensions.TestSetup;
@@ -48,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestMoveRename extends OpenCmsTestCase {
   
@@ -123,9 +122,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // state must be "deelted"
-        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        assertState(cms, source, CmsResource.STATE_DELETED);
         // assert lock state
-        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
         // "internal" property must have been added
         assertPropertyNew(cms, source, new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, 
             String.valueOf(cms.getRequestContext().currentProject().getId()), null));
@@ -139,9 +138,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination2, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, destination2, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, destination2, CmsResource.STATE_NEW);
         // assert lock state
-        assertLock(cms, destination2, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination2, CmsLock.TYPE_EXCLUSIVE);
         // set filter mapping
         setMapping(destination2, source);
         // one sibling must have been added
@@ -153,8 +152,8 @@ public class TestMoveRename extends OpenCmsTestCase {
         // just for fun try to undo changes on the source resource
         resetMapping();
         cms.changeLock(source);
-        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
-        assertLock(cms, destination2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);        
+        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
+        assertLock(cms, destination2, CmsLock.TYPE_SHARED_EXCLUSIVE);        
         cms.undoChanges(source, false);        
         assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);
     }
@@ -185,9 +184,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // state must be "deelted"
-        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        assertState(cms, source, CmsResource.STATE_DELETED);
         // assert lock state
-        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
         // "internal" property must have been added
         assertPropertyNew(cms, source, new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, 
             String.valueOf(cms.getRequestContext().currentProject().getId()), null));
@@ -201,9 +200,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, destination, CmsResource.STATE_NEW);
         // assert lock state
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         // set filter mapping
         setMapping(destination, source);
         // one sibling must have been added
@@ -227,7 +226,7 @@ public class TestMoveRename extends OpenCmsTestCase {
 
         // create a new, plain resource
         cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
-        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
         
         storeResources(cms, source);        
         
@@ -249,9 +248,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, destination, CmsResource.STATE_NEW);
         // assert lock state
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         // set filter mapping
         setMapping(destination, source);
         // no siblings on the new resource
@@ -291,7 +290,7 @@ public class TestMoveRename extends OpenCmsTestCase {
             cms.createResource(newFolder2, CmsResourceTypeFolder.getStaticTypeId());
         }
         
-        assertState(cms, newFolder2, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, newFolder2, CmsResource.STATE_NEW);
         
         cms.undoChanges(source, false);
     }
@@ -364,9 +363,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // state must be "deelted"
-        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        assertState(cms, source, CmsResource.STATE_DELETED);
         // assert lock state
-        assertLock(cms, source, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.TYPE_SHARED_EXCLUSIVE);
         // "internal" property must have been added
         assertPropertyNew(cms, source, new CmsProperty(CmsPropertyDefinition.PROPERTY_INTERNAL, 
             String.valueOf(cms.getRequestContext().currentProject().getId()), null));
@@ -380,9 +379,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, destination, CmsResource.STATE_NEW);
         // assert lock state
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         // set filter mapping
         setMapping(destination, source);
         // one sibling must have been added
@@ -432,9 +431,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, source, cms.getRequestContext().currentProject());
         // state must be "deelted"
-        assertState(cms, source, I_CmsConstants.C_STATE_DELETED);
+        assertState(cms, source, CmsResource.STATE_DELETED);
         // assert lock state
-        assertLock(cms, source, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, source, CmsLock.TYPE_EXCLUSIVE);
         // folders don't have siblings
         assertSiblingCount(cms, source, 1); 
         
@@ -443,9 +442,9 @@ public class TestMoveRename extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, destination, CmsResource.STATE_NEW);
         // assert lock state
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);   
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);   
         // folders don't have siblings
         assertSiblingCount(cms, source, 1); 
     }

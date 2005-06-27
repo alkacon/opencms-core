@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupDb.java,v $
- * Date   : $Date: 2005/06/26 11:23:00 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import junit.framework.TestSuite;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0
  */
@@ -81,7 +81,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testCreateDatabase() {
 
-        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE.equals(getDatabaseProduct())) {
             System.out.println("testCreateDatabase not applicable for oracle.");
             return;
         }
@@ -102,7 +102,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testCreateTables() {
 
-        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE.equals(getDatabaseProduct())) {
             System.out.println("testDropDatabase not applicable for oracle.");
             return;
         }
@@ -123,7 +123,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testDropDatabase() {
 
-        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE.equals(getDatabaseProduct())) {
             System.out.println("testDropDatabase not applicable for oracle.");
             return;
         }
@@ -144,7 +144,7 @@ public class TestCmsSetupDb extends OpenCmsTestCase {
      */
     public void testDropTables() {
 
-        if (C_DB_ORACLE.equals(getDatabaseProduct())) {
+        if (DB_ORACLE.equals(getDatabaseProduct())) {
             System.out.println("testDropDatabase not applicable for oracle.");
             return;
         }

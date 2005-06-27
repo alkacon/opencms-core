@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,8 @@
 package org.opencms.configuration;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsLocaleManager;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.workplace.I_CmsWpConstants;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -47,7 +46,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -126,7 +125,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogCopyFileModeString() {
 
-        if (getDialogCopyFileMode() == I_CmsConstants.C_COPY_AS_NEW) {
+        if (getDialogCopyFileMode() == CmsResource.COPY_AS_NEW) {
             return COPYMODE_RESOURCE;
         } else {
             return COPYMODE_SIBLING;
@@ -141,9 +140,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogCopyFolderModeString() {
 
-        if (getDialogCopyFolderMode() == I_CmsConstants.C_COPY_AS_NEW) {
+        if (getDialogCopyFolderMode() == CmsResource.COPY_AS_NEW) {
             return COPYMODE_RESOURCE;
-        } else if (getDialogCopyFolderMode() == I_CmsConstants.C_COPY_AS_SIBLING) {
+        } else if (getDialogCopyFolderMode() == CmsResource.COPY_AS_SIBLING) {
             return COPYMODE_SIBLING;
         } else {
             return COPYMODE_PRESERVE;
@@ -157,7 +156,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getDialogDeleteFileModeString() {
 
-        if (getDialogDeleteFileMode() == I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS) {
+        if (getDialogDeleteFileMode() == CmsResource.DELETE_REMOVE_SIBLINGS) {
             return DELETEMODE_DELETE;
         } else {
             return DELETEMODE_PRESERVE;
@@ -275,7 +274,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileDateCreated() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_CREATED);
+        return getExplorerSetting(CmsUserSettings.FILELIST_DATE_CREATED);
     }
 
     /**
@@ -285,7 +284,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileDateExpired() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_EXPIRED);
+        return getExplorerSetting(CmsUserSettings.FILELIST_DATE_EXPIRED);
     }
 
     /**
@@ -295,7 +294,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileDateLastModified() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_LASTMODIFIED);
+        return getExplorerSetting(CmsUserSettings.FILELIST_DATE_LASTMODIFIED);
     }
 
     /**
@@ -305,7 +304,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileDateReleased() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_DATE_RELEASED);
+        return getExplorerSetting(CmsUserSettings.FILELIST_DATE_RELEASED);
     }
 
     /**
@@ -315,7 +314,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileLockedBy() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_LOCKEDBY);
+        return getExplorerSetting(CmsUserSettings.FILELIST_LOCKEDBY);
     }
 
     /**
@@ -325,7 +324,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFilePermissions() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_PERMISSIONS);
+        return getExplorerSetting(CmsUserSettings.FILELIST_PERMISSIONS);
     }
 
     /**
@@ -335,7 +334,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileSize() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_SIZE);
+        return getExplorerSetting(CmsUserSettings.FILELIST_SIZE);
     }
 
     /**
@@ -345,7 +344,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileState() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_STATE);
+        return getExplorerSetting(CmsUserSettings.FILELIST_STATE);
     }
 
     /**
@@ -355,7 +354,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileTitle() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_TITLE);
+        return getExplorerSetting(CmsUserSettings.FILELIST_TITLE);
     }
 
     /**
@@ -365,7 +364,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileType() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_TYPE);
+        return getExplorerSetting(CmsUserSettings.FILELIST_TYPE);
     }
 
     /**
@@ -375,7 +374,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileUserCreated() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_USER_CREATED);
+        return getExplorerSetting(CmsUserSettings.FILELIST_USER_CREATED);
     }
 
     /**
@@ -385,7 +384,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public String getShowExplorerFileUserLastModified() {
 
-        return getExplorerSetting(I_CmsWpConstants.C_FILELIST_USER_LASTMODIFIED);
+        return getExplorerSetting(CmsUserSettings.FILELIST_USER_LASTMODIFIED);
     }
 
     /**
@@ -476,9 +475,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogCopyFileMode(String mode) {
 
-        int copyMode = I_CmsConstants.C_COPY_AS_NEW;
+        int copyMode = CmsResource.COPY_AS_NEW;
         if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
-            copyMode = I_CmsConstants.C_COPY_AS_SIBLING;
+            copyMode = CmsResource.COPY_AS_SIBLING;
         }
         setDialogCopyFileMode(copyMode);
     }
@@ -490,11 +489,11 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogCopyFolderMode(String mode) {
 
-        int copyMode = I_CmsConstants.C_COPY_AS_NEW;
+        int copyMode = CmsResource.COPY_AS_NEW;
         if (mode.equalsIgnoreCase(COPYMODE_SIBLING)) {
-            copyMode = I_CmsConstants.C_COPY_AS_SIBLING;
+            copyMode = CmsResource.COPY_AS_SIBLING;
         } else if (mode.equalsIgnoreCase(COPYMODE_PRESERVE)) {
-            copyMode = I_CmsConstants.C_COPY_PRESERVE_SIBLING;
+            copyMode = CmsResource.COPY_PRESERVE_SIBLING;
         }
         setDialogCopyFolderMode(copyMode);
     }
@@ -506,9 +505,9 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      */
     public void setDialogDeleteFileMode(String mode) {
 
-        int deleteMode = I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS;
+        int deleteMode = CmsResource.DELETE_PRESERVE_SIBLINGS;
         if (mode.equalsIgnoreCase(DELETEMODE_DELETE)) {
-            deleteMode = I_CmsConstants.C_DELETE_OPTION_DELETE_SIBLINGS;
+            deleteMode = CmsResource.DELETE_REMOVE_SIBLINGS;
         }
         setDialogDeleteFileMode(deleteMode);
     }

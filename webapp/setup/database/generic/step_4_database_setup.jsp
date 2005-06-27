@@ -7,7 +7,7 @@
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 
-    boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.C_GENERIC_PROVIDER);
+    boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.GENERIC_PROVIDER);
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard

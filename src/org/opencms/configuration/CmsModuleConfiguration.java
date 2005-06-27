@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -61,10 +61,10 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
     protected static final String N_MODULES = "modules";
 
     /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-modules.dtd";
+    private static final String CONFIGURATION_DTD_NAME = "opencms-modules.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String C_DEFAULT_XML_FILE_NAME = "opencms-modules.xml";
+    private static final String DEFAULT_XML_FILE_NAME = "opencms-modules.xml";
 
     /** The module manager generated from the configuration. */
     private CmsModuleManager m_moduleManager;
@@ -77,7 +77,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public CmsModuleConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         m_modules = new ArrayList();
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_INIT_0));
@@ -136,7 +136,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 
     /**

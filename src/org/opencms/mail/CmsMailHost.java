@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMailHost.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.mail;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,7 +69,7 @@ public class CmsMailHost implements Comparable {
     public CmsMailHost(String hostname, Integer order, String protocol, String username, String password) {
 
         m_hostname = hostname;
-        m_protocol = (protocol != null) ? protocol : CmsMailSettings.C_MAIL_DEFAULT_PROTOCOL;
+        m_protocol = (protocol != null) ? protocol : CmsMailSettings.MAIL_DEFAULT_PROTOCOL;
         m_username = username;
         m_password = password;
         m_order = order;

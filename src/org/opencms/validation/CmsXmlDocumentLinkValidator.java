@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsXmlDocumentLinkValidator.java,v $
- * Date   : $Date: 2005/06/23 15:48:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 23:22:23 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,14 @@
 package org.opencms.validation;
 
 import org.opencms.db.CmsDbContext;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
@@ -63,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert
  *   
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,11 +121,11 @@ public class CmsXmlDocumentLinkValidator {
         List validatableResources = null;
         Map invalidResources = new HashMap();
         String resourceName = null;
-        int i = I_CmsConstants.C_UNKNOWN_ID, j = I_CmsConstants.C_UNKNOWN_ID;
+        int i = CmsDbUtil.UNKNOWN_ID, j = CmsDbUtil.UNKNOWN_ID;
         I_CmsResourceType resourceType = null;
         boolean foundBrokenLinks = false;
 
-        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
 
         // populate a lookup map with the offline resources that 
         // actually get published keyed by their resource names.
@@ -137,7 +138,7 @@ public class CmsXmlDocumentLinkValidator {
 
             try {
                 if ((resourceType = OpenCms.getResourceManager().getResourceType(resource.getTypeId())) instanceof I_CmsXmlDocumentLinkValidatable) {
-                    if (resource.getState() != I_CmsConstants.C_STATE_DELETED) {
+                    if (resource.getState() != CmsResource.STATE_DELETED) {
                         // don't validate links on deleted resources
                         validatableResources.add(resource);
                     }
@@ -158,8 +159,8 @@ public class CmsXmlDocumentLinkValidator {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
                     new Integer(i + 1),
-                    new Integer(j)), I_CmsReport.C_FORMAT_NOTE);
-                report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.C_FORMAT_NOTE);
+                    new Integer(j)), I_CmsReport.FORMAT_NOTE);
+                report.print(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATING_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
                     cms.getRequestContext().removeSiteRoot(resourceName)));
@@ -177,12 +178,12 @@ public class CmsXmlDocumentLinkValidator {
                     foundBrokenLinks = true;
                     report.println(
                         Messages.get().container(Messages.RPT_HTMLLINK_FOUND_BROKEN_LINKS_0),
-                        I_CmsReport.C_FORMAT_WARNING);
+                        I_CmsReport.FORMAT_WARNING);
                 } else {
                     // the resource contains *NO* broken links
                     report.println(
                         org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.C_FORMAT_OK);
+                        I_CmsReport.FORMAT_OK);
                 }
             } catch (CmsException e) {
                 LOG.error(Messages.get().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
@@ -193,7 +194,7 @@ public class CmsXmlDocumentLinkValidator {
             // print a summary if we found broken links in the validated resources
             report.println(
                 Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_BEGIN_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
 
             Iterator outer = invalidResources.keySet().iterator();
             while (outer.hasNext()) {
@@ -202,25 +203,25 @@ public class CmsXmlDocumentLinkValidator {
 
                 report.println(
                     Messages.get().container(Messages.RPT_BROKEN_LINKS_IN_1, resourceName),
-                    I_CmsReport.C_FORMAT_NOTE);
+                    I_CmsReport.FORMAT_NOTE);
                 Iterator inner = brokenLinks.iterator();
                 while (inner.hasNext()) {
                     report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        inner.next()), I_CmsReport.C_FORMAT_WARNING);
+                        inner.next()), I_CmsReport.FORMAT_WARNING);
                 }
                 report.println();
             }
 
             report.println(
                 Messages.get().container(Messages.RPT_BROKEN_LINKS_SUMMARY_END_0),
-                I_CmsReport.C_FORMAT_HEADLINE);
+                I_CmsReport.FORMAT_HEADLINE);
             report.println(
                 Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_ERROR_0),
-                I_CmsReport.C_FORMAT_ERROR);
+                I_CmsReport.FORMAT_ERROR);
         }
 
-        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.C_FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_HTMLLINK_VALIDATOR_END_0), I_CmsReport.FORMAT_HEADLINE);
 
         return invalidResources;
     }
@@ -270,7 +271,7 @@ public class CmsXmlDocumentLinkValidator {
                 // ... if the linked resource exists in the online project
                 m_driverManager.getVfsDriver().readResource(
                     new CmsDbContext(),
-                    I_CmsConstants.C_PROJECT_ONLINE_ID,
+                    CmsProject.ONLINE_PROJECT_ID,
                     link,
                     true);
 
@@ -278,7 +279,7 @@ public class CmsXmlDocumentLinkValidator {
                 if (offlineFileLookup.containsKey(link)) {
                     unpublishedResource = (CmsResource)offlineFileLookup.get(link);
 
-                    if (unpublishedResource.getState() == I_CmsConstants.C_STATE_DELETED) {
+                    if (unpublishedResource.getState() == CmsResource.STATE_DELETED) {
                         isValidLink = false;
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/06/23 13:27:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,12 +102,12 @@ public class CmsAdminHistoryClear extends CmsReport {
     public void actionEdit() throws JspException {
 
         // save initialized instance of this class in request attribute for included sub-elements
-        getJsp().getRequest().setAttribute(C_SESSION_WORKPLACE_CLASS, this);
+        getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         
         switch (getAction()) {
             case ACTION_REPORT_UPDATE:
                 setParamAction(REPORT_UPDATE);
-                getJsp().include(C_FILE_REPORT_OUTPUT);
+                getJsp().include(FILE_REPORT_OUTPUT);
                 break;
             case ACTION_REPORT_END:
                 actionCloseDialog();
@@ -121,7 +121,7 @@ public class CmsAdminHistoryClear extends CmsReport {
                     CmsAdminHistoryClearThread thread = new CmsAdminHistoryClearThread(getCms(), params);
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
-                    getJsp().include(C_FILE_REPORT_OUTPUT);
+                    getJsp().include(FILE_REPORT_OUTPUT);
                 } catch (Throwable e) {
                     // error setting history values, show error dialog
                     includeErrorpage(this, e);

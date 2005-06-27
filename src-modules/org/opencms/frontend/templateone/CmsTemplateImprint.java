@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateImprint.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,23 +45,23 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateImprint extends CmsTemplateBean {
 
     /** Default file name of the imprint configuration file.<p> */
-    public static final String C_FILENAME_CONFIGFILE = "imprint";
+    public static final String FILENAME_CONFIGFILE = "imprint";
 
     /** Name of the property key to set the path to the configuration file.<p> */
-    public static final String C_PROPERTY_CONFIGFILE = "properties_imprint";
+    public static final String PROPERTY_CONFIGFILE = "properties_imprint";
 
     /** Name of the property key to set the link to the legal notes page.<p> */
-    public static final String C_PROPERTY_LINK_LEGAL = "link_legalnotes";
+    public static final String PROPERTY_LINK_LEGAL = "link_legalnotes";
 
     /** Name of the property key to set the link to the privacy policy page.<p> */
-    public static final String C_PROPERTY_LINK_PRIVACY = "link_privacy";
+    public static final String PROPERTY_LINK_PRIVACY = "link_privacy";
 
     /** Stores the imprint configuration.<p> */
     private CmsXmlContent m_configuration;
@@ -181,7 +181,7 @@ public class CmsTemplateImprint extends CmsTemplateBean {
      */
     public String getLinkLegalNotes() {
 
-        String link = property(C_PROPERTY_LINK_LEGAL, "search", "");
+        String link = property(PROPERTY_LINK_LEGAL, "search", "");
         if ("".equals(link)) {
             return "#";
         } else {
@@ -196,7 +196,7 @@ public class CmsTemplateImprint extends CmsTemplateBean {
      */
     public String getLinkPrivacy() {
 
-        String link = property(C_PROPERTY_LINK_PRIVACY, "search", "");
+        String link = property(PROPERTY_LINK_PRIVACY, "search", "");
         if ("".equals(link)) {
             return "#";
         } else {
@@ -233,22 +233,22 @@ public class CmsTemplateImprint extends CmsTemplateBean {
         // call initialization of super class
         super.init(context, req, res);
         // set site root
-        String siteRoot = req.getParameter(CmsTemplateBean.C_PARAM_SITE);
+        String siteRoot = req.getParameter(CmsTemplateBean.PARAM_SITE);
         if (CmsStringUtil.isNotEmpty(siteRoot)) {
             getRequestContext().setSiteRoot(siteRoot);
         }
         // set uri to file that opened the imprint window
         String oldUri = getRequestContext().getUri();
-        String uri = req.getParameter(CmsTemplateBean.C_PARAM_URI);
+        String uri = req.getParameter(CmsTemplateBean.PARAM_URI);
         if (uri == null) {
             uri = oldUri;
         }
         getRequestContext().setUri(uri);
 
         // get configuration file path
-        String configFileName = property(C_PROPERTY_CONFIGFILE, "search", "");
+        String configFileName = property(PROPERTY_CONFIGFILE, "search", "");
         if ("".equals(configFileName)) {
-            configFileName = getConfigPath() + C_FILENAME_CONFIGFILE;
+            configFileName = getConfigPath() + FILENAME_CONFIGFILE;
         }
         // collect the configuration data
         m_configuration = CmsTemplateBean.getConfigurationFile(configFileName, getCmsObject());

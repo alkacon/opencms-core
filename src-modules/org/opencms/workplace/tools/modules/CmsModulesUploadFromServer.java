@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:10 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
             // check if all dependencies are fulfilled
             List dependencies = OpenCms.getModuleManager().checkDependencies(
                 module,
-                CmsModuleManager.C_DEPENDENCY_MODE_IMPORT);
+                CmsModuleManager.DEPENDENCY_MODE_IMPORT);
             if (!dependencies.isEmpty()) {
                 StringBuffer dep = new StringBuffer(32);
                 dep.append("<ul>");

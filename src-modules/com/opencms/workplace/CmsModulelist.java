@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsModulelist.java,v $
-* Date   : $Date: 2005/05/19 07:15:14 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.w3c.dom.Element;
  * 
  * Creation date: (31.08.00 15:16:10)
  * @author Hanjo Riege
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -80,7 +80,7 @@ public class CmsModulelist extends A_CmsWpElement {
             Object callingObject, Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
         
         // Read projectlist parameters
-        String listMethod = n.getAttribute(C_MODULELIST_METHOD);
+        String listMethod = n.getAttribute(CmsWorkplaceDefault.C_MODULELIST_METHOD);
         
         // Get list definition and language values
         CmsXmlWpTemplateFile listdef = getModulelistDefinitions(cms);
@@ -141,19 +141,19 @@ public class CmsModulelist extends A_CmsWpElement {
         StringBuffer result = new StringBuffer();
         for(int i = 0;i < list.size();i++) {
             String currentModule = (String)list.elementAt(i);
-            listdef.setData(C_MODULELIST_NAME, currentModule);
-            listdef.setData(C_MODULELIST_NICE_NAME, OpenCms.getModuleManager().getModule(currentModule).getNiceName()); 
-            listdef.setData(C_MODULELIST_VERSION, OpenCms.getModuleManager().getModule(currentModule).getVersion().toString());
-            listdef.setData(C_MODULELIST_AUTHOR, OpenCms.getModuleManager().getModule(currentModule).getAuthorName());
-            listdef.setData(C_MODULELIST_DATECREATED, CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(currentModule).getDateCreated()));
-            if(OpenCms.getModuleManager().getModule(currentModule).getDateInstalled() == CmsModule.C_DEFAULT_DATE) {
-                listdef.setData(C_MODULELIST_DATEUPLOADED, "   -   ");
+            listdef.setData(CmsWorkplaceDefault.C_MODULELIST_NAME, currentModule);
+            listdef.setData(CmsWorkplaceDefault.C_MODULELIST_NICE_NAME, OpenCms.getModuleManager().getModule(currentModule).getNiceName()); 
+            listdef.setData(CmsWorkplaceDefault.C_MODULELIST_VERSION, OpenCms.getModuleManager().getModule(currentModule).getVersion().toString());
+            listdef.setData(CmsWorkplaceDefault.C_MODULELIST_AUTHOR, OpenCms.getModuleManager().getModule(currentModule).getAuthorName());
+            listdef.setData(CmsWorkplaceDefault.C_MODULELIST_DATECREATED, CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(currentModule).getDateCreated()));
+            if(OpenCms.getModuleManager().getModule(currentModule).getDateInstalled() == CmsModule.DEFAULT_DATE) {
+                listdef.setData(CmsWorkplaceDefault.C_MODULELIST_DATEUPLOADED, "   -   ");
             }
             else {
-                listdef.setData(C_MODULELIST_DATEUPLOADED, CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(currentModule).getDateInstalled()));
+                listdef.setData(CmsWorkplaceDefault.C_MODULELIST_DATEUPLOADED, CmsDateUtil.getDateShort(OpenCms.getModuleManager().getModule(currentModule).getDateInstalled()));
             }
-            listdef.setData(C_MODULELIST_IDX, new Integer(i).toString());
-            result.append(listdef.getProcessedDataValue(C_TAG_MODULELIST_DEFAULT, callingObject, parameters));
+            listdef.setData(CmsWorkplaceDefault.C_MODULELIST_IDX, new Integer(i).toString());
+            result.append(listdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_MODULELIST_DEFAULT, callingObject, parameters));
         }
         return result.toString();
     }

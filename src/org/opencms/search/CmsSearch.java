@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/06/27 08:25:56 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.SortField;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,7 +179,7 @@ public class CmsSearch implements Serializable, Cloneable {
         m_displayPages = 10;
         m_queryLength = -1;
         m_sortOrder = CmsSearch.SORT_DEFAULT;
-        m_fields = CmsSearchIndex.C_DOC_META_FIELDS;
+        m_fields = CmsSearchIndex.DOC_META_FIELDS;
     }
 
     /**

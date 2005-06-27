@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0
  */
@@ -146,10 +146,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     private static final String A_TARGET = "target";
 
     /** The name of the DTD for this configuration. */
-    private static final String C_CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
+    private static final String CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
 
     /** The name of the default XML file for this configuration. */
-    public static final String C_DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
     
     /** The copy-resource node name.*/
     private static final String N_COPY_RESOURCE = "copy-resource";
@@ -183,7 +183,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      */
     public CmsVfsConfiguration() {
 
-        setXmlFileName(C_DEFAULT_XML_FILE_NAME);
+        setXmlFileName(DEFAULT_XML_FILE_NAME);
         m_fileTranslations = new ArrayList();
         m_folderTranslations = new ArrayList();
         m_defaultFiles = new ArrayList();
@@ -202,12 +202,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         // add rules for resource types
         digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
 
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD, 2);
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD, 2);
         // please note: the resource types use a special version of the init method with 2 parameters 
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
         
-        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.C_ADD_RESOURCE_TYPE_METHOD);   
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.ADD_RESOURCE_TYPE_METHOD);   
 
         // add rules for default properties
         digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY, CmsProperty.class);
@@ -221,7 +221,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY, "addDefaultProperty");   
 
         // extension mapping rules
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, I_CmsResourceType.C_ADD_MAPPING_METHOD, 1);
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, I_CmsResourceType.ADD_MAPPING_METHOD, 1);
         digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, 0, A_SUFFIX);       
         
         // copy resource rules
@@ -373,12 +373,12 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         // creation of the resource manager
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES, CmsResourceManager.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES, "setResourceManager");
 
         // add rules for resource loaders
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, I_CmsConfigurationParameterHandler.C_INIT_CONFIGURATION_METHOD);
+        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
 
         // add rules for resource types
@@ -390,7 +390,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
 
         // generic <param> parameter rules
-        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.C_ADD_PARAMETER_METHOD, 2);
+        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD, 2);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
         digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
                       
@@ -549,7 +549,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      */
     public String getDtdFilename() {
 
-        return C_CONFIGURATION_DTD_NAME;
+        return CONFIGURATION_DTD_NAME;
     }
 
     /**

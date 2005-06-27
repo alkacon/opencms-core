@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/06/26 12:49:12 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
  
 package org.opencms.file;
 
-import org.opencms.main.I_CmsConstants;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
@@ -47,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -247,7 +246,7 @@ public class TestProperty extends OpenCmsTestCase {
          // project must be current project
          tc.assertProject(cms, resource1, cms.getRequestContext().currentProject());
          // state must be "changed"
-         tc.assertState(cms, resource1, I_CmsConstants.C_STATE_CHANGED);
+         tc.assertState(cms, resource1, CmsResource.STATE_CHANGED);
          // date last modified must be after the test timestamp
          tc.assertDateLastModifiedAfter(cms, resource1, timestamp);
          // the user last modified must be the current user
@@ -346,8 +345,8 @@ public class TestProperty extends OpenCmsTestCase {
             
         CmsObject cms = getCmsObject(); 
         echo("Testing removing multiple properties on a resource");
-        CmsProperty property5 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
-        CmsProperty property6 = new CmsProperty("NavPos", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);
+        CmsProperty property5 = new CmsProperty("Title", CmsProperty.DELETE_VALUE, CmsProperty.DELETE_VALUE);
+        CmsProperty property6 = new CmsProperty("NavPos", CmsProperty.DELETE_VALUE, CmsProperty.DELETE_VALUE);
         List propertyList2 = new ArrayList();
         propertyList2.add(property5);
         propertyList2.add(property6);
@@ -363,7 +362,7 @@ public class TestProperty extends OpenCmsTestCase {
         
         CmsObject cms = getCmsObject();  
         echo("Testing removing one property on a resource");
-        CmsProperty property4 = new CmsProperty("Title", CmsProperty.C_DELETE_VALUE, CmsProperty.C_DELETE_VALUE);                 
+        CmsProperty property4 = new CmsProperty("Title", CmsProperty.DELETE_VALUE, CmsProperty.DELETE_VALUE);                 
         removeProperty(this, cms, "/folder1/page2.html", property4);
     }
         
@@ -454,7 +453,7 @@ public class TestProperty extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, resourcename, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, resourcename, CmsResource.STATE_NEW);
         // the user last modified must be the current user
         assertUserLastModified(cms, resourcename, cms.getRequestContext().currentUser()); 
                
@@ -475,6 +474,6 @@ public class TestProperty extends OpenCmsTestCase {
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         cms.publishProject();    
         
-        assertState(cms, resourcename, I_CmsConstants.C_STATE_UNCHANGED);                
+        assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);                
     }    
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlContent.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,7 @@ public class CmsDocumentXmlContent extends A_CmsVfsDocument {
                 I_CmsResourceType resourceType = (I_CmsResourceType)i.next();
                 if (resourceType instanceof CmsResourceTypeXmlContent
                     && ((CmsResourceTypeXmlContent)resourceType).getConfiguration().containsKey(
-                        CmsResourceTypeXmlContent.C_CONFIGURATION_SCHEMA)) {
+                        CmsResourceTypeXmlContent.CONFIGURATION_SCHEMA)) {
                     allTypes.add(resourceType.getTypeName());
                 }
             }

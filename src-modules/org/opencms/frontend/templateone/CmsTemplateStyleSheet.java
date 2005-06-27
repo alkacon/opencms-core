@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/06/25 12:27:21 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,23 +53,23 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateStyleSheet extends CmsJspActionElement {
 
     /** Default file name of the CSS configuration file. */
-    public static final String C_FILENAME_CONFIGFILE = "configuration_css";
+    public static final String FILENAME_CONFIGFILE = "configuration_css";
 
     /** Node name of the optional configuration nodes. */
-    public static final String C_NODE_OPTIONALCONFIG = "StyleOptional";
+    public static final String NODE_OPTIONALCONFIG = "StyleOptional";
 
     /** Request parameter name providing the configuration file URI. */
-    public static final String C_PARAM_CONFIGFILE = "config";
+    public static final String PARAM_CONFIGFILE = "config";
 
     /** Name of the property key to set the path to the configuration file. */
-    public static final String C_PROPERTY_CONFIGFILE = "properties_style";
+    public static final String PROPERTY_CONFIGFILE = "properties_style";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateStyleSheet.class);
@@ -223,7 +223,7 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
      */
     public String getOptionalConfigValue(String key, String defaultValue) {
 
-        return getConfigValue(C_NODE_OPTIONALCONFIG + "/" + key, defaultValue);
+        return getConfigValue(NODE_OPTIONALCONFIG + "/" + key, defaultValue);
     }
 
     /**
@@ -269,16 +269,16 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
         // call initialization of super class
         super.init(context, req, res);
         // set site root to get correct configuration files
-        String siteRoot = req.getParameter(CmsTemplateBean.C_PARAM_SITE);
+        String siteRoot = req.getParameter(CmsTemplateBean.PARAM_SITE);
         if (CmsStringUtil.isNotEmpty(siteRoot)) {
             getRequestContext().setSiteRoot(siteRoot);
         }
         // set resource path
-        m_resPath = req.getParameter(CmsTemplateNavigation.C_PARAM_RESPATH);
+        m_resPath = req.getParameter(CmsTemplateNavigation.PARAM_RESPATH);
 
         // collect the configuration information 
         try {
-            String configUri = req.getParameter(C_PARAM_CONFIGFILE);
+            String configUri = req.getParameter(PARAM_CONFIGFILE);
             if (CmsStringUtil.isNotEmpty(configUri)) {
                 m_configuration = CmsTemplateBean.getConfigurationFile(configUri, getCmsObject());
             }
@@ -309,9 +309,9 @@ public class CmsTemplateStyleSheet extends CmsJspActionElement {
                     CmsXmlContent conf = m_configuration;
                     if (conf != null) {
                         // create optional configuration node
-                        conf.addValue(getCmsObject(), C_NODE_OPTIONALCONFIG, getRequestContext().getLocale(), 0);
+                        conf.addValue(getCmsObject(), NODE_OPTIONALCONFIG, getRequestContext().getLocale(), 0);
                         I_CmsXmlContentValue value = conf.getValue(
-                            C_NODE_OPTIONALCONFIG + "/headlines.set",
+                            NODE_OPTIONALCONFIG + "/headlines.set",
                             getRequestContext().getLocale());
                         // get default value String from XSD
                         selectedValues = value.getContentDefinition().getContentHandler().getConfiguration(value);

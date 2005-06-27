@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminDatabase.java,v $
-* Date   : $Date: 2005/06/09 15:45:10 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Vector;
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -86,9 +86,9 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
             filename = (String)files.nextElement();
         }
         if(filename != null) {
-            session.putValue(C_PARA_RESOURCE, filename);
+            session.putValue(CmsWorkplaceDefault.C_PARA_RESOURCE, filename);
         }
-        filename = (String)session.getValue(C_PARA_RESOURCE);
+        filename = (String)session.getValue(CmsWorkplaceDefault.C_PARA_RESOURCE);
 
         // get the filecontent
         byte[] filecontent = new byte[0];
@@ -96,9 +96,9 @@ public class CmsAdminDatabase extends CmsWorkplaceDefault {
             filecontent = CmsXmlTemplateLoader.getRequest(cms.getRequestContext()).getFile(filename);
         }
         if(filecontent != null) {
-            session.putValue(C_PARA_FILECONTENT, filecontent);
+            session.putValue(CmsWorkplaceDefault.C_PARA_FILECONTENT, filecontent);
         }
-        filecontent = (byte[])session.getValue(C_PARA_FILECONTENT);
+        filecontent = (byte[])session.getValue(CmsWorkplaceDefault.C_PARA_FILECONTENT);
         // first create the folder if it doesnt exists
         File discFolder = new File(OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(OpenCms.getSystemInfo().getPackagesRfsPath() + File.separator));
         if(!discFolder.exists()) {

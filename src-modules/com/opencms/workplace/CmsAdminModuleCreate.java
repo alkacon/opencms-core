@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminModuleCreate.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.6 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.7 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsLegacyException;
@@ -167,10 +167,10 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                         templateSelector = "errornoname";
                     }
                 }else {
-                    tryToCreateFolder(cms, C_VFS_PATH_SYSTEM, "modules");
+                    tryToCreateFolder(cms, CmsWorkplace.VFS_PATH_SYSTEM, "modules");
                     // create the module (first test if we are in a project including /system/
                     try {
-                        cms.createResource(C_VFS_PATH_MODULES + modulename, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                        cms.createResource(CmsWorkplace.VFS_PATH_MODULES + modulename, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                     }catch(CmsException e) {
                         if(!(e instanceof CmsVfsResourceAlreadyExistsException)) {
                             // couldn't create Module
@@ -178,7 +178,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                             return startProcessing(cms, templateDocument, elementName, parameters, "errorProject");
                         }else {
                             try {
-                                cms.readFolder(C_VFS_PATH_MODULES + modulename + "/");
+                                cms.readFolder(CmsWorkplace.VFS_PATH_MODULES + modulename + "/");
                             }catch(CmsException ex) {
                                 // folder exist but is deleted
                                 templateDocument.setData("details", "Sorry, you have to publish this Project and create a new one.\n" + CmsException.getStackTraceAsString(e));
@@ -193,7 +193,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                         createDateLong = (new Date()).getTime();
                     }
 
-                    String modulePath = C_VFS_PATH_MODULES + modulename + "/";
+                    String modulePath = CmsWorkplace.VFS_PATH_MODULES + modulename + "/";
                     List moduleResources = new ArrayList();
                     moduleResources.add(modulePath);                    
                     
@@ -202,7 +202,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                         
                         CmsExportPoint exportPoint =
                             new CmsExportPoint(
-                                I_CmsWpConstants.C_VFS_PATH_MODULES + modulename + "/classes/",
+                                CmsWorkplace.VFS_PATH_MODULES + modulename + "/classes/",
                                 "WEB-INF/classes/");
 
                         moduleExportPoints.add(exportPoint);
@@ -228,7 +228,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
 
                         CmsExportPoint exportPoint =
                             new CmsExportPoint(
-                                I_CmsWpConstants.C_VFS_PATH_MODULES + modulename + "/lib/",
+                                CmsWorkplace.VFS_PATH_MODULES + modulename + "/lib/",
                                 "WEB-INF/lib/");
 
                         moduleExportPoints.add(exportPoint);
@@ -244,9 +244,9 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
                     cms.writeProperty(modulePath, CmsPropertyDefinition.PROPERTY_EXPORT, "false");                    
                     
                     // create the templates folder
-                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_TEMPLATES);
+                    tryToCreateFolder(cms, modulePath, CmsWorkplace.VFS_DIR_TEMPLATES);
                     // create the "default_bodies" folder 
-                    tryToCreateFolder(cms, modulePath, I_CmsWpConstants.C_VFS_DIR_DEFAULTBODIES);
+                    tryToCreateFolder(cms, modulePath, CmsWorkplace.VFS_DIR_DEFAULTBODIES);
                         
                     CmsModule updatedModule = 
                         new CmsModule(
@@ -336,7 +336,7 @@ public class CmsAdminModuleCreate extends CmsWorkplaceDefault {
      */
     private void tryToCreateFolder(CmsObject cms, String folder, String newFolder) {
         try {
-            cms.createResource(folder + newFolder, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+            cms.createResource(folder + newFolder, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
         }catch(Exception e) {
         }
     }

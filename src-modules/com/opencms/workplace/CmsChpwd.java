@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsChpwd.java,v $
- * Date   : $Date: 2005/05/20 14:32:31 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/06/27 23:22:07 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Management System
@@ -40,7 +40,7 @@ import java.util.Hashtable;
  * Template class for displaying the chpwd screen of the OpenCms workplace.<p>
  *
  * @author Michael Emmerich
- * @version $Revision: 1.4 $ $Date: 2005/05/20 14:32:31 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -64,9 +64,9 @@ public class CmsChpwd extends CmsWorkplaceDefault {
 		// the template to be displayed
 		String template = null;
 		CmsXmlWpTemplateFile xmlTemplateDocument = new CmsXmlWpTemplateFile(cms, templateFile);
-		String oldpwd = (String)parameters.get(C_PARA_OLDPWD);
-		String newpwd = (String)parameters.get(C_PARA_NEWPWD);
-		String newpwdrepeat = (String)parameters.get(C_PARA_NEWPWDREPEAT);
+		String oldpwd = (String)parameters.get(CmsWorkplaceDefault.C_PARA_OLDPWD);
+		String newpwd = (String)parameters.get(CmsWorkplaceDefault.C_PARA_NEWPWD);
+		String newpwdrepeat = (String)parameters.get(CmsWorkplaceDefault.C_PARA_NEWPWDREPEAT);
 		// a password was given in the request so try to change it
 		if(oldpwd != null && newpwd != null && newpwdrepeat != null) {
 			if("".equals(oldpwd) || "".equals(newpwd) || "".equals(newpwdrepeat)) {
@@ -82,11 +82,11 @@ public class CmsChpwd extends CmsWorkplaceDefault {
 						oldpwd, newpwd);
 						// return to the parameter dialog
 						try {
-                            CmsXmlTemplateLoader.getResponse(requestContext).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + C_WP_EXPLORER_PREFERENCES);
+                            CmsXmlTemplateLoader.getResponse(requestContext).sendCmsRedirect(getConfigFile(cms).getWorkplaceActionPath() + CmsWorkplaceDefault.C_WP_EXPLORER_PREFERENCES);
 						}
 						catch(Exception e) {
 							throw new CmsLegacyException("Redirect fails :" + getConfigFile(cms).getWorkplaceActionPath()
-							+ C_WP_EXPLORER_PREFERENCES, e);
+							+ CmsWorkplaceDefault.C_WP_EXPLORER_PREFERENCES, e);
 						}
 
 						// an error was thrown while setting the new password

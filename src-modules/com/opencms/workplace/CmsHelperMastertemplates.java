@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsHelperMastertemplates.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,9 +34,8 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.workplace.*;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -45,7 +44,7 @@ import java.util.Vector;
 
 /**
  * Helper class to receive all mastertemplates that are currently in the system.
- * @version $Revision: 1.2 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -79,7 +78,7 @@ public class CmsHelperMastertemplates {
      */
     public static Integer getTemplates(CmsObject cms, Vector names, Vector values, String currentTemplate, int defaultReturnValue) throws CmsException {
         // first read the available templates from the VFS
-        getTemplateElements(cms, I_CmsWpConstants.C_VFS_DIR_TEMPLATES, names, values);
+        getTemplateElements(cms, CmsWorkplace.VFS_DIR_TEMPLATES, names, values);
          // find the correct index for the current template
         if(currentTemplate != null) {
            // it's required to do directory translation if comparing directory names 
@@ -108,7 +107,7 @@ public class CmsHelperMastertemplates {
 
         // get all selected template elements in the module folders
         List modules = (List) new ArrayList();
-        modules = cms.getSubFolders(I_CmsWpConstants.C_VFS_PATH_MODULES);
+        modules = cms.getSubFolders(CmsWorkplace.VFS_PATH_MODULES);
         for(int i = 0;i < modules.size();i++) {
             List moduleTemplateFiles = (List) new ArrayList();
             String folder = cms.getSitePath((CmsFolder)modules.get(i));
@@ -122,7 +121,7 @@ public class CmsHelperMastertemplates {
         Iterator en = files.iterator();
         while(en.hasNext()) {
             CmsFile file = (CmsFile)en.next();
-            if(file.getState() != I_CmsConstants.C_STATE_DELETED && checkVisible(cms, file)) {
+            if(file.getState() != CmsResource.STATE_DELETED && checkVisible(cms, file)) {
                 String nicename = cms.readProperty(cms.getSitePath(file), CmsPropertyDefinition.PROPERTY_TITLE);
                 if(nicename == null) {
                     nicename = file.getName();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,7 +139,7 @@ public class CmsTemplateContentListItem {
                     String key = keyPrefix + PARAM_COLLECTOR;
                     String value = messages.key(key);
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)
-                        || value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                        || value.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
                         // no default collector found, this indicates no list specifications for this type are present
                         continue;
                     }
@@ -154,7 +154,7 @@ public class CmsTemplateContentListItem {
                     for (int m = 0; m < LISTVARIATIONS.length; m++) {
                         key = keyPrefix + PARAM_LISTELEMENT + LISTVARIATIONS[m];
                         value = messages.key(key);
-                        if (!value.startsWith(CmsMessages.C_UNKNOWN_KEY_EXTENSION)) {
+                        if (!value.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
                             result.put(key, value);
                         }
                     }

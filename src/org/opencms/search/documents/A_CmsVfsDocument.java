@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 23:22:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,14 +62,14 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /** The vfs prefix for document keys. */
-    public static final String C_VFS_DOCUMENT_KEY_PREFIX = "VFS";
+    public static final String VFS_DOCUMENT_KEY_PREFIX = "VFS";
 
     /**
      * Name of the documenttype.
@@ -92,7 +92,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     public String getDocumentKey(String resourceType) throws CmsIndexException {
 
         try {
-            return C_VFS_DOCUMENT_KEY_PREFIX
+            return VFS_DOCUMENT_KEY_PREFIX
                 + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
         } catch (Exception exc) {
             throw new CmsIndexException(Messages.get().container(
@@ -122,10 +122,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
                 int id = OpenCms.getResourceManager().getResourceType((String)i.next()).getTypeId();
                 for (Iterator j = mimeTypes.iterator(); j.hasNext();) {
-                    keys.add(C_VFS_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
+                    keys.add(VFS_DOCUMENT_KEY_PREFIX + id + ":" + (String)j.next());
                 }
                 if (mimeTypes.isEmpty()) {
-                    keys.add(C_VFS_DOCUMENT_KEY_PREFIX + id);
+                    keys.add(VFS_DOCUMENT_KEY_PREFIX + id);
                 }
             }
         } catch (Exception exc) {
@@ -231,7 +231,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         document.add(field);
 
         // special field for VFS documents - add a marker so that the document can be identified as VFS resource
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_TYPE, C_VFS_DOCUMENT_KEY_PREFIX));
+        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_TYPE, VFS_DOCUMENT_KEY_PREFIX));
 
         float boost = 1.0f;
         // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/27 23:22:16 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,32 +67,32 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
 
     /** The name of the addMapping() method. */
-    String C_ADD_MAPPING_METHOD = "addMappingType";
+    String ADD_MAPPING_METHOD = "addMappingType";
 
     /** Name of the addResourceType() method to add a resource type from the configuration. */
-    String C_ADD_RESOURCE_TYPE_METHOD = "addResourceType";
+    String ADD_RESOURCE_TYPE_METHOD = "addResourceType";
 
     /** Configuration key prefix for properties that are attached when creating a new resource. */
-    String C_CONFIGURATION_PROPERTY_CREATE = "property.create.";
+    String CONFIGURATION_PROPERTY_CREATE = "property.create.";
 
     /** Configuration key for the resource type id. */
-    String C_CONFIGURATION_RESOURCE_TYPE_ID = "resource.type.id";
+    String CONFIGURATION_RESOURCE_TYPE_ID = "resource.type.id";
 
     /** Configuration key for the resource type name. */
-    String C_CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
+    String CONFIGURATION_RESOURCE_TYPE_NAME = "resource.type.name";
 
     /** Store the property on resource record. */
-    String C_PROPERTY_ON_RESOURCE = "resource";
+    String PROPERTY_ON_RESOURCE = "resource";
 
     /** Store the property on structure record. */
-    String C_PROPERTY_ON_STRUCTURE = "structure";
+    String PROPERTY_ON_STRUCTURE = "structure";
 
     /**
      * Maps a file extension to a resource type.<p>
@@ -198,9 +198,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * during the copy operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_NEW}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_AS_SIBLING}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_COPY_PRESERVE_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_NEW}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_AS_SIBLING}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#COPY_PRESERVE_SIBLING}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
@@ -297,8 +297,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * during the delete operation.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_DELETE_SIBLINGS}</code></li>
-     * <li><code>{@link org.opencms.main.I_CmsConstants#C_DELETE_OPTION_PRESERVE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#DELETE_REMOVE_SIBLINGS}</code></li>
+     * <li><code>{@link org.opencms.file.CmsResource#DELETE_PRESERVE_SIBLINGS}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
@@ -441,8 +441,8 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * The <code>mode</code> parameter controls what kind of lock is used.<br>
      * Possible values for this parameter are: <br>
      * <ul>
-     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_COMMON}</code></li>
-     * <li><code>{@link org.opencms.lock.CmsLock#C_MODE_TEMP}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#COMMON}</code></li>
+     * <li><code>{@link org.opencms.lock.CmsLock#TEMPORARY}</code></li>
      * </ul><p>
      * 
      * @param cms the initialized CmsObject
@@ -540,9 +540,9 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource
      * @param dateReleased the new release date of the changed resource,
-     *              set it to <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     *              set it to <code>{@link org.opencms.file.CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param dateExpired the new expire date of the changed resource, 
-     *              set it to <code>{@link org.opencms.main.I_CmsConstants#C_DATE_UNCHANGED}</code> to keep it unchanged.
+     *              set it to <code>{@link org.opencms.file.CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
      * @throws CmsException if something goes wrong

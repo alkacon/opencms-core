@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,6 +81,9 @@ public class CmsContextInfo {
     /** The user name to create the context with. */
     private String m_userName;
 
+    /** Localhost ip used in fallback cases. */
+    public static final String LOCALHOST = "127.0.0.1";
+
     /**
      * Creates a new instance, initializing the variables with some reasonable default values.<p>
      * 
@@ -98,12 +101,12 @@ public class CmsContextInfo {
 
         super();
         setUserName(OpenCms.getDefaultUsers().getUserGuest());
-        setProjectName(I_CmsConstants.C_PROJECT_ONLINE);
+        setProjectName(CmsProject.ONLINE_PROJECT_NAME);
         setRequestedUri("/");
         setSiteRoot("/");
         setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
-        setRemoteAddr(I_CmsConstants.C_IP_LOCALHOST);
+        setRemoteAddr(CmsContextInfo.LOCALHOST);
     }
 
     /**

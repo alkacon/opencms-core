@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/25 15:38:37 $
- * Version: $Revision: 1.210 $
+ * Date   : $Date: 2005/06/27 23:22:20 $
+ * Version: $Revision: 1.211 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,8 +82,8 @@ import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceManager;
-import org.opencms.workplace.I_CmsWpConstants;
 import org.opencms.xml.CmsXmlContentTypeManager;
 
 import java.io.IOException;
@@ -125,7 +125,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.210 $ 
+ * @version $Revision: 1.211 $ 
  * 
  * @since 6.0.0 
  */
@@ -1184,7 +1184,7 @@ public final class OpenCmsCore {
 
         if (resource != null) {
             // test if this file is only available for internal access operations
-            if ((resource.getFlags() & I_CmsConstants.C_ACCESS_INTERNAL_READ) > 0) {
+            if ((resource.getFlags() & CmsResource.FLAG_INTERNAL) > 0) {
                 throw new CmsException(Messages.get().container(
                     Messages.ERR_READ_INTERNAL_RESOURCE_1,
                     cms.getRequestContext().getUri()));
@@ -1785,7 +1785,7 @@ public final class OpenCmsCore {
                 req,
                 OpenCms.getDefaultUsers().getUserGuest(),
                 site.getSiteRoot(),
-                I_CmsConstants.C_PROJECT_ONLINE_ID);
+                CmsProject.ONLINE_PROJECT_ID);
             // check if "basic" authentification data is provided
             checkBasicAuthorization(cms, req, res);
         }
@@ -1824,10 +1824,10 @@ public final class OpenCmsCore {
         if (siteroot == null) {
             siteroot = "/";
         }
-        CmsObject cms = initCmsObject(req, user, siteroot, I_CmsConstants.C_PROJECT_ONLINE_ID);
+        CmsObject cms = initCmsObject(req, user, siteroot, CmsProject.ONLINE_PROJECT_ID);
         // login the user if different from Guest and password was provided
         if ((password != null) && !getDefaultUsers().getUserGuest().equals(user)) {
-            cms.loginUser(user, password, I_CmsConstants.C_IP_LOCALHOST);
+            cms.loginUser(user, password, CmsContextInfo.LOCALHOST);
         }
         return cms;
     }
@@ -1851,7 +1851,7 @@ public final class OpenCmsCore {
             project = m_securityManager.readProject(projectId);
         } catch (CmsDbEntryNotFoundException e) {
             // project not found, switch to online project
-            project = m_securityManager.readProject(I_CmsConstants.C_PROJECT_ONLINE_ID);
+            project = m_securityManager.readProject(CmsProject.ONLINE_PROJECT_ID);
         }
 
         // get requested resource uri
@@ -1867,12 +1867,12 @@ public final class OpenCmsCore {
         // get remote IP address
         String remoteAddr;
         if (req != null) {
-            remoteAddr = req.getHeader(I_CmsConstants.C_HEADER_X_FORWARDED_FOR);
+            remoteAddr = req.getHeader(CmsRequestUtil.HEADER_X_FORWARDED_FOR);
             if (remoteAddr == null) {
                 remoteAddr = req.getRemoteAddr();
             }
         } else {
-            remoteAddr = I_CmsConstants.C_IP_LOCALHOST;
+            remoteAddr = CmsContextInfo.LOCALHOST;
         }
 
         // get locale and encoding        
@@ -1881,7 +1881,7 @@ public final class OpenCmsCore {
             // locale manager is initialized
             // resolve locale and encoding
             String resourceName;
-            if (requestedResource.startsWith(I_CmsWpConstants.C_VFS_PATH_SYSTEM)) {
+            if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
                 // add site root only if resource name does not start with "/system"
                 resourceName = requestedResource;
             } else {
@@ -1975,7 +1975,7 @@ public final class OpenCmsCore {
 
         if (redirectURL == null) {
             // HTTP basic authentication is used
-            res.setHeader(I_CmsConstants.C_HEADER_WWW_AUTHENTICATE, "BASIC realm=\""
+            res.setHeader(CmsRequestUtil.HEADER_WWW_AUTHENTICATE, "BASIC realm=\""
                 + getSystemInfo().getOpenCmsContext()
                 + "\"");
             res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);

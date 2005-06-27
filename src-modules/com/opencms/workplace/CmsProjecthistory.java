@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsProjecthistory.java,v $
-* Date   : $Date: 2005/06/12 11:18:21 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.legacy.CmsLegacyException;
 import com.opencms.template.A_CmsXmlContent;
@@ -51,7 +52,7 @@ import org.w3c.dom.Element;
  * Called by CmsXmlTemplateFile for handling the special XML tag <code>&lt;ICON&gt;</code>.
  *
  * @author Edna Falkenhan
- * @version $Revision: 1.4 $ $Date: 2005/06/12 11:18:21 $
+ * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -86,7 +87,7 @@ public class CmsProjecthistory extends A_CmsWpElement {
             Hashtable parameters, CmsXmlLanguageFile lang) throws CmsException {
 
         // Read projectlist parameters
-        String listMethod = n.getAttribute(C_PROJECTLIST_METHOD);
+        String listMethod = n.getAttribute(CmsWorkplaceDefault.C_PROJECTLIST_METHOD);
 
         // Get list definition and language values
         CmsXmlWpTemplateFile listdef = getProjectlistDefinitions(cms);
@@ -136,7 +137,7 @@ public class CmsProjecthistory extends A_CmsWpElement {
 
         /** StringBuffer for the generated output */
         StringBuffer result = new StringBuffer();
-        listdef.getProcessedDataValue(C_TAG_PROJECTLIST_SNAPLOCK, callingObject, parameters);
+        listdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PROJECTLIST_SNAPLOCK, callingObject, parameters);
         for(int i = 0;i < list.size();i++) {
 
             // get the actual project
@@ -144,11 +145,11 @@ public class CmsProjecthistory extends A_CmsWpElement {
 
             // get the processed list.
             setListEntryData(cms, lang, listdef, project);
-            listdef.setData(C_PROJECTLIST_LOCKSTATE, "");
-            listdef.setData(C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
+            listdef.setData(CmsWorkplaceDefault.C_PROJECTLIST_LOCKSTATE, "");
+            listdef.setData(CmsWorkplaceDefault.C_PROJECTLIST_MENU, C_PROJECT_UNLOCK);
 
-            listdef.setData(C_PROJECTLIST_IDX, new Integer(i).toString());
-            result.append(listdef.getProcessedDataValue(C_TAG_PROJECTLIST_DEFAULT, callingObject,
+            listdef.setData(CmsWorkplaceDefault.C_PROJECTLIST_IDX, new Integer(i).toString());
+            result.append(listdef.getProcessedDataValue(CmsWorkplaceDefault.C_TAG_PROJECTLIST_DEFAULT, callingObject,
                     parameters));
         }
         return result.toString();
@@ -182,8 +183,8 @@ public class CmsProjecthistory extends A_CmsWpElement {
     public static void setListEntryData(CmsObject cms, CmsXmlLanguageFile lang,
             CmsXmlWpTemplateFile xmlFile, CmsBackupProject project) throws CmsException {
 
-        xmlFile.setData(C_PROJECTLIST_NAME, project.getName());
-        xmlFile.setData(C_PROJECTLIST_DESCRIPTION, project.getDescription());
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_NAME, project.getName());
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_DESCRIPTION, project.getDescription());
         // get the resources in the project
         List resources = project.getProjectResources();
         String reslist = new String();
@@ -194,16 +195,16 @@ public class CmsProjecthistory extends A_CmsWpElement {
             }
         }
         xmlFile.setData("resources", reslist);
-        xmlFile.setData(C_PROJECTLIST_PROJECTWORKER, project.getGroupName());
-        xmlFile.setData(C_PROJECTLIST_PROJECTMANAGER, project.getManagerGroupName());
-        xmlFile.setData(C_PROJECTLIST_DATECREATED, CmsDateUtil.getDateTimeShort(project.getDateCreated()));
-        xmlFile.setData(C_PROJECTLIST_OWNER, project.getOwnerName());
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_PROJECTWORKER, project.getGroupName());
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_PROJECTMANAGER, project.getManagerGroupName());
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_DATECREATED, CmsDateUtil.getDateTimeShort(project.getDateCreated()));
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_OWNER, project.getOwnerName());
         xmlFile.setData("publishdate", CmsDateUtil.getDateTimeShort(project.getPublishingDate()));
         xmlFile.setData("publishedby", project.getPublishedByName());
-        xmlFile.setData(C_PROJECTLIST_NAME_ESCAPED, CmsEncoder.escape(project.getName(),
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_NAME_ESCAPED, CmsEncoder.escape(project.getName(),
             cms.getRequestContext().getEncoding()));
-        xmlFile.setData(C_PROJECTLIST_PROJECTID, project.getId() + "");
-        xmlFile.setData(C_PROJECTLIST_STATE, lang.getLanguageValue(C_PROJECTLIST_STATE_UNLOCKED));
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_PROJECTID, project.getId() + "");
+        xmlFile.setData(CmsWorkplaceDefault.C_PROJECTLIST_STATE, lang.getLanguageValue(CmsWorkplaceDefault.C_PROJECTLIST_STATE_UNLOCKED));
     }
 
     /**
@@ -214,7 +215,7 @@ public class CmsProjecthistory extends A_CmsWpElement {
      */
 
     public CmsXmlWpTemplateFile getProjectlistDefinitions(CmsObject cms) throws CmsException {
-        String templatePath = C_VFS_PATH_WORKPLACE + "administration/project/historyprojects/";
+        String templatePath = CmsWorkplace.VFS_PATH_WORKPLACE + "administration/project/historyprojects/";
         m_projectlistdef = new CmsXmlWpTemplateFile(cms, templatePath+"projectlist");
         return m_projectlistdef;
     }

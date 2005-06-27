@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 23:22:09 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,8 @@
 package org.opencms.file;
 
 import org.opencms.lock.CmsLock;
-import org.opencms.main.I_CmsConstants;
-import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
@@ -50,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -114,13 +113,13 @@ public class TestCopy extends OpenCmsTestCase {
         // project must be current project
         assertProject(cms, destination, cms.getRequestContext().currentProject());
         // state must be "new"
-        assertState(cms, destination, I_CmsConstants.C_STATE_NEW);
+        assertState(cms, destination, CmsResource.STATE_NEW);
         // date created must be new
         assertDateCreatedAfter(cms, destination, timestamp);
         // user created must be current user
         assertUserCreated(cms, source, cms.getRequestContext().currentUser());
         // assert lock state
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         // now assert the filter for the rest of the attributes        
         setMapping(destination, source);        
         assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);       
@@ -150,57 +149,57 @@ public class TestCopy extends OpenCmsTestCase {
         cms.lockResource(destination);
         
         // delete and owerwrite with a sibling of source 1
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);   
-        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);   
+        assertState(cms, destination, CmsResource.STATE_DELETED);
         
-        cms.copyResource(source1, destination, I_CmsConstants.C_COPY_AS_SIBLING); 
+        cms.copyResource(source1, destination, CmsResource.COPY_AS_SIBLING); 
         
-        assertState(cms, destination, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, destination, CmsResource.STATE_CHANGED);
         assertSiblingCount(cms, destination, 2);
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         
         assertSiblingCountIncremented(cms, source1, 1);
-        assertLock(cms, source1, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source1, CmsLock.TYPE_SHARED_EXCLUSIVE);
         
         assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);        
         assertFilter(cms, source1, destination, OpenCmsTestResourceFilter.FILTER_COPY_SOURCE_DESTINATION_AS_SIBLING);
         
         
         // delete again and owerwrite with a sibling of source 2
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertState(cms, destination, CmsResource.STATE_DELETED);
 
-        cms.copyResource(source2, destination, I_CmsConstants.C_COPY_AS_SIBLING); 
+        cms.copyResource(source2, destination, CmsResource.COPY_AS_SIBLING); 
 
         assertSiblingCountIncremented(cms, source1, 0);
-        assertLock(cms, source1, CmsLock.C_TYPE_UNLOCKED);
+        assertLock(cms, source1, CmsLock.TYPE_UNLOCKED);
         
-        assertState(cms, destination, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, destination, CmsResource.STATE_CHANGED);
         assertSiblingCount(cms, destination, 2);
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         
         assertSiblingCountIncremented(cms, source2, 1);
-        assertLock(cms, source2, CmsLock.C_TYPE_SHARED_EXCLUSIVE);
+        assertLock(cms, source2, CmsLock.TYPE_SHARED_EXCLUSIVE);
         
         assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
         assertFilter(cms, source2, OpenCmsTestResourceFilter.FILTER_EXISTING_SIBLING);        
         assertFilter(cms, source2, destination, OpenCmsTestResourceFilter.FILTER_COPY_SOURCE_DESTINATION_AS_SIBLING);
 
-        cms.deleteResource(destination, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
-        assertState(cms, destination, I_CmsConstants.C_STATE_DELETED);
+        cms.deleteResource(destination, CmsResource.DELETE_PRESERVE_SIBLINGS);
+        assertState(cms, destination, CmsResource.STATE_DELETED);
 
         // delete yet again and overwrite with content of source 3 (not a sibling)
-        cms.copyResource(source3, destination, I_CmsConstants.C_COPY_AS_NEW); 
+        cms.copyResource(source3, destination, CmsResource.COPY_AS_NEW); 
 
         assertSiblingCountIncremented(cms, source1, 0);
-        assertLock(cms, source1, CmsLock.C_TYPE_UNLOCKED);
+        assertLock(cms, source1, CmsLock.TYPE_UNLOCKED);
         assertSiblingCountIncremented(cms, source2, 0);
-        assertLock(cms, source2, CmsLock.C_TYPE_UNLOCKED);        
+        assertLock(cms, source2, CmsLock.TYPE_UNLOCKED);        
         
-        assertState(cms, destination, I_CmsConstants.C_STATE_CHANGED);
+        assertState(cms, destination, CmsResource.STATE_CHANGED);
         assertSiblingCount(cms, destination, 1);
         assertSiblingCount(cms, source3, 1);
-        assertLock(cms, destination, CmsLock.C_TYPE_EXCLUSIVE);
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         
         assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
         assertFilter(cms, source2, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
@@ -223,7 +222,7 @@ public class TestCopy extends OpenCmsTestCase {
         long timestamp = System.currentTimeMillis();
         
         storeResources(cms, source);        
-        cms.copyResource(source, destination, I_CmsConstants.C_COPY_AS_NEW);
+        cms.copyResource(source, destination, CmsResource.COPY_AS_NEW);
 
         List subresources;
         Iterator i;
@@ -256,7 +255,7 @@ public class TestCopy extends OpenCmsTestCase {
             // project must be current project
             assertProject(cms, resName, cms.getRequestContext().currentProject());
             // state must be "new"
-            assertState(cms, resName, I_CmsConstants.C_STATE_NEW);
+            assertState(cms, resName, CmsResource.STATE_NEW);
             // date created must be new
             assertDateCreatedAfter(cms, destination, timestamp);
             // user created must be current user

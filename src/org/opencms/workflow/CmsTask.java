@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTask.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/27 23:22:21 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.workflow;
 
-import org.opencms.main.I_CmsConstants;
+import org.opencms.db.CmsDbUtil;
 import org.opencms.util.CmsUUID;
 
 /**
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,12 +113,12 @@ public class CmsTask {
      */
     public CmsTask() {
 
-        m_id = I_CmsConstants.C_UNKNOWN_ID;
+        m_id = CmsDbUtil.UNKNOWN_ID;
         m_name = null;
         m_state = 0;
-        m_taskType = I_CmsConstants.C_UNKNOWN_ID;
-        m_root = I_CmsConstants.C_UNKNOWN_ID;
-        m_parent = I_CmsConstants.C_UNKNOWN_ID;
+        m_taskType = CmsDbUtil.UNKNOWN_ID;
+        m_root = CmsDbUtil.UNKNOWN_ID;
+        m_parent = CmsDbUtil.UNKNOWN_ID;
         m_initiatorUserId = CmsUUID.getNullUUID();
         m_roleId = CmsUUID.getNullUUID();
         m_agentUserId = CmsUUID.getNullUUID();
@@ -129,10 +129,10 @@ public class CmsTask {
         m_endTime = null;
         m_percentage = 0;
         m_permission = "-rw-rw-rw";
-        m_priority = I_CmsConstants.C_UNKNOWN_ID;
+        m_priority = CmsDbUtil.UNKNOWN_ID;
         m_escalationType = 0;
         m_htmlLink = null;
-        m_milestone = I_CmsConstants.C_UNKNOWN_ID;
+        m_milestone = CmsDbUtil.UNKNOWN_ID;
         m_autoFinish = 0;
     }
 

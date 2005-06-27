@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2005/06/26 15:35:13 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/06/27 23:22:06 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -74,7 +73,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +206,7 @@ public class CmsImport implements Serializable {
                 boolean exists = true;
                 try {
                     CmsResource res = m_cms.readResource(m_importPath + destination);
-                    if (res.getState() == I_CmsConstants.C_STATE_DELETED) {
+                    if (res.getState() == CmsResource.STATE_DELETED) {
                         exists = false;
                     }
                 } catch (CmsException e) {
@@ -255,7 +254,7 @@ public class CmsImport implements Serializable {
         try {
             if (m_importingChannelData) {
                 m_cms.getRequestContext().saveSiteRoot();
-                m_cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
+                m_cms.getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             }
 
             // get all file-nodes
@@ -278,7 +277,7 @@ public class CmsImport implements Serializable {
                             resources.add(resource);
                         } catch (CmsException exc) {
                             // this resource is missing - we need the root-folder
-                            resources.add(I_CmsConstants.C_ROOT);
+                            resources.add("/");
                         }
                     }
                 } catch (StringIndexOutOfBoundsException exc) {
@@ -293,10 +292,10 @@ public class CmsImport implements Serializable {
 
         closeImportFile();
 
-        if (resources.contains(I_CmsConstants.C_ROOT)) {
+        if (resources.contains("/")) {
             // we have to import root - forget the rest!
             resources.clear();
-            resources.add(I_CmsConstants.C_ROOT);
+            resources.add("/");
         }
 
         return resources;
@@ -316,7 +315,7 @@ public class CmsImport implements Serializable {
         openImportFile();
         m_report.println(
             Messages.get().container(Messages.RPT_IMPORT_VERSION_1, String.valueOf(m_importVersion)),
-            I_CmsReport.C_FORMAT_NOTE);
+            I_CmsReport.FORMAT_NOTE);
         try {
             // now find the correct import implementation         
             Iterator i = m_importImplementations.iterator();
@@ -338,7 +337,7 @@ public class CmsImport implements Serializable {
             if (!run) {
                 m_report.println(
                     Messages.get().container(Messages.RPT_IMPORT_DB_NO_CLASS_0),
-                    I_CmsReport.C_FORMAT_WARNING);
+                    I_CmsReport.FORMAT_WARNING);
             }
         } finally {
             // close the import file

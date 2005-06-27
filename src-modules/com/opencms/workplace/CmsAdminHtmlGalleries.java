@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminHtmlGalleries.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/06/27 23:22:07 $
+* Version: $Revision: 1.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -34,9 +34,8 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsException;
-import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
-import org.opencms.workplace.I_CmsWpConstants;
+import org.opencms.workplace.CmsWorkplace;
 
 import com.opencms.core.I_CmsSession;
 import com.opencms.legacy.CmsXmlTemplateLoader;
@@ -51,7 +50,7 @@ import java.util.List;
  * <p>
  *
  * @author simmeu
- * @version $Revision: 1.2 $ $Date: 2005/06/21 15:49:59 $
+ * @version $Revision: 1.3 $ $Date: 2005/06/27 23:22:07 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -62,14 +61,9 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
     /**
      * This method must be implemented by all galleries. 
      * It must return the path to the gallery root folder.<p>
-     * 
-     * The root folder names are usually defined as constants in 
-     * the I_CmsWpConstants interface.
-     * 
-     * @see I_CmsWpConstants
      */ 
     public String getGalleryPath() {
-        return C_VFS_GALLERY_HTML;
+        return CmsWorkplaceDefault.C_VFS_GALLERY_HTML;
     }
     
     /**
@@ -115,17 +109,17 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
         CmsFolder thefolder = cms.readFolder(foldername);        
 
         // Check if we must redirect to head_1
-        if(foldername.equals(C_VFS_GALLERY_HTML) && templateFile.endsWith("administration_head_htmlgalleries2")) {
+        if(foldername.equals(CmsWorkplaceDefault.C_VFS_GALLERY_HTML) && templateFile.endsWith("administration_head_htmlgalleries2")) {
             // we are in the wrong head - use the first one
-            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_htmlgalleries1", elementName, parameters, templateSelector);
+            xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, CmsWorkplace.VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_htmlgalleries1", elementName, parameters, templateSelector);
         }
 
         // Check if we must redirect to head_2
         try {
             String parent = CmsResource.getParentFolder(cms.getSitePath(thefolder));
-            if(foldername.startsWith(C_VFS_GALLERY_HTML) && (parent.equals(C_VFS_GALLERY_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
+            if(foldername.startsWith(CmsWorkplaceDefault.C_VFS_GALLERY_HTML) && (parent.equals(CmsWorkplaceDefault.C_VFS_GALLERY_HTML)) && templateFile.endsWith("administration_head_htmlgalleries1")) {
                 // we are in the wrong head - use the second one
-                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, C_VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_htmlgalleries2", elementName, parameters, templateSelector);
+                xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, CmsWorkplace.VFS_PATH_WORKPLACE + "administration/htmlgallery/administration_head_htmlgalleries2", elementName, parameters, templateSelector);
             }
         }
         catch(Exception e) {}
@@ -146,7 +140,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
                     // get the path from the workplace.ini
                     String superfolder = getConfigFile(cms).getHtmlGalleryPath();
-                    CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.C_RESOURCE_TYPE_ID);
+                    CmsResource folder = cms.createResource(superfolder + galleryname, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
                     if(title != null) {
                         cms.writeProperty(cms.getSitePath(folder), CmsPropertyDefinition.PROPERTY_TITLE, title);
                     }
@@ -230,7 +224,7 @@ public class CmsAdminHtmlGalleries extends CmsAdminGallery {
 
         xmlTemplateDocument.setData("link_value", foldername);
         xmlTemplateDocument.setData("lasturl", lasturl);
-        xmlTemplateDocument.setData("galleryRootFolder", C_VFS_GALLERY_HTML);
+        xmlTemplateDocument.setData("galleryRootFolder", CmsWorkplaceDefault.C_VFS_GALLERY_HTML);
 
         // Finally start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters,
