@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/06/27 08:25:56 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.SortField;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -741,6 +741,8 @@ public class CmsSearch implements Serializable, Cloneable {
      */
     public void setQuery(String query) {
 
+        // do not replace % 
+        query = CmsStringUtil.substitute(query, "%", "%25");
         // do not replace +/- 
         query = CmsStringUtil.substitute(query, "+", "%2B");
         query = CmsStringUtil.substitute(query, "-", "%2D");
