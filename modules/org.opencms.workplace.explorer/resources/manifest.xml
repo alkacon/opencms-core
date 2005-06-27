@@ -29,18 +29,62 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/workplace/commons/"/>
+			<resource uri="/system/workplace/commons/chacc.jsp"/>
+			<resource uri="/system/workplace/commons/chaccbrowser.jsp"/>
+			<resource uri="/system/workplace/commons/chnav.jsp"/>
+			<resource uri="/system/workplace/commons/chtype.jsp"/>
+			<resource uri="/system/workplace/commons/copy.jsp"/>
+			<resource uri="/system/workplace/commons/copytoproject.jsp"/>
+			<resource uri="/system/workplace/commons/delete.jsp"/>
+			<resource uri="/system/workplace/commons/delete_standard.jsp"/>
+			<resource uri="/system/workplace/commons/displayresource.jsp"/>
+			<resource uri="/system/workplace/commons/editpointer.jsp"/>
+			<resource uri="/system/workplace/commons/history.jsp"/>
+			<resource uri="/system/workplace/commons/lock.jsp"/>
+			<resource uri="/system/workplace/commons/lock_standard.jsp"/>
+			<resource uri="/system/workplace/commons/lockchange.jsp"/>
+			<resource uri="/system/workplace/commons/lockchange_standard.jsp"/>
+			<resource uri="/system/workplace/commons/move.jsp"/>
+			<resource uri="/system/workplace/commons/newcsvfile.jsp"/>
+			<resource uri="/system/workplace/commons/newcsvfile_upload.jsp"/>
+			<resource uri="/system/workplace/commons/newresource.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_folder.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_pointer.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_sibling.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_upload.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_xmlcontent.jsp"/>
+			<resource uri="/system/workplace/commons/newresource_xmlpage.jsp"/>
+			<resource uri="/system/workplace/commons/opengallery.jsp"/>
+			<resource uri="/system/workplace/commons/preferences.jsp"/>
+			<resource uri="/system/workplace/commons/property.jsp"/>
+			<resource uri="/system/workplace/commons/property_advanced.jsp"/>
+			<resource uri="/system/workplace/commons/property_custom.jsp"/>
+			<resource uri="/system/workplace/commons/publishproject.jsp"/>
+			<resource uri="/system/workplace/commons/publishresource.jsp"/>
+			<resource uri="/system/workplace/commons/replace.jsp"/>
+			<resource uri="/system/workplace/commons/secure.jsp"/>
+			<resource uri="/system/workplace/commons/touch.jsp"/>
+			<resource uri="/system/workplace/commons/undelete.jsp"/>
+			<resource uri="/system/workplace/commons/undochanges.jsp"/>
+			<resource uri="/system/workplace/commons/unlock.jsp"/>
+			<resource uri="/system/workplace/commons/unlock_standard.jsp"/>
 			<resource uri="/system/workplace/resources/buttons/back.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_up.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_up_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/upload.png"/>
 			<resource uri="/system/workplace/resources/buttons/upload_in.png"/>
-			<resource uri="/system/workplace/resources/commons"/>
-			<resource uri="/system/workplace/resources/components"/>
-			<resource uri="/system/workplace/resources/explorer"/>
-			<resource uri="/system/workplace/resources/tree"/>
-			<resource uri="/system/workplace/views/explorer"/>
+            <resource uri="/system/workplace/resources/commons/empty.html"/>
+            <resource uri="/system/workplace/resources/commons/explorer.js"/>
+            <resource uri="/system/workplace/resources/commons/group.png"/>
+            <resource uri="/system/workplace/resources/commons/minus.png"/>
+            <resource uri="/system/workplace/resources/commons/plus.png"/>
+            <resource uri="/system/workplace/resources/commons/tree.js"/>
+            <resource uri="/system/workplace/resources/commons/user.png"/>
+			<resource uri="/system/workplace/resources/components/upload_applet"/>
+			<resource uri="/system/workplace/resources/explorer/"/>
+			<resource uri="/system/workplace/resources/tree/"/>
+			<resource uri="/system/workplace/views/explorer/"/>
 		</resources>
 		<parameters/>
 	</module>

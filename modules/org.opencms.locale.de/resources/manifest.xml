@@ -25,38 +25,7 @@
 			<exportpoint uri="/system/workplace/locales/de/messages/" destination="WEB-INF/classes/"/>
 		</exportpoints>
 		<resources>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/generic/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/db/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/importexport/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/jsp/util/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/module/messages_de.properties"/>
-		    <resource uri="/system/workplace/locales/de/messages/org/opencms/main/messages_de.properties"/>
-            <resource uri="/system/workplace/locales/de/messages/org/opencms/report/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/search/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/staticexport/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/synchronize/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/validation/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/administration/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/commons/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/help/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/list/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/threads/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/accounts/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/content/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/database/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/history/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/link/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/modules/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/projects/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/workplace/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/workplace/broadcast/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/scheduler/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/tools/searchindex/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/messages_de.properties"/>
-			<resource uri="/system/workplace/locales/de/messages/org/opencms/workplace/workplace_de.properties"/>
+			<resource uri="/system/workplace/locales/de/messages/"/>
 		</resources>
 		<parameters>
 		</parameters>

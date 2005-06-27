@@ -28,7 +28,15 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/workplace/editors/"/>
+			<resource uri="/system/workplace/editors/direct_edit.jsp"/>
+			<resource uri="/system/workplace/editors/editor.jsp"/>
+			<resource uri="/system/workplace/editors/editor_close.jsp"/>
+			<resource uri="/system/workplace/editors/editor_main.jsp"/>
+			<resource uri="/system/workplace/editors/configuration/"/>
+			<resource uri="/system/workplace/editors/dialogs/"/>
+			<resource uri="/system/workplace/editors/simple/"/>
+			<resource uri="/system/workplace/editors/simplehtml/"/>
+			<resource uri="/system/workplace/editors/xmlcontent/"/>
 			<resource uri="/system/workplace/resources/buttons/anchor.png"/>
 			<resource uri="/system/workplace/resources/buttons/bold.png"/>
 			<resource uri="/system/workplace/resources/buttons/bullist.png"/>
@@ -66,7 +74,7 @@
 			<resource uri="/system/workplace/resources/buttons/table_td.png"/>
 			<resource uri="/system/workplace/resources/buttons/table_tr.png"/>
 			<resource uri="/system/workplace/resources/buttons/underline.png"/>
-			<resource uri="/system/workplace/resources/buttons/undo.gif"/>
+			<resource uri="/system/workplace/resources/buttons/undo.png"/>
 			<resource uri="/system/workplace/resources/editors/simple/" />
 			<resource uri="/system/workplace/resources/editors/simplehtml/" />
 			<resource uri="/system/workplace/resources/editors/xmlcontent/" />
