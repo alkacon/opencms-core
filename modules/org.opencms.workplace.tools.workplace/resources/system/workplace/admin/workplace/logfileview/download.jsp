@@ -35,6 +35,7 @@ switch (wp.getAction()) {
 <%= wp.buildDownloadFileView() %>
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
+<%= wp.buildDownloadScript() %>
 
 </form>
 
