@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="javadoc">
+<property name="opencms.input" value="../../"/>
+    <property name="opencms.output" value="${opencms.input}../BuildCms/"/>
+    <property name="srcdir" value="${opencms.input}/src"/>
+    <property name="imgdir" value="${basedir}/logos"  />
+    <property name="partname"   value="core" />
+ 
+    <!-- dont change this property! -->
+    <property name="destdir" value="${opencms.output}/doc/${partname}"  />
+  
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+	      <classpath>
+	          <pathelement location="${opencms.input}/webapp/WEB-INF/lib/ant-contrib-1.0b1.jar"/>
+        </classpath>
+    </taskdef>
+
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${destdir}" />
+    </target>
+
+    <target name="javadoc" depends="init,clean">
+        <javadoc destdir="${destdir}" 
+          access="protected" 
+          use="true" 
+          notree="true" 
+          nonavbar="false" 
+          noindex="false" 
+          splitindex="true" 
+          author="true" 
+          version="true" 
+          nodeprecatedlist="false" 
+          nodeprecated="false" 
+          sourcepath="${srcdir}" 
+          stylesheetfile="javadoc.css" 
+          doctitle="OpenCms Core API, version 6.0" 
+          additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src=logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src=logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
+        >
+            <package name="org.opencms.*"/>
+            <classpath>
+                <fileset dir="${opencms.input}/webapp/WEB-INF/lib/" includes="*.jar" />
+            </classpath>
+        </javadoc>
+        <antcall target="copy.images" />
+    </target>
+    
+    
+    <target name="copy.images" >
+        <for param="file">
+            <dirset dir="${destdir}">
+                <include name="**"/>
+            </dirset>
+            <sequential>
+                <copy todir="@{file}">
+                    <fileset dir="${imgdir}" />
+                </copy>
+            </sequential>        
+        </for>
+    </target>
+  
+    <target name="clean" depends="init" >
+        <delete includeemptydirs="true">
+            <fileset dir="${destdir}" includes="**/*"/>
+        </delete>
+    </target>
+  
+    
+    <target name="zip" depends="javadoc">
+        <zip destfile="${destdir}/../${partname}.zip">
+           <fileset dir="${destdir}/.." includes="${partname}/**" />
+        </zip>
+    </target>
+</project>
