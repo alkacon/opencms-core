@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -608,7 +608,7 @@ public class CmsFlexCacheKey {
                 String t = toker.nextToken();
                 String k = null;
                 String v = null;
-                int idx = t.indexOf("=");
+                int idx = t.indexOf('=');
                 if (idx >= 0) {
                     k = t.substring(0, idx).trim();
                     if (t.length() > idx) {

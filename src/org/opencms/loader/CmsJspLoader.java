@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/25 13:44:14 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -106,7 +106,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.91 $ 
+ * @version $Revision: 1.92 $ 
  * 
  * @since 6.0.0 
  * 
@@ -356,10 +356,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         boolean bypass = false;
 
         // read "cache" property for requested VFS resource to check for special "stream" and "bypass" values                                    
-        String cacheProperty = cms.readPropertyObject(
-            cms.getSitePath(file),
-            CmsPropertyDefinition.PROPERTY_CACHE,
-            true).getValue();
+        String cacheProperty = cms.readPropertyObject(file, CmsPropertyDefinition.PROPERTY_CACHE, true).getValue();
         if (cacheProperty != null) {
             cacheProperty = cacheProperty.trim();
             if (CACHE_PROPERTY_STREAM.equals(cacheProperty)) {
@@ -571,7 +568,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
-     * Parses the JSP and modifies OpenCms ciritcal directive information.<p>
+     * Parses the JSP and modifies OpenCms critical directive information.<p>
      * 
      * @param byteContent the original JSP content
      * @param encoding the encoding to use for the JSP
@@ -1042,9 +1039,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 try {
                     contents = CmsFile.upgrade(resource, cms).getContents();
                     // check the "content-encoding" property for the JSP, use system default if not found on path
-                    encoding = cms.readPropertyObject(jspVfsName, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue(
-                        OpenCms.getSystemInfo().getDefaultEncoding());
-                    encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
+                    encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+                    if (encoding == null) {
+                        encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                    } else {
+                        encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
+                    }
                 } catch (CmsException e) {
                     controller.setThrowable(e, jspVfsName);
                     throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);

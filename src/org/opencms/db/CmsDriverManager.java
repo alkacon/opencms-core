@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/26 14:20:57 $
- * Version: $Revision: 1.535 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.536 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.535 $
+ * @version $Revision: 1.536 $
  * 
  * @since 6.0.0
  */
@@ -4968,7 +4968,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // read the root folder, coz it's ID is required to read any sub-resources
         currentResourceName = I_CmsConstants.C_ROOT;
         currentPath = I_CmsConstants.C_ROOT;
-        cacheKey = getCacheKey(null, projectId, currentPath);
+        cacheKey = getCacheKey(null, false, projectId, currentPath);
         if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
             currentResource = m_vfsDriver.readFolder(dbc, projectId, currentPath);
             m_resourceCache.put(cacheKey, currentResource);
@@ -4988,7 +4988,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             currentPath += currentResourceName + "/";
 
             // read the folder
-            cacheKey = getCacheKey(null, projectId, currentPath);
+            cacheKey = getCacheKey(null, false, projectId, currentPath);
             if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
                 currentResource = m_vfsDriver.readFolder(dbc, projectId, currentPath);
                 m_resourceCache.put(cacheKey, currentResource);
@@ -5011,7 +5011,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             currentPath += currentResourceName;
 
             // read the file
-            cacheKey = getCacheKey(null, projectId, currentPath);
+            cacheKey = getCacheKey(null, false, projectId, currentPath);
             if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
                 currentResource = m_vfsDriver.readResource(dbc, projectId, currentPath, filter.includeDeleted());
                 m_resourceCache.put(cacheKey, currentResource);
@@ -5222,16 +5222,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     throws CmsException {
 
         // check if we have the result already cached
-        String cacheKey = getCacheKey(
-            key.concat(String.valueOf(search)),
-            dbc.currentProject().getId(),
-            resource.getRootPath());
+        String cacheKey = getCacheKey(key, search, dbc.currentProject().getId(), resource.getRootPath());
         CmsProperty value = (CmsProperty)m_propertyCache.get(cacheKey);
 
         if (value == null) {
             // check if the map of all properties for this resource is already cached
             String cacheKey2 = getCacheKey(
-                C_CACHE_ALL_PROPERTIES.concat(String.valueOf(search)),
+                C_CACHE_ALL_PROPERTIES,
+                search,
                 dbc.currentProject().getId(),
                 resource.getRootPath());
 
@@ -5248,10 +5246,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 }
             } else if (search) {
                 // result not cached, look it up recursivly with search enabled
-                String cacheKey3 = getCacheKey(
-                    key.concat(String.valueOf(false)),
-                    dbc.currentProject().getId(),
-                    resource.getRootPath());
+                String cacheKey3 = getCacheKey(key, search, dbc.currentProject().getId(), resource.getRootPath());
                 value = (CmsProperty)m_propertyCache.get(cacheKey3);
 
                 if ((value == null) || value.isNullProperty()) {
@@ -5306,7 +5301,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // check if we have the result already cached
         String cacheKey = getCacheKey(
-            C_CACHE_ALL_PROPERTIES.concat(String.valueOf(search)),
+            C_CACHE_ALL_PROPERTIES,
+            search,
             dbc.currentProject().getId(),
             resource.getRootPath());
 
@@ -7734,19 +7730,24 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Return a cache key build from the provided information.<p>
      * 
      * @param prefix a prefix for the key
-     * @param project the project for which to genertate the key
+     * @param flag a boolean flag for the key (only used if prefix is not null)
+     * @param projectId the project for which to genertate the key
      * @param resource the resource for which to genertate the key
      * @return String a cache key build from the provided information
      */
-    private String getCacheKey(String prefix, CmsProject project, String resource) {
+    private String getCacheKey(String prefix, boolean flag, int projectId, String resource) {
 
         StringBuffer buffer = new StringBuffer(32);
         if (prefix != null) {
             buffer.append(prefix);
-            buffer.append("_");
+            if (flag) {
+                buffer.append("_t_");
+            } else {
+                buffer.append("_f_");
+            }
         }
-        if (project != null) {
-            if (project.isOnlineProject()) {
+        if (projectId >= I_CmsConstants.C_PROJECT_ONLINE_ID) {
+            if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
                 buffer.append("on");
             } else {
                 buffer.append("of");
@@ -7761,19 +7762,19 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Return a cache key build from the provided information.<p>
      * 
      * @param prefix a prefix for the key
-     * @param projectId the project for which to genertate the key
+     * @param project the project for which to genertate the key
      * @param resource the resource for which to genertate the key
      * @return String a cache key build from the provided information
      */
-    private String getCacheKey(String prefix, int projectId, String resource) {
+    private String getCacheKey(String prefix, CmsProject project, String resource) {
 
         StringBuffer buffer = new StringBuffer(32);
         if (prefix != null) {
             buffer.append(prefix);
             buffer.append("_");
         }
-        if (projectId >= I_CmsConstants.C_PROJECT_ONLINE_ID) {
-            if (projectId == I_CmsConstants.C_PROJECT_ONLINE_ID) {
+        if (project != null) {
+            if (project.isOnlineProject()) {
                 buffer.append("on");
             } else {
                 buffer.append("of");

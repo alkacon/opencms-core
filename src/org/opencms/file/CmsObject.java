@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/23 13:26:54 $
- * Version: $Revision: 1.134 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.135 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.134 $
+ * @version $Revision: 1.135 $
  * 
  * @since 6.0.0 
  */
@@ -2408,6 +2408,28 @@ public class CmsObject {
      * 
      * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
      * 
+     * This method is more efficient then using <code>{@link CmsObject#readPropertyObject(String, String, boolean)}</code>
+     * if you already have an instance of the resource to look up the property from.<p>
+     * 
+     * @param resource the resource where the property is attached to
+     * @param property the property name
+     * @param search if true, the property is searched on all parent folders of the resource, 
+     *      if it's not found attached directly to the resource
+     * 
+     * @return the required property, or <code>{@link CmsProperty#getNullProperty()}</code> if the property was not found
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsProperty readPropertyObject(CmsResource resource, String property, boolean search) throws CmsException {
+
+        return m_securityManager.readPropertyObject(m_context, resource, property, search);
+    }
+
+    /**
+     * Reads a property object from a resource specified by a property name.<p>
+     * 
+     * Returns <code>{@link CmsProperty#getNullProperty()}</code> if the property is not found.<p>
+     * 
      * @param resourcePath the name of resource where the property is attached to
      * @param property the property name
      * @param search if true, the property is searched on all parent folders of the resource, 
@@ -2421,6 +2443,35 @@ public class CmsObject {
 
         CmsResource resource = readResource(resourcePath, CmsResourceFilter.ALL);
         return m_securityManager.readPropertyObject(m_context, resource, property, search);
+    }
+
+    /**
+     * Reads all property objects from a resource.<p>
+     * 
+     * Returns an empty list if no properties are found.<p>
+     * 
+     * This method is more efficient then using <code>{@link CmsObject#readPropertyObjects(String, boolean)}</code>
+     * if you already have an instance of the resource to look up the property from.<p>
+     * 
+     * If the <code>search</code> parameter is <code>true</code>, the properties of all 
+     * parent folders of the resource are also read. The results are merged with the 
+     * properties directly attached to the resource. While merging, a property
+     * on a parent folder that has already been found will be ignored.
+     * So e.g. if a resource has a property "Title" attached, and it's parent folder 
+     * has the same property attached but with a differrent value, the result list will
+     * contain only the property with the value from the resource, not form the parent folder(s).<p>
+     * 
+     * @param resource the resource where the property is mapped to
+     * @param search if <code>true</code>, the properties of all parent folders of the resource 
+     *      are merged with the resource properties.
+     * 
+     * @return a list of <code>{@link CmsProperty}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readPropertyObjects(CmsResource resource, boolean search) throws CmsException {
+
+        return m_securityManager.readPropertyObjects(m_context, resource, search);
     }
 
     /**

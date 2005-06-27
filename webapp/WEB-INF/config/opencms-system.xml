@@ -76,7 +76,7 @@
 			<size-projects>32</size-projects>
 			<size-resources>8192</size-resources>
 			<size-resourcelists>256</size-resourcelists>
-			<size-properties>128</size-properties>
+			<size-properties>1024</size-properties>
 			<size-accesscontrollists>1024</size-accesscontrollists>	
 			<size-permissions>1024</size-permissions>
 		</resultcache>			

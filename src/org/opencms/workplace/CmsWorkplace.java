@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2005/06/27 16:38:36 $
+ * Version: $Revision: 1.142 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.141 $ 
+ * @version $Revision: 1.142 $ 
  * 
  * @since 6.0.0 
  */
@@ -1383,7 +1383,11 @@ public abstract class CmsWorkplace {
     public CmsMacroResolver getMacroResolver() {
 
         if (m_macroResolver == null) {
-            resolveMacros("");
+            // create a new macro resolver "with everything we got"
+            m_macroResolver = CmsMacroResolver.newInstance()
+            // initialize resolver with the objects available
+                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
+                    (m_jsp == null) ? null : m_jsp.getJspContext());
         }
         return m_macroResolver;
     }
@@ -1780,16 +1784,8 @@ public abstract class CmsWorkplace {
      */
     public String resolveMacros(String input) {
 
-        // 
-        if (m_macroResolver == null) {
-            // create a new macro resolver "with everything we got"
-            m_macroResolver = CmsMacroResolver.newInstance()
-            // initialize resolver with the objects available
-                .setCmsObject(m_cms).setMessages(getMessages()).setJspPageContext(
-                    (m_jsp == null) ? null : m_jsp.getJspContext());
-        }
         // resolve the macros
-        return m_macroResolver.resolveMacros(input);
+        return getMacroResolver().resolveMacros(input);
     }
 
     /**

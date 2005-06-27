@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/24 09:55:32 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -410,7 +410,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         try {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
             String template = jsp.getCmsObject().readPropertyObject(
-                jsp.getCmsObject().getSitePath(res),
+                res,
                 CmsPropertyDefinition.PROPERTY_TEMPLATE,
                 true).getValue("");
             if (!res.isFolder()

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  * 
@@ -84,7 +84,7 @@ public class CmsJspNavBuilder {
                 cms.getRequestContext().saveSiteRoot();
                 cms.getRequestContext().setSiteRoot(I_CmsConstants.VFS_FOLDER_CHANNELS);
                 m_title = cms.readPropertyObject(
-                    cms.getSitePath(res),
+                    res,
                     org.opencms.file.CmsPropertyDefinition.PROPERTY_TITLE,
                     false).getValue();
                 cms.getRequestContext().restoreSiteRoot();

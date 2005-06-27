@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityDateResourceComparator.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -188,8 +188,7 @@ public class CmsPriorityDateResourceComparator implements Comparator {
         Map properties = null;
 
         try {
-            properties = CmsProperty.toMap(cms.readPropertyObjects(cms.getRequestContext().removeSiteRoot(
-                resource.getRootPath()), false));
+            properties = CmsProperty.toMap(cms.readPropertyObjects(resource, false));
         } catch (CmsException e) {
             m_priority = 0;
             m_date = 0;

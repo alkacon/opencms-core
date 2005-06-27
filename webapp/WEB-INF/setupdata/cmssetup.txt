@@ -23,7 +23,6 @@ createPropertyDefinition content-encoding
 createPropertyDefinition content-conversion
 createPropertyDefinition internal
 createPropertyDefinition cache
-createPropertyDefinition stream
 createPropertyDefinition template
 createPropertyDefinition template-elements
 createPropertyDefinition locale

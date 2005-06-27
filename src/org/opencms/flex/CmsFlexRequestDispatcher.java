@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/25 13:44:14 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/06/27 16:38:35 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,8 +150,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
         CmsFlexController controller = CmsFlexController.getController(req);
         CmsObject cms = controller.getCmsObject();
-
         CmsResource resource = null;
+
         if ((m_extTarget == null) && (controller != null)) {
             // check if the file exists in the VFS, if not set external target
             try {
@@ -170,9 +170,9 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
         if ((m_extTarget != null) || (controller == null)) {
             includeExternal(req, res);
         } else if (controller.isForwardMode()) {
-            includeInternalNoCache(req, res, resource);
+            includeInternalNoCache(req, res, controller, cms, resource);
         } else {
-            includeInternalWithCache(req, res, resource);
+            includeInternalWithCache(req, res, controller, cms, resource);
         }
     }
 
@@ -203,11 +203,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * @throws ServletException in case something goes wrong
      * @throws IOException in case something goes wrong
      */
-    private void includeInternalNoCache(ServletRequest req, ServletResponse res, CmsResource resource)
-    throws ServletException, IOException {
-
-        CmsFlexController controller = CmsFlexController.getController(req);
-        CmsObject cms = controller.getCmsObject();
+    private void includeInternalNoCache(
+        ServletRequest req,
+        ServletResponse res,
+        CmsFlexController controller,
+        CmsObject cms,
+        CmsResource resource) throws ServletException, IOException {
 
         // load target with the internal resource loader
         I_CmsResourceLoader loader;
@@ -244,19 +245,21 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
 
     /**
      * Includes the requested resouce, using the Flex cache to cache the results.<p>
-     * 
      * @param req the servlet request
      * @param res the servlet response
+     * @param controller TODO:
+     * @param cms TODO:
      * @param resource the requested resource (may be <code>null</code>)
      * 
      * @throws ServletException in case something goes wrong
      * @throws IOException in case something goes wrong
      */
-    private void includeInternalWithCache(ServletRequest req, ServletResponse res, CmsResource resource)
-    throws ServletException, IOException {
-
-        CmsFlexController controller = CmsFlexController.getController(req);
-        CmsObject cms = controller.getCmsObject();
+    private void includeInternalWithCache(
+        ServletRequest req,
+        ServletResponse res,
+        CmsFlexController controller,
+        CmsObject cms,
+        CmsResource resource) throws ServletException, IOException {
 
         CmsFlexCache cache = controller.getCmsCache();
 
@@ -330,11 +333,11 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
                         // cache key is unknown, read key from properties
                         String cacheProperty = null;
                         try {
-                            // read caching property from requested VFS resource                                     
-                            cacheProperty = cms.readPropertyObject(
-                                m_vfsTarget,
-                                CmsPropertyDefinition.PROPERTY_CACHE,
-                                true).getValue();
+                            // read caching property from requested VFS resource     
+                            if (resource == null) {
+                                resource = cms.readResource(m_vfsTarget);
+                            }
+                            cacheProperty = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CACHE, true).getValue();
                             if (cacheProperty == null) {
                                 // caching property not set, use default for resource type
                                 cacheProperty = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getCachePropertyDefault();
