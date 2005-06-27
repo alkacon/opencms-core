@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2005/06/27 11:51:26 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.111 $ 
+ * @version $Revision: 1.112 $ 
  * 
  * @since 6.0.0 
  */
@@ -1134,13 +1134,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if (exportname.charAt(exportname.length() - 1) != '/') {
                     exportname = exportname + '/';
                 }
-                String value;
+                String value = null;
                 boolean cont;
                 String resourceName = rfsName;
                 do {
                     // find out where the export name was set, to replace these parent folders in the RFS name
                     try {
-                        value = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_EXPORTNAME, false).getValue();
+                        CmsProperty prop = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_EXPORTNAME, false);
+                        if (prop.isIdentical(exportNameProperty)) {
+                            // look for the right position in path 
+                            value = prop.getValue();
+                        }
                         cont = (value == null) && (resourceName.length() > 1);
                     } catch (CmsVfsResourceNotFoundException e) {
                         // this is for publishing deleted resources 
