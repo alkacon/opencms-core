@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 14:21:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.swing.JFileChooser;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,15 +200,15 @@ public class ImagePreview extends JComponent implements PropertyChangeListener {
         int mode = C_MODE_EMPTY;
         String extension = FileUploadUtils.getExtension(m_file);
         if (extension != null) {
-            if ((extension.equals("gif"))
-                || (extension.equals("jpg"))
-                || (extension.equals("jpeg"))
-                || (extension.equals("png"))) {
+            if ((extension.equals(".gif"))
+                || (extension.equals(".jpg"))
+                || (extension.equals(".jpeg"))
+                || (extension.equals(".png"))) {
                 mode = C_MODE_IMAGE;
-            } else if ((extension.equals("txt"))
-                || (extension.equals("ini"))
-                || (extension.equals("bat"))
-                || (extension.equals("java") || (extension.equals("sys")))) {
+            } else if ((extension.equals(".txt"))
+                || (extension.equals(".ini"))
+                || (extension.equals(".bat"))
+                || (extension.equals(".java") || (extension.equals(".sys")))) {
                 mode = C_MODE_TEXT;
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadUtils.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/27 14:21:17 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.io.File;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,7 +67,7 @@ public final class FileUploadUtils {
             String s = f.getName();
             int i = s.lastIndexOf('.');
             if (i > 0 && i < s.length() - 1) {
-                ext = s.substring(i + 1).toLowerCase();
+                ext = s.substring(i).toLowerCase();
             }
         }
         return ext;

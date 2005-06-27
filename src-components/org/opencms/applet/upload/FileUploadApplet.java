@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 14:21:17 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -245,7 +245,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (ok) {
                 ok = true;
                 
-                // System.out.println("Version 1.50");
+                //System.out.println("Version 1.60");
                                 
                 m_message = "";
                 m_resources = 0;
@@ -564,7 +564,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
         m_action = m_actionOutputUpload;
         repaint();
-
+        
         MultipartPostMethod filePost = new MultipartPostMethod(m_targetUrl);
 
         try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/OfficeFilter.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/27 14:21:17 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import javax.swing.filechooser.FileFilter;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,7 +60,10 @@ public class OfficeFilter extends FileFilter {
 
         String extension = FileUploadUtils.getExtension(f);
         if (extension != null) {
-            return (extension.equals("doc") || extension.equals("xls") || extension.equals("pdf") || extension.equals("ppt"));
+            return (extension.equals(".doc") 
+                    || extension.equals(".xls")  
+                    || extension.equals(".pdf") 
+                    || extension.equals(".ppt"));
         } else {
             return false;
         }
