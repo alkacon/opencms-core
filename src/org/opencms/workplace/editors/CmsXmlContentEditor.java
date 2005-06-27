@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/06/27 09:30:20 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
@@ -294,6 +294,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             newFile.setContents(newContent.marshal());
             // write the file with the updated content
             getCms().writeFile(newFile);
+            // TODO: think about to set the internal read flag during the edition, 
+            // and later when editing is completed to remove the flag
 
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);

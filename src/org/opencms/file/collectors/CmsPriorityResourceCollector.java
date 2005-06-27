@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 09:30:20 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -49,7 +50,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  * 
  * @since 6.0.0 
  */
@@ -193,7 +194,8 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+            I_CmsConstants.C_ACCESS_INTERNAL_READ);
         List result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
@@ -219,7 +221,8 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         CmsCollectorData data = new CmsCollectorData(param);
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
-        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType());
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+            I_CmsConstants.C_ACCESS_INTERNAL_READ);
         List result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources

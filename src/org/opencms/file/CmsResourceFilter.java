@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/06/26 12:52:35 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 09:30:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.main.I_CmsConstants;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0 
  */
@@ -126,13 +126,18 @@ public final class CmsResourceFilter {
      * </ul> 
      */
     public static final CmsResourceFilter ONLY_VISIBLE_NO_DELETED = ONLY_VISIBLE.addExcludeState(I_CmsConstants.C_STATE_DELETED);
+
     private static final int EXCLUDED = 2;
 
     private static final int IGNORED = 0;
+
     private static final int REQUIRED = 1;
 
     /** The cache id for this filter. */
     private String m_cacheId;
+
+    /** Indicates if the resource flag is filtered (true) or not (false). */
+    private int m_filterFlags;
 
     /** Indicates if the date of the last modification is used (true) or igrnored (false). */
     private boolean m_filterLastModified;
@@ -148,6 +153,9 @@ public final class CmsResourceFilter {
 
     /** Indicates if the visible permission is used (true) or ignored (false). */
     private boolean m_filterVisible;
+
+    /** The required/excluded flags for filtering resources. */
+    private int m_flags;
 
     /** The required start date for the timerange of the last modification date. */
     private long m_modifiedAfter;
@@ -175,6 +183,9 @@ public final class CmsResourceFilter {
         m_filterType = IGNORED;
         m_type = -1;
 
+        m_filterFlags = IGNORED;
+        m_flags = -1;
+
         m_filterVisible = false;
 
         m_filterTimerange = false;
@@ -194,6 +205,23 @@ public final class CmsResourceFilter {
     public static CmsResourceFilter requireType(int type) {
 
         return new CmsResourceFilter().addRequireType(type);
+    }
+
+    /**
+     * Returns an extended filter in order to avoid the given flags in the filtered resources.<p> 
+     *  
+     * @param flags the resource flags to exclude
+     * @return a filter excluding the given resource flags
+     */
+    public CmsResourceFilter addExcludeFlags(int flags) {
+
+        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+
+        extendedFilter.m_flags = flags;
+        extendedFilter.m_filterFlags = EXCLUDED;
+        extendedFilter.updateCacheId();
+
+        return extendedFilter;
     }
 
     /**
@@ -240,6 +268,23 @@ public final class CmsResourceFilter {
         CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
 
         extendedFilter.m_onlyFolders = Boolean.FALSE;
+        extendedFilter.updateCacheId();
+
+        return extendedFilter;
+    }
+
+    /**
+     * Returns an extended filter to guarantee a distinct resource flags of the filtered resources.<p>
+     * 
+     * @param flags the required resource flags
+     * @return a filter requiring the given resource flags
+     */
+    public CmsResourceFilter addRequireFlags(int flags) {
+
+        CmsResourceFilter extendedFilter = (CmsResourceFilter)clone();
+
+        extendedFilter.m_flags = flags;
+        extendedFilter.m_filterFlags = REQUIRED;
         extendedFilter.updateCacheId();
 
         return extendedFilter;
@@ -366,6 +411,7 @@ public final class CmsResourceFilter {
         CmsResourceFilter filter = new CmsResourceFilter();
 
         filter.m_filterState = m_filterState;
+        filter.m_filterFlags = m_filterFlags;
         filter.m_filterType = m_filterType;
         filter.m_filterVisible = m_filterVisible;
         filter.m_filterTimerange = m_filterTimerange;
@@ -373,11 +419,22 @@ public final class CmsResourceFilter {
 
         filter.m_type = m_type;
         filter.m_state = m_state;
+        filter.m_flags = m_flags;
         filter.m_modifiedAfter = m_modifiedAfter;
         filter.m_modifiedBefore = m_modifiedBefore;
         filter.m_cacheId = m_cacheId;
 
         return filter;
+    }
+
+    /**
+     * return if the stored flags should be excluded while filtering resources.<p>
+     * 
+     * @return if the flags should be excluded
+     */
+    public boolean excludeFlags() {
+
+        return m_filterFlags == EXCLUDED;
     }
 
     /**
@@ -408,6 +465,16 @@ public final class CmsResourceFilter {
     public String getCacheId() {
 
         return m_cacheId;
+    }
+
+    /**
+     * Returns the flags for this filter.<p>
+     * 
+     * @return the flags for this filter
+     */
+    public int getFlags() {
+
+        return m_flags;
     }
 
     /**
@@ -509,6 +576,22 @@ public final class CmsResourceFilter {
         // ignored
         }
 
+        // check for required resource state
+        switch (m_filterFlags) {
+            case EXCLUDED:
+                if ((resource.getFlags() & m_flags) != 0) {
+                    return false;
+                }
+                break;
+            case REQUIRED:
+                if ((resource.getFlags() & m_flags) != m_flags) {
+                    return false;
+                }
+                break;
+            default:
+        // ignored
+        }
+
         // check for required resource type
         switch (m_filterType) {
             case EXCLUDED:
@@ -560,6 +643,16 @@ public final class CmsResourceFilter {
     }
 
     /**
+     * Returns if the stored flags is required while filtering resources.<p>
+     * 
+     * @return if the flags is required
+     */
+    public boolean requireFlags() {
+
+        return m_filterFlags == REQUIRED;
+    }
+
+    /**
      * Returns if the stored state is required while filtering resources.<p>
      * 
      * @return if the state is required
@@ -606,6 +699,7 @@ public final class CmsResourceFilter {
      * @return the name of the filter
      */
     public String toString() {
+
         if (this.equals(CmsResourceFilter.ALL)) {
             return "ALL";
         } else if (this.equals(CmsResourceFilter.ALL_MODIFIED)) {
@@ -624,9 +718,9 @@ public final class CmsResourceFilter {
             return "ONLY_VISIBLE_NO_DELETED";
         } else {
             return "Nonstandard Resource Filter";
-        }    
+        }
     }
-    
+
     /**
      * Recalculates the cache id.<p>
      */
@@ -647,6 +741,18 @@ public final class CmsResourceFilter {
             case EXCLUDED:
                 result.append(" Sx");
                 result.append(m_state);
+                break;
+            default:
+        // ignored
+        }
+        switch (m_filterFlags) {
+            case REQUIRED:
+                result.append(" Fr");
+                result.append(m_flags);
+                break;
+            case EXCLUDED:
+                result.append(" Fx");
+                result.append(m_flags);
                 break;
             default:
         // ignored
