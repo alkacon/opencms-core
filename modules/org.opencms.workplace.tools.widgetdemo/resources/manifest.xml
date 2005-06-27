@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0 beta 3 Corrin</opencms_version>
-		<createdate>5/13/05 3:05 PM</createdate>
+		<opencms_version>6.0.0</opencms_version>
+		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -14,7 +14,7 @@
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[
-<p>This module several demos for using widgets in the OpenCms 6 Administrationn Framework.<p>
+<p>This module contains several demos for using widgets in the OpenCms 6 Administration Framework.<p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
 		<version>0.9.6</version>

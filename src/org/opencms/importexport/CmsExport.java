@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/06/26 12:23:30 $
- * Version: $Revision: 1.75 $
+ * Date   : $Date: 2005/06/27 17:24:18 $
+ * Version: $Revision: 1.76 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -94,7 +94,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.75 $ 
+ * @version $Revision: 1.76 $ 
  * 
  * @since 6.0.0 
  */
@@ -648,7 +648,7 @@ public class CmsExport implements Serializable {
         Element info = exportNode.addElement(CmsImportExportManager.N_INFO);
         info.addElement(CmsImportExportManager.N_CREATOR).addText(getCms().getRequestContext().currentUser().getName());
         info.addElement(CmsImportExportManager.N_OC_VERSION).addText(OpenCms.getSystemInfo().getVersionName());
-        info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getDateTimeShort(System.currentTimeMillis()));
+        info.addElement(CmsImportExportManager.N_DATE).addText(CmsDateUtil.getHeaderDate(System.currentTimeMillis()));
         info.addElement(CmsImportExportManager.N_PROJECT).addText(
             getCms().getRequestContext().currentProject().getName());
         info.addElement(CmsImportExportManager.N_VERSION).addText(CmsImportExportManager.EXPORT_VERSION);
