@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/27 09:15:41 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.db;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -38,6 +39,7 @@ import org.opencms.file.CmsVfsException;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.I_CmsConstants;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 
@@ -56,7 +58,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0
  */
@@ -355,16 +357,30 @@ public class CmsImportFolder {
 
                 if (resourceExists) {
                     CmsResource res = m_cms.readResource(filename, CmsResourceFilter.ALL);
-
-                    //m_cms.deleteAllProperties(filename);
-                    //m_cms.replaceResource(filename, type, Collections.EMPTY_MAP, buffer);
-                    m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
+                    CmsFile file = CmsFile.upgrade(res, m_cms);
+                    byte[] contents = file.getContents();
+                    try {
+                        m_cms.replaceResource(filename, res.getTypeId(), buffer, Collections.EMPTY_LIST);
+                    } catch (CmsDbSqlException sqlExc) {
+                        // SQL error, probably the file is too large for the database settings, restore content
+                        file.setContents(contents);
+                        m_cms.writeFile(file);
+                        throw sqlExc;
+                    }
 
                     OpenCms.fireCmsEvent(new CmsEvent(
                         I_CmsEventListener.EVENT_RESOURCE_AND_PROPERTIES_MODIFIED,
                         Collections.singletonMap("resource", res)));
                 } else {
-                    m_cms.createResource(actImportPath + path[path.length - 1], type, buffer, Collections.EMPTY_LIST);
+                    String newResName = actImportPath + path[path.length - 1];
+                    try {
+                        m_cms.createResource(newResName, type, buffer, Collections.EMPTY_LIST);
+                    } catch (CmsDbSqlException sqlExc) {
+                        // SQL error, probably the file is too large for the database settings, delete file
+                        m_cms.lockResource(newResName);
+                        m_cms.deleteResource(newResName, I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                        throw sqlExc;
+                    }
                 }
             }
 

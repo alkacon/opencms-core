@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/27 09:15:41 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.workplace.commons;
 
+import org.opencms.db.CmsDbSqlException;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -59,7 +62,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,11 +130,20 @@ public class CmsReplace extends CmsDialog {
                 fi.delete();
 
                 // determine the resource type id from the resource to replace
-                CmsResource res = getCms().readResource(getParamResource());
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsFile file = CmsFile.upgrade(res, getCms());
+                byte[] contents = file.getContents();
                 int resTypeId = res.getTypeId();
                 // check the lock state and replace resource
                 checkLock(getParamResource());
-                getCms().replaceResource(getParamResource(), resTypeId, content, null);
+                try {
+                    getCms().replaceResource(getParamResource(), resTypeId, content, null);
+                } catch (CmsDbSqlException sqlExc) {
+                    // SQL error, probably the file is too large for the database settings, restore old content
+                    file.setContents(contents);
+                    getCms().writeFile(file);
+                    throw sqlExc;
+                }
                 // close dialog
                 actionCloseDialog();
             } else {

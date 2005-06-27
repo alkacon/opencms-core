@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/27 09:15:41 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,13 @@
 
 package org.opencms.workplace.explorer;
 
+import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsImportFolder;
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsConstants;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -68,7 +69,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,7 +161,11 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         if (getAction() == ACTION_CANCEL) {
             try {
-                getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                CmsResource res = getCms().readResource(getParamResource());
+                if (res.getState() == I_CmsConstants.C_STATE_NEW) {
+                    // only delete new resource
+                    getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                }
             } catch (Exception e) {
                 // file was not present
             }
@@ -259,13 +264,28 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     setParamResource(computeFullResourceName());
                     // determine the resource type id from the given information
                     int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
-                    try {
-                        // create the resource
-                        getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
-                    } catch (CmsException e) {
-                        // resource was present, overwrite it
-                        getCms().lockResource(getParamResource());
-                        getCms().replaceResource(getParamResource(), resTypeId, content, null);
+                    if (! getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
+                        try {
+                            // create the resource
+                            getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
+                        } catch (CmsDbSqlException sqlExc) {
+                            // SQL error, probably the file is too large for the database settings, delete file
+                            getCms().lockResource(getParamResource());
+                            getCms().deleteResource(getParamResource(), I_CmsConstants.C_DELETE_OPTION_PRESERVE_SIBLINGS);
+                            throw sqlExc;
+                        }
+                    } else {
+                        checkLock(getParamResource());
+                        CmsFile file = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                        byte[] contents = file.getContents();
+                        try {
+                            getCms().replaceResource(getParamResource(), resTypeId, content, null);
+                        } catch (CmsDbSqlException sqlExc) {
+                            // SQL error, probably the file is too large for the database settings, restore content
+                            file.setContents(contents);
+                            getCms().writeFile(file);
+                            throw sqlExc;
+                        }
                     }
                 }
             } else {
@@ -274,6 +294,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
         } catch (Throwable e) {
             // error uploading file, show error dialog
             setParamMessage(Messages.get().getBundle(getLocale()).key(Messages.ERR_UPLOAD_FILE_0));
+            setAction(ACTION_SHOWERROR);
             includeErrorpage(this, e);
         }
     }
