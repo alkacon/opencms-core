@@ -21,7 +21,7 @@
 		<version>0.9.12</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies/>
@@ -66,9 +66,9 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -86,9 +86,9 @@
 		<file>
 			<destination>system/galleries</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -97,9 +97,9 @@
 		<file>
 			<destination>system/galleries/pics</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -113,9 +113,9 @@
 		<file>
 			<destination>system/galleries/pics/ocms-templateone</destination>
 			<type>imagegallery</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -131,9 +131,9 @@
 			<destination>system/galleries/pics/ocms-templateone/bg_nav.jpg</destination>
 			<type>image</type>
 			<uuidresource>918571e4-0d65-11d9-9f4f-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -144,9 +144,9 @@
 			<destination>system/galleries/pics/ocms-templateone/head_img.jpg</destination>
 			<type>image</type>
 			<uuidresource>06177255-0d68-11d9-9f4f-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -157,9 +157,9 @@
 			<destination>system/galleries/pics/ocms-templateone/logo_alkacon_150_t.gif</destination>
 			<type>image</type>
 			<uuidresource>2a098fcf-0d73-11d9-b3f3-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -170,9 +170,9 @@
 			<destination>system/galleries/pics/ocms-templateone/logo_opencms_150.gif</destination>
 			<type>image</type>
 			<uuidresource>7eb3f55b-193e-11d9-9027-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -181,9 +181,9 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -192,9 +192,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -208,9 +208,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/classes</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -221,9 +221,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone.properties</destination>
 			<type>plain</type>
 			<uuidresource>50aeb442-d57b-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -234,9 +234,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>2dee3551-d63b-11d8-96ad-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -247,9 +247,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>50aeb442-d57b-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -260,9 +260,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form.properties</destination>
 			<type>plain</type>
 			<uuidresource>17bdf1a3-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -273,9 +273,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>d0e71127-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -286,9 +286,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/templateone_form_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>17bdf1a3-e21e-11d8-bdbe-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -297,9 +297,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -308,9 +308,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -319,9 +319,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -330,9 +330,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -343,9 +343,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -356,9 +356,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>f10c60c2-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -374,9 +374,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/classes/org/opencms/frontend/templateone/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>7c8c76d8-1ebe-11d9-88bb-efd43b41b93a</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -385,9 +385,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -396,9 +396,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -414,9 +414,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_common</destination>
 			<type>xmlcontent</type>
 			<uuidresource>62721764-a12b-11d9-8a96-1559aed72023</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -432,9 +432,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_css</destination>
 			<type>xmlcontent</type>
 			<uuidresource>62861499-a12b-11d9-8a96-1559aed72023</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -450,9 +450,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/configuration_links</destination>
 			<type>xmlcontent</type>
 			<uuidresource>6293d03e-a12b-11d9-8a96-1559aed72023</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -468,9 +468,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/imprint</destination>
 			<type>xmlcontent</type>
 			<uuidresource>62986423-a12b-11d9-8a96-1559aed72023</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -488,9 +488,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -501,9 +501,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_1row</destination>
 			<type>plain</type>
 			<uuidresource>7f4fd05c-d570-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -519,9 +519,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_2rows</destination>
 			<type>plain</type>
 			<uuidresource>8f9ade6e-e779-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -537,9 +537,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_3rows</destination>
 			<type>plain</type>
 			<uuidresource>db7f1f4b-e779-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -555,9 +555,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/1col_4rows</destination>
 			<type>plain</type>
 			<uuidresource>f162746f-e779-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -573,9 +573,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_1row</destination>
 			<type>plain</type>
 			<uuidresource>39f4a413-e77a-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -591,9 +591,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_2rows</destination>
 			<type>plain</type>
 			<uuidresource>5c434b77-e77a-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -609,9 +609,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_3rows</destination>
 			<type>plain</type>
 			<uuidresource>80e04fab-e77a-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -627,9 +627,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/default_bodies/2cols_4rows</destination>
 			<type>plain</type>
 			<uuidresource>9fc4ca03-e77a-11d8-a573-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -643,9 +643,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/dialogs</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -656,9 +656,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/dialogs/property.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e286571e-28ef-11d9-ace6-5b969dcba4c0</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -676,9 +676,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/elements</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -689,9 +689,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/body_end.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>9759a85f-0c81-11d9-b15c-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -715,9 +715,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/elements.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ed61e049-0d41-11d9-be40-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -741,9 +741,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/elements_old.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e5443fc9-0d45-11d9-a424-9b4fc25bdb8f</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -767,9 +767,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/foot_links.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>7e344f1b-dbcf-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -793,9 +793,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/head_image.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>0f542c5f-dbce-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -819,9 +819,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/head_links.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>f1e38d5c-dbcd-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -845,9 +845,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/info_side.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>e087833e-dbcf-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -871,9 +871,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_breadcrumb.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>3b0f64f8-dbce-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -897,9 +897,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_head.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>24e31ff2-dbce-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -923,9 +923,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_head_menus.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>61baacd9-81c3-11d9-af03-c5d4954b5b38</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -949,9 +949,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/elements/nav_left.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>2f3f4145-dbce-11d8-a76e-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -973,9 +973,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/jsptemplates</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -986,9 +986,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/jsptemplates/letter</destination>
 			<type>jsp</type>
 			<uuidresource>cd04ac8d-1b66-11d9-b72e-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1016,9 +1016,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/jsptemplates/recommend</destination>
 			<type>jsp</type>
 			<uuidresource>4a98b947-1b65-11d9-b72e-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1044,9 +1044,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/lib</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1055,9 +1055,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/pages</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1068,9 +1068,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/imprint.html</destination>
 			<type>jsp</type>
 			<uuidresource>3213d530-dfd8-11d8-a31a-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1094,9 +1094,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter.html</destination>
 			<type>jsp</type>
 			<uuidresource>44a2e440-e472-11d8-9697-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1116,9 +1116,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_confirm.html</destination>
 			<type>jsp</type>
 			<uuidresource>6ba9a838-e48a-11d8-935f-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1138,9 +1138,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>4af6ac2a-e486-11d8-935f-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1160,9 +1160,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_input.html</destination>
 			<type>jsp</type>
 			<uuidresource>076c14a6-e480-11d8-935f-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1182,9 +1182,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/letter_mail.html</destination>
 			<type>jsp</type>
 			<uuidresource>6e885d74-e5ed-11d8-a89d-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1204,9 +1204,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/popup_includes.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>f060d85e-e227-11d8-959f-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1230,9 +1230,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend.html</destination>
 			<type>jsp</type>
 			<uuidresource>11e7d1ce-e217-11d8-bdbe-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1252,9 +1252,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_confirm.html</destination>
 			<type>jsp</type>
 			<uuidresource>8ac54b24-e47d-11d8-b4e5-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1274,9 +1274,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>e1552564-e45b-11d8-9a30-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1296,9 +1296,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_input.html</destination>
 			<type>jsp</type>
 			<uuidresource>5d6a2c35-e477-11d8-9697-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1318,9 +1318,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/recommend_mail.html</destination>
 			<type>jsp</type>
 			<uuidresource>e2e9b2aa-e545-11d8-b77c-83d5f21447d1</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1340,9 +1340,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/pages/search.html</destination>
 			<type>jsp</type>
 			<uuidresource>32677084-d596-11d8-ba2c-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1360,9 +1360,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1382,9 +1382,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/contact.gif</destination>
 			<type>image</type>
 			<uuidresource>46dba570-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1395,9 +1395,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/login.gif</destination>
 			<type>image</type>
 			<uuidresource>46e2d164-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1408,9 +1408,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/mail.gif</destination>
 			<type>image</type>
 			<uuidresource>46e9fd58-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1421,9 +1421,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/menu_click.js</destination>
 			<type>jsp</type>
 			<uuidresource>ff6602fa-80bd-11d9-ba74-eb1fdbd690a5</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1434,9 +1434,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/menu_over.js</destination>
 			<type>jsp</type>
 			<uuidresource>ff6602fa-80bd-11d9-ba74-eb1fdbd690a5</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1447,9 +1447,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/nav_a.gif</destination>
 			<type>image</type>
 			<uuidresource>879b1fb5-db26-11d8-8823-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1460,9 +1460,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/nav_bc.gif</destination>
 			<type>image</type>
 			<uuidresource>4714de00-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1473,9 +1473,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/nav_i.gif</destination>
 			<type>image</type>
 			<uuidresource>87a24ba8-db26-11d8-8823-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1486,9 +1486,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/page.js</destination>
 			<type>plain</type>
 			<uuidresource>40059cb6-d5a1-11d8-b29f-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1499,9 +1499,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/print.gif</destination>
 			<type>image</type>
 			<uuidresource>46cb0398-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1512,9 +1512,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/style.css</destination>
 			<type>jsp</type>
 			<uuidresource>46d22f8c-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1534,9 +1534,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/style_accessible.css</destination>
 			<type>jsp</type>
 			<uuidresource>e355ce1a-dbe3-11d8-9b6a-993e109d03c3</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1556,9 +1556,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/up.gif</destination>
 			<type>image</type>
 			<uuidresource>471c08f4-d571-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1567,9 +1567,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1580,9 +1580,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_doc.gif</destination>
 			<type>image</type>
 			<uuidresource>193b66b9-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1598,9 +1598,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_htm.gif</destination>
 			<type>image</type>
 			<uuidresource>19524a1c-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1616,9 +1616,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_html.gif</destination>
 			<type>image</type>
 			<uuidresource>19524a1c-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1634,9 +1634,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_pdf.gif</destination>
 			<type>image</type>
 			<uuidresource>195b71df-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1652,9 +1652,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_ppt.gif</destination>
 			<type>image</type>
 			<uuidresource>19662042-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1670,9 +1670,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_txt.gif</destination>
 			<type>image</type>
 			<uuidresource>19695495-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1688,9 +1688,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/resources/icons/ic_app_xls.gif</destination>
 			<type>image</type>
 			<uuidresource>196adb38-b7e4-11d9-867a-ddc62aad31dd</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1704,9 +1704,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/schemas</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1717,9 +1717,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/common.xsd</destination>
 			<type>plain</type>
 			<uuidresource>5e1f50e2-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1735,9 +1735,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/headlink.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a0cfb416-4f43-11d9-8c98-2de49c45b2e5</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1753,9 +1753,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</destination>
 			<type>plain</type>
 			<uuidresource>6ac89686-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1771,9 +1771,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/links.xsd</destination>
 			<type>plain</type>
 			<uuidresource>6f99a69a-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1789,9 +1789,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/styleoptional.xsd</destination>
 			<type>plain</type>
 			<uuidresource>fc3d5696-921f-11d9-b1ae-eb1fdbd690a5</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1807,9 +1807,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/stylesheet.xsd</destination>
 			<type>plain</type>
 			<uuidresource>72868d5e-1d06-11d9-8b0f-95b5e57c814c</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1823,9 +1823,9 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone/templates</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1836,9 +1836,9 @@
 			<destination>system/modules/org.opencms.frontend.templateone/templates/main</destination>
 			<type>jsp</type>
 			<uuidresource>8e1ce060-d570-11d8-b127-6dec57178f5b</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1868,9 +1868,9 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1893,9 +1893,9 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -1909,9 +1909,9 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1922,9 +1922,9 @@
 			<destination>system/workplace/resources/filetypes/microsite.gif</destination>
 			<type>image</type>
 			<uuidresource>e92b3b42-9078-11d9-8789-eb1fdbd690a5</uuidresource>
-			<datelastmodified>Wed, 29 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 29 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
