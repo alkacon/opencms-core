@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/06/27 13:21:37 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,6 +223,57 @@ public class CmsLinkProcessor {
                 break;
         }
     }
+    
+    /**
+     * Unescapes all <code>&amp;</code>, e.g. replaces them with a <code>&</code>.<p>
+     * 
+     * @param source the String to unescape
+     * @return the unescaped String
+     */
+    public static String unescapeLink(String source) {
+     
+        if (source == null) {
+            return null;
+        }
+        return CmsStringUtil.substitute(source, "&amp;", "&");
+        
+    }
+    
+    /**
+     * Escapes all <code>&</code>, e.g. replaces them with a <code>&amp;</code>.<p>
+     * 
+     * @param source the String to escape
+     * @return the escaped String
+     */
+    public static String escapeLink(String source) {
+
+        if (source == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(source.length() * 2);
+        int terminatorIndex;
+        for (int i = 0; i < source.length(); ++i) {
+            char ch = source.charAt(i);
+            switch (ch) {
+                case '&':
+                    // don't escape already escaped &amps;
+                    if ((terminatorIndex = source.indexOf(";", i)) > 0) {
+                        String substr = source.substring(i + 1, terminatorIndex);
+                        if ("amp".equals(substr)) {
+                            result.append(ch);
+                        } else {
+                            result.append("&amp;");
+                        }
+                    } else {
+                        result.append("&amp;");
+                    }
+                    break;
+                default:
+                    result.append(ch);
+            }
+        }
+        return new String(result);
+    }
 
     /**
      * Process a link tag.<p>
@@ -237,7 +288,7 @@ public class CmsLinkProcessor {
                 if (linkTag.getAttribute("href") != null) {
                     CmsLink link = m_linkTable.getLink(getLinkName(linkTag.getLink()));
                     if (link != null) {
-                        linkTag.setLink(processLink(link));
+                        linkTag.setLink(CmsLinkProcessor.escapeLink(processLink(link)));
                     }
                 }
                 break;

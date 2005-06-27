@@ -10,7 +10,8 @@
 			<content><![CDATA[
 <a href="http://www.alkacon.com">Alkacon</a>
 <a href="/index.html">Index page</a>
-<a href="/folder1/index.html?a=b&c=d#anchor">Index page</a>
+<a href="/folder1/index.html?a=b&amp;c=d#anchor">Index page</a>
+<a href="/folder1/index.html?a2=b2&c2=d2">Index page with unescaped ampersand</a>
 ]]></content>
 		</Html>
 		<VfsLink>/index.html</VfsLink>

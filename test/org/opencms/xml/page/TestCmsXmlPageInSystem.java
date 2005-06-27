@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/27 13:21:37 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -199,7 +199,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?a=b&someparam=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&someparam=de\">link</a>", text);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&amp;someparam=de\">link</a>", text);
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
@@ -207,11 +207,11 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index.html?a=b&language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&language=de\">link</a>", text);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index.html?a=b&amp;language=de\">link</a>", text);
 
         page.setStringValue(cms, element, Locale.ENGLISH, "<a href=\"index_noexist.html?a=b&language=de\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
-        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&language=de\">link</a>", text);
+        assertEquals("<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;language=de\">link</a>", text);
 
         page.setStringValue(
             cms,
@@ -220,7 +220,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
             "<a href=\"index_noexist.html?a=b&product=somthing\">link</a>");
         text = page.getStringValue(cms, element, Locale.ENGLISH);
         assertEquals(
-            "<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&product=somthing\">link</a>",
+            "<a href=\"/data/opencms/folder1/subfolder11/index_noexist.html?a=b&amp;product=somthing\">link</a>",
             text);
     }
 

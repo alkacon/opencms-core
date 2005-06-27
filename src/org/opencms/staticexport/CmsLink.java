@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/27 13:21:37 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,7 +130,7 @@ public class CmsLink {
 
         m_target = target;
         m_anchor = anchor;
-        m_query = query;
+        setQuery(query);
 
         // update the uri from the components
         m_uri = setUri(m_target, m_anchor, m_query);
@@ -362,7 +362,7 @@ public class CmsLink {
         // set the components
         m_target = target;
         m_anchor = anchor;
-        m_query = query;
+        setQuery(query);
 
         // create the uri from the components
         m_uri = setUri(m_target, m_anchor, m_query);
@@ -386,16 +386,25 @@ public class CmsLink {
         if (components != null) {
             m_target = components[0];
             m_anchor = components[1];
-            m_query = components[2];
+            setQuery(components[2]);
         } else {
             m_target = uri;
             m_anchor = null;
-            m_query = null;
+            setQuery(null);
         }
 
         // initialize the parameter map
         m_parameters = CmsRequestUtil.createParameterMap(m_query);
     }
+    
+    /**
+     * Sets the query of the link.<p>
+     * 
+     * @param query the query to set.
+     */
+    private void setQuery(String query) {
+        m_query = CmsLinkProcessor.unescapeLink(query);
+    }    
 
     /**
      * Joins the given components to one uri string.<p>

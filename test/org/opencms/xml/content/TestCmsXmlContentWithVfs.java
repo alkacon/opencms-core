@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/27 10:27:15 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/27 13:21:37 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -716,8 +716,17 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         Iterator i;
         CmsLinkTable table;
 
+        String retranslatedOutput = htmlValue.getStringValue(cms);
+        assertEquals("Incorrect links in resulting output", "<a href=\"http://www.alkacon.com\">Alkacon</a>\n"
+            + "<a href=\"/data/opencms/index.html\">Index page</a>\n"
+            + "<a href=\"/data/opencms/folder1/index.html?a=b&amp;c=d#anchor\">Index page</a>\n"
+            + "<a href=\"/data/opencms/folder1/index.html?a2=b2&amp;c2=d2\">Index page with unescaped ampersand</a>",
+        // note that the & in the links appear correctly escaped here
+        retranslatedOutput.trim());
+
         table = htmlValue.getLinkTable();
-        assertEquals(3, table.size());
+        assertEquals(4, table.size());
+             
 
         i = table.iterator();
         int result = 0;
@@ -729,13 +738,18 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             } else if (link.getTarget().equals("http://www.alkacon.com") && !link.isInternal()) {
                 result++;
             } else if (link.getTarget().equals("/sites/default/folder1/index.html")
-                && link.getQuery().equals("a=b&c=d")
+                && link.getQuery().equals("a=b&c=d") // at this point the & in the link should be unescaped
                 && link.getAnchor().equals("anchor")
+                && link.isInternal()) {
+                result++;
+            } else if (link.getTarget().equals("/sites/default/folder1/index.html")
+                && link.getQuery().equals("a2=b2&c2=d2") // at this point the & in the link should be unescaped
                 && link.isInternal()) {
                 result++;
             }
         }
-        assertEquals(3, result);
+
+        assertEquals(4, result);
 
         table = vfsValue.getLinkTable();
         assertEquals(1, table.size());
