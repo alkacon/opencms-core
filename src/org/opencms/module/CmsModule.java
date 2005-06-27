@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/26 15:54:25 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/27 09:31:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  * 
@@ -671,7 +671,7 @@ public class CmsModule implements Comparable {
      * 
      * @param actionInstance the module action instance for this module
      */
-    public void setActionInstance(I_CmsModuleAction actionInstance) {
+    /*package*/void setActionInstance(I_CmsModuleAction actionInstance) {
 
         m_actionInstance = actionInstance;
 
