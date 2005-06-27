@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:27:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsXmlSaxWriter;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
-import com.opencms.defaults.master.CmsMasterMedia;
+import com.opencms.defaults.master.*;
 
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -81,7 +79,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.10 $ $Date: 2005/06/27 23:22:15 $
+ * @version $Revision: 1.11 $ $Date: 2005/06/27 23:27:46 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */

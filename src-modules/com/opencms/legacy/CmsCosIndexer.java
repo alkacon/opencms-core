@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/27 23:27:46 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,8 +50,7 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
-import com.opencms.defaults.master.CmsMasterContent;
-import com.opencms.defaults.master.CmsMasterDataSet;
+import com.opencms.defaults.master.*;
 
 import java.util.Iterator;
 import java.util.Vector;
@@ -63,7 +62,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.10 $ $Date: 2005/06/27 23:22:15 $
+ * @version $Revision: 1.11 $ $Date: 2005/06/27 23:27:46 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1

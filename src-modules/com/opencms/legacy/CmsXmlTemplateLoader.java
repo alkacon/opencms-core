@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsXmlTemplateLoader.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/27 23:27:46 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,27 +48,9 @@ import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.editors.CmsDefaultPageEditor;
 
-import com.opencms.core.CmsRequestHttpServlet;
-import com.opencms.core.CmsResponseHttpServlet;
-import com.opencms.core.CmsSession;
-import com.opencms.core.I_CmsRequest;
-import com.opencms.core.I_CmsResponse;
-import com.opencms.core.I_CmsSession;
-import com.opencms.template.A_CmsXmlContent;
-import com.opencms.template.CmsRootTemplate;
-import com.opencms.template.CmsTemplateCache;
-import com.opencms.template.CmsTemplateClassManager;
-import com.opencms.template.CmsXmlControlFile;
-import com.opencms.template.CmsXmlTemplate;
-import com.opencms.template.I_CmsTemplate;
-import com.opencms.template.I_CmsTemplateCache;
-import com.opencms.template.I_CmsXmlTemplate;
-import com.opencms.template.cache.CmsElementCache;
-import com.opencms.template.cache.CmsElementDefinition;
-import com.opencms.template.cache.CmsElementDefinitionCollection;
-import com.opencms.template.cache.CmsElementDescriptor;
-import com.opencms.template.cache.CmsUri;
-import com.opencms.template.cache.CmsUriDescriptor;
+import com.opencms.core.*;
+import com.opencms.template.*;
+import com.opencms.template.cache.*;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -108,7 +90,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Alexander Kandzior (a.kandzior@alkacon.com)
  *
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
