@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/06/26 15:11:34 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/27 10:32:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            String val = CmsEncoder.decode(values[0], CmsEncoder.C_UTF8_ENCODING);
+            String val = CmsEncoder.adjustHtmlEncoding(values[0], CmsEncoder.C_UTF8_ENCODING);
             param.setStringValue(cms, val);
         }
     }

@@ -71,6 +71,7 @@ function initHtmlAreas() {
 			textAreas[textAreas.length] = tas[i];
 			var ha = new HTMLArea(tas[i], config);
 			htmlAreas[htmlAreas.length] = ha;
+			tas[i].value = decodeURIComponent(tas[i].value);
 			ha.generate();
 		}
 	}
