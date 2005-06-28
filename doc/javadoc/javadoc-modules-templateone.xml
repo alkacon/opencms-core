@@ -5,7 +5,7 @@
 
     <property name="srcdir" value="${opencms.input}/src-modules"/>
     <property name="imgdir" value="${basedir}/logos"  />
-    <property name="partname" value="modules" />
+    <property name="partname" value="modules-templateone" />
   
     <!-- dont change this property! -->
     <property name="destdir" value="${opencms.output}/doc/${partname}"  />
@@ -33,15 +33,22 @@
           version="true" 
           nodeprecatedlist="false" 
           nodeprecated="false" 
-          sourcepath="${srcdir}" 
           stylesheetfile="javadoc.css" 
-          doctitle="OpenCms Modules API, version 6.0" 
+          doctitle="The OpenCms 6.0.0 Templateone Module API" 
           additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
         >
             <classpath>
                 <fileset dir="${opencms.input}/webapp/WEB-INF/lib/" includes="*.jar" />
             </classpath>
-            <package name="*"/>
+            <sourcepath>
+                <pathelement location="${srcdir}"/>
+                <!-- This avoids complaints about non-existant sources, at buildtime no opencms.jar for the classpath at hand. -->
+                <pathelement location="${opencms.input}/src"/>
+            </sourcepath>
+           <!-- the package names to compile -->
+           <packageset dir="${srcdir}">
+               <include name="org/opencms/frontend/**"/>
+           </packageset>
         </javadoc>                
         <antcall target="copy.images" />   
     </target>    

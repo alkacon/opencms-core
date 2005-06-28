@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project default="javadoc">
+    <property name="opencms.input" value="../../"/>
+    <property name="opencms.output" value="${opencms.input}../BuildCms/" />
+
+    <property name="srcdir" value="${opencms.input}/src-modules"/>
+    <property name="imgdir" value="${basedir}/logos"  />
+    <property name="partname" value="modules-workplace" />
+  
+    <!-- dont change this property! -->
+    <property name="destdir" value="${opencms.output}/doc/${partname}"  />
+   
+    <taskdef resource="net/sf/antcontrib/antlib.xml">
+	      <classpath>
+	          <pathelement location="${opencms.input}/webapp/WEB-INF/lib/ant-contrib-1.0b1.jar"/>
+	      </classpath>
+    </taskdef>
+
+    <target name="init">
+        <tstamp />
+        <mkdir dir="${destdir}" />
+    </target>
+
+    <target name="javadoc" depends="init,clean">
+        <javadoc destdir="${destdir}" 
+          access="protected" 
+          use="true" 
+          notree="true" 
+          nonavbar="false" 
+          noindex="false" 
+          splitindex="true" 
+          author="true" 
+          version="true" 
+          nodeprecatedlist="false" 
+          nodeprecated="false" 
+          stylesheetfile="javadoc.css" 
+          doctitle="The OpenCms 6.0.0 Workplace Modules API" 
+          additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
+        >
+            <classpath>
+                <fileset dir="${opencms.input}/webapp/WEB-INF/lib/" includes="*.jar" />
+            </classpath>
+            <sourcepath>
+                <pathelement location="${srcdir}"/>
+                <!-- This avoids complaints about non-existant sources, at buildtime no opencms.jar for the classpath at hand. -->
+                <pathelement location="${opencms.input}/src"/>
+            </sourcepath>
+           <!-- the package names to compile -->
+           <packageset dir="${srcdir}">
+               <exclude name="org/opencms/frontend/**"/>
+               <exclude name="com/**"/>
+           </packageset>
+        </javadoc>                
+        <antcall target="copy.images" />   
+    </target>    
+      
+    <target name="copy.images" >
+        <copy todir="${destdir}">
+            <fileset dir="${imgdir}" />
+        </copy>
+    </target>
+  
+    <target name="clean" depends="init">
+        <delete includeemptydirs="true">
+            <fileset dir="${destdir}" includes="**/*"/>
+        </delete>
+    </target>
+  
+
+    <target name="zip" depends="javadoc">
+        <zip destfile="${destdir}/../${partname}.zip">
+            <fileset dir="${destdir}/.." includes="${partname}/**" />
+         </zip>
+    </target>
+</project>
