@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/package.html,v $
- Date   : $Date: 2005/06/28 09:58:57 $
- Version: $Revision: 1.7 $
+ Date   : $Date: 2005/06/28 13:30:16 $
+ Version: $Revision: 1.8 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -38,15 +38,19 @@
 
 Provides the main OpenCms "operating system".<p>
 
-There are 2 main ways to access resources in an OpenCms System:
+There are 3 main ways to access resources in an OpenCms System:
 <ol>
 <li>Using the <code>{@link org.opencms.main.OpenCmsServlet}</code>. This is the default usage of the OpenCms system.</li>
 <li>Using the <code>{@link org.opencms.main.CmsShell}</code>. This is done for specific reasons, usually related to system configuration or setup.</li>
+<li>Using the <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code> from an application to obtain an initialized OpenCms user context.</li>
 </ol>
+
+I all use cases, the access to the OpenCms VFS is only possible with an initialized OpenCms user context,
+this means by using a <code>{@link org.opencms.file.CmsObject}</code>.<p>
 
 <!-- Put @see and @since tags down here. -->
 
-@version $Revision: 1.7 $ 
+@version $Revision: 1.8 $ 
 
 @since 6.0.0 
 

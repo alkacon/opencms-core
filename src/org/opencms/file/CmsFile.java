@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,16 +37,16 @@ import org.opencms.util.CmsUUID;
 import java.io.Serializable;
 
 /**
- * A file object in OpenCms.<p>
+ * A file resource in the OpenCms VFS.<p>
  * 
- * A file object is a CmsResource that contains an additional byte[] array 
+ * A file resource is a CmsResource that contains an additional byte[] array 
  * of binary data, which is the file content. 
  * A file object is not allowed to have sub-resources.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */

@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/package.html,v $
- Date   : $Date: 2005/06/28 09:58:57 $
- Version: $Revision: 1.10 $
+ Date   : $Date: 2005/06/28 13:30:16 $
+ Version: $Revision: 1.11 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -39,14 +39,18 @@
 This important package provides the methods to access the OpenCms VFS repository with the permissions 
 of an authenticated user.<p>
 
+To access the OpenCms VFS repository, obtain a <code>{@link org.opencms.file.CmsObject}</code>
+which will encapsulate the current users permissions.<p>
+
 <!-- Put @see and @since tags down here. -->
 
-@version $Revision: 1.10 $
+@version $Revision: 1.11 $
 
 @since 6.0.0 
 
 @see org.opencms.file.CmsObject
 @see org.opencms.file.CmsRequestContext
+@see org.opencms.file.CmsUser
 @see org.opencms.file.CmsResource
 @see org.opencms.file.types.I_CmsResourceType
 

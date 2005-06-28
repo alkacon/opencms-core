@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResource.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.util.CmsUUID;
 import java.io.Serializable;
 
 /**
- * A backup resource object.<p>
+ * A backup resource for the OpenCms VFS resource history.<p>
  *
  * Backup resources are basic resources that contain additional information 
  * used to describe the backup state.
@@ -49,7 +49,7 @@ import java.io.Serializable;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  */

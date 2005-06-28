@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,9 +66,32 @@ import org.apache.commons.logging.Log;
  * public static methods which can be used by other classes to access 
  * basic system features of OpenCms like logging etc.<p>
  * 
+ * This Object provides singleton access to the initialized OpenCms runtime system.
+ * Some methods are for internal or advanced use only, but others are of also of interest 
+ * for general OpenCms development.<p>
+ * 
+ * For example, to generate a new instance of <code>{@link org.opencms.file.CmsObject}</code> class in your application, 
+ * use <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code>. The argument String should be 
+ * the name of the guest user, usually "Guest" and more formally obtained by <code>{@link org.opencms.db.CmsDefaultUsers#getUserGuest()}</code>.
+ * This will give you an initialized context with guest user permissions.
+ * Then use <code>{@link CmsObject#loginUser(String, String)}</code> to log in the user you want.
+ * Obviously you need the password for the new user.<p>
+ * 
+ * Using <code>{@link #getSiteManager()}</code> you can obtain the initialized <code>{@link org.opencms.site.CmsSiteManager}</code>
+ * which provides information about the sites configured in the running OpenCms instance.<p>
+ * 
+ * The <code>{@link org.opencms.db.CmsDefaultUsers}</code> instance returned by <code>{@link #getDefaultUsers()}</code>
+ * provides information about the names of the OpenCms default users.<p>
+ * 
+ * Other objects of note that can be obtained by this class include the <code>{@link org.opencms.module.CmsModuleManager}</code>
+ * or the <code>{@link org.opencms.scheduler.CmsScheduleManager}</code>.<p>
+ * 
+ * When using the instances returned by this object, keep in mind that applying changes to these may alter the basic OpenCms 
+ * system configuration, which in turn may affect the systems performance or stability.<p>
+ * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */

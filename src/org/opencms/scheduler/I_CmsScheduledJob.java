@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/I_CmsScheduledJob.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/28 13:30:17 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,9 +38,12 @@ import java.util.Map;
 /**
  * Identifies a class that can be scheduled with the OpenCms scheduler.<p>
  * 
+ * Please read the documentation for <code>{@link org.opencms.scheduler.CmsScheduledJobInfo}</code>
+ * to learn how to schedule a job in OpenCms.<p>
+ * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */

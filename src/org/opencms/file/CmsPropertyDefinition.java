@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,11 +34,11 @@ package org.opencms.file;
 import org.opencms.util.CmsUUID;
 
 /**
- * Describes a Propertydefinition in the Cms.<p>
+ * Defines a property name, so that <code>{@link CmsProperty}</code> instances can be created with that name.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0 
  */

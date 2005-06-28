@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,13 +68,16 @@ import javax.servlet.jsp.PageContext;
  * &lt;/jsp:useBean&gt;
  * </pre>
  * 
+ * You can also access the current users <code>{@link org.opencms.file.CmsObject}</code>
+ * by using <code>{@link org.opencms.jsp.CmsJspBean#getCmsObject()}</code>.<p>
+ * 
  * All exceptions that occur when calling any method of this class are catched 
  * and written to the log output only, so that a template still has a chance of
  * working at last in some elements.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +129,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Includes direct edit scriptlets, same as
-     * using the <code>&lt;cms:editable file="..." /&gt;</code>tag.<p>
+     * using the <code>&lt;cms:editable file="***" /&gt;</code>tag.<p>
      * 
      * @param isEditable include scriptlets only if true
      * @param filename file with scriptlets
@@ -282,7 +285,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Include a sub-element without paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." /&gt;</code> tag.
+     * using the <code>&lt;cms:include file="***" /&gt;</code> tag.<p>
      * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @throws JspException in case there were problems including the target
@@ -296,7 +299,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Include a named sub-element without paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag.
+     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag.<p>
      * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
@@ -311,7 +314,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Include a named sub-element without paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag.
+     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag.<p>
      * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
      * @param element the element (template selector) to display from the target
@@ -327,7 +330,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Include a named sub-element with paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
+     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
      * with parameters in the tag body.<p>
      * 
      * The parameter map should be a map where the keys are Strings 
@@ -390,7 +393,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Include a named sub-element with paramters from the OpenCms VFS, same as
-     * using the <code>&lt;cms:include file="..." element="..." /&gt;</code> tag
+     * using the <code>&lt;cms:include file="***" element="***" /&gt;</code> tag
      * with parameters in the tag body.<p>
      * 
      * @param target the target uri of the file in the OpenCms VFS (can be relative or absolute)
@@ -491,7 +494,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Returns an OpenCms or JVM system info property value, same as using
-     * the <code>&lt;cms:info property="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:info property="***" /&gt;</code> tag.<p>
      * 
      * See the description of the class {@link CmsJspTagInfo} for a detailed list 
      * of available options for the property value.<p>
@@ -539,7 +542,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Calculate a link with the OpenCms link management,
-     * same as using the <code>&lt;cms:link&gt;...&lt;/cms:link&gt;</code> tag.<p>
+     * same as using the <code>&lt;cms:link&gt;***&lt;/cms:link&gt;</code> tag.<p>
      * 
      * This is important to get the right link for exported resources, 
      * e.g. for images in the online project.
@@ -631,7 +634,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Returns a selected file property value, same as using 
-     * the <code>&lt;cms:property name="..." /&gt;</code> tag or
+     * the <code>&lt;cms:property name="***" /&gt;</code> tag or
      * calling {@link #property(String, String, String, boolean)}.<p>
      * 
      * @param name the name of the property to look for
@@ -647,7 +650,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Returns a selected file property value, same as using 
-     * the <code>&lt;cms:property name="..." file="..." /&gt;</code> tag or
+     * the <code>&lt;cms:property name="***" file="***" /&gt;</code> tag or
      * calling {@link #property(String, String, String, boolean)}.<p>
      * 
      * @param name the name of the property to look for
@@ -664,7 +667,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Returns a selected file property value, same as using
-     * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag or
+     * the <code>&lt;cms:property name="***" file="***" default="***" /&gt;</code> tag or
      * calling {@link #property(String, String, String, boolean)}.<p>
      *
      * @param name the name of the property to look for
@@ -683,7 +686,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Returns a selected file property value with optional HTML escaping, same as using 
-     * the <code>&lt;cms:property name="..." file="..." default="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:property name="***" file="***" default="***" /&gt;</code> tag.<p>
      * 
      * Please see the description of the class {@link org.opencms.jsp.CmsJspTagProperty} for
      * valid options of the <code>file</code> parameter.<p>
@@ -728,7 +731,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Checks if a template part should be used or not, same as using 
-     * the <code>&lt;cms:template element="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:template element="***" /&gt;</code> tag.<p>
      * 
      * @param element the template element to check 
      * @return <code>true</code> if the element is active, <code>false</code> otherwise
@@ -742,7 +745,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Checks if a template part should be used or not, same as using 
-     * the <code>&lt;cms:template ifexists="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:template ifexists="***" /&gt;</code> tag.<p>
      * 
      * @param elementlist the list of elements to check
      * @param checkall <code>true</code> if all elements in the list should be checked 
@@ -757,7 +760,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Checks if a template part should be used or not, same as using 
-     * the <code>&lt;cms:template element="..." ifexists="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:template element="***" ifexists="***" /&gt;</code> tag.<p>
      * 
      * @param element the template element to check
      * @param elementlist the list of elements to check 
@@ -781,7 +784,7 @@ public class CmsJspActionElement extends CmsJspBean {
 
     /**
      * Converts a relative URI in the OpenCms VFS to an absolute one based on 
-     * the location of the currently processed OpenCms URI.
+     * the location of the currently processed OpenCms URI.<p>
      * 
      * @param target the relative URI to convert
      * @return the target URI converted to an absolute one
@@ -797,7 +800,7 @@ public class CmsJspActionElement extends CmsJspBean {
     /**
      * Returns a selected user property, i.e. information about the currently
      * logged in user, same as using 
-     * the <code>&lt;cms:user property="..." /&gt;</code> tag.<p>
+     * the <code>&lt;cms:user property="***" /&gt;</code> tag.<p>
      * 
      * @param property the user property to display, please see the tag documentation for valid options
      * @return the value of the selected user property

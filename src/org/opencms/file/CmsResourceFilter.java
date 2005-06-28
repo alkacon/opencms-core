@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResourceFilter.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.file;
 
 /**
- * Provides filters for resource result sets obtained from requests to the VFS.<p>
+ * Provides filters for resource result sets obtained from requests to the OpenCms VFS.<p>
  * 
  * Using the constant filters provided by this class
  * you can control "special" behaviour 
@@ -44,7 +44,7 @@ package org.opencms.file;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */

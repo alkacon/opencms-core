@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavElement.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,18 @@ import java.util.Map;
 /**
  * Bean to collect navigation information from a resource in the OpenCms VFS.<p>
  *
+ * Each nav element contains a number of information about a VFS resource,
+ * obtained either from the resources properties or attributes.
+ * You can use this information to generate a HTML navigation for 
+ * files in the VFS in your template.<p>
+ *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
+ * 
+ * @see org.opencms.jsp.CmsJspNavBuilder
  */
 public class CmsJspNavElement implements Comparable {
 

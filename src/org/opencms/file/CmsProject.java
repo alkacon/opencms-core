@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/28 08:05:43 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,12 +38,13 @@ import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Describes an OpenCms project.<p>
+ * Describes an OpenCms project, 
+ * which contains a set of VFS resources that are being worked on at the same time.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  */

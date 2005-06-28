@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,35 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * A user in the OpenCms system.<p>
+ * A user in the OpenCms permission system.<p>
  *
- * @author Michael Emmerich 
+ * A user in OpenCms is uniquely definded by its user named returned by
+ * <code>{@link #getName()}</code>.<p>
+ * 
+ * Basic users in OpenCms are of type <code>{@link #USER_TYPE_SYSTEMUSER}</code>.
+ * This means that the user can access the OpenCms Workplace.
+ * Moreover, the user must be created by another user with the
+ * <code>{@link org.opencms.security.CmsRole#ACCOUNT_MANAGER}</code>.
+ * This user type is for "content managers" that actually have write permissions in 
+ * at last some parts of the VFS.<p>
+ * 
+ * Another possible type of users is <code>{@link #USER_TYPE_WEBUSER}</code>.
+ * These users do not have access to the OpenCms Workplace. 
+ * However, a web user can be created by every user, for example the "Guest" user.
+ * The main use case is that web users are used for users of the website that 
+ * can generate their own accounts, in a "please register your account..." scenario. 
+ * These web user accounts can then be used to 
+ * build personalized web sites. A web user is created using 
+ * <code>{@link org.opencms.file.CmsObject#addWebUser(String, String, String, String, Map)}</code>.<p>
+ *
  * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
- * @since 6.0.0 
+ * @since 6.0.0
+ * 
+ * @see CmsGroup 
  */
 public class CmsUser implements I_CmsPrincipal, Cloneable {
 

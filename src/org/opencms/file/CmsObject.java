@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/28 08:09:14 $
- * Version: $Revision: 1.137 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.138 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,12 +56,24 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * This pivotal class provides all authorized access to the OpenCms resources.<p>
+ * This pivotal class provides all authorized access to the OpenCms VFS resources.<p>
  * 
  * It encapsulates user identification and permissions.
- * Think of it as the initialized "Shell" to access the OpenCms resources.
+ * Think of it as an initialized "shell" to access the OpenCms VFS.
  * Every call to a method here will be checked for user permissions
- * according to the context the CmsObject instance was created with.<p> 
+ * according to the <code>{@link org.opencms.file.CmsRequestContext}</code> this CmsObject instance was created with.<p>
+ * 
+ * From a JSP page running in OpenCms, user <code>{@link org.opencms.jsp.CmsJspBean#getCmsObject()}</code> to gain 
+ * access to the current users CmsObject. Usually this is done with a <code>{@link org.opencms.jsp.CmsJspActionElement}</code>.<p>
+ * 
+ * To generate a new instance of this class in your application, use 
+ * <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code>. The argument String should be 
+ * the name of the guest user, usually "Guest" and more formally obtained by <code>{@link org.opencms.db.CmsDefaultUsers#getUserGuest()}</code>.
+ * This will give you an initialized context with guest user permissions.
+ * Then use <code>{@link CmsObject#loginUser(String, String)}</code> to log in the user you want.
+ * Obviously you need the password for the new user.
+ * You should never try to create an instance of this class using the constructor, 
+ * this is reserved for internal operation only.<p> 
  *
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
@@ -69,7 +81,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.137 $
+ * @version $Revision: 1.138 $
  * 
  * @since 6.0.0 
  */

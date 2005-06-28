@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspNavBuilder.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,12 +48,20 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * Bean to provide a convenient way to build navigation structures based on 
- * {@link org.opencms.jsp.CmsJspNavElement}.<p>
+ * Bean to provide a convenient way to build navigation structures based on the
+ * <code>{@link org.opencms.jsp.CmsJspNavElement}</code>.<p>
+ *
+ * Use this together with the <code>{@link org.opencms.jsp.CmsJspActionElement}</code>
+ * to obtain navigation information based on the current users permissions.
+ * For example, use <code>{@link #getNavigationForFolder(String)}</code> and pass the 
+ * value of the current OpenCms user context uri obtained 
+ * from <code>{@link org.opencms.file.CmsRequestContext#getUri()}</code> as argument to obtain a list
+ * of all items in the navigation of the current folder. Then use a simple scriptlet to 
+ * iterate over these items and create a HTML navigation.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/06/28 13:30:17 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,31 +52,37 @@ import org.apache.commons.logging.Log;
 /**
  * This the main servlet of the OpenCms system.<p>
  * 
- * From here, all other operations are invoked.
+ * From here, all operations that are results of HTTP requests are invoked.
  * Any incoming request is handled in multiple steps:
  * 
- * <ol><li>The requesting user is authenticated and a CmsObject with the user information
- * is created. The CmsObject is used to access all functions of OpenCms, limited by
- * the authenticated users permissions. If the user is not identified, it is set to the default (guest)
- * user.</li>
+ * <ol><li>The requesting <code>{@link org.opencms.file.CmsUser}</code> is authenticated 
+ * and a <code>{@link org.opencms.file.CmsObject}</code> with this users context information
+ * is created. This <code>{@link org.opencms.file.CmsObject}</code> is used to access all functions of OpenCms, limited by
+ * the authenticated users permissions. If the user is not identified, it is set to the default user, usually named "Guest".</li>
  * 
- * <li>The requested document is loaded into OpenCms and depending on its type 
+ * <li>The requested <code>{@link org.opencms.file.CmsResource}</code> is loaded into OpenCms and depending on its type 
  * (and the users persmissions to display or modify it), 
- * it is send to one of the OpenCms loaders do be processed.</li>
+ * it is send to one of the OpenCms <code>{@link org.opencms.loader.I_CmsResourceLoader}</code> implementations
+ * do be processed.</li>
  * 
  * <li>
- * The loader will then decide what to do with the contents of the 
- * requested document. In case of a JSP the JSP handling mechanism is invoked, 
- * in case of a XmlPage the template mechanism is started,
- * in case of an image (or other static file) this will simply be returned etc.
+ * The <code>{@link org.opencms.loader.I_CmsResourceLoader}</code> will then decide what to do with the 
+ * contents of the requested <code>{@link org.opencms.file.CmsResource}</code>. 
+ * In case of a JSP resource the JSP handling mechanism is invoked with the <code>{@link org.opencms.loader.CmsJspLoader}</code>, 
+ * in case of an image (or another static resource) this will be returned by the <code>{@link org.opencms.loader.CmsDumpLoader}</code>
+ * etc.
  * </li></ol>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
+ * 
+ * @see org.opencms.main.CmsShell
+ * @see org.opencms.file.CmsObject
+ * @see org.opencms.main.OpenCms
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
 

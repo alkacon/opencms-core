@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,14 +37,16 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 /**
- * A group in the OpenCms system.<p>
+ * A group in the OpenCms permission system.<p>
  *
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
+ * 
+ * @see CmsUser
  */
 public class CmsGroup implements I_CmsPrincipal {
 

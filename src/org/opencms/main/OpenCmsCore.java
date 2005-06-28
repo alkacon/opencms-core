@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.211 $
+ * Date   : $Date: 2005/06/28 13:30:17 $
+ * Version: $Revision: 1.212 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -110,22 +110,29 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.logging.Log;
 
 /**
- * This class is the main class of the OpenCms system,
- * think of it as the "operating system" of OpenCms.<p>
- *  
- * Any request to an OpenCms resource will be processed by this class first.
- * The class will try to map the request to a VFS (Virtual File System) resource,
- * i.e. an URI. If the resource is found, it will be read and forwarded to
- * to a resource loader, which then genertates the output of the requested resource.<p>
+ * The internal implementation of the core OpenCms "operating system" functions.<p>
+ * 
+ * All access to this class must be done through the public static methods
+ * of the <code>{@link org.opencms.main.OpenCms}</code> object.
+ * Under no circumstances should you ever try to access this class directly.<p>
+ * 
+ * This class is so OpenCms internal you should not even be reading this documentation ;-)<p>
+ * 
+ * Any request to the <code>{@link org.opencms.main.OpenCmsServlet}</code> will be forwarded to this core class.
+ * The core will then try to map the request to a VFS (Virtual File System) URI,
+ * that is a <code>{@link org.opencms.file.CmsResource}</code> in the OpenCms database. 
+ * If a resource is found, it will be read and forwarded to
+ * to the corresponding <code>{@link org.opencms.loader.I_CmsResourceLoader}</code>, 
+ * which will then generate the output for the requested resource and return it to the requesting client.<p>
  *
- * There will be only one instance of this object created for
- * any accessing class. This means that in the default configuration, where 
+ * There will be only one singleton instance of this object created for
+ * this core class. This means that in the default configuration, where 
  * OpenCms is accessed through a servlet context, there will be only one instance of 
- * this class in that servlet context.<p>
+ * the core in that servlet context.<p>
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.211 $ 
+ * @version $Revision: 1.212 $ 
  * 
  * @since 6.0.0 
  */

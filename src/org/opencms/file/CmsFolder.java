@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,14 @@ import org.opencms.util.CmsUUID;
 import java.io.Serializable;
 
 /**
- * A folder object in OpenCms.<p>
+ * A folder resource in the OpenCms VFS.<p>
  * 
- * A folder object is a CmsResource object that can contain sub-resources.<p>
+ * A folder resource is a CmsResource object that can contain sub-resources.<p>
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0 
  */

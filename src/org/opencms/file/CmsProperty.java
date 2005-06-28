@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Map;
 import java.util.RandomAccess;
 
 /**
- * Represents a property mapped to a structure and/or resource record of a resource.<p>
+ * Represents a property (meta-information) mapped to a VFS resource.<p>
  * 
  * A property is an object that contains three string values: a name, a property value which is mapped
  * to the structure record of a resource, and a property value which is mapped to the resource
@@ -82,7 +82,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0 
  */

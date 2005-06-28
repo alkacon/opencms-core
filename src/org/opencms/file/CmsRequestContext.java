@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/28 13:30:16 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,13 @@ import java.util.HashMap;
 import java.util.Locale;
 
 /**
- * Stores the information about the current request context,
- * like ths current user, the site root, the encoding and other stuff.<p>  
+ * Stores the information about the current users OpenCms context,
+ * for example the requested URI, the current project, the selected site and more.<p>  
  *
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.25 $
  * 
  * @since 6.0.0 
  */
