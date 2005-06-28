@@ -10,20 +10,21 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.help.en</name>
-		<nicename><![CDATA[OpenCms 6.0 Workplace English Online Help]]></nicename>
-		<group>OpenCms online help</group>
+		<nicename><![CDATA[OpenCms 6.0 Workplace english online help]]></nicename>
+		<group>OpenCms Online Help</group>
 		<class/>
-		<description><![CDATA[This module contains the english online help pages for the OpenCms workplace.
-
-(c) 2004-2005 by Alkacon Software]]></description>
-		<version>0.9.5</version>
+		<description><![CDATA[
+<p>This module contains the english online help pages for the OpenCms workplace.</p>
+<p><i>(c) 2004-2005 by Alkacon Software</i></p>
+]]></description>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 22:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace.help" version="0"/>
+			<dependency name="org.opencms.workplace.help" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.help.en/classes/" destination="WEB-INF/classes/"/>
