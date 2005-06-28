@@ -4,8 +4,8 @@
 <!--
 
  File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/overview.html,v $
- Date   : $Date: 2005/06/28 09:58:57 $
- Version: $Revision: 1.1 $
+ Date   : $Date: 2005/06/28 10:50:24 $
+ Version: $Revision: 1.2 $
 
  This library is part of OpenCms -
  the Open Source Content Mananagement System
@@ -66,6 +66,53 @@ So the database functionalities in the <code>{@link org.opencms.db}</code> packa
 but usually not directly by an application.
 </p>
 
+<h2>How to start developing OpenCms applications</h2>
+
+<p>
+Here are some basic pointers that should help you identify importants 
+parts in this API documentation that are usually required in OpenCms application development:
+</p>
+
+<p>
+You should start with the template functions provided in the <code>{@link org.opencms.jsp}</code> package.
+This contains the OpenCms <code>&lt;cms:&gt</code> taglib, as well as the <code>{@link org.opencms.jsp.CmsJspActionElement}</code> 
+(for use with scriptlets). 
+These allow you to easliy access the current users <code>{@link org.opencms.file.CmsObject}</code> from a JSP, 
+and with this you can dynamically build OpenCms front end applications based on the users permissions.
+</p>
+
+<p>
+For easy template navigation building, check out the methods <code>{@link org.opencms.jsp.CmsJspNavBuilder}</code>.
+You can build full-blown OpenCms applications with the functions from the <code>{@link org.opencms.jsp}</code> package 
+and never bother about the rest of the API.
+</p>
+
+<p>
+After you have mastered the basics of template development, you should take a closer look at the objects in the
+<code>{@link org.opencms.file}</code> package. These object are the "building blocks" for OpenCms applications, 
+and it certainly helps to understand these in greater detail before moving on to more complex OpenCms applications.
+As already mentioned, the <code>{@link org.opencms.file.CmsObject}</code> is probably the most important class there.
+</p>
+
+<p>
+In case you want to use certain OpenCms "operating system" features, use the <code>{@link org.opencms.main.OpenCms}</code> singleton to
+gain access to the low level manager classes that handle the system runtime. 
+</p>
+
+<p>
+The <code>{@link org.opencms.module}</code> package contains the OpenCms module API. 
+You do not usually need to "program" a module because a module is most often created using the OpenCms Workplace.
+However, in case you want to trigger certain module lifecyle events, have a look at the <code>{@link org.opencms.module.I_CmsModuleAction}</code>
+interface.
+</p>
+
+<p>
+There are a couple of utility functions worth to mention here:
+In case you want to send emails from your application, check out the <code>{@link org.opencms.mail}</code> package.
+You can schedule recurring operations in OpenCms by implementing the <code>{@link org.opencms.scheduler.I_CmsScheduledJob}</code>
+interface.
+</p>
+
 <h2>The basic OpenCms application design</h2>
 
 <p>
@@ -100,13 +147,9 @@ All access operations to the VFS are done through the <code>{@link org.opencms.f
 this means that all access operations automatically are done with the authenticated users permissions.
 </p>
 
-</p>
-
 <!-- Put @see and @since tags down here. -->
 
-@version $Revision: 1.1 $ 
-
-@since 6.0.0 
+@version $Revision: 1.2 $ 
 
 </body>
 </html>
