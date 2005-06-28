@@ -331,6 +331,7 @@ div.navleft {
 	height: 100%;
 	background-color: <%= navLeftBg %>; 
 	background-image: url(<%= navLeftImgBgUri %>);
+	background-repeat: no-repeat;
 }
 
 /* left navigation image row */
