@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.537 $
+ * Date   : $Date: 2005/06/28 20:40:34 $
+ * Version: $Revision: 1.538 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.537 $
+ * @version $Revision: 1.538 $
  * 
  * @since 6.0.0
  */
@@ -6791,7 +6791,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (l == 0) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
         }
-
+        
         for (int i = 0; i < l; i++) {
             char c = filename.charAt(i);
             if (((c < 'a') || (c > 'z'))
@@ -6804,6 +6804,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '$')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
             }
+        }
+        
+        // check for filenames that have only dots (which will cause issues in the static export)
+        boolean onlydots = true;
+        String name = CmsResource.getName(filename);
+        l = name.length();
+        for (int i = 0; i < l; i++) {
+            char c = name.charAt(i);
+            if ((c != '.') && (c != '/')) {
+                onlydots = false;
+            }
+        }        
+        if (onlydots) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
         }
     }
 

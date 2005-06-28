@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsException.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/28 20:40:34 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 
@@ -46,7 +47,7 @@ import java.util.Locale;
  * @author Michael Moossen 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +77,31 @@ public class CmsException extends Exception implements I_CmsThrowable {
 
         super(message.getKey(), cause);
         m_message = message;
+    }
+
+    /**
+     * Returns the HTML formatted error stack of a Throwable.<p>
+     * 
+     * The error stack is used by the common error screen 
+     * that is displayed if an error occurs.<p>
+     * 
+     * @param t the throwable to get the errorstack from
+     * @return the formatted value of the errorstack parameter
+     */
+    public static String getFormattedErrorstack(Throwable t) {
+
+        String stacktrace = CmsException.getStackTraceAsString(t);
+        if (CmsStringUtil.isEmpty(stacktrace)) {
+            return "";
+        } else {
+            stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
+            stacktrace = CmsEncoder.escapeXml(stacktrace);
+            StringBuffer result = new StringBuffer(256);
+            result.append("<html><body style='background-color: Window; overflow: scroll;'><pre>");
+            result.append(stacktrace);
+            result.append("</pre></body></html>");
+            return result.toString();
+        }
     }
 
     /**
@@ -140,29 +166,5 @@ public class CmsException extends Exception implements I_CmsThrowable {
     public CmsMessageContainer getMessageContainer() {
 
         return m_message;
-    }
-
-    /**
-     * Returns the formatted value of a throwable.<p>
-     * 
-     * The error stack is used by the common error screen 
-     * that is displayed if an error occurs.<p>
-     * 
-     * @param t the throwable to get the errorstack from
-     * @return the formatted value of the errorstack parameter
-     */
-    public static String getFormattedErrorstack(Throwable t) {
-
-        String stacktrace = CmsException.getStackTraceAsString(t);
-        if (CmsStringUtil.isEmpty(stacktrace)) {
-            return "";
-        } else {
-            stacktrace = CmsStringUtil.escapeJavaScript(stacktrace);
-            stacktrace = CmsStringUtil.substitute(stacktrace, ">", "&gt;");
-            stacktrace = CmsStringUtil.substitute(stacktrace, "<", "&lt;");
-            return "<html><body style='background-color: Window; overflow: scroll;'><pre>"
-                + stacktrace
-                + "</pre></body></html>";
-        }
     }
 }

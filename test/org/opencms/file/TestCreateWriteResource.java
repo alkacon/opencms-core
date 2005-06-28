@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCreateWriteResource.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/28 20:40:34 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
@@ -50,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit tests for the create and import methods.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestCreateWriteResource extends OpenCmsTestCase {
 
@@ -83,6 +84,7 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         suite.addTest(new TestCreateWriteResource("testCreateResourceAgain"));
         suite.addTest(new TestCreateWriteResource("testCreateFolder"));
         suite.addTest(new TestCreateWriteResource("testCreateFolderAgain"));        
+        suite.addTest(new TestCreateWriteResource("testCreateDotnameResources"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -97,8 +99,58 @@ public class TestCreateWriteResource extends OpenCmsTestCase {
         
         return wrapper;
    }
-   
-
+    
+    /**
+     * Test creation of invalid resources that have only dots in their name.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void  testCreateDotnameResources() throws Throwable {
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing creating a resource with only dots in the name");
+        
+        Exception error = null;
+        try {
+            cms.createResource("/folder1/.", CmsResourceTypeFolder.getStaticTypeId(), null, null);           
+        } catch (CmsIllegalArgumentException e) {
+            assertEquals(org.opencms.db.Messages.ERR_CREATE_RESOURCE_1, e.getMessageContainer().getKey());
+            error = e;
+        }        
+        assertNotNull(error);        
+        error = null;
+        try {
+            cms.createResource("/folder1/..", CmsResourceTypePlain.getStaticTypeId(), null, null);           
+        } catch (CmsIllegalArgumentException e) {
+            assertEquals(org.opencms.db.Messages.ERR_CREATE_RESOURCE_1, e.getMessageContainer().getKey());
+            error = e;
+        }        
+        assertNotNull(error);        
+        error = null;
+        try {
+            cms.createResource("/folder1/.../", CmsResourceTypeFolder.getStaticTypeId(), null, null);           
+        } catch (CmsIllegalArgumentException e) {
+            assertEquals(org.opencms.db.Messages.ERR_CREATE_RESOURCE_1, e.getMessageContainer().getKey());
+            error = e;
+        }        
+        assertNotNull(error);        
+        error = null;
+        try {
+            cms.createResource("/folder1/....", CmsResourceTypePlain.getStaticTypeId(), null, null);           
+        } catch (CmsIllegalArgumentException e) {
+            assertEquals(org.opencms.db.Messages.ERR_CREATE_RESOURCE_1, e.getMessageContainer().getKey());
+            error = e;
+        }        
+        assertNotNull(error);        
+        error = null;
+        try {
+            cms.createResource("/folder1/...../", CmsResourceTypeFolder.getStaticTypeId(), null, null);           
+        } catch (CmsIllegalArgumentException e) {
+            assertEquals(org.opencms.db.Messages.ERR_CREATE_RESOURCE_1, e.getMessageContainer().getKey());
+            error = e;
+        }
+        assertNotNull(error);
+    }
    
    /**
     * Test the create resource method for a folder.<p>
