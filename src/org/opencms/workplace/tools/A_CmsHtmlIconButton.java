@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/28 15:54:58 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,7 +227,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (cms != null && cms.existsResource(icon.toString())) {
+                if (cms != null && cms.existsResource("/system/workplace/resources/" + icon.toString())) {
                     html.append(icon);
                 } else {
                     html.append(iconPath);
