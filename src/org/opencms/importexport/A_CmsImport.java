@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2005/06/28 14:47:18 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.80 $ 
+ * @version $Revision: 1.81 $ 
  * 
  * @since 6.0.0 
  * 
@@ -107,6 +107,8 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The name of the legacy resource type "newpage". */
     protected static final String RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
+    
+    
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsImport.class);

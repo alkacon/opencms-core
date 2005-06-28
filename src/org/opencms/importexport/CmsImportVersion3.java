@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.69 $
+ * Date   : $Date: 2005/06/28 14:47:18 $
+ * Version: $Revision: 1.70 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,12 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
@@ -68,7 +71,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.69 $ 
+ * @version $Revision: 1.70 $ 
  * 
  * @since 6.0.0 
  * 
@@ -193,7 +196,7 @@ public class CmsImportVersion3 extends A_CmsImport {
      */
     private void importAllResources() throws CmsImportExportException {
 
-        String source, destination, type, uuidstructure, uuidresource, userlastmodified, usercreated, flags, timestamp;
+        String source, destination, type, uuidresource, userlastmodified, usercreated, flags, timestamp;
         long datelastmodified, datecreated;
 
         List fileNodes, acentryNodes;
@@ -242,9 +245,9 @@ public class CmsImportVersion3 extends A_CmsImport {
                 // <type>
                 type = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_TYPE);
                 // <uuidstructure>
-                uuidstructure = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_UUIDSTRUCTURE);
+                //uuidstructure = CmsImport.getChildElementTextValue(
+                //    currentElement,
+                //    CmsImportExportManager.N_UUIDSTRUCTURE);
                 // <uuidresource>
                 uuidresource = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDRESOURCE);
                 // <datelastmodified>
@@ -297,7 +300,6 @@ public class CmsImportVersion3 extends A_CmsImport {
                         source,
                         destination,
                         type,
-                        uuidstructure,
                         uuidresource,
                         datelastmodified,
                         userlastmodified,
@@ -389,7 +391,6 @@ public class CmsImportVersion3 extends A_CmsImport {
         String source,
         String destination,
         String type,
-        String uuidstructure,
         String uuidresource,
         long datelastmodified,
         String userlastmodified,
@@ -399,65 +400,44 @@ public class CmsImportVersion3 extends A_CmsImport {
         List properties) {
 
         byte[] content = null;
-        CmsResource res = null;
+        CmsResource result = null;
 
         try {
-            if (m_importingChannelData) {
-                // try to read an existing channel to get the channel id
-                String channelId = null;
-                try {
-                    if ((type.equalsIgnoreCase(CmsResourceTypeFolder.RESOURCE_TYPE_NAME))
-                        && (!destination.endsWith("/"))) {
-                        destination += "/";
-                    }
-                    CmsResource channel = m_cms.readResource("/" + destination);
-                    channelId = m_cms.readPropertyObject(
-                        m_cms.getSitePath(channel),
-                        CmsPropertyDefinition.PROPERTY_CHANNELID,
-                        false).getValue();
-                } catch (Exception e) {
-                    // ignore the exception, a new channel id will be generated
-                }
-                if (channelId != null) {
-                    properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CHANNELID, channelId, null));
-                }
-            }
+
             // get the file content
             if (source != null) {
                 content = getFileBytes(source);
             }
-            // get all required information to create a CmsResource
-            I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(type);
             int size = 0;
             if (content != null) {
                 size = content.length;
             }
-            // get the required UUIDs         
-            CmsUUID curUser = m_cms.getRequestContext().currentUser().getId();
-            CmsUUID newUserlastmodified = new CmsUUID(userlastmodified);
-            CmsUUID newUsercreated = new CmsUUID(usercreated);
+
+            // get all required information to create a CmsResource
+            I_CmsResourceType resType;
+            
+            // get UUIDs for the user   
+            CmsUUID newUserlastmodified;
+            CmsUUID newUsercreated;
             // check if user created and user lastmodified are valid users in this system.
-            // if not, set them to the current.
-            if (m_cms.readUser(newUserlastmodified).getId().equals(CmsUUID.getNullUUID())) {
-                newUserlastmodified = curUser;
+            // if not, use the current user
+            try {
+                newUserlastmodified = m_cms.readUser(userlastmodified).getId();
+            } catch (CmsException e) {
+                newUserlastmodified = m_cms.getRequestContext().currentUser().getId();
+                // datelastmodified = System.currentTimeMillis();
             }
-            if (m_cms.readUser(newUsercreated).getId().equals(CmsUUID.getNullUUID())) {
-                newUsercreated = curUser;
-            }
-            // get all UUIDs for the structure, resource and content        
-            CmsUUID newUuidstructure = new CmsUUID();
-            CmsUUID newUuidresource = new CmsUUID();
-            if (uuidstructure != null) {
-                newUuidstructure = new CmsUUID(uuidstructure);
-            }
-            if (uuidresource != null) {
-                newUuidresource = new CmsUUID(uuidresource);
+
+            try {
+                newUsercreated = m_cms.readUser(usercreated).getId();
+            } catch (CmsException e) {
+                newUsercreated = m_cms.getRequestContext().currentUser().getId();
+                // datecreated = System.currentTimeMillis();
             }
 
             // convert to xml page if wanted
             if (m_convertToXmlPage
-                && (resType.getTypeName().equals(A_CmsImport.RESOURCE_TYPE_LEGACY_PAGE_NAME) || resType.getTypeName().equals(
-                    RESOURCE_TYPE_NEWPAGE_NAME))) {
+                && (type.equals(RESOURCE_TYPE_NEWPAGE_NAME))) {
 
                 if (content != null) {
 
@@ -475,11 +455,27 @@ public class CmsImportVersion3 extends A_CmsImport {
                     content = xmlPage.marshal();
                 }
                 resType = OpenCms.getResourceManager().getResourceType(CmsResourceTypeXmlPage.getStaticTypeId());
+            } else if (type.equals(RESOURCE_TYPE_LINK_NAME)) {
+                resType = OpenCms.getResourceManager().getResourceType(CmsResourceTypePointer.getStaticTypeId());
+            } else if (type.equals(RESOURCE_TYPE_LEGACY_PAGE_NAME)) {
+                resType = OpenCms.getResourceManager().getResourceType(CmsResourceTypePlain.getStaticTypeId());
+            } else {
+                resType = OpenCms.getResourceManager().getResourceType(type);
+            }
+ 
+            // get UUIDs for the resource and content        
+            CmsUUID newUuidresource = null;
+            if ((uuidresource != null) && (!resType.isFolder())) {
+                // create a UUID from the provided string
+                newUuidresource = new CmsUUID(uuidresource);
+            } else {
+                // folders get always a new resource record UUID
+                newUuidresource = new CmsUUID();
             }
 
             // create a new CmsResource                         
             CmsResource resource = new CmsResource(
-                newUuidstructure,
+                new CmsUUID(), // structure ID is always a new UUID
                 newUuidresource,
                 destination,
                 resType.getTypeId(),
@@ -487,34 +483,34 @@ public class CmsImportVersion3 extends A_CmsImport {
                 new Integer(flags).intValue(),
                 m_cms.getRequestContext().currentProject().getId(),
                 CmsResource.STATE_NEW,
-                datelastmodified,
-                newUserlastmodified,
                 datecreated,
                 newUsercreated,
+                datelastmodified,
+                newUserlastmodified,
                 CmsResource.DATE_RELEASED_DEFAULT,
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 1,
                 size);
 
-            // import this resource in the VFS   
-            res = m_cms.importResource(m_importPath + destination, resource, content, properties);
+            // import this resource in the VFS
+            result = m_cms.importResource(destination, resource, content, properties);
 
-            m_report.println(
-                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                I_CmsReport.FORMAT_OK);
+            if (result != null) {
+                m_report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            }
         } catch (Exception exc) {
             // an error while importing the file
             m_report.println(exc);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_IMPORTEXPORT_ERROR_IMPORTING_RESOURCE_1, destination), exc);
-            }
             try {
                 // Sleep some time after an error so that the report output has a chance to keep up
                 Thread.sleep(1000);
             } catch (Exception e) {
-                // noop
+                // 
             }
         }
-        return res;
+ 
+        return result;
     }
 }
