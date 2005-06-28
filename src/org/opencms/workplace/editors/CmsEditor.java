@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/06/28 16:09:19 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -696,12 +696,9 @@ public abstract class CmsEditor extends CmsDialog {
                 CmsResource.DATE_RELEASED_DEFAULT,
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 false);
-            // set the internal read flag
-            int flags = getCms().readResource(temporaryFilename).getFlags();
-            if ((flags & CmsResource.FLAG_INTERNAL) == 0) {
-                flags += CmsResource.FLAG_INTERNAL;
-            }            
-            getCms().chflags(temporaryFilename, flags);
+            // remove lock from copy operation and replace it with temporary lock
+            getCms().unlockResource(temporaryFilename);
+            getCms().lockResource(temporaryFilename, CmsLock.TEMPORARY);
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;
