@@ -1,0 +1,112 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+<head>
+<!--
+
+ File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/overview.html,v $
+ Date   : $Date: 2005/06/28 09:58:57 $
+ Version: $Revision: 1.1 $
+
+ This library is part of OpenCms -
+ the Open Source Content Mananagement System
+
+ Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2.1 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ Lesser General Public License for more details.
+
+ For further information about Alkacon Software GmbH, please see the
+ company website: http://www.alkacon.com
+
+ For further information about OpenCms, please see the
+ project website: http://www.opencms.org
+
+ You should have received a copy of the GNU Lesser General Public
+ License along with this library; if not, write to the Free Software
+ Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+
+-->
+</head>
+<body bgcolor="white">
+
+<p>
+This is the API description for the OpenCms core, please read the <a href="#intro">introdution</a> below to learn 
+about the packages and functions of the API that are intended to be used in OpenCms application development.
+</p>
+
+<h2>Introduction<a name="intro"> </a>to the OpenCms API</h2>
+
+<p>
+The OpenCms API contains several building blocks:
+</p>
+
+<ul>
+<li>The document repository, called <i>Virtual File System</i> (or just <i>VFS</i>).</li>
+<li>The JSP based templating system.</li>
+<li>The module API.</a>
+<li>The main runtime system.</p>
+<li>Several utility classes, for example for mail transport or scheduling.</li>
+<li>A number of low level database connetion methods.</li>
+<li>The OpenCms Workplace implementation.</li>
+</ul>
+
+<p>
+Not all packages defined in this API are considered "end user" API functions.
+For example, to access the OpenCms repository you should use an initialized instance of the 
+<code>{@link org.opencms.file.CmsObject}</code> class, and never access the database directly with SQL.
+So the database functionalities in the <code>{@link org.opencms.db}</code> package are 
+"low level" functions, used by the classes in the <code>{@link org.opencms.file}</code> package
+but usually not directly by an application.
+</p>
+
+<h2>The basic OpenCms application design</h2>
+
+<p>
+OpenCms runs as a multi tier application. 
+The database layer that contains the VFS is accessed only through the business logic provided by the
+<code>{@link org.opencms.file.CmsObject}</code> class. 
+This runs totally independent 
+of any servlet container, there is no database logic whatsoever in the "front end", for example the JSP templates. 
+Check the <code>{@link org.opencms.main.CmsShell}</code> description to see how to access the VFS without a servlet container.
+</p>
+
+<p>
+In normal operation, OpenCms runs as a servlet in a servlet container.
+On the startup of the container, OpenCms initializes itself from the configuration provided in the XML files.
+After the XML configuration has been read, a singleton instance of the <code>{@link org.opencms.main.OpenCms}</code>
+object provides access to all OpenCms functionality.
+This <code>{@link org.opencms.main.OpenCms}</code> singleton instance can be considered the "operating system" of OpenCms.
+</p>
+
+<p>
+After the "operating system" is initialized and the <code>{@link org.opencms.main.OpenCms}</code> object is available,
+all requestes made to the <code>{@link org.opencms.main.OpenCmsServlet}</code> are directly passed to this for authorization.
+When a request is recieved, it's first authenticated to see which <code>{@link org.opencms.file.CmsUser}</code>
+has made the request. If the user has not been authenticated so far, the <code>{@link org.opencms.file.CmsUser}</code> object
+is initialized with "Guest" user permissions. 
+With this user context, an instance of a <code>{@link org.opencms.file.CmsRequestContext}</code> is generated, and with that 
+a <code>{@link org.opencms.file.CmsObject}</code> is initialized. 
+This initialized <code>{@link org.opencms.file.CmsObject}</code>
+then provides the "users context" for all access operations to the OpenCms VFS. 
+It can also be considered the "shell" of the user to the OpenCms VFS. 
+All access operations to the VFS are done through the <code>{@link org.opencms.file.CmsObject}</code>, and 
+this means that all access operations automatically are done with the authenticated users permissions.
+</p>
+
+</p>
+
+<!-- Put @see and @since tags down here. -->
+
+@version $Revision: 1.1 $ 
+
+@since 6.0.0 
+
+</body>
+</html>
