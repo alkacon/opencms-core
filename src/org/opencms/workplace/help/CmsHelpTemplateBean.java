@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/28 15:44:09 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -180,7 +180,12 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append("\t\t\t} else {\n");
         result.append("\t\t\t\twpUri = \"/administration/\"\n");
         result.append("\t\t\t}\n");
-        result.append("\t\t}\n");
+        result.append("\t\t} else if(top.body != null) {\n");
+        result.append("\t\t\twpUri = top.body.location.pathname;\n");
+        result.append("\t\t}\n");        
+        result.append("\t}\n");
+        result.append("\tif (wpUri==null) {\n");
+        result.append("\t\twpUri=\"/system/workplace/\"\n");
         result.append("\t}\n");
         result.append("\twindow.open(\"../locales/");
         result.append(locale);
@@ -189,7 +194,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append("\"toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width=600,height=450\");\n");
         result.append("}\n");
 
-        return result.toString();
+        String s = result.toString();
+        return s;
     }
 
     /**
