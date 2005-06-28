@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2005/06/28 08:27:32 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.88 $ 
+ * @version $Revision: 1.89 $ 
  * 
  * @since 6.0.0 
  */
@@ -305,8 +305,10 @@ public class CmsDialog extends CmsToolDialog {
         } else if (getParamCloseLink() != null) {
             // close link parameter present, forward JSP
             try {
-                setForwarded(true);
-                CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
+                if (!isForwarded()) {
+                    setForwarded(true);
+                    CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
+                }
             } catch (Exception e) {
                 // forward failed
                 throw new JspException(e.getMessage(), e);
