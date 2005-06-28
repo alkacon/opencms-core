@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/28 17:45:03 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0 
  */
@@ -216,7 +216,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
-            CmsResource.FLAG_INTERNAL);
+            CmsResource.FLAG_TEMPFILE);
         List result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, CmsResource.COMPARE_DATE_RELEASED);
@@ -240,7 +240,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
-            CmsResource.FLAG_INTERNAL);
+            CmsResource.FLAG_TEMPFILE);
         List foundResources = cms.readResources(foldername, filter, readSubTree);
 
         // the Cms resources are saved in a map keyed by their nav elements
@@ -305,7 +305,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
-            CmsResource.FLAG_INTERNAL);
+            CmsResource.FLAG_TEMPFILE);
         List result = cms.readResources(foldername, filter, tree);
 
         Collections.sort(result, CmsResource.COMPARE_ROOT_PATH);

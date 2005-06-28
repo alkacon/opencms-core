@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/28 17:34:11 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/06/28 17:45:03 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -696,6 +696,12 @@ public abstract class CmsEditor extends CmsDialog {
                 CmsResource.DATE_RELEASED_DEFAULT,
                 CmsResource.DATE_EXPIRED_DEFAULT,
                 false);
+            // set the temporary file flag
+            int flags = getCms().readResource(temporaryFilename).getFlags();
+            if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
+                flags += CmsResource.FLAG_TEMPFILE;
+            }            
+            getCms().chflags(temporaryFilename, flags);
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;

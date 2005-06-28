@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/06/28 17:45:03 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0.0 
  */
@@ -194,7 +194,7 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
-            CmsResource.FLAG_INTERNAL);
+            CmsResource.FLAG_TEMPFILE);
         List result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
@@ -221,7 +221,7 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         String foldername = CmsResource.getFolderPath(data.getFileName());
 
         CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
-            CmsResource.FLAG_INTERNAL);
+            CmsResource.FLAG_TEMPFILE);
         List result = cms.readResources(foldername, filter, tree);
 
         // create priority comparator to use to sort the resources
