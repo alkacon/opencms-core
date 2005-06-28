@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/28 08:05:44 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -592,7 +592,7 @@ public class CmsHtmlList {
      * 
      * If the list already contains an item with the id of a given list item, it will be removed and
      * replaced by the new list item. if not, this method is the same as the 
-     * <code>{@link #insertAllItems(List, Locale)}</code> method.
+     * <code>{@link #insertAllItems(Collection, Locale)}</code> method.
      * 
      * Try to use it instead of <code>{@link A_CmsListDialog#refreshList()}</code>.<p>
      * 

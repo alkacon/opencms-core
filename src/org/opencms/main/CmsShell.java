@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/25 11:19:03 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/06/28 08:05:44 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  * 
@@ -706,7 +706,7 @@ public class CmsShell {
      * 
      * This step is performed within the <code>CmsShell</code> constructor directly after 
      * switching to run-level 2 and obtaining the <code>CmsObject</code> for the guest user as 
-     * well as when invoking the <code>CmsShell command {@link CmsShellCommands#login(String, String)}</code>.
+     * well as when invoking the CmsShell command <code>login</code>.
      * 
      * @return the user settings for the current user.
      */

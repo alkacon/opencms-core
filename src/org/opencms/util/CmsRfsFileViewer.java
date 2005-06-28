@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/24 15:53:22 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/28 08:05:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.11 $
+     * @version $Revision: 1.12 $
      * 
      * @since 6.0.0
      */
@@ -483,10 +483,7 @@ public class CmsRfsFileViewer implements Cloneable {
     /** The log object for this class. */
     protected static final Log LOG = CmsLog.getLog(CmsRfsFileViewer.class);
 
-    /**
-     *  Maps file paths to instances of 
-     * <code>{@link CmsRfsFileLineIndexInfo}</code> instances.
-     **/
+    /** Maps file paths to internal info instances. */
     protected Map m_fileName2lineIndex;
 
     /** The path to the underlying file. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/27 16:38:35 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/06/28 08:05:43 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,7 +129,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * access to it (it is wrapped internally in the JSP pages, which have their own buffer).
      * That leads to a solution where the data is first written to the bufferd stream, 
      * but without includes. Then it is parsed again later 
-     * in <code>{@link CmsFlexResponse#processCacheEntry()}</code>, enriched with the 
+     * in the <code>{@link CmsFlexResponse}</code>, enriched with the 
      * included elements that have been ommitted in the first case.
      * I would love to see a simpler solution, but this works for now.<p>
      *

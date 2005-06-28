@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/28 08:05:43 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  */
@@ -389,8 +389,6 @@ public class CmsProject implements Cloneable {
      * Sets the delete After Publishing flag.<p>
      *
      * @param deleteAfterPublishing the delete After Publishing flag to set
-     * 
-     * @see #setType(int)
      */
     public void setDeleteAfterPublishing(boolean deleteAfterPublishing) {
 
