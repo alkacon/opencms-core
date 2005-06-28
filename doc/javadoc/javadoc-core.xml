@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project default="javadoc">
-    <property name="opencms.input" value="../../"/>
+<property name="opencms.input" value="../../"/>
     <property name="opencms.output" value="${opencms.input}../BuildCms/"/>
     <property name="srcdir" value="${opencms.input}/src"/>
     <property name="imgdir" value="${basedir}/logos"  />
@@ -34,9 +34,9 @@
           nodeprecated="false" 
           sourcepath="${srcdir}" 
           stylesheetfile="javadoc.css" 
-		  overview="${srcdir}/org/opencms/main/overview.html"
-          doctitle="The OpenCms 6.0.0 Core API" 
-          additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src=logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src=logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
+          overview="${srcdir}/org/opencms/main/overview.html"
+          doctitle="OpenCms Core API, version 6.0" 
+          additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
         >
             <package name="org.opencms.*"/>
             <classpath>
@@ -46,18 +46,11 @@
         <antcall target="copy.images" />
     </target>
     
-    
+      
     <target name="copy.images" >
-        <for param="file">
-            <dirset dir="${destdir}">
-                <include name="**"/>
-            </dirset>
-            <sequential>
-                <copy todir="@{file}">
-                    <fileset dir="${imgdir}" />
-                </copy>
-            </sequential>        
-        </for>
+        <copy todir="${destdir}">
+            <fileset dir="${imgdir}" />
+        </copy>
     </target>
   
     <target name="clean" depends="init" >

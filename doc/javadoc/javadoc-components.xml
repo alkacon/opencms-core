@@ -36,7 +36,7 @@
           sourcepath="${srcdir}" 
           stylesheetfile="javadoc.css" 
           doctitle="OpenCms Components API, version 6.0" 
-          additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src=logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src=logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
+          additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
         >
             <classpath>
                 <fileset dir="${opencms.input}/webapp/WEB-INF/lib/" includes="*.jar" />
@@ -46,19 +46,11 @@
         <antcall target="copy.images" />
     </target>
     
-    
-        
+      
     <target name="copy.images" >
-        <for param="file">
-            <dirset dir="${destdir}">
-                <include name="**"/>
-            </dirset>
-            <sequential>
-                <copy todir="@{file}">
-                    <fileset dir="${imgdir}" />
-                </copy>
-            </sequential>        
-        </for>
+        <copy todir="${destdir}">
+            <fileset dir="${imgdir}" />
+        </copy>
     </target>
   
     <target name="clean" depends="init">
