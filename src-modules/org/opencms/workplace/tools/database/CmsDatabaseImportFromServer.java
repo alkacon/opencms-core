@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseImportFromServer.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/28 18:38:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.database;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -58,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,9 +217,14 @@ public class CmsDatabaseImportFromServer extends CmsWidgetDialog {
 
         // get available files from server
         List files = getFilesFromServer();
-
-        // add the file select box widget
-        addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
+        
+        if (files.isEmpty()) {
+            // no import files available, display message
+            addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsDisplayWidget(key(Messages.GUI_IMPORTSERVER_NO_DB_EXPORTS_0))));
+        } else {
+            // add the file select box widget
+            addWidget(new CmsWidgetDialogParameter(this, PARAM_IMPORTFILE, PAGES[0], new CmsSelectWidget(files)));
+        }
     }
 
     /**

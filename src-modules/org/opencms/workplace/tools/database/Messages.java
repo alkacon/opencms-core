@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/28 18:38:09 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORTSERVER_NO_DB_EXPORTS_0 = "GUI_IMPORTSERVER_NO_DB_EXPORTS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACTION_FILE_EXPORT_0 = "ERR_ACTION_FILE_EXPORT_0";
