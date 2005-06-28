@@ -2,7 +2,7 @@
 
 <imprints xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd">
   <imprint language="en">
-    <institution><![CDATA[Alkacon Software]]></institution>
+    <institution><![CDATA[Alkacon Software GmbH]]></institution>
     <author/>
     <street><![CDATA[An der Wachsfabrik 13]]></street>
     <city><![CDATA[50996 Cologne]]></city>
@@ -19,7 +19,7 @@
       <links/>
       <content><![CDATA[
 <span style="font-weight: bold;">
-This OpenCms 6.0 demonstration was developed by Alkacon Softare.</span><br />
+This OpenCms 6.0 demonstration was developed by Alkacon Software GmbH.</span><br />
 ]]></content>
     </text.head>
     <text.foot name="text.foot0">
@@ -29,11 +29,11 @@ This OpenCms 6.0 demonstration was developed by Alkacon Softare.</span><br />
         </link>
       </links>
       <content><![CDATA[
-Alkacon Software GmbH is the main contributor for the OpenCms core system, as well as this &quot;templateone&quot; demo. We offer support, training and consulting for OpenCms based projects. <br /><br />Please visit our website <a href="${link0}">http://www.alkacon.com</a> for more details about our OpenCms service offerings.<br /><br /><span style="font-style: italic;">Alkacon Software GmbH makes more then 75% of it's work results available as Open Source. As an example many features in this &quot;templateone&quot; demo where developed in the couse of customer projects. By working with Alkacon Software, you ensure the continued success of OpenCms as an Open Source project.</span><br />]]></content>
+Alkacon Software GmbH is the main contributor for the OpenCms core system, as well as this &quot;templateone&quot; demo. We offer support, training and consulting for OpenCms based projects. <br /><br />Please visit our website <a href="${link0}">http://www.alkacon.com</a> for more details about our OpenCms service offerings.<br /><br /><span style="font-style: italic;">Alkacon Software GmbH makes more then 75% of it's work results available as Open Source. As an example many features in this &quot;templateone&quot; demo where developed in the couse of customer projects. By working with Alkacon Software GmbH, you ensure the continued success of OpenCms as an Open Source project.</span><br />]]></content>
     </text.foot>
   </imprint>
   <imprint language="de">
-    <institution><![CDATA[Alkacon Software]]></institution>
+    <institution><![CDATA[Alkacon Software GmbH]]></institution>
     <author/>
     <street><![CDATA[An der Wachsfabrik 13]]></street>
     <city><![CDATA[50996 Köln]]></city>

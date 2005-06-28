@@ -10,7 +10,7 @@
 <title>OpenCms - <cms:property name="Title" escapeHtml="true" /></title>
 
 <meta HTTP-EQUIV="CONTENT-TYPE" CONTENT="text/html; CHARSET=<cms:property name="content-encoding" default="ISO-8859-1" />">
-<meta name="author" content="Alkacon Software">
+<meta name="author" content="Alkacon Software GmbH">
 <meta name="description" content="<cms:property name="Description" default="OpenCms welcome page and release notes" />">
 <meta name="keywords" content="<cms:property name="Keywords" default="OpenCms, Demo, Application, Content Management" />">
 
@@ -52,8 +52,8 @@
 --%><cms:include file="../elements/login_element.jsp" /><%--
 --%><!-- Login element ends here -->
 
-<p class="small"><img src="<cms:link>../resources/logo_alkacon.gif</cms:link>" alt="Alkacon Software" width="100" height="36" border="0" align="left">
-&copy; 2002-2005 Alkacon Software<br>
+<p class="small"><img src="<cms:link>../resources/logo_alkacon.gif</cms:link>" alt="Alkacon Software GmbH" width="100" height="36" border="0" align="left">
+&copy; 2005 Alkacon Software GmbH<br>
 The OpenCms experts<br>
 <a href="http://www.alkacon.com" target="alkacon">http://www.alkacon.com</a></p>
 

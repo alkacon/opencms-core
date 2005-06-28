@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[This module contains the OpenCms administration tools for validating links in xml documents and pointer links. (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
 		<version>0.9.5</version>
-		<authorname><![CDATA[Alkacon Software]]></authorname>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>

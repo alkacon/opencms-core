@@ -1,13 +1,13 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/28 13:47:22 $
+ * Version: $Revision: 1.7 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
  * This license applies to all programs, pages, Java classes, parts and
  * modules of the Alkacon OpenCms Software library published by
- * Alkacon Software, unless otherwise noted.
+ * Alkacon Software GmbH, unless otherwise noted.
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com) (http://www.alkacon.com)
  *
@@ -31,14 +31,14 @@
  * For further information about OpenCms, please see the OpenCms project
  * website: http://www.opencms.org.
  * 
- * The names "Alkacon", "Alkacon Software" and "OpenCms" must not be used 
+ * The names "Alkacon", "Alkacon Software GmbH" and "OpenCms" must not be used 
  * to endorse or promote products derived from this software without prior 
  * written permission. For written permission, please contact info@alkacon.com.
  * 
  * Products derived from this software may not be called "Alkacon", 
- * "Alkacon Software" or "OpenCms", nor may "Alkacon", "Alkacon Software" 
+ * "Alkacon Software GmbH" or "OpenCms", nor may "Alkacon", "Alkacon Software GmbH" 
  * or "OpenCms" appear in their name, without prior written permission of 
- * Alkacon Software. 
+ * Alkacon Software GmbH. 
  *
  * This program is also available under a commercial non-GPL license. For
  * pricing and ordering information, please inquire at sales@alkacon.com.
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
