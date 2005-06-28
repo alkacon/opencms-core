@@ -10,15 +10,16 @@
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone</name>
-		<nicename><![CDATA[OpenCms 6.0 'templateone' frontend]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Template One frontend]]></nicename>
 		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
-<p>This module contains the highly configurable OpenCms frontend template one. </p>
+<p>This module contains the highly configurable OpenCms frontend template one.</p>
 <p>This template can easily be used to display website contents.</p>
+<p>Install this module if you want to use it for building your own website.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.12</version>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

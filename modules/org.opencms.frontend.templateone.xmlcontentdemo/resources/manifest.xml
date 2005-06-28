@@ -10,23 +10,24 @@
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.xmlcontentdemo</name>
-		<nicename><![CDATA[OpenCms 6.0 'templateone' XML content demo]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Template One XML content demo]]></nicename>
 		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains demo resources for OpenCms 6.0 XML content.</p>
+<p>Install this module if you want to see the structured content capabilities of OpenCms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.12</version>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.frontend.templateone" version="0.9"/>
-			<dependency name="org.opencms.frontend.templateone.form" version="0.9"/>
-			<dependency name="org.opencms.editors.htmlarea" version="0.9"/>
+			<dependency name="org.opencms.frontend.templateone" version="1.0.0"/>
+			<dependency name="org.opencms.frontend.templateone.form" version="1.0.0"/>
+			<dependency name="org.opencms.editors.htmlarea" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/" destination="WEB-INF/classes/"/>
@@ -1344,7 +1345,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Links to Alkacon Software GmbH]]></value>
+					<value><![CDATA[Links to Alkacon Software]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

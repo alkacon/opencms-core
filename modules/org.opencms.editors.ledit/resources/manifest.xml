@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.editors.ledit</name>
-		<nicename><![CDATA[OpenCms 6.0 LEdit Editor]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 LEdit editor]]></nicename>
 		<group>OpenCms Editors</group>
 		<class/>
 		<description><![CDATA[
@@ -18,14 +18,14 @@
 <p>Install this module if you want to use this ActiveX editor in OpenCms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.2</version>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.editors" version="0.9.0"/>
+			<dependency name="org.opencms.editors" version="1.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>

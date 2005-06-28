@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.form</name>
-		<nicename><![CDATA[OpenCms 6.0 'templateone' online input form]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Template One online input form]]></nicename>
 		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
@@ -18,14 +18,14 @@
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.12</version>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.frontend.templateone" version="0.9.0"/>
+			<dependency name="org.opencms.frontend.templateone" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/classes/" destination="WEB-INF/classes/"/>

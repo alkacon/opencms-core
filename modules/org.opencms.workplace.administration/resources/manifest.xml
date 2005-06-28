@@ -13,17 +13,19 @@
 		<nicename><![CDATA[OpenCms 6.0 Administration Framework]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[<p>This module contains the base components for the administration view.</p>
+		<description><![CDATA[
+<p>This module contains the base components for the administration view.</p>
 <p>Its allows you to install and/or develop administration tools for OpenCms 6.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>0.9.7</version>
+<p><i>(c) 2004-2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace" version="0.9.0"/>
+			<dependency name="org.opencms.workplace" version="1.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>

@@ -10,22 +10,22 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.explorer</name>
-		<nicename><![CDATA[OpenCms 6.0 Workplace Explorer]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Workplace explorer]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the OpenCms Workplace Explorer.</p>
-<p>It allows you to work on the OpenCms VFS.</p>
+<p>Install this module if you want a GUI to work on the OpenCms VFS.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.6</version>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace" version="0.9.0"/>
+			<dependency name="org.opencms.workplace" version="1.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>

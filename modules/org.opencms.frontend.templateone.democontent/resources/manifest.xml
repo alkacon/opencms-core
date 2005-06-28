@@ -10,21 +10,22 @@
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.democontent</name>
-		<nicename><![CDATA[OpenCms 6.0 'templateone' demo content]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Template One demo content]]></nicename>
 		<group>Template One</group>
 		<class/>
 		<description><![CDATA[
-<p>Contains example pages for usage of the OpenCms Template One.<p>
+<p>Contains example pages for usage of the OpenCms Template One.</p>
+<p>Install this module if you are new to OpenCms and want to see what you can do with it.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>0.9.12</version>
+		<version>1.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.frontend.templateone" version="0.9.0"/>
+			<dependency name="org.opencms.frontend.templateone" version="1.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
