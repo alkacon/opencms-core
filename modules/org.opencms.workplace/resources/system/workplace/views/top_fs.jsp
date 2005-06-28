@@ -10,8 +10,7 @@ if (wp.isReloadRequired()) {
         wp.getJsp().include(cms.link(cms.getRequestContext().getUri()));
         return;
 } 
-%>
-<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
+%><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 
 <html>
 
@@ -93,9 +92,9 @@ initHist();
 </head>
 
 <frameset rows="24,*,24" border="0" frameborder="0" framespacing="0">
-    <frame <%= wp.getFrameSource("head", cms.link("top_head.jsp?wpFrame=head")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("head", cms.link("/system/workplace/views/top_head.jsp?wpFrame=head")) %> noresize scrolling="no">
     <frame <%= wp.getFrameSource("body", wp.getStartupUri()) %> noresize scrolling="no">
-    <frame <%= wp.getFrameSource("foot", cms.link("top_foot.jsp?wpFrame=foot")) %> noresize scrolling="no">
+    <frame <%= wp.getFrameSource("foot", cms.link("/system/workplace/views/top_foot.jsp?wpFrame=foot")) %> noresize scrolling="no">
 </frameset>
 
 </html>
