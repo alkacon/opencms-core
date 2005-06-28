@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.tools.widgetdemo</name>
-		<nicename><![CDATA[OpenCms 6.0 Demos for the OpenCms 6 Administration Framework]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 Demos for the Administration Framework]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
 		<description><![CDATA[

@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.de</name>
-		<nicename><![CDATA[OpenCms 6.0 German Localization for the OpenCms Workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 6.0 German Localization for the Workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[This module contains the German language localization files for the OpenCms workplace.]]></description>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/06/28 09:22:34 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,8 +58,10 @@ import java.io.LineNumberReader;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -90,7 +92,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -283,6 +285,8 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
                         // module package name
                         String moduleName = module.getName();
+                        // module group name
+                        String moduleGroup = module.getGroup();
                         // module nice name
                         String moduleNiceName = module.getNiceName();
                         // module version
@@ -316,6 +320,9 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
                         Map moduleData = new HashMap();
                         moduleData.put("name", moduleName);
                         moduleData.put("niceName", moduleNiceName);
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleGroup)) {
+                            moduleData.put("group", moduleGroup);
+                        }
                         moduleData.put("version", moduleVersion);
                         moduleData.put("description", moduleDescription);
                         moduleData.put("filename", childResource.getName());
@@ -331,6 +338,56 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
         }
 
         return m_availableModules;
+    }
+
+    /**
+     * Returns the display string for a given module.<p>
+     * 
+     * @param module a module in the form of the result of <code>{@link #getAvailableModules()}</code>
+     * 
+     * @return the display string for the given module
+     */
+    public String getDisplayForModule(Map module) {
+
+        String name = (String)module.get("niceName");
+        String group = (String)module.get("group");
+        String version = (String)module.get("version");
+        String display = name;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(group)) {
+            display = group + ": " + display;
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(version)) {
+            display += " (" + version + ")";
+        }
+        return display;
+    }
+
+    /**
+     * Sorts the modules for display.<p>
+     * 
+     * @param modules the list of modules (the result of <code>{@link #getAvailableModules()}</code>)
+     * 
+     * @return a list of sorted module names
+     */
+    public List sortModules(Map modules) {
+
+        List aux = new ArrayList(modules.values());
+        Collections.sort(aux, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+
+                Map module1 = (Map)o1;
+                Map module2 = (Map)o2;
+                return getDisplayForModule(module1).compareTo(getDisplayForModule(module2));
+            }
+        });
+
+        List ret = new ArrayList(aux.size());
+        for (Iterator it = aux.iterator(); it.hasNext();) {
+            Map module = (Map)it.next();
+            ret.add(module.get("name"));
+        }
+        return ret;
     }
 
     /**
@@ -1380,9 +1437,7 @@ public class CmsSetupBean extends Object implements Serializable, Cloneable, I_C
 
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_JDBC_DRIVER, driver);
         setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_JDBC_URL, dbWorkConStr);
-        setExtProperty(
-            CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_TEST_QUERY,
-            getDbTestQuery());
+        setExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_TEST_QUERY, getDbTestQuery());
         setExtProperty(
             CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + '.' + CmsDbPool.KEY_JDBC_URL_PARAMS,
             getDbConStrParams());

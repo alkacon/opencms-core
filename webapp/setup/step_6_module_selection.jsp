@@ -1,27 +1,5 @@
 <%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
---%><%!
-    private List sortModules(Map modules) {
-
-       List aux = new ArrayList(modules.values());
-       Collections.sort(aux, new Comparator() {
-           public int compare(Object o1, Object o2) {
-
-               Map m1 = (Map)o1;
-               Map m2 = (Map)o2;
-               String n1 = (String)m1.get("niceName");
-               String n2 = (String)m2.get("niceName");
-               return n1.compareTo(n2);
-           }
-       });
-
-       List ret = new ArrayList(aux.size());
-       for (Iterator it = aux.iterator(); it.hasNext();) {
-            Map module = (Map)it.next();
-            ret.add(module.get("name"));
-	   }
-       return ret;
-   }
-%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
+--%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 	
 	// next page
@@ -38,7 +16,7 @@
 	Map modules = Bean.getAvailableModules();
 	Map moduleDependencies = Bean.getModuleDependencies();
 	List dependencies = null;
-	List moduleNames = sortModules(modules);
+	List moduleNames = Bean.sortModules(modules);
 	String moduleName = null;
 	String moduleNiceName = null;
 	String moduleVersion = null;
@@ -288,8 +266,6 @@ OpenCms Setup Wizard - Module selection
 	for (int i=0; i<moduleNames.size(); i++) {
 		moduleName = (String) moduleNames.get(i);
 		module = (Map) modules.get(moduleName);
-		moduleNiceName = (String) module.get("niceName");
-		moduleVersion = (String) module.get("version");
 		moduleDescription = (String) module.get("description");
 %>
 		<tr>
@@ -297,7 +273,7 @@ OpenCms Setup Wizard - Module selection
 				<input type="checkbox" name="availableModules" value="<%= moduleName %>" checked="checked" onClick="checkDependencies('<%= moduleName %>')">
 			</td>
 			<td style="vertical-align: top; width: 100%; padding-top: 4px;">
-				<%= moduleNiceName %> (<%= moduleVersion %>)
+				<%=Bean.getDisplayForModule(module)%>
 			</td>
 			<td style="vertical-align: top; text-align: right;">
 				<%
