@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.136 $
+ * Date   : $Date: 2005/06/28 08:09:14 $
+ * Version: $Revision: 1.137 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.136 $
+ * @version $Revision: 1.137 $
  * 
  * @since 6.0.0 
  */
@@ -2326,7 +2326,7 @@ public class CmsObject {
      * 
      * @see CmsProperty#getValue()
      * 
-     * @deprecated use new Object based methods.
+     * @deprecated use <code>{@link #readPropertyObject(String, String, boolean)}</code> instead.
      */
     public String readProperty(String resourcePath, String property) throws CmsException {
 
@@ -2349,7 +2349,7 @@ public class CmsObject {
      * 
      * @see CmsProperty#getValue()
      * 
-     * @deprecated use new Object based methods.
+     * @deprecated use <code>{@link #readPropertyObject(String, String, boolean)}</code> instead.
      */
     public String readProperty(String resourcePath, String property, boolean search) throws CmsException {
 
@@ -2374,7 +2374,7 @@ public class CmsObject {
      * 
      * @see CmsProperty#getValue()
      * 
-     * @deprecated use new Object based methods.
+     * @deprecated use <code>{@link #readPropertyObject(String, String, boolean)}</code> instead.
      */
     public String readProperty(String resourcePath, String property, boolean search, String propertyDefault)
     throws CmsException {
