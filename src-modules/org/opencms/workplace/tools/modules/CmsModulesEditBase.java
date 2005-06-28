@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/28 13:33:29 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -249,6 +249,6 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
      */
     private boolean isNewModule() {
 
-        return getCurrentToolPath().equals("/modules/new");
+        return getCurrentToolPath().equals("/modules/modules_new");
     }
 }
