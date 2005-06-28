@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/28 19:28:31 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Properties;
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,14 +125,14 @@ public class CmsErrorBean {
 
         if (CmsStringUtil.isNotEmpty(m_errorMessage)) {
             result.append(m_errorMessage);
-            result.append("\n\n").append(reason).append(": ");
+            result.append("\n").append(reason).append(": ");
         }
 
         // if a localized message is already set as a parameter, append it.
         result.append(getMessage(m_throwable));
         // recursively append all error reasons to the message
         for (Throwable cause = m_throwable.getCause(); cause != null; cause = cause.getCause()) {
-            result.append("\n\n").append(reason).append(": ");
+            result.append("\n").append(reason).append(": ");
             result.append(getMessage(cause));
         }
         return result.toString();
@@ -221,7 +221,7 @@ public class CmsErrorBean {
         resolver.addMacro("title", m_title);
         resolver.addMacro("label_error", Messages.get().key(m_locale, Messages.GUI_ERROR_0, new Object[] {}));
         resolver.addMacro("errorstack", CmsException.getFormattedErrorstack(m_throwable));
-        resolver.addMacro("message", getErrorMessage());
+        resolver.addMacro("message", CmsStringUtil.escapeHtml(getErrorMessage()));
         resolver.addMacro("styleuri", OpenCms.getLinkManager().substituteLink(
             m_cms,
             "/system/workplace/commons/style/workplace.css"));
