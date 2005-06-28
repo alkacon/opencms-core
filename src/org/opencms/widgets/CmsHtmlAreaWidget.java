@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/28 17:27:52 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,14 +151,14 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(128);
-
+      
         result.append("<td class=\"xmlTd\">");
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"");
         result.append(id);
         result.append("\" id=\"");
         result.append(id);
         result.append("\" rows=\"15\" wrap=\"virtual\">");
-        result.append(param.getStringValue(cms));
+        result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
         result.append("</textarea>");
         result.append("</td>");
 
@@ -184,7 +184,7 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
 
         String[] values = (String[])formParameters.get(param.getId());
         if ((values != null) && (values.length > 0)) {
-            String val = CmsEncoder.adjustHtmlEncoding(values[0], CmsEncoder.ENCODING_UTF_8);
+            String val = CmsEncoder.decode(values[0], CmsEncoder.ENCODING_UTF_8);
             param.setStringValue(cms, val);
         }
     }
