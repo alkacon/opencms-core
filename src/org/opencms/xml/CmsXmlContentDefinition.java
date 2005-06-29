@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/06/29 14:22:49 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/29 14:59:45 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -764,14 +764,12 @@ public class CmsXmlContentDefinition implements Cloneable {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
             for (int j = 0; j < type.getMinOccurs(); j++) {
                 Element typeElement = type.generateXml(cms, document, element, locale);
-                if (!typeElement.hasContent()) {
-                    // need to check for default value again because the of appinfo "mappings" node
-                    I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
-                    String defaultValue = getContentHandler().getDefault(cms, value, locale);
-                    if (defaultValue != null) {
-                        // only if there is a default value available use it to overwrite the initial default
-                        value.setStringValue(cms, defaultValue);
-                    }
+                // need to check for default value again because the of appinfo "mappings" node
+                I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
+                String defaultValue = getContentHandler().getDefault(cms, value, locale);
+                if (defaultValue != null) {
+                    // only if there is a default value available use it to overwrite the initial default
+                    value.setStringValue(cms, defaultValue);
                 }
             }
         }
