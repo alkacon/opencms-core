@@ -67,6 +67,7 @@ String editId = "directedit_".concat(String.valueOf(rnd.nextInt()));
 <input type="hidden" name="backlink" value="<%= uri %>">
 <input type="hidden" name="newlink">
 <input type="hidden" name="closelink">
+<input type="hidden" name="redirect" value="true">
 <input type="hidden" name="editortitle">
 </form>
 <span onmouseover="activateOcms('<%= editId %>');" onmouseout="deactivateOcms('<%= editId %>');">

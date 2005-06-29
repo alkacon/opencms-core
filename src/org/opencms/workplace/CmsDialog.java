@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/28 08:27:32 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2005/06/29 10:50:05 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.89 $ 
+ * @version $Revision: 1.90 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,6 +185,9 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter name for the error message. */
     public static final String PARAM_MESSAGE = "message";
+    
+    /** Request parameter name for the redirect flag. */
+    public static final String PARAM_REDIRECT = "redirect";
 
     /** Request parameter name for the resource. */
     public static final String PARAM_RESOURCE = "resource";
@@ -223,9 +226,10 @@ public class CmsDialog extends CmsToolDialog {
     private String m_paramFrameName;
     private String m_paramIsPopup;
     private String m_paramMessage;
+    private String m_paramRedirect;
     private String m_paramResource;
     private String m_paramTitle;
-
+    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -303,11 +307,17 @@ public class CmsDialog extends CmsToolDialog {
                 getJsp().include(FILE_EXPLORER_FILELIST, null, params);
             }
         } else if (getParamCloseLink() != null) {
-            // close link parameter present, forward JSP
+            // close link parameter present
             try {
-                if (!isForwarded()) {
-                    setForwarded(true);
-                    CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
+                if (Boolean.valueOf(getParamRedirect()).booleanValue()) {
+                    // redirect parameter is true, redirect to given close link                 
+                    getJsp().getResponse().sendRedirect(getParamCloseLink());             
+                } else {
+                    // forward JSP
+                    if (!isForwarded()) {
+                        setForwarded(true);
+                        CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
+                    }
                 }
             } catch (Exception e) {
                 // forward failed
@@ -970,6 +980,17 @@ public class CmsDialog extends CmsToolDialog {
 
         return m_paramMessage;
     }
+    
+    
+    /**
+     * Returns the value of the redirect flag parameter.<p>
+     * 
+     * @return the value of the redirect flag parameter
+     */
+    public String getParamRedirect() {
+
+        return m_paramRedirect;
+    }
 
     /**
      * Returns the value of the file parameter, 
@@ -1212,6 +1233,16 @@ public class CmsDialog extends CmsToolDialog {
     public void setParamMessage(String value) {
 
         m_paramMessage = value;
+    }
+    
+    /**
+     * Sets the value of the redirect flag parameter.<p>
+     * 
+     * @param redirect the value of the redirect flag parameter
+     */
+    public void setParamRedirect(String redirect) {
+
+        m_paramRedirect = redirect;
     }
 
     /**

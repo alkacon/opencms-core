@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/29 10:50:05 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,8 +103,9 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource")
             + ": "
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
+        params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(String.valueOf(true));
         params.append("&closelink=");
-        if ("true".equals(editor.getParamDirectedit())) {
+        if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
             String linkTarget;
             if (!"".equals(editor.getParamBacklink())) {
                 linkTarget = jsp.link(editor.getParamBacklink());

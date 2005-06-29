@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/29 08:33:47 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/06/29 10:50:05 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,31 +125,6 @@ public class CmsPublishProject extends CmsReport {
     public CmsPublishProject(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-    
-    /**
-     * Used to close the current JSP dialog.<p>
-     * 
-     * This overwrites the default method from the super class in order to prevent issues after directly publishing
-     * resources in direct edit mode.<br>
-     * The standard forward procedure causes problems with included template elements of a page.<p>
-     * 
-     * @throws JspException if including an element fails
-     */
-    public void actionCloseDialog() throws JspException {
-
-        if ((getParamCloseLink() != null) && Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
-            try {
-                // close link parameter present, redirect to given link JSP
-                getJsp().getResponse().sendRedirect(getParamCloseLink());
-            } catch (Exception e) {
-                // redirect failed
-                throw new JspException(e.getMessage(), e);
-            }
-        } else {
-            // not in direct publish mode, use super implementation
-            super.actionCloseDialog();
-        }
     }
 
     /**
