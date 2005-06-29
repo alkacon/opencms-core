@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2005/06/29 13:06:53 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.Map;
  * Every call to a method here will be checked for user permissions
  * according to the <code>{@link org.opencms.file.CmsRequestContext}</code> this CmsObject instance was created with.<p>
  * 
- * From a JSP page running in OpenCms, user <code>{@link org.opencms.jsp.CmsJspBean#getCmsObject()}</code> to gain 
+ * From a JSP page running in OpenCms, use <code>{@link org.opencms.jsp.CmsJspBean#getCmsObject()}</code> to gain 
  * access to the current users CmsObject. Usually this is done with a <code>{@link org.opencms.jsp.CmsJspActionElement}</code>.<p>
  * 
  * To generate a new instance of this class in your application, use 
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.138 $
+ * @version $Revision: 1.139 $
  * 
  * @since 6.0.0 
  */

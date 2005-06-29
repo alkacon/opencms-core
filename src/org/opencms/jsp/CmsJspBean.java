@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/29 13:06:54 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * to OpenCms core and VFS functionality.<p>
  * 
  * If you have large chunks of code on your JSP that you want to 
- * move to a Class file, conside creating a subclass of this bean.
+ * move to a Class file, consider creating a subclass of this bean.
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */

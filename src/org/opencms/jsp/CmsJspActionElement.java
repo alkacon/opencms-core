@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/29 13:06:54 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * By instanciating a bean of this type and accessing the methods provided by 
  * the instance, all functionality of the OpenCms JSP taglib can be easily 
- * used from within JSP scriplet code,<p>
+ * used from within JSP scriplet code.<p>
  * 
  * Initialize this bean at the beginning of your JSP like this:
  * <pre>
@@ -73,11 +73,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * All exceptions that occur when calling any method of this class are catched 
  * and written to the log output only, so that a template still has a chance of
- * working at last in some elements.<p>
+ * working at least in some elements.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
