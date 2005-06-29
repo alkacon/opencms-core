@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/06/29 17:10:05 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -287,7 +287,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
         CmsProject previousProject = cms.getRequestContext().currentProject();
         try {
-            
+
             importFile = importFile.replace('\\', '/');
             String moduleZipName = importFile.substring(importFile.lastIndexOf('/') + 1);
             String modulePackageName;
@@ -301,7 +301,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             } else {
                 modulePackageName = moduleZipName;
             }
-            
+
             CmsProject importProject = null;
 
             try {
@@ -346,9 +346,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
             importModule(cms, importFile, report);
 
-            report.println(
-                Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0),
-                I_CmsReport.FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
             // now unlock and publish the project
             cms.unlockProject(importProject.getId());
             cms.publishProject(report);
@@ -479,17 +477,16 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             CmsModuleManager.DEPENDENCY_MODE_IMPORT);
         if (dependencies.size() > 0) {
             // some dependencies not fulfilled
-            String missingModules = "";
+            StringBuffer missingModules = new StringBuffer();
             Iterator it = dependencies.iterator();
             while (it.hasNext()) {
                 CmsModuleDependency dependency = (CmsModuleDependency)it.next();
-                missingModules += Messages.get().key(
-                    Messages.ERR_MOD_DEPENDENCY_INFO_2,
-                    dependency.getName(),
-                    dependency.getVersion());
+                missingModules.append("  ").append(dependency.getName()).append(", Version ").append(
+                    dependency.getVersion()).append("\r\n");
             }
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_MOD_DEPENDENCY_INFO_2,
+                importedModule.getName() + ", Version " + importedModule.getVersion(),
                 missingModules));
         }
 

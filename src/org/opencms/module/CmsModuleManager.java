@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/29 17:10:05 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -258,7 +258,15 @@ public class CmsModuleManager {
             // perform dependency check
             List dependencies = checkDependencies(module, DEPENDENCY_MODE_DELETE);
             if (!dependencies.isEmpty()) {
-                throw new CmsConfigurationException(Messages.get().container(Messages.ERR_MOD_DEPENDENCIES_0));
+                StringBuffer message = new StringBuffer();
+                Iterator it = dependencies.iterator();
+                while (it.hasNext()) {
+                    message.append("  ").append(((CmsModuleDependency)it.next()).getName()).append("\r\n");
+                }
+                throw new CmsConfigurationException(Messages.get().container(
+                    Messages.ERR_MOD_DEPENDENCIES_2,
+                    moduleName,
+                    message.toString()));
             }
             try {
                 I_CmsModuleAction moduleAction = module.getActionInstance();
@@ -387,8 +395,10 @@ public class CmsModuleManager {
                     try {
                         moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
                     } catch (Exception e) {
-                        CmsLog.INIT.info(Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()), e);
-                    }                    
+                        CmsLog.INIT.info(
+                            Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()),
+                            e);
+                    }
                 }
                 if (moduleAction != null) {
                     count++;
