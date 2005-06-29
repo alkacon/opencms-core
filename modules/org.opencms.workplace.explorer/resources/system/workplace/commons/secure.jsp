@@ -146,7 +146,7 @@ wp.setParamAction("secure");
          
       </tr>
       
-      <% } %>      
+    <% } %>      
 
     </table>
 
@@ -157,19 +157,21 @@ wp.setParamAction("secure");
        if(OpenCms.getStaticExportManager().isStaticExportEnabled() && wp.showExportSettings()) { 
     %>
 	
-	<%= wp.dialogSpacer() %>
+    <%= wp.dialogSpacer() %>
     <%= wp.dialogBlockStart(wp.key("label.exportsettings")) %>
 
     <table border="0">
 
+    <%  if (wp.exportUserHasReadPermission()) { %>
       <tr>
         <td style="white-space:nowrap;"><%= wp.key("input.export") %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(CmsPropertyDefinition.PROPERTY_EXPORT) %>
         </td>
       </tr>
-    
-      <% if(wp.resourceIsFolder()) { %>
+    <% } else { %>
+      <%= wp.key("message.exportnotpossible") %>
+    <% } if(wp.resourceIsFolder()) { %>
       <tr>
         <td style="white-space:nowrap;"><%= wp.key("input.exportname") %>&nbsp;</td>
 

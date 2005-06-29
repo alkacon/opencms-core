@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/06/29 15:37:51 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -254,7 +254,6 @@ public class CmsSecure extends CmsDialog {
         String serverPrefix = "";
         String vfsName = CmsLinkManager.getAbsoluteUri(getParamResource(), cms.getRequestContext().getUri());
         String secureResource = "";
-        String exportedResource = "";
         try {
             if (resourceIsFolder()) {
                 vfsName = vfsName.concat("/");
@@ -263,21 +262,14 @@ public class CmsSecure extends CmsDialog {
                 getParamResource(),
                 CmsPropertyDefinition.PROPERTY_SECURE,
                 true).getValue();
-            exportedResource = getCms().readPropertyObject(
-                getParamResource(),
-                CmsPropertyDefinition.PROPERTY_EXPORT,
-                true).getValue();
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage());
             }
         }
-        if (Boolean.valueOf(exportedResource).booleanValue()) {
-            uri = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
-        } else {
-            uri = OpenCms.getStaticExportManager().getVfsPrefix().concat(vfsName);
-        }
         CmsSite currentSite = CmsSiteManager.getCurrentSite(getCms());
+        uri = OpenCms.getLinkManager().substituteLink(cms, getParamResource(), currentSite.getSiteRoot());
+        
         if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
             serverPrefix = OpenCms.getSiteManager().getWorkplaceServer();
         } else {
@@ -290,6 +282,27 @@ public class CmsSecure extends CmsDialog {
         return serverPrefix.concat(uri);
 
     }
+    
+    /**
+     * Returns true if the export user has read permission on a specified resource.<p>
+     * 
+     * @return true, if the export user has the permission to read the resource
+     */
+    public boolean exportUserHasReadPermission() {
+        String vfsName = getParamResource();
+        CmsObject cms = getCms();
+        try {
+            // static export must always be checked with the export users permissions,
+            // not the current users permissions
+            CmsObject exportCms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserExport());
+            exportCms.getRequestContext().setSiteRoot(getCms().getRequestContext().getSiteRoot());
+            // let's look up if the export user has the permission to read
+            return exportCms.hasPermissions(cms.readResource(vfsName), CmsPermissionSet.ACCESS_READ);
+        } catch (CmsException e) {
+            // ignore this exception
+        }    
+        return false;
+    }    
 
     /**
      * Returns value of the the intern property of the resource.
