@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/06/29 13:20:55 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -284,7 +284,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
         content.clearContent();
         links.clearContent();
 
-        if (CmsStringUtil.isNotEmpty(value)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
             content.addCDATA(value);
             if (linkProcessor != null) {
                 // may be null in case of default value generation (i.e. setStringValue(String) was called)

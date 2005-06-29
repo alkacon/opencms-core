@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/29 12:17:33 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/06/29 13:20:55 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,8 +204,35 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         deleteTempFile();
         boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
-        // TODO: delete the file if leaving without saving, after creating a new file
-        if (directEditMode || forceUnlock || !modified) {
+        if (directEditMode && !modified) {
+            try {
+                // create new template content
+                // one resource serves as a "template" for the new resource
+                CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
+                Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
+
+                // now create a new XML content based on the templates content definition            
+                CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
+                    getCms(),
+                    locale,
+                    template.getEncoding(),
+                    template.getContentDefinition());
+
+                // get current content
+                String currentContents = new String(getCms().readFile(getParamResource()).getContents());
+                // compare
+                if (currentContents.equals(new String(newContent.marshal()))) {
+                    // delete file if direct edit a new content
+                    getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                }
+            } catch (CmsException e) {
+                // should usually never happen
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage(), e);
+                }
+            }
+        } else if (directEditMode || forceUnlock || !modified) {
             // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
