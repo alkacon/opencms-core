@@ -421,26 +421,6 @@ hr {
     width: 95%;
 }
 
-span.logfilewidgethead { 
-  font-weight: bold;
-  position: relative;
-  left: 7px;
-  z-index: 1;
-  bottom : -6px;
-  background-color: window;
-}	
-
-div.logfilewidget {
-  position: relative;
-  z-index: 0;
-  padding: 10px;
-  border: 1px solid black;
-  overflow: auto;
-  height: 450px;
-  width: 970px;
-  max-width: 1400px;
-}
-
 td.listdetailhead {
 	vertical-align: top;
 	font-size: 10px;
