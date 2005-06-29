@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/06/29 11:17:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -595,7 +595,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 if (Boolean.valueOf(paramValue).booleanValue()) {
                     // navigation enabled, update params
                     paramValue = request.getParameter("navpos");
-                    if (!"-1".equals(paramValue)) {
+                    if (!"-1".equals(paramValue) && !String.valueOf(Float.MAX_VALUE).equals(paramValue)) {
                         // update the property only when it is different from "-1" (meaning no change)
                         oldValue = request.getParameter(PREFIX_HIDDEN + CmsPropertyDefinition.PROPERTY_NAVPOS);
                         writeProperty(CmsPropertyDefinition.PROPERTY_NAVPOS, paramValue, oldValue);
