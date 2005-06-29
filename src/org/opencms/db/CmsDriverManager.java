@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/29 14:22:49 $
- * Version: $Revision: 1.541 $
+ * Date   : $Date: 2005/06/29 15:08:39 $
+ * Version: $Revision: 1.542 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.541 $
+ * @version $Revision: 1.542 $
  * 
  * @since 6.0.0
  */
@@ -2190,7 +2190,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // we need a valid CmsBackupResource, so get all backup file headers of the
         // requested resource
-        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(dbc, res.getRootPath());
+        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(dbc, res.getRootPath(), res.getResourceId());
         // check if we have some results
         if (backupFileHeaders.size() > 0) {
             // get the first backup resource
@@ -4480,7 +4480,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public List readAllBackupFileHeaders(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // read the backup resources
-        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(dbc, resource.getRootPath());
+        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(dbc, resource.getRootPath(), resource.getResourceId());
 
         if (backupFileHeaders != null && backupFileHeaders.size() > 1) {
             // change the order of the list

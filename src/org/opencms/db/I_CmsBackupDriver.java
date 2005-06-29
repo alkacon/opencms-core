@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/06/29 15:08:39 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.50 $
+ * @version $Revision: 1.51 $
  * 
  * @since 6.0.0
  */
@@ -186,14 +186,17 @@ public interface I_CmsBackupDriver {
      *
      * The reading excludes the file content.<p>
      * 
+     * The filter is (path OR id).<p>
+     *  
      * @param dbc the current database context
      * @param resourcePath the path of the file to read
+     * @param id the resource id (usefull for siblings)
      *
      * @return a list of file headers, as <code>{@link CmsBackupResource}</code> objects, read from the Cms
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readBackupFileHeaders(CmsDbContext dbc, String resourcePath) throws CmsDataAccessException;
+    List readBackupFileHeaders(CmsDbContext dbc, String resourcePath, CmsUUID id) throws CmsDataAccessException;
 
     /**
      * Returns the max. current backup version of a resource.<p>

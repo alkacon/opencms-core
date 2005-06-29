@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.138 $
+ * Date   : $Date: 2005/06/29 15:08:40 $
+ * Version: $Revision: 1.139 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.138 $
+ * @version $Revision: 1.139 $
  * 
  * @since 6.0.0 
  */
@@ -505,9 +505,9 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeaders(org.opencms.db.CmsDbContext, java.lang.String)
+     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeaders(org.opencms.db.CmsDbContext, java.lang.String, org.opencms.util.CmsUUID)
      */
-    public List readBackupFileHeaders(CmsDbContext dbc, String resourcePath) throws CmsDataAccessException {
+    public List readBackupFileHeaders(CmsDbContext dbc, String resourcePath, CmsUUID id) throws CmsDataAccessException {
 
         CmsBackupResource currentBackupResource = null;
         ResultSet res = null;
@@ -519,6 +519,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             conn = m_sqlManager.getConnection(dbc);
             stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_ALL_VERSIONS_BACKUP");
             stmt.setString(1, resourcePath);
+            stmt.setString(2, id.toString());
             res = stmt.executeQuery();
             while (res.next()) {
                 currentBackupResource = createBackupResource(res, false);
@@ -1161,7 +1162,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             writeBackupProperties(dbc, resource, properties, backupPkId, tagId, versionId);
 
             // now check if there are old backup versions to delete
-            List existingBackups = readBackupFileHeaders(dbc, resource.getRootPath());
+            List existingBackups = readBackupFileHeaders(dbc, resource.getRootPath(), resource.getStructureId());
             if (existingBackups.size() > maxVersions) {
                 // delete redundant backups
                 deleteBackups(dbc, existingBackups, maxVersions);
