@@ -96,7 +96,7 @@
                 <if>
                		<isset property="module.packages" />
                    	<then>
-                        <echo message="module.packages is set to ${module.packages}"/>
+                        <!--echo message="module.packages is set to ${module.packages}"/-->
                         <property name="src.mode" value="multishared" />                    
                         <property name="module.input.src" value="${module.input.src.shared}" />
                    	</then>
@@ -271,7 +271,9 @@
                             debug="on" 
                             optimize="on" 
                             deprecation="on"                        
-                            includes="${module.package}/*.java" >
+                            includes="${module.package}/*.java" 
+                       		source="1.4"
+                    		target="1.4">
                             <classpath>
                                 <fileset dir="${opencms.input.libs}">
                                     <include name="**/*.jar"/>
@@ -306,7 +308,9 @@
 	                                        debug="on" 
 	                                        optimize="on" 
 	                                        deprecation="on"                        
-	                                        includes="${package.dir}/*.java" >
+	                                        includes="${package.dir}/*.java" 
+	                                   		source="1.4"
+	                                		target="1.4">
 	                                        <classpath>
 	                                            <fileset dir="${opencms.input.libs}">
 	                                                <include name="**/*.jar"/>
@@ -330,7 +334,9 @@
                                     destdir="${module.output.classes}"
                                     debug="on" 
                                     optimize="on" 
-                                    deprecation="on" >
+                                    deprecation="on" 
+                               		source="1.4"
+                            		target="1.4">
                                     <exclude name="**/test/**/*.java" />
                                     <classpath>
                                         <fileset dir="${opencms.input.libs}">

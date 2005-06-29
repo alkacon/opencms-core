@@ -255,7 +255,9 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
-            deprecation="on">
+            deprecation="on"
+       		source="1.4"
+    		target="1.4">
        		<!-- compilerarg value="-Xlint:unchecked"/ -->
        	</javac>
 		
@@ -538,7 +540,9 @@ ${opencms.inputlib.textextraction}
                        ${opencms.inputlib.pdfbox}"
             debug="on"
             optimize="on"
-            deprecation="on" />
+            deprecation="on" 
+       		source="1.4"
+    		target="1.4"/>
 		
         <copy todir="${opencms.output.tests}">
             <fileset dir="${opencms.input}/test" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes},**/data/**"/>
