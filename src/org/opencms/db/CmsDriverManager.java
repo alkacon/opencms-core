@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/29 09:24:48 $
- * Version: $Revision: 1.539 $
+ * Date   : $Date: 2005/06/29 12:02:04 $
+ * Version: $Revision: 1.540 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.539 $
+ * @version $Revision: 1.540 $
  * 
  * @since 6.0.0
  */
@@ -1083,15 +1083,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Copies the access control entries of a given resource to a destination resorce.<p>
      *
      * Already existing access control entries of the destination resource are removed.<p>
-     * 
      * @param dbc the current database context
      * @param source the resource to copy the access control entries from
      * @param destination the resource to which the access control entries are copied
+     * @param updateLastModifiedInfo if true, user and date "last modified" information on the target resource will be updated
      * 
      * @throws CmsException if something goes wrong
      */
-    public void copyAccessControlEntries(CmsDbContext dbc, CmsResource source, CmsResource destination)
-    throws CmsException {
+    public void copyAccessControlEntries(
+        CmsDbContext dbc,
+        CmsResource source,
+        CmsResource destination,
+        boolean updateLastModifiedInfo) throws CmsException {
 
         // get the entries to copy
         ListIterator aceList = m_userDriver.readAccessControlEntries(
@@ -1117,12 +1120,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         }
 
         // update the "last modified" information
-        touch(
-            dbc,
-            destination,
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED);
+        if (updateLastModifiedInfo) {
+            touch(
+                dbc,
+                destination,
+                CmsResource.TOUCH_DATE_UNCHANGED,
+                CmsResource.TOUCH_DATE_UNCHANGED,
+                CmsResource.TOUCH_DATE_UNCHANGED);
+        }
 
         // clear the cache
         clearAccessControlListCache();
@@ -1227,6 +1232,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // set user and creation timestamps
         long currentTime = System.currentTimeMillis();
+        // folders always get a new date when they are copied
+        long dateLastModified = source.isFile() ? source.getDateLastModified() : currentTime;
 
         // check the resource flags
         int flags = source.getFlags();
@@ -1247,7 +1254,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsResource.STATE_NEW,
             currentTime,
             dbc.currentUser().getId(),
-            source.getDateCreated(),
+            dateLastModified,
             source.getUserLastModified(),
             source.getDateReleased(),
             source.getDateExpired(),
@@ -1255,13 +1262,13 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             source.getLength());
 
         // trigger "is touched" state on resource (will ensure modification date is kept unchanged)
-        newResource.setDateLastModified(source.getDateLastModified());
+        newResource.setDateLastModified(dateLastModified);
 
         // create the resource
         newResource = createResource(dbc, destination, newResource, content, properties, false);
 
         // copy the access control entries to the created resource
-        copyAccessControlEntries(dbc, source, newResource);
+        copyAccessControlEntries(dbc, source, newResource, false);
 
         // clear the cache
         clearAccessControlListCache();
@@ -1739,9 +1746,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             // write the properties (internal operation, no events or duplicate permission checks)
             writePropertyObjects(dbc, newResource, properties);
 
-            // lock the created resource (internal operation, no events or duplicate permission checks)
+            // lock the created resource
             lockResource(dbc, newResource, CmsLock.COMMON);
-
+            
         } finally {
 
             // clear the internal caches

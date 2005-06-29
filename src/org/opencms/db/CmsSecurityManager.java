@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.89 $
+ * Date   : $Date: 2005/06/29 12:02:04 $
+ * Version: $Revision: 1.90 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.89 $
+ * @version $Revision: 1.90 $
  * 
  * @since 6.0.0
  */
@@ -761,7 +761,7 @@ public final class CmsSecurityManager {
             checkOfflineProject(dbc);
             checkPermissions(dbc, source, CmsPermissionSet.ACCESS_READ, true, CmsResourceFilter.ALL);
             checkPermissions(dbc, destination, CmsPermissionSet.ACCESS_CONTROL, true, CmsResourceFilter.ALL);
-            m_driverManager.copyAccessControlEntries(dbc, source, destination);
+            m_driverManager.copyAccessControlEntries(dbc, source, destination, true);
         } catch (Exception e) {
             CmsRequestContext rc = context;
             dbc.report(null, Messages.get().container(

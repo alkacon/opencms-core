@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/29 12:02:04 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.lock.CmsLock;
+import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceConfigurableFilter;
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -73,7 +74,9 @@ public class TestCopy extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestCopy.class.getName());
                 
+        // suite.addTest(new TestCopy("testCopyFileUserCreatedIssue"));
         suite.addTest(new TestCopy("testCopySingleResourceAsNew"));
+        suite.addTest(new TestCopy("testCopyFolderDateIssue"));
         suite.addTest(new TestCopy("testCopyFolderAsNew"));
         suite.addTest(new TestCopy("testCopyOverwriteDeletedFile"));
         
@@ -89,20 +92,77 @@ public class TestCopy extends OpenCmsTestCase {
         };
         
         return wrapper;
-    }     
+    }
     
     /**
      * Tests the "copy single resource as new" operation.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testCopySingleResourceAsNew() throws Throwable {
+    public void testCopySingleResourceAsNew() throws Exception {
 
         CmsObject cms = getCmsObject();     
         echo("Testing copy of a file as new");
         
+        // create a project for all tests in this suite
+        cms.createProject("testproject", "a test project", "Users", "Users", CmsProject.PROJECT_TYPE_NORMAL);
+        cms.copyResourceToProject("/");   
+        cms.addUserToGroup("test1", OpenCms.getDefaultUsers().getGroupAdministrators());
+        
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("testproject"));
+
+        
         String source = "/index.html";
         String destination = "/index_copy.html";
+        long timestamp = System.currentTimeMillis();
+        
+        CmsUser admin = cms.readUser("Admin");
+        // some assertions about the original state of the resource
+        assertUserCreated(cms, source, admin);
+        assertUserLastModified(cms, source, admin);
+        CmsResource original = cms.readResource(source);        
+        
+        storeResources(cms, source);        
+        cms.copyResource(source, destination);
+                        
+        assertFilter(cms, source, OpenCmsTestResourceFilter.FILTER_EQUAL);
+        
+        // project must be current project
+        assertProject(cms, destination, cms.getRequestContext().currentProject());
+        // state must be "new"
+        assertState(cms, destination, CmsResource.STATE_NEW);
+        // date created must be new
+        assertDateCreatedAfter(cms, destination, timestamp);
+        // date last modified must be original date
+        assertDateLastModified(cms, destination, original.getDateLastModified());        
+        // user created must be current user
+        assertUserCreated(cms, destination, cms.getRequestContext().currentUser());
+        // user last modified must be original user
+        assertUserLastModified(cms, destination, cms.readUser(original.getUserLastModified()));
+        // now assert the filter for the rest of the attributes        
+        setMapping(destination, source);        
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_FILE_AS_NEW);
+        // assert lock state
+        assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
+    }  
+    
+    /**
+     * Tests the copy operation for a folder, checking if the date of the new folder is the current date.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyFolderDateIssue() throws Exception {
+
+        
+        CmsObject cms = getCmsObject();     
+        echo("Testing copy operation for a folder, checking if the date of the new folder is the current date");            
+        
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("testproject"));
+        
+        String source = "/xmlcontent/";
+        String destination = "/xmlcontent_copy/";
         long timestamp = System.currentTimeMillis();
         
         storeResources(cms, source);        
@@ -116,25 +176,30 @@ public class TestCopy extends OpenCmsTestCase {
         assertState(cms, destination, CmsResource.STATE_NEW);
         // date created must be new
         assertDateCreatedAfter(cms, destination, timestamp);
+        // for a copied folder, also the date last modified must be new
+        assertDateLastModifiedAfter(cms, destination, timestamp);
         // user created must be current user
-        assertUserCreated(cms, source, cms.getRequestContext().currentUser());
+        assertUserCreated(cms, destination, cms.getRequestContext().currentUser());
         // assert lock state
         assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         // now assert the filter for the rest of the attributes        
         setMapping(destination, source);        
-        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);       
-    }  
+        assertFilter(cms, destination, OpenCmsTestResourceFilter.FILTER_COPY_FOLDER);    
+    }    
     
     /**
      * Tests the to copy a single resource to a destination that already exists but is
      * marked as deleted.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testCopyOverwriteDeletedFile() throws Throwable {
+    public void testCopyOverwriteDeletedFile() throws Exception {
 
         CmsObject cms = getCmsObject();     
         echo("Testing overwriting a deleted file");
+
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("testproject"));
         
         String source1 = "/folder1/page2.html";
         String source2 = "/folder1/image1.gif";
@@ -204,18 +269,21 @@ public class TestCopy extends OpenCmsTestCase {
         assertFilter(cms, source1, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
         assertFilter(cms, source2, OpenCmsTestResourceFilter.FILTER_UNDOCHANGES);        
         assertFilter(cms, source3, OpenCmsTestResourceFilter.FILTER_EQUAL);        
-        assertFilter(cms, source3, destination, OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);            
+        assertFilter(cms, source3, destination, OpenCmsTestResourceFilter.FILTER_COPY_FILE_AS_NEW);            
     }  
         
     /**
      * Tests the "copy a folder as new" operation.<p>
      * 
-     * @throws Throwable if something goes wrong
+     * @throws Exception if the test fails
      */
-    public void testCopyFolderAsNew() throws Throwable {
+    public void testCopyFolderAsNew() throws Exception {
 
         CmsObject cms = getCmsObject();     
         echo("Testing copy of a folder as new (i.e. no siblings)");
+        
+        cms.loginUser("test1", "test1");
+        cms.getRequestContext().setCurrentProject(cms.readProject("testproject"));
         
         String source = "/folder2/";
         String destination = "/folder2_copy/";
@@ -242,7 +310,7 @@ public class TestCopy extends OpenCmsTestCase {
         
         // prepare filter without sibling count
         OpenCmsTestResourceConfigurableFilter filter =
-            new OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter.FILTER_COPY_AS_NEW);
+            new OpenCmsTestResourceConfigurableFilter(OpenCmsTestResourceFilter.FILTER_COPY_FOLDER);
 
         filter.disableSiblingCountTest();        
         
@@ -257,9 +325,9 @@ public class TestCopy extends OpenCmsTestCase {
             // state must be "new"
             assertState(cms, resName, CmsResource.STATE_NEW);
             // date created must be new
-            assertDateCreatedAfter(cms, destination, timestamp);
+            assertDateCreatedAfter(cms, resName, timestamp);
             // user created must be current user
-            assertUserCreated(cms, source, cms.getRequestContext().currentUser());
+            assertUserCreated(cms, resName, cms.getRequestContext().currentUser());
             // assert lock state
             assertLock(cms, resName);
             // must have sibling count of 1

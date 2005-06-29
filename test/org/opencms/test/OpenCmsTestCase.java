@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.86 $
+ * Date   : $Date: 2005/06/29 12:02:04 $
+ * Version: $Revision: 1.87 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.86 $
+ * @version $Revision: 1.87 $
  * 
  * @since 6.0.0
  */
@@ -1631,21 +1631,23 @@ public class OpenCmsTestCase extends TestCase {
             // compare the user created if necessary
             if (filter.testUserCreated()) {
                 if (!storedResource.getUserCreated().equals(res.getUserCreated())) {
-                    noMatches += "[UserCreated "
-                        + storedResource.getUserCreated()
-                        + " != "
-                        + res.getUserCreated()
-                        + "]\n";
+                    noMatches += createUserFailMessage(
+                        cms,
+                        "UserCreated",
+                        storedResource.getUserLastModified(),
+                        res.getUserLastModified());
+                    noMatches += "\n";
                 }
             }
             // compare the user created if necessary
             if (filter.testUserLastModified()) {
                 if (!storedResource.getUserLastModified().equals(res.getUserLastModified())) {
-                    noMatches += "[UserLastModified "
-                        + storedResource.getUserLastModified()
-                        + " != "
-                        + res.getUserLastModified()
-                        + "]\n";
+                    noMatches += createUserFailMessage(
+                        cms,
+                        "UserLastModified",
+                        storedResource.getUserLastModified(),
+                        res.getUserLastModified());
+                    noMatches += "\n";
                 }
             }
 
@@ -2384,7 +2386,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (!res.getUserCreated().equals(user.getId())) {
-                fail("[UserLastCreated (" + user.getName() + ") " + user.getId() + " != " + res.getUserCreated() + "]");
+                fail(createUserFailMessage(cms, "UserCreated", user.getId(), res.getUserLastModified()));
             }
 
         } catch (CmsException e) {
@@ -2406,13 +2408,7 @@ public class OpenCmsTestCase extends TestCase {
             CmsResource res = cms.readResource(resourceName, CmsResourceFilter.ALL);
 
             if (!res.getUserLastModified().equals(user.getId())) {
-                fail("[UserLastModified ("
-                    + user.getName()
-                    + ") "
-                    + user.getId()
-                    + " != "
-                    + res.getUserLastModified()
-                    + "]");
+                fail(createUserFailMessage(cms, "UserLastModified", user.getId(), res.getUserLastModified()));
             }
 
         } catch (CmsException e) {
@@ -2786,6 +2782,35 @@ public class OpenCmsTestCase extends TestCase {
             }
         }
         return noMatches;
+    }
+
+    /**
+     * Creates a user compare fail message.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param message the message to show
+     * @param user1 the id of the first (expected) user
+     * @param user2 the id of the second (found) user
+     * @return a user compare fail message
+     * 
+     * @throws CmsException if one of the users can't be read
+     */
+    private String createUserFailMessage(CmsObject cms, String message, CmsUUID user1, CmsUUID user2)
+    throws CmsException {
+
+        StringBuffer result = new StringBuffer();
+        result.append("[");
+        result.append(message);
+        result.append(" (");
+        result.append(cms.readUser(user1).getName());
+        result.append(") ");
+        result.append(user1);
+        result.append(" != (");
+        result.append(cms.readUser(user2).getName());
+        result.append(") ");
+        result.append(user1);
+        result.append("]");
+        return result.toString();
     }
 
     /**
