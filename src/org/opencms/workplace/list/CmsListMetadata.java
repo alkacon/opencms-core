@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,18 +347,18 @@ public class CmsListMetadata {
      * Returns the html code for the header of the list.<p>
      * 
      * @param list the list to generate the code for
-     * @param locale the locale to generate the code for
+     * @param wp the workplace instance
      * 
      * @return html code
      */
-    public String htmlHeader(CmsHtmlList list, Locale locale) {
+    public String htmlHeader(CmsHtmlList list, CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr>\n");
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            html.append(col.htmlHeader(list, locale));
+            html.append(col.htmlHeader(list, wp));
         }
         if (!m_multiActions.isEmpty()) {
             html.append("\t<th width='0' class='select'>\n");

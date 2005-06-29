@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,7 +137,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
             Map objects = (Map)getSettings().getListObject();
             if (objects != null) {
                 objects.remove(CmsGroupsList.class.getName());
-                objects.remove(CmsUsersList.class.getName());
+                objects.remove(A_CmsUsersList.class.getName());
             }
         } catch (Throwable t) {
             errors.add(t);

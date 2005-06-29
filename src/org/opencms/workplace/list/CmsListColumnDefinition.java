@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * Html list column definition.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -279,11 +278,11 @@ public class CmsListColumnDefinition {
      * Returns the html code for a column header.<p>
      * 
      * @param list the list to generate the header code for
-     * @param locale the locale for localized messages
+     * @param wp the workplace instance
      * 
      * @return html code
      */
-    public String htmlHeader(CmsHtmlList list, Locale locale) {
+    public String htmlHeader(CmsHtmlList list, CmsWorkplace wp) {
 
         if (!isVisible()) {
             return "";
@@ -315,31 +314,32 @@ public class CmsListColumnDefinition {
         String onClic = "listSort('" + listId + "', '" + getId() + "');";
         String helpText = null;
         if (m_helpText != null) {
-            helpText = new MessageFormat(m_helpText.key(locale), locale).format(new Object[] {getName().key(locale)});
+            helpText = new MessageFormat(m_helpText.key(wp.getLocale()), wp.getLocale()).format(new Object[] {getName().key(wp.getLocale())});
         } else {
             if (isSorteable()) {
                 if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
                     helpText = Messages.get().key(
-                        locale,
+                        wp.getLocale(),
                         Messages.GUI_LIST_COLUMN_ASC_SORT_1,
-                        new Object[] {getName().key(locale)});
+                        new Object[] {getName().key(wp.getLocale())});
                 } else {
                     helpText = Messages.get().key(
-                        locale,
+                        wp.getLocale(),
                         Messages.GUI_LIST_COLUMN_DESC_SORT_1,
-                        new Object[] {getName().key(locale)});
+                        new Object[] {getName().key(wp.getLocale())});
                 }
             } else {
                 helpText = Messages.get().key(
-                    locale,
+                    wp.getLocale(),
                     Messages.GUI_LIST_COLUMN_NO_SORT_1,
-                    new Object[] {getName().key(locale)});
+                    new Object[] {getName().key(wp.getLocale())});
             }
         }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
-            getName().key(locale),
+            getName().key(wp.getLocale()),
             helpText,
             isSorteable(),
             null,

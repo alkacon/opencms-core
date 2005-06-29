@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/28 15:54:58 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/06/29 09:24:48 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,17 +31,19 @@
 
 package org.opencms.workplace.tools;
 
-import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
+
+import java.io.File;
 
 /**
  * Default skeleton for an html icon button.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,6 +103,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     /**
      * Generates a default html code for icon buttons.<p>
      * 
+     * @param jsp the jsp context 
      * @param style the style of the button
      * @param id the id
      * @param name the name
@@ -112,6 +115,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @return html code
      */
     public static String defaultButtonHtml(
+        CmsJspActionElement jsp,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String name,
@@ -120,39 +124,12 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String iconPath,
         String onClick) {
 
-        return defaultButtonHtml(null, style, id, id, name, helpText, enabled, iconPath, onClick, false);
-    }
-
-    /**
-     * Generates a default html code for icon buttons.<p>
-     * 
-     * @param cms the cms context 
-     * @param style the style of the button
-     * @param id the id
-     * @param name the name
-     * @param helpText the help text
-     * @param enabled if enabled or not
-     * @param iconPath the path to the icon
-     * @param onClick the js code to execute
-     * 
-     * @return html code
-     */
-    public static String defaultButtonHtml(
-        CmsObject cms,
-        CmsHtmlIconButtonStyleEnum style,
-        String id,
-        String name,
-        String helpText,
-        boolean enabled,
-        String iconPath,
-        String onClick) {
-
-        return defaultButtonHtml(cms, style, id, id, name, helpText, enabled, iconPath, onClick, false);
+        return defaultButtonHtml(jsp, style, id, id, name, helpText, enabled, iconPath, onClick, false);
     }
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
-     * @param cms the cms context, can be null
+     * @param jsp the cms context, can be null
      * @param style the style of the button
      * @param id the id
      * @param helpId the id of the helptext div tag
@@ -166,7 +143,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @return html code
      */
     public static String defaultButtonHtml(
-        CmsObject cms,
+        CmsJspActionElement jsp,
         CmsHtmlIconButtonStyleEnum style,
         String id,
         String helpId,
@@ -227,8 +204,14 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (cms != null && cms.existsResource("/system/workplace/resources/" + icon.toString())) {
-                    html.append(icon);
+                if (jsp != null) {
+                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath("/resources/");
+                    File test = new File(resorcesRoot + "/" + icon.toString());
+                    if (test.exists()) {
+                        html.append(icon);
+                    } else {
+                        html.append(iconPath);
+                    }
                 } else {
                     html.append(iconPath);
                 }

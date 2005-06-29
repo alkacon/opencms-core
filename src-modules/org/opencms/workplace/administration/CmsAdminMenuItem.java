@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/06/26 10:56:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.tools.CmsToolMacroResolver;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public class CmsAdminMenuItem {
         html.append("\t\t<td>\n");
         String onClic = "return openView('" + getId() + "', '" + m_link + "', '" + m_target + "');";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getCms(),
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             getId(),
             getName(),

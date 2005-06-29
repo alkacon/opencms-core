@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebuserOverviewDialog.java,v $
  * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.9 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsUserOverviewDialog extends CmsEditUserDialog {
+public class CmsWebuserOverviewDialog extends CmsEditWebuserDialog {
 
     /** Formatter for the last login property. */
     private static final CmsListDateMacroFormatter LAST_LOGIN_FORMATTER = new CmsListDateMacroFormatter(
@@ -63,7 +63,7 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsUserOverviewDialog(CmsJspActionElement jsp) {
+    public CmsWebuserOverviewDialog(CmsJspActionElement jsp) {
 
         super(jsp);
 
@@ -76,7 +76,7 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsUserOverviewDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsWebuserOverviewDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -194,7 +194,7 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
      */
     private boolean isOverview() {
 
-        return getCurrentToolPath().equals("/accounts/users/edit");
+        return getCurrentToolPath().equals("/accounts/webusers/edit");
     }
 
 }

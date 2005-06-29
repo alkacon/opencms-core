@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.15 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
         Map objects = (Map)getSettings().getListObject();
         if (objects != null) {
-            objects.remove(CmsUsersList.class.getName());
+            objects.remove(A_CmsUsersList.class.getName());
         }
     }
 
@@ -250,7 +250,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         iconCol.setWidth("20");
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         iconCol.setSorteable(false);
-        if (!getListId().equals(CmsNotUserGroupsList.LIST_ID)) {
+        if (!getListId().equals(CmsNotUserGroupsList.LIST_ID) && !getListId().equals(CmsNotWebuserGroupsList.LIST_ID)) {
             // state action
             CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
                 LIST_ACTION_ICON,
@@ -260,13 +260,13 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             CmsListDirectAction dirAction = new CmsListDirectAction(LIST_ACTION_ICON_DIRECT);
             dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
             dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
-            dirAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group.png");
+            dirAction.setIconPath(getGroupIcon());
             iconAction.setFirstAction(dirAction);
             // adds an indirect group icon
             CmsListDirectAction indirAction = new CmsListDirectAction(LIST_ACTION_ICON_INDIRECT);
             indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
             indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
-            indirAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group_indirect.png");
+            indirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group_indirect.png");
             iconAction.setSecondAction(indirAction);
             iconCol.addDirectAction(iconAction);
         } else {
@@ -274,7 +274,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
             CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
             iconAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_AVAILABLE_NAME_0));
             iconAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_AVAILABLE_HELP_0));
-            iconAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group.png");
+            iconAction.setIconPath(getGroupIcon());
             iconAction.setEnabled(false);
             iconCol.addDirectAction(iconAction);
         }
@@ -324,5 +324,19 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
 
         // test the needed parameters
         m_paramUsername = getCms().readUser(new CmsUUID(getParamUserid())).getName();
+    }
+
+    /**
+     * Returns the path to the group icon.<p>
+     * 
+     * @return the path to the group icon
+     */
+    private String getGroupIcon() {
+
+        if (getCurrentToolPath().contains("webuser")) {
+            return A_CmsUsersList.PATH_BUTTONS + "webuser_groups.png";
+        } else {
+            return A_CmsUsersList.PATH_BUTTONS + "group.png";
+        }
     }
 }

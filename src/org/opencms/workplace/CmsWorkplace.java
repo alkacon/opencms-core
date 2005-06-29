@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/28 08:27:32 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2005/06/29 09:24:48 $
+ * Version: $Revision: 1.145 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.144 $ 
+ * @version $Revision: 1.145 $ 
  * 
  * @since 6.0.0 
  */
@@ -1530,7 +1530,7 @@ public abstract class CmsWorkplace {
      */
     public boolean isForwarded() {
 
-        return m_forwarded || getJsp().getResponse().isCommitted();
+        return m_forwarded;
     }
 
     /**

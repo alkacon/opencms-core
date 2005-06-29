@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/06/26 10:56:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.text.MessageFormat;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,7 +101,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
             || getItem().get(getColumn()) == null
             || helpText.equals(new MessageFormat(helpText, wp.getLocale()).format(new Object[] {""}))) {
             return A_CmsHtmlIconButton.defaultButtonHtml(
-                null,
+                wp.getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 id,
                 getId(),
@@ -113,6 +113,7 @@ public class CmsListDefaultAction extends CmsListDirectAction {
         }
 
         return A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,

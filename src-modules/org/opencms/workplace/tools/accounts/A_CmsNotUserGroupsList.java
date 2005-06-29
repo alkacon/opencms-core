@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotGroupUsersList.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/A_CmsNotUserGroupsList.java,v $
  * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.7 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,28 +47,23 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Not Usergroups view.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
+public class A_CmsNotUserGroupsList extends A_CmsUserGroupsList {
 
     /** list action id constant. */
     public static final String LIST_ACTION_ADD = "aa";
 
     /** list action id constant. */
     public static final String LIST_DEFACTION_ADD = "da";
-
-    /** list id constant. */
-    public static final String LIST_ID = "lngu";
 
     /** list action id constant. */
     public static final String LIST_MACTION_ADD = "ma";
@@ -77,22 +72,11 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
      * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
+     * @param listId the id of the list
      */
-    public CmsNotGroupUsersList(CmsJspActionElement jsp) {
+    public A_CmsNotUserGroupsList(CmsJspActionElement jsp, String listId) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_NOTGROUPUSERS_LIST_NAME_0), true);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public CmsNotGroupUsersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
+        super(jsp, listId, Messages.get().container(Messages.GUI_NOTUSERGROUPS_LIST_NAME_0), true);
     }
 
     /**
@@ -106,13 +90,12 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
                 Iterator itItems = getSelectedItems().iterator();
                 while (itItems.hasNext()) {
                     CmsListItem listItem = (CmsListItem)itItems.next();
-                    getCms().addUserToGroup((String)listItem.get(LIST_COLUMN_LOGIN), getParamGroupname());
+                    getCms().addUserToGroup(getParamUsername(), (String)listItem.get(LIST_COLUMN_NAME));
                 }
             } catch (CmsException e) {
                 // refresh the list
                 Map objects = (Map)getSettings().getListObject();
                 if (objects != null) {
-                    objects.remove(CmsGroupsList.class.getName());
                     objects.remove(A_CmsUsersList.class.getName());
                 }
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ADD_SELECTED_GROUPS_0), e);
@@ -131,7 +114,7 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         if (getParamListAction().equals(LIST_DEFACTION_ADD) || getParamListAction().equals(LIST_ACTION_ADD)) {
             CmsListItem listItem = getSelectedItem();
             try {
-                getCms().addUserToGroup((String)listItem.get(LIST_COLUMN_LOGIN), getParamGroupname());
+                getCms().addUserToGroup(getParamUsername(), (String)listItem.get(LIST_COLUMN_NAME));
             } catch (CmsException e) {
                 // should never happen
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ADD_SELECTED_GROUP_0), e);
@@ -143,14 +126,14 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
      */
-    protected List getUsers() throws CmsException {
+    protected List getGroups() throws CmsException {
 
-        List groupusers = getCms().getUsersOfGroup(getParamGroupname());
-        List users = getCms().getUsers();
-        users.removeAll(groupusers);
-        return users;
+        List usergroups = getCms().getGroupsOfUser(getParamUsername());
+        List groups = getCms().getGroups();
+        groups.removeAll(usergroups);
+        return groups;
     }
 
     /**
@@ -158,9 +141,9 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        setActive(((LIST_ID + "-form").equals(request.getParameter(PARAM_FORMNAME))));
+        setActive(((getListId() + "-form").equals(request.getParameter(PARAM_FORMNAME))));
         super.initWorkplaceRequestValues(settings, request);
-        setParamFormName(LIST_ID + "-form");
+        setParamFormName(getListId() + "-form");
     }
 
     /**
@@ -173,16 +156,16 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
         CmsListColumnDefinition stateCol = metadata.getColumnDefinition(LIST_COLUMN_STATE);
         // add add action
         CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD);
-        stateAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_NAME_0));
-        stateAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_HELP_0));
+        stateAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_NAME_0));
+        stateAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_HELP_0));
         stateAction.setIconPath(ICON_ADD);
         stateCol.addDirectAction(stateAction);
         // get column for name
-        CmsListColumnDefinition nameCol = metadata.getColumnDefinition(LIST_COLUMN_LOGIN);
+        CmsListColumnDefinition nameCol = metadata.getColumnDefinition(LIST_COLUMN_NAME);
         // add add action
         CmsListDefaultAction addAction = new CmsListDefaultAction(LIST_DEFACTION_ADD);
-        addAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_NAME_0));
-        addAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_ADD_HELP_0));
+        addAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_NAME_0));
+        addAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_HELP_0));
         nameCol.setDefaultAction(addAction);
     }
 
@@ -193,9 +176,9 @@ public class CmsNotGroupUsersList extends A_CmsGroupUsersList {
 
         // add add multi action
         CmsListMultiAction addMultiAction = new CmsListMultiAction(LIST_MACTION_ADD);
-        addMultiAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_NAME_0));
-        addMultiAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_HELP_0));
-        addMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_MACTION_ADD_CONF_0));
+        addMultiAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_ADD_NAME_0));
+        addMultiAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_ADD_HELP_0));
+        addMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_ADD_CONF_0));
         addMultiAction.setIconPath(ICON_MULTI_ADD);
         metadata.addMultiAction(addMultiAction);
     }

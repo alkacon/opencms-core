@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,7 +158,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         Map objects = (Map)getSettings().getListObject();
         if (objects != null) {
             objects.remove(CmsGroupsList.class.getName());
-            objects.remove(CmsUsersList.class.getName());
+            objects.remove(A_CmsUsersList.class.getName());
         }
     }
 
@@ -232,7 +232,7 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
             iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_AVAILABLE_NAME_0));
             iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_AVAILABLE_HELP_0));
         }
-        iconAction.setIconPath(CmsUsersList.PATH_BUTTONS + "user.png");
+        iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
         iconAction.setEnabled(false);
         iconCol.addDirectAction(iconAction);
         // add it to the list definition

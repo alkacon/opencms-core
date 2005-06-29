@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsEditWebuserDialog.java,v $
  * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.15 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.db.CmsDefaultUsers;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -46,18 +47,18 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsEditUserDialog extends A_CmsEditUserDialog {
+public class CmsEditWebuserDialog extends A_CmsEditUserDialog {
 
     /**
      * Public constructor with JSP action element.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsEditUserDialog(CmsJspActionElement jsp) {
+    public CmsEditWebuserDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -69,7 +70,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsEditUserDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsEditWebuserDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -79,7 +80,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      */
     protected CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException {
 
-        return getCms().createUser(name, pwd, desc, info);
+        return getCms().addWebUser(name, pwd, CmsDefaultUsers.DEFAULT_GROUP_GUESTS, desc, info);
     }
 
     /**
@@ -87,7 +88,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      */
     protected String getListClass() {
 
-        return CmsUsersList.class.getName();
+        return CmsWebusersList.class.getName();
     }
 
     /**
@@ -95,7 +96,7 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      */
     protected String getListRootPath() {
 
-        return "/accounts/users";
+        return "/accounts/webusers";
     }
 
     /**
@@ -103,6 +104,6 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      */
     protected void writeUser(CmsUser user) throws CmsException {
 
-        getCms().writeUser(user);
+        getCms().writeWebUser(user);
     }
 }

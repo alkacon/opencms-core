@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditUserDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebusersList.java,v $
  * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.15 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,32 +34,36 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 
-import java.util.Map;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to edit new or existing system user in the administration view.<p>
+ * Main web user account management view.<p>
  * 
- * @author Michael Moossen 
+ * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsEditUserDialog extends A_CmsEditUserDialog {
+public class CmsWebusersList extends A_CmsUsersList {
+
+    /** list id constant. */
+    public static final String LIST_ID = "lwu";
 
     /**
-     * Public constructor with JSP action element.<p>
+     * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsEditUserDialog(CmsJspActionElement jsp) {
+    public CmsWebusersList(CmsJspActionElement jsp) {
 
-        super(jsp);
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_WEBUSERS_LIST_NAME_0));
     }
 
     /**
@@ -69,40 +73,56 @@ public class CmsEditUserDialog extends A_CmsEditUserDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsEditUserDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsWebusersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#createUser(java.lang.String, java.lang.String, java.lang.String, java.util.Map)
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#deleteUser(org.opencms.util.CmsUUID)
      */
-    protected CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException {
+    protected void deleteUser(CmsUUID id) throws CmsException {
 
-        return getCms().createUser(name, pwd, desc, info);
+        getCms().deleteWebUser(id);
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getListClass()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getEditRootPath()
      */
-    protected String getListClass() {
+    protected String getEditRootPath() {
 
-        return CmsUsersList.class.getName();
+        return "/accounts/webusers/edit";
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#getListRootPath()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
-    protected String getListRootPath() {
+    protected String getGroupIcon() {
 
-        return "/accounts/users";
+        return PATH_BUTTONS + "webuser_groups.png";
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#writeUser(org.opencms.file.CmsUser)
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUserIcon()
      */
-    protected void writeUser(CmsUser user) throws CmsException {
+    protected String getUserIcon() {
 
-        getCms().writeUser(user);
+        return PATH_BUTTONS + "webuser.png";
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
+     */
+    protected List getUsers() throws CmsException {
+
+        return getCms().getUsers(CmsUser.USER_TYPE_WEBUSER);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#readUser(java.lang.String)
+     */
+    protected CmsUser readUser(String name) throws CmsException {
+
+        return getCms().readWebUser(name);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/28 20:40:34 $
- * Version: $Revision: 1.538 $
+ * Date   : $Date: 2005/06/29 09:24:48 $
+ * Version: $Revision: 1.539 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.538 $
+ * @version $Revision: 1.539 $
  * 
  * @since 6.0.0
  */
@@ -611,6 +611,16 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
             //check if the user exists
             if (user != null) {
+                // web user can not be members of:
+                // Administrators, Projectmanagers or Users
+                if (user.getType() == CmsUser.USER_TYPE_WEBUSER) {
+                    if (groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_ADMINISTRATORS)
+                        || groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS)
+                        || groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_USERS)) {
+                        throw new CmsSecurityException(Messages.get().container(Messages.ERR_WEBUSER_GROUP_0));
+                    }
+                }
+
                 group = readGroup(dbc, groupname);
                 //check if group exists
                 if (group != null) {
@@ -2294,10 +2304,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         List modifiedFiles = readChangedResourcesInsideProject(dbc, projectId, 1);
 
         // changed/new/deleted folders in the specified project
-        List modifiedFolders = readChangedResourcesInsideProject(
-            dbc,
-            projectId,
-            CmsResourceTypeFolder.RESOURCE_TYPE_ID);
+        List modifiedFolders = readChangedResourcesInsideProject(dbc, projectId, CmsResourceTypeFolder.RESOURCE_TYPE_ID);
 
         // all resources inside the project have to be be reset to their online state.
 
@@ -6791,7 +6798,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (l == 0) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
         }
-        
+
         for (int i = 0; i < l; i++) {
             char c = filename.charAt(i);
             if (((c < 'a') || (c > 'z'))
@@ -6804,20 +6811,6 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '$')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
             }
-        }
-        
-        // check for filenames that have only dots (which will cause issues in the static export)
-        boolean onlydots = true;
-        String name = CmsResource.getName(filename);
-        l = name.length();
-        for (int i = 0; i < l; i++) {
-            char c = name.charAt(i);
-            if ((c != '.') && (c != '/')) {
-                onlydots = false;
-            }
-        }        
-        if (onlydots) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
         }
     }
 

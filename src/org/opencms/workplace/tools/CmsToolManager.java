@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/06/29 09:24:48 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,8 +223,15 @@ public class CmsToolManager {
             return "<div class='pathbar'>&nbsp;</div>\n";
         }
         CmsTool adminTool = resolveAdminTool(toolPath);
-        String html = A_CmsHtmlIconButton.defaultButtonHtml(CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT, "nav"
-            + adminTool.getId(), adminTool.getHandler().getShortName(), null, false, null, null);
+        String html = A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            "nav" + adminTool.getId(),
+            adminTool.getHandler().getShortName(),
+            null,
+            false,
+            null,
+            null);
         String parent = toolPath;
         while (!parent.equals(getRootToolPath(wp))) {
             parent = getParent(wp, parent);
@@ -241,6 +248,7 @@ public class CmsToolManager {
 
             String onClic = "openPage('" + link + "');";
             String buttonHtml = A_CmsHtmlIconButton.defaultButtonHtml(
+                wp.getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 id,
                 adminTool.getHandler().getName(),

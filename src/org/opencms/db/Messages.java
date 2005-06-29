@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/06/25 10:35:46 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/06/29 09:24:48 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 6.0.0 
  */
@@ -566,6 +566,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_VFS_INVALID_PROPERTY_LIST_1 = "ERR_VFS_INVALID_PROPERTY_LIST_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_WEBUSER_GROUP_0 = "ERR_WEBUSER_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_ACL_ENTRY_1 = "ERR_WRITE_ACL_ENTRY_1";

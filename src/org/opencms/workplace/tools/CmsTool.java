@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/06/26 10:56:53 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/06/29 09:24:48 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +123,7 @@ public class CmsTool {
         }
         String onClic = "openPage('" + link + "');";
         return A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getCms(),
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT,
             getId(),
             m_handler.getName(),

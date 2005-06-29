@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsNotUserGroupsList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,6 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.list.CmsListDirectAction;
-import org.opencms.workplace.list.CmsListItem;
-import org.opencms.workplace.list.CmsListMetadata;
-import org.opencms.workplace.list.CmsListMultiAction;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,23 +42,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_ADD = "aa";
-
-    /** list action id constant. */
-    public static final String LIST_DEFACTION_ADD = "da";
+public class CmsNotUserGroupsList extends A_CmsNotUserGroupsList {
 
     /** list id constant. */
     public static final String LIST_ID = "lnug";
-
-    /** list action id constant. */
-    public static final String LIST_MACTION_ADD = "ma";
 
     /**
      * Public constructor.<p>
@@ -80,7 +58,7 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
      */
     public CmsNotUserGroupsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_NOTUSERGROUPS_LIST_NAME_0), true);
+        super(jsp, LIST_ID);
     }
 
     /**
@@ -95,107 +73,12 @@ public class CmsNotUserGroupsList extends A_CmsUserGroupsList {
         this(new CmsJspActionElement(context, req, res));
     }
 
+    
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListId()
      */
-    public void executeListMultiActions() throws CmsRuntimeException {
+    public String getListId() {
 
-        if (getParamListAction().equals(LIST_MACTION_ADD)) {
-            // execute the remove multiaction
-            try {
-                Iterator itItems = getSelectedItems().iterator();
-                while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
-                    getCms().addUserToGroup(getParamUsername(), (String)listItem.get(LIST_COLUMN_NAME));
-                }
-            } catch (CmsException e) {
-                // refresh the list
-                Map objects = (Map)getSettings().getListObject();
-                if (objects != null) {
-                    objects.remove(CmsUsersList.class.getName());
-                }
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ADD_SELECTED_GROUPS_0), e);
-            }
-        } else {
-            throwListUnsupportedActionException();
-        }
-        listSave();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
-     */
-    public void executeListSingleActions() throws CmsRuntimeException {
-
-        if (getParamListAction().equals(LIST_DEFACTION_ADD) || getParamListAction().equals(LIST_ACTION_ADD)) {
-            CmsListItem listItem = getSelectedItem();
-            try {
-                getCms().addUserToGroup(getParamUsername(), (String)listItem.get(LIST_COLUMN_NAME));
-            } catch (CmsException e) {
-                // should never happen
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ADD_SELECTED_GROUP_0), e);
-            }
-        } else {
-            throwListUnsupportedActionException();
-        }
-        listSave();
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
-     */
-    protected List getGroups() throws CmsException {
-
-        List usergroups = getCms().getGroupsOfUser(getParamUsername());
-        List groups = getCms().getGroups();
-        groups.removeAll(usergroups);
-        return groups;
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        setActive(((LIST_ID + "-form").equals(request.getParameter(PARAM_FORMNAME))));
-        super.initWorkplaceRequestValues(settings, request);
-        setParamFormName(LIST_ID + "-form");
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-
-        super.setColumns(metadata);
-        // get column for state
-        CmsListColumnDefinition stateCol = metadata.getColumnDefinition(LIST_COLUMN_STATE);
-        // add add action
-        CmsListDirectAction stateAction = new CmsListDirectAction(LIST_ACTION_ADD);
-        stateAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_NAME_0));
-        stateAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_HELP_0));
-        stateAction.setIconPath(ICON_ADD);
-        stateCol.addDirectAction(stateAction);
-        // get column for name
-        CmsListColumnDefinition nameCol = metadata.getColumnDefinition(LIST_COLUMN_NAME);
-        // add add action
-        CmsListDefaultAction addAction = new CmsListDefaultAction(LIST_DEFACTION_ADD);
-        addAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_NAME_0));
-        addAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DEFACTION_ADD_HELP_0));
-        nameCol.setDefaultAction(addAction);
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setMultiActions(CmsListMetadata metadata) {
-
-        // add add multi action
-        CmsListMultiAction addMultiAction = new CmsListMultiAction(LIST_MACTION_ADD);
-        addMultiAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_ADD_NAME_0));
-        addMultiAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_ADD_HELP_0));
-        addMultiAction.setConfirmationMessage(Messages.get().container(Messages.GUI_GROUPS_LIST_MACTION_ADD_CONF_0));
-        addMultiAction.setIconPath(ICON_MULTI_ADD);
-        metadata.addMultiAction(addMultiAction);
+        return LIST_ID;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/26 10:56:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.text.MessageFormat;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +99,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
             || getItem().get(getColumn()) == null
             || helpText.equals(new MessageFormat(helpText, wp.getLocale()).format(new Object[] {""}))) {
             return A_CmsHtmlIconButton.defaultButtonHtml(
-                null,
+                wp.getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY,
                 id,
                 getId(),
@@ -107,10 +107,18 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
                 helpText,
                 isEnabled(),
                 getIconPath(),
-                onClic.toString(), true);
+                onClic.toString(),
+                true);
         }
-        return A_CmsHtmlIconButton.defaultButtonHtml(CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY, id, getName().key(
-            wp.getLocale()), helpText, isEnabled(), getIconPath(), onClic.toString());
+        return A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY,
+            id,
+            getName().key(wp.getLocale()),
+            helpText,
+            isEnabled(),
+            getIconPath(),
+            onClic.toString());
     }
 
     /**

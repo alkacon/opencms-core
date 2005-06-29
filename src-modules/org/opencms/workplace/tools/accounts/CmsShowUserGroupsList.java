@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserGroupsList.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,6 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
-import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.list.CmsListMetadata;
-
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,11 +42,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
+public class CmsShowUserGroupsList extends A_CmsShowUserGroupsList {
 
     /** list id constant. */
     public static final String LIST_ID = "lsug";
@@ -64,7 +58,7 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
      */
     public CmsShowUserGroupsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_USERGROUPS_LIST_NAME_0), false);
+        super(jsp, LIST_ID);
         refreshList();
     }
 
@@ -81,52 +75,10 @@ public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListId()
      */
-    public String defaultActionHtmlStart() {
+    public String getListId() {
 
-        return getList().listJs(getLocale());
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
-     */
-    public void executeListMultiActions() throws CmsRuntimeException {
-
-        throwListUnsupportedActionException();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
-     */
-    public void executeListSingleActions() throws CmsRuntimeException {
-
-        throwListUnsupportedActionException();
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
-     */
-    protected List getGroups() throws CmsException {
-
-        return getCms().getGroupsOfUser(getParamUsername());
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
-     */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-
-        setActive(((LIST_ID + "-form").equals(request.getParameter(PARAM_FORMNAME))));
-        super.initWorkplaceRequestValues(settings, request);
-        setParamFormName(LIST_ID + "-form");
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setMultiActions(CmsListMetadata metadata) {
-
-        // noop
+        return LIST_ID;
     }
 }

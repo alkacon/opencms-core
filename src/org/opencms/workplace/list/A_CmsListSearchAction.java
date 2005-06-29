@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListSearchAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,6 +119,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
             + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
             + "');";
         return A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             getId(),
             getName().key(wp.getLocale()),
@@ -178,6 +179,7 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
                     + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
                     + "');";
                 return A_CmsHtmlIconButton.defaultButtonHtml(
+                    wp.getJsp(),
                     CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                     getId(),
                     getName().key(wp.getLocale()),

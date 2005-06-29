@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/28 08:05:44 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -431,7 +431,7 @@ public class CmsHtmlList {
         html.append(htmlTitle(wp));
         html.append(htmlToolBar(wp));
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
-        html.append(m_metadata.htmlHeader(this, wp.getLocale()));
+        html.append(m_metadata.htmlHeader(this, wp));
         if (m_visibleItems.isEmpty()) {
             html.append(m_metadata.htmlEmptyTable(wp.getLocale()));
         } else {
@@ -444,7 +444,7 @@ public class CmsHtmlList {
             }
         }
         html.append("</table>\n");
-        html.append(htmlPagingBar(wp.getLocale()));
+        html.append(htmlPagingBar(wp));
         html.append(htmlEnd(wp));
         return wp.resolveMacros(html.toString());
     }
@@ -908,11 +908,11 @@ public class CmsHtmlList {
     /**
      * Generates the needed html code for the paging bar.<p>
      * 
-     * @param locale for message localization
+     * @param wp the workplace instance
      * 
      * @return html code
      */
-    private String htmlPagingBar(Locale locale) {
+    private String htmlPagingBar(CmsWorkplace wp) {
 
         if (getNumberOfPages() < 2) {
             return "";
@@ -923,15 +923,16 @@ public class CmsHtmlList {
         html.append("\t\t<td class='main'>\n");
         // prev button
         String id = "listPrev";
-        String name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
+        String name = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
         String iconPath = ICON_LEFT;
         boolean enabled = getCurrentPage() > 1;
-        String helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
+        String helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
         if (!enabled) {
-            helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
+            helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
         }
         String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,
@@ -942,15 +943,16 @@ public class CmsHtmlList {
         html.append("\n");
         // next button
         id = "listNext";
-        name = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
+        name = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
         iconPath = ICON_RIGHT;
         enabled = getCurrentPage() < getNumberOfPages();
-        helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
+        helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
         if (!enabled) {
-            helpText = Messages.get().key(locale, Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
+            helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
         }
         onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
+            wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
             name,
@@ -981,14 +983,14 @@ public class CmsHtmlList {
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
             html.append(Messages.get().key(
-                locale,
+                wp.getLocale(),
                 Messages.GUI_LIST_PAGING_TEXT_2,
-                new Object[] {m_name.key(locale), new Integer(getTotalSize())}));
+                new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
         } else {
             html.append(Messages.get().key(
-                locale,
+                wp.getLocale(),
                 Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
-                new Object[] {m_name.key(locale), new Integer(getSize()), new Integer(getTotalSize())}));
+                new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
         }
         html.append("\t\t</td>\n");
         html.append("\t</tr>\n");

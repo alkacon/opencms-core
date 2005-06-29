@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/06/29 09:24:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -385,7 +385,7 @@ public class CmsGroupsList extends A_CmsListDialog {
         CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
         editAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_ACTION_EDIT_NAME_0));
         editAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_ACTION_EDIT_HELP_0));
-        editAction.setIconPath(CmsUsersList.PATH_BUTTONS + "group.png");
+        editAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
         editCol.addDirectAction(editAction);
         // add it to the list definition
         metadata.addColumn(editCol);
@@ -401,7 +401,7 @@ public class CmsGroupsList extends A_CmsListDialog {
         CmsListDirectAction usersAction = new CmsListDirectAction(LIST_ACTION_USERS);
         usersAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_ACTION_USERS_NAME_0));
         usersAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_ACTION_USERS_HELP_0));
-        usersAction.setIconPath(CmsUsersList.PATH_BUTTONS + "user.png");
+        usersAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
         usersCol.addDirectAction(usersAction);
         // add it to the list definition
         metadata.addColumn(usersCol);
