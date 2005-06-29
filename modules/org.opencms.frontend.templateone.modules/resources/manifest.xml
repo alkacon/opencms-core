@@ -1740,10 +1740,6 @@
 					<name>Title</name>
 					<value><![CDATA[Modules demo contents]]></value>
 				</property>
-				<property>
-					<name>style_main_configpath</name>
-					<value><![CDATA[/demopages/_configuration/]]></value>
-				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
