@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/29 20:16:16 $
- * Version: $Revision: 1.665 $
+ * Date   : $Date: 2005/06/29 21:18:02 $
+ * Version: $Revision: 1.666 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,10 +26,10 @@ OpenCms 6.0.0 - June 30, 2005
 * Fixed issue with confusing redirect to localhost in a simple broken site configuration
 - No more silly version "names", just numbers like 6.0.0
 * Fixed issue with HtmlArea widget converting &lt;a&gt; to <a>
-* Fixed issues with PostgetSQL thanks to Antonio Cores contrinution
+* Fixed issues with PostgreSQL thanks to Antonio Cores contribution
 * Fixed issue with user / date last modified being wrong after resource copy 
 * Fixed several issues in the English and German localization 
-* Fixed issue with logfile viewer box being to big
+* Fixed issue with logfile viewer box being too big
 * Fixed several issues with Templateone and demo modules
 * Fixed issue with direct edit buttons overlapping the headline text
 ! Direct edit buttons can be activated/deactivated pressing Ctrl-Space
@@ -38,6 +38,7 @@ OpenCms 6.0.0 - June 30, 2005
 ! Added first version of english online help
 * Fixed issue with resource history of siblings not showing the other siblings entries
 * Fixed issue with '%' char causing an error when using the full text search
+* Fixed issue with errors when trying to perform a VFS operation with insufficient permissions
 
 OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 * New pointer link validation tool for the (new) Administration
