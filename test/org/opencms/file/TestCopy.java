@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestCopy.java,v $
- * Date   : $Date: 2005/06/29 12:02:04 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/29 14:22:49 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestCopy extends OpenCmsTestCase {
   
@@ -180,6 +180,8 @@ public class TestCopy extends OpenCmsTestCase {
         assertDateLastModifiedAfter(cms, destination, timestamp);
         // user created must be current user
         assertUserCreated(cms, destination, cms.getRequestContext().currentUser());
+        // user last modified must be current user
+        assertUserLastModified(cms, destination, cms.getRequestContext().currentUser());
         // assert lock state
         assertLock(cms, destination, CmsLock.TYPE_EXCLUSIVE);
         // now assert the filter for the rest of the attributes        

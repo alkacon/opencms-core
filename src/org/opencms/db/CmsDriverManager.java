@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/29 12:02:04 $
- * Version: $Revision: 1.540 $
+ * Date   : $Date: 2005/06/29 14:22:49 $
+ * Version: $Revision: 1.541 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.540 $
+ * @version $Revision: 1.541 $
  * 
  * @since 6.0.0
  */
@@ -677,7 +677,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // no space before or after the name
         name = name.trim();
         // check the username
-        validFilename(name);
+        validUsername(name);
         // check the password
         validatePassword(password);
 
@@ -762,7 +762,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // no space before or after the name
         name = name.trim();
         // check the username
-        validFilename(name);
+        validUsername(name);
         // check the password
         validatePassword(password);
 
@@ -1232,9 +1232,18 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
         // set user and creation timestamps
         long currentTime = System.currentTimeMillis();
-        // folders always get a new date when they are copied
-        long dateLastModified = source.isFile() ? source.getDateLastModified() : currentTime;
-
+        long dateLastModified;
+        CmsUUID userLastModified;
+        if (source.isFolder()) {
+            // folders always get a new date and uswer when they are copied
+            dateLastModified = currentTime;
+            userLastModified = dbc.currentUser().getId();
+        } else {
+            // files keep the date and user last modified from the source
+            dateLastModified = source.getDateLastModified();
+            userLastModified = source.getUserLastModified();
+        }
+        
         // check the resource flags
         int flags = source.getFlags();
         if (source.isLabeled()) {
@@ -1255,7 +1264,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             currentTime,
             dbc.currentUser().getId(),
             dateLastModified,
-            source.getUserLastModified(),
+            userLastModified,
             source.getDateReleased(),
             source.getDateExpired(),
             1,
@@ -3570,7 +3579,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // no space before or after the name
         name = name.trim();
         // check the username
-        validFilename(name);
+        validUsername(name);
 
         CmsUser newUser = m_userDriver.importUser(
             dbc,
@@ -6818,6 +6827,20 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 && (c != '$')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
             }
+        }
+        
+        // check for filenames that have only dots (which will cause issues in the static export)
+        boolean onlydots = true;
+        String name = CmsResource.getName(filename);
+        l = name.length();
+        for (int i = 0; i < l; i++) {
+            char c = name.charAt(i);
+            if ((c != '.') && (c != '/')) {
+                onlydots = false;
+            }
+        }        
+        if (onlydots) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
         }
     }
 
