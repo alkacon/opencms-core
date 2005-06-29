@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/28 15:33:42 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/29 08:33:47 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -416,7 +416,7 @@ public class CmsPublishProject extends CmsReport {
         // set the publishing type: publish project or direct publish
        
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
-            setParamDirectpublish("true");
+            setParamDirectpublish(String.valueOf(true));
         }
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -434,7 +434,7 @@ public class CmsPublishProject extends CmsReport {
         } else if (REPORT_BEGIN.equals(getParamAction())) {
             setAction(ACTION_REPORT_BEGIN);
         } else if (REPORT_END.equals(getParamAction())) {
-            if ("true".equals(getParamThreadHasNext())) {
+            if (Boolean.valueOf(getParamThreadHasNext()).booleanValue()) {
                 // after the link check start the publish thread
                 startPublishThread();
 
@@ -449,9 +449,10 @@ public class CmsPublishProject extends CmsReport {
         } else {
             setAction(ACTION_DEFAULT);
             // set parameters depending on publishing type
-            if ("true".equals(getParamDirectpublish())) {
-                // check the required permissions to publish the resource directly     
-                if (! checkResourcePermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false)) {
+            if (Boolean.valueOf(getParamDirectpublish()).booleanValue()) {
+                // check the required permissions to publish the resource directly
+                if (!getCms().isManagerOfProject()
+                    && !checkResourcePermissions(CmsPermissionSet.ACCESS_DIRECT_PUBLISH, false)) {
                     // no publish permissions for the resource, set cancel action to close dialog
                     setAction(ACTION_CANCEL);
                     return;
