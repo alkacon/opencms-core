@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/06/29 20:15:45 $
- * Version: $Revision: 1.664 $
+ * Date   : $Date: 2005/06/29 20:16:16 $
+ * Version: $Revision: 1.665 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ OpenCms 6.0.0 - June 30, 2005
 * Fixed issue with login of users without required permissions to view the workplace
 ! Added first version of english online help
 * Fixed issue with resource history of siblings not showing the other siblings entries
-* Fixed issue with '%' char casing an error when using the full text search
+* Fixed issue with '%' char causing an error when using the full text search
 
 OpenCms 5.9.2 Corrin (aka 6.0 RC 2) - June 17, 2005
 * New pointer link validation tool for the (new) Administration
