@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/29 19:31:43 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,11 +33,15 @@ package org.opencms.workplace.tools.workplace.rfsfile;
 
 import org.opencms.jsp.CmsJspActionElement;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.jsp.JspException;
+import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -47,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,56 +98,74 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
         // show error header once if there were validation errors
         result.append(createWidgetErrorHeader());
 
-        // wrap a box with scrollbars around the file content: 
-        result.append(createFileContentBoxStart());
-        try {
-            result.append(m_logView.readFilePortion());
-        } catch (Throwable f) {
-            List commitErrors = getCommitErrors();
-            if (commitErrors == null) {
-                commitErrors = new LinkedList();
-            }
-            commitErrors.add(f);
-            setCommitErrors(commitErrors);
-        }
-        result.append(createFileContentBoxEnd());
+        // result.append(createFileContentBoxStart());
+
+        result.append(createWidgetBlockStart(m_logView.getFilePath().replace('\\', '/')));
+        result.append("<iframe style=\"overflow: auto;\" src=\""
+            + getJsp().link("/system/workplace/admin/workplace/logfileview/index.html?showlog=true")
+            + "\" width=\"100%\" height=\"400\" border=\"0\" frameborder=\"0\"></iframe>");
+        result.append(createWidgetBlockEnd());
+
+        // result.append(createFileContentBoxEnd());
         // close widget table
+
         result.append(createWidgetTableEnd());
         return result.toString();
     }
 
     /**
-     * Returns the ending <code>div</code> 
-     * for wrapping the content of a file in a box with scrollbars.<p>
-     * 
-     * @return the ending <code>div</code> for wrapping the content of a file 
-     *         in a box with scrollbars
+     * @see org.opencms.workplace.CmsWidgetDialog#displayDialog()
      */
-    protected String createFileContentBoxEnd() {
+    public void displayDialog() throws JspException, IOException, ServletException {
 
-        StringBuffer result = new StringBuffer(127);
-        result.append("  </pre>\r\n");
-        result.append("</div>\r\n");
-        return result.toString();
+        if (!Boolean.valueOf(getParamShowlog()).booleanValue()) {
+            super.displayDialog();
+        } else {
+            StringBuffer result = new StringBuffer(1024);
+            // wrap a box with scrollbars around the file content: 
+            try {
+                result.append("<pre>");
+                result.append(m_logView.readFilePortion());
+                result.append("</pre>");
+            } catch (Throwable f) {
+                List commitErrors = getCommitErrors();
+                if (commitErrors == null) {
+                    commitErrors = new LinkedList();
+                }
+                commitErrors.add(f);
+                setCommitErrors(commitErrors);
+            }
+            JspWriter out = getJsp().getJspContext().getOut();
+            out.print(result.toString());
+        }
     }
 
     /**
-     * Returns the starting <code>div</code> with custom style (new_admin.css -> logfilewidget) 
-     * for wrapping the content of a file. <p>
-     * 
-     * @return the starting <code>div</code> with custom style (new_admin.css -> logfilewidget) 
-     *         for wrapping the content of a file
+     * Boolean request parameter that switches between serving the content of the file 
+     * to the iframe of the page that is generated if the switch is false. <p>
      */
-    protected String createFileContentBoxStart() {
+    String m_paramShowlog;
 
-        StringBuffer result = new StringBuffer(127);
-        result.append("<span class=\"logfilewidgethead\" >\r\n");
-        result.append("  ").append(m_logView.getFilePath().replace('\\', '/')).append("\r\n");
-        result.append("</span>\r\n");
-        result.append("<div id=\"logview\" class=\"logfilewidget\">\r\n");
-        // the file path in the "border"
-        result.append("  <pre>\r\n");
-        return result.toString();
+    /**
+     * Returns true wether the content of the file should be written to the response or false 
+     * if the page content should be generated.<p>
+     *  
+     * @return true wether the content of the file should be written to the response or false 
+     * if the page content should be generated
+     */
+    public String getParamShowlog() {
+
+        return m_paramShowlog;
+    }
+
+    /**
+     * Set the value to decide wether page content or the file content has to be shown to the response.<p> 
+     * 
+     * @param value the value to decide wether page content or the file content has to be shown to the response to set
+     */
+    public void setParamShowlog(String value) {
+
+        m_paramShowlog = value;
     }
 
     /**
