@@ -1,7 +1,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://sites/default/xmlcontent/nestedcontent/address.xsd"/>
+	<xsd:include schemaLocation="opencms://sites/default/xmlcontentdemo/nestedcontent/address.xsd"/>
 	
 	<xsd:element name="Bookmarks" type="OpenCmsBookmarks"/>
 	

@@ -6,7 +6,7 @@
 
 <cms:include file="list_content.html" element="header" editable="true"/> 
 
-<cms:contentload collector="allInSubTreeDateReleasedDesc" param="/xmlcontent/article_${number}.html|article" editable="true">
+<cms:contentload collector="allInSubTreeDateReleasedDesc" param="/xmlcontentdemo/article_${number}.html|article" editable="true">
 
 <div class="element">
 

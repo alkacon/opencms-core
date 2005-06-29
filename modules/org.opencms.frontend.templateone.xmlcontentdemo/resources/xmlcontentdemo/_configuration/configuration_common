@@ -2,10 +2,10 @@
 
 <configurations xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/common.xsd">
   <configuration language="en">
-    <area.name/>
-    <layout.version><![CDATA[accessible]]></layout.version>
-    <navigation.startfolder/>
-    <headnav.menus>true</headnav.menus>
+    <area.name><![CDATA[OpenCms Xml Content Demo]]></area.name>
+    <layout.version><![CDATA[common]]></layout.version>
+    <navigation.startfolder>/sites/default/</navigation.startfolder>
+    <headnav.menus>false</headnav.menus>
     <headnav.menudepth><![CDATA[2]]></headnav.menudepth>
     <headnav.markcurrent>true</headnav.markcurrent>
     <navleft.showselected>false</navleft.showselected>

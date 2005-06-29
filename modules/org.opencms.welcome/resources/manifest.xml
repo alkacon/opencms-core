@@ -53,7 +53,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.5]]></value>
+					<value><![CDATA[6.5]]></value>
 				</property>
 				<property>
 					<name>default-file</name>

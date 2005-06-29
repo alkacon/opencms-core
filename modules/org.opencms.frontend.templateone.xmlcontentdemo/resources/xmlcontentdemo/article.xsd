@@ -37,7 +37,7 @@
 			<defaults>
 				<default element="Title" value="${key.editor.defaults.Article.Title}"/>
 				<default element="Teaser" value="${key.editor.defaults.Article.Teaser}"/>
-				<default eleemnt="Release" value="${currenttime}"/>
+				<default element="Release" value="${currenttime}"/>
 				<default element="Author" value="${currentuser.fullname}"/>
 			</defaults>
 		</xsd:appinfo>
