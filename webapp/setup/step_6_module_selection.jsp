@@ -125,7 +125,7 @@ function checkForwardDependencies(modulePackageName, recursionCounter) {
 		}	
 		updatesCount = updatesCount + dependencies.length;
 	}
-	if (recursionCounter==0) {
+	if (recursionCounter==0 && updatesCount>0) {
 		alert("Dependencies have been updated!\r\n\r\n" + updatesCount + " module(s) depend on this module.");
 	}
 	return updatesCount;
