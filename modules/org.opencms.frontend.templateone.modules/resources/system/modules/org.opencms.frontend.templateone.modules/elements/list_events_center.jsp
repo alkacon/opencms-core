@@ -42,7 +42,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 </c:if>
 <c:if test="${shownumber == 'true'}"></p></c:if>
 </c:if>
-<p>
+<p style="margin-top: 8px; padding-top: 0px;">
 <a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
 <cms:contentshow element="ShortDescription" /><br>
 <c:set var="dateString">
