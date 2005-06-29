@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/06/29 13:30:43 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,7 +166,7 @@ public class CmsGroupsList extends A_CmsListDialog {
      */
     public void actionDeleteGroup() throws Exception {
 
-        String groupName = getCms().readUser(
+        String groupName = getCms().readGroup(
             new CmsUUID(getJsp().getRequest().getParameter(CmsEditGroupDialog.PARAM_GROUPID))).getName();
         getCms().deleteGroup(groupName);
         refreshList();
