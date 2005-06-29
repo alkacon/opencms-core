@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/29 15:08:39 $
- * Version: $Revision: 1.542 $
+ * Date   : $Date: 2005/06/29 15:18:11 $
+ * Version: $Revision: 1.543 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.542 $
+ * @version $Revision: 1.543 $
  * 
  * @since 6.0.0
  */
@@ -614,10 +614,12 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 // web user can not be members of:
                 // Administrators, Projectmanagers or Users
                 if (user.getType() == CmsUser.USER_TYPE_WEBUSER) {
-                    if (groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_ADMINISTRATORS)
-                        || groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS)
-                        || groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_USERS)) {
-                        throw new CmsSecurityException(Messages.get().container(Messages.ERR_WEBUSER_GROUP_0));
+                    List forbidden = new ArrayList();
+                    forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_ADMINISTRATORS);
+                    forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS);
+                    forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_USERS);
+                    if (forbidden.contains(groupname)) {
+                        throw new CmsSecurityException(Messages.get().container(Messages.ERR_WEBUSER_GROUP_1, forbidden));
                     }
                 }
 
