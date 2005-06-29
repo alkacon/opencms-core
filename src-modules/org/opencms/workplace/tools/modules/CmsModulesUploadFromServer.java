@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/28 18:38:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/29 20:16:25 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,18 +129,13 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
                 CmsModuleManager.DEPENDENCY_MODE_IMPORT);
             if (!dependencies.isEmpty()) {
                 StringBuffer dep = new StringBuffer(32);
-                dep.append("<ul>");
-
                 for (int i = 0; i < dependencies.size(); i++) {
                     CmsModuleDependency dependency = (CmsModuleDependency)dependencies.get(i);
-                    dep.append("<li>");
                     dep.append(dependency.getName());
                     dep.append(" (Version: ");
                     dep.append(dependency.getVersion());
-                    dep.append(")</li>");
+                    dep.append(")\n");
                 }
-                dep.append("</ul>");
-
                 errors.add(new CmsRuntimeException(Messages.get().container(
                     Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
                     m_moduleupload,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSendEmailDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/06/29 20:16:25 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,18 +213,16 @@ public class CmsSendEmailDialog extends A_CmsMessageDialog {
             }
         }
         if (!excluded.isEmpty()) {
-            StringBuffer html = new StringBuffer(500);
-            html.append("<it><strong>");
-            html.append(Messages.get().container(Messages.GUI_EXCLUDED_USERS_WARNING_0).key(getLocale()));
-            html.append("<ul>");
+            StringBuffer text = new StringBuffer(500);
+            text.append(Messages.get().container(Messages.GUI_EXCLUDED_USERS_WARNING_0).key(getLocale()));
+            text.append("\n");
             Iterator it = excluded.iterator();
             while (it.hasNext()) {
-                html.append("<li>");
-                html.append(it.next());
-                html.append("</li>");
+                text.append("- ");
+                text.append(it.next());
+                text.append("\n");
             }
-            html.append("</ul></strong></it>");
-            setExcludedUsers(html.toString());
+            setExcludedUsers(text.toString());
         }
         if (users.isEmpty()) {
             setCommitErrors(Collections.singletonList(new CmsIllegalStateException(Messages.get().container(
