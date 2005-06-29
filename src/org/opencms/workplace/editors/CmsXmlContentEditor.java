@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/29 09:55:41 $
- * Version: $Revision: 1.59 $
+ * Date   : $Date: 2005/06/29 12:16:28 $
+ * Version: $Revision: 1.60 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsEncoder;
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.59 $ 
+ * @version $Revision: 1.60 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,19 +203,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         deleteTempFile();
         boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
-        if (directEditMode && !modified) {
-            try {
-                // delete file if direct edit a new content
-                if (getCms().readResource(getParamResource()).getState() == CmsResource.STATE_NEW) {
-                    getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
-                }
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage(), e);
-                }
-            }
-        } else if (directEditMode || forceUnlock || !modified) {
+        if (directEditMode || forceUnlock || !modified) {
             // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
