@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/06/29 15:37:51 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/06/29 16:38:08 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.commons;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,7 +269,17 @@ public class CmsSecure extends CmsDialog {
             }
         }
         CmsSite currentSite = CmsSiteManager.getCurrentSite(getCms());
-        uri = OpenCms.getLinkManager().substituteLink(cms, getParamResource(), currentSite.getSiteRoot());
+        CmsProject currentProject = cms.getRequestContext().currentProject();
+        try {
+            cms.getRequestContext().setCurrentProject(cms.readProject(CmsProject.ONLINE_PROJECT_ID));
+            uri = OpenCms.getLinkManager().substituteLink(cms, getParamResource(), currentSite.getSiteRoot());
+        } catch (CmsException e) {
+            if (LOG.isErrorEnabled()) {
+                LOG.error(e.getLocalizedMessage());
+            }
+        } finally {
+            cms.getRequestContext().setCurrentProject(currentProject);
+        }
         
         if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
             serverPrefix = OpenCms.getSiteManager().getWorkplaceServer();
