@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/06/29 07:25:45 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,8 +143,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         // append settings info or disabled message if history is disabled
         retValue.append(dialogBlockStart(key("label.admin.history.settings")));
         if (isHistoryEnabled()) {
-            retValue.append(maxVersions + " ");
-            retValue.append(key("input.history.clear.versioninfo"));
+            retValue.append(key("input.history.clear.versioninfo", new Object[] {new Integer(maxVersions)}));
             retValue.append("<br>" + key("input.history.clear.selectinfo"));
         } else {
             retValue.append(key("input.history.clear.disabledinfo"));
