@@ -715,6 +715,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/galleryoverview/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/galleryoverview/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>804e59ca-d42f-11d9-bd97-555ce86a55d5</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/cache</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
