@@ -437,8 +437,9 @@ div.logfilewidget {
   border: 1px solid black;
   overflow: auto;
   height: 450px;
+  width: 970px;
+  max-width: 1400px;
 }
-
 
 td.listdetailhead {
 	vertical-align: top;
