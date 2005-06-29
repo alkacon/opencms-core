@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/06/28 14:47:18 $
- * Version: $Revision: 1.70 $
+ * Date   : $Date: 2005/06/29 07:10:43 $
+ * Version: $Revision: 1.71 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import org.opencms.xml.page.CmsXmlPage;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.zip.ZipFile;
@@ -71,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.70 $ 
+ * @version $Revision: 1.71 $ 
  * 
  * @since 6.0.0 
  * 
@@ -122,6 +123,8 @@ public class CmsImportVersion3 extends A_CmsImport {
         m_importZip = importZip;
         m_docXml = docXml;
         m_importingChannelData = false;
+        m_linkStorage = new HashMap();
+        m_linkPropertyStorage = new HashMap();
         try {
             // first import the user information
             if (cms.hasRole(CmsRole.ACCOUNT_MANAGER)) {
@@ -130,6 +133,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             }
             // now import the VFS resources
             importAllResources();
+            convertPointerToSiblings();
         } finally {
             cleanUp();
         }
@@ -291,7 +295,7 @@ public class CmsImportVersion3 extends A_CmsImport {
                     m_report.print(org.opencms.report.Messages.get().container(
                         org.opencms.report.Messages.RPT_ARGUMENT_1,
                         translatedName));
-                    m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0));
+                    //m_report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0));
                     // get all properties
                     properties = readPropertiesFromManifest(currentElement, deleteProperties);
 
@@ -492,8 +496,17 @@ public class CmsImportVersion3 extends A_CmsImport {
                 1,
                 size);
 
-            // import this resource in the VFS
-            result = m_cms.importResource(destination, resource, content, properties);
+            
+            if (type.equals(RESOURCE_TYPE_LINK_NAME)) {
+                // store links for later conversion
+                m_report.print(Messages.get().container(Messages.RPT_STORING_LINK_0), I_CmsReport.FORMAT_NOTE);
+                m_linkStorage.put(m_importPath + destination, new String(content));
+                m_linkPropertyStorage.put(m_importPath + destination, properties);
+                result = resource;
+            } else {
+                // import this resource in the VFS
+                result = m_cms.importResource(destination, resource, content, properties);
+            }
 
             if (result != null) {
                 m_report.println(
