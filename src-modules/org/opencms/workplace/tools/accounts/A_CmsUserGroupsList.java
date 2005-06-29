@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/06/29 13:02:39 $
+ * Version: $Revision: 1.16 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -333,7 +333,7 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
      */
     private String getGroupIcon() {
 
-        if (getCurrentToolPath().contains("webuser")) {
+        if (getCurrentToolPath().indexOf("webuser") != -1) {
             return A_CmsUsersList.PATH_BUTTONS + "webuser_groups.png";
         } else {
             return A_CmsUsersList.PATH_BUTTONS + "group.png";
