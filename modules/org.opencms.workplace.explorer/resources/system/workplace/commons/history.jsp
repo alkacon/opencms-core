@@ -45,7 +45,7 @@ default:
 	}
 	
 	function viewVersion(resourcename, versionid) {
-        	window.open("displayresource.jsp?<%= wp.PARAM_RESOURCE %>="+resourcename+"&=<%= wp.PARAM_VERSIONID %>="+versionid,'version','scrollbars=yes, resizable=yes, width=800, height=600');
+        	window.open("displayresource.jsp?<%= wp.PARAM_RESOURCE %>="+resourcename+"&<%= wp.PARAM_VERSIONID %>="+versionid,'version','scrollbars=yes, resizable=yes, width=800, height=600');
 	}
 //-->
 </script>
