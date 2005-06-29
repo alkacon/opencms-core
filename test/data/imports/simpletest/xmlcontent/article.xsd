@@ -24,8 +24,14 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<mapping element="Title" mapto="property:Title" />
-			<mapping element="Release" mapto="attribute:datereleased" />
+			<mappings>
+				<mapping element="Title" mapto="property:Title" />
+				<mapping element="Release" mapto="attribute:datereleased" />
+			</mappings>
+			<defaults>
+				<default element="Title" value="Default title value"/>
+				<default element="Teaser" value="Default teaser value"/>
+			</defaults>
 		</xsd:appinfo>
 	</xsd:annotation>  
 </xsd:schema>
