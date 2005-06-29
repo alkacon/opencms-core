@@ -37,7 +37,7 @@
 				<mapping element="Priority" mapto="property:collector.priority" />
 			</mappings>
 			<layouts>
-				<layout element="Priority" widget="SelectorWidget" configuration="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3:${key.priority.standard}*|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}" />
+				<layout element="Priority" widget="SelectorWidget" configuration="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3*:${key.priority.standard}|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}" />
 			</layouts>
 			<validationrules/>
 			<defaults>
