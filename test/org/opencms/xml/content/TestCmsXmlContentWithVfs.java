@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/29 12:54:36 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/06/29 14:52:37 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -540,30 +540,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
         assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
     }
-    
-    /**
-     * Test default values after a new XML content has been created.<p>
-     * 
-     * @throws Exception in case the test fails
-     */
-    public void testDefaultOnCreation() throws Exception {
-        
-        CmsObject cms = getCmsObject();
-        echo("Testing default values when creating an XML content resource");
-        
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-        
-        // create a new xml content article
-        String xmlContentFile = "/xmlcontent/article_0005.html";
-        cms.createResource(xmlContentFile, 12);
-        
-        CmsFile file = cms.readFile(xmlContentFile);
-        String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
-        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
-        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
-        
-        assertEquals("Default title value", value);
-    }
 
     /**
      * Test default values in the appinfo node using a nested XML content schema.<p>
@@ -613,6 +589,33 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value1 = xmlcontent.addValue(cms, "Cascade[1]/VfsLink", Locale.ENGLISH, 2);
         assertEquals("/default/for/all/from/outer.txt", value1.getStringValue(cms));        
         
+    }
+    
+    /**
+     * Test default values after a new XML content has been created.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testDefaultOnCreation() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing default values when creating an XML content resource");
+        
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+        
+        // create a new xml content article
+        String xmlContentFile = "/xmlcontent/article_0005.html";
+        cms.createResource(xmlContentFile, 12);
+        
+        CmsFile file = cms.readFile(xmlContentFile);
+        String content = new String(file.getContents(), CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+        
+        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
+        assertEquals("Default title value", value);
+        
+        value = xmlcontent.getStringValue(cms, "Release", Locale.ENGLISH);
+        assertEquals("1114525380000", value);
     }
 
     /**
@@ -929,6 +932,67 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     }
 
     /**
+     * Tests the element mappings from the appinfo node for nested XML content.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testMappingsOfNestedContent() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing mapping of values in the XML content with nested elements");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
+
+        String resourcename = "/mappingtest_nested.html";
+        // create a file in the VFS with this content (required for mappings to work)
+        cms.createResource(
+            resourcename,
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
+            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
+            Collections.EMPTY_LIST);
+
+        CmsFile file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+
+        CmsProperty titleProperty;
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertSame(titleProperty, CmsProperty.getNullProperty());
+
+        String titleStr = "This must be the Title (not nested)";
+        I_CmsXmlContentValue value;
+        value = xmlcontent.getValue("Test", Locale.ENGLISH);
+        assertEquals(value.getStringValue(cms), "Another Test");
+        value.setStringValue(cms, titleStr);
+
+        String descStr = "This must be the Description (which IS nested)";
+        value = xmlcontent.getValue("Cascade/Toast", Locale.ENGLISH);
+        assertEquals(value.getStringValue(cms), "Toast");
+        value.setStringValue(cms, descStr);
+
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        assertEquals(titleStr, titleProperty.getValue());
+        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertEquals(descStr, titleProperty.getValue());
+    }
+
+    /**
      * Tests the element mappings from the appinfo node if there is more then one locale.<p>
      * 
      * @throws Exception in case something goes wrong
@@ -1013,67 +1077,6 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
             CmsPropertyDefinition.PROPERTY_TITLE,
             false);
         assertEquals(titleStrDe, titlePropertyDe.getValue());
-    }
-
-    /**
-     * Tests the element mappings from the appinfo node for nested XML content.<p>
-     * 
-     * @throws Exception in case something goes wrong
-     */
-    public void testMappingsOfNestedContent() throws Exception {
-
-        CmsObject cms = getCmsObject();
-        echo("Testing mapping of values in the XML content with nested elements");
-
-        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
-
-        String content;
-        CmsXmlContent xmlcontent;
-
-        // unmarshal content definition
-        content = CmsFileUtil.readFile(
-            "org/opencms/xml/content/xmlcontent-definition-7.xsd",
-            CmsEncoder.ENCODING_UTF_8);
-        // store content definition in entitiy resolver
-        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_7, content.getBytes(CmsEncoder.ENCODING_UTF_8));
-
-        // now read the XML content
-        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-7.xml", CmsEncoder.ENCODING_UTF_8);
-        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver);
-
-        String resourcename = "/mappingtest_nested.html";
-        // create a file in the VFS with this content (required for mappings to work)
-        cms.createResource(
-            resourcename,
-            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
-            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
-            Collections.EMPTY_LIST);
-
-        CmsFile file = cms.readFile(resourcename);
-        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
-
-        CmsProperty titleProperty;
-        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertSame(titleProperty, CmsProperty.getNullProperty());
-
-        String titleStr = "This must be the Title (not nested)";
-        I_CmsXmlContentValue value;
-        value = xmlcontent.getValue("Test", Locale.ENGLISH);
-        assertEquals(value.getStringValue(cms), "Another Test");
-        value.setStringValue(cms, titleStr);
-
-        String descStr = "This must be the Description (which IS nested)";
-        value = xmlcontent.getValue("Cascade/Toast", Locale.ENGLISH);
-        assertEquals(value.getStringValue(cms), "Toast");
-        value.setStringValue(cms, descStr);
-
-        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
-        cms.writeFile(file);
-
-        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals(titleStr, titleProperty.getValue());
-        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
-        assertEquals(descStr, titleProperty.getValue());
     }
 
     /**
