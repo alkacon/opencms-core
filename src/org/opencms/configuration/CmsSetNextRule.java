@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/29 14:01:38 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
@@ -194,7 +194,7 @@ public class CmsSetNextRule extends Rule {
      */
     public void begin(java.lang.String namespace, java.lang.String name, Attributes attributes) throws Exception {
 
-        // not now: 6.0 RC 2
+        // not now: 6.0.0
         //digester.setLogger(CmsLog.getLog(digester.getClass()));
 
         // Push an array to capture the parameter values if necessary

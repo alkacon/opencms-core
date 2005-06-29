@@ -111,7 +111,7 @@ However, the OpenCms Workplace must always be accessed through one specific URL.
 The site URL you enter here will be used <i>both</i> as URL to access the Workplace,
 and as URL for the default site. In case you want to add other sites, or if you want to use different URLs
 for default site and Workplace, you must
-manually edit the <code>opencms.properties</code> file after the installation.
+manually edit the <code>opencms-system.xml</code> file after the installation.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else	{ %>

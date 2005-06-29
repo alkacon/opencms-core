@@ -150,7 +150,7 @@
     		</then>
     	</if>
     	
-    	<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number} (${version.name})" />
+    	<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number}" />
         <echo message=" " />
         <echo message="OpenCms core lib directory is: ${opencms.core.lib}" />
         <echo message="OpenCms lib directory is: ${opencms.input.libs}" />

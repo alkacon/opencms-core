@@ -2,8 +2,7 @@
 
 <project name="OpenCms" default="compile" basedir=".">
 
-    <property name="version.number"             		value="6.0 RC 2" />    
-    <property name="version.name"               		value="Corrin" />
+    <property name="version.number"             		value="6.0.0" />    
     
 	<property name="app.name" 							value="opencms" />
     
@@ -143,7 +142,7 @@
         </tstamp>
         <property name="version.number" value="${env.USERNAME}_${timestamp}"/>
         
-        <echo message="Building OpenCms ${version.number} (${version.name})" />
+        <echo message="Building OpenCms ${version.number}" />
         <echo message=" " />
         <echo message="OpenCms input directory is: ${opencms.input}" />
         <echo message="OpenCms output directory is: ${opencms.output}" />
@@ -472,7 +471,7 @@ ${opencms.inputlib.textextraction}
         </tstamp>
         <property name="version.number" value="${env.USERNAME}_${timestamp}_current"/>
         
-        <echo message="Building OpenCms ${version.number} (${version.name})  source distribution " />
+        <echo message="Building OpenCms ${version.number} source distribution " />
         <echo message=" " />
         <echo message="OpenCms input directory is: ${opencms.input}" />
         <echo message="OpenCms output directory is: ${opencms.output}" />
