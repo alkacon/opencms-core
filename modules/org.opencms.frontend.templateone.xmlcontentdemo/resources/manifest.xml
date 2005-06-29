@@ -81,7 +81,7 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -101,7 +101,7 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -112,7 +112,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -128,7 +128,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -139,7 +139,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -150,7 +150,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -161,7 +161,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -172,7 +172,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -183,7 +183,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -196,7 +196,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>99d7678b-275e-11d9-b242-1fd2a335da0f</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -214,7 +214,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>e5c050c6-2760-11d9-83ac-1fd2a335da0f</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -231,7 +231,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/classes/org/opencms/frontend/templateone/xmlcontentdemo/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>99d7678b-275e-11d9-b242-1fd2a335da0f</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -247,7 +247,7 @@
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/elements</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -260,7 +260,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/elements/side_article_list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>0c7b4022-1942-11d9-9027-95b5e57c814c</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -276,7 +276,7 @@
 		<file>
 			<destination>xmlcontentdemo</destination>
 			<type>microsite</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -342,7 +342,7 @@
 			<destination>xmlcontentdemo/article.xsd</destination>
 			<type>plain</type>
 			<uuidresource>3416bed7-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -360,7 +360,7 @@
 			<destination>xmlcontentdemo/article_0001.html</destination>
 			<type>article</type>
 			<uuidresource>e20dff06-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -378,7 +378,7 @@
 			<destination>xmlcontentdemo/article_0002.html</destination>
 			<type>article</type>
 			<uuidresource>00b9d277-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -396,7 +396,7 @@
 			<destination>xmlcontentdemo/article_0003.html</destination>
 			<type>article</type>
 			<uuidresource>beeee83b-113f-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -414,7 +414,7 @@
 			<destination>xmlcontentdemo/article_0004.html</destination>
 			<type>article</type>
 			<uuidresource>f7c19c2b-1140-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -432,7 +432,7 @@
 			<destination>xmlcontentdemo/detail.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>34046f4b-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -458,7 +458,7 @@
 			<destination>xmlcontentdemo/detail_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>960d3b21-1147-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -480,7 +480,7 @@
 			<destination>xmlcontentdemo/include.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d13bd579-1f34-11d9-9f84-bdb3d9688e5d</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -510,7 +510,7 @@
 			<destination>xmlcontentdemo/list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -540,7 +540,7 @@
 			<destination>xmlcontentdemo/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -562,7 +562,7 @@
 			<destination>xmlcontentdemo/list_tree.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>b62c9903-2126-11d9-aca1-33454537bb5d</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -600,7 +600,7 @@
 			<destination>xmlcontentdemo/side_element_demo.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>22d10d1e-1158-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -640,7 +640,7 @@
 		<file>
 			<destination>xmlcontentdemo/_configuration</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -658,7 +658,7 @@
 			<destination>xmlcontentdemo/_configuration/configuration_common</destination>
 			<type>xmlcontent</type>
 			<uuidresource>d0cd7274-e7fc-11d9-b6a3-45827a23a0d1</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -676,7 +676,7 @@
 			<destination>xmlcontentdemo/_configuration/configuration_css</destination>
 			<type>xmlcontent</type>
 			<uuidresource>d0d20659-e7fc-11d9-b6a3-45827a23a0d1</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -694,7 +694,7 @@
 			<destination>xmlcontentdemo/_configuration/configuration_links</destination>
 			<type>xmlcontent</type>
 			<uuidresource>d0d69a3e-e7fc-11d9-b6a3-45827a23a0d1</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -712,7 +712,7 @@
 			<destination>xmlcontentdemo/_configuration/imprint</destination>
 			<type>xmlcontent</type>
 			<uuidresource>d0db2d23-e7fc-11d9-b6a3-45827a23a0d1</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -732,7 +732,7 @@
 		<file>
 			<destination>xmlcontentdemo/nestedcontent</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -770,7 +770,7 @@
 			<destination>xmlcontentdemo/nestedcontent/address.xsd</destination>
 			<type>plain</type>
 			<uuidresource>ca5a9323-4a9b-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -788,7 +788,7 @@
 			<destination>xmlcontentdemo/nestedcontent/bookmark.xsd</destination>
 			<type>plain</type>
 			<uuidresource>c1bb8b1f-4a9b-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -806,7 +806,7 @@
 			<destination>xmlcontentdemo/nestedcontent/bookmark_0001.html</destination>
 			<type>bookmark</type>
 			<uuidresource>8faf73e9-4ab0-11d9-9252-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -824,7 +824,7 @@
 			<destination>xmlcontentdemo/nestedcontent/bookmark_0002.html</destination>
 			<type>bookmark</type>
 			<uuidresource>150f392a-4ab7-11d9-9252-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -842,7 +842,7 @@
 			<destination>xmlcontentdemo/nestedcontent/detail.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>281f2e7b-4aad-11d9-8340-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -864,7 +864,7 @@
 			<destination>xmlcontentdemo/nestedcontent/detail_include.txt</destination>
 			<type>plain</type>
 			<uuidresource>5813cf4f-4b6a-11d9-b02b-636f59544321</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -886,7 +886,7 @@
 			<destination>xmlcontentdemo/nestedcontent/list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>2924c5ca-4ab2-11d9-9252-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -908,7 +908,7 @@
 			<destination>xmlcontentdemo/nestedcontent/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>9f7b4471-4ab2-11d9-9252-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -928,7 +928,7 @@
 		<file>
 			<destination>xmlcontentdemo/side-elements</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -946,7 +946,7 @@
 			<destination>xmlcontentdemo/side-elements/list_tree_side.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>d111e85f-2757-11d9-b242-1fd2a335da0f</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -968,7 +968,7 @@
 			<destination>xmlcontentdemo/side-elements/newfeatures.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>f96f7311-4e93-11d9-91b6-f5a79cbbc4d3</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -990,7 +990,7 @@
 			<destination>xmlcontentdemo/side-elements/subtree_side.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>1cb11f5b-275a-11d9-b242-1fd2a335da0f</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1010,7 +1010,7 @@
 		<file>
 			<destination>xmlcontentdemo/subfolder</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1048,7 +1048,7 @@
 			<destination>xmlcontentdemo/subfolder/article_0001.html</destination>
 			<type>article</type>
 			<uuidresource>51387b3e-2126-11d9-aca1-33454537bb5d</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1066,7 +1066,7 @@
 			<destination>xmlcontentdemo/subfolder/article_0002.html</destination>
 			<type>article</type>
 			<uuidresource>2e84d9f5-21f6-11d9-8e1f-33454537bb5d</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1083,7 +1083,7 @@
 			<destination>xmlcontentdemo/subfolder/list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1112,7 +1112,7 @@
 			<destination>xmlcontentdemo/subfolder/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1132,7 +1132,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1170,7 +1170,7 @@
 			<destination>xmlcontentdemo/widgetdemo/detail.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>aec341ca-4ab8-11d9-9252-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1192,7 +1192,7 @@
 			<destination>xmlcontentdemo/widgetdemo/detail_include.txt</destination>
 			<type>plain</type>
 			<uuidresource>17430c06-4e8f-11d9-91b6-f5a79cbbc4d3</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1205,7 +1205,7 @@
 			<destination>xmlcontentdemo/widgetdemo/list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>c378e48f-4a96-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1227,7 +1227,7 @@
 			<destination>xmlcontentdemo/widgetdemo/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>9a6cb4a6-4a98-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1249,7 +1249,7 @@
 			<destination>xmlcontentdemo/widgetdemo/widgetdemo.xsd</destination>
 			<type>plain</type>
 			<uuidresource>23768351-4a87-11d9-b6d0-b12b962e112e</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1267,7 +1267,7 @@
 			<destination>xmlcontentdemo/widgetdemo/widgetdemo_0001.html</destination>
 			<type>widgetdemo</type>
 			<uuidresource>e58f0260-4a94-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1283,7 +1283,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo/downloads</destination>
 			<type>downloadgallery</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1301,7 +1301,7 @@
 			<destination>xmlcontentdemo/widgetdemo/downloads/download.txt</destination>
 			<type>plain</type>
 			<uuidresource>5d5a6321-4a94-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1319,7 +1319,7 @@
 			<destination>xmlcontentdemo/widgetdemo/downloads/open_source_wikipedia.rtf</destination>
 			<type>binary</type>
 			<uuidresource>c9bf6325-e4ca-11d9-99a7-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1335,7 +1335,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo/html</destination>
 			<type>htmlgallery</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1353,7 +1353,7 @@
 			<destination>xmlcontentdemo/widgetdemo/html/htmlsample1.txt</destination>
 			<type>plain</type>
 			<uuidresource>958d64d2-4ac3-11d9-bc95-2b70d56337a7</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1371,7 +1371,7 @@
 			<destination>xmlcontentdemo/widgetdemo/html/htmlsample2.txt</destination>
 			<type>plain</type>
 			<uuidresource>744c84f9-e4b7-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1387,7 +1387,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo/links-alkacon</destination>
 			<type>linkgallery</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1405,7 +1405,7 @@
 			<destination>xmlcontentdemo/widgetdemo/links-alkacon/alkacon-services</destination>
 			<type>pointer</type>
 			<uuidresource>cfa5d0ae-e4be-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1423,7 +1423,7 @@
 			<destination>xmlcontentdemo/widgetdemo/links-alkacon/alkacon.com</destination>
 			<type>pointer</type>
 			<uuidresource>9fc97719-e4be-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1439,7 +1439,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo/links-opencms</destination>
 			<type>linkgallery</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1457,7 +1457,7 @@
 			<destination>xmlcontentdemo/widgetdemo/links-opencms/opencms-faq</destination>
 			<type>pointer</type>
 			<uuidresource>77f01738-e4bf-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1475,7 +1475,7 @@
 			<destination>xmlcontentdemo/widgetdemo/links-opencms/opencms.org</destination>
 			<type>pointer</type>
 			<uuidresource>e4ce3fc9-4a93-11d9-a9ec-7f8d39515329</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1493,7 +1493,7 @@
 			<destination>xmlcontentdemo/widgetdemo/links-opencms/solution-providers</destination>
 			<type>pointer</type>
 			<uuidresource>494008a3-e4bf-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1509,7 +1509,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo/tables</destination>
 			<type>tablegallery</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1527,7 +1527,7 @@
 			<destination>xmlcontentdemo/widgetdemo/tables/fruit-flies.html</destination>
 			<type>plain</type>
 			<uuidresource>dbfad975-e4ba-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1545,7 +1545,7 @@
 			<destination>xmlcontentdemo/widgetdemo/tables/members.html</destination>
 			<type>plain</type>
 			<uuidresource>b3d0af1e-b571-11d9-8de8-5fde9e2f6a72</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1563,7 +1563,7 @@
 			<destination>xmlcontentdemo/widgetdemo/tables/travel-expenses.html</destination>
 			<type>plain</type>
 			<uuidresource>8030d03b-e4bb-11d9-8813-b7f5f5443f03</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1579,7 +1579,7 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1612,7 +1612,7 @@
 		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1623,7 +1623,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1636,7 +1636,7 @@
 			<destination>system/workplace/resources/filetypes/article.gif</destination>
 			<type>image</type>
 			<uuidresource>a17837da-2769-11d9-a415-1fd2a335da0f</uuidresource>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
