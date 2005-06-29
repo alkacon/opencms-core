@@ -92,7 +92,7 @@
 				<translation>s#ü#ue#g</translation>
 				<translation>s#Ü#Ue#g</translation>
 				<translation>s#ß#ss#g</translation>
-				<translation>s#[^0-9a-zA-Z_\.\-\/]#!#g</translation>
+				<translation>s#[^0-9a-zA-Z_$~\.\-\/]#!#g</translation>
 				<translation>s#!+#x#g</translation>
 			</filetranslations>
 			<foldertranslations enabled="false"/>
