@@ -24,14 +24,14 @@ String separator = "";
 		}
 	}
 	%>
-	<input type="hidden" name="action" value="search" />
-	<input type="hidden" name="uri" value="<%= cms.getRequestContext().getUri() %>" />
-	<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>" />
-	<input type="hidden" name="query" value="" />
-	<input type="hidden" name="page" value="1" />
-	<input type="hidden" name="index" value="<%= cms.getSearchIndexName() %>" />
-	&nbsp;<span style="vertical-align: middle;"><input type="text" class="search" name="query2" />
-	&nbsp;<input type="submit" name="startsearch" value="<%= cms.key("link.search") %>" class="formbutton" /></span>&nbsp;
+	<input type="hidden" name="action" value="search">
+	<input type="hidden" name="uri" value="<%= cms.getRequestContext().getUri() %>">
+	<input type="hidden" name="__locale" value="<%= cms.getRequestContext().getLocale() %>">
+	<input type="hidden" name="query" value="">
+	<input type="hidden" name="page" value="1">
+	<input type="hidden" name="index" value="<%= cms.getSearchIndexName() %>">
+	&nbsp;<span style="vertical-align: middle;"><input type="text" class="search" name="query2">
+	&nbsp;<input type="submit" name="startsearch" value="<%= cms.key("link.search") %>" class="formbutton"></span>&nbsp;
 	</form>
 <!-- Ende der Head-Links -->
 </div>
