@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/29 12:16:28 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2005/06/29 12:17:33 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,6 +203,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         deleteTempFile();
         boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
+        // TODO: delete the file if leaving without saving, after creating a new file
         if (directEditMode || forceUnlock || !modified) {
             // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
