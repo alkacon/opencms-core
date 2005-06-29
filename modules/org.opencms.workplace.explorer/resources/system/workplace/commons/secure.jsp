@@ -105,7 +105,7 @@ wp.setParamAction("secure");
     <%@ include file="includes/resourceinfo.txt" %>
     <%= wp.dialogSpacer() %>
 
-    <%= wp.dialogBlockStart(wp.key("label.address")) %>
+    <%= wp.dialogBlockStart(wp.key("label.onlineaddress")) %>
     <%= wp.getResourceUrl() %>
     <%= wp.dialogBlockEnd() %>
     <%= wp.dialogSpacer() %>
