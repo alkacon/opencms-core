@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.233 $
+ * Date   : $Date: 2005/06/29 14:13:20 $
+ * Version: $Revision: 1.234 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.233 $
+ * @version $Revision: 1.234 $
  * 
  * @since 6.0.0 
  */
@@ -913,8 +913,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             } else if (offlineResource.getState() == CmsResource.STATE_CHANGED) {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(m),
-                    new Integer(n)), I_CmsReport.FORMAT_NOTE);
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -1071,8 +1071,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             } else if (offlineResource.getState() == CmsResource.STATE_NEW) {
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_SUCCESSION_2,
-                    new Integer(m),
-                    new Integer(n)), I_CmsReport.FORMAT_NOTE);
+                    String.valueOf(m),
+                    String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
                 report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
