@@ -15,27 +15,26 @@
         </link>
       </links>
       <content><![CDATA[<H1>Release Notes for OpenCms 6.0.0</H1>
-<p>06/29/2005: This is the OpenCms 6.0.0 final release. OpenCms 6.0.0
-is a major upgrade, and it vastly expands the features of OpenCms
-5.0.</p>
-<p>OpenCms 6.0.0 has been in public beta testing for more than 6
-months now and therefore&nbsp;can be considered very stable.</p>
-<H2>What's New?</H2>
-<p>Here is what's new in this release of OpenCms compared to the
-5.0.x version:</p>
-<p><strong><strong>Working with content is made very
-easy</strong>&nbsp;</strong></p>
+<p>06/29/2005: This is the OpenCms 6.0.0 final release. 
+OpenCms 6.0.0 is a major upgrade, and it vastly expands the features of OpenCms 5.0. OpenCms 6.0.0 has been in public beta
+testing for more than 6 months now and therefore&nbsp;can be considered very
+stable.</p>
+<H2>What's New in Version 6.0?</H2>
+<p><strong><strong>Working with content&nbsp;has
+been&nbsp;simplified</strong>&nbsp;</strong></p>
 <ul>
 <li>The "Direct Edit" feature allows users to open the 
   editor directly from the websites front-end by pushing an "Edit" button that 
-  appears on page elements</li><LI>Added an optional WYSIWYG editor implementation of the 
-  popular HtmlArea editor, this editor also works with Mozilla browsers&nbsp;</LI><li>All contents in the VFS can have a "publication date" 
+  appears on page elements</li><LI>Added an optional WYSIWYG editor implementation of 
+  the popular HtmlArea editor, this editor also works with Mozilla (Firefox) 
+  browsers&nbsp;</LI><li>All contents in the VFS can have a "publication date" 
   and an "expiration date" so they can appear / disappear automatically from a 
   website</li><LI>Using the new resource type "XmlContent", building 
-  structured content (e.g. news articles, product descriptions etc.) is really 
-  easy and requires little or no programming&nbsp;</LI><LI>The OpenCms workplace has been rewritten in JSP, 
-  adding new features and much improved usability</LI><li>Build-in support for full text search in HTML, PDF, 
-  Word, Excel and Plaintext documents (based on Apache Lucene)&nbsp;</li><LI>OpenCms now comes with a highly configurable template 
+  structured content (e.g. news articles, product descriptions etc.) can be done 
+  by simply creating an XML schema
+  </LI><LI>The OpenCms workplace has been rewritten in JSP, adding new features and 
+  much improved usability</LI><li>Build-in support for full text search in HTML, 
+  PDF,&nbsp;MS Office&nbsp;and Plaintext documents&nbsp;</li><LI>OpenCms now comes with a highly configurable template 
   with many advanced functions as additional default module&nbsp;</LI><LI>It's not longer required to "lock" a resource in the Explorer with the 
   context menu manually, this is done automatically if the "autolock" feature is 
   enabled (this is also the default)</LI>
@@ -48,30 +47,36 @@ structure</STRONG>     </p>
   "VFS links" automatically</li><LI>Properties on files can be "individual" or "shared" 
   among siblings</LI><LI>The edited pages are now stored directly in the 
   location where they have been edited, the /system/bodies/ folder is not longer 
-  required</LI><LI>Resource permissions in the VFS are now managed in ACLs instead of Unix - 
-  style&nbsp;&nbsp;</LI>
+  required</LI>
 </ul>
  
-<p><strong>OpenCms features more possibilities</strong></p>
+<p><strong>Multisite and internationalization support</strong></p>
 <UL class=noindent>
   <LI>Multiple websites can now be managed in one OpenCms 
   installation</LI><LI>Multi-language versions of the same page and improved 
-  support for managing multi language websites is integrated</LI><LI>Full support for multibyte languages (e.g. UTF-8, which now is the standard encoding)</LI></UL>
-<P><STRONG>OpenCms allows you to secure your 
-documents</STRONG></P>
+  support for managing multi language websites is integrated</LI><LI>Full support for multibyte languages (e.g. UTF-8, 
+  which now is the standard encoding)
+  </LI><LI>Microsites allow users to build "sites&nbsp;within sites"</LI></UL>
+<P><STRONG>    Improved security 
+support</STRONG></P>
 <UL class=noindent>
-<li>It is&nbsp;now possible to configure a "secure" (e.g. 
-  https-) server for a site. Individual documents can be marked as secure, so that they are transmitted via
-this secure server</li></UL>
+  <LI>Resource permissions in the VFS are now managed in access control lists 
+  (ACL) instead of Unix - style</LI>
+  <LI>It is&nbsp;now possible to configure a "secure" (e.g. https-) server for a 
+  site. Individual documents can be marked as secure, so that they are 
+  transmitted via this secure server
+  </LI><LI>A user account is now automatically locked after a configurable number of 
+  invalid login attempts</LI></UL>
 <p><strong>Improvements regarding the usability of
 OpenCms</strong></p>
 <UL>
-  <LI>There is a new and easy to use Administration</LI><LI>The setup wizard guides you through an uncomplicated 
+  <LI>There is a new&nbsp;and much 
+  improved&nbsp;Administration</LI><LI>The setup wizard guides you through an uncomplicated 
   installation of the system. Also many "known issues" (e.g. regarding encoding 
   setting and Xerces version) have been fixed</LI><LI>The Workplace is now fully usable with Mozilla based browsers (e.g. 
   Firefox) </LI></UL>
-<P><STRONG>Changes to&nbsp;the database model make OpenCms more 
-efficient</STRONG></P>
+<P><STRONG>    Changes to&nbsp;the database 
+model</STRONG></P>
 <UL>
   <LI>Publishing has been rewritten and is now much faster 
   especially with many resources</LI><LI>The static export has been fully rewritten, is also 
@@ -85,28 +90,37 @@ efficient</STRONG></P>
 <P><STRONG>A&nbsp;cleaner&nbsp;OpenCms API for programmers</STRONG></P>
 <UL>
   <LI>Implemented a&nbsp;new, cleaned up XmlPage API that 
-  replaces the old XmlTemplate for page data storage</LI><LI>The resource type API has been enhanced, so that resource types can be 
-  easily added without workarounds</LI></UL>
-<P><STRONG>OpenCms has been made more scalable and easy to 
-extend</STRONG>         </P>
+  replaces the old XmlTemplate for page data storage</LI><LI>The resource type API has been enhanced, so that 
+  resource types can be easily added without workarounds
+  </LI><LI>Much improved JavaDoc for the whole core API</LI></UL>
+<P><STRONG>    OpenCms has been made more 
+scalable</STRONG>         </P>
 <UL>
   <LI>Implemented a&nbsp;"plugin" mechanism for editors and 
   make editors more configurable, so that other editor implementations (e.g. 
   WYSIWYG Java Applet) can be easily integrated in the workplace</LI><LI>The module API has been rewritten from ground up, now 
-  providing a clean interface to implement</LI><LI>The OpenCms user management has been made independent from the OpenCms 
-  VFS, so that other user directories can be "plugged" into the system as a 
-  separate module </LI></UL>
+  providing a clean interface to implement</LI><LI>The OpenCms user management has been made independent 
+  from the OpenCms VFS, so that other user directories can be "plugged" into the 
+  system as a separate module
+  </LI><LI>The scheduler API has been much improved,&nbsp;and an easy to use 
+  scheduler GUI is provided</LI></UL>
 <P><STRONG>Miscellaneous additions and improvements</STRONG></P>
 <UL><li>Optimized the use of http headers, including use of 
-  "304 - not modified" for resources that have not been modified</li><li>The XmlPage structure is always validated by a W3C XML 
-  Schema, to prevent creation of invalid content</li><li>Logging now uses log4j from Apache Jakarta</li><li>The configuration is based on a new XML structure that 
+  "304 - not modified" for resources that have not been modified</li><li>The XmlPage and XmlContent structure is always 
+  validated by a W3C XML Schema, to prevent creation of invalid content</li><li>Logging now uses log4j from Apache Jakarta</li><li>The configuration is based on a new XML structure that 
   is read by Apache Digester&nbsp;</li></UL>
 <H2>Backward compatibility</H2>
-<p>OpenCms 6 is largely backward compatible with the 5.x releases.
-Existing content from 5.x is easily importable, automatically
-converted to the new XML page format and requires almost no manual
-modification - at least if you didn't somehow change the structure
-of the XML control code of the 5.0.x page files.</p>
+<p>We recommend everyone who uses an earlier version of 
+OpenCms to update to the 6.0.0 release. In case you are using one of the previous development versions
+(OpenCms 6 alpha, beta or release candidates), there
+have been a lot of issues fixed in the final release. If
+you still use OpenCms 5.0.x, you should definitely consider an update
+since the 6.0 version is much more advanced and stable.</p>
+<P>OpenCms 6 is largely backward compatible with the 5.x releases. Existing 
+content from 5.x is easily importable, automatically converted to the new XML 
+page format and requires almost no manual modification - at least if you didn't 
+somehow change the structure of the XML control code of the 5.0.x page 
+files.</P>
 <p>For the sake of a clean and structured API, we have decided to
 make improvements on the API level that break existing 5.0 code.
 This means changes of Java code in templates or custom classes is
