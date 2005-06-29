@@ -50,6 +50,8 @@
 			<validationrules/>
 			<defaults>
 				<default element="Date" value="${currenttime}"/>
+				<default element="Release" value="${currenttime}"/>
+				<default element="Expiration" value="${currenttime}"/>
 			</defaults>
 		</xsd:appinfo>
 

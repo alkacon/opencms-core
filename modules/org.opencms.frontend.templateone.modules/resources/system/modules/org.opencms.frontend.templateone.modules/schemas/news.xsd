@@ -53,6 +53,8 @@
 			<validationrules/>
 			<defaults>
 				<default element="Date" value="${currenttime}"/>
+				<default element="Release" value="${currenttime}"/>
+				<default element="Expiration" value="${currenttime}"/>
 				<default element="Author" value="${currentuser.firstname} ${currentuser.lastname}"/>
 				<default element="AuthorMail" value="${currentuser.email}"/>
 			</defaults>

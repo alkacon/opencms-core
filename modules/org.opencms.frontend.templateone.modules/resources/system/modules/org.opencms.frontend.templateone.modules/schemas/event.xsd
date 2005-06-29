@@ -45,6 +45,10 @@
 				<layout element="Priority" widget="SelectorWidget" configuration="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3*:${key.priority.standard}|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}" />
 				<layout element="ShortDescription" widget="TextareaWidget" />
 			</layouts>
+			<defaults>
+				<default element="Release" value="${currenttime}"/>
+				<default element="Expiration" value="${currenttime}"/>
+			</defaults>
 			<validationrules/>
 		</xsd:appinfo>
 
