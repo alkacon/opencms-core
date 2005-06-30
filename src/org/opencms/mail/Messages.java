@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/06/30 10:12:36 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEND_EMAIL_AUTHENTICATE_2 = "ERR_SEND_EMAIL_AUTHENTICATE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SEND_EMAIL_HOSTNAME_1 = "ERR_SEND_EMAIL_HOSTNAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_HOST_1 = "LOG_ADD_HOST_1";
