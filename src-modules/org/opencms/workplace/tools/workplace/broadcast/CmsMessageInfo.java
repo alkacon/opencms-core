@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsMessageInfo.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/06/30 10:13:28 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,8 @@ import java.util.Collections;
 import java.util.List;
 import java.util.StringTokenizer;
 
+import javax.mail.Address;
+import javax.mail.SendFailedException;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 
@@ -50,7 +52,7 @@ import javax.mail.internet.InternetAddress;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,7 +151,29 @@ public class CmsMessageInfo {
         theMail.setSubject("[" + OpenCms.getSystemInfo().getServerName() + "] " + getSubject());
         theMail.setMsg(getMsg());
         // send the mail
-        theMail.send();
+        try {
+            theMail.send();
+        } catch (SendFailedException sf) {
+            // don't try to resend to successful Addresses: construct a new string with all unsent
+            StringBuffer newTo = new StringBuffer();
+            Address[] unsent = sf.getValidUnsentAddresses();
+            if (unsent != null) {
+                for (int i = unsent.length - 1; i >= 0; i--) {
+                    newTo.append(unsent[i].toString()).append(';');
+                }
+            }
+            if (unsent != null) {
+                unsent = sf.getInvalidAddresses();
+                for (int i = unsent.length - 1; i >= 0; i--) {
+                    newTo.append(unsent[i].toString()).append(';');
+                }
+            }
+
+            setTo(newTo.toString());
+            // use the message of the internal cause: this is a localizes CmsRuntimeException
+            throw (Exception)sf.getCause();
+
+        }
     }
 
     /**
@@ -200,6 +224,9 @@ public class CmsMessageInfo {
     /**
      * Sets the to string.<p>
      * 
+     * This has to be a ';' separated string of email-addresses.<p>
+     * 
+     * 
      * @param to the to string
      */
     public void setTo(String to) {
@@ -242,4 +269,5 @@ public class CmsMessageInfo {
             return Collections.EMPTY_LIST;
         }
     }
+
 }
