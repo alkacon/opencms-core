@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/28 17:45:03 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/06/30 08:57:03 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -647,12 +647,22 @@ public abstract class CmsEditor extends CmsDialog {
             // make sure the project is reset in case of any exception
             switchToCurrentProject();
         }
-        // update properties of original file first (required if change in encoding occured)
-        getCms().writePropertyObjects(getParamResource(), properties);
-        // now replace the content of the original file
-        CmsFile orgFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
-        orgFile.setContents(tempFile.getContents());
-        getCms().writeFile(orgFile);
+        if (getCms().existsResource(getParamResource(), CmsResourceFilter.ALL)) {
+            // update properties of original file first (required if change in encoding occured)
+            getCms().writePropertyObjects(getParamResource(), properties);
+            // now replace the content of the original file
+            CmsFile orgFile = getCms().readFile(getParamResource(), CmsResourceFilter.ALL);
+            orgFile.setContents(tempFile.getContents());
+            getCms().writeFile(orgFile);
+        } else {
+            getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
+            // remove the temporary file flag
+            int flags = getCms().readResource(getParamResource()).getFlags();
+            if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
+                flags ^= CmsResource.FLAG_TEMPFILE;
+            }
+            getCms().chflags(getParamResource(), flags);
+        }
     }
 
     /**

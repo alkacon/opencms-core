@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/29 13:20:55 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/06/30 08:57:03 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,35 +204,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         deleteTempFile();
         boolean directEditMode = Boolean.valueOf(getParamDirectedit()).booleanValue();
         boolean modified = Boolean.valueOf(getParamModified()).booleanValue();
-        if (directEditMode && !modified) {
-            try {
-                // create new template content
-                // one resource serves as a "template" for the new resource
-                CmsFile templateFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-                CmsXmlContent template = CmsXmlContentFactory.unmarshal(getCms(), templateFile);
-                Locale locale = (Locale)OpenCms.getLocaleManager().getDefaultLocales(getCms(), getParamResource()).get(0);
-
-                // now create a new XML content based on the templates content definition            
-                CmsXmlContent newContent = CmsXmlContentFactory.createDocument(
-                    getCms(),
-                    locale,
-                    template.getEncoding(),
-                    template.getContentDefinition());
-
-                // get current content
-                String currentContents = new String(getCms().readFile(getParamResource()).getContents());
-                // compare
-                if (currentContents.equals(new String(newContent.marshal()))) {
-                    // delete file if direct edit a new content
-                    getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
-                }
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e.getLocalizedMessage(), e);
-                }
-            }
-        } else if (directEditMode || forceUnlock || !modified) {
+        if (directEditMode || forceUnlock || !modified) {
             // unlock the resource when in direct edit mode, force unlock is true or resource was not modified
             try {
                 getCms().unlockResource(getParamResource());
@@ -297,7 +269,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // get the collector used for calculating the next file name
         I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
-
+        String newFileName = "";
         try {
 
             // one resource serves as a "template" for the new resource
@@ -313,7 +285,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 template.getContentDefinition());
 
             // IMPORTANT: calculation of the name MUST be done here so the file name is ensured to be valid
-            String newFileName = collector.getCreateLink(getCms(), collectorName, param);
+            newFileName = collector.getCreateLink(getCms(), collectorName, param);
 
             // now create the resource, fill it with the marshalled XML and write it back to the VFS
             getCms().createResource(newFileName, templateFile.getTypeId());
@@ -322,9 +294,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             newFile.setContents(newContent.marshal());
             // write the file with the updated content
             getCms().writeFile(newFile);
-            // TODO: think about to set the internal read flag during the edition, 
-            // and later when editing is completed to remove the flag
-
+            
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamAction(null);
@@ -335,14 +305,21 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setParamTempfile(createTempFile());
 
             // set the member variables for the content 
-            m_file = newFile;
+            m_file = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
             m_content = newContent;
-
+            
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
             }
             throw new JspException(e);
+        } finally {
+            try {
+                // delete the new file
+                getCms().deleteResource(newFileName, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            } catch (CmsException e) {
+                // ignore
+            }
         }
     }
 
