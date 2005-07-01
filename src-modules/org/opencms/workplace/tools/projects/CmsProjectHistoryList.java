@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectHistoryList.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/01 08:29:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -194,7 +194,7 @@ public class CmsProjectHistoryList extends A_CmsListDialog {
         Iterator itProjects = projects.iterator();
         while (itProjects.hasNext()) {
             CmsBackupProject project = (CmsBackupProject)itProjects.next();
-            CmsListItem item = getList().newItem(new Integer(project.getId()).toString());
+            CmsListItem item = getList().newItem(new Integer(project.getVersionId()).toString());
             item.set(LIST_COLUMN_NAME, project.getName());
             item.set(LIST_COLUMN_DESCRIPTION, project.getDescription());
             try {
