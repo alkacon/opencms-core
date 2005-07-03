@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  * 
@@ -135,6 +135,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      * @author Alexander Kandzior 
      */
     class CmsFlexKeyMap extends LRUMap {
+
+        /** Serial version UID required for safe serialization. */
+        private static final long serialVersionUID = 6931995916013396902L;
 
         /**
          * Initialize the map with the given size.<p>

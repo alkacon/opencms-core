@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsLoaderException.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,14 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLoaderException extends CmsException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -6554951600180737353L;
 
     /**
      * Creates a new localized Exception.<p>

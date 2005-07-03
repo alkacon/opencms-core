@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/06/28 17:45:03 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,11 +44,14 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0 
  */
 public class CmsResource extends Object implements Cloneable, Serializable, Comparable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 257325098790850498L;
 
     /**
      * A comparator for the release date of 2 resources.<p>

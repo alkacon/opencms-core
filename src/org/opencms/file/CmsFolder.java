@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,14 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0 
  */
 public class CmsFolder extends CmsResource implements Cloneable, Serializable, Comparable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 5527163725725725452L;
 
     /**
      * Constructor, creates a new CmsFolder Object from the given CmsResource.<p> 

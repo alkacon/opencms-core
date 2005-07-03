@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle8/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,10 +36,13 @@ package org.opencms.db.oracle8;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.oracle.CmsSqlManager {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -3971397442201681203L;
 
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/oracle8/query.properties";

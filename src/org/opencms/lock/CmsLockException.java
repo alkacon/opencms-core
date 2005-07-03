@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockException.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,14 @@ import org.opencms.main.CmsException;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLockException extends CmsException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 6287290119009014741L;
 
     /**
      * Creates a new localized Exception.<p>

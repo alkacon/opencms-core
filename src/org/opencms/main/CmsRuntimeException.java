@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsRuntimeException.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,14 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsRuntimeException extends RuntimeException implements I_CmsThrowable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -7855345575622173787L;
 
     /** The container for the localized message.  */
     protected CmsMessageContainer m_message;

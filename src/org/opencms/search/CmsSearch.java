@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/07/03 09:41:51 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.main.OpenCms;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.util.CmsStringUtil;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -69,11 +68,11 @@ import org.apache.lucene.search.SortField;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearch implements Serializable, Cloneable {
+public class CmsSearch implements Cloneable {
 
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {

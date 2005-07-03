@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsDataNotImplementedException.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/03 09:41:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,14 @@ import org.opencms.main.CmsException;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0 
  */
 public class CmsDataNotImplementedException extends CmsDataAccessException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -2896104363126492116L;
 
     /**
      * @see org.opencms.main.CmsException#CmsException(CmsMessageContainer)

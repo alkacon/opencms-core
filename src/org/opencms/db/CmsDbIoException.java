@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbIoException.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.main.CmsException;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  * 
  * @since 6.0.0
  */
 public class CmsDbIoException extends CmsDbException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -2591688110837459803L;
 
     /**
      * Creates a new localized Exception.<p>

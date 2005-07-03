@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/06/28 09:22:34 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.LineNumberReader;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -92,11 +91,11 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSetupBean extends Object implements Serializable, Cloneable, I_CmsShellCommands {
+public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommands {
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";

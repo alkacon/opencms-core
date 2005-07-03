@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronizeList.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,14 @@ import java.io.Serializable;
  * @author Edna Falkenhan
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSynchronizeList implements Serializable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -4460686435282590290L;
 
     /**
      * Last modification data of this resource in the FS.

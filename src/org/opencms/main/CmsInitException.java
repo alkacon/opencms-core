@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsInitException.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,14 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsInitException extends CmsRuntimeException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 7705928617426913316L;
 
     /** Indicates that this exception describes a new error. */
     private boolean m_newError;

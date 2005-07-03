@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,18 +31,17 @@
 
 package org.opencms.setup;
 
-import java.io.Serializable;
 
 /**
  * Contains info about the result of a setup test.<p>
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSetupTestResult extends Object implements Serializable, Cloneable {
+public class CmsSetupTestResult extends Object implements Cloneable {
 
     private boolean m_green;
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportException.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.main.CmsException;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsStaticExportException extends CmsException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 7034371829347546644L;
 
     /**
      * Creates a new localized Exception.<p>

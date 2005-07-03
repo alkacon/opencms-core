@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexException.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/03 09:41:51 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,14 @@ import org.opencms.main.CmsException;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsIndexException extends CmsException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 2847764701955156287L;
 
     /**
      * Creates a new localized Exception.<p>

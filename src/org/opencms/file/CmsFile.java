@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,14 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0 
  */
 public class CmsFile extends CmsResource implements Cloneable, Serializable, Comparable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -5201022482708455620L;
 
     /** The id of the content database record. */
     private CmsUUID m_contentId;

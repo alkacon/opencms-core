@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsIllegalStateException.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,14 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsIllegalStateException extends CmsRuntimeException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 1714975399892060445L;
 
     /**
      * Creates a new localized Exception.<p>

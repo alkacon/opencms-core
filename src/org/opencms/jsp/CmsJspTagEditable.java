@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,11 +54,14 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
 /**
  * Implementation of editor tag used to provide settings to include tag.<p>
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagEditable extends BodyTagSupport {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -8273502823786740776L;
 
     /** file with editable elements. */
     protected String m_file;
@@ -175,11 +178,7 @@ public class CmsJspTagEditable extends BodyTagSupport {
         // set request parameters required by the included direct edit JSP 
         Map parameterMap = new HashMap();
         CmsJspTagInclude.addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
-        CmsJspTagInclude.addParameter(
-            parameterMap,
-            I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_TARGET,
-            editTarget,
-            true);
+        CmsJspTagInclude.addParameter(parameterMap, I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_TARGET, editTarget, true);
         CmsJspTagInclude.addParameter(
             parameterMap,
             I_CmsEditorActionHandler.DIRECT_EDIT_PARAM_LOCALE,

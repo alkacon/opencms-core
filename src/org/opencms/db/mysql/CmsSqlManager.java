@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mysql/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,14 @@ package org.opencms.db.mysql;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -4644765734741432392L;
 
     /** The filename/path of the SQL query properties. */
     private static final String QUERY_PROPERTIES = "org/opencms/db/mysql/query.properties";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,11 +59,14 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 1726324354709298575L;
 
     /** Ethernet addess of the server machine. */
     private static EthernetAddress m_ethernetAddress;

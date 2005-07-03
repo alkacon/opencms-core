@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,11 +57,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.62 $
+ * @version $Revision: 1.63 $
  * 
  * @since 6.0.0 
  */
 public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Serializable, Cloneable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -5994026786008303964L;
 
     /** A pattern being replaced in SQL queries to generate SQL queries to access online/offline tables. */
     protected static final String QUERY_PROJECT_SEARCH_PATTERN = "_${PROJECT}_";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/03 09:41:51 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,13 +58,16 @@ import javax.swing.border.Border;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  * 
  * @see CmsAntTaskSelectionPrompt
  */
 public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -8439685952987222098L;
 
     /** Constant for border width. */
     private static final int C_BORDER_SIZE = 10;
@@ -77,26 +80,37 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
     /** Border. */
     private final Border m_border = BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, 0, C_BORDER_SIZE);
+    
     /** Panel for buttons. */
     private final JPanel m_buttons = new JPanel();
+    
     /** Cancel button. */
     private final JButton m_cancel = new JButton("Cancel");
+    
     /** Main Panel. */
     private final JPanel m_content = new JPanel();
+    
     /** Array of by default selected items. */
     private String[] m_defList = null;
+    
     /** Label for prompt. */
     private JLabel m_label = null;
+    
     /** Ok button. */
     private final JButton m_ok = new JButton("Ok");
+    
     /** Associated ant task. */
     private final CmsAntTaskSelectionPrompt m_promptTask;
+    
     /** Select all button. */
     private final JButton m_selAll = new JButton("All");
+    
     /** Array of selection buttons, check boxes or radio buttons. */
     private JToggleButton[] m_selections = null;
+    
     /** Select none button. */
     private final JButton m_selNone = new JButton("None");
+    
     /** Scrollable view. */
     private final JScrollPane m_view = new JScrollPane(m_content);
 

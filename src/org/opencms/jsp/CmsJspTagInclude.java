@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,14 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParamParent {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 705978510743164951L;
 
     /** Debugging on / off. */
     private static final boolean DEBUG = false;

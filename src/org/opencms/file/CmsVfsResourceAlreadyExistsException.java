@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsVfsResourceAlreadyExistsException.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.main.CmsException;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0 
  */
 public class CmsVfsResourceAlreadyExistsException extends CmsVfsException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -3746588003217008115L;
 
     /**
      * Creates a new localized Exception.<p>

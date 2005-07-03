@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationException.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/07/03 09:41:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,12 +40,15 @@ import org.opencms.main.CmsException;
  * @author Alexander Kandzior
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0
  */
-public class CmsConfigurationException extends CmsException { 
-    
+public class CmsConfigurationException extends CmsException {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -5455695221600757274L;
+
     /**
      * Creates a new localized Exception.<p>
      * 
@@ -65,14 +68,14 @@ public class CmsConfigurationException extends CmsException {
     public CmsConfigurationException(CmsMessageContainer container, Throwable cause) {
 
         super(container, cause);
-    }     
-       
+    }
+
     /**
      * @see org.opencms.main.CmsException#createException(org.opencms.i18n.CmsMessageContainer, java.lang.Throwable)
      */
     public CmsException createException(CmsMessageContainer container, Throwable cause) {
-        
+
         return new CmsConfigurationException(container, cause);
-    }     
-              
+    }
+
 }

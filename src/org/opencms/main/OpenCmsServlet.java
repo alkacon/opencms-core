@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/06/28 13:30:17 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.54 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.54 $ 
  * 
  * @since 6.0.0 
  * 
@@ -85,6 +85,9 @@ import org.apache.commons.logging.Log;
  * @see org.opencms.main.OpenCms
  */
 public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 4729951599966070050L;
 
     /** Name of the <code>DefaultWebApplication</code> parameter in the <code>web.xml</code> OpenCms servlet configuration. */
     public static final String SERVLET_PARAM_DEFAULT_WEB_APPLICATION = "DefaultWebApplication";

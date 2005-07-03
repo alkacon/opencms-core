@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,11 +102,14 @@ import javax.servlet.jsp.tagext.Tag;
  *
  * @author Shawn Bayern
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagParam extends BodyTagSupport {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -1057768160264355211L;
 
     /**
      * There used to be an 'encode' attribute; I've left this as a

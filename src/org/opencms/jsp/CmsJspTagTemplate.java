@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,14 @@ import org.apache.commons.logging.Log;
  * Used to select various template elements form a JSP template that
  * is included in another file.<p>
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagTemplate extends BodyTagSupport {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -3773247710025810438L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagTemplate.class);

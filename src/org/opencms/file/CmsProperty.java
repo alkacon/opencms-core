@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,11 +82,14 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0 
  */
 public class CmsProperty implements Serializable, Cloneable, Comparable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 93613508924212782L;
 
     /**
      * Signals that the resource property values of a resource

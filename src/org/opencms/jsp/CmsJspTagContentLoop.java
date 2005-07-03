@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,11 +47,14 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 8832749526732064836L;
 
     /** Reference to the looped content element. */
     private A_CmsXmlDocument m_content;

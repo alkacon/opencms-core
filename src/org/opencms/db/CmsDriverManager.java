@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/06/29 15:18:11 $
- * Version: $Revision: 1.543 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.544 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.543 $
+ * @version $Revision: 1.544 $
  * 
  * @since 6.0.0
  */
@@ -3034,7 +3034,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         CmsGroup group = null;
 
         // get all child groups if the user group
-        allChilds = m_userDriver.readChildGroups(dbc, groupname);
+        childs = m_userDriver.readChildGroups(dbc, groupname);
         // now get all subchilds for each group
         Iterator it = childs.iterator();
         while (it.hasNext()) {

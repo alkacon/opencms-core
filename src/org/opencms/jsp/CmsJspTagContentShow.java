@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,11 +57,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagContentShow extends TagSupport {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -6776067180965738432L;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(TagSupport.class);

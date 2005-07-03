@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagLabel.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/03 09:41:52 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior
  *  
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,9 @@ public class CmsJspTagLabel extends BodyTagSupport {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagLabel.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 5720473164730803034L;
 
     /**
      * Internal action method.<p>
