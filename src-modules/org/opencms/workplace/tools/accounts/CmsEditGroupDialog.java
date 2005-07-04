@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/04 12:39:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -130,6 +130,8 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
                 newGroup.setProjectCoWorker(m_group.getProjectCoWorker());
                 newGroup.setRole(m_group.getRole());
                 m_group = newGroup;
+            } else {
+                m_group.setParentId(getCms().readGroup(getParentGroup()).getId());
             }
             // write the edited group
             getCms().writeGroup(m_group);
