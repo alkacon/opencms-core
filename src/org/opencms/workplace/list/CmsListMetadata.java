@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/04 12:29:51 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -539,6 +539,7 @@ public class CmsListMetadata {
     public void setSearchAction(CmsListSearchAction searchAction) {
 
         m_searchAction = searchAction;
+        m_searchAction.setListId(getListId());
     }
 
     /**
