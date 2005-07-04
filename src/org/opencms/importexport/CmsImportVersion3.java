@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/06/29 07:10:43 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/07/04 07:42:59 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.importexport;
 
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
@@ -47,6 +48,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPasswordHandler;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 import org.opencms.xml.page.CmsXmlPage;
 
@@ -72,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  * 
@@ -333,9 +335,25 @@ public class CmsImportVersion3 extends A_CmsImport {
                             String denied = CmsImport.getChildElementTextValue(
                                 currentEntry,
                                 CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
-
-                            // add the entry to the list
-                            aceList.add(getImportAccessControlEntry(res, id, allowed, denied, acflags));
+                            
+                            // get the correct principal
+                            try {
+                                String principalId = new CmsUUID().toString();
+                                String principal = id.substring(id.indexOf('.') + 1, id.length());
+    
+                                if (id.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+                                    principal = OpenCms.getImportExportManager().translateGroup(principal);
+                                    principalId = m_cms.readGroup(principal).getId().toString();
+                                } else {
+                                    principal = OpenCms.getImportExportManager().translateUser(principal);
+                                    principalId = m_cms.readUser(principal).getId().toString();
+                                }
+                                                       
+                                // add the entry to the list
+                                aceList.add(getImportAccessControlEntry(res, principalId, allowed, denied, acflags));
+                            } catch (CmsDataAccessException  e) {
+                                // user or group not found, so do not import the ace                                
+                            }
                         }
                         importAccessControlEntries(res, aceList);
 
