@@ -1,7 +1,8 @@
-
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_additionaldates.xsd"/>
+		
 	<xsd:element name="EventDates" type="OpenCmsEventDates"/>
 	
 	<xsd:complexType name="OpenCmsEventDates">
@@ -14,7 +15,7 @@
 		<xsd:sequence>
 			<xsd:element name="EventDate" type="OpenCmsDateTime" />
 			<xsd:element name="EventEndDate" type="OpenCmsDateTime" minOccurs="0" />
-			<xsd:element name="AdditionalDate" type="OpenCmsDateTime" minOccurs="0" maxOccurs="20" />	
+			<xsd:element name="AdditionalDate" type="OpenCmsAdditionalDate" minOccurs="0" maxOccurs="20" />	
 			<xsd:element name="DateRemark" type="OpenCmsString" minOccurs="0" />		
 			<xsd:element name="RegistrationClose" type="OpenCmsDateTime" minOccurs="0" />
 		</xsd:sequence>
@@ -24,9 +25,6 @@
 	<xsd:annotation>
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.modules.workplace"/>		
-			<mappings>
-				<mapping element="EventDate" mapto="property:collector.date" />
-			</mappings>
 			<layouts>
 				<layout element="DateRemark" widget="TextareaWidget" />
 			</layouts>

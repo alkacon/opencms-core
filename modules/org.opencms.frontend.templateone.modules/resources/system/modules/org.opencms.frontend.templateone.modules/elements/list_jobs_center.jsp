@@ -12,10 +12,39 @@ pageContext.setAttribute("locale", locale);
 boolean showNumber = Integer.parseInt(request.getParameter("elementcount")) == Integer.MAX_VALUE;
 pageContext.setAttribute("shownumber", "" + showNumber);
 
-%><fmt:setLocale value="${locale}" /><%--
---%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
+String folder = cms.getCategoryFolder();
+pageContext.setAttribute("catfolder", folder);
 
---%><cms:contentload collector="${param.collector}" param="${param.folder}job_${number}.html|job|${param.elementcount}" editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
+int count = cms.getResourceCount(folder, "job");
+pageContext.setAttribute("rescount", "" + count);
+
+%><fmt:setLocale value="${locale}" /><%--
+--%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%
+
+// get first the navigation HTML which sets additionally some flags in the bean
+String categoryNav = cms.buildHtmlNavList("job", "style=\"margin-top: 4px;\"");
+
+if (cms.showNavBreadCrumb()) {
+%>
+<hr noshade="noshade" size="1">
+<b><fmt:message key="navbar.center.path" />:</b> <%= cms.buildHtmlNavBreadcrumb(" | ") %>
+<hr noshade="noshade" size="1">
+<%
+}
+
+if (cms.hasCategoryFolders()) {
+%>
+<p style="margin: 0px;">
+<b><fmt:message key="navbar.center.categories" />:</b></p>
+<%= categoryNav %>
+<hr noshade="noshade" size="1">
+<%
+}
+%>
+<c:choose>
+<c:when test="${(rescount != '0') && (rescount != '-1')}"><%--
+
+--%><cms:contentload collector="${param.collector}" param="${pageContext.catfolder}job_${number}.html|job|${param.elementcount}" editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
 --%><cms:contentinfo var="contentInfo" scope="request" /><%--
 
 --%><c:if test="${(contentInfo.resultIndex % contentInfo.pageSize) == 1}"><%--
@@ -35,7 +64,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 [<c:out value="${i}" />]&nbsp;
 </c:when>
 <c:otherwise>
-[<a href="<cms:link><%= cms.getRequestContext().getUri() %>?pageIndex=<c:out value="${i}" /></cms:link>"><c:out value="${i}" /></a>]&nbsp;
+[<a href="<cms:link><%= cms.getRequestContext().getUri() %>?pageIndex=<c:out value="${i}" />&categoryfolder=<c:out value="${catfolder}" /></cms:link>"><c:out value="${i}" /></a>]&nbsp;
 </c:otherwise>
 </c:choose>
 </c:forEach>
@@ -43,9 +72,13 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <c:if test="${shownumber == 'true'}"></p></c:if>
 </c:if>
 <p style="margin-top: 8px; padding-top: 0px;">
-<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
+<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %>&categoryfolder=<%= folder %></cms:link>"><b><cms:contentshow element="Title" /></b></a><br>
 <cms:contentshow element="ShortDescription" />
-<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
+<small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %>&categoryfolder=<%= folder %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>
 </cms:contentload><%--
---%></fmt:bundle>
+--%></c:when><%--
+
+--%><c:otherwise>
+<p><b><fmt:message key="item.noentries" /></b></p>
+</c:otherwise></c:choose></fmt:bundle>

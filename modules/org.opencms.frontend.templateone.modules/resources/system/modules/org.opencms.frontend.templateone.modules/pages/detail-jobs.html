@@ -7,6 +7,7 @@ CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
 String uri = request.getParameter("uri");
 String oldUri = cms.getRequestContext().getUri();
+pageContext.setAttribute("detailfile", oldUri);
 boolean uriPresent = false;
 if (CmsStringUtil.isNotEmpty(uri)) {
 	cms.getRequestContext().setUri(uri);
@@ -20,16 +21,10 @@ pageContext.setAttribute("locale", locale);
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:include property="template" element="head" /><%
-
-if (CmsStringUtil.isNotEmpty(uri)) {
-	cms.getRequestContext().setUri(oldUri);
-}
-
-%>
+--%><cms:include property="template" element="head" />
 <div class="element"><%--
 
---%><cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
+--%><cms:contentload collector="singleFile" param="${pageContext.detailfile}" editable="true">
 
 <table border="0">
 <tr><td colspan="2">
@@ -197,9 +192,18 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%-- end external links --%>
 
 </td></tr>
-<% if (uriPresent) { %>
+<% if (uriPresent) { 
+		
+		String catFolder = request.getParameter("categoryfolder");
+		if (catFolder != null && !"".equals(catFolder)) {
+			catFolder = "<input type=\"hidden\" name=\"categoryfolder\" value=\"" + catFolder + "\">";
+		} else {
+			catFolder = "";
+		}
+	
+%>
 <tr>
-	<td colspan="2">&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
+	<td colspan="2">&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0" method="post"><%= catFolder %><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
 </tr>
 <% } %>
 </table>

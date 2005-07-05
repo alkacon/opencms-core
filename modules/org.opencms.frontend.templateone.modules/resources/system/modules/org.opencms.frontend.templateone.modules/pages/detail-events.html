@@ -7,6 +7,7 @@ CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
 String uri = request.getParameter("uri");
 String oldUri = cms.getRequestContext().getUri();
+pageContext.setAttribute("detailfile", oldUri);
 boolean uriPresent = false;
 if (CmsStringUtil.isNotEmpty(uri)) {
 	cms.getRequestContext().setUri(uri);
@@ -20,16 +21,10 @@ pageContext.setAttribute("locale", locale);
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:include property="template" element="head" /><%
-
-if (CmsStringUtil.isNotEmpty(uri)) {
-	cms.getRequestContext().setUri(oldUri);
-}
-
-%>
+--%><cms:include property="template" element="head" />
 <div class="element">
 
-<cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
+<cms:contentload collector="singleFile" param="${pageContext.detailfile}" editable="true">
 
 <table border="0">
 <tr><td colspan="2">
@@ -37,30 +32,35 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <cms:contentcheck ifexists="SubTitle"><p><span style="font-weight: bold;"><cms:contentshow element="SubTitle" /></span></p></cms:contentcheck>
 
 <%-- begin short description --%>
-<b><cms:contentshow element="ShortDescription" /></b>
+<cms:contentcheck ifexists="ShortDescription"><b><cms:contentshow element="ShortDescription" /></b></cms:contentcheck>
 <hr noshade="noshade" size="1">
 <%-- end short description --%>
 </td></tr>
 
 <%-- begin date --%>
 <cms:contentcheck ifexists="EventDates/EventDate">
-<c:set var="dateString">
+<c:set var="startdateString">
 	<cms:contentshow element="EventDates/EventDate" />
 </c:set>
 <%
-	cms.setDate("dateString");
+	cms.setDate("startdateString");
 %>
 <tr>
 	<td class="nowrap">
-		<fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" />
+		<fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><fmt:message key="eventarticle.eventtime" />
 		<cms:contentcheck ifexists="EventDates/EventEndDate">
-		<c:set var="dateString">
-		<cms:contentshow element="EventDates/EventEndDate" />
+		<c:set var="enddateString">
+			<cms:contentshow element="EventDates/EventEndDate" />
 		</c:set>
+		<fmt:message key="eventarticle.eventend" /> 
 		<%
-			cms.setDate("dateString");
-		%>
-		<fmt:message key="eventarticle.eventend" /> <fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" />
+			cms.setDate("enddateString");
+			if (cms.isSameDate("startdateString", "enddateString")) {
+				%><fmt:formatDate value="${date}" timeStyle="short" type="time" /><%
+			} else {
+				%><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><%
+			}
+		%><fmt:message key="eventarticle.eventtime" />
 		</cms:contentcheck>
 	</td>
 </tr>
@@ -70,12 +70,25 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%-- begin additional dates --%>
 <cms:contentcheck ifexistsone="EventDates/AdditionalDate">
 <tr><td class="nowrap"><fmt:message key="label.EventDate.AdditionalDate" />:&nbsp;</td><td><cms:contentloop element="EventDates/AdditionalDate"><%--
---%><c:set var="dateString"><%--
-	--%><cms:contentshow  /><%--
+--%><c:set var="startdateString"><%--
+	--%><cms:contentshow element="StartDate" /><%--
 --%></c:set><%
-	cms.setDate("dateString");
-%><c:if test="${next == 'true'}">, </c:if><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><c:set var="next" value="true" /><%--
---%></cms:contentloop></td></tr>
+	cms.setDate("startdateString");
+%><c:if test="${next == 'true'}">; </c:if><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><fmt:message key="eventarticle.eventtime" /><c:set var="next" value="true" /><%--
+--%><cms:contentcheck ifexists="EndDate"> <fmt:message key="eventarticle.eventend" /> <%--
+
+--%><c:set var="enddateString"><%--
+	--%><cms:contentshow element="EndDate" /><%--
+--%></c:set><%
+	cms.setDate("enddateString");
+	if (cms.isSameDate("startdateString", "enddateString")) {
+		%><fmt:formatDate value="${date}" timeStyle="short" type="time" /><%
+	} else {
+		%><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><%
+	}
+%><fmt:message key="eventarticle.eventtime" /><%--
+
+--%></cms:contentcheck></cms:contentloop></td></tr>
 </cms:contentcheck>
 <%-- end additional dates --%>
 

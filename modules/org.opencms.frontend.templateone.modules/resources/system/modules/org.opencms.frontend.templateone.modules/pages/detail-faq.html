@@ -7,6 +7,7 @@ CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
 String uri = request.getParameter("uri");
 String oldUri = cms.getRequestContext().getUri();
+pageContext.setAttribute("detailfile", oldUri);
 boolean uriPresent = false;
 if (CmsStringUtil.isNotEmpty(uri)) {
 	cms.getRequestContext().setUri(uri);
@@ -20,16 +21,10 @@ pageContext.setAttribute("locale", locale);
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:include property="template" element="head" /><%
-
-if (CmsStringUtil.isNotEmpty(uri)) {
-	cms.getRequestContext().setUri(oldUri);
-}
-
-%>
+--%><cms:include property="template" element="head" />
 <div class="element">
 
-<cms:contentload collector="singleFile" param="${opencms.uri}" editable="true">
+<cms:contentload collector="singleFile" param="${pageContext.detailfile}" editable="true">
 
 <h1><cms:contentshow element="Title" /></h1>
 
@@ -47,8 +42,17 @@ if (CmsStringUtil.isNotEmpty(uri)) {
 <%@ include file="../elements/detail-element-faqparagraph.txt" %>
 <%-- end images --%>
 
-<% if (uriPresent) { %>
-<p><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></p>
+<% if (uriPresent) { 
+	
+	String catFolder = request.getParameter("categoryfolder");
+	if (catFolder != null && !"".equals(catFolder)) {
+		catFolder = "<input type=\"hidden\" name=\"categoryfolder\" value=\"" + catFolder + "\">";
+	} else {
+		catFolder = "";
+	}
+
+%>
+<p><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0" method="post"><%= catFolder %><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></p>
 <% } %>
 
 </cms:contentload>

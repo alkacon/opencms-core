@@ -2,6 +2,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_additionaldates.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_dates.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/event_extended.xsd"/>
 	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone.modules/schemas/image.xsd"/>
@@ -19,7 +20,7 @@
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="SubTitle" type="OpenCmsString" minOccurs="0" />
-			<xsd:element name="ShortDescription" type="OpenCmsString" />	
+			<xsd:element name="ShortDescription" type="OpenCmsString" minOccurs="0" />	
 			<xsd:element name="LongDescription" type="OpenCmsHtml" />
 			<xsd:element name="EventDates" type="OpenCmsEventDate" />
 			<xsd:element name="ExternalLink" type="OpenCmsExternalLink" minOccurs="0" maxOccurs="5"/>
@@ -40,6 +41,7 @@
 				<mapping element="Release" mapto="attribute:datereleased" />
 				<mapping element="Expiration" mapto="attribute:dateexpired" />
 				<mapping element="Priority" mapto="property:collector.priority" />
+				<mapping element="EventDates/EventDate" mapto="property:collector.date" />
 			</mappings>
 			<layouts>
 				<layout element="Priority" widget="SelectorWidget" configuration="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3*:${key.priority.standard}|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}" />
@@ -48,6 +50,7 @@
 			<defaults>
 				<default element="Release" value="${currenttime}"/>
 				<default element="Expiration" value="${currenttime}"/>
+				<default element="EventDates/EventDate" value="${currenttime}"/>
 			</defaults>
 			<validationrules/>
 		</xsd:appinfo>

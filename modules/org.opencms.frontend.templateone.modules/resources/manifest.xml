@@ -750,7 +750,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;params=(count,elementcount,folder,collector,pageIndex)]]></value>
+					<value><![CDATA[uri;params=(count,elementcount,folder,categoryfolder,collector,pageIndex)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -887,7 +887,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;params=(uri)]]></value>
+					<value><![CDATA[uri;params=(uri,categoryfolder)]]></value>
 				</property>
 				<property>
 					<name>export</name>
@@ -917,7 +917,7 @@
 				</property>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;params=(uri)]]></value>
+					<value><![CDATA[uri;params=(uri,categoryfolder)]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -1009,6 +1009,24 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[XSD for events]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/event_additionaldates.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/event_additionaldates.xsd</destination>
+			<type>plain</type>
+			<uuidresource>1bde6334-ec9d-11d9-a038-8b6885970dc7</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for additional event dates]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

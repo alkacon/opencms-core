@@ -15,14 +15,14 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 String folder = cms.getCategoryFolder();
 pageContext.setAttribute("catfolder", folder);
 
-int count = cms.getResourceCount(folder, 35);
+int count = cms.getResourceCount(folder, "faq");
 pageContext.setAttribute("rescount", "" + count);
 
 %><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%
 
 // get first the navigation HTML which sets additionally some flags in the bean
-String categoryNav = cms.buildHtmlNavList(35, "style=\"margin-top: 4px;\"");
+String categoryNav = cms.buildHtmlNavList("faq", "style=\"margin-top: 4px;\"");
 
 if (cms.showNavBreadCrumb()) {
 %>
@@ -72,7 +72,7 @@ if (cms.hasCategoryFolders()) {
 <c:if test="${shownumber == 'true'}"></p></c:if>
 </c:if>
 <p style="margin-top: 8px; padding-top: 0px;">
-<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><b><cms:contentshow element="Title" /></b></a>
+<a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %>&categoryfolder=<%= folder %></cms:link>"><b><cms:contentshow element="Title" /></b></a>
 </p>
 </cms:contentload><%--
 --%></c:when><%--

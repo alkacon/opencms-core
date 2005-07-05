@@ -26,7 +26,7 @@ String folderTitle = cms.property("Title", folder, "");
 <%
 	cms.setDate("dateString");
 %>
-<fmt:formatDate value="${date}" type="date" dateStyle="short" /> - </cms:contentcheck><cms:contentshow element="ShortDescription" />
+<fmt:formatDate value="${date}" type="date" dateStyle="short" /><cms:contentcheck ifexists="ShortDescription"> - </cms:contentcheck></cms:contentcheck><cms:contentcheck ifexists="ShortDescription"><cms:contentshow element="ShortDescription" /></cms:contentcheck>
 </p>
 
 </cms:contentload></div><%--
