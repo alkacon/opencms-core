@@ -64,6 +64,11 @@ String formButtonBorder = cms.getConfigValue("form.button.border", headLinksBord
 String formButtonBg = cms.getConfigValue("form.button.bg", headLinksBg);
 String formButtonFont = cms.getConfigValue("form.button.font", footLinksFont);
 
+// optional infobox configuration
+String infoBoxWidth = cms.getOptionalConfigValue("infobox.width", "145");
+String infoBoxModulesHeadline = cms.getOptionalConfigValue("infobox.modules.headline.size", "10");
+String infoBoxModulesFont = cms.getOptionalConfigValue("infobox.modules.font.size", "8");
+
 %>/* old styles */
 .headerwhite { font-size: 8pt; color: #ffffff; }
 .headerinfo  { font-size: 8pt; text-indent: 7px; text-align: left; }	
@@ -308,7 +313,7 @@ div.element2 {
 
 /* infobox column */
 td.infobox {
-	width: 145px;
+	width: <%= infoBoxWidth %>px;
 	vertical-align: top;
 	background-color: <%= sideBg %>;
 	border-left: 1px solid <%= mainBorder %>;
@@ -361,7 +366,7 @@ div.sidelist {
 }
 
 p.sidelisthead {
-	font-size: 10pt;
+	font-size: <%= infoBoxModulesHeadline %>pt;
 	font-weight: bold;
 	margin: 0px;
 	padding-left: 3px;
@@ -370,12 +375,12 @@ p.sidelisthead {
 }
 
 p.sidelistitem {
-	font-size: 8pt;
+	font-size: <%= infoBoxModulesFont %>pt;
 	margin: 5px 3px 0px;
 }
 
 a.sidelistitemhead {
-	font-size: 8pt;
+	font-size: <%= infoBoxModulesFont %>pt;
 	font-weight: bold;
 	margin-bottom: 3px;
 }
