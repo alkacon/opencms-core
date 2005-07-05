@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/05 07:06:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/05 07:12:31 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -265,7 +265,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             if (CmsStringUtil.isNotEmpty(getParamXsltFile())) { 
                 xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
                 styleProp = getCms().readPropertyObject(getParamXsltFile(),
-                    CmsPropertyDefinition.PROPERTY_STYLE_SIDE_URI, true);
+                    CmsPropertyDefinition.PROPERTY_STYLESHEET, true);
             }
 
             byte[] content = xmlContent.getBytes();
