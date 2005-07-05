@@ -1514,7 +1514,7 @@
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>0</flags>
+			<flags>512</flags>
 			<properties>
 				<property>
 					<name>Title</name>
@@ -1532,7 +1532,7 @@
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>0</flags>
+			<flags>512</flags>
 			<properties>
 				<property>
 					<name>Title</name>
@@ -1550,7 +1550,7 @@
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>0</flags>
+			<flags>512</flags>
 			<properties>
 				<property>
 					<name>Title</name>
@@ -1568,7 +1568,7 @@
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
-			<flags>0</flags>
+			<flags>512</flags>
 			<properties>
 				<property>
 					<name>content-encoding</name>
