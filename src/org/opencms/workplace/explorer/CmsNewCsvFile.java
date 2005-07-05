@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/05 07:06:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,14 +157,18 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * @return a XML representation of the csv data
      * 
      * @param csvData the csv data to convert
+     * @param colGroup the format definitions for the table columns, can be null
      * @param delimiter the delimiter to separate the values with
      * 
      * @throws IOException if there is an IO problem
      */
-    public static String convertCsvToXml(String csvData, String delimiter) throws IOException {
+    public static String convertCsvToXml(String csvData, String colGroup, String delimiter) throws IOException {
 
         StringBuffer xml = new StringBuffer(64);
         xml.append("<table>\n");
+        if (CmsStringUtil.isNotEmpty(colGroup)) {
+            xml.append(colGroup);
+        }    
         String line;
         BufferedReader br = new BufferedReader(new StringReader(csvData));
         while ((line = br.readLine()) != null) {
@@ -226,28 +230,44 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             setParamResource(computeFullResourceName());
             int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
 
-            String xmlContent = "";
             CmsProperty styleProp = CmsProperty.getNullProperty();
-            if (TABULATOR.equals(getParamDelimiter())) {
-                setParamDelimiter("\t");
-            } else if (BEST_DELIMITER.equals(getParamDelimiter())) {
-                setParamDelimiter(getPreferredDelimiter(getParamCsvContent()));
+            
+            // set the delimiter
+            String delimiter = getParamDelimiter();
+            if (TABULATOR.equals(delimiter)) {
+                delimiter = "\t";
+            } else if (BEST_DELIMITER.equals(delimiter)) {
+                delimiter = getPreferredDelimiter(getParamCsvContent());
             }
+            setParamDelimiter(delimiter);
+            
+            String csvContent = getParamCsvContent();
+            String colgroup = "";
+            String lineSeparator = System.getProperty("line.separator");
+            String firstCsvLine = csvContent.substring(0, csvContent.indexOf(lineSeparator));
+            if (isFormattingInformation(firstCsvLine, delimiter)) {
+                // transform formatting to HTML colgroup
+                colgroup = getColGroup(firstCsvLine, delimiter);
+                // cut of first line
+                csvContent = csvContent.substring(firstCsvLine.length() + lineSeparator.length());
+            }    
 
+            // transform csv to html
+            String xmlContent = "";
             try {
-                xmlContent = convertCsvToXml(getParamCsvContent(), getParamDelimiter());
+                xmlContent = convertCsvToXml(csvContent, colgroup, getParamDelimiter());
             } catch (IOException e) {
                 throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));
             }
-
-            if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
-
+            
+            // if xslt file parameter is set, transform the raw html and set the css stylesheet property
+            // of the converted file to that of the stylesheet
+            if (CmsStringUtil.isNotEmpty(getParamXsltFile())) { 
                 xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
-                styleProp = getCms().readPropertyObject(
-                    getParamXsltFile(),
-                    CmsPropertyDefinition.PROPERTY_STYLESHEET,
-                    true);
+                styleProp = getCms().readPropertyObject(getParamXsltFile(),
+                    CmsPropertyDefinition.PROPERTY_STYLE_SIDE_URI, true);
             }
+
             byte[] content = xmlContent.getBytes();
 
             try {
@@ -268,34 +288,73 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             includeErrorpage(this, e);
         }
     }
+    
+    private static boolean isFormattingInformation(String formatString, String delimiter) {
+        String[] formatStrings = formatString.split(delimiter);
+        for (int i = 0; i < formatStrings.length; i++) {
+            if (!formatStrings[i].matches("[lcr][1-9]?")) {
+                return false;
+            }    
+        } 
+        return true;
+    }
+    
+    /**
+     * Converts a delimiter separated format string int o colgroup html fragment.<p>
+     * @param formatString the formatstring to convert
+     * @param delimiter the delimiter the formats (l,r or c) are delimited with
+     * 
+     * @return the resulting colgroup HTML
+     */
+    private static String getColGroup(String formatString, String delimiter) {
+
+        StringBuffer colgroup = new StringBuffer(128);
+        String[] formatStrings = formatString.split(delimiter);
+        colgroup.append("<colgroup>\n");
+        for (int i = 0; i < formatStrings.length; i++) {
+            colgroup.append("<col align=\"");
+            char align = formatStrings[i].trim().charAt(0);
+            switch (align) {
+                case 'l':
+                    colgroup.append("left");
+                    break;
+                case 'c':
+                    colgroup.append("center");
+                    break;
+                case 'r':
+                    colgroup.append("right");
+                    break;
+                default:
+                    throw new RuntimeException("invalid format option");
+            }
+            colgroup.append("\"/>\n");
+        }
+        return colgroup.append("</colgroup>\n").toString();
+    }    
 
     /**
      * Applies a XSLT Transformation to the xmlContent.<p>
      * 
      * @param xsltFile the XSLT transformation file
      * @param xmlContent the XML content to transform
+     * 
      * @return the transformed xml
+     * 
+     * @throws Exception if something goes wrong
      */
-    public String applyXslTransformation(String xsltFile, String xmlContent) {
+    public String applyXslTransformation(String xsltFile, String xmlContent) throws Exception {
 
-        try {
             TransformerFactory factory = TransformerFactory.newInstance();
-
             InputStream stylesheet = new ByteArrayInputStream(getCms().readFile(xsltFile).getContents());
             Transformer transformer = factory.newTransformer(new StreamSource(stylesheet));
             Document document = DocumentHelper.parseText(xmlContent);
             DocumentSource source = new DocumentSource(document);
             DocumentResult streamResult = new DocumentResult();
+            
             // transform the xml with the xslt stylesheet
             transformer.transform(source, streamResult);
             return streamResult.getDocument().asXML();
 
-        } catch (Exception e) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(e);
-            }
-            return "";
-        }
     }
 
     /**
