@@ -1,0 +1,918 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0.0</opencms_version>
+		<createdate>Mon, 04 Jul 2005 14:56:34 GMT</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.help.de</name>
+		<nicename><![CDATA[Online help for OpenCms in German]]></nicename>
+		<class/>
+		<description><![CDATA[This module contains the online help pages for the OpenCms workplace in German language.
+Install this module if you want to use the german version of the OpenCms Workplace.
+
+(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
+		<version>0.12</version>
+		<authorname><![CDATA[Achim Westermann]]></authorname>
+		<authoremail><![CDATA[a.westermann@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.workplace" version="1.0"/>
+			<dependency name="org.opencms.workplace.help" version="0"/>
+		</dependencies>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.help.de/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/workplace/locales/de/help/"/>
+			<resource uri="/system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 25 Oct 2004 14:35:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 29 Jun 2005 19:51:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/locales</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/contribute.html</source>
+			<destination>system/workplace/locales/de/help/contribute.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c6aad9f5-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Contributions]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[How You Can Contribute]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/index.html</source>
+			<destination>system/workplace/locales/de/help/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c6b931dc-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Help Start]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[The OpenCms Online Help]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/administration</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Administration]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/index.html</source>
+			<destination>system/workplace/locales/de/help/administration/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c59b3e56-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Administration]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Administration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/administration/accounts</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[User Management]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[User Management]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/accounts/edit_user.html</source>
+			<destination>system/workplace/locales/de/help/administration/accounts/edit_user.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>f824c551-e7b0-11d9-b351-d5c12ccb7197</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Edit User]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Edit user]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit user]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/accounts/index.html</source>
+			<destination>system/workplace/locales/de/help/administration/accounts/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c4fdedb5-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[User Management]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/administration/accounts/new_user.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>f824c551-e7b0-11d9-b351-d5c12ccb7197</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Create a new user.]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[New user]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New user]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/administration/projects</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Project Management]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Project Management]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/projects/history.html</source>
+			<destination>system/workplace/locales/de/help/administration/projects/history.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c547c808-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Project History]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Project History]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/projects/index.html</source>
+			<destination>system/workplace/locales/de/help/administration/projects/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c55f95d0-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Project Management]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/projects/new.html</source>
+			<destination>system/workplace/locales/de/help/administration/projects/new.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c572a8a6-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[New Project]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New Project]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/projects/settings.html</source>
+			<destination>system/workplace/locales/de/help/administration/projects/settings.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c585bb7e-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Project Settings]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Project Settings]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Editors]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editors]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/editors/index.html</source>
+			<destination>system/workplace/locales/de/help/editors/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c5c13cf4-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Editors]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editors]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/editors/msdhtml.html</source>
+			<destination>system/workplace/locales/de/help/editors/msdhtml.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c5d6c0cc-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[MSDHTML Editor]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[MSDHTML Editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/explorer</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Explorer]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/history.html</source>
+			<destination>system/workplace/locales/de/help/explorer/history.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c60b3e5d-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Resource History]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource History]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/index.html</source>
+			<destination>system/workplace/locales/de/help/explorer/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c61be035-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[The OpenCms Explorer]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[The OpenCms Explorer]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/preferences.html</source>
+			<destination>system/workplace/locales/de/help/explorer/preferences.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c62ef30d-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Editing the Preferences]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editing the Preferences]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/publishresource.html</source>
+			<destination>system/workplace/locales/de/help/explorer/publishresource.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c63f94e5-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Publishing Resources]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Publishing Resources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/touch.html</source>
+			<destination>system/workplace/locales/de/help/explorer/touch.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c652a7bd-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Touching Resources]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Touching Resources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/explorer/dialogs</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/help/images</destination>
+			<type>imagegallery</type>
+			<datelastmodified>Mon, 04 Jul 2005 14:34:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Images for the English Online Help]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/context-menu.jpg</source>
+			<destination>system/workplace/locales/de/help/images/context-menu.jpg</destination>
+			<type>image</type>
+			<uuidresource>c671a179-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/msdhtml.jpg</source>
+			<destination>system/workplace/locales/de/help/images/msdhtml.jpg</destination>
+			<type>image</type>
+			<uuidresource>c687254d-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/preferences.jpg</source>
+			<destination>system/workplace/locales/de/help/images/preferences.jpg</destination>
+			<type>image</type>
+			<uuidresource>c69a3821-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</source>
+			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
+			<type>plain</type>
+			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
+			<datelastmodified>Mon, 04 Jul 2005 13:46:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
