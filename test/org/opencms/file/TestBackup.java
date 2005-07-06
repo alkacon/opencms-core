@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestBackup.java,v $
- * Date   : $Date: 2005/06/29 15:08:40 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/06 10:23:38 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit tests for backup operation.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  */
 public class TestBackup extends OpenCmsTestCase {
 
@@ -214,7 +214,7 @@ public class TestBackup extends OpenCmsTestCase {
             List backupResourcesForFile = cms.readAllBackupFileHeaders(filename);
             List backupResourcesForSibling = cms.readAllBackupFileHeaders(siblingname);
             assertEquals(backupResourcesForFile, backupResourcesForSibling);
-            assertEquals(2 + counter + 1, backupResourcesForFile.size());
+            assertEquals(2 * counter + 1, backupResourcesForFile.size());
         } finally {
             cms.getRequestContext().restoreSiteRoot();
         }
