@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link3" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/proj_singleaction.png]]></target>
+        </link>
+        <link name="link2" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/user_prefs_filesperpage.png]]></target>
+        </link>
+        <link name="link0" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/list_browse.png]]></target>
+        </link>
+        <link name="link4" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/group_multiactions.png]]></target>
+        </link>
+        <link name="link1" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/proj_history_search.png]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<P>Auf dieser Seite wird die Bedienung und Konfiguration des Listen - Widgets 
+beschrieben. Dieses Widget kommt in der Workplace von OpenCms 6.0.0 an 
+verschiedenen Stellen zum Einsatz: </P>
+<UL>
+  <LI>In der Projekt - Historie</LI><LI>Zur Anzeige der Installierten Module</LI><LI>Zur Darstellung von vorhandenen Benutzern</LI><LI>... </LI></UL>
+<P>Die Liste ist&nbsp;das komplexeste aber auch gleichzeitig eines der 
+komfortabelsten Widgets in OpenCms 6.0.0. Für die folgenden beispielhaften 
+Erläuterungen wird die Liste in der <STRONG>Projekt Historie</STRONG> 
+herangezogen, die konkreten Spaltennamen können aber durch beliebige vorhandene 
+ersetzt werden ohne dass die Schilderung der Funktionalität ungültig wird. Das 
+Listen - Widget bietet die folgend Funkionalitäten: </P>
+<UL>
+  <LI><STRONG>Sortieren </STRONG></LI></UL>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+    <P>Durch Anklicken der Spaltenköpfe wird die Liste nach der betreffenden 
+    Spalte sortiert. Um z.B. nach allen Veränderungen des Offline Projektes zu 
+    Suchen, kann man die Spalte "<STRONG>Name</STRONG>" anklicken. Um einen 
+    chronologischen Überblick über die letzten Änderungen auf dem OpenCms Server 
+    zu erhalten, kann man auf die Spalte "<STRONG>Veröffentlicht am</STRONG>" 
+    klicken. <BR>Die gegenwärtige Sortierung der Liste kann man anhand&nbsp;der 
+    Markierung der Spalte, die das Sortierungskriterium liefert erkennen: Ist 
+    z.B. ein zusätzlicher Pfeil nach Oben in der Spalte "<STRONG>Angelegt 
+    am</STRONG>"&nbsp;zu erkennen, ist die Liste von Unten nach Oben in 
+    aufsteigender Reihenfolge nach dem Datum sortiert: Die jüngsten Einträge 
+    sind am weitesten Oben. Die Sortierungsrichtung (hier: vom aufsteigendem 
+    Datum zum absteigenden) erhält man durch ein erneutes Anklicken der 
+    sortierten Spalte. </P>
+    <P><STRONG>Beachten Sie</STRONG>: Spaltenköpfe die "ausgegraut" erscheinen 
+    sind nicht sortierbar. Dies ist oft der Fall, wenn die Spalte nur ein 
+    einfaches Icon enthält das als Schaltfläche für eine Aktion dient. 
+  </P></BLOCKQUOTE></BLOCKQUOTE>
+<UL dir=ltr>
+  <LI><STRONG>Blättern </STRONG> </LI></UL>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+    <P dir=ltr>Je nach Anzahl der Zeilen in der Liste und Konfiguration der 
+    Benutzereinstellungen werden nicht alle vorhandenen Zeilen einer Liste auf 
+    einer Seite angezeigt, sondern eine Blätter - Funktionalität verwendet. 
+    Dieses verhindert übermässige Ladezeiten und damit Wartezeiten der 
+    Administratoren. Sobald die Blätter - Funktion in Kraft tritt (unter welchen 
+    Bedingungen wird weiter unten erklärt), erscheinen die zugehörigen 
+    Steuerelement, die im folgenden Screenshot sichtbar sind. Sie erlauben über 
+    eine ComboBox die Auswahl der Seite, auf die geblättert werden soll zeigen 
+    an, auf welcher Seite Sie sich gerade befinden. Beachten Sie, dass bei zu 
+    vielen Einträgen die "<STRONG>Suchen</STRONG>" - Funktionalität benutzt 
+    werden kann, um lästiges Blättern zu vermeiden. </P>
+    <P dir=ltr><IMG alt="Steuerelemente zum Blättern durch Listen - Widgets" hspace=0 src="${link0}" width="100%" align=baseline 
+  border=0></P></BLOCKQUOTE></BLOCKQUOTE>
+<UL dir=ltr>
+  <LI><STRONG>Suchen</STRONG> </LI></UL>
+<BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+  <BLOCKQUOTE dir=ltr style="MARGIN-RIGHT: 0px">
+    <P dir=ltr align=left>Besonders, wenn die Liste sehr viele Einträge enthält, 
+    lohnt sich ein Einschränken der Ergebnisse durch eine Suche. Hierbei wird in 
+    das Textfeld eine Teilzeichenkette des gewünschten Projektnamens eingegeben. 
+    Beachten Sie, dass nur in der Spalte "<STRONG>Name</STRONG>" gesucht wird. 
+    Durch&nbsp;Anklicken&nbsp;des "<STRONG>Suchen</STRONG> " -&nbsp;Links 
+    erhalten&nbsp;Sie die&nbsp;reduzierte Menge der Ergebniszeilen. Um wieder 
+    die Übersicht über alle Einträge zu erhalten, kann der "<STRONG>Alle 
+    anzeigen</STRONG> " - Link angeklickt werden. Besonders, wenn die Liste sehr 
+    viele Einträge enthält, lohnt sich ein Einschränken der Ergebnisse durch 
+    eine Suche. Hierbei wird in das Textfeld eine Teilzeichenkette des 
+    gewünschten Projektnamens eingegeben. Beachten Sie, dass nur in der Spalte 
+    "<STRONG>Name</STRONG>" gesucht wird. Durch&nbsp;Anklicken&nbsp;des 
+    "<STRONG>Suchen</STRONG> " -&nbsp;Links erhalten&nbsp;Sie 
+    die&nbsp;reduzierte Menge der Ergebniszeilen. Um wieder die Übersicht über 
+    alle Einträge zu erhalten, kann der "<STRONG>Alle anzeigen</STRONG> " - Link 
+    angeklickt werden. Besonders, wenn die Liste sehr viele Einträge enthält, 
+    lohnt sich ein Einschränken der Ergebnisse durch eine Suche. Hierbei wird in 
+    das Textfeld eine Teilzeichenkette des gewünschten Projektnamens eingegeben. 
+    Beachten Sie, dass nur in der Spalte "<STRONG>Name</STRONG>" gesucht wird. 
+    Durch&nbsp;Anklicken&nbsp;des "<STRONG>Suchen</STRONG> " -&nbsp;Links 
+    erhalten&nbsp;Sie die&nbsp;reduzierte Menge der Ergebniszeilen. Um wieder 
+    die Übersicht über alle Einträge zu erhalten, kann der "<STRONG>Alle 
+    anzeigen</STRONG> " - Link angeklickt werden. </P>
+    <P dir=ltr><IMG alt="" hspace=0 src="${link1}"  
+    width="100%" 
+    align=baseline border=0></P></BLOCKQUOTE></BLOCKQUOTE>
+
+
+<P dir=ltr style="MARGIN-RIGHT: 0px">
+  
+   Die Anzeige der Einträge pro Seite in allen 
+          Listen - Widgets der Workplace kann benutzerspezifisch&nbsp;in OpenCms 
+          6.0.0 unter dem "<STRONG>Einstellungen</STRONG>" - Link in 
+          der&nbsp;Titelleiste vorgenommen werden. In diesen 
+          Benutzereinstellungen &nbsp;entscheidet unter dem Tab (Reiter) 
+          "<STRONG>Explorer</STRONG>" die Einstellung "<STRONG>Dateien pro 
+          Seite</STRONG>" über die Zeilen pro Seite in Listen. Ein zu hoher Wert erhöht die Ladezeiten der Seite (speziell bei schwachen 
+      Servern oder langsamen Verbindungen), ein zu 
+      kleiner Wert kann die Übersicht 
+      einschränken und in zu zeitlastigem blättern 
+      enden.
+   
+    <P dir=ltr>&nbsp;</P>
+<P dir=ltr> 
+     <IMG alt="Benutzerspezifische Einstellung der Zeilen pro Seite für alle Listen der Workplace" src="${link2}" 
+          width="100%" align=baseline border=0  ></P>
+<H3 dir=ltr>Einzel - Aktionen </H3>
+<P dir=ltr>Hiermit werden Aktionen bezeichnet, die durch das Anklicken einer 
+Schaltfläche oder sonstigen Kontrollelements innerhalb einer Zeile der Liste 
+gestartet werden kann. </P>
+<P dir=ltr><STRONG>Tip</STRONG>: Gehen Sie mit der Maus über eine Zeile und 
+beobachten Sie, ob sich der Mauszeiger in eine "Hand" verwandelt. Ist dies der 
+Fall können sie durch einen Klick mit der Linken Maustaste eine Aktion starten. 
+</P>
+<P dir=ltr><STRONG>Tip</STRONG>: Wenn Sie sich mit de´m Mauszeiger über einer 
+Aktion befinden, können Sie in der linken oberen Ecke im 
+"<STRONG>Hilfe</STRONG>" -&nbsp; Fenster herausfinden, welche Aktion Sie durch 
+einen Klick mit der Linken Maustaste starten werden. </P>
+<P dir=ltr>Einzel - Aktionen wirken immer nur auf eine Entität (dem Gegenstand, 
+der durch die Zeile dargestellt wird, z.B. ein Benutzer oder ein Modul), an der 
+Sie Einstellungen vornehmen wollen. </P>
+<P dir=ltr><IMG alt="" hspace=0 src="${link3}" align=baseline border=0></P>
+<H3 dir=ltr>Multi - Aktionen </H3>
+<P dir=ltr>Hiermit werden Aktionen bezeichnet, die durch Anklicken von 
+Schaltflächen rechts oberhalb der Liste gestartet werden und sich auf alle per 
+Häkchen selektierten Zeilen der Liste auswirken. </P>
+<P dir=ltr><IMG alt="" hspace=0 src="${link4}" align=baseline 
+border=0></P>]]></content>
+    </element>
+  </page>
+</pages>

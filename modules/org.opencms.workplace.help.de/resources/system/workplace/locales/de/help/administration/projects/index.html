@@ -3,35 +3,83 @@
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
   <page language="en">
     <element name="body">
-      <links/>
-      <content><![CDATA[<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><FONT 
-size=1><span lang="DE-CH">When do we need a project? In general you are working in the standard 
-projcect called "Offline". This project implicitly includes all your available 
-pages and folders. Out of this project you are able to "direct - publish" 
-all your created or modified pages and folders. You may also publish the 
-complete offline project. But for larger websites this may publish more 
-resources than you might have control (or knowledge about their validity) 
-over.<br ><br ></span><span lang="DE-CH">Subprojects 
-allow to split the work on a&nbsp; website amongst several authors or to work on 
-different subparts independently. For instance you serve a standard site with 
-stable content. You often do minor changes like fixing writing errors or adding 
-some news. In a subproject you are able to add completely new parts that are 
-bigger and take longer to get stable. In this way it is possible to publish the 
-"Offline" project more frequently while having time to work on the bigger new 
-parts.&nbsp;</span></FONT></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN 
-lang=DE-CH><FONT size=1></FONT></SPAN>&nbsp;</P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=DE-CH><FONT size=1>If the&nbsp;"Offline" project is 
-published it will not publish any&nbsp;pages that are part of other projects 
-regardless of the fact that the pages of these other projects are in folders 
-below the "Offline" project's root. </FONT></SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=DE-CH><FONT size=1></FONT></SPAN>&nbsp;</P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><SPAN lang=DE-CH><FONT size=1>In this page your are able to create 
-new projects, change the settings of the current project selected in the combo 
-box in the left upper edge of the workplace window or view the project history 
-of the current project. </FONT></SPAN></P>
-<P class=MsoNormal style="MARGIN: 0cm 0cm 0pt"><span lang="DE-CH"><FONT 
-size=1></FONT></span>&nbsp;</P>]]></content>
+      <links>
+        <link name="link3" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/common-widgets/list.html]]></target>
+        </link>
+        <link name="link5" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/publishing.html]]></target>
+        </link>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/history.html]]></target>
+        </link>
+        <link name="link6" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/separation.html]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/new.html]]></target>
+        </link>
+        <link name="link4" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/settings.html]]></target>
+        </link>
+        <link name="link7" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/publishing.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/settings.html]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<P>In der oberen Gruppe "<STRONG>Projektwerkzeuge</STRONG>"&nbsp;erlaubt Ihnen 
+diese Ansicht ermöglicht Ihnen&nbsp;das Starten der&nbsp;Aktionen: </P>
+<P>&nbsp;</P>
+<UL>
+  <LI><A 
+  href="${link0}" 
+  target=_self>Neues Projekt anlegen</A></LI><LI><A 
+  href="${link1}" 
+  target=_self>Standardeinstellungen ändern</A></LI><LI><A 
+  href="${link2}" 
+  target=_self>Projekt Historie anzeigen</A> </LI></UL>
+<P>&nbsp;</P>
+<P>Die untere Gruppe "<STRONG>Projekte</STRONG>" gibt die Übersicht über die im 
+System vorhandenen Projekte und erlaubt ebenfalls Interaktionen die mit diesen 
+Projekten verbunden sind. Die Darstellung wird von einem sog. Listen - Widget 
+übernommen, dessen Bedienkonzept <A 
+href="${link3}" 
+target=_self>hier</A> erläutert ist. </P>
+<P>Es gibt eine Reihe von Aktionen, die auf die per Häckchen selektieren 
+Projekte ausgeführt werden kann: </P>
+<UL>
+  <LI><!--StartFragment -->&nbsp;<SPAN class="dialogblockhead" 
+  unselectable="on">Projekte Löschen </SPAN></LI><LI><SPAN class="dialogblockhead" unselectable="on">Sperrung Aufheben 
+  </SPAN></LI><LI><SPAN class="dialogblockhead" unselectable="on">Pfade der Projekte Anzeigen 
+  </SPAN></LI></UL>
+<P><SPAN class="dialogblockhead" unselectable="on">Diese Aktionen werden auf alle 
+per Häkchen selektierten Projekte ausgeführt (Multi-Actions). </SPAN></P>
+<P><SPAN class="dialogblockhead" unselectable="on">Weitere Aktionen lassen sich 
+aus&nbsp;einer Zeile heraus, die für ein Projekt steht starten (von links nach 
+rechts): </SPAN></P>
+<UL>
+  <LI><SPAN class="dialogblockhead" unselectable="on">Ansicht der Projektdateien 
+  (genaueres ist <A 
+  href="${link4}" 
+  target=_self>hier</A> zu lesen) </SPAN></LI><LI><SPAN class="dialogblockhead" unselectable="on">Sperrung &nbsp;aufheben 
+  (nur, wenn eine Sperrung existiert) </SPAN></LI><LI><SPAN class="dialogblockhead" unselectable="on">Projekt veröffentlichen (nur, wenn unveröffentlichte 
+  Änderungen bestehen - 
+  genaueres ist <A 
+  href="${link5}" 
+  target=_self>hier</A> zu lesen) </SPAN></LI><LI><SPAN class="dialogblockhead" unselectable="on">Projekt bearbeiten </SPAN></LI><LI><SPAN class="dialogblockhead" unselectable="on">Projekt löschen 
+</SPAN></LI></UL>
+<P><SPAN class="dialogblockhead" unselectable="on">Zum grundsätzlichen Verständnis des Einsatzes&nbsp;von 
+Projekten&nbsp;wird empfohlen, <A 
+href="${link6}" 
+target=_self>diese Hilfeseite</A> zu lesen. Der Mechanismus und Sinn der 
+Veröffentlichung wird <A 
+href="${link7}" 
+target=_self>hier</A>   
+        
+        beschrieben. 
+</SPAN></P>]]></content>
     </element>
   </page>
 </pages>
