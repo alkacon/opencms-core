@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/28 08:05:44 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.52 $
+ * @version $Revision: 1.53 $
  * 
  * @since 6.0.0 
  */
@@ -289,12 +289,12 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     /**
      * Writes the user info as blob.<p>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the database context
      * @param userId the user id
      * @param additionalInfo the additional user info
      * @param reservedParam for future use
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if something goes wrong
      */
     private void internalWriteUserInfo(CmsDbContext dbc, CmsUUID userId, Map additionalInfo, Object reservedParam)
     throws CmsDataAccessException {

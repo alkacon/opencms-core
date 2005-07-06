@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0
  */
@@ -335,6 +335,15 @@ public class TestSynchronize extends OpenCmsTestCase {
         }
     }
 
+    /**
+     * Returns a rfs path for a given resource to be synchronized.<p>
+     * 
+     * @param cms the cms context
+     * @param resource the resource to synchronize
+     * @param syncSettings the synchronization settings
+     * 
+     * @return the rfs path
+     */
     private String getRfsPath(CmsObject cms, CmsResource resource, CmsSynchronizeSettings syncSettings) {
 
         String path = syncSettings.getDestinationPathInRfs() + cms.getSitePath(resource);
@@ -347,6 +356,7 @@ public class TestSynchronize extends OpenCmsTestCase {
      * 
      * @param cms the current user's Cms object
      * @param resource the VFS resource to be modified in the RFS
+     * @param syncSettings the synchronization settings
      */
     private void touchResourceInRfs(CmsObject cms, CmsResource resource, CmsSynchronizeSettings syncSettings) {
 

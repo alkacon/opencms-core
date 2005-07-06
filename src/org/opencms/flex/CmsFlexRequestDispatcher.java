@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/06/28 08:05:43 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,6 +198,8 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
      * 
      * @param req the servlet request
      * @param res the servlet response
+     * @param controller the flex controller
+     * @param cms the cms context
      * @param resource the requested resource (may be <code>null</code>)
      * 
      * @throws ServletException in case something goes wrong

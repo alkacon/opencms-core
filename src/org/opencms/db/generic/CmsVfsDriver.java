@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.251 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.252 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.251 $
+ * @version $Revision: 1.252 $
  * 
  * @since 6.0.0 
  */
@@ -2671,6 +2671,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
     }
 
+    /**
+     * Appends the appropriate selection criteria related with the read mode.<p>
+     * 
+     * @param projectId the id of the project of the resources
+     * @param mode the selection mode
+     * @param conditions buffer to append the selection criteria
+     */
     private void prepareResourceCondition(int projectId, int mode, StringBuffer conditions) {
 
         if ((mode & CmsDriverManager.READMODE_ONLY_FOLDERS) > 0) {

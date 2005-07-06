@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/07/04 07:42:59 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.73 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.72 $ 
+ * @version $Revision: 1.73 $ 
  * 
  * @since 6.0.0 
  * 
@@ -398,7 +398,6 @@ public class CmsImportVersion3 extends A_CmsImport {
      * @param source the path to the source-file
      * @param destination the path to the destination-file in the cms
      * @param type the resource-type of the file
-     * @param uuidstructure  the structure uuid of the resource
      * @param uuidresource  the resource uuid of the resource
      * @param datelastmodified the last modification date of the resource
      * @param userlastmodified the user who made the last modifications to the resource

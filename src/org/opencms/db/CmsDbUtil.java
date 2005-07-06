@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsDbUtil.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0
  */
@@ -186,7 +186,8 @@ public final class CmsDbUtil {
      * @param conn the connection to access the database
      * @param tableName the name of the table to read the primary key ID
      * @param newId the new primary key ID
-     * @throws CmsException if something gows wrong
+     * 
+     * @throws CmsDbSqlException if something gows wrong
      */
     private static void createId(Connection conn, String tableName, int newId) throws CmsDbSqlException {
 
@@ -220,7 +221,7 @@ public final class CmsDbUtil {
      * @param tableName the name of the table to create a new primary key ID
      * @param cacheKey the key to store the new primary key ID in the cache
      * 
-     * @throws CmsException if something goes wrong
+     * @throws CmsDbSqlException if something goes wrong
      */
     private static void generateNextId(String dbPoolUrl, String tableName, String cacheKey) throws CmsDbSqlException {
 
@@ -274,7 +275,8 @@ public final class CmsDbUtil {
      * @param tableName the name of the table to read the primary key ID
      * 
      * @return the primary key ID or UNKNOWN_ID if there is no entry for the given table
-     * @throws CmsException if something gows wrong
+     * 
+     * @throws CmsDbSqlException if something gows wrong
      */
     private static int readId(Connection conn, String tableName) throws CmsDbSqlException {
 
@@ -322,7 +324,8 @@ public final class CmsDbUtil {
      * @param newId the new primary key ID
      * 
      * @return true if the number of affected rows is 1
-     * @throws CmsException if something gows wrong
+     * 
+     * @throws CmsDbSqlException if something gows wrong
      */
     private static boolean writeId(Connection conn, String tableName, int oldId, int newId) throws CmsDbSqlException {
 

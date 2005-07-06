@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.60 $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.60 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.61 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.60 $ 
+ * @version $Revision: 1.61 $ 
  * 
  * @since 6.0.0 
  */
@@ -325,9 +325,10 @@ public class CmsSynchronize {
      * Deletes a resource in the VFS and updates the synchronisation lists.<p>
      * 
      * @param res The resource to be deleted
+     * 
      * @throws CmsException if something goes wrong
      */
-    private void deleteFromVfs(CmsResource res) throws CmsSynchronizeException, CmsException {
+    private void deleteFromVfs(CmsResource res) throws CmsException {
 
         String resourcename = m_cms.getSitePath(res);
 
@@ -480,8 +481,10 @@ public class CmsSynchronize {
      * Returns a byte array containing the content of server FS file.<p>
      *
      * @param file the name of the file to read
+     * 
      * @return bytes[] the content of the file
-     * @throws Exception if something goes wrong
+     * 
+     * @throws IOException if something goes wrong
      */
     private byte[] getFileBytes(File file) throws IOException {
 
@@ -934,6 +937,8 @@ public class CmsSynchronize {
      * synchronisation lists.<p>
      * 
      * @param res the resource to be exported
+     * 
+     * @throws CmsSynchronizeException if the resource could not be synchronized
      * @throws CmsException if something goes wrong
      */
     private void updateFromRfs(CmsResource res) throws CmsSynchronizeException, CmsException {
@@ -1012,7 +1017,8 @@ public class CmsSynchronize {
      *
      * @param content the content of the file in the VFS
      * @param file the file in SFS that has to be updated with content
-     * @throws Exception if something goes wrong
+     * 
+     * @throws IOException if something goes wrong
      */
     private void writeFileByte(byte[] content, File file) throws IOException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/06/29 09:24:48 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/07/06 11:40:30 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -575,6 +575,7 @@ public class CmsToolManager {
      * 
      * @param cms the cms context object
      * @param len the recursion level
+     * @param handlers the list of handlers to register
      */
     private void registerHandlerList(CmsObject cms, int len, List handlers) {
 

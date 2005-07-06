@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -483,6 +483,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     /**
      * Adds a new XML schema type with the default value to the given parent node.<p>
      * 
+     * @param cms the cms context
      * @param parent the XML parent element to add the new value to
      * @param type the type of the value to add
      * @param locale the locale to add the new value for

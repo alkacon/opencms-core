@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/06 11:40:30 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,6 +142,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      * 
      * @param contentInfoBean the info bean of the collector
      * @param collectorResult the result list of the collector
+     * 
+     * @return a limited collector's result list
      */
     private static List limitCollectorResult(CmsContentInfoBean contentInfoBean, List collectorResult) {
 

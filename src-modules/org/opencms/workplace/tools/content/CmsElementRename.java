@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -913,7 +913,7 @@ public class CmsElementRename extends CmsReport {
     /**
      * Analyzes xml page and removes any element if this is not valid for the specified template and has no content.<p>
      * 
-     * @param resources a list of xml pages
+     * @param page a xml page
      * @param locale the locale
      */
     private void removeInValidElements(CmsXmlPage page, Locale locale) {

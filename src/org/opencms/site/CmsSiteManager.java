@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.50 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.50 $ 
  * 
  * @since 6.0.0 
  */
@@ -544,14 +544,12 @@ public final class CmsSiteManager implements Cloneable {
     }
 
     /**
-     * Adds a new Sitematcher object to the map of server names.
-     * 
-     * If this method  
-     * a <code>RuntimeException</code> is thrown.<p>
+     * Adds a new Site matcher object to the map of server names.
      * 
      * @param server the SiteMatcher of the server
      * @param site the site to add
-     * @throws CmsConfigurationException, if the site contains a servername, that is already assigned
+     * 
+     * @throws CmsConfigurationException if the site contains a servername, that is already assigned
      */
     private void addServer(CmsSiteMatcher server, CmsSite site) throws CmsConfigurationException {
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/06 11:40:30 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -316,6 +316,7 @@ public class CmsSetupDb extends Object {
      * 
      * @param inputReader an input stream reader on the setup script
      * @param replacers the replacements to perform in the script
+     * @param abortOnError if a error occurs this flag indicates if to continue or to abort
      */
     private void executeSql(Reader inputReader, Map replacers, boolean abortOnError) {
 
@@ -409,6 +410,7 @@ public class CmsSetupDb extends Object {
      * @param databaseKey the database variant of the script
      * @param sqlScript the name of the script
      * @param replacers the replacements to perform in the script
+     * @param abortOnError if a error occurs this flag indicates if to continue or to abort
      */
     private void executeSql(String databaseKey, String sqlScript, Map replacers, boolean abortOnError) {
 
@@ -444,6 +446,8 @@ public class CmsSetupDb extends Object {
      * Creates and executes a database statment from a String.<p>
      * 
      * @param statement the database statement
+     * 
+     * @throws SQLException if something goes wrong
      */
     private void executeStatement(String statement) throws SQLException {
 

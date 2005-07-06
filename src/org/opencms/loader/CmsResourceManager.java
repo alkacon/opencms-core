@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -763,6 +763,7 @@ public class CmsResourceManager {
      * options for the resource type.<p>
      *
      * @param resourceType the resource type to add
+     * @param configuration the resource configuration
      */
     private synchronized void initResourceType(
         I_CmsResourceType resourceType,

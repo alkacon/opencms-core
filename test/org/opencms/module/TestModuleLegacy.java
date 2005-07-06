@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/Attic/TestModuleLegacy.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,12 +50,12 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestModuleLegacy extends OpenCmsTestCase {
     
     /** The DB pool url. */
-    public static final String m_pool = "opencms:default";
+    public static final String POOL = "opencms:default";
     
     /**
      * Default JUnit constructor.<p>
@@ -105,7 +105,7 @@ public class TestModuleLegacy extends OpenCmsTestCase {
         echo("Testing legacy module import");
         
         // check that master tables are not already available
-        CmsDbAccess masterDbAccess = new CmsDbAccess(m_pool);
+        CmsDbAccess masterDbAccess = new CmsDbAccess(POOL);
         if (masterDbAccess.checkTables()) {
             fail("Master tables already created ?!");
         } else {
@@ -138,7 +138,7 @@ public class TestModuleLegacy extends OpenCmsTestCase {
         // start cms
         getCmsObject();
         
-        CmsDbAccess masterDbAccess = new CmsDbAccess(m_pool);
+        CmsDbAccess masterDbAccess = new CmsDbAccess(POOL);
         if (!masterDbAccess.checkTables()) {
             fail ("Master tables not created!");
         }
@@ -155,7 +155,7 @@ public class TestModuleLegacy extends OpenCmsTestCase {
 
         CmsObject cms = getCmsObject();
         
-        CmsDbAccess masterDbAccess = new CmsDbAccess(m_pool);
+        CmsDbAccess masterDbAccess = new CmsDbAccess(POOL);
         CmsMasterDataSet dataset1 = new CmsMasterDataSet(), dataset2 = new CmsMasterDataSet();
         CmsMasterContent content = new CmsMasterContent(cms) {
             public int getSubId() {

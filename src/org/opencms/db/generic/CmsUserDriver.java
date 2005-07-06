@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/28 08:05:43 $
- * Version: $Revision: 1.105 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.106 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.105 $
+ * @version $Revision: 1.106 $
  * 
  * @since 6.0.0 
  */
@@ -1758,13 +1758,14 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
     /**
      * Checks if a user is member of a group.<P/>
      * 
-     * @param runtimeInfo the current runtime info
+     * @param dbc the database context
      * @param userId the id of the user to check
      * @param groupId the id of the group to check
      * @param reservedParam reserved optional parameter, should be null on standard OpenCms installations
      *
      * @return true if user is member of group
-     * @throws CmsException if operation was not succesful
+     * 
+     * @throws CmsDataAccessException if operation was not succesful
      */
     private boolean internalValidateUserInGroup(CmsDbContext dbc, CmsUUID userId, CmsUUID groupId, Object reservedParam)
     throws CmsDataAccessException {

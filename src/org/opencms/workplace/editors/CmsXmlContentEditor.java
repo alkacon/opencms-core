@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/06/30 08:57:03 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/07/06 11:40:30 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.63 $ 
+ * @version $Revision: 1.64 $ 
  * 
  * @since 6.0.0 
  */
@@ -1046,6 +1046,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * do not call this method directly.<p>
      * 
      * @param contentDefinition the content definition to start with
+     * @param pathPrefix for nested xml content
+     * @param showHelpBubble if the code for a help bubble should be generated
+     * 
      * @return the HTML that generates the form for the XML editor
      */
     private StringBuffer getXmlEditorForm(

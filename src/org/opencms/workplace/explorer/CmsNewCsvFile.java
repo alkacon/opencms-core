@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/05 07:12:31 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -289,6 +289,14 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         }
     }
     
+    /**
+     * Tests if the given string is a <code>delimiter</code> separated list of Formatting Information.<p>
+     * 
+     * @param formatString the string to check
+     * @param delimiter the list separators
+     * 
+     * @return true if the string is a <code>delimiter</code> separated list of Formatting Information
+     */
     private static boolean isFormattingInformation(String formatString, String delimiter) {
         String[] formatStrings = formatString.split(delimiter);
         for (int i = 0; i < formatStrings.length; i++) {

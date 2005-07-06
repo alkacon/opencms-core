@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/06/29 12:02:04 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.90 $
+ * @version $Revision: 1.91 $
  * 
  * @since 6.0.0
  */
@@ -5402,7 +5402,7 @@ public final class CmsSecurityManager {
      * @throws CmsSecurityException in case the user is a default user 
      * @throws CmsException if something goes wrong
      */
-    private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException {
+    private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
         if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
             throw new CmsSecurityException(org.opencms.security.Messages.get().container(

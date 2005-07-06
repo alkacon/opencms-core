@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsMergePages.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -529,7 +529,8 @@ public class CmsMergePages extends CmsReport {
      * <li>List m_foldersEqualnames: contains all pages which can be found in both folders and are no siblings of each other</li>
      * <li>List m_foldersDifferenttypes: contains all pages which can be found in both folders but are of different types</li>
      * </ul>
-     * @throws CmsException
+     * 
+     * @throws CmsException if something goes wrong
      */
     private void collectResources() throws CmsException {
 

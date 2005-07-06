@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.93 $ 
+ * @version $Revision: 1.94 $ 
  * 
  * @since 6.0.0 
  * 
@@ -420,9 +420,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * Dispatches the current request to the OpenCms internal JSP.<p>
      * 
      * @param controller the current controller
+     * 
      * @return the content of the processed JSP
-     * @throws ServletException
-     * @throws IOException
+     * 
+     * @throws ServletException if inclusion does not work
+     * @throws IOException if inclusion does not work
      */
     private byte[] dispatchJsp(CmsFlexController controller) throws ServletException, IOException {
 
@@ -553,8 +555,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * i.e. the path in the file
      * system relative to the web application directory.
      *
+     * @param repository The directory to store the generated JSP pages in (relative path in web application)
      * @param name The name of the JSP file 
      * @param online Flag to check if this is request is online or not
+     * 
      * @return The full uri to the JSP
      */
     private String getJspUri(String repository, String name, boolean online) {
@@ -959,6 +963,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * 
      * @throws ServletException might be thrown in the process of including the JSP 
      * @throws IOException might be thrown in the process of including the JSP 
+     * @throws CmsLoaderException if the resource type can not be read
      */
     private synchronized String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
     throws IOException, ServletException, CmsLoaderException {

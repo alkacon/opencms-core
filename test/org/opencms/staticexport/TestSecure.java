@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestSecure.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -233,16 +233,31 @@ public class TestSecure extends OpenCmsTestCase {
         assertTrue(text.indexOf(SERVER_NORMAL) != -1);
     }
 
+    /**
+     * Checks that the link begins with a slash.<p>
+     * 
+     * @param link the link to test
+     */
     private void assertHasNoPrefix(String link) {
 
         assertTrue(link.startsWith("/"));
     }
 
+    /**
+     * Checks that the link uses a non secure protocoll.<p>
+     * 
+     * @param link the link to check
+     */
     private void assertHasNormalPrefix(String link) {
 
         assertTrue(link.startsWith(SERVER_NORMAL));
     }
 
+    /**
+     * Checks that the link uses a secure protocoll.<p>
+     * 
+     * @param link the link to check
+     */
     private void assertHasSecurePrefix(String link) {
 
         assertTrue(link.startsWith(SERVER_SECURE));

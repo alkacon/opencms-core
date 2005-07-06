@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  * 
@@ -510,7 +510,6 @@ public final class CmsLockManager {
      * 
      * @param driverManager the driver manager
      * @param dbc the current database context
-     * @param runtimeInfo the current runtime info
      * @param resource the resource to find all siblings from
      * 
      * @return a list of <code>{@link CmsResource}</code> Objects that 

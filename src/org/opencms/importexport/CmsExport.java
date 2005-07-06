@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.78 $
+ * Date   : $Date: 2005/07/06 11:40:29 $
+ * Version: $Revision: 1.79 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.78 $ 
+ * @version $Revision: 1.79 $ 
  * 
  * @since 6.0.0 
  */
@@ -716,7 +716,9 @@ public class CmsExport {
      * Adds all files in fileNames to the manifest.xml file.<p>
      * 
      * @param fileNames list of path Strings, e.g. <code>/folder/index.html</code>
-     * @throws CmsImportExportException2 if something goes wrong
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws IOException if a file could not be exported
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void addFiles(List fileNames) throws CmsImportExportException, IOException, SAXException {
@@ -756,6 +758,7 @@ public class CmsExport {
      * Exports all page body files that have not explicityl been added by the user.<p>
      * 
      * @throws CmsImportExportException if something goes wrong
+     * @throws IOException if a file could not be exported
      * @throws SAXException if something goes wrong procesing the manifest.xml
      */
     private void addPageBodyFiles() throws CmsImportExportException, IOException, SAXException {

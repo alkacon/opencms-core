@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -751,7 +751,10 @@ public class CmsHtmlImport {
 
     /**
      * Builds an index of all files to be imported and determines their new names in the OpenCms.<p>
+     * 
      * @param startfolder the folder to start with
+     * 
+     * @throws Exception if something goes wrong
      */
     private void buildIndex(String startfolder) throws Exception {
 
@@ -806,7 +809,8 @@ public class CmsHtmlImport {
      * Copies all  HTML files to the VFS.<p>
      * 
      * @param startfolder startfolder the folder to start with
-     * @throws CmsException if something goes wrong
+     * 
+     * @throws Exception if something goes wrong
      */
     private void copyHtmlFiles(String startfolder) throws Exception {
 
@@ -853,7 +857,6 @@ public class CmsHtmlImport {
      * Copies all files except HTML files to the VFS.<p>
      * 
      * @param startfolder startfolder the folder to start with
-     * @throws CmsException if something goes wrong
      */
     private void copyOtherFiles(String startfolder) {
 
@@ -1269,7 +1272,10 @@ public class CmsHtmlImport {
      * This is made by checking the extension.
      * 
      * @param filename the name of the file in the real filesystem  
+     * 
      * @return the id of the OpenCms file type
+     * 
+     * @throws Exception if something goes wrong
      */
     private int getFileType(String filename) throws Exception {
 
@@ -1294,7 +1300,10 @@ public class CmsHtmlImport {
      * @param relativeName the name in the real fielsystem, relative to the start folder
      * @param name the name of the file
      * @param isFile flag to indicate that the resource is a file
+     * 
      * @return a valid name in the VFS
+     * 
+     * @throws Exception if something goes wrong
      */
     private String getVfsName(String relativeName, String name, boolean isFile) throws Exception {
 
