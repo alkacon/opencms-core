@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceSibling.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -42,8 +41,11 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -62,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,16 +178,17 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
     }
 
     /**
-     * Redirects to the property dialog if the resourceeditprops parameter is true.<p>
+     * Forwards to the property dialog if the resourceeditprops parameter is true.<p>
      * 
      * If the parameter is not true, the dialog will be closed.<p>
      * If the sibling of the new resource is locked, the paramter will be ignored as properties
      * cannot be created in this case.<p>
      * 
-     * @throws IOException if redirecting to the property dialog fails
+     * @throws IOException if forwarding to the property dialog fails
+     * @throws ServletException if forwarding to the property dialog fails
      * @throws JspException if an inclusion fails
      */
-    public void actionEditProperties() throws IOException, JspException {
+    public void actionEditProperties() throws IOException, JspException, ServletException {
 
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
         // get the sibling name
@@ -201,10 +204,11 @@ public class CmsNewResourceSibling extends CmsNewResourcePointer {
             throw new JspException(e);
         }
         if (editProps) {
-            // edit properties checkbox checked, redirect to property dialog
-            String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
-            params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD;
-            sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER + params);
+            // edit properties checkbox checked, forward to property dialog
+            Map params = new HashMap();
+            params.put(PARAM_RESOURCE, getParamResource());
+            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+            sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
         } else {
             // edit properties not checked, close the dialog
             actionCloseDialog();

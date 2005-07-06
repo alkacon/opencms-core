@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,23 +34,23 @@ package org.opencms.workplace.explorer;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-
-import org.apache.commons.logging.Log;
 
 /**
  * The new resource folder dialog handles the creation of a folder.<p>
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,9 +71,6 @@ public class CmsNewResourceFolder extends CmsNewResource {
 
     /** Request parameter name for the create index file flag. */
     public static final String PARAM_CREATEINDEX = "createindex";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsNewResourceFolder.class);
 
     private String m_paramCreateIndex;
 
@@ -129,33 +126,31 @@ public class CmsNewResourceFolder extends CmsNewResource {
     }
 
     /**
-     * Redirects to the property dialog if the resourceeditprops parameter is true.<p>
+     * Forwards to the property dialog if the resourceeditprops parameter is true.<p>
      * 
      * If the parameter is not true, the dialog will be closed.<p>
      * 
-     * @throws IOException if redirecting to the property dialog fails
+     * @throws IOException if forwarding to the property dialog fails
+     * @throws ServletException if forwarding to the property dialog fails
      * @throws JspException if an inclusion fails
      */
-    public void actionEditProperties() throws IOException, JspException {
+    public void actionEditProperties() throws IOException, JspException, ServletException {
 
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
         boolean createIndex = Boolean.valueOf(getParamCreateIndex()).booleanValue();
         if (editProps || createIndex) {
-            // edit properties checkbox checked, redirect to property dialog
-            String params = "?" + PARAM_RESOURCE + "=" + CmsEncoder.encode(getParamResource());
-            if (createIndex) {
-                // set dialogmode to wizard - create index page to indicate the creation of the index page
-                params += "&"
-                    + CmsPropertyAdvanced.PARAM_DIALOGMODE
-                    + "="
-                    + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
-            } else {
-                // set dialogmode to wizard
-                params += "&" + CmsPropertyAdvanced.PARAM_DIALOGMODE + "=" + CmsPropertyAdvanced.MODE_WIZARD;
-            }
             if (editProps) {
-                // edit properties of folder, redirect to property dialog
-                sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER + params);
+                // edit properties of folder, forward to property dialog
+                Map params = new HashMap();
+                params.put(PARAM_RESOURCE, getParamResource());
+                if (createIndex) {
+                    // set dialogmode to wizard - create index page to indicate the creation of the index page
+                    params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
+                } else {
+                    // set dialogmode to wizard
+                    params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
+                }
+                sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
             } else if (createIndex) {
                 // create an index file in the new folder, redirect to new xmlpage dialog              
                 String newFolder = getParamResource();
@@ -164,20 +159,12 @@ public class CmsNewResourceFolder extends CmsNewResource {
                 }
                 // set the current explorer resource to the new created folder
                 getSettings().setExplorerResource(newFolder);
-
-                String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                    CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
-                newUri += "?"
-                    + CmsPropertyAdvanced.PARAM_DIALOGMODE
-                    + "="
-                    + CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX;
-                try {
-                    // redirect to new xmlpage dialog
-                    sendCmsRedirect(PATH_DIALOGS + newUri);
-                    return;
-                } catch (IOException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_REDIRECT_XMLPAGE_FAILED_1, PATH_DIALOGS + newUri));
-                }
+                String newUri = PATH_DIALOGS
+                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
+                String[] uri = CmsRequestUtil.splitUri(newUri);
+                Map params = CmsRequestUtil.createParameterMap(uri[2]);
+                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
+                sendForward(uri[0], params);
             }
         }
         // edit properties and create index file not checked, close the dialog and update tree

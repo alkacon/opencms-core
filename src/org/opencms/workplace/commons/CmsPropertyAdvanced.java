@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsTabDialog;
@@ -60,6 +61,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.RandomAccess;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
@@ -78,7 +80,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -263,15 +265,18 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             }
             // set the current explorer resource to the new created folder
             getSettings().setExplorerResource(newFolder);
-
-            String newUri = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
-            newUri += "?" + PARAM_DIALOGMODE + "=" + MODE_WIZARD_CREATEINDEX;
+            String newUri = PATH_DIALOGS
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
             try {
-                // redirect to new xmlpage dialog
-                sendCmsRedirect(PATH_DIALOGS + newUri);
+                // forward to new xmlpage dialog
+                String[] uri = CmsRequestUtil.splitUri(newUri);
+                Map params = CmsRequestUtil.createParameterMap(uri[2]);
+                params.put(PARAM_DIALOGMODE, MODE_WIZARD_CREATEINDEX);
+                sendForward(uri[0], params);
                 return;
             } catch (IOException e) {
+                LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+            } catch (ServletException e) {
                 LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             }
         } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
@@ -314,7 +319,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // set the request parameters before returning to the overview
             setParamAction(DIALOG_SHOW_DEFAULT);
             setParamNewproperty(null);
-            sendCmsRedirect(getJsp().getRequestContext().getUri() + "?" + paramsAsRequest());
+            sendForward(getJsp().getRequestContext().getUri(), paramsAsParameterMap());
         } catch (Throwable e) {
             // error defining property, show error dialog
             includeErrorpage(this, e);
@@ -764,14 +769,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
             } else {
                 // we are in an offline project
-                
+
                 // check permissions
-                if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+                if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
                     getSettings().setErrorMessage(null);
                     m_isEditable = new Boolean(false);
-                    return m_isEditable.booleanValue();    
+                    return m_isEditable.booleanValue();
                 }
-                
+
                 // check lock state
                 String resourceName = getParamResource();
                 CmsResource file = null;

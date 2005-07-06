@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/06/29 09:24:48 $
- * Version: $Revision: 1.145 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.146 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,6 +74,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TimeZone;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -88,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.145 $ 
+ * @version $Revision: 1.146 $ 
  * 
  * @since 6.0.0 
  */
@@ -1770,15 +1771,7 @@ public abstract class CmsWorkplace {
      */
     public Map paramsAsParameterMap() {
 
-        Map params = paramValues();
-        Map result = new HashMap(params.size());
-        Iterator i = params.keySet().iterator();
-        while (i.hasNext()) {
-            String param = (String)i.next();
-            String value = params.get(param).toString();
-            result.put(param, new String[] {value});
-        }
-        return result;
+        return CmsRequestUtil.createParameterMap(paramValues());
     }
 
     /**
@@ -1789,7 +1782,7 @@ public abstract class CmsWorkplace {
      * as request parameters
      */
     public String paramsAsRequest() {
-
+        
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
@@ -1834,7 +1827,26 @@ public abstract class CmsWorkplace {
      */
     public void sendCmsRedirect(String location) throws IOException {
 
+        // IBM Websphere patch: use forward here
+        int todo = 0;
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
+    }
+    
+    /**
+     * Forwards to the specified location in the OpenCms VFS.<p>
+     *
+     * @param location the location the response is redirected to
+     * @param params the map of parameters to use for the forwarded request
+     * 
+     * @throws IOException in case the forward fails
+     * @throws ServletException in case the forward fails
+     */
+    public void sendForward(String location, Map params) throws IOException, ServletException {
+
+        setForwarded(true);
+        // params must be arrays of String, ensure this is the case
+        params = CmsRequestUtil.createParameterMap(params);
+        CmsRequestUtil.forwardRequest(getJsp().link(location), params, getJsp().getRequest(), getJsp().getResponse());
     }
 
     /**

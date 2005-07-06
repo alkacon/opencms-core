@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/06/29 11:17:03 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -532,7 +532,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             setAction(ACTION_DEFAULT);
             try {
                 actionEdit(request);
-                sendCmsRedirect(CmsPropertyAdvanced.URI_PROPERTY_DIALOG + "?" + paramsAsRequest());
+                sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG, paramsAsParameterMap());
             } catch (Exception e) {
                 // should usually never happen
                 if (LOG.isInfoEnabled()) {

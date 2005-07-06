@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimpleEditor.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,11 +104,11 @@ public class CmsSimpleEditor extends CmsEditor {
     }
 
     /**
-     * Performs the exit editor action.<p>
+     * Performs the exit editor action.<p> 
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
-    public void actionExit() throws IOException, JspException {
+    public void actionExit() throws IOException, JspException, ServletException {
 
         if (getAction() == ACTION_CANCEL) {
             // save and exit was canceled

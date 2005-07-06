@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/07/06 11:40:30 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.65 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,6 +67,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspException;
 
@@ -78,7 +79,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.64 $ 
+ * @version $Revision: 1.65 $ 
  * 
  * @since 6.0.0 
  */
@@ -222,10 +223,11 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * The default action is: save resource, clear temporary files and publish the resource directly.<p>
      * 
-     * @throws IOException if a redirection fails
+     * @throws IOException if a forward fails
+     * @throws ServletException of a forward fails
      * @throws JspException if including a JSP fails
      */
-    public void actionDirectEdit() throws IOException, JspException {
+    public void actionDirectEdit() throws IOException, JspException, ServletException {
 
         // get the action class from the OpenCms runtime property
         I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
@@ -243,7 +245,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      * 
      * @see org.opencms.workplace.editors.CmsEditor#actionExit()
      */
-    public void actionExit() throws IOException, JspException {
+    public void actionExit() throws IOException, JspException, ServletException {
 
         if (getAction() == ACTION_CANCEL) {
             // save and exit was cancelled

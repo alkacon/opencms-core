@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.667 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.668 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,10 @@ Legend:
 OpenCms 6.0.1 - ???, 2005
 - Added serial version UIDs to all serializable classes
 * Fixed issue with CmsDriverManager#getChilds()
+* Fixed issue with "search" causing JavaScript errors in new Administration
+* Fixed issue with editing the "parent group" of a group
+! Added advanced rule based configuration options to static export
+- Replaced use of "sendCmsRedirect" in Workplace with "sendFroward" to reduce issues in IBM Websphere AS
 
 OpenCms 6.0.0 - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -66,6 +67,7 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
@@ -85,7 +87,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -356,20 +358,23 @@ public class CmsPreferences extends CmsTabDialog {
         try {
             if (DIALOG_SET.equals(getParamAction())) {
                 // after "set" action, leave dialog open 
-                sendCmsRedirect(getJsp().getRequestContext().getUri()
-                    + "?"
-                    + PARAM_TAB
-                    + "="
-                    + getActiveTab()
-                    + "&"
-                    + PARAM_SETPRESSED
-                    + "=true");
+                Map params = new HashMap();
+                params.put(PARAM_TAB, String.valueOf(getActiveTab()));
+                params.put(PARAM_SETPRESSED, Boolean.TRUE.toString());
+                sendForward(getJsp().getRequestContext().getUri(), params);
             } else {
-                // redirect to dialog with action set to reload the workplace
-                sendCmsRedirect(getJsp().getRequestContext().getUri() + "?" + PARAM_ACTION + "=" + DIALOG_RELOAD);
+                // forward to dialog with action set to reload the workplace
+                Map params = new HashMap();
+                params.put(PARAM_ACTION, DIALOG_RELOAD);
+                sendForward(getJsp().getRequestContext().getUri(), params);
             }
         } catch (IOException e) {
-            // error during redirect, do nothing
+            // error during forward, do nothing
+            if (LOG.isInfoEnabled()) {
+                LOG.info(e.getLocalizedMessage());
+            }
+        } catch (ServletException e) {
+            // error during forward, do nothing
             if (LOG.isInfoEnabled()) {
                 LOG.info(e.getLocalizedMessage());
             }

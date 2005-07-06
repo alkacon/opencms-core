@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/06/30 08:57:03 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/07/06 12:45:07 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,9 +49,11 @@ import org.opencms.workplace.CmsWorkplace;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 
+import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 
 import org.apache.commons.logging.Log;
@@ -63,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,12 +95,6 @@ public abstract class CmsEditor extends CmsDialog {
     /** Value for the action: an error occured. */
     public static final int ACTION_SHOW_ERRORMESSAGE = 127;
 
-    /** Stores the VFS editor path. */
-    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
-
-    /** Constant for the Editor special "save error" confirmation dialog. */
-    public static final String FILE_DIALOG_EDITOR_CONFIRM = PATH_EDITORS + "dialogs/confirm.jsp";
-
     /** Value for the action parameter: change the element. */
     public static final String EDITOR_CHANGE_ELEMENT = "changeelement";
 
@@ -125,6 +121,12 @@ public abstract class CmsEditor extends CmsDialog {
 
     /** Value for the action parameter: an error occured. */
     public static final String EDITOR_SHOW_ERRORMESSAGE = "error";
+
+    /** Stores the VFS editor path. */
+    public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
+    
+    /** Constant for the Editor special "save error" confirmation dialog. */
+    public static final String FILE_DIALOG_EDITOR_CONFIRM = PATH_EDITORS + "dialogs/confirm.jsp";
 
     /** Parameter name for the request parameter "backlink". */
     public static final String PARAM_BACKLINK = "backlink";
@@ -198,10 +200,11 @@ public abstract class CmsEditor extends CmsDialog {
      * Performs the exit editor action.<p>
      * 
      * @throws CmsException if something goes wrong
-     * @throws IOException if a redirection fails
+     * @throws IOException if a forward fails
+     * @throws ServletException if a forward fails
      * @throws JspException if including an element fails
      */
-    public abstract void actionExit() throws CmsException, IOException, JspException;
+    public abstract void actionExit() throws CmsException, IOException, ServletException, JspException;
 
     /**
      * Performs the save content action.<p>
@@ -602,18 +605,19 @@ public abstract class CmsEditor extends CmsDialog {
 
         m_paramTempFile = fileName;
     }
-    
+
     /**
-     * Closes the editor and redirects to the workplace or the resource depending on the editor mode.<p>
+     * Closes the editor and forwards to the workplace or the resource depending on the editor mode.<p>
      * 
-     * @throws IOException if a redirection fails
+     * @throws IOException if forwarding fails 
+     * @throws ServletException if forwarding fails
      * @throws JspException if including a JSP fails
      */
-    protected void actionClose() throws IOException, JspException {
+    protected void actionClose() throws IOException, JspException, ServletException {
 
-        if ("true".equals(getParamDirectedit())) {
+        if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
             // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
+            if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
                 // set link to the specified back link target
                 setParamCloseLink(getJsp().link(getParamBacklink()));
             } else {
@@ -625,8 +629,8 @@ public abstract class CmsEditor extends CmsDialog {
             // load the common JSP close dialog
             getJsp().include(FILE_DIALOG_CLOSE);
         } else {
-            // redirect to the workplace explorer view 
-            sendCmsRedirect(CmsFrameset.JSP_WORKPLACE_URI);
+            // forward to the workplace explorer view
+            sendForward(CmsFrameset.JSP_WORKPLACE_URI, new HashMap());
         }
     }
 
@@ -710,7 +714,7 @@ public abstract class CmsEditor extends CmsDialog {
             int flags = getCms().readResource(temporaryFilename).getFlags();
             if ((flags & CmsResource.FLAG_TEMPFILE) == 0) {
                 flags += CmsResource.FLAG_TEMPFILE;
-            }            
+            }
             getCms().chflags(temporaryFilename, flags);
         } catch (CmsException e) {
             switchToCurrentProject();
