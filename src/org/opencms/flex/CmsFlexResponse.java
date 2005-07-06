@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/07/06 13:14:30 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,7 +582,6 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SENDREDIRECT_1, location));
         }
-
         if (m_cachingRequired && !m_includeMode) {
             m_bufferRedirect = location;
         }
@@ -593,7 +592,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
             }
-
+            if (LOG.isWarnEnabled()) {
+                if (m_controller.getResponseStackSize() > 2) {
+                    // sendRedirect in a stacked response scenario, this may cause issues in some appservers
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_FLEXRESPONSE_REDIRECTWARNING_3,
+                        m_controller.getCmsResource().getRootPath(),
+                        m_controller.getCurrentRequest().getElementUri(),
+                        location));
+                }
+            }            
             m_controller.getTopResponse().sendRedirect(location);
         }
 
