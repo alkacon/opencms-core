@@ -2,7 +2,9 @@
 
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
-	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/modules/org.opencms.frontend.templateone/schemas/homelink.xsd"/>
+	
 	<xsd:element name="configurations" type="OpenCmsConfigurations"/>
 	
 	<xsd:complexType name="OpenCmsConfigurations">
@@ -20,7 +22,8 @@
 			<xsd:element name="headnav.menudepth" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="headnav.menuclick" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="headnav.markcurrent" type="OpenCmsBoolean" minOccurs="0" />
-			<xsd:element name="headnav.images" type="OpenCmsBoolean" minOccurs="0" />			
+			<xsd:element name="headnav.images" type="OpenCmsBoolean" minOccurs="0" />
+			<xsd:element name="headnav.homelink" type="OpenCmsHomelink" minOccurs="0" />		
 			<xsd:element name="navleft.showselected" type="OpenCmsBoolean" />
 			<xsd:element name="login.uri" type="OpenCmsVfsFile" />
 			<xsd:element name="help.uri" type="OpenCmsVfsFile" />

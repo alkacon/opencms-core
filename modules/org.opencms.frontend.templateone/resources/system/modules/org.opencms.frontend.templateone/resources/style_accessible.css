@@ -35,6 +35,8 @@ String headNavBorder = cms.getConfigValue("head.nav.border", headNavBgHover);
 // left navigation
 String navLeftBg = cms.getConfigValue("navleft.bg", "#CCCCCC");
 String navLeftFont = cms.getConfigValue("navleft.font", "#000000");
+String navLeftActiveColor = cms.getOptionalConfigValue("navleft.font.color", navLeftFont);
+String navLeftActiveWeight = cms.getFontWeight("navleft.font.bold", "true");
 
 String navLeftImgBgUri = cms.link(cms.getConfigValue("navleft.img.bg.uri", "/system/galleries/pics/ocms-templateone/bg_nav.jpg"));
 
@@ -359,8 +361,8 @@ li.navleft {
 a.navleft,a.navleft:link,a.navleft:visited,a.navleft:active { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; font-weight: normal; text-decoration:none; }
 a.navleft:hover { color: <%= navLeftFont %>; text-decoration: underline; }
 
-a.navleftactive,a.navleftactive:link,a.navleftactive:visited,a.navleftactive:active { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftFont %>; font-weight: bold; text-decoration:none; }
-a.navleftactive:hover { color: <%= navLeftFont %>; text-decoration: underline; }
+a.navleftactive,a.navleftactive:link,a.navleftactive:visited,a.navleftactive:active { font-family: <%= navFontFamily %>; font-size: 0.8em; color: <%= navLeftActiveColor %>; <%= navLeftActiveWeight %> text-decoration:none; }
+a.navleftactive:hover { color: <%= navLeftActiveColor %>; text-decoration: underline; }
 
 /* Side element styles */
 div.sidelist {

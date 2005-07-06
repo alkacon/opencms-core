@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/07/06 10:25:13 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,10 @@ import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.content.CmsXmlContent;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,6 +55,8 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Provides methods to build the different navigations for the OpenCms template one.<p>
@@ -74,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,6 +122,12 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
+    
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsTemplateBean.class);
+    
+    /** Stores the global website area configuration. */
+    private CmsXmlContent m_globalConfiguration;
 
     /** Stores the path to the head navigation start folder. */
     private String m_headNavFolder;
@@ -280,15 +290,33 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         result.append("\t<!-- Start Topnavigation -->\n");
 
         List navElements = getNavigation().getNavigationForFolder(getHeadNavFolder());
-        if (!showHeadNavImages()) {
+        boolean showHomeLink = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.show", "true")).booleanValue();
+        if (showHomeLink && !showHeadNavImages()) {
             // create the "home" link at first position
+            boolean onlyIndex = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.onlyindex", "false")).booleanValue();
+            String url = getStartFolder();
+            String target = "_self";
+            if ((onlyIndex && isDefaultFile(getStartFolder(), getRequestContext().getUri())) || (! onlyIndex)) {
+                // settings only valid for start page of microsite or for all subpages
+                url = getConfigurationValue("headnav.homelink/link.url", getStartFolder());
+                homeLabel = getConfigurationValue("headnav.homelink/link.text", homeLabel);
+                target = getConfigurationValue("headnav.homelink/link.target", "_self");
+            }
+            
+            if (url.startsWith("/")) {
+                // internal link
+                url = link(url);
+            }
             homeLabel = homeLabel.toUpperCase();
+
             result.append("<a class=\"");
             result.append(styleLink);
             result.append("\" href=\"");
-            result.append(link(getStartFolder()));
+            result.append(url);
             result.append("\" title=\"");
             result.append(homeLabel);
+            result.append("\" target=\"");
+            result.append(target);
             result.append("\">");
             result.append(homeLabel);
             result.append("</a>\n");
@@ -581,6 +609,55 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             // none of the left navigation elements is shown, add a non breaking space to avoid html display errors
             out.print("&nbsp;");
         }
+    }
+    
+    /**
+     * Returns the template configuration path in the OpenCms VFS.<p>
+     * 
+     * @return the template configuration path
+     */
+    public String getConfigPath() {
+
+        return property(CmsTemplateBean.PROPERTY_CONFIGPATH, "search", "/");
+    }
+    
+    /**
+     * Returns the common configuration properties for the current web site area.<p>
+     * 
+     * @return the common configuration properties
+     */
+    public CmsXmlContent getConfiguration() {
+
+        if (m_globalConfiguration == null) {
+            m_globalConfiguration = CmsTemplateBean.getConfigurationFile(getConfigPath() + CmsTemplateBean.FILE_CONFIG_COMMON, getCmsObject());
+        }
+        return m_globalConfiguration;
+    }
+    
+    /**
+     * Returns the value for the specified property key name from the configuration.<p>
+     * 
+     * Returns the default value argument if the property is not found.<p>
+     * 
+     * @param key the property key name to look up
+     * @param defaultValue a default value
+     * @return the value for the specified property key name
+     */
+    public String getConfigurationValue(String key, String defaultValue) {
+
+        String value = null;
+        try {
+            value = getConfiguration().getStringValue(null, key, getRequestContext().getLocale());
+        } catch (Exception e) {
+            // log error in debug mode
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(e);
+            }
+        }
+        if (CmsStringUtil.isEmpty(value)) {
+            value = defaultValue;
+        }
+        return value;
     }
 
     /**

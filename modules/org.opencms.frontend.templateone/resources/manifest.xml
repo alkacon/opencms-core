@@ -1750,6 +1750,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/homelink.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/homelink.xsd</destination>
+			<type>plain</type>
+			<uuidresource>9ec37292-ed6c-11d9-928b-8b6885970dc7</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Headnav home link schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone/schemas/imprint.xsd</destination>
 			<type>plain</type>

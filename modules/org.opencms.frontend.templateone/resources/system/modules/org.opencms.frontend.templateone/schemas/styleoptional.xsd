@@ -28,6 +28,8 @@
 			<xsd:element name="content.link.underline" type="OpenCmsBoolean" />
 			<xsd:element name="content.link.bold" type="OpenCmsBoolean" />
 			<xsd:element name="navleft.font.size" type="OpenCmsString" />
+			<xsd:element name="navleft.font.color" type="OpenCmsColor" minOccurs="0" />
+			<xsd:element name="navleft.font.bold" type="OpenCmsBoolean" minOccurs="0" />
 			<xsd:element name="infobox.width" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="infobox.modules.headline.size" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="infobox.modules.font.size" type="OpenCmsString" minOccurs="0" />
