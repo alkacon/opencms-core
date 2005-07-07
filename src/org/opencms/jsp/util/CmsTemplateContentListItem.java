@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/Attic/CmsTemplateContentListItem.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/07 16:25:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,8 +59,10 @@ public class CmsTemplateContentListItem {
 
     /** The display area of the list: center. */
     public static final String DISPLAYAREA_CENTER = "center";
+    
     /** The display area of the list: left. */
     public static final String DISPLAYAREA_LEFT = "left";
+    
     /** The display area of the list: right. */
     public static final String DISPLAYAREA_RIGHT = "right";
 
@@ -69,6 +71,7 @@ public class CmsTemplateContentListItem {
 
     /** The name of the list variation: long. */
     public static final String LISTVARIATION_LONG = "long";
+    
     /** The name of the list variation: short. */
     public static final String LISTVARIATION_SHORT = "short";
 
@@ -77,28 +80,37 @@ public class CmsTemplateContentListItem {
 
     /** Macro used in property definition names to resolve the list index. */
     public static final String MACRO_LISTINDEX = "index";
+    
     /** Macro used in folder String to represent the microsite folder. */
     public static final String MACRO_MICROSITEFOLDER = "microsite.folder";
 
     /** Request parameter name for the collector. */
     public static final String PARAM_COLLECTOR = "collector";
+    
     /** Request parameter name for the list count. */
     public static final String PARAM_COUNT = "count";
+    
     /** Request parameter name maximum number of elements to show. */
     public static final String PARAM_ELEMENTCOUNT = "elementcount";
+    
     /** Request parameter name for the xmlcontent folder. */
     public static final String PARAM_FOLDER = "folder";
+    
     /** Request parameter name for the xmlcontent listelement. */
     public static final String PARAM_LISTELEMENT = "listelement";
 
     /** Name of the property key to set the element collector. */
     public static final String PROPERTY_LAYOUT_COLLECTOR = "layout.${" + MACRO_LISTINDEX + "}." + PARAM_COLLECTOR;
+    
     /** Name of the property key to set the element count. */
     public static final String PROPERTY_LAYOUT_COUNT = "layout.${" + MACRO_LISTINDEX + "}." + PARAM_COUNT;
+    
     /** Name of the property key to set the folder holding the contents. */
     public static final String PROPERTY_LAYOUT_FOLDER = "layout.${" + MACRO_LISTINDEX + "}." + PARAM_FOLDER;
+    
     /** Name of the property key to set the element type. */
     public static final String PROPERTY_LAYOUT_TYPE = "layout.${" + MACRO_LISTINDEX + "}.type";
+    
     /** Name of the property key to set the list variation. */
     public static final String PROPERTY_LAYOUT_VARIATION = "layout.${" + MACRO_LISTINDEX + "}.variation";
 

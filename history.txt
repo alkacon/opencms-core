@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/07/07 11:27:19 $
- * Version: $Revision: 1.669 $
+ * Date   : $Date: 2005/07/07 16:25:27 $
+ * Version: $Revision: 1.670 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,9 @@ OpenCms 6.0.1 - ???, 2005
 - Replaced use of "sendCmsRedirect" in Workplace with "sendFroward" to reduce issues in IBM Websphere AS
 ! Property values can now be read and written as a list
 ! XML content mappings can map multiple occurences of a value to a property list value
+! For XML content values mapped to a property, the property is deleted if no value is available in the XML content 
+- Added patch for use of CmsJspStatusBean with mod_jk contributed by Thorsten Ludewig
+! Added resource collector to collect all files that have been "mapped" to another file
 
 OpenCms 6.0.0 - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler

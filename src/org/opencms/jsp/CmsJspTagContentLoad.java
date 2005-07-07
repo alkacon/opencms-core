@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/07/06 11:40:30 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/07/07 16:25:27 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -207,7 +207,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             }
 
             // check "direct edit" support
-            if (m_editable) {
+            if (m_editable && (m_resourceName != null)) {
 
                 m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
                     pageContext,
@@ -346,7 +346,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         }
 
         // check "direct edit" support
-        if (m_editable) {
+        if (m_editable && (m_resourceName != null)) {
 
             // check options for first element
             String directEditOptions;

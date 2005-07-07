@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/07 16:25:27 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,46 @@ public class CmsContentInfoBean {
     public int getResultSize() {
 
         return m_resultSize;
+    }
+
+    /**
+     * Returns true if the current resource is the first resource on the current page.<p>
+     * 
+     * @return true if the current resource is the first resource on the current page
+     */
+    public boolean isFirstOnPage() {
+
+        return m_resultIndex == (m_pageCount * m_pageSize) + 1;
+    }
+
+    /**
+     * Returns true if the current resource is the first resource in the result list.<p>
+     * 
+     * @return true if the current resource is the first resource in the result list
+     */
+    public boolean isFirstResult() {
+
+        return m_resultIndex == 1;
+    }
+
+    /**
+     * Returns true if the current resource is the last resource on the current page.<p>
+     * 
+     * @return true if the current resource is the last resource on the current page
+     */
+    public boolean isLastOnPage() {
+
+        return (m_resultIndex == (m_pageCount + 1) * m_pageSize) || isLastResult();
+    }
+
+    /**
+     * Returns true if the current resource is the last resource in the result list.<p>
+     * 
+     * @return true if the current resource is the last resource in the result list
+     */
+    public boolean isLastResult() {
+
+        return m_resultIndex == m_resultSize;
     }
 
     /**

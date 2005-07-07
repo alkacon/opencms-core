@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityResourceCollector.java,v $
- * Date   : $Date: 2005/06/28 17:45:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/07 16:25:27 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,16 @@ package org.opencms.file.collectors;
 
 import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -49,7 +53,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -57,6 +61,9 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
 
     /** The standard priority value if no value was set on resource. */
     public static final int PRIORITY_STANDARD = 3;
+
+    /** The name of the channel property to read. */
+    public static final String PROPERTY_CHANNEL = "collector.channel";
 
     /** The name of the priority property to read. */
     public static final String PROPERTY_PRIORITY = "collector.priority";
@@ -68,7 +75,9 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         "allInFolderPriorityDateDesc",
         "allInSubTreePriorityDateDesc",
         "allInFolderPriorityTitleDesc",
-        "allInSubTreePriorityTitleDesc"};
+        "allInSubTreePriorityTitleDesc",
+        "allMappedToUriPriorityDateAsc",
+        "allMappedToUriPriorityDateDesc"};
 
     /** Array list for fast collector name lookup. */
     private static final List COLLECTORS_LIST = Collections.unmodifiableList(Arrays.asList(COLLECTORS));
@@ -100,7 +109,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
             case 1:
             case 3:
             case 5:
+            case 6:
+            case 7:
                 // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
+                // "allMappedToUriPriorityDateAsc", "allMappedToUriPriorityDateDesc"
                 return null;
             default:
                 throw new CmsDataAccessException(Messages.get().container(
@@ -128,7 +140,10 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
             case 1:
             case 3:
             case 5:
+            case 6:
+            case 7:
                 // "allInSubTreePriorityDateAsc", "allInSubTreePriorityDateDesc" or "allInSubTreePriorityTitleDesc"
+                // "allMappedToUriPriorityDateAsc", "allMappedToUriPriorityDateDesc"
                 return null;
             default:
                 throw new CmsDataAccessException(Messages.get().container(
@@ -168,6 +183,12 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
             case 5:
                 // "allInSubTreePriorityTitleDesc"
                 return allInFolderPriorityTitle(cms, param, true);
+            case 6:
+                // "allMappedToUriPriorityDateAsc"
+                return allMappedToUriPriorityDate(cms, param, true);
+            case 7:
+                // "allMappedToUriPriorityDateDesc"
+                return allMappedToUriPriorityDate(cms, param, false);
             default:
                 throw new CmsDataAccessException(Messages.get().container(
                     Messages.ERR_COLLECTOR_NAME_INVALID_1,
@@ -229,5 +250,54 @@ public class CmsPriorityResourceCollector extends A_CmsResourceCollector {
         Collections.sort(result, comparator);
 
         return shrinkToFit(result, data.getCount());
+    }
+
+    /**
+     * Returns a list of all resource from specified folder that have been mapped to 
+     * the currently requested uri, sorted by priority, then date ascending or descending.<p>
+     * 
+     * @param cms the current OpenCms user context
+     * @param param the folder name to use
+     * @param asc if true, the date sort order is ascending, otherwise descending
+     * 
+     * @return all resources in the folder matching the given criteria
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected List allMappedToUriPriorityDate(CmsObject cms, String param, boolean asc) throws CmsException {
+
+        CmsCollectorData data = new CmsCollectorData(param);
+        String foldername = CmsResource.getFolderPath(data.getFileName());
+
+        CmsResourceFilter filter = CmsResourceFilter.DEFAULT.addRequireType(data.getType()).addExcludeFlags(
+            CmsResource.FLAG_TEMPFILE);
+
+        List result = cms.readResources(foldername, filter, true);
+        List mapped = new ArrayList();
+
+        // sort out the resources mapped to the current page
+        Iterator i = result.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            // read all properties - reason: comparator will do this later anyway, so we just prefill the cache
+            CmsProperty prop = cms.readPropertyObject(res, PROPERTY_CHANNEL, false);
+            if (!prop.isNullProperty()) {
+                if (CmsProject.isInsideProject(prop.getValueList(), cms.getRequestContext().getSiteRoot()
+                    + cms.getRequestContext().getUri())) {
+                    mapped.add(res);
+                }
+            }
+        }
+
+        if (mapped.isEmpty()) {
+            // nothing was mapped, no need for further processing
+            return mapped;
+        }
+
+        // create priority comparator to use to sort the resources
+        CmsPriorityDateResourceComparator comparator = new CmsPriorityDateResourceComparator(cms, asc);
+        Collections.sort(mapped, comparator);
+
+        return shrinkToFit(mapped, data.getCount());
     }
 }

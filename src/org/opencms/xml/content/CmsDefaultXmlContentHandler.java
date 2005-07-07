@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/07/07 11:27:19 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/07/07 16:25:27 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -320,6 +320,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         content.setFile(file);
         // resolve the file mappings
         content.resolveMappings(cms);
+        // ensure all property mappings of deleted optional values are removed
+        removeEmptyMappings(cms, content);
 
         return file;
     }
@@ -843,6 +845,77 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             return messages.key(keyName);
         }
         return CmsMessages.formatUnknownKey(keyName);
+    }
+
+    /**
+     * Removes property values on resources for non-existing, optional elements.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param content the XML content to remove the property values for
+     * 
+     * @throws CmsException in case of read/write errors accessing the OpenCms VFS
+     */
+    protected void removeEmptyMappings(CmsObject cms, CmsXmlContent content) throws CmsException {
+
+        Iterator mappings = m_elementMappings.keySet().iterator();
+
+        String rootPath = null;
+        List siblings = null;
+
+        while (mappings.hasNext()) {
+            String path = (String)mappings.next();
+            String mapping = (String)m_elementMappings.get(path);
+
+            if (mapping.startsWith(MAPTO_PROPERTY_LIST) || mapping.startsWith(MAPTO_PROPERTY)) {
+
+                // get root path of the file
+                if (rootPath == null) {
+                    rootPath = content.getFile().getRootPath();
+                }
+
+                try {
+                    // try / catch to ensure site root is always restored
+                    cms.getRequestContext().saveSiteRoot();
+                    cms.getRequestContext().setSiteRoot("/");
+
+                    // read all siblings of the file
+                    if (siblings == null) {
+                        siblings = cms.readSiblings(rootPath, CmsResourceFilter.IGNORE_EXPIRATION);
+                    }
+
+                    for (int i = 0; i < siblings.size(); i++) {
+
+                        // get sibline filename and locale
+                        String filename = ((CmsResource)siblings.get(i)).getRootPath();
+                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
+
+                        if (!content.hasLocale(locale)) {
+                            // only remove property if the locale fits
+                            continue;
+                        }
+                        if (content.hasValue(path, locale)) {
+                            // value is available, property must be kept
+                            continue;
+                        }
+
+                        String property;
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST)) {
+                            // this is a property list mapping
+                            property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                        } else {
+                            // this is a property mapping
+                            property = mapping.substring(MAPTO_PROPERTY.length());
+                        }
+                        // delete the property value for the not existing node
+                        cms.writePropertyObject(filename, new CmsProperty(property, CmsProperty.DELETE_VALUE, null));
+                    }
+
+                } finally {
+                    // restore the saved site root
+                    cms.getRequestContext().restoreSiteRoot();
+                }
+            }
+        }
     }
 
     /**
