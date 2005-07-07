@@ -3,7 +3,14 @@
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
   <page language="en">
     <element name="body">
-      <links/>
+      <links>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/permissions.html]]></target>
+        </link>
+        <link name="link1" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/proj_path.png]]></target>
+        </link>
+      </links>
       <content><![CDATA[<p>Wozu benötigt man ein Projekt?&nbsp;Projekte ermöglichen, die
 Arbeit an grossen Web-Auftritten in kleinere Stücke zu zerlegen und
 dies unabhängig voneinander publizierbar und zugreifbar zu machen.
@@ -16,12 +23,25 @@ Projektes residieren so gehören die Dateien unterhalb dieser Pfade
 den weiteren Projekten. Einem Projekt sind nur die Dateien und
 Ordner zugeordnet, die unterhalb seiner Pfade liegen und nicht über
 einen Pfad eines anderen Projektes in weniger Schritten erreicht
-werden könnte.</p>Im Allgemeinen arbeiten Sie im 
-Standardprojekt namens "Offline". Dieses Projekt wird implizit bei der 
-Installation von OpenCms angelegt.&nbsp;Das "Offline" - Projekt&nbsp;hat den 
-Pfad "/", d.h. wenn keine weiteren Projekte mit spezielleren Pfaden angelegt 
-werden, sind alle Dateien und Verzeichnisse Ihrer Site dem "Offline" Projekt 
-zugeordnet.&nbsp;]]></content>
+werden könnte.</p>
+<P>Im Allgemeinen arbeiten Sie im Standardprojekt namens "Offline". Dieses 
+Projekt wird implizit bei der Installation von OpenCms angelegt.&nbsp;Das 
+"Offline" - Projekt&nbsp;hat den Pfad "/", d.h. wenn keine weiteren Projekte mit 
+spezielleren Pfaden angelegt werden, sind alle Dateien und Verzeichnisse Ihrer 
+Site dem "Offline" Projekt zugeordnet.&nbsp;</P>
+<P>Im folgenden Beispielbild sehen wir das Projekt, welches 
+diese Dokumentation erstellt hat. Es hat einen Pfad, der bei 
+".../locales/de/help/" beginnt. Dort liegt dieser Inhalt. Beachten Sie die Namen 
+der Verzeichnisse und Dateien: nur diejeningen, die im Projektpfad liegen 
+erscheinen schwarz. Viele Modifikationen, z. B. das <A 
+href="${link0}" 
+target=_self>Setzen von Zugriffsberechtigungen</A>          
+      , ist an&nbsp;Ressourcen ausserhalb des 
+Projektpfades nicht möglich. </P>
+<P align=left><IMG alt="" hspace=0 src="${link1}" align=baseline 
+border=0></P>
+<P align=center><BR><EM>Namen von Dateien und Verzeichnisse ausserhalb des Projektpfades 
+sind augegraut. </EM><BR></P>]]></content>
     </element>
   </page>
 </pages>

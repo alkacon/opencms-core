@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link2" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/expl_perm_inherit_overwrite.png]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/permissions.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/generalTopics/permissions/attrib.html]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<P>Nehmen Sie an, sie möchten alle Unterverzeichnisse und enthaltenen Dateien 
+eines Verzeichnisse der Gruppe <STRONG>Guest </STRONG>nur zum Lesen zur 
+Verfügung stellen. Ohne Vererbung von Berechtigungen innerhalb von 
+Verzeichnisstrukturen müssten Sie jetzt an jeder dieser Unterdateien und 
+Unterverzeichnissen <A 
+href="${link0}" 
+target=_self>die Rechte manuell setzen</A>. Eine sehr aufwändige Arbeit. Stellen 
+Sie sich vor, in Zukunft werden weitere Dateien und Unterverzeichnisse in 
+diesesm Verzeichnis erstellt. Die verantwortlichen Redakteure wissen nichts von 
+diesem Rechtemanagement und vergessen, auch für die neuen Ressourcen die Rechte 
+der Gruppe <STRONG>Guest</STRONG> setzen. </P>
+<P>Durch Vererbung der Berechtigungen an einer Ressource können Sie einfach an 
+ein Verzeichnis Berechtigungen für eine Gruppe oder einen Benutzer setzen. 
+Automatisch werden alle Unterdateien und Unterverzeichnisse dieser Gruppe oder 
+diesem Benutzer die gleichen Rechte gewähren. </P>
+<P>Diese Vererbung kann in den Kind - Ressourcen 
+(Unterdateien und Unterverzeichnisse) nur dadurch manipuliert werden, dass an die Kind - Ressourcen Zugriffsrechte für denselben Benutzer / 
+dieselbe Gruppe neu definiert werden.</P>
+<P>Bitte beachten Sie: Wenn&nbsp;in der 
+Vererbungsreihenfolge einer Gruppe / einem Benutzer ein&nbsp;<A 
+href="${link1}" 
+target=_self>Zugriffsrecht</A>&nbsp;ausdrücklich verboten wurde, so kann ein 
+ausdrückliches Erlauben desselben Rechtes für denselben Benutzer / dieselbe 
+Gruppe dies nicht wieder aufheben, es sei den das Häkchen "Geerbte 
+Überschreiben" wird gesetzt.</P>
+<P align=left><IMG alt="" hspace=0 src="${link2}" align=baseline 
+border=0></P>
+<P align=center><BR><EM>Überschreiben geerbter 
+Zugriffsrechte.</EM></P>]]></content>
+    </element>
+  </page>
+</pages>
