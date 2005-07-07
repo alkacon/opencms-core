@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/07 11:27:19 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,6 +70,9 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for property mappings. */
     String MAPTO_PROPERTY = "property:";
+    
+    /** Prefix for property list mappings. */
+    String MAPTO_PROPERTY_LIST = "propertyList:";
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p> 

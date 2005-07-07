@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/07/07 11:27:19 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,11 +336,6 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             return;
         }
 
-        if (value.getIndex() > 1) {
-            // this implementation currently just supports mapping of the first element 
-            return;
-        }
-
         // get the original VFS file from the content
         CmsFile file = content.getFile();
         if (file == null) {
@@ -379,8 +374,27 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                     // get the string value of the current node
                     String stringValue = value.getStringValue(cms);
+                    if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
 
-                    if (mapping.startsWith(MAPTO_PROPERTY)) {
+                        // this is a property list mapping
+                        String property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+
+                        String path = CmsXmlUtils.removeXpathIndex(value.getPath());
+                        List values = content.getValues(path, locale);
+                        Iterator j = values.iterator();
+                        StringBuffer result = new StringBuffer(values.size() * 64);
+                        while (j.hasNext()) {
+                            I_CmsXmlContentValue val = (I_CmsXmlContentValue)j.next();
+                            result.append(val.getStringValue(cms));
+                            if (j.hasNext()) {
+                                result.append(CmsProperty.VALUE_LIST_DELIMITER);
+                            }
+                        }
+
+                        // write the created list string value in the selected property
+                        cms.writePropertyObject(filename, new CmsProperty(property, result.toString(), null));
+
+                    } else if (mapping.startsWith(MAPTO_PROPERTY)) {
 
                         // this is a property mapping
                         String property = mapping.substring(MAPTO_PROPERTY.length());

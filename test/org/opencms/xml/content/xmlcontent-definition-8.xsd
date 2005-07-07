@@ -30,6 +30,7 @@
 			<resourcebundle name="org.opencms.workplace.workplace" />
 			<mappings>
 				<mapping element="String" mapto="property:Title" />
+				<mapping element="VfsFile" mapto="propertyList:Description" />
 			</mappings>
 			<validationrules>
 				<rule element="String" regex="!.*[Ee]rr.*" />

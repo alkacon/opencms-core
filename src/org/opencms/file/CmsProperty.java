@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/07/07 11:27:19 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,8 @@
  */
 
 package org.opencms.file;
+
+import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -82,14 +84,11 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0 
  */
 public class CmsProperty implements Serializable, Cloneable, Comparable {
-
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 93613508924212782L;
 
     /**
      * Signals that the resource property values of a resource
@@ -133,10 +132,14 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     /** Key used for a shared (resource) property value. */
     public static final String TYPE_SHARED = "shared";
 
-    /**
-     * A null property object to be used in caches if a property is not found.<p>
-     */
+    /** The delimiter value for separating values in a list, per default this is the <code>|</code> char. */
+    public static final char VALUE_LIST_DELIMITER = '|';
+
+    /** The null property object to be used in caches if a property is not found. */
     private static final CmsProperty NULL_PROPERTY = new CmsProperty();
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 93613508924212782L;
 
     /**
      * Boolean flag to decide if the property definition for this property should be created 
@@ -144,20 +147,20 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     private boolean m_autoCreatePropertyDefinition;
 
-    /**
-     * The name of this property.<p>
-     */
+    /** The name of this property. */
     private String m_name;
 
-    /**
-     * The value of this property attached to the structure record.<p>
-     */
+    /** The value of this property attached to the structure record. */
     private String m_resourceValue;
 
-    /**
-     * The value of this property attached to the resource record.<p>
-     */
+    /** The (optional) value list of this property attached to the structure record. */
+    private List m_resourceValueList;
+
+    /** The value of this property attached to the resource record. */
     private String m_structureValue;
+
+    /** The (optional) value list of this property attached to the resource record. */
+    private List m_structureValueList;
 
     /**
      * Creates a new CmsProperty object.<p>
@@ -168,10 +171,6 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     public CmsProperty() {
 
         // noting to do, all values will be initialized with "null" or "false" by default
-        m_name = null;
-        m_structureValue = null;
-        m_resourceValue = null;
-        m_autoCreatePropertyDefinition = false;
     }
 
     /**
@@ -386,7 +385,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
 
         property.m_name = m_name;
         property.m_structureValue = m_structureValue;
+        property.m_structureValueList = m_structureValueList;
         property.m_resourceValue = m_resourceValue;
+        property.m_resourceValueList = m_resourceValueList;
         property.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
 
         return property;
@@ -423,7 +424,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean deleteResourceValue() {
 
-        return (m_resourceValue != null && m_resourceValue.length() == 0);
+        return (m_resourceValue == DELETE_VALUE) || (m_resourceValue != null && m_resourceValue.length() == 0);
     }
 
     /**
@@ -435,7 +436,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean deleteStructureValue() {
 
-        return (m_structureValue != null && m_structureValue.length() == 0);
+        return (m_structureValue == DELETE_VALUE) || (m_structureValue != null && m_structureValue.length() == 0);
     }
 
     /**
@@ -490,6 +491,25 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Returns the value of this property attached to the resource record, split as a list.<p>
+     * 
+     * This list is build form the resource value, which is split into separate values
+     * using the <code>|</code> char as delimiter. If the delimiter is not found,
+     * then the list will contain one entry which is equal to <code>{@link #getResourceValue()}</code>.<p>
+     * 
+     * @return the value of this property attached to the resource record, split as a (unmodifiable) list of Strings
+     */
+    public List getResourceValueList() {
+
+        if ((m_resourceValueList == null) && (m_resourceValue != null)) {
+            // use lazy initializing of the list
+            m_resourceValueList = createListFromValue(m_resourceValue);
+            m_resourceValueList = Collections.unmodifiableList(m_resourceValueList);
+        }
+        return m_resourceValueList;
+    }
+
+    /**
      * Returns the value of this property attached to the structure record.<p>
      * 
      * @return the value of this property attached to the structure record
@@ -500,11 +520,29 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Returns the value of this property attached to the structure record, split as a list.<p>
+     * 
+     * This list is build form the structure value, which is split into separate values
+     * using the <code>|</code> char as delimiter. If the delimiter is not found,
+     * then the list will contain one entry which is equal to <code>{@link #getStructureValue()}</code>.<p>
+     * 
+     * @return the value of this property attached to the structure record, split as a (unmodifiable) list of Strings
+     */
+    public List getStructureValueList() {
+
+        if ((m_structureValueList == null) && (m_structureValue != null)) {
+            // use lazy initializing of the list
+            m_structureValueList = createListFromValue(m_structureValue);
+            m_structureValueList = Collections.unmodifiableList(m_structureValueList);
+        }
+        return m_structureValueList;
+    }
+
+    /**
      * Returns the compound value of this property.<p>
      * 
-     * The value returned is the structure value, if only the structure value is set.
-     * Dito for the resource value, if only the resource value is set. If both values are
-     * set, the structure value is returned.
+     * The value returned is the value of {@link #getStructureValue()}, if it is not <code>null</code>.
+     * Otherwise the value if {@link #getResourceValue()} is returned (which may also be <code>null</code>).<p>
      * 
      * @return the compound value of this property
      */
@@ -520,7 +558,8 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * In other words, this method returns the defaultValue if this property object 
      * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
      * 
-     * @param defaultValue a default value which is returned if both the structure and resource values are null
+     * @param defaultValue a default value which is returned if both the structure and resource values are <code>null</code>
+     * 
      * @return the compound value of this property, or the default value
      */
     public String getValue(String defaultValue) {
@@ -534,6 +573,47 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         // on a property object different from the null property...
         return (m_structureValue != null) ? m_structureValue : ((m_resourceValue != null) ? m_resourceValue
         : defaultValue);
+    }
+
+    /**
+     * Returns the compound value of this property, split as a list.<p>
+     * 
+     * This list is build form the used value, which is split into separate values
+     * using the <code>|</code> char as delimiter. If the delimiter is not found,
+     * then the list will contain one entry.<p>
+     * 
+     * The value returned is the value of {@link #getStructureValueList()}, if it is not <code>null</code>.
+     * Otherwise the value if {@link #getResourceValueList()} is returned (which may also be <code>null</code>).<p>
+     * 
+     * @return the compound value of this property, split as a (unmodifiable) list of Strings
+     */
+    public List getValueList() {
+
+        return (m_structureValue != null) ? getStructureValueList() : getResourceValueList();
+    }
+
+    /**
+     * Returns the compound value of this property, split as a list, or a specified default value list,
+     * if both the structure and resource values are null.<p>
+     * 
+     * In other words, this method returns the defaultValue if this property object 
+     * is the null property (see {@link CmsProperty#getNullProperty()}).<p>
+     * 
+     * @param defaultValue a default value list which is returned if both the structure and resource values are <code>null</code>
+     * 
+     * @return the compound value of this property, split as a (unmodifiable) list of Strings
+     */
+    public List getValueList(List defaultValue) {
+
+        if (this == CmsProperty.NULL_PROPERTY) {
+            // return the default value if this property is the null property
+            return defaultValue;
+        }
+
+        // somebody might have set both values to null manually
+        // on a property object different from the null property...
+        return (m_structureValue != null) ? getStructureValueList()
+        : ((m_resourceValue != null) ? getResourceValueList() : defaultValue);
     }
 
     /**
@@ -640,6 +720,27 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     public void setResourceValue(String resourceValue) {
 
         m_resourceValue = resourceValue;
+        m_resourceValueList = null;
+    }
+
+    /**
+     * Sets the value of this property attached to the resource record form the given list of Strings.<p>
+     * 
+     * The value will be created form the individual values of the given list, which are appended
+     * using the <code>|</code> char as delimiter.<p>
+     * 
+     * @param valueList the list of value (Strings) to attach to the resource record
+     */
+    public void setResourceValueList(List valueList) {
+
+        if (valueList != null) {
+            m_resourceValueList = new ArrayList(valueList);
+            m_resourceValueList = Collections.unmodifiableList(m_resourceValueList);
+            m_resourceValue = createValueFromList(m_resourceValueList);
+        } else {
+            m_resourceValueList = null;
+            m_resourceValue = null;
+        }
     }
 
     /**
@@ -650,6 +751,27 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     public void setStructureValue(String structureValue) {
 
         m_structureValue = structureValue;
+        m_structureValueList = null;
+    }
+
+    /**
+     * Sets the value of this property attached to the structure record form the given list of Strings.<p>
+     * 
+     * The value will be created form the individual values of the given list, which are appended
+     * using the <code>|</code> char as delimiter.<p>
+     * 
+     * @param valueList the list of value (Strings) to attach to the structure record
+     */
+    public void setStructureValueList(List valueList) {
+
+        if (valueList != null) {
+            m_structureValueList = new ArrayList(valueList);
+            m_structureValueList = Collections.unmodifiableList(m_structureValueList);
+            m_structureValue = createValueFromList(m_structureValueList);
+        } else {
+            m_structureValueList = null;
+            m_structureValue = null;
+        }
     }
 
     /**
@@ -694,4 +816,43 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         return strBuf.toString();
     }
 
+    /**
+     * Returns the list value representation for the given String.<p>
+     * 
+     * The given value is split along the <code>|</code> char.<p>
+     * 
+     * @param value the value list to create the list representation for
+     * 
+     * @return the list value representation for the given String
+     */
+    private List createListFromValue(String value) {
+
+        if (value == null) {
+            return null;
+        }
+        return CmsStringUtil.splitAsList(value, VALUE_LIST_DELIMITER);
+    }
+
+    /**
+     * Returns the single String value representation for the given value list.<p>
+     * 
+     * @param valueList the value list to create the single String value for
+     * 
+     * @return the single String value representation for the given value list
+     */
+    private String createValueFromList(List valueList) {
+
+        if (valueList == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(valueList.size() * 32);
+        Iterator i = valueList.iterator();
+        while (i.hasNext()) {
+            result.append(i.next().toString());
+            if (i.hasNext()) {
+                result.append(VALUE_LIST_DELIMITER);
+            }
+        }
+        return result.toString();
+    }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/07 11:27:19 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -70,6 +70,7 @@ public class TestProperty extends OpenCmsTestCase {
         TestSuite suite = new TestSuite();
         suite.setName(TestProperty.class.getName());
                 
+        suite.addTest(new TestProperty("testPropertyLists"));
         suite.addTest(new TestProperty("testWriteProperty"));
         suite.addTest(new TestProperty("testWriteProperties"));
         suite.addTest(new TestProperty("testRemoveProperty"));
@@ -93,6 +94,94 @@ public class TestProperty extends OpenCmsTestCase {
         };
         
         return wrapper;
+    }  
+        
+    /**
+     * Tests reading and writing property lists.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testPropertyLists() throws Exception {  
+        
+        CmsObject cms = getCmsObject(); 
+        echo("Testing reading and writing property lists");
+        
+        String source = "/xmlcontent/article_0001.html";
+        cms.lockResource(source);
+        
+        CmsProperty prop;
+        prop = cms.readPropertyObject(source, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        
+        // basic asserts so we know for shure where we start
+        assertEquals("Sample Article 1", prop.getValue());
+        assertEquals("Sample Article 1", prop.getStructureValue());
+        assertNull(prop.getResourceValue());
+        
+        // simple list asserts
+        assertEquals(1, prop.getValueList().size());
+        assertEquals(1, prop.getStructureValueList().size());
+        assertNull(prop.getResourceValueList());
+        
+        // now set the title as a list        
+        List list = new ArrayList();
+        String value = "";
+        for (int i=1; i<=10; i++) {
+            String s = "Title " + i; 
+            list.add(s);
+            value += s;
+            if (i<10) {
+                value += CmsProperty.VALUE_LIST_DELIMITER;
+            }
+        }       
+        prop.setStructureValueList(list);
+        
+        // asserts on non-written property
+        assertEquals(value, prop.getValue());
+        assertEquals(value, prop.getStructureValue());
+        assertNull(prop.getResourceValue());
+        assertEquals(10, prop.getValueList().size());
+        assertEquals(10, prop.getStructureValueList().size());
+        assertNull(prop.getResourceValueList());
+        list = prop.getValueList();
+        for (int i=1; i<=10; i++) {
+            String s = "Title " + i; 
+            assertEquals(s, list.get(i-1).toString());
+        } 
+        
+        // write the property object
+        cms.writePropertyObject(source, prop);
+        
+        // read and check the property
+        CmsProperty prop2 = cms.readPropertyObject(source, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        
+        // asserts on written property
+        assertEquals(value, prop2.getValue());
+        assertEquals(value, prop2.getStructureValue());
+        assertNull(prop2.getResourceValue());
+        assertEquals(10, prop2.getValueList().size());
+        assertEquals(10, prop2.getStructureValueList().size());
+        assertNull(prop2.getResourceValueList());
+        list = prop2.getValueList();
+        for (int i=1; i<=10; i++) {
+            String s = "Title " + i; 
+            assertEquals(s, list.get(i-1).toString());
+        }
+        
+        // setting a list via the single string value
+        prop.setStructureValue(null);
+        value = "Test|Toast|Hi|Ho";
+        prop.setValue(value, CmsProperty.TYPE_SHARED);
+        
+        assertEquals(value, prop.getValue());
+        assertEquals(value, prop.getResourceValue());
+        assertNull(prop.getStructureValue());
+        assertEquals(4, prop.getValueList().size());
+        assertEquals(4, prop.getResourceValueList().size());
+        assertNull(prop.getStructureValueList());
+        assertEquals("Test", prop.getResourceValueList().get(0));
+        assertEquals("Toast", prop.getResourceValueList().get(1));
+        assertEquals("Hi", prop.getResourceValueList().get(2));
+        assertEquals("Ho", prop.getResourceValueList().get(3));      
     }  
     
     /**
@@ -429,8 +518,7 @@ public class TestProperty extends OpenCmsTestCase {
         
         List result = cms.readResourcesWithProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME);
         assertTrue(result.contains(res));
-    }  
-    
+    }      
     
     /**
      * Test default property creation (from resource type configuration).<p>
@@ -475,5 +563,5 @@ public class TestProperty extends OpenCmsTestCase {
         cms.publishProject();    
         
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);                
-    }    
+    }   
 }

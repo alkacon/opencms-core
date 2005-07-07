@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/06/29 14:52:37 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/07/07 11:27:19 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -122,6 +122,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testMappings"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsWithManyLocales"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMappingsOfNestedContent"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testMappingsAsList"));        
         suite.addTest(new TestCmsXmlContentWithVfs("testResourceBundle"));
         suite.addTest(new TestCmsXmlContentWithVfs("testMacros"));
 
@@ -928,9 +929,87 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         cms.writeFile(file);
 
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals(titleStr, titleProperty.getValue());
+        assertEquals(titleStr, titleProperty.getValue());        
     }
 
+    /**
+     * Tests element mappings fom XML content to a property list.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testMappingsAsList() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing element mappings fom XML content to a property list");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // please note: XML schema 8 already in the cache from previous tests
+        
+        // now read the XML content
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", CmsEncoder.ENCODING_ISO_8859_1);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_ISO_8859_1, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        String resourcename = "/mappinglist.html";
+        // create a file in the VFS with this content (required for mappings to work)
+        cms.createResource(
+            resourcename,
+            OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId(),
+            content.getBytes(CmsEncoder.ENCODING_ISO_8859_1),
+            Collections.EMPTY_LIST);
+
+        CmsFile file = cms.readFile(resourcename);
+        xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
+
+        CmsProperty prop;
+        prop = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertSame(prop, CmsProperty.getNullProperty());               
+
+        I_CmsXmlContentValue value;
+        CmsXmlContentValueSequence seq = xmlcontent.getValueSequence("VfsFile", Locale.ENGLISH);
+        assertEquals(0, seq.getElementCount());
+        
+        String res1 = "/index.html";
+        String res2 = "/xmlcontent/";
+        String res3 = "/xmlcontent/article_0001.html";
+        String res4 = "/folder1/index.html";
+        
+        String sr = cms.getRequestContext().getSiteRoot();
+        String propValue = sr + res1 + "|" + sr + res2 + "|" + sr + res3 + "|" + sr + res4;
+        
+        value = seq.addValue(cms, 0);
+        value.setStringValue(cms, res1);
+        value = seq.addValue(cms, 1);
+        value.setStringValue(cms, res2);
+        value = seq.addValue(cms, 2);
+        value.setStringValue(cms, res3);
+        value = seq.addValue(cms, 3);
+        value.setStringValue(cms, res4);
+        
+        assertEquals(4, seq.getElementCount());
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        // check for written property values as list
+        prop = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        List list = prop.getValueList();
+        assertNotNull(list);
+        assertEquals(4, list.size());
+        assertEquals(sr + res1, list.get(0));
+        assertEquals(sr + res2, list.get(1));
+        assertEquals(sr + res3, list.get(2));
+        assertEquals(sr + res4, list.get(3));        
+        assertEquals(propValue, prop.getValue());      
+    }
+    
     /**
      * Tests the element mappings from the appinfo node for nested XML content.<p>
      * 
