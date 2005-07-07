@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/07/05 07:07:41 $
- * Version: $Revision: 1.235 $
+ * Date   : $Date: 2005/07/07 13:07:38 $
+ * Version: $Revision: 1.236 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.235 $
+ * @version $Revision: 1.236 $
  * 
  * @since 6.0.0 
  */
@@ -611,8 +611,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         try {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(m),
-                new Integer(n)), I_CmsReport.FORMAT_NOTE);
+                String.valueOf(m),
+                String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_DELETE_FOLDER_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -718,8 +718,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEL_FOLDER_3,
                         dbc.removeSiteRoot(currentFolder.getRootPath()),
-                        new Integer(m),
-                        new Integer(n)));
+                        String.valueOf(m),
+                        String.valueOf(n)));
                 }
             }
         } finally {
@@ -906,8 +906,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEL_FILE_3,
                         dbc.removeSiteRoot(offlineResource.getRootPath()),
-                        new Integer(m),
-                        new Integer(n)));
+                        String.valueOf(m),
+                        String.valueOf(n)));
                 }
 
             } else if (offlineResource.getState() == CmsResource.STATE_CHANGED) {
@@ -1064,8 +1064,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_PUBLISHING_FILE_3,
                         dbc.removeSiteRoot(offlineResource.getRootPath()),
-                        new Integer(m),
-                        new Integer(n)));
+                        String.valueOf(m),
+                        String.valueOf(n)));
                 }
 
             } else if (offlineResource.getState() == CmsResource.STATE_NEW) {
@@ -1195,8 +1195,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         LOG.debug(Messages.get().key(
                             Messages.LOG_PUBLISHING_FILE_3,
                             dbc.removeSiteRoot(offlineResource.getRootPath()),
-                            new Integer(m),
-                            new Integer(n)));
+                            String.valueOf(m),
+                            String.valueOf(n)));
                     }
                 }
             }
@@ -1288,8 +1288,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         try {
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_SUCCESSION_2,
-                new Integer(m),
-                new Integer(n)), I_CmsReport.FORMAT_NOTE);
+                String.valueOf(m),
+                String.valueOf(n)), I_CmsReport.FORMAT_NOTE);
             report.print(Messages.get().container(Messages.RPT_PUBLISH_FOLDER_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
@@ -1458,8 +1458,8 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 LOG.debug(Messages.get().key(
                     Messages.LOG_PUBLISHING_FOLDER_3,
                     offlineFolder.getRootPath(),
-                    new Integer(m),
-                    new Integer(n)));
+                    String.valueOf(m),
+                    String.valueOf(n)));
             }
         } finally {
             // notify the app. that the published folder and it's properties have been modified offline
@@ -1708,9 +1708,9 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
             currentResource = null;
             Object[] msgArgs = new Object[] {
-                new Integer(publishedFileCount),
-                new Integer(publishedFolderCount),
-                new Integer(deletedFolderCount),
+                String.valueOf(publishedFileCount),
+                String.valueOf(publishedFolderCount),
+                String.valueOf(deletedFolderCount),
                 report.formatRuntime()};
             CmsMessageContainer message = Messages.get().container(Messages.RPT_PUBLISH_STAT_4, msgArgs);
             if (LOG.isInfoEnabled()) {
@@ -1752,7 +1752,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             } else {
                 throw new CmsDbEntryNotFoundException(Messages.get().container(
                     Messages.ERR_NO_PROJECT_WITH_ID_1,
-                    new Integer(id)));
+                    String.valueOf(id)));
             }
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
