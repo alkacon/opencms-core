@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.63 $
+ * Date   : $Date: 2005/07/07 10:08:28 $
+ * Version: $Revision: 1.64 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.63 $
+ * @version $Revision: 1.64 $
  * 
  * @since 6.0.0 
  */
@@ -369,7 +369,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             // id 0 is special, please see below
             StringBuffer buffer = new StringBuffer(128);
             buffer.append(queryKey);
-            if (projectId == CmsProject.ONLINE_PROJECT_ID) {
+            if (projectId == CmsProject.ONLINE_PROJECT_ID || projectId < 0) {
                 buffer.append("_ONLINE");
             } else {
                 buffer.append("_OFFLINE");
