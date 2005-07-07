@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsJspStatusBean.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/07 13:14:26 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0
  */
@@ -471,6 +471,32 @@ public class CmsJspStatusBean extends CmsJspActionElement {
         m_errorMessage = (String)req.getAttribute(ERROR_MESSAGE);
         m_requestUri = (String)req.getAttribute(ERROR_REQUEST_URI);
         m_statusCode = (Integer)req.getAttribute(ERROR_STATUS_CODE);
+
+        if (m_statusCode == null || m_requestUri == null) {
+            // check if the error request is invoked via Apache/HTTPd ErrorDocument and mod_jk
+
+            // to use this you need to add the following to "jk.conf":
+
+            // JkEnvVar REDIRECT_URL none
+            // JkEnvVar REDIRECT_STATUS none
+            // JkEnvVar REDIRECT_SERVLET_NAME OpenCmsServlet         
+
+            String jkUri = (String)req.getAttribute("REDIRECT_URL");
+            String jkStatusCode = (String)req.getAttribute("REDIRECT_STATUS");
+            String jkServletName = (String)req.getAttribute("REDIRECT_SERVLET_NAME");
+            try {
+                if (!"none".equals(jkStatusCode) && !"none".equals(jkUri)) {
+                    m_servletName = jkServletName;
+                    m_requestUri = jkUri;
+                    m_statusCode = new Integer(jkStatusCode);
+                }
+            } catch (NullPointerException e) {
+                // attibute not set, ignore
+            } catch (NumberFormatException e) {
+                // status code not a number, ignore
+            }
+        }
+
         // get the status code as String
         if (m_statusCode != null) {
             m_statusCodeMessage = String.valueOf(m_statusCode.intValue());
@@ -595,5 +621,4 @@ public class CmsJspStatusBean extends CmsJspActionElement {
 
         m_statusCodeMessage = statusCodeMessage;
     }
-
 }
