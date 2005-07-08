@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.73 $
+ * Date   : $Date: 2005/07/08 19:14:11 $
+ * Version: $Revision: 1.74 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.73 $ 
+ * @version $Revision: 1.74 $ 
  * 
  * @since 6.0.0 
  * 
@@ -331,10 +331,10 @@ public class CmsImportVersion3 extends A_CmsImport {
                                 CmsImportExportManager.N_FLAGS);
                             String allowed = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET +"/"+ CmsImportExportManager.N_ACCESSCONTROL_ALLOWEDPERMISSIONS);
                             String denied = CmsImport.getChildElementTextValue(
                                 currentEntry,
-                                CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
+                                CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET +"/"+ CmsImportExportManager.N_ACCESSCONTROL_DENIEDPERMISSIONS);
                             
                             // get the correct principal
                             try {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/08 19:14:11 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.22 $
  * 
  * @since 6.0.0
  */
@@ -295,7 +295,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             + "/"
             + N_PRINCIPALTRANSLATIONS
             + "/"
-            + N_PRINCIPALTRANSLATION, 1, A_TO);
+            + N_PRINCIPALTRANSLATION, 1, A_FROM);
         digester.addCallParam("*/"
             + N_IMPORTEXPORT
             + "/"
@@ -303,7 +303,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             + "/"
             + N_PRINCIPALTRANSLATIONS
             + "/"
-            + N_PRINCIPALTRANSLATION, 2, A_FROM);
+            + N_PRINCIPALTRANSLATION, 2, A_TO);
 
         // add rules for the ignored properties
         digester.addCallMethod(
@@ -663,17 +663,19 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
         Element principalsElement = importElement.addElement(N_PRINCIPALTRANSLATIONS);
         i = m_importExportManager.getImportUserTranslations().keySet().iterator();
         while (i.hasNext()) {
-            String to = (String)i.next();
+            String from = (String)i.next();
+            String to = (String)m_importExportManager.getImportUserTranslations().get(from);
             principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.PRINCIPAL_USER).addAttribute(
                 A_FROM,
-                (String)m_importExportManager.getImportUserTranslations().get(to)).addAttribute(A_TO, to);
+                from).addAttribute(A_TO, to);
         }
         i = m_importExportManager.getImportGroupTranslations().keySet().iterator();
         while (i.hasNext()) {
-            String to = (String)i.next();
+            String from = (String)i.next();
+            String to = (String)m_importExportManager.getImportGroupTranslations().get(from);
             principalsElement.addElement(N_PRINCIPALTRANSLATION).addAttribute(A_TYPE, I_CmsPrincipal.PRINCIPAL_GROUP).addAttribute(
                 A_FROM,
-                (String)m_importExportManager.getImportGroupTranslations().get(to)).addAttribute(A_TO, to);
+                from).addAttribute(A_TO, to);
         }
 
         // <ignoredproperties> node
