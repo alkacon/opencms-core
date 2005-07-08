@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/08 15:39:56 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,7 +210,7 @@ public class CmsHistory extends CmsDialog {
                 result.append("<td align=\"right\">");                
                 result.append("<table class=\"buttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
                 result.append("\t<tr>\n");
-                result.append(button("javascript:viewVersion('"+getCms().getSitePath(file)+"','"+versionId+"')", null, "preview.png", "messagebox.title.viewresource", 0));
+                result.append(button("javascript:viewVersion('"+file.getRootPath()+"','"+versionId+"')", null, "preview.png", "messagebox.title.viewresource", 0));
                 result.append(button("javascript:restore('"+versionId+"')", null, "publish.png", "messagebox.title.restoreresource", 0));                
                 result.append("</tr>\n");
                 result.append("</table>\n");
