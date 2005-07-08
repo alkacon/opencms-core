@@ -1,74 +1,241 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
-  <page language="en">
+  <page language="de">
     <element name="body">
       <links>
-        <link name="link3" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/images/expl_locks_overtake.png]]></target>
+        <link name="link14" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/pointer.gif]]></target>
         </link>
-        <link name="link2" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/resources/explorer/lock_shared.gif]]></target>
+        <link name="link5" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/htmlgallery.gif]]></target>
         </link>
-        <link name="link0" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/resources/explorer/lock_user.gif]]></target>
+        <link name="link6" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/tablegallery.gif]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/chtype.html]]></target>
+        </link>
+        <link name="link17" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/xmlcontent.gif]]></target>
+        </link>
+        <link name="link4" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/linkgallery.gif]]></target>
+        </link>
+        <link name="link9" type="IMG" internal="false">
+          <target><![CDATA[ /opencms/opencms/system/workplace/resources/filetypes/plain.gif]]></target>
+        </link>
+        <link name="link12" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/jsp.gif]]></target>
         </link>
         <link name="link1" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/resources/explorer/lock_other.gif]]></target>
+          <target><![CDATA[/system/workplace/resources/filetypes/folder.gif]]></target>
+        </link>
+        <link name="link13" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/binary.gif]]></target>
+        </link>
+        <link name="link3" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/downloadgallery.gif]]></target>
+        </link>
+        <link name="link8" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/properties.html]]></target>
+        </link>
+        <link name="link11" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/upload/index.html]]></target>
+        </link>
+        <link name="link16" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/xmltemplate.gif]]></target>
+        </link>
+        <link name="link2" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/imagegallery.gif]]></target>
+        </link>
+        <link name="link15" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/properties.html]]></target>
+        </link>
+        <link name="link7" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/page.gif]]></target>
+        </link>
+        <link name="link10" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/resources/filetypes/image.gif]]></target>
         </link>
       </links>
-      <content><![CDATA[<p>Um eine Datei oder ein Verzeichnis zu bearbeiten, muss diese
-zuvor gesperrt werden. In den früheren Versionen von OpenCms musste
-dieser Arbeitsschritt immer als erstes ausgeführt werden, ab der
-Version 6.0 wird dies automatisch von OpenCms erledigt. Sobald eine
-Seite zum bearbeiten aufgerufen wird, wird diese mit dem Status „
-Gesperrt“ versehen. Der jeweilige Status einer Datei oder eines
-Verzeichnisses ist anhand eines Symbols in Form eines „
-Vorhängeschlosses“ im Workplace erkennbar.</p>
-<table cellspacing="0" cellpadding="2" border="1">
+      <content><![CDATA[<p>OpenCms 6.0.0 unterscheidet Typen von Ressourcen. Dieses
+ermöglicht, mit speziellen Typen von Ressourcen gesondert umzugehen
+und dadurch komfortableres Arbeiten zu unterstützen.</p>
+<p>Diese Typen von Ressource lassen sich auswählen, wenn eine neue
+Ressource erstellt wird oder der Typ einer Ressource im
+Explorer&nbsp;<A href="${link0}"
+ target=_self>nachträglich geändert</A> wird.</p>
+<p><strong>Bitte beachten Sie:</strong> Nicht alle Typen von
+Ressourcen lassen sich beim Erstellen einer Ressource auswählen.
+Bei einigen gewünschten Typen muss man im Explorer nachträglich den
+Typ der Ressource auf den gewünschten ändern.</p>
+<h2>Verzeichnis - Typen</h2>
+<table border="1" cellpadding="2" cellspacing="0">
 <tr>
-<td><IMG alt="Eigene Sperrung" hspace=0 src="${link0}"
- align=baseline border=0></td>
-<td>
-Das Element ist von Ihnen durch Änderung gesperrt
-worden.
-</td>
+<td><strong>Symbol</strong></td>
+<td><strong>Name</strong></td>
+<td><strong>Beschreibung</strong></td>
 </tr>
 <tr>
-<td><IMG alt="Fremde Sperrung" hspace=0 src="${link1}"
- align=baseline border=0></td>
-<td>
-Das Element ist durch einen anderen Nutzer zur
-Bearbeitung gesperrt.
-</td>
+<td><IMG title=Ordner alt="" src="${link1}"
+ border=0 ></td>
+<td>Ordner</td>
+<td>Ein gewöhnliches Verzeichnis ohne 
+      Zusatzfunktionen.</td>
 </tr>
 <tr>
-<td><IMG alt="Verknüpfte Sperrung" hspace=0 src="${link2}"
- align=baseline border=0></td>
-<td>
-Ein verknüpftes Element wurde durch eine Änderung
-(Änderung des Inhaltes, Umbenennung, Löschung)&nbsp;&nbsp;gesperrt
-oder eine neues vernküpftes Element wurde erstellt. Hierbei ist das
-direkt vom Redakteur modifizierte vernküpfte Element durch einen
-der oberen beiden Sperrsymbole zu erkennen (je nachdem, ob sie das
-betr. Element geändert haben).
-</td>
+<td><IMG title=Bildergalerie alt="" src="${link2}"
+ border=0></td>
+<td>Bildergalerie</td>
+<td>Der Speicherort für Ihre Bilder und Grafiken. Ihre
+Standard-Bildergalerie trägt den Namen „<i>bilder</i>“ und liegt in
+dem Ordner „<i>_galerien</i>“.&nbsp; Sie können sich eine
+unbegrenzte Anzahl weiterer Bildergalerien anlegen. Auch der
+Speicherort ist nicht festgelegt und kann außerhalb des Ordners „
+<i>_galerien</i>“ liegen.</td>
 </tr>
+<tr>
+<td><IMG title=Downloadgalerie alt="" src="${link3}"
+ border=0></td>
+<td>Downloadgalerie</td>
+<td>Der Speicherort für Ihre zum Download angeboten Dokumente: PDF-
+und Word-Dokumente sind hier gut aufgehoben und können über die
+Download-Galerie im Editor in Ihre Seiten eingebunden werden.</td>
+</tr>
+<tr>
+<td><IMG title=Linkgalerie alt="" src="${link4}"
+ border=0></td>
+<td>Linkgalerie</td>
+<td>Der Speicherort für Ihre gesammelten Links. Die hier
+aufgeführten Inhalte können mit Hilfe der Link-Galerie in Ihre
+Dokumente eingefügt werden.</td>
+</tr>
+<tr>
+<td><IMG title=HTML-Galerie alt="" src="${link5}"
+ border=0></td>
+<td>HTML-Galerie</td>
+<td>Immer wiederkehrende Layouts können Sie als Vorlage in der
+HTML-Galerie ablegen. Um eine solche Vorlage in Ihrem Dokumente zu
+verwenden, steht die HTML-Galerie im Editor zur Verfügung.</td>
+</tr>
+<tr>
+<td><IMG title=Tabellengalerie alt="" src="${link6}"
+ border=0></td>
+<td>Tabellengalerie</td>
+<td>Wer häufig Daten aus Programmen wie z.B. MS Excel im
+Internetveröffentlichen muss, kann mit der Hilfe dieses Galerietyps
+Inhalte als so genannte CSV-Dateien auf den Server laden und
+anschließend mit der Unterstützung eines Assistenten als Inhalt in
+seine Seiten integrieren.</td>
+</tr><!--
+<tr>
+<td><IMG title=Microsite alt="" src="/opencms/opencms/system/workplace/resources/filetypes/microsite.gif"
+ border=0></td>
+<td>Microsite</td>
+<td>Mit Hilfe einer Microsite können eigenständige Verzeichnis
+angelegt werden. Hierdurch ist es z.B. möglich, einem bestimmten
+Teilbereich Ihrer Homepage als eigenständiges Unterprojekt zu
+betreiben. Diese Microsite kann über eine unabhängige Navigation
+verfügen und sich auch vom Layout vollständig anders
+darstellen.</td>
+</tr>
+-->
 </table>
-<p>Für den Fall das Sie dringend eine Datei bearbeiten müssen, die
-derzeit von einem Kollegen gesperrt wurde, bietet Ihnen OpenCMS die
-Möglichkeit die Sperrung zu übernehmen.</p>
-<p>Klicken Sie auf das Dateisymbol der gesperrten Datei. Anders als
-bei einer ungesperrten Datei erscheint im Kontextmenü die
-Auswahlmöglichkeit „<i>Sperrung übernehmen</i>“.</p>
-<P><IMG alt="" hspace=0 src="${link3}" align=baseline 
-border=0></P>
-<strong>Beachten Sie</strong>: Die Übernahme einer Sperrung kann
-dazu führen, dass der ursprüngliche Bearbeiter keinen Zugriff mehr
-auf die Datei erhält und gegebenenfalls erfolgte Änderungen im
-Editor nicht mehr speichern kann.<br>
-<br>
- &nbsp;]]></content>
+<P>
+<br><STRONG>Bitte beachten Sie:</STRONG> Damit die vom 
+Editor aus erreichbaren Assistenten zum Einfügen von Grafiken, Downloads und 
+HTML-Vorlagen etc. einwandfrei funktionieren, ist es unerlässlich für den 
+jeweiligen Medientyp den entsprechenden „Erweiterten Ordner“ zu wählen. Grafiken 
+und Bilder gehören in einen erweiterten Ordner vom Typ Bildergalerie, während 
+ein Word- oder PDF-Dokument in eine Downloadgalerie gehört. Andernfalls werden 
+die Dateien in dem jeweiligen Assistenten nicht erscheinen und können somit auch 
+nicht eingefügt werden. </P>
+<H2>Datei - Typen</H2>
+<P>
+<TABLE cellSpacing=0 cellPadding=2 border=1>
+  
+  <TR>
+    <TD><STRONG>Symbol</STRONG></TD>
+    <TD><STRONG>Name</STRONG></TD>
+    <TD><STRONG>Beschreibung</STRONG></TD></TR>
+  <TR>
+    <TD><IMG title=Seite 
+      alt="" 
+    src="${link7}" border=0></TD>
+    <TD>Seite</TD>
+    <TD>Eine Seite des Internetauftrittes, den sie mit 
+      OpenCms verwalten. Die Art iherer Darstellung wird durch <A 
+      href="${link8}" 
+      target=_self>Eigenschaften</A>       
+       gesteuert.</TD>
+  </TR>
+  <TR>
+    <TD><IMG title=Text 
+      alt="" src 
+    ="${link9}" border=0 ></TD>
+    <TD>Text</TD>    <TD>Eine einfache Textdatei.</TD>
+ </TR>
+  <TR>
+    <TD><IMG title=Bild 
+      alt="" 
+    src="${link10}" border=0></TD>
+    <TD>Bild</TD>    <TD>Eine Bilddatei. Beim <A 
+      href="${link11}" 
+      target=_self>Hochladen von Dateien</A> erkennt OpenCms die gängisten 
+      Bildformate automatisch und setzt diesen Typ.</TD>
+
+    </TR>
+  <TR>
+    <TD><IMG title=JSP 
+      alt="" 
+    src="${link12}" border=0></TD>
+    <TD>JSP</TD>    <TD>
+      <P>Eine Java Server Page enthält eine Mixtur aus HTML und Java Code. Sie 
+      kann als normale Internetseite gesehen werden (vgl. Seite), jedoch wird 
+      sie zu dem Zeitpunkt der Anfrage (mit Ihrem Browser) interpretiert und 
+      kann unterschiedliche Inhalte (z.B. aus Datenbanken) enthalten. </P>
+      <P>Ein Redakteur wird nur unwahrscheinlich JSP's entwerfen müssen. Dies 
+      ist die Aufgabe von Programmieren. </P></TD>
+
+    </TR>
+  <TR>
+    <TD><IMG title=Binär 
+      alt="" 
+      src="${link13}" border=0></TD>
+    <TD>Binär</TD>    <TD>Der Inhalt einer Binärdatei ist weder zum 
+      Anzeigen noch zum Verändern gedacht. Durch Setzen dieses Typs teilen Sie 
+      OpenCms dies mit.</TD>
+
+    </TR>
+  <TR>
+    <TD><IMG title="Externe Verknüpfung" 
+      alt="" 
+      src="${link14}" border=0></TD>
+    <TD>Externe Verknüpfung</TD><td>Ein Link auf eine Seite ausserhalb Ihres von 
+      OpenCms verwalteten Internetauftritts. Externe Verknüpfungen lassen sich 
+      z.B. über <A 
+      href="${link15}" 
+      target=_self>Konfiguration von Eigenschaften</A>      transparent in 
+      die Navigation Ihrer Internetseite integrieren.</td></TR>
+  <TR>
+    <TD><IMG title="XML Template" 
+      alt="" 
+      src="${link16}" border=0></TD>
+    <TD>XML Template</TD>    <TD>Eine Vorlage für das Layout von Seiten. Redakteure 
+      werden sich mit dieser technologischen Arbeit nicht aufhalten lassen 
+      müssen.</TD>
+</TR>
+
+  <TR>
+    <TD><IMG title="Generischer XML Inhalt" 
+      alt="" 
+      src="${link17}" border=0></TD>
+    <TD>Generischer XML Inhalt</TD>    <TD>OpenCms 6.0.0 erlaubt das einbinden von 
+      strukturierten XML - Dateien, deren Inhalt man mit einer Schema Datei 
+      definieren kann. Dieses ünterstützt Integration von Daten in eine 
+      komplexere OpenCms Anwendung.</TD>
+</TR></TABLE></P>]]></content>
     </element>
   </page>
 </pages>

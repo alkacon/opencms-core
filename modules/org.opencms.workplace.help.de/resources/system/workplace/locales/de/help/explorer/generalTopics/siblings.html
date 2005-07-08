@@ -1,74 +1,80 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
-  <page language="en">
+  <page language="de">
     <element name="body">
       <links>
-        <link name="link3" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/images/expl_locks_overtake.png]]></target>
+        <link name="link3" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/copy_file.html]]></target>
         </link>
         <link name="link2" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/resources/explorer/lock_shared.gif]]></target>
+          <target><![CDATA[/system/workplace/locales/de/help/images/expl_filetype_link_page.png]]></target>
         </link>
-        <link name="link0" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/resources/explorer/lock_user.gif]]></target>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/generalTopics/types.html]]></target>
+        </link>
+        <link name="link4" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/siblings.html]]></target>
         </link>
         <link name="link1" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/resources/explorer/lock_other.gif]]></target>
+          <target><![CDATA[/system/workplace/resources/explorer/link.gif]]></target>
         </link>
       </links>
-      <content><![CDATA[<p>Um eine Datei oder ein Verzeichnis zu bearbeiten, muss diese
-zuvor gesperrt werden. In den früheren Versionen von OpenCms musste
-dieser Arbeitsschritt immer als erstes ausgeführt werden, ab der
-Version 6.0 wird dies automatisch von OpenCms erledigt. Sobald eine
-Seite zum bearbeiten aufgerufen wird, wird diese mit dem Status „
-Gesperrt“ versehen. Der jeweilige Status einer Datei oder eines
-Verzeichnisses ist anhand eines Symbols in Form eines „
-Vorhängeschlosses“ im Workplace erkennbar.</p>
-<table cellspacing="0" cellpadding="2" border="1">
-<tr>
-<td><IMG alt="Eigene Sperrung" hspace=0 src="${link0}"
- align=baseline border=0></td>
-<td>
-Das Element ist von Ihnen durch Änderung gesperrt
-worden.
-</td>
-</tr>
-<tr>
-<td><IMG alt="Fremde Sperrung" hspace=0 src="${link1}"
- align=baseline border=0></td>
-<td>
-Das Element ist durch einen anderen Nutzer zur
-Bearbeitung gesperrt.
-</td>
-</tr>
-<tr>
-<td><IMG alt="Verknüpfte Sperrung" hspace=0 src="${link2}"
- align=baseline border=0></td>
-<td>
-Ein verknüpftes Element wurde durch eine Änderung
-(Änderung des Inhaltes, Umbenennung, Löschung)&nbsp;&nbsp;gesperrt
-oder eine neues vernküpftes Element wurde erstellt. Hierbei ist das
-direkt vom Redakteur modifizierte vernküpfte Element durch einen
-der oberen beiden Sperrsymbole zu erkennen (je nachdem, ob sie das
-betr. Element geändert haben).
-</td>
-</tr>
-</table>
-<p>Für den Fall das Sie dringend eine Datei bearbeiten müssen, die
-derzeit von einem Kollegen gesperrt wurde, bietet Ihnen OpenCMS die
-Möglichkeit die Sperrung zu übernehmen.</p>
-<p>Klicken Sie auf das Dateisymbol der gesperrten Datei. Anders als
-bei einer ungesperrten Datei erscheint im Kontextmenü die
-Auswahlmöglichkeit „<i>Sperrung übernehmen</i>“.</p>
-<P><IMG alt="" hspace=0 src="${link3}" align=baseline 
-border=0></P>
-<strong>Beachten Sie</strong>: Die Übernahme einer Sperrung kann
-dazu führen, dass der ursprüngliche Bearbeiter keinen Zugriff mehr
-auf die Datei erhält und gegebenenfalls erfolgte Änderungen im
-Editor nicht mehr speichern kann.<br>
+      <content><![CDATA[Verknüpfungen sind Seiten und Dateien die im inhaltlich identisch
+sind. Mit Hilfe dieses Menüpunktes erstellen Sie eine Verknüpfung
+auf Seiteninhalte die auf dem OpenCms Server liegen. Dies können
+Seiten aus Ihrem Projekt sein, aber auch Seiten aus fremden
+Verzeichnissen.&nbsp; Wenn Sie eine verknüpfte Seite bearbeiten,
+werden damit auch alle anderen verknüpften Seiten identisch
+geändert. Sie können so den Inhalt einer Seite in unterschiedlichen
+Verzeichnissen als „Verknüpfung“ ablegen und brauchen nur eine
+Datei bearbeiten um sämtliche verknüpfte Dateien ebenfalls zu
+ändern. Dies hat dann Vorteile, wenn ein bestimmter Inhalt auf
+einer Seite in unterschiedlichen Themenbereichen und&nbsp;
+Zusammenhängen als eigenständige Seite präsentiert werden soll. 
+<p><b>Beispiel:</b> Es müssen die Allgemeinen Geschäftsbedingungen
+(AGB) in den Internetauftritten von allen angeschlossenen
+Filialen&nbsp;erscheinen. Der Inhalt soll aber zentral von einer
+autorisierten Person gepflegt werden. Ein Link auf die „AGB“ zur
+Geschäftsführung wäre unangemessen, weil der Besucher im
+Internetauftritt der jeweiligen Filiale verbleiben soll. Also wird
+die Seite der „AGB“ als Verknüpfung in die Verzeichnisse der
+einzelnen Filialen kopiert und kann im Verzeichnis der
+autorisierten Person bearbeitet werden.</p>
+<p>Verknüfpungen erkennt man im Explorer am einem Symbol, dass über
+das Icon des normalen <A href="${link0}"
+ target=_self>Dateityps</A> liegt :<IMG alt="" hspace=0 src="${link1}"
+  align=baseline border=0 >&nbsp;<BR>Eine 
+Datei vom Typ "Seite" als Verknüpfung sieht so aus: <IMG alt="" hspace=0 
+src="${link2}" 
+align=baseline border=0></p>
+<p>Solange mehr als eine Seite, die auf einen Inhalt zeigt
+existiert, sind die Seiten Verknüpfungen. Wenn sie alle
+Verknüpfungen zum gleichen Inhalt löschen bis auf eine, so wird die
+letzte Verknüpfung zu dem Original und fortlaufend normal
+dargestellt und behandelt.<br>
 <br>
- &nbsp;]]></content>
+<strong>Achtung:</strong> Wenn sie Verknüpfungen löschen sollten
+Sie die Option "<em>Verknüpfungen erhalten</em> " auswählen, um
+nicht alle Verknüpfungen (und damit den Inhalt) gleichzeitig zu
+löschen. Es sei denn, dies ist Ihr Anliegen.</p>
+<p><b>Achtung:</b> Es können keine Verknüpfungen auf Ordner
+erstellt werden. Wird ein Ordner als Verknüpfung abgelegt, so ist
+der Ordner eine eigenständige Kopie. Nur die Inhalte des Ordners
+haben dann verknüpfte Elemente mit den oben beschriebenen
+Eigenschaften. Wird in einem der so kopierten Ordner eine neue
+Seite angelegt oder neue Dateien hochgeladen, wirkt sich das nicht
+auf den anderen Ordner aus.</p>
+<p><strong>Tip:</strong> Sie können Verknüpfungen durch die
+Schaltfläche "<em>Neu</em>" oder&nbsp;durch <A href="${link3}"
+ target=_self>Kopieren von Dateien</A> mit Auswahl "<em>Erstelle
+eine neue Verknüpfung zur Datei</em>" erstellen.</p>
+<p><strong>Tip:</strong> Sie können sich alle Verknüpfungen zum
+gleichen Inhalt über das Kontextmenü einer Datei anzeigen lassen.
+Mehr lesen Sie <A href="${link4}"
+ target=_self>hier</A>.</p>
+<p><strong>Tip:</strong> Verknüpfungen erkennen Sie an diesem
+Symbol:</p>]]></content>
     </element>
   </page>
 </pages>

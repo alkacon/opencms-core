@@ -1,11 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
-  <page language="en">
+  <page language="de">
     <element name="body">
       <links>
-        <link name="link0" type="A" internal="true">
+        <link name="link2" type="A" internal="true">
           <target><![CDATA[/system/workplace/locales/de/help/administration/projects/publish.html]]></target>
+        </link>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/generalTopics/siblings.html]]></target>
+        </link>
+        <link name="link1" type="IMG" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/images/expl_delete_sibling.png]]></target>
         </link>
       </links>
       <content><![CDATA[<p>Löscht eine Datei oder ein Verzeichnis aus dem Projekt. Nach dem
@@ -16,10 +22,20 @@ entfernt.</p>
 können Sie wiederherstellen, in dem Sie nach einem Klick auf das
 Datei- oder Verzeichnissymbol den Menüeintrag „
 <i>Wiederherstellen</i>“ auswählen.</p>
-<P>Bitte beachten Sie: Sie können den Löschvorgang nur wieder Rückgängig machen, 
-wenn Sie seit dem Löschen die Datei (oder das zug. Projekt) nicht wieder <A 
-href="${link0}" 
-target=_self>veröffentlichen</A>. </P>]]></content>
+<p><strong>Bitte beachten Sie:</strong> Wenn sie eine <A href="${link0}"
+ target=_self>Verknüpfung</a> löschen, bekommen sie die Option zu
+wählen, ob alle Verknüpfungen gelöscht werden sollen. Damit würden
+Sie den Inhalt und alle Seiten, die auf Ihn verweisen löschen.
+Wählen Sie die andere Option (als Standard aktiviert), um nur diese
+eine Verknüpfung zu löschen.</p>
+<p align="center"><IMG alt="" hspace=0 src="${link1}"
+ align=baseline border=0></p>
+<p align="center"><em>Erweiterte Optionen beim Löschen einer
+Verknüpfung.</em></p>
+<p><strong>Bitte beachten Sie:</strong> Sie können den Löschvorgang
+nur wieder Rückgängig machen, wenn Sie seit dem Löschen die Datei
+(oder das zug. Projekt) nicht wieder <A href="${link2}"
+ target=_self>veröffentlichen</a>.</p>]]></content>
     </element>
   </page>
 </pages>

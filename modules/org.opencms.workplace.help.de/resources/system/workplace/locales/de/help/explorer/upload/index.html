@@ -1,58 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
-  <page language="en">
+  <page language="de">
     <element name="body">
       <links>
         <link name="link3" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/images/expl_titlebar-2.png]]></target>
+          <target><![CDATA[/system/workplace/resources/buttons/upload.png]]></target>
         </link>
-        <link name="link2" type="IMG" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/images/expl_titlebar-1.png]]></target>
+        <link name="link2" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/userPreferences.html]]></target>
         </link>
         <link name="link0" type="A" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/index.html]]></target>
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/upload/upload_std.html]]></target>
         </link>
         <link name="link1" type="A" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/administration/projects/separation.html]]></target>
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/upload/upload_applet.html]]></target>
         </link>
       </links>
-      <content><![CDATA[<p>Der Explorer ist der „zentrale Punkt“ bei der Arbeit mit
-OpenCms. Von hier aus haben Sie Zugriff auf nahezu alle zur
-Verfügung stehenden Ressourcen im System: Sie können Dateien oder
-Verzeichnisse anlegen und löschen, deren Eigenschaften ändern oder
-sie zum Bearbeiten im Editor aufrufen.&nbsp; Auch sämtliche OpenCms
-Programmeinstellungen lassen sich von dieser Position bequem
-erledigen.</p>
-<p>Der&nbsp;Explorer basiert vollständig auf HTML und läuft daher
-mit Ihrem Internet-Browser (Internet-Explorer ab 5.5,
-Mozilla-Firefox empfohlen ab 1.0.4), ohne dass Sie weitere Software
-auf Ihrem Rechner installieren müssen.</p>
-<P>Alle Dateimanipulationen werden über ein Kontextmenü vorgenommen das durch 
-Anklicken der Darstellung der Dateien und Verzeichnisse erscheint. Mehr Detail 
-zu diesem Menü finden Sie <A 
-href="${link0}" 
-target=_self>hier</A>. </P>
-<P>Die Titelleiste gibt Ihnen einen ständigen Überblick über das aktuelle <A 
-href="${link1}" 
-target=_self>Projekt</A>&nbsp; die aktuell Site und den Ort an den Sie in der 
-Darstellung des Dateisystems des Explorers navigiert haben. Weiterhin können Sie 
-globale Einstellung vornehmen: Die Wahl des aktuellen Projektes, der Site, der 
-Ansicht (Hinüberwechseln in die Administrationsoberfläche), ein paar 
-Navigationshilfen ("<STRONG>zurück</STRONG>", "<STRONG>Ebene aufwärts</STRONG>", 
-"<STRONG>Aktualisieren</STRONG>"), das Erstellen oder Hochladen von neuen 
-Dateien oder Verzeichnissen, die Vornahme der benutzerspezifischen 
-Einstellungen, das Abmelden vom System und als letztes das Aufrufen dieser 
-Online - Hilfe. </P>
- &nbsp; 
-<p align="center"><IMG title=context-menu.jpg alt="Darstellung der Explorer - Titelleiste Teil 1" src="${link2}"
- width="94%" border=0></p>
-<p align="center"><em>Die Titelleiste des OpenCms Explorer... </em></p>
-<br>
-<p align="center"><IMG title=context-menu.jpg alt="Darstellung der Explorer - Titelleiste Teil 1" src="${link3}"
- width="94%" border=0></p>
-<p align="center"><em>Die oberste Zeile bleibt auch in der Administrationsansicht bestehen.</em></p>
-<br>]]></content>
+      <content><![CDATA[<P>Mit Hilfe dieses Menüpunktes können Sie Dateien, Dokumente oder Bilder auf 
+den OpenCms Server hochladen und so Ihren Lesern beispielsweise als Download 
+anbieten. Es existieren zwei Möglichkeiten des Hochladens, die beide Ihre 
+zweckbezogenen Vorteile haben: </P>
+<UL>
+  <LI><A 
+  href="${link0}" 
+  target=_self>Hochladen durch Ihren Browser</A></LI><LI><A 
+  href="${link1}" 
+  target=_self>Hochladen mittels eines Java Applet</A>     </LI></UL>
+<P>Welche Methode Sie zum Hochladen verwenden, konfigurieren Sie in Ihren <A 
+href="${link2}" 
+target=_self>Benutzereinstellungen</A>. &nbsp;</P>
+<P>Diese Aktion kann entweder über eine separate 
+Schaltfläche der Titelleiste oder über die Schaltfläche "Neu" mit der Option "<!--StartFragment --><EM>Neue 
+Datei hochladen</EM>" gestartet werden. </P>
+<P>&nbsp;</P>
+<P align=center><IMG alt="" hspace=0 src="${link3}" align=baseline 
+border=0><BR><EM>    Symbol für das Hochladen von 
+Dateien.</EM></P>]]></content>
     </element>
   </page>
 </pages>
