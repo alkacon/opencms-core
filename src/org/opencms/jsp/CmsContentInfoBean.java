@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2005/07/07 16:25:27 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/08 12:50:00 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,16 @@ public class CmsContentInfoBean {
     public int getResultSize() {
 
         return m_resultSize;
+    }
+
+    /**
+     * Returns true if there is no resource in the result list.<p> 
+     * 
+     * @return true if there is no resource in the result list
+     */
+    public boolean isEmptyResult() {
+
+        return m_resultSize <= 0;
     }
 
     /**

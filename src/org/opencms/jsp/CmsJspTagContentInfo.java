@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/08 12:50:00 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolver {
-
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -1955531050687258685L;
 
     /** The keys of the supported content info values. */
     private static final String[] KEYS = {
@@ -87,6 +84,9 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     /** The scopes supported by the page context as a list. */
     private static final List SCOPES_LIST = Collections.unmodifiableList(Arrays.asList(SCOPES));
 
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -1955531050687258685L;
+
     /** The scope under which the content info is saved in the page context. */
     private String m_scope;
 
@@ -104,11 +104,9 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
         // get a reference to the parent "content container" class
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
         if (ancestor == null) {
-            // localize error message:
-            // build a container:
-            String msg;
+            // build a container
             CmsMessageContainer container = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentinfo");
-            msg = Messages.getLocalizedMessage(container, pageContext);
+            String msg = Messages.getLocalizedMessage(container, pageContext);
             throw new JspTagException(msg);
         }
 

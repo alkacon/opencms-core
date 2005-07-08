@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/07/08 12:50:00 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
 
+import java.util.List;
 import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +121,30 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
             // no value available for the selected element name, so we skip the whole body
             return SKIP_BODY;
         }
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorName()
+     */
+    public String getCollectorName() {
+
+        return m_parentTag.getCollectorName();
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorParam()
+     */
+    public String getCollectorParam() {
+
+        return m_parentTag.getCollectorParam();
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorResult()
+     */
+    public List getCollectorResult() {
+
+        return m_parentTag.getCollectorResult();
     }
 
     /**

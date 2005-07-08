@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagContentContainer.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/08 12:50:00 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,16 +33,38 @@ package org.opencms.jsp;
 
 import org.opencms.xml.A_CmsXmlDocument;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
  * Provides access to a XML content document that was loaded by a parent tag.<p> 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsJspTagContentContainer {
+
+    /**
+     * Returns the name of the currently used XML content collector.<p>
+     * 
+     * @return the name of the currently used XML content collector
+     */
+    String getCollectorName();
+
+    /**
+     * Returns the parameters of the currently used XML content collector.<p>
+     * 
+     * @return the parameters of the currently used XML content collector
+     */
+    String getCollectorParam();
+
+    /**
+     * Returns the list of all currently loaded XML content documents.<p>
+     * 
+     * @return the list of all currently loaded XML content documents
+     */
+    List getCollectorResult();
 
     /**
      * Returns the resource name in the VFS for the currently loaded XML content document.<p>
@@ -71,5 +93,4 @@ public interface I_CmsJspTagContentContainer {
      * @return the currently selected locale for the current content
      */
     Locale getXmlDocumentLocale();
-
 }

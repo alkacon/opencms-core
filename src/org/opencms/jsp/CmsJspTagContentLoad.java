@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/07/07 16:25:27 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/07/08 12:50:00 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,13 +52,14 @@ import java.util.Locale;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.tagext.BodyTagSupport;
+import javax.servlet.jsp.tagext.Tag;
 
 /**
  * Used to access and display XML content item information from the VFS.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +73,12 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
     /** The name of the collector to use for list building. */
     private String m_collector;
+
+    /** The name of the content collector used. */
+    private String m_collectorName;
+
+    /** The parameters of the content collector uses. */
+    private String m_collectorParam;
 
     /** The list of collected content items. */
     private List m_collectorResult;
@@ -111,6 +118,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
     /** Paramter used for the collector. */
     private String m_param;
+
+    /** Indicates if the collector results should be preloaded. */
+    private boolean m_preload;
 
     /** The (optional) property to extend the parameter with. */
     private String m_property;
@@ -182,45 +192,49 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public int doAfterBody() throws JspException {
 
-        if (m_directEditPermissions != null) {
-            // last element was direct editable, close it
-            CmsJspTagEditable.includeDirectEditElement(
-                pageContext,
-                I_CmsEditorActionHandler.DIRECT_EDIT_AREA_END,
-                m_resourceName,
-                null,
-                null,
-                m_directEditPermissions,
-                null);
-            m_directEditPermissions = null;
-        }
+        if (!m_preload) {
+            // if in only preload mode, nothing needs to be done here    
 
-        // check if there are more files to iterate
-        if (m_collectorResult.size() > 0) {
-
-            // there are more files available...
-            try {
-                doLoadNextFile();
-            } catch (CmsException e) {
-                m_controller.setThrowable(e, m_resourceName);
-                throw new JspException(e);
-            }
-
-            // check "direct edit" support
-            if (m_editable && (m_resourceName != null)) {
-
-                m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
+            if (m_directEditPermissions != null) {
+                // last element was direct editable, close it
+                CmsJspTagEditable.includeDirectEditElement(
                     pageContext,
-                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
+                    I_CmsEditorActionHandler.DIRECT_EDIT_AREA_END,
                     m_resourceName,
                     null,
-                    m_directEditFollowOptions,
                     null,
-                    m_directEditCreateLink);
+                    m_directEditPermissions,
+                    null);
+                m_directEditPermissions = null;
             }
 
-            // another loop is required
-            return EVAL_BODY_AGAIN;
+            // check if there are more files to iterate
+            if (m_collectorResult.size() > 0) {
+
+                // there are more files available...
+                try {
+                    doLoadNextFile();
+                } catch (CmsException e) {
+                    m_controller.setThrowable(e, m_resourceName);
+                    throw new JspException(e);
+                }
+
+                // check "direct edit" support
+                if (m_editable && (m_resourceName != null)) {
+
+                    m_directEditPermissions = CmsJspTagEditable.includeDirectEditElement(
+                        pageContext,
+                        I_CmsEditorActionHandler.DIRECT_EDIT_AREA_START,
+                        m_resourceName,
+                        null,
+                        m_directEditFollowOptions,
+                        null,
+                        m_directEditCreateLink);
+                }
+
+                // another loop is required
+                return EVAL_BODY_AGAIN;
+            }
         }
 
         // no more files are available, so skip the body and finish the loop
@@ -274,52 +288,77 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         int pageAttribCount = 0;
         pageAttribCount += CmsStringUtil.isNotEmpty(m_pageSize) ? 1 : 0;
         pageAttribCount += CmsStringUtil.isNotEmpty(m_pageIndex) ? 1 : 0;
-        //pageAttribCount += CmsStringUtil.isNotEmpty(m_pageNavLength) ? 1 : 0;
 
         if (pageAttribCount > 0 && pageAttribCount < 2) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_INDEX_SIZE_0));
         }
 
-        // check if the tag contains a collector attribute
-        if (CmsStringUtil.isEmpty(m_collector)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0));
+        // get a reference to the parent "content container" class (if available)
+        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        I_CmsJspTagContentContainer container;
+        if (ancestor != null) {
+            // parent content container available, use values from this container
+            container = (I_CmsJspTagContentContainer)ancestor;
+        } else {
+            // non parent container, initialize new values
+            container = this;
+
+            // check if the tag contains a collector attribute
+            if (CmsStringUtil.isEmpty(m_collector)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0));
+            }
+
+            // check if the tag contains a param attribute
+            if (CmsStringUtil.isEmpty(m_param)) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
+            }
         }
 
-        // check if the tag contains a param attribute
-        if (CmsStringUtil.isEmpty(m_param)) {
-            throw new CmsIllegalArgumentException(
-                Messages.get().container(Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
+        if (m_preload) {
+            // always deactivate direct edit for prelaod
+            m_editable = false;
         }
 
         // initialize OpenCms access objects
         m_controller = CmsFlexController.getController(pageContext.getRequest());
         m_cms = m_controller.getCmsObject();
 
+        // store the current locale    
+        m_locale = m_cms.getRequestContext().getLocale();
+
+        // get the resource name from the selected container
+        String resourcename = getResourceName(m_cms, container);
+
         // initialize a string mapper to resolve EL like strings in tag attributes
-        String resourcename = getResourceName(m_cms, this);
         CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(m_cms).setJspPageContext(pageContext).setResourceName(
             resourcename).setKeepEmptyMacros(true);
 
         // resolve the collector name
-        String collectorName = resolver.resolveMacros(getCollector());
-
-        // store the current locale    
-        m_locale = m_cms.getRequestContext().getLocale();
-
-        // resolve the parameter
-        String param = resolver.resolveMacros(getParam());
-
-        // now collect the resources
-        I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(collectorName);
+        if (ancestor != null) {
+            // parent content container available, use values from this container
+            m_collectorName = container.getCollectorName();
+            m_collectorParam = container.getCollectorParam();
+            m_collectorResult = container.getCollectorResult();
+        } else {
+            // non parent container, initialize new values
+            m_collectorName = resolver.resolveMacros(getCollector());
+            // resolve the parameter
+            m_collectorParam = resolver.resolveMacros(getParam());
+            m_collectorResult = null;
+        }
 
         try {
+            // now collect the resources
+            I_CmsResourceCollector collector = OpenCms.getResourceManager().getContentCollector(m_collectorName);
             if (collector == null) {
-                throw new CmsException(Messages.get().container(Messages.ERR_COLLECTOR_NOT_FOUND_1, collectorName));
+                throw new CmsException(Messages.get().container(Messages.ERR_COLLECTOR_NOT_FOUND_1, m_collectorName));
             }
-
-            // execute the collector
-            m_collectorResult = collector.getResults(m_cms, collectorName, param);
+            // execute the collector if not already done in parent tag
+            if (m_collectorResult == null) {
+                m_collectorResult = collector.getResults(m_cms, m_collectorName, m_collectorParam);
+            }
 
             m_contentInfoBean = new CmsContentInfoBean();
             m_contentInfoBean.setPageSizeAsString(resolver.resolveMacros(m_pageSize));
@@ -328,18 +367,23 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_contentInfoBean.setResultSize(m_collectorResult.size());
             m_contentInfoBean.initResultIndex();
 
-            m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
-            m_contentInfoBean.initPageNavIndexes();
+            if (!m_preload) {
+                // not required when only preloading 
 
-            String createParam = collector.getCreateParam(m_cms, collectorName, param);
-            if (createParam != null) {
-                // use "create link" only if collector supports it
-                m_directEditCreateLink = CmsEncoder.encode(collectorName + "|" + createParam);
+                m_collectorResult = CmsJspTagContentLoad.limitCollectorResult(m_contentInfoBean, m_collectorResult);
+                m_contentInfoBean.initPageNavIndexes();
+
+                String createParam = collector.getCreateParam(m_cms, m_collectorName, m_collectorParam);
+                if (createParam != null) {
+                    // use "create link" only if collector supports it
+                    m_directEditCreateLink = CmsEncoder.encode(m_collectorName + "|" + createParam);
+                }
+
+                if (m_collectorResult != null && m_collectorResult.size() > 0) {
+                    doLoadNextFile();
+                }
             }
 
-            if (m_collectorResult != null && m_collectorResult.size() > 0) {
-                doLoadNextFile();
-            }
         } catch (CmsException e) {
             m_controller.setThrowable(e, m_cms.getRequestContext().getUri());
             throw new JspException(e);
@@ -383,6 +427,30 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public String getCollector() {
 
         return m_collector;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorName()
+     */
+    public String getCollectorName() {
+
+        return m_collectorName;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorParam()
+     */
+    public String getCollectorParam() {
+
+        return m_collectorParam;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorResult()
+     */
+    public List getCollectorResult() {
+
+        return m_collectorResult;
     }
 
     /**
@@ -433,6 +501,16 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public String getParam() {
 
         return m_param;
+    }
+
+    /**
+     * Returns "true" if this content load tag should only preload the values from the collector.<p>
+     * 
+     * @return "true" if this content load tag should only preload the values from the collector
+     */
+    public String getPreload() {
+
+        return String.valueOf(m_preload);
     }
 
     /**
@@ -558,6 +636,19 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     }
 
     /**
+     * Sets the preload flag for this content load tag.<p> 
+     * 
+     * If this is set to <code>true</code>, then the collector result will only 
+     * be preloaded, but not iterated.<p> 
+     * 
+     * @param preload the preload flag to set
+     */
+    public void setPreload(String preload) {
+
+        m_preload = Boolean.valueOf(preload).booleanValue();
+    }
+
+    /**
      * Sets the property.<p>
      *
      * @param property the property to set
@@ -592,5 +683,4 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         return null;
     }
-
 }

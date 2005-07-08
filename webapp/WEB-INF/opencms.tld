@@ -126,6 +126,9 @@
         <attribute>
             <name>pageNavLength</name>
         </attribute>        
+        <attribute>
+            <name>preload</name>
+        </attribute>  
     </tag>    
         
     <tag>
