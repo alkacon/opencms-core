@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/08 10:19:58 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,8 +61,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.fileupload.FileItem;
@@ -84,7 +88,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,25 +166,53 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * 
      * @throws IOException if there is an IO problem
      */
-    public static String convertCsvToXml(String csvData, String colGroup, String delimiter) throws IOException {
+    private String getTableHtml() throws IOException {
 
-        StringBuffer xml = new StringBuffer(64);
-        xml.append("<table>\n");
-        if (CmsStringUtil.isNotEmpty(colGroup)) {
-            xml.append(colGroup);
-        }    
+        String csvData = getParamCsvContent();
+        String lineSeparator = System.getProperty("line.separator");
+        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator)); 
+        String delimiter = getParamDelimiter();
+        int[] headerColSpan = null;
+        
+        StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><table>");
+        if (isFormattingInformation(formatString, delimiter)) {
+            // transform formatting to HTML colgroup
+            xml.append(getColGroup(formatString, delimiter));
+            // cut of first line
+            csvData = csvData.substring(formatString.length() + lineSeparator.length());
+            headerColSpan = getColSpans(formatString, delimiter);
+        }   
+          
+        
+        // first line
+        
         String line;
         BufferedReader br = new BufferedReader(new StringReader(csvData));
-        while ((line = br.readLine()) != null) {
+        if ((line = br.readLine()) != null) {
             xml.append("<tr>\n");
             String[] words = CmsStringUtil.splitAsArray(line, delimiter);
             for (int i = 0; i < words.length; i++) {
-                xml.append("\t<td>").append(removeStringDelimiters(words[i])).append("</td>\n");
+                xml.append("\t<td align=\"center\"");
+                if ((headerColSpan != null) && (headerColSpan.length > i) && (headerColSpan[i] > 1)) {
+                    xml.append(" colspan=\"").append(headerColSpan[i]).append("\"");
+                } 
+                xml.append(">").append(removeStringDelimiters(words[i])).append("</td>\n");
             }
             xml.append("</tr>\n");
+            while ((line = br.readLine()) != null) {
+                xml.append("<tr>\n");
+                words = CmsStringUtil.splitAsArray(line, delimiter);
+                for (int i = 0; i < words.length; i++) {
+                    xml.append("\t<td>").append(removeStringDelimiters(words[i])).append("</td>\n");
+                }
+                xml.append("</tr>\n");
+            }
         }
+
         return xml.append("</table>").toString();
     }
+    
+    
 
     /**                                                                                                                              
      * Removes the string delimiters from a key (as well as any white space                                                          
@@ -233,7 +265,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             CmsProperty styleProp = CmsProperty.getNullProperty();
             
             // set the delimiter
-            String delimiter = getParamDelimiter();
+            String delimiter = getParamDelimiter(); 
             if (TABULATOR.equals(delimiter)) {
                 delimiter = "\t";
             } else if (BEST_DELIMITER.equals(delimiter)) {
@@ -241,21 +273,11 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             }
             setParamDelimiter(delimiter);
             
-            String csvContent = getParamCsvContent();
-            String colgroup = "";
-            String lineSeparator = System.getProperty("line.separator");
-            String firstCsvLine = csvContent.substring(0, csvContent.indexOf(lineSeparator));
-            if (isFormattingInformation(firstCsvLine, delimiter)) {
-                // transform formatting to HTML colgroup
-                colgroup = getColGroup(firstCsvLine, delimiter);
-                // cut of first line
-                csvContent = csvContent.substring(firstCsvLine.length() + lineSeparator.length());
-            }    
 
             // transform csv to html
             String xmlContent = "";
             try {
-                xmlContent = convertCsvToXml(csvContent, colgroup, getParamDelimiter());
+                xmlContent = getTableHtml();
             } catch (IOException e) {
                 throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));
             }
@@ -263,7 +285,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             // if xslt file parameter is set, transform the raw html and set the css stylesheet property
             // of the converted file to that of the stylesheet
             if (CmsStringUtil.isNotEmpty(getParamXsltFile())) { 
-                xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
+                xmlContent = applyXslTransformation2(getParamXsltFile(), xmlContent);
                 styleProp = getCms().readPropertyObject(getParamXsltFile(),
                     CmsPropertyDefinition.PROPERTY_STYLESHEET, true);
             }
@@ -300,7 +322,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     private static boolean isFormattingInformation(String formatString, String delimiter) {
         String[] formatStrings = formatString.split(delimiter);
         for (int i = 0; i < formatStrings.length; i++) {
-            if (!formatStrings[i].matches("[lcr][1-9]?")) {
+            if (!formatStrings[i].trim().matches("[lcr][1-9]?")) {
                 return false;
             }    
         } 
@@ -318,7 +340,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
         StringBuffer colgroup = new StringBuffer(128);
         String[] formatStrings = formatString.split(delimiter);
-        colgroup.append("<colgroup>\n");
+        colgroup.append("<colgroup>");
         for (int i = 0; i < formatStrings.length; i++) {
             colgroup.append("<col align=\"");
             char align = formatStrings[i].trim().charAt(0);
@@ -335,11 +357,34 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 default:
                     throw new RuntimeException("invalid format option");
             }
-            colgroup.append("\"/>\n");
+            colgroup.append("\"/>");
         }
-        return colgroup.append("</colgroup>\n").toString();
+        return colgroup.append("</colgroup>").toString();
     }    
 
+    /**
+     * Converts a delimiter separated format string int o colgroup html fragment.<p>
+     * @param formatString the formatstring to convert
+     * @param delimiter the delimiter the formats (l,r or c) are delimited with
+     * 
+     * @return the resulting colgroup HTML
+     */
+    private static int[] getColSpans(String formatString, String delimiter) {
+
+        String[] formatStrings = formatString.split(delimiter);
+        int[] colSpans = new int[formatStrings.length];
+        for (int i = 0; i < formatStrings.length; i++) {
+            String colSpan = formatStrings[i].trim().substring(1);
+            if (CmsStringUtil.isEmpty(colSpan)) {
+                colSpans[i] = 1;
+                continue;
+            } else {
+               colSpans[i] = Integer.parseInt(colSpan);
+            }
+        }
+        return colSpans;
+    } 
+    
     /**
      * Applies a XSLT Transformation to the xmlContent.<p>
      * 
@@ -355,14 +400,50 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             TransformerFactory factory = TransformerFactory.newInstance();
             InputStream stylesheet = new ByteArrayInputStream(getCms().readFile(xsltFile).getContents());
             Transformer transformer = factory.newTransformer(new StreamSource(stylesheet));
+            //transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
             Document document = DocumentHelper.parseText(xmlContent);
             DocumentSource source = new DocumentSource(document);
             DocumentResult streamResult = new DocumentResult();
-            
             // transform the xml with the xslt stylesheet
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
+            // we want to pretty format the XML output
+            // note : this is broken in jdk1.5 beta!
+            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
             transformer.transform(source, streamResult);
-            return streamResult.getDocument().asXML();
+            
+            String result = streamResult.getDocument().asXML();
+            return result;
 
+    }
+    
+    /**
+     * Applies a XSLT Transformation to the xmlContent.<p>
+     * 
+     * @param xsltFile the XSLT transformation file
+     * @param xmlContent the XML content to transform
+     * 
+     * @return the transformed xml
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public String applyXslTransformation2(String xsltFile, String xmlContent) throws Exception {
+
+        // JAXP reads data
+        Source xmlSource = new StreamSource(new StringReader(xmlContent));
+        String xsltString = new String(getCms().readFile(xsltFile).getContents());
+        Source xsltSource = new StreamSource(new StringReader(xsltString));
+
+        
+        TransformerFactory transFact = TransformerFactory.newInstance();
+        Transformer trans = transFact.newTransformer(xsltSource);
+
+        StringWriter writer = new StringWriter();
+        trans.transform(xmlSource, new StreamResult(writer));
+        String result = writer.toString();
+        return result;
     }
 
     /**
