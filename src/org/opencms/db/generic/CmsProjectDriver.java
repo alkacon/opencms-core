@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/07/07 13:07:38 $
- * Version: $Revision: 1.236 $
+ * Date   : $Date: 2005/07/08 09:59:17 $
+ * Version: $Revision: 1.237 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.236 $
+ * @version $Revision: 1.237 $
  * 
  * @since 6.0.0 
  */
@@ -2127,7 +2127,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     backupTagId,
                     rootPath,
                     resourceType,
-                    CmsFolder.isFolderType(resourceType),
+                    structureId.isNullUUID() ? false : CmsFolder.isFolderType(resourceType),
                     resourceState,
                     siblingCount));
             }
