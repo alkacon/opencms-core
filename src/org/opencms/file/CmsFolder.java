@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/07/08 17:46:26 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,16 @@
 
 package org.opencms.file;
 
+import org.opencms.db.CmsSecurityManager;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsUUID;
 
 import java.io.Serializable;
+
+import org.apache.commons.logging.Log;
 
 /**
  * A folder resource in the OpenCms VFS.<p>
@@ -46,7 +50,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0 
  */
@@ -54,6 +58,8 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 5527163725725725452L;
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsSecurityManager.class);
 
     /**
      * Constructor, creates a new CmsFolder Object from the given CmsResource.<p> 
@@ -136,17 +142,19 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
      * 
      * @param typeId the resource type id to check 
      * 
-     * @return true if the given resource type id describes a folder type
+     * @return true if the given resource type id describes a folder type or false if it is no folder or an unknown type.
+     * 
      */
     public static final boolean isFolderType(int typeId) {
 
         try {
             return OpenCms.getResourceManager().getResourceType(typeId).isFolder();
         } catch (CmsLoaderException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_UNKNOWN_RESOURCE_TYPE_1,
-                new Integer(typeId)), e);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, new Integer(typeId)), e);
+            }
         }
+        return false;
     }
 
     /**
