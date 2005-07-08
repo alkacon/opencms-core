@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsStaticExportManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  * 
  * @since 6.0.0
  */
@@ -119,7 +119,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
 
         // make sure static export on default is disabled
         OpenCms.getStaticExportManager().setDefault("false");
-        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix();
+        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() + folder);
         String expected1, expected2;
 
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
@@ -189,7 +189,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         // publish the changes
         cms.publishProject();
 
-        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix();
+        String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() +  folder);
         String expected;
 
         echo("Testing basic export name generating functions for a JSP");
@@ -244,19 +244,33 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         checkLinkWithParameters(cms, vfsName, expected);
     }
 
+    /**
+     * Checks a link that has no parameters.<p>
+     * 
+     * @param cms the cms context
+     * @param vfsName the vfsName of the resource to test the link for
+     * @param expected the previous generated link
+     */
     private void checkLinkWithoutParameters(CmsObject cms, String vfsName, String expected) {
 
         // check JSP without parameters
-        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getSiteRoot(), vfsName);
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         assertEquals(expected, rfsName);
         assertEquals(vfsName, OpenCms.getStaticExportManager().getVfsName(cms, rfsName));
     }
 
+    /**
+     * Checks a link that has parameters.<p>
+     * 
+     * @param cms the cms context
+     * @param vfsName the vfsName of the resource to test the link for
+     * @param expected the previous generated link
+     */
     private void checkLinkWithParameters(CmsObject cms, String vfsName, String expected) {
 
         // check JSP WITH parameters
-        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d");
+        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getSiteRoot(), vfsName, "?a=b&c=d");
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         String extension = expected.substring(expected.lastIndexOf('.'));
         Pattern pattern = Pattern.compile("^"

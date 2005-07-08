@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  * 
@@ -189,18 +189,19 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                 String vfsName = (String)itSibs.next();
 
                 // get the link name for the published file 
-                String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
+                String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, "", vfsName);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_CHECKING_STATIC_EXPORT_2, vfsName, rfsName));
                 }
-                if (rfsName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix())
+                if (rfsName.startsWith(OpenCms.getStaticExportManager().getRfsPrefix(vfsName))
                     && (!scrubedFiles.contains(rfsName))
                     && (!scrubedFolders.contains(CmsResource.getFolderPath(rfsName)))) {
 
                     if (res.isFolder()) {
                         if (res.isDeleted()) {
-                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
-                                + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length()));
+                            String exportFolderName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                                vfsName)
+                                + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
                             try {
                                 File exportFolder = new File(exportFolderName);
                                 // check if export folder exists, if so delete it
@@ -231,10 +232,11 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
 
                     }
 
-                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath()
-                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix().length()));
+                    String rfsExportFileName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getExportPath(
+                        vfsName)
+                        + rfsName.substring(OpenCms.getStaticExportManager().getRfsPrefix(vfsName).length()));
 
-                    purgeFile(rfsExportFileName);
+                    purgeFile(rfsExportFileName, vfsName);
                     scrubedFiles.add(rfsName);
 
                     if (!res.isFolder()) {
@@ -242,17 +244,16 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                         Iterator iter = fileList.iterator();
                         while (iter.hasNext()) {
                             File file = (File)iter.next();
-                            purgeFile(file.getAbsolutePath());
-                            rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix()
+                            purgeFile(file.getAbsolutePath(), vfsName);
+                            rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
                                 + "/"
                                 + file.getAbsolutePath().substring(
-                                    OpenCms.getStaticExportManager().getExportPath().length()));
+                                    OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
                             rfsName = CmsStringUtil.substitute(
                                 rfsName,
                                 new String(new char[] {File.separatorChar}),
                                 "/");
                             scrubedFiles.add(rfsName);
-
                         }
                     }
                 }
@@ -306,12 +307,13 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
     /**
      * Deletes the given file from the RFS if it exists.<p>
      * 
+     * @param vfsName the vfs name of the file to delete
      * @param exportFileName the file to delete
      */
-    private void purgeFile(String exportFileName) {
+    private void purgeFile(String exportFileName, String vfsName) {
 
-        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix()
-            + exportFileName.substring(OpenCms.getStaticExportManager().getExportPath().length()));
+        String rfsName = CmsFileUtil.normalizePath(OpenCms.getStaticExportManager().getRfsPrefix(vfsName)
+            + exportFileName.substring(OpenCms.getStaticExportManager().getExportPath(vfsName).length()));
         rfsName = CmsStringUtil.substitute(rfsName, new String(new char[] {File.separatorChar}), "/");
 
         try {

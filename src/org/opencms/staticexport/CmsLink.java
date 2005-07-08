@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2005/06/27 13:21:37 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -412,6 +412,8 @@ public class CmsLink {
      * @param target the link target (without anchor/query)
      * @param anchor the anchor or null 
      * @param query the query or null
+     * 
+     * @return the composed uri
      */
     private String setUri(String target, String anchor, String query) {
 

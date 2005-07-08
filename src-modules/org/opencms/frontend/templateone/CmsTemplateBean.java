@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,9 +210,6 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Stores the path to the start folder for navigation and search. */
     private String m_startFolder;
-
-    /** Stores the URI to the CSS style sheet to use on the page. */
-    private String m_styleUri;
 
     /** Holds the template parts. */
     private CmsTemplateParts m_templateParts;
@@ -691,20 +688,42 @@ public class CmsTemplateBean extends CmsJspActionElement {
     /**
      * Returns the substituted URI of the CSS style sheet to use in the template.<p>
      * 
+     * @param resPath the resource path
+     * @param config the uri to the configuration settings
+     * @param site the site
+     * @param locale the locale
+     * 
+     * @return the substituted URI of the CSS style sheet
+     */
+    public String getStyleSheetUri(String resPath, String config, String site, Locale locale) {
+
+        String fileName = FILE_CSS;
+        if (showAccessibleVersion()) {
+            // use accessible CSS version
+            fileName = FILE_CSS_ACCESSIBLE;
+        }
+        fileName += "?respath=" + resPath;
+        fileName += "&config=" + config;
+        fileName += "&site=" + site;
+        fileName += "&__locale=" + locale;
+        // generate substituted style sheet URI
+        return link(CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/resources/" + fileName);
+    }
+
+    /**
+     * Returns the substituted URI of the CSS style sheet to use in the template.<p>
+     * 
      * @return the substituted URI of the CSS style sheet
      */
     public String getStyleSheetUri() {
 
-        if (m_styleUri == null) {
-            String fileName = FILE_CSS;
-            if (showAccessibleVersion()) {
-                // use accessible CSS version
-                fileName = FILE_CSS_ACCESSIBLE;
-            }
-            // generate substituted style sheet URI
-            m_styleUri = link(CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/resources/" + fileName);
+        String fileName = FILE_CSS;
+        if (showAccessibleVersion()) {
+            // use accessible CSS version
+            fileName = FILE_CSS_ACCESSIBLE;
         }
-        return m_styleUri;
+        // generate substituted style sheet URI
+        return link(CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/resources/" + fileName);
     }
 
     /**

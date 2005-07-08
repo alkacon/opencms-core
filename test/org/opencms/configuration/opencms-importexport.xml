@@ -87,7 +87,64 @@
 				<regex>/sites/.*</regex>
 				<regex>/system/galleries/.*</regex>
 				<regex>/system/modules/.*/resources/.*</regex>
+                <export-rules>
+                    <export-rule>
+                        <name>rule for site one</name>
+                        <description>description of rule for site one</description>
+                        <modified-resources>
+                            <regex>/sites/site1/.*</regex>
+                            <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        </modified-resources>
+                        <export-resources>
+                            <uri>/sites/site1/</uri>
+                        </export-resources>
+                    </export-rule>
+                    <export-rule>
+                        <name>rule for site two</name>
+                        <description>description of rule for site two</description>
+                        <modified-resources>
+                            <regex>/sites/site2/.*</regex>
+                            <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        </modified-resources>
+                        <export-resources>
+                            <uri>/sites/site2/</uri>
+                        </export-resources>
+                    </export-rule>
+                </export-rules>
 			</resourcestorender>
+            <rfs-rules>
+                <rfs-rule>
+                    <name>rule for site default</name>
+                    <description>rule for site default</description>
+                    <source>/sites/default/</source>
+                    <rfs-prefix>${CONTEXT_NAME}/export</rfs-prefix>
+                    <exportpath>export</exportpath>
+                    <related-system-res/>
+                </rfs-rule>
+                <rfs-rule>
+                    <name>rule for site one</name>
+                    <description>description of rule for site one</description>
+                    <source>/sites/site1/</source>
+                    <rfs-prefix>site1</rfs-prefix>
+                    <exportpath>c:/apache/site1</exportpath>
+                    <related-system-res>
+                        <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        <regex>/system/modules/org.opencms.frontend.templateone.modules/.*</regex>
+                    </related-system-res>
+                </rfs-rule>
+                <rfs-rule>
+                    <name>rule for site two</name>
+                    <description>description of rule for site two</description>
+                    <source>/sites/site2/</source>
+                    <rfs-prefix>site2</rfs-prefix>
+                    <exportpath>c:/apache/site2</exportpath>
+        			<userelativelinks>true</userelativelinks>			
+                    <related-system-res>
+                        <regex>/system/modules/org.opencms.frontend.templateone/.*</regex>
+                        <regex>/system/modules/org.opencms.frontend.templateone.form/.*</regex>
+                    </related-system-res>
+                </rfs-rule>
+            </rfs-rules>
 		</rendersettings>
 	</staticexport>  
 </opencms>    

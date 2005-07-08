@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_ENCODING_1 = "ERR_INVALID_ENCODING_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_EXPORT_PATH_0 = "ERR_INVALID_EXPORT_PATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_EXPORT_PATH_1 = "ERR_INVALID_EXPORT_PATH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_RFS_PREFIX_1 = "ERR_INVALID_RFS_PREFIX_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_OUTPUT_STREAM_1 = "ERR_OUTPUT_STREAM_1";
@@ -70,19 +79,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_EXPORT_HEADERS_1 = "INIT_EXPORT_HEADERS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_EXPORT_LINK_STYLE_ABSOLUTE_0 = "INIT_EXPORT_LINK_STYLE_ABSOLUTE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_EXPORT_LINK_STYLE_RELATIVE_0 = "INIT_EXPORT_LINK_STYLE_RELATIVE_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String INIT_EXPORT_OPTIMIZATION_1 = "INIT_EXPORT_OPTIMIZATION_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_EXPORT_PATH_1 = "INIT_EXPORT_PATH_1";
+    public static final String INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1 = "INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String INIT_EXPORT_RFS_PREFIX_1 = "INIT_EXPORT_RFS_PREFIX_1";
+    public static final String INIT_EXPORT_RFS_RULE_EXPORT_PATH_2 = "INIT_EXPORT_RFS_RULE_EXPORT_PATH_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1 = "INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_EXPORT_RFS_RULE_RFS_PREFIX_2 = "INIT_EXPORT_RFS_RULE_RFS_PREFIX_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_EXPORT_TESTRESOURCE_1 = "INIT_EXPORT_TESTRESOURCE_1";
@@ -245,6 +254,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRITE_FAILED_1 = "LOG_WRITE_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_EXPORT_FOLDER_3 = "RPT_DELETE_EXPORT_FOLDER_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETING_EXPORT_FOLDERS_BEGIN_0 = "RPT_DELETING_EXPORT_FOLDERS_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETING_EXPORT_FOLDERS_END_0 = "RPT_DELETING_EXPORT_FOLDERS_END_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_EXPORTING_0 = "RPT_EXPORTING_0";

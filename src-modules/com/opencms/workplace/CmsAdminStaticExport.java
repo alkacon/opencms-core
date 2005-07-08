@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsAdminStaticExport.java,v $
-* Date   : $Date: 2005/06/21 15:49:59 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/07/08 17:42:47 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * <P>
  *
  * @author Hanjo Riege
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -113,7 +113,7 @@ public class CmsAdminStaticExport extends CmsWorkplaceDefault {
                 }
             }
             xmlTemplateDocument.setData("exportpoints", allStartPoints);
-            xmlTemplateDocument.setData("path", OpenCms.getStaticExportManager().getExportPath());
+            xmlTemplateDocument.setData("path", OpenCms.getStaticExportManager().getExportPath(null));
         }
 
         // special feature to test the regular expressions

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/07/06 10:25:13 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -1036,7 +1036,6 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
                     return true;
                 }
             }
-
         }
 
         // current uri does not match

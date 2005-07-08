@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/08 17:42:47 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,9 +171,9 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         // generate a unique key for the included part
         String partKey = generateKey(target, element, layout);
         // try to get the part String from the stored Map
-        String part = "";
+        String part = null;
         try {
-            part = (String)m_parts.get(partKey);
+            // part = (String)m_parts.get(partKey);
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
                 part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());

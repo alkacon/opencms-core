@@ -189,7 +189,8 @@
 	exporturl, 
 	plainoptimization, 
 	testresource, 
-	resourcestorender)>
+	resourcestorender,
+    rfs-rules?)>
 
 <!--
 # The rfs prefix is used to adjust the links to
@@ -255,6 +256,72 @@
 # The intention is to speed up the dependency check by excluding folders 
 # like "/system".
 -->
-<!ELEMENT resourcestorender (regex+)>
+<!ELEMENT resourcestorender (regex+, export-rules?)>
 
+<!--
+# This set of resources is always rendered.
+-->
 <!ELEMENT regex (#PCDATA)>
+
+<!--
+# A list of export rules.
+# Each rule defines how to export a set of resources defined by regular expresions.
+# Additionally all resourcestorender/regex entries are rendered.
+-->
+<!ELEMENT export-rules (export-rule+)>
+
+<!--
+# A single export rule that defines a set of resources to be exported (<export>),
+# if something has been changed in the other set of resources (<modified>).
+-->
+<!ELEMENT export-rule (name, description, modified-resources, export-resources)>
+
+<!--
+# A list of regular expressions defining a set of resources.
+-->
+<!ELEMENT modified-resources (regex+)>
+
+<!--
+# A list of URIs (folders or files) defining a set of resources to export,
+# if a file in <modified> has been changed.
+-->
+<!ELEMENT export-resources (uri+)>
+
+<!--
+# A OpenCms URI (folder or file).
+-->
+<!ELEMENT uri (#PCDATA)>
+
+<!--
+# A list of rfs-rules definitions used to adjust the links to
+# resources that are written to the "real" file system.
+# the association is resource-based, every resource can have its own rfs-rule.
+-->
+<!ELEMENT rfs-rules (rfs-rule+)>
+
+<!--
+# A rfs-prefix definition for a single site.
+-->
+<!ELEMENT rfs-rule (name, description, source, rfs-prefix, exportpath, userelativelinks?, related-system-res)>
+
+<!--
+# the source resources to be configured by a rfs-rule.
+-->
+<!ELEMENT source (#PCDATA)>
+
+<!--
+# a name for a rule.
+-->
+<!ELEMENT name (#PCDATA)>
+
+<!--
+# a description text of a rule.
+-->
+<!ELEMENT description (#PCDATA)>
+
+<!--
+# A list of regular expression that should define the related system resources, this related system resources will
+# also be written to the "real" file system.
+-->
+<!ELEMENT related-system-res (regex*)>
+
