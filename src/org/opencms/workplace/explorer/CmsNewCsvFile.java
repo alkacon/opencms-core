@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/11 16:04:50 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/11 16:05:31 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,9 +46,7 @@ import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.xml.CmsXmlException;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.util.ArrayList;
@@ -61,7 +59,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.PageContext;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Source;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
@@ -70,11 +67,6 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.logging.Log;
-
-import org.dom4j.Document;
-import org.dom4j.DocumentHelper;
-import org.dom4j.io.DocumentResult;
-import org.dom4j.io.DocumentSource;
 
 /**
  * The new resource upload dialog handles the upload of cvs files. They are converted in a first step to xml
@@ -88,7 +80,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
