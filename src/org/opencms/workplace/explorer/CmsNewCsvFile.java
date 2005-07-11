@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/08 10:19:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/11 16:04:50 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.io.DocumentSource;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,6 +233,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 k = k.substring(0, k.length() - 1);
             }
         }
+        // replace excel protected quotations marks ("") by single quotation marks
+        k = CmsStringUtil.substitute(k, "\"\"", "\"");
         return k;
     }
 
@@ -285,7 +287,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             // if xslt file parameter is set, transform the raw html and set the css stylesheet property
             // of the converted file to that of the stylesheet
             if (CmsStringUtil.isNotEmpty(getParamXsltFile())) { 
-                xmlContent = applyXslTransformation2(getParamXsltFile(), xmlContent);
+                xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
                 styleProp = getCms().readPropertyObject(getParamXsltFile(),
                     CmsPropertyDefinition.PROPERTY_STYLESHEET, true);
             }
@@ -388,6 +390,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     /**
      * Applies a XSLT Transformation to the xmlContent.<p>
      * 
+     * The method does not use DOM4J, because iso-8859-1 code ist not transformed correctly.
+     * 
      * @param xsltFile the XSLT transformation file
      * @param xmlContent the XML content to transform
      * 
@@ -397,45 +401,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      */
     public String applyXslTransformation(String xsltFile, String xmlContent) throws Exception {
 
-            TransformerFactory factory = TransformerFactory.newInstance();
-            InputStream stylesheet = new ByteArrayInputStream(getCms().readFile(xsltFile).getContents());
-            Transformer transformer = factory.newTransformer(new StreamSource(stylesheet));
-            //transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-            Document document = DocumentHelper.parseText(xmlContent);
-            DocumentSource source = new DocumentSource(document);
-            DocumentResult streamResult = new DocumentResult();
-            // transform the xml with the xslt stylesheet
-            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-            transformer.setOutputProperty(OutputKeys.METHOD, "xml");
-            transformer.setOutputProperty(OutputKeys.ENCODING, "ISO-8859-1");
-            // we want to pretty format the XML output
-            // note : this is broken in jdk1.5 beta!
-            transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(source, streamResult);
-            
-            String result = streamResult.getDocument().asXML();
-            return result;
-
-    }
-    
-    /**
-     * Applies a XSLT Transformation to the xmlContent.<p>
-     * 
-     * @param xsltFile the XSLT transformation file
-     * @param xmlContent the XML content to transform
-     * 
-     * @return the transformed xml
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public String applyXslTransformation2(String xsltFile, String xmlContent) throws Exception {
-
         // JAXP reads data
         Source xmlSource = new StreamSource(new StringReader(xmlContent));
         String xsltString = new String(getCms().readFile(xsltFile).getContents());
         Source xsltSource = new StreamSource(new StringReader(xsltString));
-
         
         TransformerFactory transFact = TransformerFactory.newInstance();
         Transformer trans = transFact.newTransformer(xsltSource);
