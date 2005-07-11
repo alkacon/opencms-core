@@ -46,11 +46,11 @@ default:
 
 <table border="0">
 <tr>
-	<td><%= wp.key("input.navtext") %></td>
+	<td><%= wp.key(Messages.GUI_LABEL_NAVTEXT_0) %></td>
 	<td class="maxwidth"><input type="text" name="<%= wp.PARAM_NAVTEXT %>" class="maxwidth" value="<%= wp.getCurrentNavText() %>"></td>
 </tr>
 <tr>
-	<td><%= wp.key("input.insert") %></td>
+	<td><%= wp.key(Messages.GUI_CHNAV_INSERT_AFTER_0) %></td>
 	<td><%= wp.buildNavPosSelector() %></td>
 </tr>
 </table>

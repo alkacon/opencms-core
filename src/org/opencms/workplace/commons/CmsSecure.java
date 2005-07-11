@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/06/29 16:38:08 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,10 +165,10 @@ public class CmsSecure extends CmsDialog {
         StringBuffer result = new StringBuffer("<table border=\"0\"><tr>");
         result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
             "\" ").append("true".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(
-            key("label.true")).append("</td>");
+            key(Messages.GUI_LABEL_TRUE_0)).append("</td>");
         result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
             "\" ").append("false".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(
-            key("label.false")).append("</td>");
+            key(Messages.GUI_LABEL_FALSE_0)).append("</td>");
         result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
             "\" ").append(CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append(
             "/></td><td id=\"tablelabel\">").append(getPropertyInheritanceInfo(propName)).append("</td></tr></table>");
@@ -236,10 +236,9 @@ public class CmsSecure extends CmsDialog {
         }
 
         if (CmsStringUtil.isNotEmpty(folderPropVal)) {
-            return new StringBuffer(key("label.inherit")).append(' ').append(folderPropVal).append(' ').append(
-                key("label.from")).append(' ').append(folderName).toString();
+            return key(Messages.GUI_SECURE_INHERIT_FROM_2, new Object[] {folderPropVal, folderName});
         } else {
-            return key("label.notset");
+            return key(Messages.GUI_SECURE_NOT_SET_0);
         }
     }
 
@@ -439,7 +438,7 @@ public class CmsSecure extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for chnav dialog    
-            setParamTitle(key("title.secureexport") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_SECURE_EXPORT_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

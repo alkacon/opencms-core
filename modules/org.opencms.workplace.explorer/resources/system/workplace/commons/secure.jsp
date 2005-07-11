@@ -1,4 +1,5 @@
-<%@ page import="org.opencms.workplace.commons.*,
+<%@ page import="org.opencms.workplace.commons.Messages,
+                 org.opencms.workplace.commons.*,
                  org.opencms.file.*,
                  org.opencms.main.*,
                  org.opencms.site.CmsSiteManager"
@@ -63,7 +64,7 @@ wp.setParamAction("secure");
       checkedExportOrSecure = true;
     }
     if (document.secure.elements['intern'] != null && document.secure.elements['intern'].checked && checkedExportOrSecure) {
-      alert("<%= wp.key("error.message.secure.notintern") %>");
+      alert("<%= wp.key(Messages.GUI_SECURE_EXPORTED_NOT_INTERN_0) %>");
       document.secure.elements['intern'].checked = false;
     }
   }
@@ -83,7 +84,7 @@ wp.setParamAction("secure");
         document.secure.elements['export'][1].checked = true;  
       }
       if (checkedExportOrSecure) {
-        alert("<%= wp.key("error.message.secure.noexportsecure") %>");
+        alert("<%= wp.key(Messages.GUI_SECURE_INTERN_NO_EXPORT_0) %>");
       }
     }
 
@@ -105,12 +106,12 @@ wp.setParamAction("secure");
     <%@ include file="includes/resourceinfo.txt" %>
     <%= wp.dialogSpacer() %>
 
-    <%= wp.dialogBlockStart(wp.key("label.onlineaddress")) %>
+    <%= wp.dialogBlockStart(wp.key(Messages.GUI_SECURE_ONLINE_ADDRESS_0)) %>
     <%= wp.getResourceUrl() %>
     <%= wp.dialogBlockEnd() %>
     <%= wp.dialogSpacer() %>
 
-    <%= wp.dialogBlockStart(wp.key("label.securityinternalsettings")) %>
+    <%= wp.dialogBlockStart(wp.key(Messages.GUI_SECURE_INTERN_SETTINGS_0)) %>
     <table>
 
       <tr>
@@ -120,7 +121,7 @@ wp.setParamAction("secure");
       if(CmsSiteManager.getCurrentSite(wp.getCms()).hasSecureServer()) { 
       %>
 
-        <td style="white-space:nowrap;"><%= wp.key("input.secure") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key(Messages.GUI_SECURE_0) %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(CmsPropertyDefinition.PROPERTY_SECURE) %>
         </td>
@@ -128,7 +129,7 @@ wp.setParamAction("secure");
       <% } else { %>
         <td colspan="2">
 
-          <%= wp.key("message.nosecureserver") %>
+          <%= wp.key(Messages.GUI_SECURE_NO_SERVER_0) %>
 
         </td>
       <% } %>
@@ -139,7 +140,7 @@ wp.setParamAction("secure");
       if(!wp.resourceIsFolder()) { %>
       
       <tr>
-        <td style="white-space:nowrap;"><%= wp.key("input.intern") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key(Messages.GUI_PERMISSION_INTERNAL_0) %>&nbsp;</td>
         <td class="maxwidth" style="padding-left: 5px;">
           <input type="checkbox" id="intern" name="intern" value="true" style="text-align:left" onclick="checkNoSecureNorExport()" <%= Boolean.valueOf(wp.readInternProp()).booleanValue() ? "checked=\"checked\"" : "" %>>
           </td>
@@ -158,13 +159,13 @@ wp.setParamAction("secure");
     %>
 	
     <%= wp.dialogSpacer() %>
-    <%= wp.dialogBlockStart(wp.key("label.exportsettings")) %>
+    <%= wp.dialogBlockStart(wp.key(Messages.GUI_SECURE_EXPORT_SETTINGS_0)) %>
 
     <table border="0">
 
     <%  if (wp.exportUserHasReadPermission()) { %>
       <tr>
-        <td style="white-space:nowrap;"><%= wp.key("input.export") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key(Messages.GUI_SECURE_EXPORT_0) %>&nbsp;</td>
         <td>
           <%= wp.buildRadio(CmsPropertyDefinition.PROPERTY_EXPORT) %>
         </td>
@@ -173,7 +174,7 @@ wp.setParamAction("secure");
       <%= wp.key("message.exportnotpossible") %>
     <% } if(wp.resourceIsFolder()) { %>
       <tr>
-        <td style="white-space:nowrap;"><%= wp.key("input.exportname") %>&nbsp;</td>
+        <td style="white-space:nowrap;"><%= wp.key(Messages.GUI_SECURE_EXPORTNAME_0) %>&nbsp;</td>
 
         <td class="maxwidth" style="padding-left: 5px;">
           <input type="text" id="exportname" name="exportname" class="maxwidth" value="<%= wp.readProperty(CmsPropertyDefinition.PROPERTY_EXPORTNAME) %>">

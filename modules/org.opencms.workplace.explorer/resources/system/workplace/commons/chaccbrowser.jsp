@@ -34,7 +34,7 @@ default:
 //////////////////// FRAME: main popup window is displayed
 	
 %>
-<%= wp.htmlStart(null, wp.key("dialog.permission.headline.add")) %>
+<%= wp.htmlStart(null, wp.key(Messages.GUI_PERMISSION_ADD_ACE_0)) %>
 
 <script type="text/javascript">
 <!--
@@ -51,10 +51,10 @@ function selectForm(type, name) {
 </script>
 <%= wp.bodyStart("dialog dialogpopup") %>
 
-<%= wp.dialogSubheadline(wp.key("dialog.permission.browse.groups")) %>
+<%= wp.dialogSubheadline(wp.key(Messages.GUI_PERMISSION_TITLE_0)) %>
 <iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_FRAME %>=<%= wp.DIALOG_FRAME_GROUPS %>" width="100%" height="240" frameborder="1"></iframe>
 
-<%= wp.dialogSubheadline(wp.key("dialog.permission.browse.users")) %>
+<%= wp.dialogSubheadline(wp.key(Messages.GUI_PERMISSION_AVAILABLE_USERS_0)) %>
 <iframe src="<%= wp.getDialogUri() %>?<%= wp.PARAM_FRAME %>=<%= wp.DIALOG_FRAME_USERS %>" width="100%" height="240" frameborder="1"></iframe>
 
 <div>&nbsp;</div>

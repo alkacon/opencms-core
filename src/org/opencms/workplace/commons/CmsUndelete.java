@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +138,7 @@ public class CmsUndelete extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("title.undelete") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_UNDELETE_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

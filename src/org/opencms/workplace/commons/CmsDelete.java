@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,21 +157,21 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
             // show only if resource has siblings and correct lock state
             StringBuffer result = new StringBuffer(512);
             int defaultMode = getSettings().getUserSettings().getDialogDeleteFileMode();
-            result.append(key("messagebox.siblings"));
+            result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
             result.append("<p>");
             result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"false\"");
             if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
-            result.append(key("messagebox.option.siblingsPreserve"));
+            result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
             result.append("<br>");
             result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"true\"");
             if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
-            result.append(key("messagebox.option.siblingsDelete"));
+            result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
             result.append("<p>");
             return result.toString();
         }
@@ -310,7 +310,7 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("title.delete") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_DELETE_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

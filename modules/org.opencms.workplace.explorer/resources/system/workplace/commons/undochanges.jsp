@@ -42,13 +42,11 @@ default:
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.key("messagebox.undochanges1") %> <%= wp.getFileName() %> 
-<%= wp.key("messagebox.undochanges2") %> <%= wp.getLastModifiedDate() %> 
-<%= wp.key("messagebox.undochanges3") %> <%= wp.getLastModifiedUser() %>.
+<%= wp.key("GUI_UNDO_LASTMODIFIED_INFO_3", new Object[] {wp.getFileName(), wp.getLastModifiedDate(), wp.getLastModifiedUser()}) %>
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.key("messagebox.undochanges4") %>
+<%= wp.key("GUI_UNDO_CONFIRMATION_0") %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>

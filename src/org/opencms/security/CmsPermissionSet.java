@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPermissionSet.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Set;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,15 +160,13 @@ public class CmsPermissionSet {
      * @return hastable with permission keys and values
      */
     private static HashMap permissions() {
-
         if (m_permissions == null) {
             m_permissions = new HashMap();
-            m_permissions.put("security.permission.read", new Integer(CmsPermissionSet.PERMISSION_READ));
-            m_permissions.put("security.permission.write", new Integer(CmsPermissionSet.PERMISSION_WRITE));
-            m_permissions.put("security.permission.view", new Integer(CmsPermissionSet.PERMISSION_VIEW));
-            m_permissions.put("security.permission.control", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
-            m_permissions.put("security.permission.direct_publish", new Integer(
-                CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
+            m_permissions.put("GUI_PERMISSION_TYPE_READ_0", new Integer(CmsPermissionSet.PERMISSION_READ));
+            m_permissions.put("GUI_PERMISSION_TYPE_WRITE_0", new Integer(CmsPermissionSet.PERMISSION_WRITE));
+            m_permissions.put("GUI_PERMISSION_TYPE_VIEW_0", new Integer(CmsPermissionSet.PERMISSION_VIEW));
+            m_permissions.put("GUI_PERMISSION_TYPE_CONTROL_0", new Integer(CmsPermissionSet.PERMISSION_CONTROL));
+            m_permissions.put("GUI_PERMISSION_TYPE_DIRECT_PUBLISH_0", new Integer(CmsPermissionSet.PERMISSION_DIRECT_PUBLISH));
         }
         return m_permissions;
     }

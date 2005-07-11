@@ -52,13 +52,13 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.copyto") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("GUI_COPY_TO_0") %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="" class="maxwidth"></td>
-	<td><input name="selectfolder" type="button" value="<%= wp.key("button.search") %>" onClick="top.openTreeWin('copy');" class="dialogbutton" style="width: 60px;">
+	<td><input name="selectfolder" type="button" value="<%= wp.key("GUI_LABEL_SEARCH_0") %>" onClick="top.openTreeWin('copy');" class="dialogbutton" style="width: 60px;">
 </tr>
 <%--
 <tr>
-	<td colspan="2" style="white-space: nowrap;" unselectable="on"><input name="<%= wp.PARAM_KEEPRIGHTS %>" type="checkbox" value="true">&nbsp;<%= wp.key("input.keeprights") %></td>    
+	<td colspan="2" style="white-space: nowrap;" unselectable="on"><input name="<%= wp.PARAM_KEEPRIGHTS %>" type="checkbox" value="true">&nbsp;<%= wp.key("GUI_COPY_KEEP_PERMISSIONS_0") %></td>    
 </tr>
 --%>
 </table>

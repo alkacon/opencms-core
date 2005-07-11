@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +161,7 @@ public class CmsChnav extends CmsDialog {
         }
 
         // add the first entry: before first element
-        options.add(messages.key("input.firstelement"));
+        options.add(messages.key(Messages.GUI_CHNAV_POS_FIRST_0));
         values.add(firstValue + "");
 
         // show all present navigation elements in box
@@ -184,7 +184,7 @@ public class CmsChnav extends CmsDialog {
 
             // if the element is the current file, mark it in selectbox
             if (curNav.getNavText().equals(navText) && curNav.getNavPosition() == navPos) {
-                options.add(CmsEncoder.escapeHtml(messages.key("input.currentposition") + " [" + ne.getFileName() + "]"));
+                options.add(CmsEncoder.escapeHtml(messages.key(Messages.GUI_CHNAV_POS_CURRENT_1, new Object[] {ne.getFileName()})));
                 values.add("-1");
             } else {
                 options.add(CmsEncoder.escapeHtml(navText + " [" + ne.getFileName() + "]"));
@@ -193,11 +193,11 @@ public class CmsChnav extends CmsDialog {
         }
 
         // add the entry: at the last position
-        options.add(messages.key("input.lastelement"));
+        options.add(messages.key(Messages.GUI_CHNAV_POS_LAST_0));
         values.add((maxValue + 1) + "");
 
         // add the entry: no change
-        options.add(messages.key("input.nochange"));
+        options.add(messages.key(Messages.GUI_CHNAV_NO_CHANGE_0));
         if (curNav.getNavPosition() == Float.MAX_VALUE) {
             // current resource has no valid position, use "last position"
             values.add((maxValue + 1) + "");
@@ -439,7 +439,7 @@ public class CmsChnav extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for chnav dialog     
-            setParamTitle(key("explorer.context.chnav") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_CHNAV_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

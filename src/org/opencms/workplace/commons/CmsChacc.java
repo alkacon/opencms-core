@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,7 +193,7 @@ public class CmsChacc extends CmsDialog {
                 getCms().chacc(file, getTypes()[arrayPosition], name, permissionString);
                 return true;
             } catch (CmsException e) {
-                m_errorMessages.add(key("dialog.permission.error.add"));
+                m_errorMessages.add(e.getMessage());
             }
         }
         return false;
@@ -233,7 +233,7 @@ public class CmsChacc extends CmsDialog {
             getCms().chflags(getParamResource(), flags);
 
         } catch (CmsException e) {
-            m_errorMessages.add(key("dialog.permission.error.internal"));
+            m_errorMessages.add(key(Messages.ERR_MODIFY_INTERNAL_FLAG_0));
             return false;
         }
         return true;
@@ -325,7 +325,7 @@ public class CmsChacc extends CmsDialog {
             getCms().chacc(file, type, name, allowValue, denyValue, flags);
             return true;
         } catch (CmsException e) {
-            m_errorMessages.add(key("dialog.permission.error.modify"));
+            m_errorMessages.add(key(Messages.ERR_CHACC_MODIFY_ENTRY_0));
             return false;
         }
     }
@@ -346,7 +346,7 @@ public class CmsChacc extends CmsDialog {
             getCms().rmacc(file, type, name);
             return true;
         } catch (CmsException e) {
-            m_errorMessages.add(key("dialog.permission.error.remove"));
+            m_errorMessages.add(key(Messages.ERR_CHACC_DELETE_ENTRY_0));
             return false;
         }
     }
@@ -376,7 +376,7 @@ public class CmsChacc extends CmsDialog {
         result.append(image);
         result.append("\" class=\"noborder\" id=\"ic-userpermissions\"></a></td>\n");
         result.append("\t<td>");
-        result.append(dialogSubheadline(key("dialog.permission.headline.user")));
+        result.append(dialogSubheadline(key(Messages.GUI_PERMISSION_USER_0)));
         result.append("</td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
@@ -401,7 +401,7 @@ public class CmsChacc extends CmsDialog {
         StringBuffer result = new StringBuffer(8);
         String errorMessages = getErrorMessagesString();
         if (!"".equals(errorMessages)) {
-            result.append(dialogBlock(HTML_START, key("dialog.permission.error.headline"), true));
+            result.append(dialogBlock(HTML_START, key(Messages.GUI_PERMISSION_ERROR_0), true));
             result.append(errorMessages);
             result.append(dialogBlockEnd());
         }
@@ -435,7 +435,7 @@ public class CmsChacc extends CmsDialog {
         result.append(image);
         result.append("\" class=\"noborder\" id=\"ic-inheritedpermissions\"></a></td>\n");
         result.append("\t<td>");
-        result.append(dialogSubheadline(key("dialog.permission.headline.inherited")));
+        result.append(dialogSubheadline(key(Messages.GUI_PERMISSION_BEQUEATH_SUBFOLDER_0)));
         result.append("</td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
@@ -448,7 +448,7 @@ public class CmsChacc extends CmsDialog {
         // create detail view selector 
         result.append("<table border=\"0\">\n<tr>\n");
         result.append("\t<td>");
-        result.append(key("dialog.permission.viewselect"));
+        result.append(key(Messages.GUI_PERMISSION_SELECT_VIEW_0));
         result.append("</td>\n");
         String selectedView = getSettings().getPermissionDetailView();
         result.append("\t<form action=\"").append(getDialogUri()).append(
@@ -460,7 +460,7 @@ public class CmsChacc extends CmsDialog {
         // set parameters to show correct hidden input fields
         setParamAction(null);
         result.append(paramsAsHidden());
-        result.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\"").append(key("button.short")).append(
+        result.append("\t<input  type=\"submit\" class=\"dialogbutton\" value=\"").append(key(Messages.GUI_PERMISSION_SUMMARY_0)).append(
             "\"");
         if (!"long".equals(selectedView)) {
             result.append(" disabled=\"disabled\"");
@@ -474,7 +474,7 @@ public class CmsChacc extends CmsDialog {
         result.append(PARAM_VIEW);
         result.append("\" value=\"long\">\n");
         result.append(paramsAsHidden());
-        result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(key("button.long")).append(
+        result.append("\t<input type=\"submit\" class=\"dialogbutton\" value=\"").append(key(Messages.GUI_PERMISSION_SUMMARY_0)).append(
             "\"");
         if ("long".equals(selectedView)) {
             result.append(" disabled=\"disabled\"");
@@ -623,8 +623,8 @@ public class CmsChacc extends CmsDialog {
         String userName = getSettings().getUser().getName();
 
         if (m_typesLocalized[0] == null) {
-            m_typesLocalized[0] = key("label.group");
-            m_typesLocalized[1] = key("label.user");
+            m_typesLocalized[0] = key(Messages.GUI_LABEL_GROUP_0);
+            m_typesLocalized[1] = key(Messages.GUI_LABEL_USER_0);
         }
 
         // set flags to show editable or non editable entries
@@ -697,10 +697,10 @@ public class CmsChacc extends CmsDialog {
             inArray = true;
         }
         if (!inArray) {
-            m_errorMessages.add(key("dialog.permission.error.type"));
+            m_errorMessages.add(key(Messages.ERR_PERMISSION_SELECT_TYPE_0));
         }
         if (name == null || "".equals(name.trim())) {
-            m_errorMessages.add(key("dialog.permission.error.name"));
+            m_errorMessages.add(key(Messages.ERR_MISSING_GROUP_OR_USER_NAME_0));
         }
         if (m_errorMessages.size() > 0) {
             return false;
@@ -848,7 +848,7 @@ public class CmsChacc extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build the title for chacc dialog     
-            setParamTitle(key("title.chmod") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_PERMISSION_CHANGE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
 
     }
@@ -967,7 +967,7 @@ public class CmsChacc extends CmsDialog {
         // only display form if the current user has the "control" right
         if (getEditable()) {
             result.append(dialogSpacer());
-            result.append(dialogBlockStart(key("dialog.permission.headline.add")));
+            result.append(dialogBlockStart(key(Messages.GUI_PERMISSION_ADD_ACE_0)));
 
             // get all possible entry types
             ArrayList options = new ArrayList();
@@ -990,9 +990,9 @@ public class CmsChacc extends CmsDialog {
             result.append("\t<td>").append(buildSelect("name=\"type\"", options, optionValues, -1)).append("</td>\n");
             result.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");
             result.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\"");
-            result.append(key("button.search")).append(
+            result.append(key(Messages.GUI_LABEL_SEARCH_0)).append(
                 "\" onClick=\"javascript:openDialogWin('chaccbrowser.jsp','UserGroup');\"></td>\n");
-            result.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\"").append(key("input.add")).append(
+            result.append("\t<td><input class=\"dialogbutton\" type=\"submit\" value=\"").append(key(Messages.GUI_LABEL_ADD_0)).append(
                 "\"></td>\n");
             result.append("</tr>\n");
             result.append("</form>\n");
@@ -1075,7 +1075,7 @@ public class CmsChacc extends CmsDialog {
                 "\" method=\"post\" name=\"internal\" class=\"nomargin\">\n");
             result.append("<table border=\"0\" width=\"100%\">\n");
             result.append("<tr>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">").append(key("dialog.permission.internal"));
+            result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_INTERNAL_0));
             result.append(" <input type=\"checkbox\" name=\"");
             result.append(PARAM_INTERNAL);
             result.append("\" value=\"true\"");
@@ -1088,7 +1088,7 @@ public class CmsChacc extends CmsDialog {
             result.append(" ></td>\n");
             if (getEditable()) {
                 result.append("<td><input  type=\"submit\" class=\"dialogbutton\" value=\"").append(
-                    key("button.submit")).append("\">");
+                    key(Messages.GUI_LABEL_SET_0)).append("\">");
             }
             result.append("</td>\n");
             result.append("</tr>\n");
@@ -1175,9 +1175,8 @@ public class CmsChacc extends CmsDialog {
             result.append(dialogRow(HTML_END));
             // show the resource from which the ace is inherited if present
             if (inheritRes != null && !"".equals(inheritRes)) {
-                result.append("<div class=\"dialogpermissioninherit\">").append(key("dialog.permission.list.inherited")).append(
-                    "  ");
-                result.append(inheritRes);
+                result.append("<div class=\"dialogpermissioninherit\">");
+                result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {inheritRes}));
                 result.append("</div>\n");
             }
             result.append("<div id =\"").append(idValue).append("\" class=\"hide\">");
@@ -1201,11 +1200,11 @@ public class CmsChacc extends CmsDialog {
         // build headings for permission descriptions
         result.append("<tr>\n");
         result.append("\t<td class=\"dialogpermissioncell\"><span class=\"textbold\" unselectable=\"on\">");
-        result.append(key("dialog.permission.list.permission")).append("</span></td>\n");
+        result.append(key(Messages.GUI_PERMISSION_0)).append("</span></td>\n");
         result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
-        result.append(key("dialog.permission.list.allowed")).append("</span></td>\n");
+        result.append(key(Messages.GUI_PERMISSION_ALLOWED_0)).append("</span></td>\n");
         result.append("\t<td class=\"dialogpermissioncell textcenter\"><span class=\"textbold\" unselectable=\"on\">");
-        result.append(key("dialog.permission.list.denied")).append("</span></td>\n");
+        result.append(key(Messages.GUI_PERMISSION_DENIED_0)).append("</span></td>\n");
         result.append("</tr>");
 
         Iterator i = m_permissionKeys.iterator();
@@ -1239,7 +1238,7 @@ public class CmsChacc extends CmsDialog {
 
             // show overwrite inherited checkbox
             result.append("<tr>\n");
-            result.append("\t<td class=\"dialogpermissioncell\">").append(key("dialog.permission.list.overwrite")).append(
+            result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_OVERWRITE_INHERITED_0)).append(
                 "</td>\n");
             result.append("\t<td class=\"dialogpermissioncell textcenter\">");
             result.append("<input type=\"checkbox\" name=\"").append(PARAM_OVERWRITEINHERITED).append(
@@ -1254,7 +1253,7 @@ public class CmsChacc extends CmsDialog {
             // show inherit permissions checkbox on folders
             if (getInheritOption()) {
                 result.append("<tr>\n");
-                result.append("\t<td class=\"dialogpermissioncell\">").append(key("dialog.permission.list.inherit")).append(
+                result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1)).append(
                     "</td>\n");
                 result.append("\t<td class=\"dialogpermissioncell textcenter\">");
                 result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(
@@ -1271,7 +1270,7 @@ public class CmsChacc extends CmsDialog {
             result.append("<tr>\n");
             result.append("\t<td>&nbsp;</td>\n");
             result.append("\t<td class=\"textcenter\"><input class=\"dialogbutton\" type=\"submit\" value=\"").append(
-                key("button.submit")).append("\"></form></td>\n");
+                key(Messages.GUI_LABEL_SET_0)).append("\"></form></td>\n");
             result.append("\t<td class=\"textcenter\">\n");
             // build the form for the "delete" button            
             result.append("\t\t<form class=\"nomargin\" action=\"").append(getDialogUri()).append(
@@ -1279,7 +1278,7 @@ public class CmsChacc extends CmsDialog {
             // set parameters to show correct hidden input fields
             setParamAction(DIALOG_DELETE);
             result.append(paramsAsHidden());
-            result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(key("button.delete")).append(
+            result.append("\t\t<input class=\"dialogbutton\" type=\"submit\" value=\"").append(key(Messages.GUI_LABEL_DELETE_0)).append(
                 "\">\n");
             result.append("\t\t</form>\n");
             result.append("\t</td>\n");
@@ -1357,7 +1356,7 @@ public class CmsChacc extends CmsDialog {
 
         if (hasEntries || !getInheritOption()) {
             // create headline for resource entries
-            result.append(dialogSubheadline(key("dialog.permission.headline.resource")));
+            result.append(dialogSubheadline(key(Messages.GUI_PERMISSION_TITLE_0)));
         }
 
         // create the internal form

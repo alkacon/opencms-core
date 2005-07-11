@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,7 +147,7 @@ public class CmsUndoChanges extends CmsDialog {
             retValue.append("<input type=\"checkbox\" name=\""
                 + PARAM_RECURSIVE
                 + "\" value=\"true\">&nbsp;"
-                + key("input.changesubresources"));
+                + key(Messages.GUI_UNDO_CHANGES_SUBRESOURCES_0));
             retValue.append("</td>\n</tr>\n");
         }
         return retValue.toString();
@@ -259,7 +259,7 @@ public class CmsUndoChanges extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for undo changes dialog     
-            setParamTitle(key("title.undochanges") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_UNDO_CHANGES_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
 
         try {

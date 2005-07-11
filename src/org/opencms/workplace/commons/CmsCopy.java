@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/11 15:55:07 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSiteManager;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,18 +163,9 @@ public class CmsCopy extends CmsDialog {
                     }
                 }
                 if (resource.getTypeId() == targetType) {
-                    // prepare common message part
-                    String message = "<p>\n"
-                        + key("source")
-                        + ": "
-                        + getParamResource()
-                        + "<br>\n"
-                        + key("target")
-                        + ": "
-                        + getParamTarget()
-                        + "\n</p>\n";
                     // file type of target is the same as source, show confirmation dialog
-                    setParamMessage(message + key("confirm.message." + getParamDialogtype()));
+                    setParamMessage(CmsStringUtil.escapeHtml(key(Messages.GUI_COPY_CONFIRM_OVERWRITE_2, 
+                        new Object[] {getParamResource(), getParamTarget()})));
                     getJsp().include(FILE_DIALOG_SCREEN_CONFIRM);
                 } else {
                     // file type is different, create error message
@@ -220,7 +212,7 @@ public class CmsCopy extends CmsDialog {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(key("messagebox.option.folder.assibling.copy") + "<br>\n");
+            retValue.append(key(Messages.GUI_COPY_CREATE_SIBLINGS_0) + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\""
                 + CmsResource.COPY_PRESERVE_SIBLING
                 + "\"");
@@ -228,13 +220,13 @@ public class CmsCopy extends CmsDialog {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(key("messagebox.option.folder.preserve.copy") + "<br>\n");
+            retValue.append(key(Messages.GUI_COPY_ALL_NO_SIBLINGS_0) + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + CmsResource.COPY_AS_NEW + "\"");
             if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(key("messagebox.option.folder.asnewresource.copy") + "<br>\n");
+            retValue.append(key(Messages.GUI_COPY_ALL_0) + "<br>\n");
 
         } else {
             // for files, show copy option "copy as sibling" and "copy as new resource"
@@ -246,13 +238,13 @@ public class CmsCopy extends CmsDialog {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(key("messagebox.option.file.assibling.copy") + "<br>\n");
+            retValue.append(key(Messages.GUI_CREATE_SIBLING_0) + "<br>\n");
             retValue.append("<input type=\"radio\" name=\"copymode\" value=\"" + CmsResource.COPY_AS_NEW + "\"");
             if (defaultMode == CmsResource.COPY_AS_NEW) {
                 retValue.append(checkedAttr);
             }
             retValue.append("> ");
-            retValue.append(key("messagebox.option.file.asnewresource.copy") + "<br>\n");
+            retValue.append(key(Messages.GUI_COPY_AS_NEW_0) + "<br>\n");
         }
 
         return retValue.toString();
@@ -350,7 +342,7 @@ public class CmsCopy extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for copy dialog     
-            setParamTitle(key("title.copy") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_COPY_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 
