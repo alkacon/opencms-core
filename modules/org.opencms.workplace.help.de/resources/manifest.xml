@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Fri, 08 Jul 2005 17:51:03 GMT</createdate>
+		<createdate>Mon, 11 Jul 2005 15:10:14 GMT</createdate>
 		<project>German OnlineDoc</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.22</version>
+		<version>0.24</version>
 		<authorname><![CDATA[Achim Westermann]]></authorname>
 		<authoremail><![CDATA[a.westermann@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -1049,7 +1049,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/editors/index.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>c5c13cf4-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:28:38 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 13:36:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1092,6 +1092,74 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Der Microsoft Dynamic HTML Editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/editors/simple.html</source>
+			<destination>system/workplace/locales/de/help/editors/simple.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>e1364311-f1e3-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 09:28:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 08:15:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Beschreibung des Editors für Quelltexte (non - WYSIWYG).]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Quelltext - Editor]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Der Quelltext - Editor]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/editors/xmlcontent.html</source>
+			<destination>system/workplace/locales/de/help/editors/xmlcontent.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>b30efa90-f20d-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 13:35:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 13:14:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Beschreibung des Editors für Quelltexte (non - WYSIWYG).]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Quelltext - Editor]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Der Quelltext - Editor]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1511,6 +1579,260 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/help/explorer/newresource</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 11 Jul 2005 09:54:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 09:54:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6.0]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Neue Ressource]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Die Schaltfläche "Neu"]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/folder-extended.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/folder-extended.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>11dde826-f1f4-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 13:49:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 10:10:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer einen neuen erweiterten Ordner erstellt.]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Erweiterter Ordner]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Erweiterter Ordner]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/folder.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/folder.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>c40e9576-f1f2-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 13:49:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 10:01:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer einen neuen Ordner erstellt.]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Ordner]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Ordner]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/index.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/index.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>e0e16b2d-f1ee-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 10:42:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 09:33:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer neue Ressourcen erstellt.]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Die Schaltfläche "Neu"]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/page.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/page.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>713f30aa-f212-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 13:57:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 13:48:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer eine neue Seite erstellt.]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Seite ]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Seite ]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/pointer.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/pointer.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>82895989-f213-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 14:26:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 13:55:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer eine neue externe Verknüpfung erstellt.]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Externe Verknüpfung]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Externe Verknüpfung]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/structured_content.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/structured_content.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>6c17265a-f1f8-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 14:33:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 10:42:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer einen neuen Strukturierten Inhalt erstellen erstellt.]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Strukturierter Inhalt]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Strukturierter Inhalt]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/newresource/upload.html</source>
+			<destination>system/workplace/locales/de/help/explorer/newresource/upload.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>e2fc03c8-ee3e-11d9-bde2-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 14:29:37 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 06 Jul 2005 16:56:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Beschreibt die Alternativen zum Hochladen von Dateien auf den OpenCms Server.]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Neue Datei hochladen]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Neue Datei hochladen]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/help/explorer/popupMenu</destination>
 			<type>folder</type>
 			<datelastmodified>Wed, 06 Jul 2005 15:09:05 GMT</datelastmodified>
@@ -1539,7 +1861,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/explorer/popupMenu/chtype.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>5abe60b5-eefe-11d9-85a7-21bd740a33b2</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:30:18 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 07:59:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 15:46:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1675,7 +1997,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/explorer/popupMenu/directpublish.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>bcba1899-ee2a-11d9-bde2-21bd740a33b2</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:31:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 07:40:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Jul 2005 14:32:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1696,6 +2018,40 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Direkt Veröffentlichen]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/popupMenu/edit-pointer.html</source>
+			<destination>system/workplace/locales/de/help/explorer/popupMenu/edit-pointer.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>45f32340-f214-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 14:36:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 14:01:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärt, wie man externe Verknüpfungen editieren kann.]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Verknüpfung editieren]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Verknüpfung editieren]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1735,7 +2091,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/explorer/popupMenu/index.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>d429fd80-ee31-11d9-bde2-21bd740a33b2</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:31:21 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 08:18:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Jul 2005 15:22:56 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1761,7 +2117,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/explorer/popupMenu/move.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>c059cca3-eefc-11d9-85a7-21bd740a33b2</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:31:43 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 09:53:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 15:35:31 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1795,7 +2151,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/explorer/popupMenu/navchange.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>2af451a5-ef7f-11d9-b28c-21bd740a33b2</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:31:52 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 08:17:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Jul 2005 07:09:04 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1900,7 +2256,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 17:32:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 15:57:25 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -1992,16 +2348,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 					<value><![CDATA[Aktualisieren von Dateien]]></value>
 				</property>
 			</properties>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>USER.test</uuidprincipal>
-					<flags>16</flags>
-					<permissionset>
-						<allowed>12</allowed>
-						<denied>18</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/locales/de/help/explorer/popupMenu/undo.html</source>
@@ -2059,23 +2406,13 @@ Install this module if you want to use the german version of the OpenCms Workpla
 					<value><![CDATA[Dateitransport zum Server]]></value>
 				</property>
 			</properties>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>USER.Achim</uuidprincipal>
-					<flags>18</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>4</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/locales/de/help/explorer/upload/index.html</source>
 			<destination>system/workplace/locales/de/help/explorer/upload/index.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>e2fc03c8-ee3e-11d9-bde2-21bd740a33b2</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:29:33 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 14:29:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Jul 2005 16:56:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -2194,6 +2531,32 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/locales/de/help/images/editor_plain.png</source>
+			<destination>system/workplace/locales/de/help/images/editor_plain.png</destination>
+			<type>image</type>
+			<uuidresource>12f748fd-f1e9-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 08:52:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 08:52:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/editor_xmlcontent.png</source>
+			<destination>system/workplace/locales/de/help/images/editor_xmlcontent.png</destination>
+			<type>image</type>
+			<uuidresource>51894182-f208-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 12:35:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 12:35:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/locales/de/help/images/expl_context_menu.png</source>
 			<destination>system/workplace/locales/de/help/images/expl_context_menu.png</destination>
 			<type>image</type>
@@ -2201,7 +2564,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Jul 2005 10:15:54 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2214,7 +2577,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 14:45:56 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2227,7 +2590,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 14:51:57 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2240,7 +2603,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Jul 2005 09:10:01 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2253,6 +2616,19 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Jul 2005 14:44:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/expl_edit_pointer.png</source>
+			<destination>system/workplace/locales/de/help/images/expl_edit_pointer.png</destination>
+			<type>image</type>
+			<uuidresource>5621ac8f-f216-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 14:16:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 14:16:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2279,7 +2655,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Jul 2005 09:03:51 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2305,7 +2681,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Jul 2005 14:12:02 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
@@ -2317,6 +2693,45 @@ Install this module if you want to use the german version of the OpenCms Workpla
 					<value><![CDATA[Sperrung Übernehmen.]]></value>
 				</property>
 			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/expl_new_folder_extended.png</source>
+			<destination>system/workplace/locales/de/help/images/expl_new_folder_extended.png</destination>
+			<type>image</type>
+			<uuidresource>aab5ddff-f1f4-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 10:15:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 10:15:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/expl_new_resource.png</source>
+			<destination>system/workplace/locales/de/help/images/expl_new_resource.png</destination>
+			<type>image</type>
+			<uuidresource>28f3aa8a-f1f1-11d9-8b6b-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 09:50:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 09:50:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/expl_new_resource_xml.png</source>
+			<destination>system/workplace/locales/de/help/images/expl_new_resource_xml.png</destination>
+			<type>image</type>
+			<uuidresource>48d8ad4f-f208-11d9-94a9-21bd740a33b2</uuidresource>
+			<datelastmodified>Mon, 11 Jul 2005 12:35:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 11 Jul 2005 12:35:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -2340,19 +2755,10 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 13:42:03 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.test</uuidprincipal>
-					<flags>32</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/locales/de/help/images/expl_perm_group.png</source>
@@ -2388,7 +2794,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Thu, 07 Jul 2005 14:15:43 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2570,7 +2976,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<datelastmodified>Fri, 08 Jul 2005 13:03:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 08 Jul 2005 09:33:20 GMT</datecreated>
-			<usercreated>Achim</usercreated>
+			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
 			<accesscontrol/>
@@ -2675,8 +3081,8 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
 			<type>plain</type>
 			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
-			<datelastmodified>Wed, 06 Jul 2005 14:39:20 GMT</datelastmodified>
-			<userlastmodified>Achim</userlastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 14:57:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
