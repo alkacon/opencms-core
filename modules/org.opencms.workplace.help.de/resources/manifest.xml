@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 11 Jul 2005 15:10:14 GMT</createdate>
+		<createdate>Tue, 12 Jul 2005 17:10:46 GMT</createdate>
 		<project>German OnlineDoc</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.24</version>
+		<version>0.27</version>
 		<authorname><![CDATA[Achim Westermann]]></authorname>
 		<authoremail><![CDATA[a.westermann@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -1135,7 +1135,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/editors/xmlcontent.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>b30efa90-f20d-11d9-94a9-21bd740a33b2</uuidresource>
-			<datelastmodified>Mon, 11 Jul 2005 13:35:34 GMT</datelastmodified>
+			<datelastmodified>Mon, 11 Jul 2005 16:13:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 11 Jul 2005 13:14:23 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1147,11 +1147,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung des Editors für Quelltexte (non - WYSIWYG).]]></value>
+					<value><![CDATA[Beschreibung des Editors für Xmlcontent .]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Quelltext - Editor]]></value>
+					<value><![CDATA[Xmlcontent - Editor]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1159,7 +1159,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Der Quelltext - Editor]]></value>
+					<value><![CDATA[Der Xmlcontent - Editor]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -3081,7 +3081,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
 			<type>plain</type>
 			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 11 Jul 2005 14:57:11 GMT</datelastmodified>
+			<datelastmodified>Tue, 12 Jul 2005 16:47:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

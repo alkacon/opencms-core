@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Attic/CmsProjectSettingsDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/12 17:21:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -228,6 +228,17 @@ public class CmsProjectSettingsDialog extends A_CmsProjectDialog {
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    /**
+     * Overridden to set a custom online help mapping.<p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        super.initWorkplaceMembers(jsp);
+        setOnlineHelpUriCustom("/projects/project_settings.html");
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/12 17:21:12 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,6 +188,17 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
     }
 
     /**
+     * Overridden to set a custom online help path. <p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        super.initWorkplaceMembers(jsp);
+        setOnlineHelpUriCustom("/accounts/users/overview/");
+    }
+
+    /**
      * Checks if the User overview has to be displayed.<p>
      * 
      * @return <code>true</code> if the user overview has to be displayed
@@ -196,5 +207,4 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
 
         return getCurrentToolPath().equals("/accounts/users/edit");
     }
-
 }

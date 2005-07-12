@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/12 17:21:12 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,6 +149,17 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
     }
 
     /**
+     * Overridden to set the online help path for this dialog.<p>
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
+     */
+    protected void initWorkplaceMembers(CmsJspActionElement jsp) {
+
+        super.initWorkplaceMembers(jsp);
+        setOnlineHelpUriCustom("/accounts/groups/overview/");
+    }
+
+    /**
      * Checks if the group overview has to be displayed.<p>
      * 
      * @return <code>true</code> if the group overview has to be displayed
@@ -157,5 +168,4 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
 
         return getCurrentToolPath().equals("/accounts/groups/edit");
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/07/04 12:39:19 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/12 17:21:12 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,11 +61,11 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Dialog to edit new an existing group in the administration view.<p>
+ * Dialog to create a new group or edit an existing group in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -340,7 +340,7 @@ public class CmsEditGroupDialog extends CmsWidgetDialog {
 
         if (!isNewGroup()) {
             // test the needed parameters
-            getCms().readGroup(new CmsUUID(getParamGroupid())).getName(); 
+            getCms().readGroup(new CmsUUID(getParamGroupid())).getName();
 
         }
     }

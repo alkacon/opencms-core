@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/07/12 17:21:12 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -169,13 +169,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
-     * Returns the dialog class name of the list to refresh.<p> 
-     * 
-     * @return the list dialog class name
-     */
-    protected abstract String getListClass();
-    
-    /**
      * Returns the user id parameter value.<p>
      * 
      * @return the user id parameter value
@@ -278,6 +271,13 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     }
 
     /**
+     * Returns the dialog class name of the list to refresh.<p> 
+     * 
+     * @return the list dialog class name
+     */
+    protected abstract String getListClass();
+
+    /**
      * Returns the root path for the list tool.<p>
      * 
      * @return the root path
@@ -353,6 +353,7 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         dialogObject.put(USER_OBJECT, m_user);
         dialogObject.put(PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
+
     }
 
     /**

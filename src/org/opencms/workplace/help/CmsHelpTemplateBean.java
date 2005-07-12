@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/06/28 15:44:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/12 17:21:12 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,45 +153,51 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
         StringBuffer result = new StringBuffer(16);
 
+        // the online help invoker: pops up the window with url.
         result.append("function openOnlineHelp(wpUri) {\n");
         result.append("\tif (wpUri == null || wpUri == \"\") {\n");
-        result.append("\t\tif (top.body != null && top.body.explorer_body != null) {\n");
-        result.append("\t\t\t// determine currently shown explorer item\n");
-        result.append("\t\t\ttry {\n");
-        result.append("\t\t\t\twpUri = top.body.explorer_body.explorer_files.location.pathname;\n");
-        result.append("\t\t\t} catch (e) {}\n");
-        result.append("\t\t} else if (top.body != null && top.body.admin_content != null) {\n");
-        result.append("\t\t\t// determine currently shown administration item\n");
-        result.append("\t\t\tvar parameters = \"\";\n");
-        result.append("\t\t\ttry {\n");
-        result.append("\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.tool_title.location.search);\n");
-        result.append("\t\t\t} catch (e) {\n");
+        result.append("\t\tif (top.body.top.body.admin_content != null && top.body.top.body.admin_content.onlineHelpUriCustom != null) {\n");
+        result.append("\t\t\twpUri = top.body.top.body.admin_content.onlineHelpUriCustom;\n");
+        result.append("\t\t}\n");
+        result.append("\t\telse{\n");
+        result.append("\t\t\tif (top.body != null && top.body.explorer_body != null) {\n");
+        result.append("\t\t\t\t// determine currently shown explorer item\n");
         result.append("\t\t\t\ttry {\n");
-        result.append("\t\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.location.search);\n");
+        result.append("\t\t\t\t\twpUri = top.body.explorer_body.explorer_files.location.pathname;\n");
         result.append("\t\t\t\t} catch (e) {}\n");
-        result.append("\t\t\t}\n");
-        result.append("\t\t\tvar pathIndex = parameters.lastIndexOf(\"path=\");\n");
-        result.append("\t\t\tif (pathIndex != -1) {\n");
-        result.append("\t\t\t\tparameters = parameters.substring(pathIndex + 5);\n");
-        result.append("\t\t\t\tif (parameters.indexOf(\"&\") != -1) {\n");
-        result.append("\t\t\t\t\tparameters = parameters.substring(0, parameters.indexOf(\"&\"));\n");
+        result.append("\t\t\t} else if (top.body != null && top.body.admin_content != null) {\n");
+        result.append("\t\t\t\t// determine currently shown administration item\n");
+        result.append("\t\t\t\tvar parameters = \"\";\n");
+        result.append("\t\t\t\ttry {\n");
+        result.append("\t\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.tool_title.location.search);\n");
+        result.append("\t\t\t\t} catch (e) {\n");
+        result.append("\t\t\t\t\ttry {\n");
+        result.append("\t\t\t\t\t\tparameters = decodeURIComponent(top.body.admin_content.location.search);\n");
+        result.append("\t\t\t\t\t} catch (e) {}\n");
         result.append("\t\t\t\t}\n");
-        result.append("\t\t\t\twpUri = parameters + \"/\";\n");
-        result.append("\t\t\t} else {\n");
-        result.append("\t\t\t\twpUri = \"/administration/\"\n");
+        result.append("\t\t\t\tvar pathIndex = parameters.lastIndexOf(\"path=\");\n");
+        result.append("\t\t\t\tif (pathIndex != -1) {\n");
+        result.append("\t\t\t\t\tparameters = parameters.substring(pathIndex + 5);\n");
+        result.append("\t\t\t\t\tif (parameters.indexOf(\"&\") != -1) {\n");
+        result.append("\t\t\t\t\t\tparameters = parameters.substring(0, parameters.indexOf(\"&\"));\n");
+        result.append("\t\t\t\t\t}\n");
+        result.append("\t\t\t\t\twpUri = parameters + \"/\";\n");
+        result.append("\t\t\t\t} else {\n");
+        result.append("\t\t\t\t\twpUri = \"/administration/\"\n");
+        result.append("\t\t\t\t}\n");
+        result.append("\t\t\t} else if(top.body != null) {\n");
+        result.append("\t\t\t\twpUri = top.body.location.pathname;\n");
         result.append("\t\t\t}\n");
-        result.append("\t\t} else if(top.body != null) {\n");
-        result.append("\t\t\twpUri = top.body.location.pathname;\n");
-        result.append("\t\t}\n");        
+        result.append("\t\t}\n");
         result.append("\t}\n");
         result.append("\tif (wpUri==null) {\n");
-        result.append("\t\twpUri=\"/system/workplace/\"\n");
+        result.append("\t\twpUri=\"/system/workplace/\";\n");
         result.append("\t}\n");
         result.append("\twindow.open(\"../locales/");
         result.append(locale);
         result.append("/help/index.html?").append(PARAM_BUILDFRAME).append("=true");
         result.append("&").append(PARAM_WORKPLACERESOURCE).append("=\" + wpUri, \"cmsonlinehelp\", ");
-        result.append("\"toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width=600,height=450\");\n");
+        result.append("\"toolbar=no,location=no,directories=no,status=yes,menubar=0,scrollbars=yes,resizable=yes,width=700,height=450\");\n");
         result.append("}\n");
 
         String s = result.toString();

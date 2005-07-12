@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/07/12 12:33:41 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2005/07/12 17:21:38 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.91 $ 
+ * @version $Revision: 1.92 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,7 +184,7 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Request parameter name for the error message. */
     public static final String PARAM_MESSAGE = "message";
-    
+
     /** Request parameter name for the redirect flag. */
     public static final String PARAM_REDIRECT = "redirect";
 
@@ -214,11 +214,21 @@ public class CmsDialog extends CmsToolDialog {
 
     /** Key name for the throwable attribute. */
     protected static final String ATTRIBUTE_THROWABLE = "throwable";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDialog.class);
 
     private int m_action;
+
+    /** 
+     * The custom mapping for online help.<p> 
+     * 
+     * It will be translated to a javascript variable called onlineHelpUriCustom. 
+     * If it is set, the top.head javascript for the online help will use this value. <p> 
+     *  
+     * 
+     */
+    private String m_onlineHelpUriCustom;
     private String m_paramAction;
     private String m_paramCloseLink;
     private String m_paramDialogtype;
@@ -228,7 +238,7 @@ public class CmsDialog extends CmsToolDialog {
     private String m_paramRedirect;
     private String m_paramResource;
     private String m_paramTitle;
-    
+
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -310,12 +320,15 @@ public class CmsDialog extends CmsToolDialog {
             try {
                 if (Boolean.valueOf(getParamRedirect()).booleanValue()) {
                     // redirect parameter is true, redirect to given close link                 
-                    getJsp().getResponse().sendRedirect(getParamCloseLink());             
+                    getJsp().getResponse().sendRedirect(getParamCloseLink());
                 } else {
                     // forward JSP
                     if (!isForwarded()) {
                         setForwarded(true);
-                        CmsRequestUtil.forwardRequest(getParamCloseLink(), getJsp().getRequest(), getJsp().getResponse());
+                        CmsRequestUtil.forwardRequest(
+                            getParamCloseLink(),
+                            getJsp().getRequest(),
+                            getJsp().getResponse());
                     }
                 }
             } catch (Exception e) {
@@ -892,6 +905,23 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Returns the custom mapping for the online help.<p>
+     * 
+     * @return the custom mapping for the online help
+     */
+    public String getOnlineHelpUriCustom() {
+
+        if (m_onlineHelpUriCustom == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(m_onlineHelpUriCustom.length() + 4);
+        result.append("\"");
+        result.append(m_onlineHelpUriCustom);
+        result.append("\"");
+        return result.toString();
+    }
+
+    /**
      * Returns the value of the action parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -979,8 +1009,7 @@ public class CmsDialog extends CmsToolDialog {
 
         return m_paramMessage;
     }
-    
-    
+
     /**
      * Returns the value of the redirect flag parameter.<p>
      * 
@@ -1170,17 +1199,33 @@ public class CmsDialog extends CmsToolDialog {
             // used as path for the online help window. This is needed because there are pages 
             // e.g. /administration/accounts/users/new  that perform a jsp - forward while leaving the 
             // path param on the old page: no correct online help possible. 
-            result.append("var onlineHelpUriCustom = null;\n");
-            result.append("function setOnlineHelpUri(uri) {\n");
-            result.append("\tonlineHelpUriCustom = uri;\n");
-            result.append("}\n\n");
+            result.append("var onlineHelpUriCustom = ");
+            result.append(getOnlineHelpUriCustom());
+            result.append(";\n");
 
             result.append("</script>\n");
             return result.toString();
         } else {
             return super.pageHtml(segment, null);
         }
+    }
 
+    /**
+     * Set the custom mapping for the online help. <p>
+     * 
+     * This value will be set to a javascript variable called onlineHelpUriCustom. 
+     * If it is set, the top.head javascript for the online help will use this value. <p> 
+     * 
+     * This method should be called from <code>{@link #initWorkplaceRequestValues(CmsWorkplaceSettings, HttpServletRequest)}</code>,  
+     * <code>{@link CmsWorkplace#initWorkplaceMembers(CmsJspActionElement)}</code> 
+     * or from the jsp if the dialog class is used for several actions. 
+     * It should be used whenever the online help mapping does not work (due to jsp - forwards).<p>
+     * 
+     * @param uri the left hand value in mapping.properties for the online help pages
+     */
+    public void setOnlineHelpUriCustom(String uri) {
+
+        m_onlineHelpUriCustom = uri;
     }
 
     /**
@@ -1242,7 +1287,7 @@ public class CmsDialog extends CmsToolDialog {
 
         m_paramMessage = value;
     }
-    
+
     /**
      * Sets the value of the redirect flag parameter.<p>
      * 
@@ -1292,7 +1337,7 @@ public class CmsDialog extends CmsToolDialog {
 
         return "";
     }
-    
+
     /**
      * Checks if the permissions of the current user on the resource to use in the dialog are sufficient.<p>
      * 
@@ -1303,11 +1348,13 @@ public class CmsDialog extends CmsToolDialog {
      * @return true if the permissions are sufficient, otherwise false
      */
     protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder) {
-        
-        return checkResourcePermissions(required, neededForFolder, Messages.get()
-            .container(Messages.GUI_ERR_RESOURCE_PERMISSIONS_2, getParamResource(), required.getPermissionString()));  
+
+        return checkResourcePermissions(required, neededForFolder, Messages.get().container(
+            Messages.GUI_ERR_RESOURCE_PERMISSIONS_2,
+            getParamResource(),
+            required.getPermissionString()));
     }
-    
+
     /**
      * Checks if the permissions of the current user on the resource to use in the dialog are sufficient.<p>
      * 
@@ -1318,8 +1365,11 @@ public class CmsDialog extends CmsToolDialog {
      * @param errorMessage the message container that is stored in the session in case the permissions are not sufficient
      * @return true if the permissions are sufficient, otherwise false
      */
-    protected boolean checkResourcePermissions(CmsPermissionSet required, boolean neededForFolder, CmsMessageContainer errorMessage) {
-        
+    protected boolean checkResourcePermissions(
+        CmsPermissionSet required,
+        boolean neededForFolder,
+        CmsMessageContainer errorMessage) {
+
         boolean hasPermissions = false;
         try {
             CmsResource res;
@@ -1336,13 +1386,13 @@ public class CmsDialog extends CmsToolDialog {
                 LOG.info(e);
             }
         }
-        
-        if (! hasPermissions) {
+
+        if (!hasPermissions) {
             // store the error message in the users session
             getSettings().setErrorMessage(errorMessage);
         }
-        
-        return hasPermissions;  
+
+        return hasPermissions;
     }
 
     /**
