@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/06/29 12:02:04 $
- * Version: $Revision: 1.87 $
+ * Date   : $Date: 2005/07/12 09:26:45 $
+ * Version: $Revision: 1.88 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.87 $
+ * @version $Revision: 1.88 $
  * 
  * @since 6.0.0
  */
@@ -595,7 +595,7 @@ public class OpenCmsTestCase extends TestCase {
 
         // create a new database first
         setupDatabase();
-
+        
         // create a shell instance
         m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
 
@@ -654,6 +654,30 @@ public class OpenCmsTestCase extends TestCase {
         return cms;
     }
 
+    public static void restartOpenCms() {
+        
+        // turn off exceptions after error logging during setup (won't work otherwise)
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        // output a message 
+        System.out.println("\n\n\n----- Restarting OpenCms -----");
+
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
+            }
+        }  
+        
+        // create a shell instance
+        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+        
+        // turn on exceptions after error logging
+        OpenCmsTestLogAppender.setBreakOnError(true);
+    }       
+        
     /**
      * Adds an additional path to the list of test data configuration files.<p>
      * 
