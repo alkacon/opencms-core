@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.545 $
+ * Date   : $Date: 2005/07/12 09:25:01 $
+ * Version: $Revision: 1.546 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.545 $
+ * @version $Revision: 1.546 $
  * 
  * @since 6.0.0
  */
@@ -4403,6 +4403,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
             eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
             eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+            eventData.put(I_CmsEventListener.KEY_CMSOBJECT, cms);
             CmsEvent exportPointEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(exportPointEvent);
         }

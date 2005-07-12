@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/06/27 23:22:25 $
-* Version: $Revision: 1.4 $
+* Date   : $Date: 2005/07/12 09:25:42 $
+* Version: $Revision: 1.5 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
 
 package com.opencms.defaults.master;
 
+import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
@@ -60,8 +61,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.4 $
- * $Date: 2005/06/27 23:22:25 $
+ * $Revision: 1.5 $
+ * $Date: 2005/07/12 09:25:42 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -669,7 +670,9 @@ public abstract class CmsMasterContent
             // a "directly" published COS resource can be handled totally equal to a published project
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishHistoryId.toString());  
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(cms.getRequestContext().currentProject().getId()));            
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(cms.getRequestContext().currentProject().getId()));
+            eventData.put(I_CmsEventListener.KEY_CMSOBJECT, cms);
+            eventData.put(I_CmsEventListener.KEY_DBCONTEXT, new CmsDbContext(cms.getRequestContext()));
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
     }
