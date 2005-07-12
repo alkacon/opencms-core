@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/06/28 08:05:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/12 12:44:35 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,7 +322,7 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.12 $
+     * @version $Revision: 1.13 $
      * 
      * @since 6.0.0
      */
@@ -525,23 +525,12 @@ public class CmsRfsFileViewer implements Cloneable {
      */
     public CmsRfsFileViewer() {
 
-        try {
-            m_isLogfile = true;
-            m_fileName2lineIndex = new HashMap();
-            m_filePath = OpenCms.getSystemInfo().getLogFileRfsPath();
-            // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
-            m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
-            m_enabled = true;
-            m_windowSize = 200;
-            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
-                // will be null  else
-                setFilePath(OpenCms.getSystemInfo().getLogFileRfsPath());
-            }
-        } catch (CmsRfsException ex) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(ex.getLocalizedMessage());
-            }
-        }
+        m_isLogfile = true;
+        m_fileName2lineIndex = new HashMap();
+        // system default charset: see http://java.sun.com/j2se/corejava/intl/reference/faqs/index.html#default-encoding
+        m_fileEncoding = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+        m_enabled = true;
+        m_windowSize = 200;
     }
 
     /**
@@ -820,8 +809,10 @@ public class CmsRfsFileViewer implements Cloneable {
                     if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
                         // early indexing.
                         initIndexer(m_filePath);
-                        // scroll to last window: 
-                        scrollToFileEnd();
+                        // scroll to last window:
+                        if (m_isLogfile) {
+                            scrollToFileEnd();
+                        }
                     }
                 }
             }
@@ -902,7 +893,9 @@ public class CmsRfsFileViewer implements Cloneable {
         m_windowSize = windowSize;
         // go to last window (nice for logfiles)
         if (CmsStringUtil.isNotEmpty(m_filePath)) {
-            scrollToFileEnd();
+            if (m_isLogfile) {
+                scrollToFileEnd();
+            }
         }
     }
 
