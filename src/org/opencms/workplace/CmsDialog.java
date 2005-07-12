@@ -1,11 +1,10 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/06/29 10:50:05 $
- * Version: $Revision: 1.90 $
+ * Date   : $Date: 2005/07/12 12:33:41 $
+ * Version: $Revision: 1.91 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
- *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  *
  * This library is free software; you can redistribute it and/or
@@ -62,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.90 $ 
+ * @version $Revision: 1.91 $ 
  * 
  * @since 6.0.0 
  */
@@ -1165,8 +1164,17 @@ public class CmsDialog extends CmsToolDialog {
                 result.append("if (top.head && top.head.helpUrl) {\n");
                 result.append("\ttop.head.helpUrl=\"");
                 result.append(helpUrl + "\";\n");
-                result.append("}\n");
+                result.append("}\n\n");
             }
+            // the variable that may be set as path: if non-null this will be 
+            // used as path for the online help window. This is needed because there are pages 
+            // e.g. /administration/accounts/users/new  that perform a jsp - forward while leaving the 
+            // path param on the old page: no correct online help possible. 
+            result.append("var onlineHelpUriCustom = null;\n");
+            result.append("function setOnlineHelpUri(uri) {\n");
+            result.append("\tonlineHelpUriCustom = uri;\n");
+            result.append("}\n\n");
+
             result.append("</script>\n");
             return result.toString();
         } else {
