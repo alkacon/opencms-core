@@ -177,6 +177,15 @@
 					<source>source2</source>
 				</sources>		
 			</index>	
+			<index>
+				<name>German online help</name>
+				<rebuild>auto</rebuild>
+				<project>Online</project>
+				<locale>de</locale>			
+				<sources>
+					<source>source3</source>
+				</sources>		
+			</index>	
 		</indexes>
 		<indexsources>				
 			<indexsource>
@@ -219,6 +228,16 @@
 	                <name>mspowerpoint</name>
 	                <name>image</name>
 	                <name>generic</name>
+				</documenttypes-indexed>
+			</indexsource>	
+			<indexsource>
+				<name>source3</name>
+				<indexer class="org.opencms.search.CmsVfsIndexer" />
+				<resources>
+					<resource>/system/workplace/locales/</resource>
+				</resources>		
+				<documenttypes-indexed>
+	                <name>xmlpage</name>
 				</documenttypes-indexed>
 			</indexsource>	
 		</indexsources>		
