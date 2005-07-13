@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/06/29 17:10:05 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/07/13 10:06:01 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
-import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
@@ -63,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -411,15 +410,7 @@ public class CmsModuleManager {
                     try {
                         // create a copy of the adminCms so that each module instance does have 
                         // it's own context, a shared context might introduce side - effects
-                        CmsContextInfo contextInfo = new CmsContextInfo(
-                            cms.getRequestContext().currentUser(),
-                            cms.getRequestContext().currentProject(),
-                            cms.getRequestContext().getUri(),
-                            cms.getRequestContext().getSiteRoot(),
-                            cms.getRequestContext().getLocale(),
-                            cms.getRequestContext().getEncoding(),
-                            cms.getRequestContext().getRemoteAddress());
-                        CmsObject adminCmsCopy = OpenCms.initCmsObject(cms, contextInfo);
+                        CmsObject adminCmsCopy = OpenCms.initCmsObject(cms);
                         // initialize the module
                         moduleAction.initialize(adminCmsCopy, configurationManager, module);
                     } catch (Throwable t) {

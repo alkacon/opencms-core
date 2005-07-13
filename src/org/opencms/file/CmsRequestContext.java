@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/07/13 10:06:01 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,11 +45,11 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.25 $
+ * @version $Revision: 1.26 $
  * 
  * @since 6.0.0 
  */
-public class CmsRequestContext {
+public final class CmsRequestContext {
 
     /** Request context attribute for indicating that an editor is currently open. */
     public static final String ATTRIBUTE_EDITOR = "org.opencms.file.CmsRequestContext.ATTRIBUTE_EDITOR";

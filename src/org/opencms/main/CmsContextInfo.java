@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsContextInfo.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/13 10:06:02 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
@@ -42,11 +43,14 @@ import java.util.Locale;
  * Contains user information for automated creation of a  
  * {@link org.opencms.file.CmsRequestContext} during system runtime.<p>
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsContextInfo {
+
+    /** Localhost ip used in fallback cases. */
+    public static final String LOCALHOST = "127.0.0.1";
 
     /** The encoding to create the context with. */
     private String m_encoding;
@@ -81,9 +85,6 @@ public class CmsContextInfo {
     /** The user name to create the context with. */
     private String m_userName;
 
-    /** Localhost ip used in fallback cases. */
-    public static final String LOCALHOST = "127.0.0.1";
-
     /**
      * Creates a new instance, initializing the variables with some reasonable default values.<p>
      * 
@@ -99,7 +100,6 @@ public class CmsContextInfo {
      */
     public CmsContextInfo() {
 
-        super();
         setUserName(OpenCms.getDefaultUsers().getUserGuest());
         setProjectName(CmsProject.ONLINE_PROJECT_NAME);
         setRequestedUri("/");
@@ -107,6 +107,22 @@ public class CmsContextInfo {
         setLocaleName(CmsLocaleManager.getDefaultLocale().toString());
         setEncoding(OpenCms.getSystemInfo().getDefaultEncoding());
         setRemoteAddr(CmsContextInfo.LOCALHOST);
+    }
+
+    /**
+     * Creates a new instance with all context variables initialized from the given request context.<p>
+     *
+     * @param requestContext the request context to initialize this context info with
+     */
+    public CmsContextInfo(CmsRequestContext requestContext) {
+
+        setUserName(requestContext.currentUser().getName());
+        setProjectName(requestContext.currentProject().getName());
+        setRequestedUri(requestContext.getUri());
+        setSiteRoot(requestContext.getSiteRoot());
+        setLocale(requestContext.getLocale());
+        setEncoding(requestContext.getEncoding());
+        setRemoteAddr(requestContext.getRemoteAddress());
     }
 
     /**
@@ -129,7 +145,6 @@ public class CmsContextInfo {
         String encoding,
         String remoteAddr) {
 
-        super();
         m_user = user;
         setUserName(m_user.getName());
         m_project = project;

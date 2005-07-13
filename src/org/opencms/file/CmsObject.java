@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/06/29 13:06:53 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2005/07/13 10:06:01 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,11 +81,11 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.139 $
+ * @version $Revision: 1.140 $
  * 
  * @since 6.0.0 
  */
-public class CmsObject {
+public final class CmsObject {
 
     /**
      * The request context.

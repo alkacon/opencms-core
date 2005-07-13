@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.671 $
+ * Date   : $Date: 2005/07/13 10:06:01 $
+ * Version: $Revision: 1.672 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@ OpenCms 6.0.1 - ???, 2005
 - Added patch for use of CmsJspStatusBean with mod_jk contributed by Thorsten Ludewig
 ! Added resource collector to collect all files that have been "mapped" to another file
 ! Added "preload" option to <cms:contentload> tag for better control of displayed content
+* Fixed issue with history of siblings in a multiple site configuration
 
 OpenCms 6.0.0 - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler

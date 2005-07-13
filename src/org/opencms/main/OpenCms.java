@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCms.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/07/13 10:06:02 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
@@ -462,6 +462,28 @@ public final class OpenCms {
     }
 
     /**
+     * Returns an independent copy of the provided CmsObject.<p>
+     * 
+     * This can be useful in case a permanent reference to a CmsObject is stored.
+     * Changing the request context values (for example project, siteroot) in the new CmsObject 
+     * will have no side effects to the CmsObject it was copied form.<p>  
+     * 
+     * @param cms the CmsObject to create a copy of
+     * 
+     * @return an independent copy of the provided CmsObject
+     * 
+     * @throws CmsException in case the intialization failed
+     * 
+     * @see OpenCms#initCmsObject(CmsObject)
+     * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
+     * @see OpenCms#initCmsObject(String)
+     */
+    public static CmsObject initCmsObject(CmsObject cms) throws CmsException {
+
+        return OpenCmsCore.getInstance().initCmsObject(cms);
+    }
+
+    /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
      * 
      * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions, 
@@ -478,8 +500,9 @@ public final class OpenCms {
      * 
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(CmsObject)
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
-     * @see #initCmsObject(String)
+     * @see OpenCms#initCmsObject(String)
      */
     public static CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo) throws CmsException {
 
@@ -503,8 +526,9 @@ public final class OpenCms {
      * 
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(CmsObject)
+     * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
      * @see OpenCms#initCmsObject(String)
-     * @see #initCmsObject(CmsObject, CmsContextInfo)
      */
     public static CmsObject initCmsObject(String user) throws CmsException {
 

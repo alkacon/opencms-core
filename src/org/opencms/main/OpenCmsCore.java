@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/06/28 13:30:17 $
- * Version: $Revision: 1.212 $
+ * Date   : $Date: 2005/07/13 10:06:02 $
+ * Version: $Revision: 1.213 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.212 $ 
+ * @version $Revision: 1.213 $ 
  * 
  * @since 6.0.0 
  */
@@ -670,6 +670,29 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns an independent copy of the provided CmsObject.<p>
+     * 
+     * This can be useful in case a permanent reference to a CmsObject is stored.
+     * Changing the request context values (for example project, siteroot) in the new CmsObject 
+     * will have no side effects to the CmsObject it was copied form.<p>  
+     * 
+     * @param cms the CmsObject to create a copy of
+     * 
+     * @return an independent copy of the provided CmsObject
+     * 
+     * @throws CmsException in case the intialization failed
+     * 
+     * @see OpenCms#initCmsObject(CmsObject)
+     * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
+     * @see OpenCms#initCmsObject(String)
+     */
+    protected CmsObject initCmsObject(CmsObject cms) throws CmsException {
+
+        CmsContextInfo contextInfo = new CmsContextInfo(cms.getRequestContext());
+        return initCmsObject(contextInfo);
+    }
+    
+    /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
      * 
      * Note: Only if the provided <code>adminCms</code> CmsObject has admin permissions, 
@@ -687,8 +710,9 @@ public final class OpenCmsCore {
      * 
      * @see org.opencms.db.CmsDefaultUsers#getUserGuest()
      * @see org.opencms.db.CmsDefaultUsers#getUserExport()
+     * @see OpenCms#initCmsObject(CmsObject)
      * @see OpenCms#initCmsObject(CmsObject, CmsContextInfo)
-     * @see #initCmsObject(String)
+     * @see OpenCms#initCmsObject(String)
      */
     protected CmsObject initCmsObject(CmsObject adminCms, CmsContextInfo contextInfo)
     throws CmsRoleViolationException, CmsException {
@@ -957,32 +981,32 @@ public final class OpenCmsCore {
         // now initialize the managers
         try {
             // initialize the scheduler
-            m_scheduleManager.initialize(adminCms);
+            m_scheduleManager.initialize(initCmsObject(adminCms));
 
             // initialize the workplace manager
-            m_workplaceManager.initialize(adminCms);
+            m_workplaceManager.initialize(initCmsObject(adminCms));
 
             // initialize the locale manager
             m_localeManager = systemConfiguration.getLocaleManager();
-            m_localeManager.initialize(adminCms);
+            m_localeManager.initialize(initCmsObject(adminCms));
 
             // initialize the site manager
-            m_siteManager.initialize(adminCms);
+            m_siteManager.initialize(initCmsObject(adminCms));
 
             // initialize the static export manager
-            m_staticExportManager.initialize(adminCms);
+            m_staticExportManager.initialize(initCmsObject(adminCms));
 
             // initialize the XML content type manager
-            m_xmlContentTypeManager.initialize(adminCms);
+            m_xmlContentTypeManager.initialize(initCmsObject(adminCms));
 
             // intialize the module manager
-            m_moduleManager.initialize(adminCms, m_configurationManager);
+            m_moduleManager.initialize(initCmsObject(adminCms), m_configurationManager);
 
             // initialize the resource manager
-            m_resourceManager.initialize(adminCms);
+            m_resourceManager.initialize(initCmsObject(adminCms));
 
             // initialize the search manager
-            m_searchManager.initialize(adminCms);
+            m_searchManager.initialize(initCmsObject(adminCms));
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
