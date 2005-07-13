@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/12 17:21:12 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/13 10:19:15 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,9 +62,19 @@ import org.apache.commons.collections.ExtendedProperties;
 /**
  * The bean that provides methods to build the HTML for the single online help frames.<p>
  * 
- * @author Andreas Zahner 
+ * <h4>Things to know</h4> 
+ * <ul>
+ *  <li>
+ *  Online help will only work with content resources of type xmlpage.
+ *  <li>
+ *  Content pages with a property <em>"template-elements"</em> set to <em>"sitemap"</em> get 
+ *  a trailing site map after their content (see <code>{@link org.opencms.workplace.help.CmsNavigationListView#createNavigation()}</code>). 
+ * </ul>
  * 
- * @version $Revision: 1.11 $ 
+ * @author Andreas Zahner 
+ * @author Achim Westermann
+ * 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,7 +249,15 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 getParamHelpresource(),
                 key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
             result.append("</h1>\n");
+            // print navigation if property template-elements is set to sitemap
             result.append(getJsp().getContent(getParamHelpresource(), "body", getLocale()));
+            if ("sitemap".equals(getJsp().property("template-elements", getParamHelpresource()))) {
+                CmsNavigationListView nav = new CmsNavigationListView(getJsp());
+                nav.setSiteRootPath(getParamHelpresource());
+                nav.setStartLevel(3);
+                nav.setEndLevel(6);
+                result.append(nav.createNavigation());
+            }
             result.append("\t</td>\n");
             result.append("</tr>\n");
             result.append("</table>\n");

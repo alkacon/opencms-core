@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Tue, 12 Jul 2005 17:10:46 GMT</createdate>
+		<createdate>Wed, 13 Jul 2005 10:13:58 GMT</createdate>
 		<project>German OnlineDoc</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.27</version>
+		<version>0.28</version>
 		<authorname><![CDATA[Achim Westermann]]></authorname>
 		<authoremail><![CDATA[a.westermann@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -142,7 +142,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/contribute.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>c6aad9f5-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:35:31 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Jul 2005 09:19:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -151,6 +151,10 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -176,20 +180,20 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<source>system/workplace/locales/de/help/index.html</source>
 			<destination>system/workplace/locales/de/help/index.html</destination>
 			<type>xmlpage</type>
-			<uuidresource>c6b931dc-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Fri, 08 Jul 2005 17:35:50 GMT</datelastmodified>
+			<uuidresource>92c1b139-f379-11d9-9944-21bd740a33b2</uuidresource>
+			<datelastmodified>Wed, 13 Jul 2005 10:09:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
+			<datecreated>Wed, 13 Jul 2005 08:39:06 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1.0]]></value>
+					<name>Description</name>
+					<value><![CDATA[Startseite der OpenCms Online - Hilfe mit Inhaltsverzeichnis.]]></value>
 				</property>
 				<property>
-					<name>NavText</name>
-					<value><![CDATA[Hilfe Start]]></value>
+					<name>template-elements</name>
+					<value><![CDATA[sitemap]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -197,7 +201,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Die OpenCms Online Hilfe]]></value>
+					<value><![CDATA[Willkommen zur OpenCms Online - Hilfe]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
