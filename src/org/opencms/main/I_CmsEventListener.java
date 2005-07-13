@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/07/13 09:22:42 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  * 
@@ -68,9 +68,6 @@ package org.opencms.main;
  * @see org.opencms.main.OpenCms#addCmsEventListener(I_CmsEventListener, int[])
  */
 public interface I_CmsEventListener {
-
-    /** Key name for passing a CmsObject in the data map. */
-    String KEY_CMSOBJECT = "cmsObject";
 
     /** Key name for passing a report in the data map. */
     String KEY_REPORT = "report";

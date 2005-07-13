@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/defaults/master/Attic/CmsMasterContent.java,v $
-* Date   : $Date: 2005/07/12 09:25:42 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/07/13 09:23:21 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -61,8 +61,8 @@ import java.util.Vector;
  * and import - export.
  *
  * @author A. Schouten $
- * $Revision: 1.5 $
- * $Date: 2005/07/12 09:25:42 $
+ * $Revision: 1.6 $
+ * $Date: 2005/07/13 09:23:21 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -671,7 +671,6 @@ public abstract class CmsMasterContent
             Map eventData = new HashMap();
             eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishHistoryId.toString());  
             eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(cms.getRequestContext().currentProject().getId()));
-            eventData.put(I_CmsEventListener.KEY_CMSOBJECT, cms);
             eventData.put(I_CmsEventListener.KEY_DBCONTEXT, new CmsDbContext(cms.getRequestContext()));
             OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData));
         }
