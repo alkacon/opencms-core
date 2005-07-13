@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/13 10:19:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/13 16:15:24 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.help;
 
 import org.opencms.file.CmsProject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
@@ -67,14 +68,15 @@ import org.apache.commons.collections.ExtendedProperties;
  *  <li>
  *  Online help will only work with content resources of type xmlpage.
  *  <li>
- *  Content pages with a property <em>"template-elements"</em> set to <em>"sitemap"</em> get 
- *  a trailing site map after their content (see <code>{@link org.opencms.workplace.help.CmsNavigationListView#createNavigation()}</code>). 
+ *  Content pages with a property <em>"template-elements"</em> set to a path of a ressource (jsp, page,...) 
+ *  will get the content produced by <code>{@link org.opencms.jsp.CmsJspActionElement#getContent(String)}</code> 
+ * appended after their own output. This allows to use jsp's in the online help template.
  * </ul>
  * 
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,12 +253,15 @@ public class CmsHelpTemplateBean extends CmsDialog {
             result.append("</h1>\n");
             // print navigation if property template-elements is set to sitemap
             result.append(getJsp().getContent(getParamHelpresource(), "body", getLocale()));
-            if ("sitemap".equals(getJsp().property("template-elements", getParamHelpresource()))) {
-                CmsNavigationListView nav = new CmsNavigationListView(getJsp());
-                nav.setSiteRootPath(getParamHelpresource());
-                nav.setStartLevel(3);
-                nav.setEndLevel(6);
-                result.append(nav.createNavigation());
+            try {
+                CmsProperty elements = getCms().readPropertyObject(getParamHelpresource(), CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, false);
+                if (! elements.isNullProperty()) {
+                    result.append(getJsp().getContent(elements.getValue()));
+                }
+            } catch (CmsException e1) {
+                // TODO: Generate Localized message : ui reporting
+                int todo = 0;
+                e1.printStackTrace();
             }
             result.append("\t</td>\n");
             result.append("</tr>\n");
