@@ -25,7 +25,7 @@
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key(Messages.GUI_NEW_INVITATION_0) %>
+<%= wp.key("select.new") %>
 
 <%= wp.dialogSpacer() %>
 
