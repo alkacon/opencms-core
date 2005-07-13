@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,7 +298,8 @@ public class CmsChtype extends CmsDialog {
             // first call of dialog
             setAction(ACTION_DEFAULT);
             // build title for change file type dialog     
-            setParamTitle(key("title.chtype") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_CHTYPE_1, 
+                new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

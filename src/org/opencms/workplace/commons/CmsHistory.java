@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/07/08 15:39:56 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -136,27 +136,27 @@ public class CmsHistory extends CmsDialog {
             result.append("<tr>\n");
             result.append("\t<td style=\"width:10%;\" class=\"textbold\">");
             // Version No
-            result.append(key("label.version"));
+            result.append(key(Messages.GUI_LABEL_VERSION_0));
             result.append("</td>\n");
             result.append("\t<td style=\"width:10%;\" class=\"textbold\">");
             // Type
-            result.append(key("input.type"));
+            result.append(key(Messages.GUI_LABEL_TYPE_0));
             result.append("</td>\n");   
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
             // Publised at
-            result.append(key("label.publishedat"));
+            result.append(key(Messages.GUI_HISTORY_LAST_PUBLISHED_AT_0));
             result.append("</td>\n");  
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
             // Edited at
-            result.append(key("label.editedat"));
+            result.append(key(Messages.GUI_HISTORY_LAST_EDITED_AT_0));
             result.append("</td>\n"); 
             result.append("\t<td style=\"width:20%;\" class=\"textbold\">");
             // Edited by
-            result.append(key("label.editedby"));
+            result.append(key(Messages.GUI_HISTORY_EDITED_BY_0));
             result.append("</td>\n");
             result.append("\t<td style=\"width:10%;\" class=\"textbold\">");
             // Size
-            result.append(key("input.size"));
+            result.append(key(Messages.GUI_LABEL_SIZE_0));
             result.append("</td>\n");
             result.append("\t<td style=\"text-align:right; width:10%;\" class=\"textbold\">");
             result.append("&nbsp;");
@@ -259,7 +259,7 @@ public class CmsHistory extends CmsDialog {
         } else {                        
             setAction(ACTION_DEFAULT);
             // build title for copy dialog     
-            setParamTitle(key("title.history") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_HISTORY_OF_1, new Object[] {CmsResource.getName(getParamResource())}));
         }      
     } 
     

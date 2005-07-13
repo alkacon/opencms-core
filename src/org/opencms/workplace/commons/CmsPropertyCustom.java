@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,10 +149,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // create the column heads
         result.append("<table border=\"0\">\n");
         result.append("<tr>\n");
-        result.append("\t<td class=\"textbold\">" + key("input.property") + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + key("label.value") + "</td>\n");
+        result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_0) + "</td>\n");
+        result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_VALUE_0) + "</td>\n");
         result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-            + key("input.usedproperty")
+            + key(Messages.GUI_PROPERTY_USED_0)
             + "</td>\n");
         result.append("</tr>\n");
         result.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -303,7 +303,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         }
 
         // create "add to navigation" checkbox
-        result.append(buildTableRowStart(key("input.addtonav")));
+        result.append(buildTableRowStart(key(Messages.GUI_PROPERTY_ADD_TO_NAV_0)));
         result.append("<input type=\"checkbox\" name=\"enablenav\" id=\"enablenav\" value=\"true\" onClick=\"toggleNav();\"");
         if (getActiveProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVTEXT)
             || getActiveProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVPOS)) {
@@ -316,10 +316,10 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         result.append(buildTableRowEnd());
 
         // create NavText input row
-        result.append(buildPropertyEntry(CmsPropertyDefinition.PROPERTY_NAVTEXT, key("input.navtitle"), editable));
+        result.append(buildPropertyEntry(CmsPropertyDefinition.PROPERTY_NAVTEXT, key(Messages.GUI_LABEL_NAVTEXT_0), editable));
 
         // create NavPos select box row
-        result.append(buildTableRowStart(key("input.insert")));
+        result.append(buildTableRowStart(key(Messages.GUI_CHNAV_INSERT_AFTER_0)));
         synchronized (this) {
             result.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled
                 + " id=\"navpos\" class=\"maxwidth noborder\"", getMessages()));
@@ -559,7 +559,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             if (resName.startsWith(CmsWorkplace.TEMP_FILE_PREFIX)) {
                 resName = resName.substring(1);
             }
-            setParamTitle(key("title.property") + ": " + resName);
+            setParamTitle(key(Messages.GUI_PROPERTIES_1, new Object[] {resName}));
         }
     }
 

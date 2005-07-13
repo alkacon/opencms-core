@@ -40,7 +40,7 @@ case CmsPublishProject.ACTION_UNLOCK_CONFIRMATION:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("project.lockchange.message3") %><%= wp.getParamProjectname() %><%= wp.key("project.lockchange.message4") %>
+<%= wp.key(Messages.GUI_PUBLISH_RELEASE_LOCKS_1, new Object[] {wp.getParamProjectname()}) %>
 
 
 <%= wp.dialogContentEnd() %>
@@ -71,7 +71,7 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("project.publish.message1") %><%= wp.getParamProjectname() %><%= wp.key("project.publish.message2") %>
+<%= wp.key(Messages.GUI_PUBLISH_PROJECT_CONFIRMATION_1, new Object[] {wp.getParamProjectname()}) %>
 
 
 <%= wp.dialogContentEnd() %>

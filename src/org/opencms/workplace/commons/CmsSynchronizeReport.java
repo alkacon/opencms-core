@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSynchronizeReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public class CmsSynchronizeReport extends CmsReport {
         } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
-            setParamTitle(key("title.sync"));
+            setParamTitle(key(Messages.GUI_SYNC_FOLDERS_AND_FILES_0));
         }
     }
 }

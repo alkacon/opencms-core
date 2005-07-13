@@ -210,7 +210,7 @@ function doSet() {
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonsOkCancelAdvanced(null, null, "value=\""+wp.key("button.advanced")+"\" onclick=\"submitAdvanced();\"") %>
+<%= wp.dialogButtonsOkCancelAdvanced(null, null, "value=\""+wp.key(Messages.GUI_PROPERTY_ADVANCED_0)+"\" onclick=\"submitAdvanced();\"") %>
 </form>
 
 <%= wp.dialogEnd() %>

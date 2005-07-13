@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsReplace.java,v $
- * Date   : $Date: 2005/06/27 09:15:41 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,7 +182,8 @@ public class CmsReplace extends CmsDialog {
             // first call of dialog
             setAction(ACTION_DEFAULT);
             // build title for replace resource dialog     
-            setParamTitle(key("title.replace") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_REPLACE_FILE_1, 
+                new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

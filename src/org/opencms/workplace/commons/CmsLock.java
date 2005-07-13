@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -222,7 +222,7 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
         } else {
             switch (getDialogAction(getCms())) {
             case TYPE_LOCK:
-                setParamTitle(key("messagebox.title.lock"));
+                setParamTitle(key(Messages.GUI_LOCK_RESOURCE_0));
                 setParamDialogtype(DIALOG_TYPE_LOCK);
                 // check the required permissions to lock/unlock the resource       
                 if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
@@ -232,12 +232,12 @@ public class CmsLock extends CmsDialog implements I_CmsDialogHandler {
                 }
                 break;
             case TYPE_LOCKCHANGE:
-                setParamTitle(key("messagebox.title.lockchange"));
+                setParamTitle(key(Messages.GUI_LOCK_STEAL_0));
                 setParamDialogtype(DIALOG_TYPE_UNLOCK);
                 break;
             case TYPE_UNLOCK:
             default:
-                setParamTitle(key("messagebox.title.unlock"));
+                setParamTitle(key(Messages.GUI_LOCK_UNLOCK_0));
                 setParamDialogtype(DIALOG_TYPE_UNLOCK);
             }
             // set action depending on user settings

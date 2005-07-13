@@ -34,7 +34,7 @@ default:
 <%@ include file="includes/resourceinfo.txt" %>
 <%= wp.dialogSpacer() %>
 <%= wp.dialogRowStart() %>
-<%= wp.key("message.chtype") %>
+<%= wp.key(Messages.GUI_CHTYPE_PLEASE_SELECT_0) %>
 <%= wp.dialogRowEnd() %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">

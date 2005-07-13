@@ -84,12 +84,12 @@ function checkName() {
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.newpropertydef") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_PROPERTY_NEW_0) %></td>
 	<td class="maxwidth"><input id="<%= wp.PARAM_NEWPROPERTY %>" name="<%= wp.PARAM_NEWPROPERTY %>" type="text" value="" class="maxwidth" onKeyup="checkName();" on></td>
 </tr>
 </table>
 
-<%= wp.dialogSubheadline(wp.key("input.activepropertydef")) %>
+<%= wp.dialogSubheadline(wp.key(Messages.GUI_PROPERTIES_ACTIVE_0)) %>
 
 <%= wp.dialogWhiteBoxStart() %>
 <%= wp.buildActivePropertiesList() %>
@@ -138,7 +138,7 @@ function toggleDelete(propName, prefix, activeTab) {
 	field.value = "";
 	if (checked == true) {
 		// box has been checked, check style and get value from hidden field
-		if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && field.className == "dialogmarkedfield") {
+		if (activeTab == "<%= wp.key(Messages.GUI_PROPERTIES_INDIVIDUAL_0) %>" && field.className == "dialogmarkedfield") {
 			field.className = "maxwidth";
 		}
 		m_field = field;
@@ -148,7 +148,7 @@ function toggleDelete(propName, prefix, activeTab) {
 	} else {
 		// box has been unchecked 
 		var resValue = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;
-		if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && resValue.length > 0) {
+		if (activeTab == "<%= wp.key(Messages.GUI_PROPERTIES_INDIVIDUAL_0) %>" && resValue.length > 0) {
 			// in "shared properties" form, show resource value if present			
 			field.className = "dialogmarkedfield";
 			m_field = field;
@@ -185,7 +185,7 @@ function checkValue(propName, activeTab) {
 // called on the onFocus event of an input field
 function deleteResEntry(propName, activeTab) {
 	var field = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName);
-	if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>" && field.className == "dialogmarkedfield") {
+	if (activeTab == "<%= wp.key(Messages.GUI_PROPERTIES_INDIVIDUAL_0) %>" && field.className == "dialogmarkedfield") {
 		// clear field to allow individual input
 		field.value = "";
 		field.className = "maxwidth";
@@ -194,7 +194,7 @@ function deleteResEntry(propName, activeTab) {
 
 // called on the onBlur event of an input field
 function checkResEntry(propName, activeTab) {
-	if (activeTab == "<%= wp.key(wp.PANEL_STRUCTURE) %>") {
+	if (activeTab == "<%= wp.key(Messages.GUI_PROPERTIES_INDIVIDUAL_0) %>") {
 		// check only in "shared properties" form
 		var newVal = document.getElementById("<%= wp.PREFIX_VALUE %>"+propName).value;
 		var resVal = document.getElementById("<%= wp.PREFIX_RESOURCE %>"+propName).value;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,11 +390,11 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildSelectCopyFileMode(String htmlAttributes) {
 
         List options = new ArrayList(2);
-        options.add(key("preferences.workplace.default.copy.file.sibling"));
-        options.add(key("preferences.workplace.default.copy.file.asnew"));
+        options.add(key(Messages.GUI_PREF_COPY_AS_SIBLING_0));
+        options.add(key(Messages.GUI_COPY_AS_NEW_0));
         List values = new ArrayList(2);
-        values.add("" + CmsResource.COPY_AS_SIBLING);
-        values.add("" + CmsResource.COPY_AS_NEW);
+        values.add(String.valueOf(CmsResource.COPY_AS_SIBLING));
+        values.add(String.valueOf(CmsResource.COPY_AS_NEW));
         int selectedIndex = values.indexOf(getParamTabDiCopyFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -408,13 +408,13 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildSelectCopyFolderMode(String htmlAttributes) {
 
         List options = new ArrayList(3);
-        options.add(key("preferences.workplace.default.copy.folder.sibling"));
-        options.add(key("preferences.workplace.default.copy.folder.preserve"));
-        options.add(key("preferences.workplace.default.copy.folder.asnew"));
+        options.add(key(Messages.GUI_PREF_COPY_AS_SIBLINGS_0));
+        options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_RESOURCES_0));
+        options.add(key(Messages.GUI_PREF_COPY_AS_NEW_0));
         List values = new ArrayList(3);
-        values.add("" + CmsResource.COPY_AS_SIBLING);
-        values.add("" + CmsResource.COPY_PRESERVE_SIBLING);
-        values.add("" + CmsResource.COPY_AS_NEW);
+        values.add(String.valueOf(CmsResource.COPY_AS_SIBLING));
+        values.add(String.valueOf(CmsResource.COPY_PRESERVE_SIBLING));
+        values.add(String.valueOf(CmsResource.COPY_AS_NEW));
         int selectedIndex = values.indexOf(getParamTabDiCopyFolderMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -428,11 +428,11 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildSelectDeleteFileMode(String htmlAttributes) {
 
         List options = new ArrayList(2);
-        options.add(key("preferences.workplace.default.delete.deletesibling"));
-        options.add(key("preferences.workplace.default.delete.preservesibling"));
+        options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_0));
+        options.add(key(Messages.GUI_PREF_DELETE_SIBLINGS_0));
         List values = new ArrayList(2);
-        values.add("" + CmsResource.DELETE_REMOVE_SIBLINGS);
-        values.add("" + CmsResource.DELETE_PRESERVE_SIBLINGS);
+        values.add(String.valueOf(CmsResource.DELETE_REMOVE_SIBLINGS));
+        values.add(String.valueOf(CmsResource.DELETE_PRESERVE_SIBLINGS));
         int selectedIndex = values.indexOf(getParamTabDiDeleteFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
@@ -481,7 +481,7 @@ public class CmsPreferences extends CmsTabDialog {
      */
     public String buildSelectExplorerFileEntries(String htmlAttributes) {
 
-        String[] opts = new String[] {"10", "25", "50", "100", key("preferences.fileentries.unlimited")};
+        String[] opts = new String[] {"10", "25", "50", "100", key(Messages.GUI_LABEL_UNLIMITED_0)};
         List options = new ArrayList(java.util.Arrays.asList(opts));
         String[] vals = new String[] {"10", "25", "50", "100", "" + Integer.MAX_VALUE};
         int selectedIndex = 2;
@@ -601,7 +601,7 @@ public class CmsPreferences extends CmsTabDialog {
                     String preSelection = computeEditorPreselection(request, currentResourceType);
                     List options = new ArrayList(availableEditors.size() + 1);
                     List values = new ArrayList(availableEditors.size() + 1);
-                    options.add(key("preferences.editor.best"));
+                    options.add(key(Messages.GUI_PREF_EDITOR_BEST_0));
                     values.add(INPUT_DEFAULT);
                     // second: iteration over the available editors for the resource type                   
                     int selectedIndex = 0;
@@ -679,8 +679,8 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildSelectPublishSiblings(String htmlAttributes) {
 
         List options = new ArrayList(2);
-        options.add(key("preferences.workplace.default.publish.sibling"));
-        options.add(key("preferences.workplace.default.publish.nosibling"));
+        options.add(key(Messages.GUI_PREF_PUBLISH_SIBLINGS_0));
+        options.add(key(Messages.GUI_PREF_PUBLISH_ONLY_SELECTED_0));
         List values = new ArrayList(2);
         values.add("true");
         values.add("false");
@@ -697,8 +697,8 @@ public class CmsPreferences extends CmsTabDialog {
     public String buildSelectReportType(String htmlAttributes) {
 
         List options = new ArrayList(2);
-        options.add(key("preferences.report.simple"));
-        options.add(key("preferences.report.extended"));
+        options.add(key(Messages.GUI_LABEL_SIMPLE_0));
+        options.add(key(Messages.GUI_LABEL_EXTENDED_0));
         String[] vals = new String[] {I_CmsReport.REPORT_TYPE_SIMPLE, I_CmsReport.REPORT_TYPE_EXTENDED};
         List values = new ArrayList(java.util.Arrays.asList(vals));
         int selectedIndex = 0;
@@ -809,14 +809,14 @@ public class CmsPreferences extends CmsTabDialog {
 
         result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
-        result.append("\t<td style=\"width: 25%;\">" + key("input.user") + "</td>\n");
+        result.append("\t<td style=\"width: 25%;\">" + key(Messages.GUI_LABEL_USER_0) + "</td>\n");
         result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getName() + "</td>\n");
-        result.append("\t<td style=\"width: 25%;\">" + key("input.email") + "</td>\n");
+        result.append("\t<td style=\"width: 25%;\">" + key(Messages.GUI_LABEL_EMAIL_0) + "</td>\n");
         result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getEmail() + "</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key("input.lastname") + "</td>\n");
+        result.append("\t<td>" + key(Messages.GUI_LABEL_LASTNAME_0) + "</td>\n");
         result.append("\t<td class=\"textbold\">" + user.getLastname() + "</td>\n");
         result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">" + key("input.adress") + "</td>\n");
 
@@ -826,12 +826,12 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key("input.firstname") + "</td>\n");
+        result.append("\t<td>" + key(Messages.GUI_LABEL_FIRSTNAME_0) + "</td>\n");
         result.append("\t<td class=\"textbold\">" + user.getFirstname() + "</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key("input.description") + "</td>\n");
+        result.append("\t<td>" + key(Messages.GUI_LABEL_DESCRIPTION_0) + "</td>\n");
         result.append("\t<td class=\"textbold\">" + user.getDescription() + "</td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
@@ -1270,12 +1270,12 @@ public class CmsPreferences extends CmsTabDialog {
     public List getTabs() {
 
         ArrayList tabList = new ArrayList(6);
-        tabList.add(key("panel.workplace"));
-        tabList.add(key("panel.explorer"));
-        tabList.add(key("panel.dialogs"));
-        tabList.add(key("panel.editors"));
-        tabList.add(key("panel.task"));
-        tabList.add(key("panel.user"));
+        tabList.add(key(Messages.GUI_PREF_PANEL_WORKPLACE_0));
+        tabList.add(key(Messages.GUI_PREF_PANEL_EXPLORER_0));
+        tabList.add(key(Messages.GUI_PREF_PANEL_DIALOGS_0));
+        tabList.add(key(Messages.GUI_PREF_PANEL_EDITORS_0));
+        tabList.add(key(Messages.GUI_PREF_PANEL_TASK_0));
+        tabList.add(key(Messages.GUI_PREF_PANEL_USER_0));
         return tabList;
     }
 
@@ -1775,7 +1775,7 @@ public class CmsPreferences extends CmsTabDialog {
 
             setAction(ACTION_DEFAULT);
             // build title for preferences dialog     
-            setParamTitle(key("title.preferences"));
+            setParamTitle(key(Messages.GUI_PREF_0));
         }
 
     }
@@ -1833,9 +1833,9 @@ public class CmsPreferences extends CmsTabDialog {
     private String buildSelectButtonStyle(String htmlAttributes, int selectedIndex) {
 
         List options = new ArrayList(3);
-        options.add(key("preferences.buttonstyle.img"));
-        options.add(key("preferences.buttonstyle.imgtxt"));
-        options.add(key("preferences.buttonstyle.txt"));
+        options.add(key(Messages.GUI_PREF_BUTTONSTYLE_IMG_0));
+        options.add(key(Messages.GUI_PREF_BUTTONSTYLE_IMGTXT_0));
+        options.add(key(Messages.GUI_PREF_BUTTONSTYLE_TXT_0));
         String[] vals = new String[] {"0", "1", "2"};
         List values = new ArrayList(java.util.Arrays.asList(vals));
         return buildSelect(htmlAttributes, options, values, selectedIndex);

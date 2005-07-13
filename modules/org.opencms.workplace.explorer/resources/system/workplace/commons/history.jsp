@@ -38,7 +38,7 @@ default:
 <script type="text/javascript">
 <!--
 	function restore(versionid) {
-		if(confirm("<%=wp.key("messagebox.message1.restoreresource")%>")) {
+		if(confirm("<%=wp.key(Messages.GUI_HISTORY_CONFIRMATION_0)%>")) {
 			document.main.<%= wp.PARAM_VERSIONID %>.value = versionid;
 			document.main.submit();	
 		}	

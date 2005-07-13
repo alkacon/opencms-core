@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -428,10 +428,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // there are properties defined for this resource, build the form list
             result.append("<table border=\"0\">\n");
             result.append("<tr>\n");
-            result.append("\t<td class=\"textbold\">" + key("input.property") + "</td>\n");
-            result.append("\t<td class=\"textbold\">" + key("label.value") + "</td>\n");
+            result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_0) + "</td>\n");
+            result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_VALUE_0) + "</td>\n");
             result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-                + key("input.usedproperty")
+                + key(Messages.GUI_PROPERTY_USED_0)
                 + "</td>\n");
             result.append("</tr>\n");
             result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -469,7 +469,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // get currently active tab
         String activeTab = getActiveTabName();
         // get structure panel name
-        String structurePanelName = key(PANEL_STRUCTURE);
+        String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
         Iterator i = getPropertyValues().iterator();
         while (i.hasNext()) {
             String[] curProp = (String[])i.next();
@@ -612,21 +612,21 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (m_isFolder) {
                 // resource is a folder, show only the configured tab
                 if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-                    tabList.add(key(PANEL_STRUCTURE));
+                    tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
                 } else {
-                    tabList.add(key(PANEL_RESOURCE));
+                    tabList.add(key(Messages.GUI_PROPERTIES_SHARED_0));
                 }
             } else {
                 // resource is no folder, show both tabs
-                tabList.add(key(PANEL_STRUCTURE));
-                tabList.add(key(PANEL_RESOURCE));
+                tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
+                tabList.add(key(Messages.GUI_PROPERTIES_SHARED_0));
             }
         } else {
             // tabs are disabled, show only the configured tab
             if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-                tabList.add(key(PANEL_STRUCTURE));
+                tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
             } else {
-                tabList.add(key(PANEL_RESOURCE));
+                tabList.add(key(Messages.GUI_PROPERTIES_SHARED_0));
             }
         }
         return tabList;
@@ -672,14 +672,14 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         switch (button) {
             case BUTTON_DEFINE:
                 result.append("<input name=\"define\" type=\"button\" value=\"");
-                result.append(key("button.newpropertydef"));
+                result.append(key(Messages.GUI_PROPERTY_DEFINE_0));
                 result.append("\" class=\"dialogbutton\"");
                 result.append(attribute);
                 result.append(">\n");
                 break;
             case BUTTON_FINISH:
                 result.append("<input name=\"finish\" type=\"submit\" value=\"");
-                result.append(key("button.endwizard"));
+                result.append(key(Messages.GUI_PROPERTY_FINISH_0));
                 result.append("\" class=\"dialogbutton\"");
                 result.append(attribute);
                 result.append(">\n");
@@ -722,7 +722,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         // set the action for the JSP switch 
         if (DIALOG_SHOW_DEFINE.equals(getParamAction())) {
             setAction(ACTION_SHOW_DEFINE);
-            setParamTitle(key("title.newpropertydef") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_PROPERTY_NEW_DEF_1, new Object[] {CmsResource.getName(getParamResource())}));
         } else if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             if (isPopup) {
                 setAction(ACTION_CLOSEPOPUP_SAVE);
@@ -741,9 +741,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // set the default action: show edit form  
             setAction(ACTION_DEFAULT);
             if (!isEditable()) {
-                setParamTitle(key("title.property") + ": " + CmsResource.getName(getParamResource()));
+                setParamTitle(key(Messages.GUI_PROPERTIES_OF_1, 
+                    new Object[] {CmsResource.getName(getParamResource())}));
             } else {
-                setParamTitle(key("title.editpropertyinfo") + ": " + CmsResource.getName(getParamResource()));
+                setParamTitle(key(Messages.GUI_PROPERTIES_EDIT_1, 
+                    new Object[] {CmsResource.getName(getParamResource())}));
             }
             // check if the user switched a tab
             m_tabSwitched = false;
@@ -856,7 +858,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         String activeTab) {
 
         StringBuffer result = new StringBuffer(256);
-        String structurePanelName = key(PANEL_STRUCTURE);
+        String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
         String inputAttrs = "class=\"maxwidth\"";
         if (structurePanelName.equals(activeTab)) {
             // in "shared properties" form, show resource value if no structure value is set
@@ -950,7 +952,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
 
             // get currently active tab
             String activeTab = getActiveTabName();
-            String structurePanelName = key(PANEL_STRUCTURE);
+            String structurePanelName = key(Messages.GUI_PROPERTIES_INDIVIDUAL_0);
 
             // get all properties for the resource
             List propertyDef = new ArrayList();
@@ -1109,7 +1111,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 String valueStructure = null;
                 String valueResource = null;
 
-                if (key(PANEL_STRUCTURE).equals(activeTab)) {
+                if (key(Messages.GUI_PROPERTIES_INDIVIDUAL_0).equals(activeTab)) {
                     // get parameters from the structure tab
                     valueStructure = request.getParameter(PREFIX_VALUE + propName);
                     valueResource = request.getParameter(PREFIX_RESOURCE + propName);

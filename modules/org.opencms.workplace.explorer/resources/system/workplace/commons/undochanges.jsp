@@ -42,11 +42,11 @@ default:
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.key("GUI_UNDO_LASTMODIFIED_INFO_3", new Object[] {wp.getFileName(), wp.getLastModifiedDate(), wp.getLastModifiedUser()}) %>
+<%= wp.key(Messages.GUI_UNDO_LASTMODIFIED_INFO_3, new Object[] {wp.getFileName(), wp.getLastModifiedDate(), wp.getLastModifiedUser()}) %>
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.key("GUI_UNDO_CONFIRMATION_0") %>
+<%= wp.key(Messages.GUI_UNDO_CONFIRMATION_0) %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>

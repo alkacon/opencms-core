@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/06/29 10:50:05 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -196,7 +196,7 @@ public class CmsPublishProject extends CmsReport {
                     // set the flag that another thread is following
                     setParamThreadHasNext("true");
                     // set the key name for the continue checkbox
-                    setParamReportContinueKey("label.button.continue.brokenlinks");
+                    setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
                     getJsp().include(FILE_REPORT_OUTPUT);
 
                 } catch (Throwable e) {
@@ -232,7 +232,7 @@ public class CmsPublishProject extends CmsReport {
                 retValue.append(" checked=\"checked\"");
             }
             retValue.append(">&nbsp;");
-            retValue.append(key("messagebox.message5.publishresource"));
+            retValue.append(key(Messages.GUI_PUBLISH_ALLSIBLINGS_0));
             retValue.append("</td>\n</tr>\n");
             return retValue.toString();
         }
@@ -435,10 +435,10 @@ public class CmsPublishProject extends CmsReport {
                 // determine resource name, last modified date and last modified user of resource
                 computePublishResource();
                 // add the title for the direct publish dialog 
-                setParamTitle(key("messagebox.title.publishresource") + ": " + getParamResourcename());
+                setParamTitle(key(Messages.GUI_PUBLISH_RESOURCE_1, new Object[] {getParamResourcename()}));
             } else {
                 // add the title for the publish project dialog 
-                setParamTitle(key("project.publish.title"));
+                setParamTitle(key(Messages.GUI_PUBLISH_PROJECT_0));
                 // determine the project id and name for publishing
                 computePublishProject();
                 // determine target to close the report

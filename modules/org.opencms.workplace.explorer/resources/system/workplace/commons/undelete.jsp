@@ -41,7 +41,7 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("GUI_UNDELETE_CONFIRMATION_0") %>
+<%= wp.key(Messages.GUI_UNDELETE_CONFIRMATION_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

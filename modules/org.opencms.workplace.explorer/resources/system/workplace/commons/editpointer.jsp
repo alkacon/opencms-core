@@ -46,7 +46,7 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.linkto") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_EDIT_POINTER_LINK_URL_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_LINKTARGET %>" id="<%= wp.PARAM_LINKTARGET %>" type="text" value="<%= wp.getOldTargetValue() %>" class="maxwidth"></td>
 </tr>
 </table>

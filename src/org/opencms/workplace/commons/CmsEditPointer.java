@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsEditPointer.java,v $
- * Date   : $Date: 2005/06/23 11:35:44 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/13 14:30:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,7 +191,7 @@ public class CmsEditPointer extends CmsDialog {
             // first call of dialog
             setAction(ACTION_DEFAULT);
             // build title for change link target dialog     
-            setParamTitle(key("title.changelink") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(key(Messages.GUI_CHLINK_1, new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
 

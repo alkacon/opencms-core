@@ -65,7 +65,7 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("messagebox.message1.lockchange") %> <%= wp.key("messagebox.message2.lockchange") %>
+<%= wp.key(Messages.GUI_LOCK_CHANGE_CONFIRMATION_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

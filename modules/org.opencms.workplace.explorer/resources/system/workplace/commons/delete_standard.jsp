@@ -48,7 +48,7 @@ default:
 
 <%= wp.buildDeleteSiblings() %>
 
-<%= wp.key("GUI_DELETE_CONFIRMATION_0") %>
+<%= wp.key(Messages.GUI_DELETE_CONFIRMATION_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

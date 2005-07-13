@@ -42,7 +42,7 @@ case CmsPublishProject.ACTION_UNLOCK_CONFIRMATION:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("messagebox.message1.lockedinfolder") %>
+<%= wp.key(Messages.GUI_PUBLISH_UNLOCK_CONFIRMATION_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
@@ -74,17 +74,9 @@ default:
 
 <table border="0" cellpadding="2" cellspacing="0">
 <tr>
-	<td><%= wp.key("messagebox.message1.publishresource") %></td>
+	<td><%= wp.key(Messages.GUI_PUBLISH_CONFIRMATION_3, new Object[] {wp.getParamResource(), wp.getParamModifieddate(), wp.getParamModifieduser()}) %></td>
 </tr>
-<tr>
-	<td><%= wp.getParamResource() %></td>
-</tr>
-<tr>
-	<td><%= wp.key("messagebox.message2.publishresource") %> <%= wp.getParamModifieddate() %> 
-		<%= wp.key("messagebox.message3.publishresource") %> <%= wp.getParamModifieduser() %>
-		<%= wp.key("messagebox.message4.publishresource") %>
-	</td>
-</tr>
+
 <%= wp.buildCheckSiblings() %>
 </table>
 

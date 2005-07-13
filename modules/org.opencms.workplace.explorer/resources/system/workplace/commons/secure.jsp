@@ -171,7 +171,7 @@ wp.setParamAction("secure");
         </td>
       </tr>
     <% } else { %>
-      <%= wp.key("message.exportnotpossible") %>
+      <%= wp.key(Messages.GUI_SECURE_EXPORTUSER_NO_PERMISSION_0) %>
     <% } if(wp.resourceIsFolder()) { %>
       <tr>
         <td style="white-space:nowrap;"><%= wp.key(Messages.GUI_SECURE_EXPORTNAME_0) %>&nbsp;</td>
