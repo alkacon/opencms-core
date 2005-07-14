@@ -59,11 +59,11 @@
           <target><![CDATA[/system/workplace/resources/filetypes/image.gif]]></target>
         </link>
       </links>
-      <content><![CDATA[<p>OpenCms 6.0.0 unterscheidet Typen von Ressourcen. Dieses
-ermöglicht, mit speziellen Typen von Ressourcen gesondert umzugehen
-und dadurch komfortableres Arbeiten zu unterstützen.</p>
-<p>Diese Typen von Ressource lassen sich auswählen, wenn eine neue
-Ressource erstellt wird oder der Typ einer Ressource im
+      <content><![CDATA[<p>In OpenCms gibt es
+unterschiedliche&nbsp;Arten von Ressourcen. Dadurch können die verschiedenen Ressource-Typen&nbsp;gesondert
+behandelt und&nbsp;ein komfortableres Arbeiten ermöglicht werden.</p>
+<p>Eine Auswahl der&nbsp;Ressourcetypen erhält der Benutzer, wenn eine
+neue Ressource erstellt oder der Typ einer Ressource im
 Explorer&nbsp;<A href="${link0}"
  target=_self>nachträglich geändert</A> wird.</p>
 <p><strong>Bitte beachten Sie:</strong> Nicht alle Typen von
@@ -90,16 +90,16 @@ Typ der Ressource auf den gewünschten ändern.</p>
 <td>Bildergalerie</td>
 <td>Der Speicherort für Ihre Bilder und Grafiken. Ihre
 Standard-Bildergalerie trägt den Namen „<i>bilder</i>“ und liegt in
-dem Ordner „<i>_galerien</i>“.&nbsp; Sie können sich eine
-unbegrenzte Anzahl weiterer Bildergalerien anlegen. Auch der
-Speicherort ist nicht festgelegt und kann außerhalb des Ordners „
+dem Ordner „<i>_galerien</i>“.&nbsp; Sie können eine&nbsp;beliebig
+viele&nbsp;weitere Bildergalerien anlegen. Auch die Stelle im
+Dateisystem ist nicht festgelegt und kann außerhalb des Ordners „
 <i>_galerien</i>“ liegen.</td>
 </tr>
 <tr>
 <td><IMG title=Downloadgalerie alt="" src="${link3}"
  border=0></td>
 <td>Downloadgalerie</td>
-<td>Der Speicherort für Ihre zum Download angeboten Dokumente: PDF-
+<td>Der Speicherort für Ihre zum Download angebotenen Dokumente: PDF-
 und Word-Dokumente sind hier gut aufgehoben und können über die
 Download-Galerie im Editor in Ihre Seiten eingebunden werden.</td>
 </tr>
@@ -123,11 +123,11 @@ verwenden, steht die HTML-Galerie im Editor zur Verfügung.</td>
 <td><IMG title=Tabellengalerie alt="" src="${link6}"
  border=0></td>
 <td>Tabellengalerie</td>
-<td>Wer häufig Daten aus Programmen wie z.B. MS Excel im
-Internetveröffentlichen muss, kann mit der Hilfe dieses Galerietyps
-Inhalte als so genannte CSV-Dateien auf den Server laden und
-anschließend mit der Unterstützung eines Assistenten als Inhalt in
-seine Seiten integrieren.</td>
+<td>Wer häufig Daten aus Programmen wie z.B. MS Excel 
+      im Internet veröffentlicht, kann mit der Hilfe dieses Galerietyps Inhalte aus
+CSV-Dateien hochladen.&nbsp;Die&nbsp;Daten werden in eine&nbsp;HTML Tabelle überführt, und in einer
+Tabellengallerie abgelegt.&nbsp;Anschließend kann die Tabelle mit&nbsp;Hilfe eines Assistenten in&nbsp;die
+editierten&nbsp;Seiten integriert werden.</td>
 </tr><!--
 <tr>
 <td><IMG title=Microsite alt="" src="/opencms/opencms/system/workplace/resources/filetypes/microsite.gif"
@@ -143,13 +143,13 @@ darstellen.</td>
 -->
 </table>
 <P>
-<br><STRONG>Bitte beachten Sie:</STRONG> Damit die vom 
-Editor aus erreichbaren Assistenten zum Einfügen von Grafiken, Downloads und 
-HTML-Vorlagen etc. einwandfrei funktionieren, ist es unerlässlich für den 
-jeweiligen Medientyp den entsprechenden „Erweiterten Ordner“ zu wählen. Grafiken 
-und Bilder gehören in einen erweiterten Ordner vom Typ Bildergalerie, während 
-ein Word- oder PDF-Dokument in eine Downloadgalerie gehört. Andernfalls werden 
-die Dateien in dem jeweiligen Assistenten nicht erscheinen und können somit auch 
+<br><STRONG>Bitte beachten Sie:</STRONG>    
+        Damit die 
+vom Editor aus erreichbaren Assistenten zum Einfügen von Grafiken, 
+Downloads und HTML-Vorlagen etc. einwandfrei funktionieren, muss der jeweiligen 
+Medientyp&nbsp;in dem&nbsp;entsprechenden „Erweiterten Ordner“ abgelegt werden. Grafiken und Bilder sollten sich 
+in Bildergalerien befinden, während Word- oder PDF-Dokumente Downloadgalerien gehören. Andernfalls 
+werden die Dateien nicht in dem zugehörigen Assistenten erscheinen und somit auch 
 nicht eingefügt werden. </P>
 <H2>Datei - Typen</H2>
 <P>
@@ -165,7 +165,7 @@ nicht eingefügt werden. </P>
     src="${link7}" border=0></TD>
     <TD>Seite</TD>
     <TD>Eine Seite des Internetauftrittes, den sie mit 
-      OpenCms verwalten. Die Art iherer Darstellung wird durch <A 
+      OpenCms verwalten. Die Art ihrer Darstellung wird durch <A 
       href="${link8}" 
       target=_self>Eigenschaften</A>       
        gesteuert.</TD>
@@ -182,7 +182,7 @@ nicht eingefügt werden. </P>
     src="${link10}" border=0></TD>
     <TD>Bild</TD>    <TD>Eine Bilddatei. Beim <A 
       href="${link11}" 
-      target=_self>Hochladen von Dateien</A> erkennt OpenCms die gängisten 
+      target=_self>Hochladen von Dateien</A> erkennt OpenCms die gängigsten 
       Bildformate automatisch und setzt diesen Typ.</TD>
 
     </TR>
@@ -194,8 +194,8 @@ nicht eingefügt werden. </P>
       <P>Eine Java Server Page enthält eine Mixtur aus HTML und Java Code. Sie 
       kann als normale Internetseite gesehen werden (vgl. Seite), jedoch wird 
       sie zu dem Zeitpunkt der Anfrage (mit Ihrem Browser) interpretiert und 
-      kann unterschiedliche Inhalte (z.B. aus Datenbanken) enthalten. </P>
-      <P>Ein Redakteur wird nur unwahrscheinlich JSP's entwerfen müssen. Dies 
+      kann dynamische Inhalte (z.B. aus Datenbanken) enthalten. </P>
+      <P>Ein Redakteur wird in der Regel keine JSP's erstellen. Dies 
       ist die Aufgabe von Programmieren. </P></TD>
 
     </TR>
@@ -212,7 +212,7 @@ nicht eingefügt werden. </P>
     <TD><IMG title="Externe Verknüpfung" 
       alt="" 
       src="${link14}" border=0></TD>
-    <TD>Externe Verknüpfung</TD><td>Ein Link auf eine Seite ausserhalb Ihres von 
+    <TD>Externe Verknüpfung</TD><td>Ein Link auf eine Seite außerhalb Ihres von 
       OpenCms verwalteten Internetauftritts. Externe Verknüpfungen lassen sich 
       z.B. über <A 
       href="${link15}" 
@@ -231,10 +231,10 @@ nicht eingefügt werden. </P>
     <TD><IMG title="Generischer XML Inhalt" 
       alt="" 
       src="${link17}" border=0></TD>
-    <TD>Generischer XML Inhalt</TD>    <TD>OpenCms 6.0.0 erlaubt das einbinden von 
-      strukturierten XML - Dateien, deren Inhalt man mit einer Schema Datei 
-      definieren kann. Dieses ünterstützt Integration von Daten in eine 
-      komplexere OpenCms Anwendung.</TD>
+    <TD>Generischer XML Inhalt</TD>    <TD>      
+            OpenCms&nbsp; erlaubt das Einbinden von 
+      strukturierten XML-Dateien, deren Inhalt mit einer Schema-Definition (eine sog. 
+      XSD-Datei) definiert ist.</TD>
 </TR></TABLE></P>]]></content>
     </element>
   </page>

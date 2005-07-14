@@ -18,14 +18,14 @@
  Zugriffsberechtigungen werden im Dialog für das Setzten von Berechtigungen 
 auch in folgender Kurzform angegeben: </P>
 <P><IMG alt="" hspace=0 src="${link0}" align=baseline border=0></P>
-<P>Hier soll zum einen erklärt werden, wie solche Kurzformen zu lesen sind und 
-zum anderen, was die Zugriffsarten bedeuten. </P>
+<P>    Hier soll zum einen erklärt werden, wie solche Kurzformen 
+zu lesen sind die Zugriffsarten bedeuten. </P>
 <H2>Attribute</H2>
-<P>Die Art der Zugriffsberechtigung auf eine Ressource wird durch Attribute 
+<P>     Zugriffsberechtigung auf Ressourcen werden durch&nbsp;Attribute 
 festgelegt. Jedes Attribut steht für eine bestimmte Zugriffsart, die entweder 
 erlaubt oder verboten werden kann. </P>
-<P>Die folgende Tabelle stellt den ausführlichen Namen, den Kürzel und die 
-Beschreibung der Zugriffsart in dieser Reihenfolge dar. Sie hilft die 
+<P>   Die folgende Tabelle stellt den ausführlichen Namen, den 
+Kürzel und die Beschreibung der Zugriffsart dar. Sie hilft die 
 Kurzschreibweise der Berechtigungen eines Benutzers oder einer Gruppe zu 
 verstehen.</P>
 <P>
@@ -38,10 +38,10 @@ verstehen.</P>
   <TR>
     <TD>Auflisten</TD>
     <TD>v</TD>
-    <TD>Im Unterschied zum Lesen beinhaltet dieser Zugriff nicht den Inhalt 
-      der Ressource sondern nur die Existenz: Wenn man diese Berechtigung für 
-      die Ressource hat, kann man sie im Explorer sehen. Das Kürzel kommt vom 
-      englischen "view".</TD></TR>
+    <TD>       Besitzt ein Benutzer&nbsp;diese 
+      Art von Berechtigung für die Ressource, kann er sie im Explorer 
+      sehen. Es bedeutet jedoch nicht, dass er&nbsp;sie auch öffnen kann, denn hierzu benötigt 
+      er Lesezugriff.&nbsp;</TD></TR>
   <TR>
     <TD>Lesen</TD>
     <TD>r</TD>
@@ -53,22 +53,21 @@ verstehen.</P>
       als Zugriff auf den Inhalt erscheinen - jedoch wird&nbsp;durch diese 
       Aktion niemals wirklicher Dateiinhalt angezeigt sondern lediglich die 
       Existenz von Verzeichnissen und Dateien preisgegeben. Deswegen muss ein 
-      Verzeichnis nur die Zugriffsarte "Auflisten" haben um traversierbar zu 
+      Verzeichnis nur die Zugriffsart "Auflisten" haben um traversierbar zu 
       sein. </P>
       <P>Warum sollte man dann überhaupt Attribute wie Schreiben und Lesen an 
       Verzeichnisse hängen? Durch die <A 
       href="${link1}" 
       target=_self>Vererbung der Rechte</A> können dann alle enthaltenen Dateien 
-      nicht gelesen oder geschrieben werden. </P>
-      <P>Das Kürzel kommt vom englischen "read". </P>         
+      nicht gelesen oder geschrieben werden. </P>         
                
        </TD></TR>
   <TR>
     <TD>Berechtigung <BR>ändern</TD>
     <TD>c</TD>
-    <TD>Dieses Attribug kontrolliert, ob die 
-      Zugriffsberechtigungen (die wir hier gerade beschreiben) an der Ressource 
-      geändert werden dürfen.&nbsp; Das Kürzel kommt vom englischen "c".</TD></TR>
+    <TD>     
+       Dieses Attribut kontrolliert, ob die Zugriffsberechtigungen (die wir 
+      hier gerade beschreiben) an der Ressource geändert werden dürfen.&nbsp;</TD></TR>
   <TR>
     <TD>Schreiben</TD>
     <TD>w</TD>

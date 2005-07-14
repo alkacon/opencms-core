@@ -4,61 +4,74 @@
   <page language="de">
     <element name="body">
       <links>
+        <link name="link3" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/copy_file.html]]></target>
+        </link>
         <link name="link2" type="IMG" internal="true">
           <target><![CDATA[/system/workplace/locales/de/help/images/expl_copy_folder.png]]></target>
         </link>
         <link name="link0" type="A" internal="true">
-          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/copy_file.html]]></target>
-        </link>
-        <link name="link1" type="A" internal="true">
           <target><![CDATA[/system/workplace/locales/de/help/explorer/generalTopics/siblings.html]]></target>
         </link>
+        <link name="link1" type="A" internal="true">
+          <target><![CDATA[/system/workplace/locales/de/help/explorer/popupMenu/copy_file.html]]></target>
+        </link>
       </links>
-      <content><![CDATA[<p>       
-    
-Etwas komplexer als das <A 
-href="${link0}" 
-target=_self>Kopieren von Dateien</A> ist das Kopieren von Verzeichnissen. Diese 
-Komplexität ist bedingt durch die Existenz von <A 
-href="${link1}" 
-target=_self>Verknüpfungen</A> in OpenCms.</p>
-<P>Sie haben beim Kopieren von Verzeichnissen drei verschiedene Optionen. </P>
-<P align=left><IMG alt="" hspace=0 src="${link2}" align=baseline 
-border=0></P>
-<P align=center><BR><EM>Drei Optionen beim Kopieren von Verzeichnissen.</EM> 
-</P>
-<H3>1.&nbsp;<!--StartFragment --> "Kopiere keine Ressource, 
-erstelle nur Verknüpfungen zu allen Ressourcen im Verzeichnis"</H3>
-<P>Hierbei wird die Verzeichnisstruktur (alle 
-Unterverzeichnisse) des zu kopierenden Verzeichnisses in ein neues Verzeichnis 
-kopiert. Alle Dateien werden als Verknüpfung kopiert. Eine sinnvolle Aktion, 
-wenn sie eine ganze Site in einer anderen Sprache anbieten wollen.</P>
-<H3>2.&nbsp;<!--StartFragment --> "Kopiere Resourcen die nicht verknüpft sind, 
-erstelle neue Verknüpfungen für verknüpfte Resourcen" </H3>
-<P>Hierbei wird die Verzeichnisstruktur (alle Unterverzeichnisse) des zu 
-kopierenden Verzeichnisses in ein neues Verzeichnis kopiert.&nbsp; Alle 
-enthaltenen Dateien die keine weiteren Verknüpfungen (Geschwister) haben werden 
-inhaltlich kopiert. Für alle Dateien, die mehrere Verknüpfungen haben werden in 
-das neue Verzeichnis kopiert. </P>
-<P>Mit dieser Option können Sie verhindern, dass sie Inhalte von Verknüpfungen 
-(mehrfach referenzierte Inhalte) abkoppeln. Vielleicht haben Sie in einem 
-Verzeichnisbaum einige Dateien deren Inhalt einzigartig bleiben muss und bei 
-Änderung überall geändert werden muss (Eine Lizensdatei z. B.). Durch dieses 
-Kopieren bleiben diese Verknüpfungen bestehen, die übrigen Dateien können Sie 
-danach unabhängig von den Orginalen inhaltlich verändern. </P>
-<H3>3.&nbsp;<!--StartFragment --> "Kopiere alle Resourcen, auch verknüpfte 
-Resourcen"</H3>
-<P>Hierbei wird die Verzeichnisstruktur (alle Unterverzeichnisse) des zu 
-kopierenden Verzeichnisses in ein neues Verzeichnis kopiert. Nicht nur die 
-individuellen Dateien werden inhaltlich kopiert: Die Vernküpfungen ebenfalls. 
-Dies bedeutet bei Verknüpfungen, dass zwar im neuen Verzeichnis auch 
-Verknüpfungen erscheinen werden, die analog zu den orginalen Verknüpfungen auf 
-den gleichen Inhalt zeigen. Jedoch ist dieser Inhalt nur der kopierte Inhalt der 
-orginalen Verknüpfungen. Wenn sie im kopierten Verzeichnis Änderungen an den 
-Inhalten dieser kopierten Verknüpfungen machen, so bleibt der Inhalt der orginal 
-Verknüpfungen unberührt, lediglich die Inhalte aller Verknüpfungen der Kopie 
-werden manipuliert. </P>
-<P>&nbsp;</P>]]></content>
+      <content><![CDATA[<p>Durch das Konzept von <A href="${link0}"
+ target=_self><u>Verknüpfungen</u></a> in OpenCms ist das
+Kopieren von Verzeichnissen etwas komplizierter als&nbsp;das von <A
+
+ href="${link1}" target=_self >einzelnen Dateien</a> .</p>
+<p>Sie haben beim Kopieren von Verzeichnissen drei
+Möglichkeiten.</p>
+<p align="left"><IMG alt="" hspace=0 src="${link2}"
+ align=baseline border=0></p>
+<p align="center"><br>
+<em>Drei Auswahlmöglichkeiten beim Kopieren von
+Verzeichnissen.</em></p>
+<h3>1.&nbsp; "Kopiere keine Ressource, erstelle nur Verknüpfungen
+zu allen Ressourcen im Verzeichnis"</h3>
+<p>Hierbei wird die Verzeichnisstruktur (alle Unterverzeichnisse)
+des zu kopierenden Verzeichnisses in ein neues Verzeichnis kopiert.
+Alle Dateien werden als Verknüpfung kopiert. Eine sinnvolle Aktion,
+wenn sie eine ganze Site in einer anderen Sprache anbieten
+wollen.</p>
+<h3>2.&nbsp; "Kopiere Resourcen die nicht verknüpft sind, erstelle
+neue Verknüpfungen für verknüpfte Resourcen"</h3>
+<p>Hierbei wird die Verzeichnisstruktur (alle Unterverzeichnisse)
+des zu kopierenden Verzeichnisses in ein neues Verzeichnis
+kopiert.&nbsp; Alle enthaltenen Dateien die keine weiteren
+Verknüpfungen (Geschwister) haben werden inhaltlich kopiert. Für
+alle Dateien, die mehrere Verknüpfungen haben werden in das neue
+Verzeichnis kopiert.</p>
+<p>Mit dieser Option können Sie verhindern, dass sie Inhalte von
+Verknüpfungen (mehrfach referenzierte Inhalte) abkoppeln.
+Vielleicht haben Sie in einem Verzeichnisbaum einige Dateien deren
+Inhalt einzigartig bleiben muss und bei Änderung überall geändert
+werden muss (z.B. eine Lizenzdatei). Durch dieses Kopieren bleiben
+diese Verknüpfungen bestehen, die übrigen Dateien können Sie danach
+unabhängig von den Orginalen inhaltlich verändern.</p>
+<h3>3.&nbsp; "Kopiere alle Resourcen, auch verknüpfte
+Resourcen"</h3>
+<p>Kopiert die&nbsp;Verzeichnisstruktur des zu kopierenden
+Verzeichnisses in ein neues Verzeichnis. Nicht nur die
+individuellen Dateien werden inhaltlich kopiert, sondern auch die
+Verknüpfungen ebenfalls. Dies bedeutet bei Verknüpfungen, dass zwar
+im neuen Verzeichnis auch Verknüpfungen erscheinen werden, die
+analog zu den orginalen Verknüpfungen auf den gleichen Inhalt
+zeigen. Jedoch ist dieser Inhalt nur der kopierte Inhalt der
+orginalen Verknüpfungen. Wenn sie im kopierten Verzeichnis
+Änderungen an den Inhalten dieser kopierten Verknüpfungen machen,
+so bleibt der Inhalt der ursprünglichen Verknüpfungen unberührt,
+lediglich die Inhalte aller Verknüpfungen der Kopie werden
+manipuliert.</p>
+&nbsp; 
+<p>Die Auswahl des Zielverzeichnisses geschieht analog zum 
+<A 
+href="${link3}" 
+target=_self>Kopieren von Dateien</A>       
+ .</p>
+&nbsp;]]></content>
     </element>
   </page>
 </pages>
