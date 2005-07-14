@@ -1226,6 +1226,15 @@ a.navhelp:hover, a.navhelp:active {
 	background-image: url(<%= cms.link("/system/modules/org.opencms.workplace.help/resources/nav_a.gif") %>);
 	background-repeat:no-repeat;
 }
+
+/* error messages style */
+.dialogerror {
+	color: #c03;
+	background-color: #fcfaed;
+	border: 1px solid #DDDDDD;
+	padding: 4px;
+	display:block;
+}
 	
 <% }
 

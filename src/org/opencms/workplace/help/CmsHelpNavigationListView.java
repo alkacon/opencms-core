@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpNavigationListView.java,v $
- * Date   : $Date: 2005/07/13 16:15:58 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/07/14 10:38:38 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * 
  * @since 6.0.0
  */
@@ -115,10 +115,13 @@ public final class CmsHelpNavigationListView {
 
         StringBuffer buffer = new StringBuffer(2048);
         int endlevel = calculateEndLevel();
-        buffer.append("\n").append(getSpaces(endlevel - m_depth)).append("<ul>\n");
+        String spaces = getSpaces((endlevel-m_depth) * 2);
+        buffer.append("\n").append(spaces).append("<p>\n");
+        buffer.append(spaces).append("  <ul>\n");
         List navElements = m_jsp.getNavigation().getSiteNavigation(m_navRootPath, endlevel);
         createNavigationInternal(buffer, navElements);
-        buffer.append(getSpaces(endlevel - m_depth)).append("</ul>\n");
+        buffer.append(spaces).append("  </ul>\n");
+        buffer.append(spaces).append("</p>");
         return buffer.toString();
     }
 

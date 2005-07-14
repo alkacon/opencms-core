@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/13 16:15:24 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/14 10:38:38 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,13 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsPropertyUtils;
@@ -59,6 +61,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * The bean that provides methods to build the HTML for the single online help frames.<p>
@@ -76,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,6 +123,9 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
     /** Absolute path to used JSP templates. */
     public static final String TEMPLATEPATH = CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/jsptemplates/";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHelpTemplateBean.class);
 
     /** Request parameter for the help build frameset flag. */
     private String m_paramBuildframe;
@@ -219,7 +225,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /**
      * Returns the HTML for the body frame of the online help.<p>
      * 
-     * @return the HTML for the body frame of the online help
+     * @return the HTML for the body frame of the online help 
      */
     public String displayBody() {
 
@@ -254,14 +260,35 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // print navigation if property template-elements is set to sitemap
             result.append(getJsp().getContent(getParamHelpresource(), "body", getLocale()));
             try {
-                CmsProperty elements = getCms().readPropertyObject(getParamHelpresource(), CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS, false);
-                if (! elements.isNullProperty()) {
-                    result.append(getJsp().getContent(elements.getValue()));
+                CmsProperty elements = getCms().readPropertyObject(
+                    getParamHelpresource(),
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    false);
+                if (!elements.isNullProperty()) {
+                    try {
+                        // trigger an exception here as getContent won't throw anything!
+                        getJsp().getCmsObject().readFile(elements.getValue());
+                        result.append(getJsp().getContent(elements.getValue()));
+                    } catch (Throwable t) {
+                        CmsVfsResourceNotFoundException e2 = new CmsVfsResourceNotFoundException(
+                            Messages.get().container(
+                                Messages.ERR_CONTENT_APPEND_2,
+                                this.getParamHelpresource(),
+                                elements.getValue(),
+                                "template-elements"),
+                            t);
+                        throw e2;
+                    }
                 }
             } catch (CmsException e1) {
-                // TODO: Generate Localized message : ui reporting
-                int todo = 0;
-                e1.printStackTrace();
+
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e1);
+                }
+                result.append("<br>\n<div class=\"dialogerror\">");
+                // getLocale() does not work in this context!?!
+                result.append(e1.getMessageContainer().key(Locale.GERMAN));
+                result.append("</div>");
             }
             result.append("\t</td>\n");
             result.append("</tr>\n");
