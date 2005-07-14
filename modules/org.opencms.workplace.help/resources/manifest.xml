@@ -4,8 +4,8 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
-		<project>Offline</project>
+		<createdate>Thu, 14 Jul 2005 09:06:38 GMT</createdate>
+		<project>GermanOnlineHelp</project>
 		<export_version>4</export_version>
 	</info>
 	<module>
@@ -13,11 +13,9 @@
 		<nicename><![CDATA[OpenCms 6.0 Workplace online help - Base module]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
-		<description><![CDATA[
-<p>This module installs the basic templates required for the online help in all languages.</p>
-<p><i>(c) 2004-2005 by Alkacon Software</i></p>
-]]></description>
-		<version>1.0.0</version>
+		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p>
+<p><i>(c) 2004-2005 by Alkacon Software</i></p>]]></description>
+		<version>1.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -40,7 +38,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 13 Jul 2005 10:27:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -142,12 +140,45 @@
 			<destination>system/modules/org.opencms.workplace.help/classes/org/opencms/workplace/help/mappings.properties</destination>
 			<type>plain</type>
 			<uuidresource>4531ec0a-d2a0-11d9-9e1a-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 13 Jul 2005 16:07:55 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.help/elements</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 13 Jul 2005 14:12:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2005 14:12:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.help/elements/sitemap.jsp</source>
+			<destination>system/modules/org.opencms.workplace.help/elements/sitemap.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>3aff1091-f3a8-11d9-8d82-91fe884058f0</uuidresource>
+			<datelastmodified>Thu, 14 Jul 2005 09:04:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 13 Jul 2005 14:13:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sitemap / Index overview]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -172,13 +203,13 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
-				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property type="shared">
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
 				</property>
 				<property>
 					<name>template-elements</name>
