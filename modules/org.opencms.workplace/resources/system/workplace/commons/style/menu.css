@@ -1137,10 +1137,9 @@ h2          { font-size: 14px; margin-top: 15px; margin-bottom: 3px }
 h3          { font-size: 12px; margin-top: 15px; margin-bottom: 3px }
 h4          { font-size: 12px; margin-top: 15px; margin-bottom: 3px; font-style: italic }
 p           { margin-top: 10px; margin-bottom: 10px }
-ul	     	{ margin-top: 0px; margin-bottom: 10px }
-li	     	{ margin-top: 0px; margin-bottom: 5px } 
-li p	    { margin-top: 0px; margin-bottom: 5px } 
-ol	     	{ margin-top: 0px; margin-bottom: 10px }
+ul	     	{ margin-top: 2px; margin-bottom: 2px }
+li	     	{ margin-top: 2px; margin-bottom: 2px } 
+ol	     	{ margin-top: 2px; margin-bottom: 2px }
 strong	    { font-weight: bold; }
 .definition	{ margin-top: 0px; margin-left: 30px; margin-bottom: 0px; margin-right: 0px; }
 
