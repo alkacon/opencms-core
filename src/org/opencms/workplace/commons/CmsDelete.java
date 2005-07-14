@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/14 07:26:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,14 +164,14 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
-            result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
+            result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
             result.append("<br>");
             result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"true\"");
             if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
-            result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
+            result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
             result.append("<p>");
             return result.toString();
         }
