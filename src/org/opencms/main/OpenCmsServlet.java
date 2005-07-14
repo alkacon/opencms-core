@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/07/14 12:02:13 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  * 
@@ -293,6 +293,8 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
             return;
         }
         try {
+            // provide the original error code in a request attribute
+            req.setAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE, new Integer(errorCode));
             OpenCms.getResourceManager().loadResource(cms, file, req, res);
         } catch (CmsException e) {
             CmsMessageContainer container = Messages.get().container(

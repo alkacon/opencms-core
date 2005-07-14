@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2005/07/14 12:02:13 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.94 $ 
+ * @version $Revision: 1.95 $ 
  * 
  * @since 6.0.0 
  * 
@@ -468,30 +468,38 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
                     // get the result byte array
                     result = f_res.getWriterBytes();
-                    if (controller.getTopRequest().getHeader(CmsRequestUtil.HEADER_OPENCMS_EXPORT) != null) {
+                    HttpServletRequest req = controller.getTopRequest();
+                    if (req.getHeader(CmsRequestUtil.HEADER_OPENCMS_EXPORT) != null) {
                         // this is a non "on-demand" static export request, don't write to the response stream
-                        controller.getTopRequest().setAttribute(
-                            CmsRequestUtil.HEADER_OPENCMS_EXPORT,
-                            new Long(controller.getDateLastModified()));
+                        req.setAttribute(CmsRequestUtil.HEADER_OPENCMS_EXPORT, new Long(
+                            controller.getDateLastModified()));
                     } else if (controller.isTop()) {
                         // process headers and write output if this is the "top" request/response                                  
                         res.setContentLength(result.length);
-                        if (isWorkplaceUser) {
-                            res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
-                            CmsRequestUtil.setNoCacheHeaders(res);
-                        } else {
-                            // set date last modified header                        
-                            CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
-                            if ((f_req.getParameterMap().size() == 0) && (controller.getDateLastModified() > -1)) {
-                                // only use "expires" header on pages that have no parameters
-                                // and that are cachable (i.e. 'date last modified' is set)
-                                // otherwise some browsers (e.g. IE 6) will not even try to request 
-                                // updated versions of the page
-                                CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                        // check for preset error code
+                        Integer errorCode = (Integer)req.getAttribute(CmsRequestUtil.ATTRIBUTE_ERRORCODE);
+                        if (errorCode == null) {
+                            // set last modified / no cache headers only if this is not an error page
+                            if (isWorkplaceUser) {
+                                res.setDateHeader(CmsRequestUtil.HEADER_LAST_MODIFIED, System.currentTimeMillis());
+                                CmsRequestUtil.setNoCacheHeaders(res);
+                            } else {
+                                // set date last modified header                        
+                                CmsFlexController.setDateLastModifiedHeader(res, controller.getDateLastModified());
+                                if ((f_req.getParameterMap().size() == 0) && (controller.getDateLastModified() > -1)) {
+                                    // only use "expires" header on pages that have no parameters
+                                    // and that are cachable (i.e. 'date last modified' is set)
+                                    // otherwise some browsers (e.g. IE 6) will not even try to request 
+                                    // updated versions of the page
+                                    CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                                }
                             }
+                            // set response status to "200 - OK" (required for static export "on-demand")
+                            res.setStatus(HttpServletResponse.SC_OK);
+                        } else {
+                            // set previously saved error code
+                            res.setStatus(errorCode.intValue());
                         }
-                        // set response status to "200 - OK" (required for static export "on-demand")
-                        res.setStatus(HttpServletResponse.SC_OK);
                         // proecess the headers
                         CmsFlexResponse.processHeaders(f_res.getHeaders(), res);
                         res.getOutputStream().write(result);
