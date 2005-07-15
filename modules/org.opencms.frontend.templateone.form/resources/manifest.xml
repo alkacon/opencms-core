@@ -24,9 +24,7 @@
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies>
-			<dependency name="org.opencms.frontend.templateone" version="1.0.0"/>
-		</dependencies>
+		<dependencies/>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/classes/" destination="WEB-INF/classes/"/>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/lib/" destination="WEB-INF/lib/"/>
