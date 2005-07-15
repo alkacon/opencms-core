@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewDialog.java,v $
- * Date   : $Date: 2005/06/29 19:31:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/15 10:34:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,11 +51,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
+
+    /**
+     * Boolean request parameter that switches between serving the content of the file 
+     * to the iframe of the page that is generated if the switch is false. <p>
+     */
+    String m_paramShowlog;
 
     /**
      * Public constructor with JSP action element.<p> 
@@ -78,39 +84,6 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     public CmsRfsFileViewDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-    }
-
-    /**
-     * Returns the dialog HTML for all defined widgets of the named dialog (page).<p>
-     * 
-     * This overwrites the method from the super class to create a layout variation for the widgets.<p>
-     * 
-     * @param dialog the dialog (page) to get the HTML for
-     * @return dialog HTML for all defined widgets of the named dialog (page)
-     */
-    protected String createDialogHtml(String dialog) {
-
-        StringBuffer result = new StringBuffer(1024);
-
-        // create widget table
-        result.append(createWidgetTableStart());
-
-        // show error header once if there were validation errors
-        result.append(createWidgetErrorHeader());
-
-        // result.append(createFileContentBoxStart());
-
-        result.append(createWidgetBlockStart(m_logView.getFilePath().replace('\\', '/')));
-        result.append("<iframe style=\"overflow: auto;\" src=\""
-            + getJsp().link("/system/workplace/admin/workplace/logfileview/index.html?showlog=true")
-            + "\" width=\"100%\" height=\"400\" border=\"0\" frameborder=\"0\"></iframe>");
-        result.append(createWidgetBlockEnd());
-
-        // result.append(createFileContentBoxEnd());
-        // close widget table
-
-        result.append(createWidgetTableEnd());
-        return result.toString();
     }
 
     /**
@@ -141,12 +114,6 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     }
 
     /**
-     * Boolean request parameter that switches between serving the content of the file 
-     * to the iframe of the page that is generated if the switch is false. <p>
-     */
-    String m_paramShowlog;
-
-    /**
      * Returns true wether the content of the file should be written to the response or false 
      * if the page content should be generated.<p>
      *  
@@ -166,6 +133,43 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
     public void setParamShowlog(String value) {
 
         m_paramShowlog = value;
+    }
+
+    /**
+     * Returns the dialog HTML for all defined widgets of the named dialog (page).<p>
+     * 
+     * This overwrites the method from the super class to create a layout variation for the widgets.<p>
+     * 
+     * @param dialog the dialog (page) to get the HTML for
+     * @return dialog HTML for all defined widgets of the named dialog (page)
+     */
+    protected String createDialogHtml(String dialog) {
+
+        StringBuffer result = new StringBuffer(1024);
+
+        // create widget table
+        result.append(createWidgetTableStart());
+
+        // show error header once if there were validation errors
+        result.append(createWidgetErrorHeader());
+
+        String fileContentHeader;
+        if (m_logView.getFilePath() == null) {
+            fileContentHeader = Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_NO_FILE_SELECTED_0, null);
+        } else {
+            fileContentHeader = m_logView.getFilePath().replace('\\', '/');
+        }
+        result.append(createWidgetBlockStart(fileContentHeader));
+        result.append("<iframe style=\"overflow: auto;\" src=\"");
+        result.append(getJsp().link("/system/workplace/admin/workplace/logfileview/index.html?showlog=true"));
+        result.append("\" width=\"100%\" height=\"400\" border=\"0\" frameborder=\"0\"></iframe>");
+        result.append(createWidgetBlockEnd());
+
+        // result.append(createFileContentBoxEnd());
+        // close widget table
+
+        result.append(createWidgetTableEnd());
+        return result.toString();
     }
 
     /**
