@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Thu, 14 Jul 2005 15:43:25 GMT</createdate>
+		<createdate>Sun, 17 Jul 2005 12:36:07 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.29</version>
+		<version>0.30</version>
 		<authorname><![CDATA[Achim Westermann]]></authorname>
 		<authoremail><![CDATA[a.westermann@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -42,7 +42,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 13 Jul 2005 09:22:06 GMT</datecreated>
+			<datecreated>Fri, 15 Jul 2005 07:26:38 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -115,12 +115,20 @@ Install this module if you want to use the german version of the OpenCms Workpla
 		<file>
 			<destination>system/workplace/locales/de/help</destination>
 			<type>folder</type>
-			<datelastmodified>Thu, 14 Jul 2005 14:54:00 GMT</datelastmodified>
+			<datelastmodified>Sun, 17 Jul 2005 12:21:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[utf-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
 				<property>
 					<name>template</name>
 					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
@@ -202,6 +210,40 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Die OpenCms Online Hilfe]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/search.html</source>
+			<destination>system/workplace/locales/de/help/search.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>a5c8c4b4-f505-11d9-a9a0-55fa789c6c3d</uuidresource>
+			<datelastmodified>Fri, 15 Jul 2005 14:40:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 15 Jul 2005 07:54:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Führt eine Suche aufgrund von Parametern aus und stellt die Ergebnisse dar.]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/elements/search.jsp]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Suchergebnisse]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -928,7 +970,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/editors/index.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>c5c13cf4-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Thu, 14 Jul 2005 14:54:00 GMT</datelastmodified>
+			<datelastmodified>Sun, 17 Jul 2005 11:51:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
