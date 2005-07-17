@@ -1114,6 +1114,12 @@ div.widgetcombo a:hover {
 
    if (style == ONLINEHELP) { %>
    
+
+
+
+
+
+   
 body, h1, h2, h3, h4, h5, h6, p, td, caption, th, ul, ol, dl, li, dd, dt {
 	font-family: Verdana, Arial, Helvetica, sans-serif; 
 	color: WindowText; 
@@ -1214,7 +1220,9 @@ a.navhelp:hover, a.navhelp:active {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	float: left;
-	background-image: url(<%= cms.link("/system/modules/org.opencms.workplace.help/resources/nav_i.gif") %>);
+	background-image: url(/opencms/export/system/modules/org.opencms.workplace.help/resources/nav_i.gif);
+	padding-left: 10px; 
+  background-position: 0px 1px;
 	background-repeat:no-repeat;
 }
 
@@ -1223,7 +1231,7 @@ a.navhelp:hover, a.navhelp:active {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
 	font-size: 11px;
 	float: left;
-	background-image: url(<%= cms.link("/system/modules/org.opencms.workplace.help/resources/nav_a.gif") %>);
+	background-image: url(/opencms/export/system/modules/org.opencms.workplace.help/resources/nav_a.gif);
 	background-repeat:no-repeat;
 }
 
@@ -1236,6 +1244,16 @@ a.navhelp:hover, a.navhelp:active {
 	display:block;
 }
 	
+.searchResult {
+	color: #000000; 
+	background-color: #fcfaed;
+	border: 1px solid #DDDDDD;
+	width:60%;
+	padding: 4px;
+	margin-bottom:4px;
+	display:block;
+}
+ 
 <% }
 
    // for all styles except onlinehelp!!
