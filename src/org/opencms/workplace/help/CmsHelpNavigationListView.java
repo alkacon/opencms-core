@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpNavigationListView.java,v $
- * Date   : $Date: 2005/07/14 10:38:38 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/07/17 13:34:50 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.help;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
+import org.opencms.main.CmsIllegalArgumentException;
 
 import java.util.List;
 import java.util.StringTokenizer;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -97,6 +98,8 @@ public final class CmsHelpNavigationListView {
 
     private static String getSpaces(int n) {
 
+        // avoid negative NegativeArraySizeException in case uri is missing
+        n = Math.max(n, 0);
         StringBuffer result = new StringBuffer(n);
         for (; n > 0; n--) {
             result.append(' ');
@@ -115,14 +118,23 @@ public final class CmsHelpNavigationListView {
 
         StringBuffer buffer = new StringBuffer(2048);
         int endlevel = calculateEndLevel();
-        String spaces = getSpaces((endlevel-m_depth) * 2);
-        buffer.append("\n").append(spaces).append("<p>\n");
-        buffer.append(spaces).append("  <ul>\n");
-        List navElements = m_jsp.getNavigation().getSiteNavigation(m_navRootPath, endlevel);
-        createNavigationInternal(buffer, navElements);
-        buffer.append(spaces).append("  </ul>\n");
-        buffer.append(spaces).append("</p>");
-        return buffer.toString();
+        String spaces = getSpaces((endlevel - m_depth) * 2);
+        if (m_navRootPath != null) {
+            buffer.append("\n").append(spaces).append("<p>\n");
+            buffer.append(spaces).append("  <ul>\n");
+            List navElements = m_jsp.getNavigation().getSiteNavigation(m_navRootPath, endlevel);
+            if (navElements.size() > 0) {
+                createNavigationInternal(buffer, navElements);
+            }
+            buffer.append(spaces).append("  </ul>\n");
+            buffer.append(spaces).append("</p>");
+            return buffer.toString();
+        } else {
+            CmsIllegalArgumentException ex = new CmsIllegalArgumentException(Messages.get().container(
+                Messages.GUI_HELP_ERR_SITEMAP_MISSING_PARAM_1,
+                "navRootPath"));
+            throw ex;
+        }
     }
 
     /**
@@ -170,15 +182,22 @@ public final class CmsHelpNavigationListView {
     private int calculateEndLevel() {
 
         int result = 0;
-        // where are we? (start level)
-        StringTokenizer counter = new StringTokenizer(m_navRootPath, "/", false);
-        // one less as level 0 nav elements accepted is one level (depth 1).
-        result = counter.countTokens() - 1;
-        if (!CmsResource.isFolder(m_navRootPath)) {
-            // cut stuff like system/workpalce/locale/de/help/index.html
-            result--;
+        if (m_navRootPath != null) {
+            // where are we? (start level)
+
+            StringTokenizer counter = new StringTokenizer(m_navRootPath, "/", false);
+            // one less as level 0 nav elements accepted is one level (depth 1).
+            result = counter.countTokens() - 1;
+            if (!CmsResource.isFolder(m_navRootPath)) {
+                // cut stuff like system/workpalce/locale/de/help/index.html
+                result--;
+            }
+            result += m_depth;
         }
-        return result + m_depth;
+        if (result < 0) {
+            result = 0;
+        }
+        return result;
     }
 
     private void createNavigationInternal(StringBuffer buffer, List navElements) {
