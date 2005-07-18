@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/17 13:41:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/18 08:02:06 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -346,7 +346,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             Messages.get().key(getLocale(), Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1, new Object[] {new Integer(3)})).append(
             "\');");
 
-        result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"get\" action=\"");
+        result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
         String searchLink = getJsp().link(
             new StringBuffer("/system/workplace/locales/").append(getLocale().getLanguage()).append("/help/search.html").toString());
         result.append(searchLink);
