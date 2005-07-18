@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsStaticExportManager.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -254,7 +254,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
     private void checkLinkWithoutParameters(CmsObject cms, String vfsName, String expected) {
 
         // check JSP without parameters
-        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getSiteRoot(), vfsName);
+        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         assertEquals(expected, rfsName);
         assertEquals(vfsName, OpenCms.getStaticExportManager().getVfsName(cms, rfsName));
@@ -270,7 +270,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
     private void checkLinkWithParameters(CmsObject cms, String vfsName, String expected) {
 
         // check JSP WITH parameters
-        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, cms.getRequestContext().getSiteRoot(), vfsName, "?a=b&c=d");
+        String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName, "?a=b&c=d"); 
         System.out.println("RFS name: " + rfsName + " VFS name: " + vfsName);
         String extension = expected.substring(expected.lastIndexOf('.'));
         Pattern pattern = Pattern.compile("^"

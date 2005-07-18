@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -414,9 +414,8 @@ public class CmsLinkManager {
                     // base not cached, check if we must export it
                     if (exportManager.isExportLink(cms, cms.getRequestContext().getUri())) {
                         // base uri must also be exported
-                        uriBaseName = exportManager.getRfsName(
-                            cms,
-                            cms.getRequestContext().getSiteRoot(),
+                        uriBaseName = exportManager.getRfsName(cms,
+                        //cms.getRequestContext().getSiteRoot(),
                             cms.getRequestContext().getUri());
                     } else {
                         // base uri dosn't need to be exported
@@ -435,10 +434,12 @@ public class CmsLinkManager {
             // check if we have the absolute vfs name for the link target cached
             resultLink = exportManager.getCachedOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink);
             if (resultLink == null) {
+                cms.getRequestContext().saveSiteRoot();
+                cms.getRequestContext().setSiteRoot(targetSite.getSiteRoot());
                 // didn't find the link in the cache
                 if (exportManager.isExportLink(cms, vfsName)) {
                     // export required, get export name for target link
-                    resultLink = exportManager.getRfsName(cms, targetSite.getSiteRoot(), vfsName, parameters);
+                    resultLink = exportManager.getRfsName(cms, vfsName, parameters); 
                     // now set the parameters to null, we do not need them anymore
                     parameters = null;
                 } else {
@@ -449,6 +450,7 @@ public class CmsLinkManager {
                         resultLink = resultLink.concat(parameters);
                     }
                 }
+                cms.getRequestContext().restoreSiteRoot();
                 // cache the result
                 exportManager.cacheOnlineLink(cms.getRequestContext().getSiteRoot() + ":" + absoluteLink, resultLink);
             }
@@ -459,7 +461,7 @@ public class CmsLinkManager {
 
                     int linkType = -1;
                     // check the secure property of the link
-                    boolean secureLink = exportManager.isSecureLink(cms, link, siteRoot);
+                    boolean secureLink = exportManager.isSecureLink(cms, link, targetSite.getSiteRoot());
                     boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                     try {
                         // read the linked resource 

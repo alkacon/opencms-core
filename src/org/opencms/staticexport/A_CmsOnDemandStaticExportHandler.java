@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  * 
@@ -189,7 +189,7 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                 String vfsName = (String)itSibs.next();
 
                 // get the link name for the published file 
-                String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, "", vfsName);
+                String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_CHECKING_STATIC_EXPORT_2, vfsName, rfsName));
                 }
@@ -240,7 +240,7 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
                     scrubedFiles.add(rfsName);
 
                     if (!res.isFolder()) {
-                        List fileList = getRelatedFilesToPurge(rfsExportFileName);
+                        List fileList = getRelatedFilesToPurge(rfsExportFileName, vfsName);
                         Iterator iter = fileList.iterator();
                         while (iter.hasNext()) {
                             File file = (File)iter.next();
@@ -265,10 +265,11 @@ public abstract class A_CmsOnDemandStaticExportHandler implements I_CmsStaticExp
      * Returns a list of related files to purge.<p>
      * 
      * @param exportFileName the previous exported rfs filename (already purged)
+     * @param vfsName the vfs name of the resource (to be used to compute more sofisticated sets of related files to purge 
      * 
      * @return a list of related files to purge
      */
-    protected abstract List getRelatedFilesToPurge(String exportFileName);
+    protected abstract List getRelatedFilesToPurge(String exportFileName, String vfsName);
 
     /**
      * Returns a list containing the root paths of all siblings of a resource.<p> 

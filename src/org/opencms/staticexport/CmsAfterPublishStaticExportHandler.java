@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  * 
@@ -114,7 +114,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             Iterator itExpRes = resourcesToExport.iterator();
             while (itExpRes.hasNext()) {
                 CmsPublishedResource pubResource = (CmsPublishedResource)itExpRes.next();
-                String rfsName = manager.getRfsName(cmsExportObject, "", pubResource.getRootPath());
+                String rfsName = manager.getRfsName(cmsExportObject, pubResource.getRootPath());
                 resourceFilter.add(rfsName.substring(manager.getRfsPrefixForRfsName(rfsName).length()));
             }
 
@@ -679,7 +679,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
             for (int i = 0, l = siblings.size(); i < l; i++) {
                 String vfsName = (String)siblings.get(i);
                 // get the link name for the published file, vfsName is root path
-                String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, "", vfsName);
+                String rfsName = OpenCms.getStaticExportManager().getRfsName(cms, vfsName);
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_CHECKING_STATIC_EXPORT_2, vfsName, rfsName));
                 }

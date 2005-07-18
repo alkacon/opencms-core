@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  * 
@@ -50,9 +50,9 @@ import java.util.List;
 public class CmsOnDemandStaticExportHandler extends A_CmsOnDemandStaticExportHandler {
 
     /**
-     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String)
+     * @see org.opencms.staticexport.A_CmsOnDemandStaticExportHandler#getRelatedFilesToPurge(java.lang.String, java.lang.String)
      */
-    protected List getRelatedFilesToPurge(String exportFileName) {
+    protected List getRelatedFilesToPurge(String exportFileName, String vfsName) {
 
         return Collections.EMPTY_LIST;
     }

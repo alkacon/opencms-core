@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportRfsRule.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.staticexport;
 
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -44,7 +43,7 @@ import java.util.regex.Pattern;
  * Help class for storing of rfs-rules..<p>
  * 
  * @author Michael Moossen
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  * @since 6.0.0
  */
 public class CmsStaticExportRfsRule {
@@ -265,10 +264,6 @@ public class CmsStaticExportRfsRule {
      */
     public void setRfsPrefix(String rfsPrefix) {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(rfsPrefix)) {
-            // not allowed, getting troubles translating rfsName -> vfsName
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_INVALID_RFS_PREFIX_1, m_name));
-        }
         m_rfsPrefix = rfsPrefix;
     }
 

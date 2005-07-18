@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.114 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.115 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.114 $ 
+ * @version $Revision: 1.115 $ 
  * 
  * @since 6.0.0 
  */
@@ -706,8 +706,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      */
     public CmsStaticExportData getExportData(String vfsName, CmsObject cms) {
 
-        // the vfsName is already a root path!
-        return getExportData(getRfsName(cms, "", vfsName), vfsName, cms);
+        return getExportData(getRfsName(cms, vfsName), vfsName, cms);
     }
 
     /**
@@ -956,17 +955,16 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * Returns the static export rfs name for a given vfs resoure.<p>
      * 
      * @param cms an initialized cms context
-     * @param siteRoot the root of the site of the resource
      * @param vfsName the name of the vfs resource
      * 
      * @return the static export rfs name for a give vfs resoure
      * 
      * @see #getVfsName(CmsObject, String)
-     * @see #getRfsName(CmsObject, String, String, String)
+     * @see #getRfsName(CmsObject, String, String)
      */
-    public String getRfsName(CmsObject cms, String siteRoot, String vfsName) {
+    public String getRfsName(CmsObject cms, String vfsName) {
 
-        return getRfsName(cms, siteRoot, vfsName, null);
+        return getRfsName(cms, vfsName, null);
     }
 
     /**
@@ -974,13 +972,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * resource includes request parameters.<p>
      * 
      * @param cms an initialized cms context
-     * @param siteRoot the root of the site of the resource
      * @param vfsName the name of the vfs resource
      * @param parameters the parameters of the link pointing to the resource
      * 
      * @return the static export rfs name for a give vfs resoure
      */
-    public String getRfsName(CmsObject cms, String siteRoot, String vfsName, String parameters) {
+    public String getRfsName(CmsObject cms, String vfsName, String parameters) {
 
         String rfsName = vfsName;
         try {
@@ -1076,7 +1073,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         // add export rfs prefix and return result
-        return getRfsPrefix(siteRoot + vfsName).concat(rfsName);
+        if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            return getRfsPrefix(cms.getRequestContext().addSiteRoot(vfsName)).concat(rfsName);
+        } else {
+            return getRfsPrefix(cms.getRequestContext().getSiteRoot() + "/").concat(rfsName);
+        }
     }
 
     /**
@@ -1149,7 +1150,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the VFS name for the given RFS name, being the exact reverse of <code>{@link #getRfsName(CmsObject, String, String)}</code>.<p>
+     * Returns the VFS name for the given RFS name, being the exact reverse of <code>{@link #getRfsName(CmsObject, String)}</code>.<p>
      * 
      * Returns <code>null</code> if no matching VFS resource can be found for the given RFS name.<p>
      * 
@@ -1158,7 +1159,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @return the VFS name for the given RFS name, or <code>null</code> if the RFS name does not match to the VFS
      * 
-     * @see #getRfsName(CmsObject, String, String)
+     * @see #getRfsName(CmsObject, String)
      */
     public String getVfsName(CmsObject cms, String rfsName) {
 
@@ -1231,12 +1232,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 CmsLog.INIT.info(e.getMessageContainer());
                 rule.setExportPath(m_staticExportPath);
             }
-            try {
-                rule.setRfsPrefix(normalizeRfsPrefix(rule.getRfsPrefixConfigured()));
-            } catch (CmsIllegalArgumentException e) {
-                CmsLog.INIT.info(e.getMessageContainer());
-                rule.setRfsPrefix(m_rfsPrefix);
-            }
+            rule.setRfsPrefix(normalizeRfsPrefix(rule.getRfsPrefixConfigured()));
         }
         m_vfsPrefix = insertContextStrings(m_vfsPrefixConfigured);
         m_vfsPrefix = CmsFileUtil.normalizePath(m_vfsPrefix, '/');

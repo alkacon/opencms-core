@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/07/08 15:39:56 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/18 12:27:48 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,16 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.site.CmsSiteManager;
+import org.opencms.staticexport.CmsStaticExportManager;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -67,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,7 +158,6 @@ public class CmsDisplayResource extends CmsDialog {
      */
     public void actionShow() throws Exception {
 
-        String url = getJsp().link(getParamResource());
         // try to load the backup resource
         if (CmsStringUtil.isNotEmpty(getParamVersionid())) {
             byte[] result = getBackupResourceContent(getCms(), getParamResource(), getParamVersionid());
@@ -178,6 +182,42 @@ public class CmsDisplayResource extends CmsDialog {
             }
         } else {
             if (getCms().existsResource(getParamResource(), CmsResourceFilter.DEFAULT)) {
+                String url = getJsp().link(getParamResource());
+                // if in online project
+                if (url.indexOf("//:")<0 && getCms().getRequestContext().currentProject().isOnlineProject()) {
+                    url = CmsSiteManager.getSite(getCms().getRequestContext().getSiteRoot()).getUrl() + url;
+                    try {
+                        CmsStaticExportManager manager = OpenCms.getStaticExportManager();
+                        HttpURLConnection.setFollowRedirects(false);
+                        // try to export it
+                        URL exportUrl = new URL(manager.getExportUrl() + manager.getRfsName(getCms(), getParamResource()));
+                        HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
+                        // setup the connection and request the resource
+                        urlcon.setRequestMethod("GET");
+                        urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, "true");
+                        if (manager.getAcceptLanguageHeader() != null) {
+                            urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_LANGUAGE, manager.getAcceptLanguageHeader());
+                        } else {
+                            urlcon.setRequestProperty(
+                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
+                                manager.getDefaultAcceptLanguageHeader());
+                        }
+                        if (manager.getAcceptCharsetHeader() != null) {
+                            urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_CHARSET, manager.getAcceptCharsetHeader());
+                        } else {
+                            urlcon.setRequestProperty(
+                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
+                                manager.getDefaultAcceptCharsetHeader());
+                        }
+                        // now perform the request to export
+                        urlcon.connect();
+                        urlcon.getResponseCode();
+                        urlcon.disconnect();
+
+                    } catch (Exception e) {
+                        // ignore
+                    }
+                }
                 getJsp().getResponse().sendRedirect(url);
             } else {
                 // resource is outside time window, show error message
