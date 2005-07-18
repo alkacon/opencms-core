@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/18 14:26:11 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * 
  * @since 6.0.0
  */
@@ -146,4 +146,17 @@ public class TestCmsEncoder extends TestCase {
 
         assertEquals(param, result);
     }
+
+    /**
+     * Tests decoding german "umlaute".<p>
+     *
+     */
+    public void testDecodeUmlauts() {
+
+        String param = "%C3%BC"; // Ü
+        String decoded = CmsEncoder.decode(param);
+        assertEquals("ü", decoded);
+    }
+    
+    
 }
