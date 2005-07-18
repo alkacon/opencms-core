@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.115 $
+ * Date   : $Date: 2005/07/18 12:50:11 $
+ * Version: $Revision: 1.116 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.115 $ 
+ * @version $Revision: 1.116 $ 
  * 
  * @since 6.0.0 
  */
@@ -389,10 +389,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public int export(HttpServletRequest req, HttpServletResponse res, CmsObject cms, CmsStaticExportData data)
     throws CmsException, IOException, ServletException, CmsStaticExportException {
 
-        int status = -1;
-
-        CmsFile file;
-
         String vfsName = data.getVfsName();
         String rfsName = data.getRfsName();
         CmsResource resource = data.getResource();
@@ -446,6 +442,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             LOG.debug(Messages.get().key(Messages.LOG_SE_RESOURCE_START_1, data));
         }
 
+        CmsFile file;
         // read vfs resource
         if (resource.isFile()) {
             file = cms.readFile(vfsName);
@@ -483,30 +480,34 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         // release unused resources
         file = null;
 
+        int status = -1;
         if (result != null) {
             // normal case
             String exportPath = getExportPath(siteRoot + vfsName);
-            status = writeResource(cms, req, exportPath, rfsName, vfsName, resource, result);
-            // system folder case
-            if (vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-                // iterate over all rules
-                Iterator it = getRfsRules().iterator();
-                while (it.hasNext()) {
-                    CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
-                    if (rule.match(vfsName)) {
-                        int stat = writeResource(cms, req, rule.getExportPath(), rfsName, vfsName, resource, result);
-                        if (stat != HttpServletResponse.SC_OK) {
-                            status = stat;
+            // only export those resource where the export property is set
+            if (isExportLink(cms, vfsName)) {
+                writeResource(req, exportPath, rfsName, vfsName, resource, result);
+                // system folder case
+                if (vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                    // iterate over all rules
+                    Iterator it = getRfsRules().iterator();
+                    while (it.hasNext()) {
+                        CmsStaticExportRfsRule rule = (CmsStaticExportRfsRule)it.next();
+                        if (rule.match(vfsName)) {
+                            writeResource(req, rule.getExportPath(), rfsName, vfsName, resource, result);
                         }
                     }
                 }
-            }
-
-            // get the status that was set 
-            status = (wrapRes != null) ? wrapRes.getStatus() : -1;
-            if (status < 0) {
-                // the status was not set, assume everything is o.k.
-                status = HttpServletResponse.SC_OK;
+                // get the wrapper status that was set
+                status = (wrapRes != null) ? wrapRes.getStatus() : -1;
+                if (status < 0) {
+                    // the status was not set, assume everything is o.k.
+                    status = HttpServletResponse.SC_OK;
+                }
+            } else {
+                // the resource was not used for export, so return HttpServletResponse.SC_SEE_OTHER
+                // as a signal for not exported resource
+                status = HttpServletResponse.SC_SEE_OTHER;
             }
         } else {
             // the resource was not written because it was not modified. 
@@ -2229,7 +2230,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Writes a resource to the given export path with the given rfs name and the given content.<p>
      * 
-     * @param cms the current cms context
      * @param req the current request
      * @param exportPath the path to export the resource
      * @param rfsName the rfs name
@@ -2237,12 +2237,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * @param resource the resource
      * @param content the content
      * 
-     * @return a http response status
-     * 
      * @throws CmsException if something goes wrong
      */
-    private int writeResource(
-        CmsObject cms,
+    private void writeResource(
         HttpServletRequest req,
         String exportPath,
         String rfsName,
@@ -2250,22 +2247,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         CmsResource resource,
         byte[] content) throws CmsException {
 
-        int status;
         File exportFile = null;
         String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
-
-        // only export those resource where the export property is set
-        if (isExportLink(cms, vfsName)) {
-            // make sure all required parent folder exist
-            createExportFolder(exportPath, rfsName);
-            status = HttpServletResponse.SC_OK;
-            // generate export file instance and output stream
-            exportFile = new File(exportFileName);
-        } else {
-            // the resource was not used for export, so return HttpServletResponse.SC_SEE_OTHER
-            // as a signal for not exported resource
-            status = HttpServletResponse.SC_SEE_OTHER;
-        }
+        
+        // make sure all required parent folder exist
+        createExportFolder(exportPath, rfsName);
+        // generate export file instance and output stream
+        exportFile = new File(exportFileName);
 
         if (exportFile != null) {
             // write new exported file content
@@ -2301,6 +2289,5 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 exportFile.setLastModified((resource.getDateLastModified() / 1000) * 1000);
             }
         }
-        return status;
     }
 }
