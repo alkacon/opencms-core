@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.5 $
+* Date   : $Date: 2005/07/18 10:10:35 $
+* Version: $Revision: 1.6 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.mail.internet.InternetAddress;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.5 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.6 $ $Date: 2005/07/18 10:10:35 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
@@ -484,7 +484,7 @@ public class CmsTaskAction {
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             String sendToAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
-            if(CmsStringUtil.isEmpty(sendToAll)) {
+            if(!CmsStringUtil.isEmpty(sendToAll)) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
                     List users = cms.getUsersOfGroup(group.getName());
@@ -793,8 +793,8 @@ public class CmsTaskAction {
         CmsSimpleMail mail;
         mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
 
-        // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
-        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL) != null) {
+        String sendToAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
+        if(!CmsStringUtil.isEmpty(sendToAll)) {
             CmsGroup group = taskService.readGroup(task);
             List groupUsers = cms.getUsersOfGroup(group.getName());
             mail = createMail(taskService.readOwner(task), groupUsers,
