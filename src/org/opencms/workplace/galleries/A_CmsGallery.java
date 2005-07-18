@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/18 07:32:11 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -401,7 +401,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 // no resource to display, create empty row
                 buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
                 buttonBar.append("<img height=\"22\" border=\"0\" src=\"");
-                buttonBar.append(getJsp().link(CmsWorkplace.VFS_PATH_RESOURCES + "empty.gif"));
+                buttonBar.append(getJsp().link(CmsWorkplace.VFS_PATH_RESOURCES + "tree/empty.gif"));
                 buttonBar.append("\">");
                 buttonBar.append("</td></tr></table>");
             }
@@ -409,7 +409,7 @@ public abstract class A_CmsGallery extends CmsDialog {
             // resource is deleted, display empty table
             buttonBar.append("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\"><tr><td>");
             buttonBar.append("<img height=\"22\" border=\"0\" src=\"");
-            buttonBar.append(getJsp().link(CmsWorkplace.VFS_PATH_RESOURCES + "empty.gif"));
+            buttonBar.append(getJsp().link(CmsWorkplace.VFS_PATH_RESOURCES + "tree/empty.gif"));
             buttonBar.append("\">");
             buttonBar.append("</td></tr></table>");
         }
