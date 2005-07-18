@@ -1113,6 +1113,11 @@ div.widgetcombo a:hover {
 <% } 
 
    if (style == ONLINEHELP) { %>
+
+
+
+
+
    
 
 
@@ -1238,19 +1243,28 @@ a.navhelp:hover, a.navhelp:active {
 /* error messages style */
 .dialogerror {
 	color: #c03;
-	background-color: #fcfaed;
-	border: 1px solid #DDDDDD;
+	background-color: infobackground;
+	border: 1px solid threedshadow;
 	padding: 4px;
 	display:block;
 }
 	
 .searchResult {
 	color: #000000; 
-	background-color: #fcfaed;
-	border: 1px solid #DDDDDD;
-	width:60%;
+	font-weight:bold;
+	background-color: infobackground;
+	border: 1px solid threedshadow;
 	padding: 4px;
 	margin-bottom:4px;
+	display:block;
+}
+ 
+.searchExcerpt {
+	color: #999999; 
+	font-weight:normal;
+	background-color: infobackground;
+	border: 0;
+	padding: 4px;
 	display:block;
 }
  
