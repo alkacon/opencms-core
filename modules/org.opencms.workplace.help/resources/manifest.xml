@@ -279,6 +279,10 @@
 					<name>export</name>
 					<value><![CDATA[true]]></value>
 				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
