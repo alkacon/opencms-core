@@ -262,14 +262,19 @@
                         <var name="module.libs.path" value="${module.libs.path}:${opencms.input.libs}/@{library}" />
                     </sequential>
                 </for>
-				<for param="archive">
-					<path>
-						<fileset dir="${module.input.lib}" includes="*.jar"/>
-					</path>
-                    <sequential>
-                        <var name="module.libs.path" value="${module.libs.path}:${module.input.lib}/@{archive}" />
-                    </sequential>
-                </for>
+            	<if>
+		    		<available file="${module.input.lib}" />
+    				<then>
+						<for param="archive">
+							<path>
+								<fileset dir="${module.input.lib}" includes="*.jar"/>
+							</path>
+		                    <sequential>
+		                        <var name="module.libs.path" value="${module.libs.path}:${module.input.lib}/@{archive}" />
+		                    </sequential>
+		                </for>
+					</then>
+        		</if>
                 <!--echo message="${module.libs.path}" /-->
                 
                 <if>
