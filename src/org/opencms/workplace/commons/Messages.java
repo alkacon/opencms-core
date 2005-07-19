@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/07/18 13:42:03 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/19 15:00:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -382,7 +382,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PERMISSION_ERROR_0 = "GUI_PERMISSION_ERROR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PERMISSION_INHERITED_FROM_0 = "GUI_PERMISSION_INHERITED_FROM_0";
+    public static final String GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0 = "GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_INHERITED_FROM_1 = "GUI_PERMISSION_INHERITED_FROM_1";

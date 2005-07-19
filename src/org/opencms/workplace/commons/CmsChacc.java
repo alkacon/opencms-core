@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/07/18 13:42:03 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/19 15:01:53 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -1253,7 +1253,7 @@ public class CmsChacc extends CmsDialog {
             // show inherit permissions checkbox on folders
             if (getInheritOption()) {
                 result.append("<tr>\n");
-                result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_INHERITED_FROM_0)).append(
+                result.append("\t<td class=\"dialogpermissioncell\">").append(key(Messages.GUI_PERMISSION_INHERIT_ON_SUBFOLDERS_0)).append(
                     "</td>\n");
                 result.append("\t<td class=\"dialogpermissioncell textcenter\">");
                 result.append("<input type=\"checkbox\" name=\"").append(PARAM_INHERIT).append("\" value=\"true\"").append(
