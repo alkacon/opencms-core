@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/07/13 10:06:01 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2005/07/19 09:26:34 $
+ * Version: $Revision: 1.141 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.140 $
+ * @version $Revision: 1.141 $
  * 
  * @since 6.0.0 
  */
@@ -2897,14 +2897,22 @@ public final class CmsObject {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
         I_CmsPrincipal principal = null;
+        CmsUUID principalId = null;
 
-        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
-            principal = readGroup(principalName);
-        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
-            principal = readUser(principalName);
+        try {
+            if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
+                principal = readGroup(principalName);
+                principalId = principal.getId();
+            } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
+                principal = readUser(principalName);
+                principalId = principal.getId();
+            }
+        } catch (CmsException exc) {
+            // cw: fallback - deleting ace's must be possible even if principal is missing
+            principalId = new CmsUUID(principalName);
         }
 
-        m_securityManager.removeAccessControlEntry(m_context, res, principal.getId());
+        m_securityManager.removeAccessControlEntry(m_context, res, principalId);
     }
 
     /**
