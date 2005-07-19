@@ -262,6 +262,14 @@
                         <var name="module.libs.path" value="${module.libs.path}:${opencms.input.libs}/@{library}" />
                     </sequential>
                 </for>
+				<for param="archive">
+					<path>
+						<fileset dir="${module.input.lib}" includes="*.jar"/>
+					</path>
+                    <sequential>
+                        <var name="module.libs.path" value="${module.libs.path}:${module.input.lib}/@{archive}" />
+                    </sequential>
+                </for>
                 <!--echo message="${module.libs.path}" /-->
                 
                 <if>
@@ -285,7 +293,6 @@
                                 </fileset>
                                 <pathelement path="${module.dependencies.path}"/>
                                 <pathelement path="${module.libs.path}"/>
-                            	<pathelement path="${module.input.lib}"/>
                             </classpath>
                         </javac>
                         <copy todir="${module.output.classes}/${module.package}">
