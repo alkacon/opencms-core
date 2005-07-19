@@ -10,6 +10,7 @@
 	
     <property name="module.input" 						location="${basedir}/${module.name}" />
     <property name="module.input.res" 					location="${module.input}/resources" />
+    <property name="module.input.lib" 					location="${module.input.res}/system/modules/${module.name}/lib" />
     <property name="module.input.src.single"            location="${module.input}/src" />
     <property name="module.input.src.shared"            location="${opencms.input}/src-modules" />
 	<property file="${module.input}/module.properties" />
@@ -172,6 +173,7 @@
         <echo message=" " />
         <echo message="Module dependencies: ${module.dependencies}" />
         <echo message="Module libraries: ${module.libs}" />
+    	<echo message="Additional lib folder: ${module.input.lib}" />
     </target>	     
 	
     <target name="builddeps" description="Generates all the modules dependencies">
@@ -283,11 +285,12 @@
                                 </fileset>
                                 <pathelement path="${module.dependencies.path}"/>
                                 <pathelement path="${module.libs.path}"/>
+                            	<pathelement path="${module.input.lib}"/>
                             </classpath>
                         </javac>
                         <copy todir="${module.output.classes}/${module.package}">
                             <fileset dir="${module.input.src}" includes="${jar.includes.shared}" excludes="${jar.excludes.shared}" />
-                        </copy>       
+                        </copy>
                      </then>
                      <else>
                      	<if>
