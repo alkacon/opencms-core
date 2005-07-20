@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/07/13 10:06:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/07/20 08:31:05 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -350,7 +350,9 @@ public class CmsModuleManager {
      */
     public Set getModuleNames() {
 
-        return Collections.unmodifiableSet(new HashSet(m_modules.keySet()));
+        synchronized (m_modules) {
+            return new HashSet(m_modules.keySet());
+        }
     }
 
     /**
