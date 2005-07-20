@@ -465,6 +465,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/headnav</source>
+			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/headnav</destination>
+			<type>xmlcontent</type>
+			<uuidresource>55de9707-f924-11d9-9daa-f73c2606dec1</uuidresource>
+			<datelastmodified>Wed, 20 Jul 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Jul 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Manual head navigation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/imprint</source>
 			<destination>system/modules/org.opencms.frontend.templateone/copyresources/_configuration/imprint</destination>
 			<type>xmlcontent</type>
@@ -1799,6 +1817,78 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Head links schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/navtop.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/navtop.xsd</destination>
+			<type>plain</type>
+			<uuidresource>5d15f997-f76c-11d9-a520-f73c2606dec1</uuidresource>
+			<datelastmodified>Mon, 18 Jul 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Jul 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top navigation schema]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/navtopentry.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/navtopentry.xsd</destination>
+			<type>plain</type>
+			<uuidresource>92a6221c-f76c-11d9-a520-f73c2606dec1</uuidresource>
+			<datelastmodified>Wed, 20 Jul 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Jul 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Single top navigation entry lvl 1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/navtopentry2.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/navtopentry2.xsd</destination>
+			<type>plain</type>
+			<uuidresource>0597f85c-f775-11d9-a520-f73c2606dec1</uuidresource>
+			<datelastmodified>Wed, 20 Jul 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Jul 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Single top navigation entry lvl 2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone/schemas/navtopentry3.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone/schemas/navtopentry3.xsd</destination>
+			<type>plain</type>
+			<uuidresource>4e038d31-f775-11d9-a520-f73c2606dec1</uuidresource>
+			<datelastmodified>Wed, 20 Jul 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 18 Jul 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Single top navigation entry lvl 2]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
