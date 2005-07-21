@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsField.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/21 07:29:58 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,6 +68,9 @@ public class CmsField {
     
     /** HTML field type: textarea. */
     public static final String TYPE_TEXTAREA = "textarea";
+    
+    /** HTML field type: captcha image. */
+    public static final String TYPE_CAPTCHA = "captcha";
 
     /** Regular expression to validate email addresses. */
     public static final String VALIDATION_EMAIL = "(\\w[-._\\w]*\\w@\\w[-._\\w]*\\w\\.\\w{2,4})";

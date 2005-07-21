@@ -99,4 +99,17 @@
 		<%= messages.key("form.html.row.end") %>
 		<%
 		}
+		
+		// ############ captcha field ############
+		else if (fieldType.equals(CmsField.TYPE_CAPTCHA)) {
+		%><%= messages.key("form.html.row.start") %>
+			<%= messages.key("form.html.label.start") %><%= fieldLabel %><%= mandatory %><%= messages.key("form.html.label.end") %>
+			<%= messages.key("form.html.field.start") %>
+			<img src="<%= cms.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha") %>" width="200" height="100" alt="">
+			<br>
+			<input type="text" name="<%= field.getName() %>" value="<%= field.getValue() %>"<%= formConfiguration.getFormFieldAttributes() %>><%= errorMessage %>
+			<%= messages.key("form.html.field.end") %>
+		<%= messages.key("form.html.row.end") %>
+		<%
+		}		
 %>

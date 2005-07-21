@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/21 07:29:58 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1032,13 +1032,20 @@ public class CmsForm {
                 } else {
                     field.setValidationExpression(getConfigurationValue(stringValue, ""));
                 }
-                // get the field mandatory flag
-                stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDMANDATORY, locale);
-                boolean isMandatory = Boolean.valueOf(stringValue).booleanValue();
-                field.setMandatory(isMandatory);
-                if (isMandatory) {
-                    // set flag that determines if mandatory fields are present
+                
+                // force captcha fields to be mandatory
+                if (CmsField.TYPE_CAPTCHA.equals(field.getType())) {
+                    field.setMandatory(true);
                     setHasMandatoryFields(true);
+                } else {
+                    // get the field mandatory flag
+                    stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDMANDATORY, locale);
+                    boolean isMandatory = Boolean.valueOf(stringValue).booleanValue();
+                    field.setMandatory(isMandatory);
+                    if (isMandatory) {
+                        // set flag that determines if mandatory fields are present
+                        setHasMandatoryFields(true);
+                    }
                 }
 
                 if (field.needsItems()) {

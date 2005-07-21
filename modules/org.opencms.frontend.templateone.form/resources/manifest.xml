@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<createdate>Wed, 20 Jul 2005 15:06:07 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,12 +13,10 @@
 		<nicename><![CDATA[OpenCms 6.0 Template One online input form]]></nicename>
 		<group>Template One</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains online form functionality for the OpenCms frontend template one.</p>
+		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.0.0</version>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -44,8 +42,8 @@
 						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
 					</property>
 				</properties>
-                <param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
-            </type>
+				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
@@ -64,7 +62,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 19 Jul 2005 12:19:11 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -199,7 +197,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</source>
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
@@ -278,7 +275,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/jsptemplates/inputfields.txt</destination>
 			<type>plain</type>
 			<uuidresource>c5d9a9d2-6577-11d9-8a19-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 20 Jul 2005 13:51:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -303,6 +300,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/lib/ehcache-1.0.jar</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/lib/ehcache-1.0.jar</destination>
+			<type>binary</type>
+			<uuidresource>3667e21b-f850-11d9-9e77-c7beef112ba5</uuidresource>
+			<datelastmodified>Tue, 19 Jul 2005 12:25:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jul 2005 12:25:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC2.0.1.jar</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/lib/jcaptcha-all-1.0-RC2.0.1.jar</destination>
+			<type>binary</type>
+			<uuidresource>3677245e-f850-11d9-9e77-c7beef112ba5</uuidresource>
+			<datelastmodified>Tue, 19 Jul 2005 12:25:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jul 2005 12:25:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -311,6 +334,36 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/pages/captcha.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/pages/captcha.jpg</destination>
+			<type>jsp</type>
+			<uuidresource>0cad6a0a-f90e-11d9-b740-c7beef112ba5</uuidresource>
+			<datelastmodified>Wed, 20 Jul 2005 12:45:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 20 Jul 2005 11:04:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[never;]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Renders captcha images]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -355,7 +408,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 19 Jul 2005 12:41:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -423,6 +476,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/schemas/optionalformcaptcha.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/optionalformcaptcha.xsd</destination>
+			<type>plain</type>
+			<uuidresource>8175f1c2-f851-11d9-9e77-c7beef112ba5</uuidresource>
+			<datelastmodified>Wed, 20 Jul 2005 11:01:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 19 Jul 2005 12:34:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for optional captcha images]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -432,8 +503,16 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
 				</property>
 			</properties>
 			<accesscontrol>
@@ -442,7 +521,7 @@
 					<flags>38</flags>
 					<permissionset>
 						<allowed>0</allowed>
-						<denied>15</denied>
+						<denied>30</denied>
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
@@ -455,12 +534,7 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>

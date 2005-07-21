@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/21 07:29:58 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -526,6 +526,13 @@ public class CmsFormHandler extends CmsJspActionElement {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(Messages.LOG_ERR_PATTERN_SYNTAX_0), e);
                     }
+                }
+            }
+            // validate captcha fields
+            if (CmsField.TYPE_CAPTCHA.equals(currentField.getType())) {
+                if (!CmsCaptcha.validateCaptchaPhrase(this, currentField.getValue())) {
+                    getErrors().put(currentField.getName(), ERROR_VALIDATION);
+                    allOk = false;
                 }
             }
         }
