@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/07/21 16:06:09 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.db;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsVfsException;
@@ -46,7 +48,9 @@ import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.StringTokenizer;
 import java.util.Vector;
 import java.util.zip.ZipEntry;
@@ -57,7 +61,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0
  */
@@ -255,8 +259,9 @@ public class CmsImportFolder {
             }
             entries++; // count number of entries in zip
             String actImportPath = importPath;
+            String title = CmsResource.getName(entry.getName());
             String filename = m_cms.getRequestContext().getFileTranslator().translateResource(entry.getName());
-            // separete path in direcotries an file name ...
+            // separate path in direcotries an file name ...
             StringTokenizer st = new StringTokenizer(filename, "/\\");
             int count = st.countTokens();
             String[] path = new String[count];
@@ -372,8 +377,20 @@ public class CmsImportFolder {
                         Collections.singletonMap("resource", res)));
                 } else {
                     String newResName = actImportPath + path[path.length - 1];
+                    if (title.lastIndexOf('.') != -1) {
+                        title = title.substring(0, title.lastIndexOf('.'));
+                    }
+                    List properties = new ArrayList(1);
+                    CmsProperty titleProp = new CmsProperty();
+                    titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
+                    if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                        titleProp.setStructureValue(title);
+                    } else {
+                        titleProp.setResourceValue(title);
+                    }
+                    properties.add(titleProp);
                     try {
-                        m_cms.createResource(newResName, type, buffer, Collections.EMPTY_LIST);
+                        m_cms.createResource(newResName, type, buffer, properties);
                     } catch (CmsDbSqlException sqlExc) {
                         // SQL error, probably the file is too large for the database settings, delete file
                         m_cms.lockResource(newResName);

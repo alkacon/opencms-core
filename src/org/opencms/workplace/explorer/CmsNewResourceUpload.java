@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/21 16:06:09 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,8 @@ package org.opencms.workplace.explorer;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.I_CmsResourceType;
@@ -45,8 +47,9 @@ import org.opencms.workplace.CmsWorkplaceException;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsChtype;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -68,7 +71,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -256,8 +259,22 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
                 } else {
                     // single file upload
-                    String newResname = getCms().getRequestContext().getFileTranslator().translateResource(
-                        CmsResource.getName(fileName.replace('\\', '/')));
+                    String newResname = CmsResource.getName(fileName.replace('\\', '/'));
+                    // determine Title property value to set on new resource
+                    String title = newResname;
+                    if (title.lastIndexOf('.') != -1) {
+                        title = title.substring(0, title.lastIndexOf('.'));
+                    }
+                    List properties = new ArrayList(1);
+                    CmsProperty titleProp = new CmsProperty();
+                    titleProp.setName(CmsPropertyDefinition.PROPERTY_TITLE);
+                    if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+                        titleProp.setStructureValue(title);
+                    } else {
+                        titleProp.setResourceValue(title);
+                    }
+                    properties.add(titleProp);
+                    newResname = getCms().getRequestContext().getFileTranslator().translateResource(newResname);
                     setParamNewResourceName(newResname);
                     setParamResource(newResname);
                     setParamResource(computeFullResourceName());
@@ -266,7 +283,7 @@ public class CmsNewResourceUpload extends CmsNewResource {
                     if (! getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
                         try {
                             // create the resource
-                            getCms().createResource(getParamResource(), resTypeId, content, Collections.EMPTY_LIST);
+                            getCms().createResource(getParamResource(), resTypeId, content, properties);
                         } catch (CmsDbSqlException sqlExc) {
                             // SQL error, probably the file is too large for the database settings, delete file
                             getCms().lockResource(getParamResource());
