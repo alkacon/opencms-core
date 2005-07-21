@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/07/21 13:39:07 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/07/21 16:10:44 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -705,7 +705,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      *
      * @return A list with the package names of the modules to be installed
      */
-    public List getInstallModules() {
+    public List getModulesToInstall() {
 
         if (m_installModules == null || m_installModules.isEmpty()) {
             return Collections.EMPTY_LIST;
