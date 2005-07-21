@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/07/21 13:38:47 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -92,7 +92,7 @@ public class TestConfiguration extends OpenCmsTestCase {
             String xmlOrigFile = inputFile + config.getXmlFileName();
             System.out.println("\n\nConfiguration instance: " + config + ":\n");
 
-            // gernerate XML document for the configuration
+            // generate XML document for the configuration
             Document outputDoc = manager.generateXml(config);
             outputDoc.setName(config.getXmlFileName());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/07/13 10:06:02 $
- * Version: $Revision: 1.213 $
+ * Date   : $Date: 2005/07/21 13:36:03 $
+ * Version: $Revision: 1.214 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.213 $ 
+ * @version $Revision: 1.214 $ 
  * 
  * @since 6.0.0 
  */
@@ -285,7 +285,7 @@ public final class OpenCmsCore {
      */
     protected static void setErrorCondition(CmsMessageContainer errorCondition) {
 
-        // init exceptions should only be thrown during setp process
+        // init exceptions should only be thrown during setup process
         if ((m_instance != null) && (m_instance.getRunLevel() < OpenCms.RUNLEVEL_3_SHELL_ACCESS)) {
             if (!Messages.ERR_CRITICAL_INIT_WIZARD_0.equals(errorCondition.getKey())) {
                 // if wizard is still enabled allow retry of initialization (for setup wizard)
