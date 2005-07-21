@@ -1,0 +1,8 @@
+<%@ page import="org.opencms.jsp.*,org.opencms.frontend.templateone.form.*" %><%
+	
+	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
+	
+	CmsCaptcha captcha = new CmsCaptcha();
+	captcha.writeCaptchaImage(cms);
+
+%>
