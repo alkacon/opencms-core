@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupWorkplaceImportThread.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/21 13:39:07 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public class CmsSetupWorkplaceImportThread extends Thread {
     /** Gets the System.out stream so it can be restored. */
     private PrintStream m_tempOut;
 
+    /** Flag to signalize if a workplace import is needed or not. */
+    private boolean m_workplaceImportNeeded;
+
     /** 
      * Constructor.<p>
      * 
@@ -83,6 +86,7 @@ public class CmsSetupWorkplaceImportThread extends Thread {
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
         m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_setupBean.getSetupLogName());
+        m_workplaceImportNeeded = !setupBean.getInstallModules().isEmpty();
     }
 
     /**
@@ -146,13 +150,15 @@ public class CmsSetupWorkplaceImportThread extends Thread {
             // start the logging thread 
             m_loggingThread.start();
 
-            // create a shell that will start importing the workplace
-            m_shell = new CmsShell(
-                m_setupBean.getWebAppRfsPath() + "WEB-INF" + File.separator,
-                m_setupBean.getServletMapping(),
-                m_setupBean.getDefaultWebApplication(),
-                "${user}@${project}>",
-                m_setupBean);
+            if (m_workplaceImportNeeded) {
+                // create a shell that will start importing the workplace
+                m_shell = new CmsShell(
+                    m_setupBean.getWebAppRfsPath() + "WEB-INF" + File.separator,
+                    m_setupBean.getServletMapping(),
+                    m_setupBean.getDefaultWebApplication(),
+                    "${user}@${project}>",
+                    m_setupBean);
+            }
 
             try {
                 try {
@@ -176,9 +182,14 @@ public class CmsSetupWorkplaceImportThread extends Thread {
                         CmsLog.INIT.info(org.opencms.main.Messages.get().key(org.opencms.main.Messages.INIT_LINE_0));
 
                     }
-                    m_shell.start(new FileInputStream(new File(m_setupBean.getWebAppRfsPath()
-                        + CmsSetupDb.SETUP_DATA_FOLDER
-                        + "cmssetup.txt")));
+                    if (m_workplaceImportNeeded) {
+                        m_shell.start(new FileInputStream(new File(m_setupBean.getWebAppRfsPath()
+                            + CmsSetupDb.SETUP_DATA_FOLDER
+                            + "cmssetup.txt")));
+                    } else {
+                        System.out.println(org.opencms.setup.Messages.get().key(
+                            org.opencms.setup.Messages.INIT_NO_WORKPLACE_IMPORT_NEEDED_0));
+                    }
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(org.opencms.setup.Messages.get().key(
                             org.opencms.setup.Messages.INIT_IMPORT_WORKPLACE_FINISHED_0));

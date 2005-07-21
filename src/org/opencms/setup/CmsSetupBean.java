@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/07/21 13:39:07 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
+
+    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
+    public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
     /** DB provider constant. */
     public static final String MYSQL_PROVIDER = "mysql";
@@ -108,9 +111,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
     /** DB provider constant. */
     public static final String POSTGRESQL_PROVIDER = "postgresql";
-
-    /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
-    public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
     /** Required files per database server setup. */
     public static final String[] REQUIRED_DB_SETUP_FILES = {
@@ -337,56 +337,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         }
 
         return m_availableModules;
-    }
-
-    /**
-     * Returns the display string for a given module.<p>
-     * 
-     * @param module a module in the form of the result of <code>{@link #getAvailableModules()}</code>
-     * 
-     * @return the display string for the given module
-     */
-    public String getDisplayForModule(Map module) {
-
-        String name = (String)module.get("niceName");
-        String group = (String)module.get("group");
-        String version = (String)module.get("version");
-        String display = name;
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(group)) {
-            display = group + ": " + display;
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(version)) {
-            display += " (" + version + ")";
-        }
-        return display;
-    }
-
-    /**
-     * Sorts the modules for display.<p>
-     * 
-     * @param modules the list of modules (the result of <code>{@link #getAvailableModules()}</code>)
-     * 
-     * @return a list of sorted module names
-     */
-    public List sortModules(Map modules) {
-
-        List aux = new ArrayList(modules.values());
-        Collections.sort(aux, new Comparator() {
-
-            public int compare(Object o1, Object o2) {
-
-                Map module1 = (Map)o1;
-                Map module2 = (Map)o2;
-                return getDisplayForModule(module1).compareTo(getDisplayForModule(module2));
-            }
-        });
-
-        List ret = new ArrayList(aux.size());
-        for (Iterator it = aux.iterator(); it.hasNext();) {
-            Map module = (Map)it.next();
-            ret.add(module.get("name"));
-        }
-        return ret;
     }
 
     /**
@@ -662,6 +612,28 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         return m_defaultWebApplication;
     }
 
+    /**
+     * Returns the display string for a given module.<p>
+     * 
+     * @param module a module in the form of the result of <code>{@link #getAvailableModules()}</code>
+     * 
+     * @return the display string for the given module
+     */
+    public String getDisplayForModule(Map module) {
+
+        String name = (String)module.get("niceName");
+        String group = (String)module.get("group");
+        String version = (String)module.get("version");
+        String display = name;
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(group)) {
+            display = group + ": " + display;
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(version)) {
+            display += " (" + version + ")";
+        }
+        return display;
+    }
+
     /** 
      * Returns the error messages.<p>
      * 
@@ -726,6 +698,19 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         } else {
             return CmsStringUtil.substitute(value, "$replace$", replaceString);
         }
+    }
+
+    /**
+     * Returns A list with the package names of the modules to be installed.<p>
+     *
+     * @return A list with the package names of the modules to be installed
+     */
+    public List getInstallModules() {
+
+        if (m_installModules == null || m_installModules.isEmpty()) {
+            return Collections.EMPTY_LIST;
+        }
+        return Collections.unmodifiableList(m_installModules);
     }
 
     /**
@@ -1553,6 +1538,34 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         System.out.println("This is OpenCms " + OpenCms.getSystemInfo().getVersionName());
         System.out.println();
         System.out.println();
+    }
+
+    /**
+     * Sorts the modules for display.<p>
+     * 
+     * @param modules the list of modules (the result of <code>{@link #getAvailableModules()}</code>)
+     * 
+     * @return a list of sorted module names
+     */
+    public List sortModules(Map modules) {
+
+        List aux = new ArrayList(modules.values());
+        Collections.sort(aux, new Comparator() {
+
+            public int compare(Object o1, Object o2) {
+
+                Map module1 = (Map)o1;
+                Map module2 = (Map)o2;
+                return getDisplayForModule(module1).compareTo(getDisplayForModule(module2));
+            }
+        });
+
+        List ret = new ArrayList(aux.size());
+        for (Iterator it = aux.iterator(); it.hasNext();) {
+            Map module = (Map)it.next();
+            ret.add(module.get("name"));
+        }
+        return ret;
     }
 
     /** 
