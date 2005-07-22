@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/07/21 07:29:58 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/22 15:22:39 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,6 +109,8 @@ public class CmsFormHandler extends CmsJspActionElement {
 
     /** The localized messages for the form handler. */
     private CmsMessages m_messages;
+    
+    private Boolean m_isValidatedCorrect;
 
     /**
      * Constructor, creates the necessary form configuration objects.<p>
@@ -322,6 +324,7 @@ public class CmsFormHandler extends CmsJspActionElement {
 
         setErrors(new HashMap());
         m_fieldValues = null;
+        m_isValidatedCorrect = null;
         setInitial(CmsStringUtil.isEmpty(req.getParameter(PARAM_FORMACTION)));
         // get the localized messages
         setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
@@ -449,9 +452,17 @@ public class CmsFormHandler extends CmsJspActionElement {
      * @return true if the optional check page should be displayed, otherwise false
      */
     public boolean showCheck() {
-
-        return getFormConfiguration().getShowCheck()
-            && ACTION_SUBMIT.equals(getRequest().getParameter(PARAM_FORMACTION));
+        
+        boolean result = false;
+        boolean validationCorrect = validate();
+        
+        if (getFormConfiguration().getShowCheck() && ACTION_SUBMIT.equals(getRequest().getParameter(PARAM_FORMACTION))) {
+            result = true;
+        } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && ACTION_CONFIRMED.equals(getRequest().getParameter(PARAM_FORMACTION)) && !validationCorrect) {
+            result = true;
+        }
+        
+        return result;
     }
 
     /**
@@ -461,9 +472,29 @@ public class CmsFormHandler extends CmsJspActionElement {
      */
     public boolean showForm() {
 
-        return isInitial()
-            || !validate()
-            || ACTION_CORRECT_INPUT.equals(getRequest().getParameter(PARAM_FORMACTION));
+        boolean result = false;
+        boolean validationCorrect = validate();
+        
+        if (isInitial()) {
+            // inital call
+            result = true;
+        } else if (ACTION_CORRECT_INPUT.equals(getRequest().getParameter(PARAM_FORMACTION))) {
+            // user decided to modify his inputs
+            result = true;
+        } else if (!getFormConfiguration().hasCaptchaField() && !validationCorrect) {
+            // input field validation failed
+            result = true;
+        } else {
+            if (getFormConfiguration().captchaFieldIsOnInputPage() && !validationCorrect) {
+                // input or captcha field validation failed
+                result = true;
+            } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && !validationCorrect) {
+                // captcha field validation failed- redisplay the check page, not the input page!
+                result = false;
+            }
+        }
+        
+        return result;
     }
 
     /**
@@ -475,13 +506,24 @@ public class CmsFormHandler extends CmsJspActionElement {
      * @return true if all neccessary fields can be validated, otherwise false
      */
     public boolean validate() {
+        
+        if (m_isValidatedCorrect != null) {
+            return m_isValidatedCorrect.booleanValue();
+        }
 
         boolean allOk = true;
         // iterate the form fields
         Iterator i = getFormConfiguration().getFields().iterator();
         // validate each form field
-        while (i.hasNext()) {
+        while (i.hasNext()) { 
+            
             CmsField currentField = (CmsField)i.next();
+            
+            if (CmsField.TYPE_CAPTCHA.equalsIgnoreCase(currentField.getType())) {
+                // the captcha field doesn't get validated here...
+                continue;
+            }
+            
             if (currentField.isMandatory()) {
                 // check if the field has a value
                 if (currentField.needsItems()) {
@@ -528,14 +570,23 @@ public class CmsFormHandler extends CmsJspActionElement {
                     }
                 }
             }
-            // validate captcha fields
-            if (CmsField.TYPE_CAPTCHA.equals(currentField.getType())) {
-                if (!CmsCaptcha.validateCaptchaPhrase(this, currentField.getValue())) {
-                    getErrors().put(currentField.getName(), ERROR_VALIDATION);
+        }
+                
+        CmsCaptchaField captchaField = m_formConfiguration.getCaptchaField(); 
+        if (captchaField != null) {
+            
+            boolean captchaFieldIsOnInputPage = getFormConfiguration().captchaFieldIsOnInputPage() && getFormConfiguration().isInputFormSubmitted(this);
+            boolean captchaFieldIsOnCheckPage = getFormConfiguration().captchaFieldIsOnCheckPage() && getFormConfiguration().isCheckPageSubmitted(this);
+
+            if (captchaFieldIsOnInputPage || captchaFieldIsOnCheckPage) {
+                if (!captchaField.validateCaptchaPhrase(this, captchaField.getValue())) {
+                    getErrors().put(captchaField.getName(), ERROR_VALIDATION);
                     allOk = false;
                 }
             }
         }
+        
+        m_isValidatedCorrect = new Boolean(allOk);
         return allOk;
     }
 

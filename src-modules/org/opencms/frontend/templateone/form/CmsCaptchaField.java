@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Attic/CmsCaptcha.java,v $
- * Date   : $Date: 2005/07/21 07:29:22 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
+ * Date   : $Date: 2005/07/22 15:22:39 $
  * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
@@ -45,7 +45,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
-import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
@@ -56,29 +55,34 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @version $Revision: 1.1 $
  */
-public class CmsCaptcha {
+public class CmsCaptchaField extends CmsField {
     
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsCaptcha.class);
+    private static final Log LOG = CmsLog.getLog(CmsCaptchaField.class);
     
     /** Request parameter name of the captcha phrase. */
-    public static final String C_PARAM_CAPTCHA_PHRASE = "captcha-phrase";
+    public static final String C_PARAM_CAPTCHA_PHRASE = "captchaphrase";
     
-    /** The share captche service instance. */
-    private static ImageCaptchaService imageCaptchaService = null;
+    /** The settings to render captcha images. */
+    private CmsCaptchaSettings m_captchaSettings;
     
     /**
-     * Returns the captcha service singleton.<p>
-     * 
-     * @return the captcha service singleton
+     * Creates a new captcha field.<p>
+     * @param captchaSettings the settings to render captcha images
+     * @param fieldLabel the localized label of this field
+     * @param fieldValue the submitted value of this field
      */
-    public static synchronized ImageCaptchaService getImageCaptchaService() {
+    public CmsCaptchaField(CmsCaptchaSettings captchaSettings, String fieldLabel, String fieldValue) {
         
-        if (imageCaptchaService == null) {
-            imageCaptchaService = new DefaultManageableImageCaptchaService();
-        }
+        super();
         
-        return imageCaptchaService;
+        m_captchaSettings = captchaSettings;
+        
+        setType(CmsField.TYPE_CAPTCHA);
+        setName(C_PARAM_CAPTCHA_PHRASE);
+        setValue(fieldValue);
+        setLabel(fieldLabel);
+        setMandatory(true);
     }
 
 
@@ -97,7 +101,7 @@ public class CmsCaptcha {
             String sessionId = cms.getRequest().getSession().getId();
             Locale locale = cms.getRequestContext().getLocale();
             
-            BufferedImage captchaImage = getImageCaptchaService().getImageChallengeForID(sessionId, locale);
+            BufferedImage captchaImage = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings).getImageChallengeForID(sessionId, locale);
             JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(captchaImageOutput);
             jpegEncoder.encode(captchaImage);
         } catch (Exception e) {
@@ -128,16 +132,30 @@ public class CmsCaptcha {
      * @param captchaPhrase the captcha phrase to be validate
      * @return true, if the captcha phrase entered by the user is correct, false otherwise
      */
-    public static boolean validateCaptchaPhrase(CmsJspActionElement jsp, String captchaPhrase) {
+    public boolean validateCaptchaPhrase(CmsJspActionElement jsp, String captchaPhrase) {
         
         boolean result = false;
         String sessionId = jsp.getRequest().getSession().getId();  
         
         if (CmsStringUtil.isNotEmpty(captchaPhrase)) {
-            result = getImageCaptchaService().validateResponseForID(sessionId, captchaPhrase).booleanValue();
+            
+            ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings);
+            if (captchaService != null) {
+                result = captchaService.validateResponseForID(sessionId, captchaPhrase).booleanValue();
+            }
         }
         
         return result;
+    }
+    
+    /**
+     * Returns the captcha settings of this field.<p>
+     * 
+     * @return the captcha settings of this field
+     */
+    public CmsCaptchaSettings getCaptchaSettings() {
+        
+        return m_captchaSettings;
     }
 
 }

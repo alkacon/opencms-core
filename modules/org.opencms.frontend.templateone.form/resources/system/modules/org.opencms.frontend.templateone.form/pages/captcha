@@ -2,7 +2,8 @@
 	
 	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 	
-	CmsCaptcha captcha = new CmsCaptcha();
+	CmsCaptchaSettings settings = new CmsCaptchaSettings(cms);
+	CmsCaptchaField captcha = new CmsCaptchaField(settings, null, null);
 	captcha.writeCaptchaImage(cms);
 
 %>

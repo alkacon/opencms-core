@@ -1,0 +1,38 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="FormCaptchas" type="OpenCmsFormCaptchas"/>
+	
+	<xsd:complexType name="OpenCmsFormCaptchas">
+		<xsd:sequence>
+			<xsd:element name="FormCaptcha" type="OpenCmsFormCaptcha" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsFormCaptcha">
+		<xsd:sequence>
+			<xsd:element name="FieldLabel" type="OpenCmsString" />
+			
+			<!--
+			<xsd:element name="ImageWidth" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="ImageHeight" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MinPhraseLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MaxPhraseLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MinFontSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MaxFontSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="FontColor" type="OpenCmsColor" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="BackgroundColor" type="OpenCmsColor" minOccurs="0" maxOccurs="1" />
+			//-->
+			
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+ 
+</xsd:schema>

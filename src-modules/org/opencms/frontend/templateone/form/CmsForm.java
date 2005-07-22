@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/07/21 07:29:58 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/22 15:22:39 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +167,33 @@ public class CmsForm {
 
     /** Request parameter name for the optional send confirmation email checkbox. */
     public static final String PARAM_SENDCONFIRMATION = "sendconfirmation";
+    
+    /** Configuration node name for the optional captcha. */
+    public static final String NODE_CAPTCHA = "FormCaptcha";
+    
+    /** Configuration node name for the optional captcha image width. */
+    public static final String NODE_CAPTCHA_IMAGEWIDTH = "ImageWidth";
+    
+    /** Configuration node name for the optional captcha image height. */
+    public static final String NODE_CAPTCHA_IMAGEHEIGHT = "ImageHeight";
+    
+    /** Configuration node name for the optional captcha min. phrase length. */
+    public static final String NODE_CAPTCHA_MIN_PHRASE_LENGTH = "MinPhraseLength";
+    
+    /** Configuration node name for the optional captcha max. phrase length. */
+    public static final String NODE_CAPTCHA_MAX_PHRASE_LENGTH = "MaxPhraseLength";
+    
+    /** Configuration node name for the optional captcha min. font size. */
+    public static final String NODE_CAPTCHA_MIN_FONT_SIZE = "MinFontSize";
+    
+    /** Configuration node name for the optional captcha max. font size. */
+    public static final String NODE_CAPTCHA_MAX_FONT_SIZE = "MaxFontSize";
+    
+    /** Configuration node name for the optional captcha font color. */
+    public static final String NODE_CAPTCHA_FONTCOLOR = "FontColor";
+    
+    /** Configuration node name for the optional captcha background color. */
+    public static final String NODE_CAPTCHA_BACKGROUNDCOLOR = "BackgroundColor";
 
     private List m_configurationErrors;
 
@@ -200,6 +227,8 @@ public class CmsForm {
     private String m_mailType;
 
     private boolean m_showCheck;
+    
+    private CmsCaptchaField m_captchaField;
 
     /**
      * Default constructor which parses the configuration file.<p>
@@ -500,6 +529,14 @@ public class CmsForm {
 
         // initialize the form input fields
         initInputFields(content, jsp, locale, messages, initial);
+        
+        // init. the optional captcha field
+        initCaptchaField(jsp, content, locale, initial);
+        
+        // add the captcha field to the list of all fields, if the form has no check page
+        if (captchaFieldIsOnInputPage() && m_captchaField != null) {
+            m_fields.add(m_captchaField);
+        }
     }
 
     /**
@@ -1032,20 +1069,13 @@ public class CmsForm {
                 } else {
                     field.setValidationExpression(getConfigurationValue(stringValue, ""));
                 }
-                
-                // force captcha fields to be mandatory
-                if (CmsField.TYPE_CAPTCHA.equals(field.getType())) {
-                    field.setMandatory(true);
+                // get the field mandatory flag
+                stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDMANDATORY, locale);
+                boolean isMandatory = Boolean.valueOf(stringValue).booleanValue();
+                field.setMandatory(isMandatory);
+                if (isMandatory) {
+                    // set flag that determines if mandatory fields are present
                     setHasMandatoryFields(true);
-                } else {
-                    // get the field mandatory flag
-                    stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDMANDATORY, locale);
-                    boolean isMandatory = Boolean.valueOf(stringValue).booleanValue();
-                    field.setMandatory(isMandatory);
-                    if (isMandatory) {
-                        // set flag that determines if mandatory fields are present
-                        setHasMandatoryFields(true);
-                    }
                 }
 
                 if (field.needsItems()) {
@@ -1119,6 +1149,49 @@ public class CmsForm {
             getFields().add(createConfirmationMailCheckbox(jsp, messages, initial));
         }
     }
+    
+    /**
+     * Initializes the optional captcha field.<p>
+     * 
+     * @param jsp the initialized CmsJspActionElement to access the OpenCms API
+     * @param locale the currently active Locale
+     * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
+     * @param content the XML configuration content
+     * @param messages the localized messages
+     */
+    private void initCaptchaField(CmsJspActionElement jsp, CmsXmlContent xmlContent, Locale locale, boolean initial) {
+        
+        boolean captchaFieldIsOnInputPage = captchaFieldIsOnInputPage();
+        boolean displayCheckPage = captchaFieldIsOnCheckPage() && isInputFormSubmitted(jsp);
+        boolean submittedCheckPage = captchaFieldIsOnCheckPage() && isCheckPageSubmitted(jsp);
+
+        if (captchaFieldIsOnInputPage || displayCheckPage || submittedCheckPage) {
+
+            CmsObject cms = jsp.getCmsObject();
+            
+            I_CmsXmlContentValue xmlValueCaptcha = xmlContent.getValue(NODE_CAPTCHA, locale);
+            if (xmlValueCaptcha != null) {
+
+                // get the field label
+                String xPathCaptcha = xmlValueCaptcha.getPath() + "/";
+                String stringValue = xmlContent.getStringValue(cms, xPathCaptcha + NODE_FIELDLABEL, locale);
+                String fieldLabel = getConfigurationValue(stringValue, "");
+
+                // get the field value
+                String fieldValue = "";
+                if (!initial) {
+                    fieldValue = jsp.getRequest().getParameter(CmsCaptchaField.C_PARAM_CAPTCHA_PHRASE);
+                    if (fieldValue == null) {
+                        fieldValue = "";
+                    }
+                }
+
+                // get the image settings from the XML content
+                CmsCaptchaSettings captchaSettings = new CmsCaptchaSettings(cms, xmlContent, locale);
+                m_captchaField = new CmsCaptchaField(captchaSettings, fieldLabel, fieldValue);
+            }
+        }
+    }
 
     /**
      * Initializes the member variables.<p>
@@ -1169,4 +1242,62 @@ public class CmsForm {
             }
         }
     }
+    
+    /**
+     * Returns the (opt.) captcha field of this form.<p>
+     * 
+     * @return the (opt.) captcha field of this form
+     */
+    public CmsCaptchaField getCaptchaField() {
+        
+        return m_captchaField;
+    }
+    
+    /**
+     * Tests, if the captcha field (if configured at all) should be displayed on the input page.<p>
+     * 
+     * @return true, if the captcha field should be displayed on the input page
+     */
+    public boolean captchaFieldIsOnInputPage() {
+        return !getShowCheck();
+    }
+    
+    /**
+     * Tests, if the captcha field (if configured at all) should be displayed on the check page.<p>
+     * 
+     * @return true, if the captcha field should be displayed on the check page
+     */
+    public boolean captchaFieldIsOnCheckPage() {
+        return getShowCheck();
+    }
+    
+    /**
+     * Tests if the check page was submitted.<p>
+     * 
+     * @param jsp the Cms JSP page
+     * @return true, if the check page was submitted
+     */
+    public boolean isCheckPageSubmitted(CmsJspActionElement jsp) {
+        return CmsFormHandler.ACTION_CONFIRMED.equals(jsp.getRequest().getParameter(CmsFormHandler.PARAM_FORMACTION));
+    }
+    
+    /**
+     * Tests if the input page was submitted.<p>
+     * 
+     * @param jsp the Cms JSP page
+     * @return true, if the input page was submitted
+     */
+    public boolean isInputFormSubmitted(CmsJspActionElement jsp) {
+        return CmsFormHandler.ACTION_SUBMIT.equals(jsp.getRequest().getParameter(CmsFormHandler.PARAM_FORMACTION));
+    }
+    
+    /**
+     * Tests if a captcha field is configured for this form.<p>
+     * 
+     * @return true, if a captcha field is configured for this form
+     */
+    public boolean hasCaptchaField() {
+        return m_captchaField != null;
+    }
+
 }
