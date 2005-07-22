@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/AllTests.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/22 10:37:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.i18n}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  * 
  * @since 6.0
  */
@@ -64,10 +64,11 @@ public final class AllTests {
         TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
         //$JUnit-BEGIN$
+        suite.addTestSuite(TestCmsCoreMessageBundles.class);
         suite.addTestSuite(TestCmsEncoder.class);
+        suite.addTestSuite(TestCmsLocaleManager.class);
         suite.addTestSuite(TestCmsMessages.class);
         suite.addTestSuite(TestCmsModuleMessageBundles.class);
-        suite.addTestSuite(TestCmsCoreMessageBundles.class);
         //$JUnit-END$
         return suite;
     }

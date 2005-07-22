@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/07/22 10:37:20 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,12 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
     /** Runtime property name for locale handler. */
     public static final String LOCALE_HANDLER = "class_locale_handler";
+
+    /** Request parameter to force encoding selection. */
+    public static final String PARAMETER_ENCODING = "__encoding";
+
+    /** Request parameter to force locale selection. */
+    public static final String PARAMETER_LOCALE = "__locale";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLocaleManager.class);
@@ -93,12 +99,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
     /** The configured locale handler. */
     private I_CmsLocaleHandler m_localeHandler;
-
-    /** Request parameter to force encoding selection. */
-    public static final String PARAMETER_ENCODING = "__encoding";
-
-    /** Request parameter to force locale selection. */
-    public static final String PARAMETER_LOCALE = "__locale";
 
     /**
      * Initializes a new CmsLocaleManager, called from the configuration.<p>
@@ -153,7 +153,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the default locale configured in <code>opencms.properties</code>.<p>
+     * Returns the default locale configured in <code>opencms-system.xml</code>.<p>
      *
      * The default locale is the first locale int the list of configured default locales.
      *
@@ -410,49 +410,43 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the best matching locale from the given locales.<p>
+     * Tries to find the given requested locale (eventually simplified) in the collection of available locales, 
+     * if the requested locale is not found it will return the first match from the given list of default locales.<p>
      * 
-     * The best matching locale is the first locale (eventually simplified) 
-     * in the given list with the maximum number of parts similar to a (part of a) 
-     * locale in the filter list.
+     * @param requestedLocale the requested locale, if this (or a simplified version of it) is available it will be returned
+     * @param defaults a list of default locales to use in case the requested locale is not available
+     * @param available the available locales to find a match in
      * 
-     * Example:
-     * getBestMatchingLocale([en_GB, de], {de, en, en_US} -> en
-     *      since en_GB <> de = 0, en_GB <> en = 1, en_GB <> en_US = 1, de <> de = 1, de <> en = 0, de <> en_US = 0 
-     * 
-     * @param requestedLocale the originally requested locale
-     * @param locales a list of locale names
-     * @param filter a list of locale names to use as filter
      * @return the best matching locale name or null if no name matches
      */
-    public Locale getBestMatchingLocale(Locale requestedLocale, List locales, Collection filter) {
+    public Locale getBestMatchingLocale(Locale requestedLocale, List defaults, Collection available) {
 
-        if ((filter == null) || (locales == null)) {
+        if ((available == null) || (defaults == null)) {
             return null;
         }
 
-        Locale result = null;
-
-        int max = -1;
-        for (int i = -1; i < locales.size(); i++) {
-            Locale locale = (i < 0) ? requestedLocale : (Locale)locales.get(i);
-            if (locale != null) {
-                for (Iterator j = filter.iterator(); j.hasNext();) {
-                    int m = match(locale, (Locale)j.next());
-                    if (m > max) {
-                        max = m;
-                        result = locale;
-                    }
-                }
+        // the requested locale is the match we want to find most
+        if (available.contains(requestedLocale)) {
+            // check if the requested locale is directly available
+            return requestedLocale;
+        }
+        if (requestedLocale.getVariant().length() > 0) {
+            // locale has a variant like "en_EN_whatever", try only with language and country 
+            Locale check = new Locale(requestedLocale.getLanguage(), requestedLocale.getCountry(), "");
+            if (available.contains(check)) {
+                return check;
+            }
+        }
+        if (requestedLocale.getCountry().length() > 0) {
+            // locale has a country like "en_EN", try only with language
+            Locale check = new Locale(requestedLocale.getLanguage(), "", "");
+            if (available.contains(check)) {
+                return check;
             }
         }
 
-        if (max < 0) {
-            return null;
-        }
-
-        return new Locale(result.getLanguage(), (max > 1) ? result.getCountry() : "", (max > 2) ? result.getVariant()
-        : "");
+        // no match found for the requested locale, return the first match from the default locales
+        return getFirstMatchingLocale(defaults, available);
     }
 
     /**
@@ -520,20 +514,21 @@ public class CmsLocaleManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the first matching locale.<p>
+     * Returns the first matching locale (eventually simplified) from the available locales.<p>
      * 
-     * @param locales must be a ascending sourted list of locales in order of preference
-     * @param filter the filter to check the locales agains
+     * @param locales must be an ascending sorted list of locales in order of preference
+     * @param available the available locales to find a match in
+     * 
      * @return the first precise or simplified match
      */
-    public Locale getFirstMatchingLocale(List locales, Collection filter) {
+    public Locale getFirstMatchingLocale(List locales, Collection available) {
 
         Iterator i;
         // first try a precise match
         i = locales.iterator();
         while (i.hasNext()) {
             Locale locale = (Locale)i.next();
-            if (filter.contains(locale)) {
+            if (available.contains(locale)) {
                 // precise match
                 return locale;
             }
@@ -543,10 +538,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
         i = locales.iterator();
         while (i.hasNext()) {
             Locale locale = (Locale)i.next();
-            locale = new Locale(locale.getLanguage(), locale.getCountry(), "");
-            if (filter.contains(locale)) {
-                // match
-                return locale;
+            if (locale.getVariant().length() > 0) {
+                // the locale has a variant, try to match without the variant
+                locale = new Locale(locale.getLanguage(), locale.getCountry(), "");
+                if (available.contains(locale)) {
+                    // match
+                    return locale;
+                }
             }
         }
 
@@ -554,10 +552,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
         i = locales.iterator();
         while (i.hasNext()) {
             Locale locale = (Locale)i.next();
-            locale = new Locale(locale.getLanguage(), "", "");
-            if (filter.contains(locale)) {
-                // match
-                return locale;
+            if (locale.getCountry().length() > 0) {
+                // the locale has a country, try to match without the country
+                locale = new Locale(locale.getLanguage(), "", "");
+                if (available.contains(locale)) {
+                    // match
+                    return locale;
+                }
             }
         }
 
@@ -739,28 +740,5 @@ public class CmsLocaleManager implements I_CmsEventListener {
             String eventType = "EVENT_CLEAR_CACHES";
             LOG.debug(Messages.get().key(Messages.LOG_LOCALE_MANAGER_FLUSH_CACHE_1, eventType));
         }
-    }
-
-    /**
-     * Returns the number of parts matching in the given locales.<p>
-     * 
-     * @param locale1 the first locale 
-     * @param locale2 the second locale 
-     * @return the number of matching parts (0-3)
-     */
-    private int match(Locale locale1, Locale locale2) {
-
-        int result = 0;
-        if (!locale1.getLanguage().equals("") && locale1.getLanguage().equals(locale2.getLanguage())) {
-            result = 1;
-            if (!locale1.getCountry().equals("") && locale1.getCountry().equals(locale2.getCountry())) {
-                result = 2;
-                if (!locale1.getVariant().equals("") && locale1.getVariant().equals(locale2.getVariant())) {
-                    result = 3;
-                }
-            }
-
-        }
-        return result;
     }
 }
