@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaServiceCache.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/07/22 15:47:09 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,9 +45,9 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  * Caches captcha services.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
-public class CmsCaptchaServiceCache implements I_CmsEventListener {
+public final class CmsCaptchaServiceCache implements I_CmsEventListener {
     
     /** The shared instance of the captcha service cache. */
     private static CmsCaptchaServiceCache sharedInstance = null;
