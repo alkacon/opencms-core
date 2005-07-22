@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/07/22 10:38:36 $
- * Version: $Revision: 1.674 $
+ * Date   : $Date: 2005/07/22 12:32:26 $
+ * Version: $Revision: 1.675 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ OpenCms 6.0.1 - ???, 2005
 * Fixed issue with history of siblings in a multiple site configuration
 * Fixed issue with error (404) pages not returning a 404 status code
 * Fixed issue with locale selection process not always working correctly when using "language_COUNTRY" type locale
+* Fixed issue 912: NullPointerException in "recommend page" of templateone
 
 OpenCms 6.0.0 - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler
