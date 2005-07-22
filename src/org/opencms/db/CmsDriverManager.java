@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/07/13 09:22:19 $
- * Version: $Revision: 1.547 $
+ * Date   : $Date: 2005/07/22 07:10:33 $
+ * Version: $Revision: 1.548 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.547 $
+ * @version $Revision: 1.548 $
  * 
  * @since 6.0.0
  */
@@ -3816,6 +3816,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     if (resource.getRootPath().startsWith(curSite)) {
                         // the source lies in a labeled site
                         sourceInside = true;
+                    }
+                    if (linkInside && sourceInside) {
+                        break;
                     }
                 }
                 // return true when either source or link is in labeled site, otherwise false
