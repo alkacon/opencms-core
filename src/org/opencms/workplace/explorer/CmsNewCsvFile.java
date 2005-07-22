@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/11 16:05:31 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/07/22 13:22:12 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,7 +166,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         String delimiter = getParamDelimiter();
         int[] headerColSpan = null;
         
-        StringBuffer xml = new StringBuffer("<?xml version=\"1.0\" encoding=\"ISO-8859-1\"?><table>");
+        StringBuffer xml = new StringBuffer("<table>");
         if (isFormattingInformation(formatString, delimiter)) {
             // transform formatting to HTML colgroup
             xml.append(getColGroup(formatString, delimiter));
@@ -404,7 +404,12 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         StringWriter writer = new StringWriter();
         trans.transform(xmlSource, new StreamResult(writer));
         String result = writer.toString();
-        return result;
+        // cut of the prefacing declaration '<?xml version="1.0" encoding="UTF-8"?>'
+        if (result.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")) {
+            return result.substring(38);   
+        } else {
+            return result;
+        }
     }
 
     /**
