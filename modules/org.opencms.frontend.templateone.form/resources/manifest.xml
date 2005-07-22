@@ -337,8 +337,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.frontend.templateone.form/pages/captcha.jpg</source>
-			<destination>system/modules/org.opencms.frontend.templateone.form/pages/captcha.jpg</destination>
+			<source>system/modules/org.opencms.frontend.templateone.form/pages/captcha</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/pages/captcha</destination>
 			<type>jsp</type>
 			<uuidresource>0cad6a0a-f90e-11d9-b740-c7beef112ba5</uuidresource>
 			<datelastmodified>Wed, 20 Jul 2005 12:45:31 GMT</datelastmodified>
