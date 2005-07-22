@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/07/22 12:14:36 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -868,13 +868,16 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
         // call initialization of super class
         super.init(context, req, res);
-        // do some additional stuff
-        m_properties = properties("search");
-        // check which page version to display
-        initPageVersion();
-        // check if the head navigation should be shown
-        m_showHeadNavigation = !showPrintVersion()
-            && Boolean.valueOf(property(PROPERTY_SHOW_HEADNAV, "search", "true")).booleanValue();
+        String className = getClass().getName();
+        if (className.endsWith("Bean")) {
+            // do some additional stuff if this is not called by a super class
+            m_properties = properties("search");
+            // check which page version to display
+            initPageVersion();
+            // check if the head navigation should be shown
+            m_showHeadNavigation = !showPrintVersion()
+                && Boolean.valueOf(property(PROPERTY_SHOW_HEADNAV, "search", "true")).booleanValue();
+        }
     }
 
     /**

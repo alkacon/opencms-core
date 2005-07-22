@@ -1,12 +1,13 @@
 <%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%--
 
---%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request">
-</jsp:useBean><%
+--%><jsp:useBean id="cms3" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request"><%--
+--%><jsp:setProperty name="cms3" property="*"/><%--
+--%></jsp:useBean><%
 
 // initialise Cms Action Element
-cms.init(pageContext, request, response);
+cms3.init(pageContext, request, response);
 
-if (cms.template("html")) {
+if (cms3.template("html")) {
 
 CmsTemplateStyleSheet style = new CmsTemplateStyleSheet(pageContext, request, response);
 
@@ -29,7 +30,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html lang="<%= cms.getRequestContext().getLocale() %>">
+<html lang="<%= cms3.getRequestContext().getLocale() %>">
 <head>
 	<style type="text/css">
 		<!--
@@ -52,48 +53,48 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 	</style>
 </head>
 <body>
-<h1><%= cms.key("recommend.mail.title") %></h1>
+<h1><%= cms3.key("recommend.mail.title") %></h1>
 <p>
-	<%= cms.getFormText("mail_head", false) %>
+	<%= cms3.getFormText("mail_head", false) %>
 </p>
 <div class="mail">
 <p>
-	<%= cms.key("recommend.text.page") %>
-	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageTitle() %></a><br />
-	<%= cms.key("recommend.text.url") %> <%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
+	<%= cms3.key("recommend.text.page") %>
+	<a href="<%= cms3.getPageUrl() %>"><%= cms3.getPageTitle() %></a><br />
+	<%= cms3.key("recommend.text.url") %> <%= cms3.getFormattedString(cms3.getPageUrl(), '/', 80, "<br>") %>
 </p>
 <p>
-	<%= cms.getMessage() %>
+	<%= cms3.getMessage() %>
 </p>
 <p>
-	<%= cms.key("recommend.mail.text.url") %><br>
-	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageUrl() %></a>
+	<%= cms3.key("recommend.mail.text.url") %><br>
+	<a href="<%= cms3.getPageUrl() %>"><%= cms3.getPageUrl() %></a>
 </p>
 </div>
 <p>
-	<%= cms.getFormText("mail_foot", false) %>
+	<%= cms3.getFormText("mail_foot", false) %>
 </p>
 </body>
 </html>
 <%
 }
 
-if (cms.template("text")) {
-%><%= cms.key("recommend.mail.title") %>
+if (cms3.template("text")) {
+%><%= cms3.key("recommend.mail.title") %>
 
-<%= cms.getFormText("mail_head", true) %>
+<%= cms3.getFormText("mail_head", true) %>
 
 ---------------------------------------------------------------------
-<%= cms.key("recommend.text.page") %> <%= cms.getPageTitle() %>
-<%= cms.key("recommend.text.url") %> <%= cms.getPageUrl() %>
+<%= cms3.key("recommend.text.page") %> <%= cms3.getPageTitle() %>
+<%= cms3.key("recommend.text.url") %> <%= cms3.getPageUrl() %>
 
-<%= cms.getMessage() %>
+<%= cms3.getMessage() %>
 
-<%= cms.key("recommend.mail.text.url") %>
-<%= cms.getPageUrl() %>
+<%= cms3.key("recommend.mail.text.url") %>
+<%= cms3.getPageUrl() %>
 ---------------------------------------------------------------------
 
-<%= cms.getFormText("mail_foot", true) %>
+<%= cms3.getFormText("mail_foot", true) %>
 <%
 }
 %>

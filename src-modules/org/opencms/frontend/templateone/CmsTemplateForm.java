@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateForm.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/22 12:14:36 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.httpclient.util.URIUtil;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,7 +347,9 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
      * @param res the JSP response 
      */
     public void init(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
+        
+        // get the page uri from request parameter
+        m_pageUri = req.getParameter(CmsTemplateBean.PARAM_URI);
         // call initialization of super class
         super.init(context, req, res);
         // set site root
@@ -357,8 +359,6 @@ public abstract class CmsTemplateForm extends CmsTemplateBean {
         }
         // store the form uri
         m_formUri = getRequestContext().getUri();
-        // get the page uri from request parameter
-        m_pageUri = req.getParameter(CmsTemplateBean.PARAM_URI);
         if (m_pageUri == null) {
             m_pageUri = m_formUri;
         }

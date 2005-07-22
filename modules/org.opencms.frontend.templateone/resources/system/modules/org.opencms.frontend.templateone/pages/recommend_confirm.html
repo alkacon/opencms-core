@@ -1,36 +1,37 @@
 <%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*" %><%--
 
---%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request"><%--
+--%><jsp:useBean id="cms2" class="org.opencms.frontend.templateone.CmsTemplateFormRecommend" scope="request"><%--
+--%><jsp:setProperty name="cms2" property="*"/><%--
 --%></jsp:useBean><%
 
 
 // initialise Cms Action Element
-cms.init(pageContext, request, response);
+cms2.init(pageContext, request, response);
 
-	cms.includePopup("popuphead", cms.key("recommend.title"));
+	cms2.includePopup("popuphead", cms2.key("recommend.title"));
 	
 	%>
-	<h1 class="popup"><%= cms.key("recommend.title") %></h1>
+	<h1 class="popup"><%= cms2.key("recommend.title") %></h1>
 	<div class="popup" style="padding: 2px;">
-		<%= cms.getFormText("confirm_head", false) %>
+		<%= cms2.getFormText("confirm_head", false) %>
 		<p>
-		<%= cms.key("recommend.text.page") %><br />
-		<a href="javascript:showFile('<%= cms.getPageUrl() %>');"><%= cms.getPageTitle() %></a><br />
-		<%= cms.key("recommend.text.url") %><br /><%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
+		<%= cms2.key("recommend.text.page") %><br />
+		<a href="javascript:showFile('<%= cms2.getPageUrl() %>');"><%= cms2.getPageTitle() %></a><br />
+		<%= cms2.key("recommend.text.url") %><br /><%= cms2.getFormattedString(cms2.getPageUrl(), '/', 80, "<br>") %>
 		</p>
 		<p>
-		<%= cms.key("recommend.text.confirmation") %>
+		<%= cms2.key("recommend.text.confirmation") %>
 		</p>
 		<p>
-		<%= cms.key("recommend.form.email.recipient") %><br />
-		<%= cms.getEmailRecipient() %>
+		<%= cms2.key("recommend.form.email.recipient") %><br />
+		<%= cms2.getEmailRecipient() %>
 		</p>
 		<p>
-		<%= cms.key("recommend.form.message") %><br />
-		<%= cms.getMessage() %>
+		<%= cms2.key("recommend.form.message") %><br />
+		<%= cms2.getMessage() %>
 		</p>
-		<%= cms.getFormText("confirm_foot", false) %>
+		<%= cms2.getFormText("confirm_foot", false) %>
 	</div>
 <%
-	cms.includePopup("popupfoot", null);
+	cms2.includePopup("popupfoot", null);
 %>

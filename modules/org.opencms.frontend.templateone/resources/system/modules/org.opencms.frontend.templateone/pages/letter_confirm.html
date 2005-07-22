@@ -1,34 +1,35 @@
 <%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*" %><%--
 
---%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request">
-</jsp:useBean><%
+--%><jsp:useBean id="cms2" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request"><%--
+--%><jsp:setProperty name="cms2" property="*"/><%--
+--%></jsp:useBean><%
 
 
 // initialise Cms Action Element
-cms.init(pageContext, request, response);
+cms2.init(pageContext, request, response);
 
-cms.includePopup("popuphead", cms.key("recommend.title"));
+cms2.includePopup("popuphead", cms2.key("recommend.title"));
 	%>
-	<h1 class="popup"><%= cms.key("letter.title") %></h1>
+	<h1 class="popup"><%= cms2.key("letter.title") %></h1>
 	<div class="popup" style="padding: 2px;">
-		<%= cms.getFormText("confirm_head", false) %>
+		<%= cms2.getFormText("confirm_head", false) %>
 		<p>
-			<%= cms.key("letter.text.confirmation") %>
+			<%= cms2.key("letter.text.confirmation") %>
 		</p>
 		<p>
-			<%= cms.key("letter.form.concern.title") %>
-			<%= cms.key("letter.form.concern." + cms.getConcern()) %><%
-				if ("other".equals(cms.getConcern())) {
-					out.print(": "+cms.getConcernDetail());
+			<%= cms2.key("letter.form.concern.title") %>
+			<%= cms2.key("letter.form.concern." + cms2.getConcern()) %><%
+				if ("other".equals(cms2.getConcern())) {
+					out.print(": "+cms2.getConcernDetail());
 				}				
 			%>
 		</p>
 		<p>
-			<%= cms.key("letter.form.message") %><br />
-			<%= cms.getMessage() %>
+			<%= cms2.key("letter.form.message") %><br />
+			<%= cms2.getMessage() %>
 		</p>
-		<%= cms.getFormText("confirm_foot", false) %>
+		<%= cms2.getFormText("confirm_foot", false) %>
 	</div>
 <%
-cms.includePopup("popupfoot", null);
+cms2.includePopup("popupfoot", null);
 %>

@@ -1,12 +1,13 @@
 <%@ page session="false" buffer="none" import="org.opencms.frontend.templateone.*" %><%--
 
---%><jsp:useBean id="cms" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request">
-</jsp:useBean><%
+--%><jsp:useBean id="cms3" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request"><%--
+--%><jsp:setProperty name="cms3" property="*"/><%--
+--%></jsp:useBean><%
 
 // initialise Cms Action Element
-cms.init(pageContext, request, response);
+cms3.init(pageContext, request, response);
 
-if (cms.template("html")) {
+if (cms3.template("html")) {
 
 CmsTemplateStyleSheet style = new CmsTemplateStyleSheet(pageContext, request, response);
 
@@ -29,7 +30,7 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
-<html lang="<%= cms.getRequestContext().getLocale() %>">
+<html lang="<%= cms3.getRequestContext().getLocale() %>">
 <head>
 	<style type="text/css">
 		<!--
@@ -52,122 +53,122 @@ String contentLinkVisited = style.getConfigValue("content.link.visited", content
 	</style>
 </head>
 <body>
-<h1><%= cms.key("letter.mail.title") %></h1>
+<h1><%= cms3.key("letter.mail.title") %></h1>
 <p>
-	<%= cms.getFormText("mail_head", false) %>
+	<%= cms3.getFormText("mail_head", false) %>
 </p>
 <div class="mail">
 <p>
-	<%= cms.key("letter.text.page") %>
-	<a href="<%= cms.getPageUrl() %>"><%= cms.getPageTitle() %></a><br />
-	<%= cms.key("letter.text.url") %> <%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %>
+	<%= cms3.key("letter.text.page") %>
+	<a href="<%= cms3.getPageUrl() %>"><%= cms3.getPageTitle() %></a><br />
+	<%= cms3.key("letter.text.url") %> <%= cms3.getFormattedString(cms3.getPageUrl(), '/', 80, "<br>") %>
 </p>
 <p>
-	<%= cms.key("letter.form.concern.title") %> <%= cms.key("letter.form.concern." + cms.getConcern()) %><%
-	if ("other".equals(cms.getConcern())) {
-		out.print("<br>" + cms.getConcernDetail());
+	<%= cms3.key("letter.form.concern.title") %> <%= cms3.key("letter.form.concern." + cms3.getConcern()) %><%
+	if ("other".equals(cms3.getConcern())) {
+		out.print("<br>" + cms3.getConcernDetail());
 	}
 	%>
 </p>
 <p>
-	<%= cms.getMessage() %>
+	<%= cms3.getMessage() %>
 </p>
 <p>
-	<%= cms.key("letter.mail.contactdata") %>
+	<%= cms3.key("letter.mail.contactdata") %>
 </p>
 <table border="0" cellpadding="2" cellspacing="0" style="font-size: 1.0em;">
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.salutation.title") %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.salutation.title") %></td>
 	<td><% 
-			if (!"".equals(cms.getContactSalutation())) {
-				out.print(cms.key("letter.form.salutation." + cms.getContactSalutation()));
+			if (!"".equals(cms3.getContactSalutation())) {
+				out.print(cms3.key("letter.form.salutation." + cms3.getContactSalutation()));
 			}
 		%></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.title") %></td>
-	<td><%= cms.getContactTitle() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.title") %></td>
+	<td><%= cms3.getContactTitle() %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.firstname") %></td>
-	<td><%= cms.getContactFirstName() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.firstname") %></td>
+	<td><%= cms3.getContactFirstName() %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.lastname") %></td>
-	<td><%= cms.getContactLastName() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.lastname") %></td>
+	<td><%= cms3.getContactLastName() %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.email") %></td>
-	<td><a href="mailto:<%= cms.getContactEmail() %>"><%= cms.getContactEmail() %></a></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.email") %></td>
+	<td><a href="mailto:<%= cms3.getContactEmail() %>"><%= cms3.getContactEmail() %></a></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.phone") %></td>
-	<td><%= cms.getContactPhone() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.phone") %></td>
+	<td><%= cms3.getContactPhone() %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.street") %></td>
-	<td style="white-space: nowrap;"><%= cms.getContactStreet() %> <%= cms.getContactNumber() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.street") %></td>
+	<td style="white-space: nowrap;"><%= cms3.getContactStreet() %> <%= cms3.getContactNumber() %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.city") %></td>
-	<td style="white-space: nowrap;"><%= cms.getContactZip() %> <%= cms.getContactCity() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.city") %></td>
+	<td style="white-space: nowrap;"><%= cms3.getContactZip() %> <%= cms3.getContactCity() %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= cms.key("letter.form.country") %></td>
-	<td><%= cms.getContactCountry() %></td>
+	<td style="white-space: nowrap;"><%= cms3.key("letter.form.country") %></td>
+	<td><%= cms3.getContactCountry() %></td>
 </tr>
 </table>
 
 <p>
-	<%= cms.key("letter.mail.text.url") %><br>
-	<a href="<%= cms.getPageUrl() %>"><%= cms.getFormattedString(cms.getPageUrl(), '/', 80, "<br>") %></a>
+	<%= cms3.key("letter.mail.text.url") %><br>
+	<a href="<%= cms3.getPageUrl() %>"><%= cms3.getFormattedString(cms3.getPageUrl(), '/', 80, "<br>") %></a>
 </p>
 </div>
 <p>
-	<%= cms.getFormText("mail_foot", false) %>
+	<%= cms3.getFormText("mail_foot", false) %>
 </p>
 </body>
 </html>
 <%
 }
 
-if (cms.template("text")) {
-%><%= cms.key("letter.mail.title") %>
+if (cms3.template("text")) {
+%><%= cms3.key("letter.mail.title") %>
 
-<%= cms.getFormText("mail_head", true) %>
+<%= cms3.getFormText("mail_head", true) %>
 
 ---------------------------------------------------------------------
-<%= cms.key("letter.text.page") %> <%= cms.getPageTitle() %>
-<%= cms.key("letter.text.url") %> <%= cms.getPageUrl() %>
+<%= cms3.key("letter.text.page") %> <%= cms3.getPageTitle() %>
+<%= cms3.key("letter.text.url") %> <%= cms3.getPageUrl() %>
 
-<%= cms.key("letter.form.concern.title") %> <%= cms.key("letter.form.concern." + cms.getConcern()) %><%
-	if ("other".equals(cms.getConcern())) {
-		out.print("\n" + cms.getConcernDetail());
+<%= cms3.key("letter.form.concern.title") %> <%= cms3.key("letter.form.concern." + cms3.getConcern()) %><%
+	if ("other".equals(cms3.getConcern())) {
+		out.print("\n" + cms3.getConcernDetail());
 	}
 	%>
 
-<%= cms.getMessage() %>
+<%= cms3.getMessage() %>
 
-<%= cms.key("letter.mail.contactdata") %>
-<%= cms.key("letter.form.salutation.title") %> <% 
-	if (!"".equals(cms.getContactSalutation())) {
-		out.print(cms.key("letter.form.salutation." + cms.getContactSalutation()));
+<%= cms3.key("letter.mail.contactdata") %>
+<%= cms3.key("letter.form.salutation.title") %> <% 
+	if (!"".equals(cms3.getContactSalutation())) {
+		out.print(cms3.key("letter.form.salutation." + cms3.getContactSalutation()));
 	}
 	%>
-<%= cms.key("letter.form.title") %> <%= cms.getContactTitle() %>
-<%= cms.key("letter.form.firstname") %> <%= cms.getContactFirstName() %>
-<%= cms.key("letter.form.lastname") %> <%= cms.getContactLastName() %>
-<%= cms.key("letter.form.email") %> <%= cms.getContactEmail() %>
-<%= cms.key("letter.form.phone") %> <%= cms.getContactPhone() %>
-<%= cms.key("letter.form.street") %> <%= cms.getContactStreet() %> <%= cms.getContactNumber() %>
-<%= cms.key("letter.form.city") %> <%= cms.getContactZip() %> <%= cms.getContactCity() %>
-<%= cms.key("letter.form.country") %> <%= cms.getContactCountry() %>
+<%= cms3.key("letter.form.title") %> <%= cms3.getContactTitle() %>
+<%= cms3.key("letter.form.firstname") %> <%= cms3.getContactFirstName() %>
+<%= cms3.key("letter.form.lastname") %> <%= cms3.getContactLastName() %>
+<%= cms3.key("letter.form.email") %> <%= cms3.getContactEmail() %>
+<%= cms3.key("letter.form.phone") %> <%= cms3.getContactPhone() %>
+<%= cms3.key("letter.form.street") %> <%= cms3.getContactStreet() %> <%= cms3.getContactNumber() %>
+<%= cms3.key("letter.form.city") %> <%= cms3.getContactZip() %> <%= cms3.getContactCity() %>
+<%= cms3.key("letter.form.country") %> <%= cms3.getContactCountry() %>
 
-<%= cms.key("letter.mail.text.url") %>
-<%= cms.getPageUrl() %>
+<%= cms3.key("letter.mail.text.url") %>
+<%= cms3.getPageUrl() %>
 ---------------------------------------------------------------------
 
-<%= cms.getFormText("mail_foot", true) %>
+<%= cms3.getFormText("mail_foot", true) %>
 <%
 }
 %>
