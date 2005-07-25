@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/18 08:02:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/07/25 16:22:29 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * <h4>Things to know</h4> 
  * <ul>
  *  <li>
- *  Online help will only work with content resources of type xmlpage.
+ *  Online help will only work with resources of type xmlpage.
  *  <li>
  *  Content pages with a property <em>"template-elements"</em> set to a path of a ressource (jsp, page,...) 
  *  will get the content produced by <code>{@link org.opencms.jsp.CmsJspActionElement#getContent(String)}</code> 
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,7 +90,10 @@ public class CmsHelpTemplateBean extends CmsDialog {
     public static final String DEFAULT_HELPFILE = "index.html";
 
     /** File name of the help mappings properties file(s). */
-    public static final String HELPMAPPINGS_FILENAME = "mappings.properties";
+    public static final String HELPMAPPINGS_FILENAME = "mappings_"
+        + "${"
+        + CmsMacroResolver.KEY_REQUEST_LOCALE
+        + "}.properties";
 
     /** The name of the help module. */
     public static final String MODULE_NAME = "org.opencms.workplace.help";
@@ -128,8 +131,11 @@ public class CmsHelpTemplateBean extends CmsDialog {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHelpTemplateBean.class);
 
-    /** The online project that is switched to whenever body content is processed for performance reasons. */
+    /** The online project that is switched to whenever body content is processed that shall be exported. */
     private CmsProject m_onlineProject;
+
+    /** The online project that is switched to whenever body content is processed that should not be exported. */
+    private CmsProject m_offlineProject;
 
     /** Request parameter for the help build frameset flag. */
     private String m_paramBuildframe;
@@ -153,6 +159,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         super(jsp);
         try {
             m_onlineProject = getCms().readProject(CmsProject.ONLINE_PROJECT_ID);
+            m_offlineProject = jsp.getRequestContext().currentProject();
         } catch (CmsException e) {
             // failed to get online project
             m_onlineProject = getCms().getRequestContext().currentProject();
@@ -241,71 +248,87 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
         StringBuffer result = new StringBuffer(256);
 
-        // store current project
-        CmsProject project = getJsp().getRequestContext().currentProject();
-        // change to online project to increase display performance
-        getJsp().getRequestContext().setCurrentProject(m_onlineProject);
-        result.append(buildHtmlHelpStart("onlinehelp.css", true));
-        result.append("<body>\n");
-        result.append("<a name=\"top\"></a>\n");
-        result.append("<table class=\"helpcontent\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
-        result.append("<tr>\n");
-        result.append("\t<td class=\"helpnav\">\n");
-        result.append("\t\t<a class=\"navhelphead\" href=\"javascript:top.body.location.href=top.head.homeLink;\">");
-        result.append(key(Messages.GUI_HELP_NAVIGATION_HEAD_0));
-        result.append("</a>\n");
-        result.append(buildHtmlHelpNavigation());
-        result.append("</td>\n");
-        result.append("\t<td class=\"helpcontent\">\n");
-        result.append("\t\t<h1>");
-        result.append(getJsp().property(
-            CmsPropertyDefinition.PROPERTY_TITLE,
-            getParamHelpresource(),
-            key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
-        result.append("</h1>\n");
-        // print navigation if property template-elements is set to sitemap
-        result.append(getJsp().getContent(getParamHelpresource(), "body", getLocale()));
+        // change to online project to allow static export 
         try {
-            CmsProperty elements = getCms().readPropertyObject(
+            getJsp().getRequestContext().setCurrentProject(m_onlineProject);
+            result.append(buildHtmlHelpStart("onlinehelp.css", true));
+            result.append("<body>\n");
+            result.append("<a name=\"top\"></a>\n");
+            result.append("<table class=\"helpcontent\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
+            result.append("<tr>\n");
+            result.append("\t<td class=\"helpnav\">\n");
+            result.append("\t\t<a class=\"navhelphead\" href=\"javascript:top.body.location.href=top.head.homeLink;\">");
+            result.append(key(Messages.GUI_HELP_NAVIGATION_HEAD_0));
+            result.append("</a>\n");
+            result.append(buildHtmlHelpNavigation());
+            result.append("</td>\n");
+            result.append("\t<td class=\"helpcontent\">\n");
+            result.append("\t\t<h1>");
+            result.append(getJsp().property(
+                CmsPropertyDefinition.PROPERTY_TITLE,
                 getParamHelpresource(),
-                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
-                false);
-            if (!elements.isNullProperty()) {
-                try {
-                    // trigger an exception here as getContent won't throw anything!
-                    getJsp().getCmsObject().readFile(elements.getValue());
-                    // Ok, ressource exists: switsch from the online project to turn of static export links. 
-                    // change from online project to allow dynamic content in dynamic pages.
-                    getJsp().getRequestContext().setCurrentProject(project);
-                    result.append(getJsp().getContent(elements.getValue()));
-                    getJsp().getRequestContext().setCurrentProject(project);
-                } catch (Throwable t) {
-                    CmsVfsResourceNotFoundException e2 = new CmsVfsResourceNotFoundException(Messages.get().container(
-                        Messages.GUI_HELP_ERR_CONTENT_APPEND_2,
-                        this.getParamHelpresource(),
-                        elements.getValue(),
-                        "template-elements"), t);
-                    throw e2;
+                key(Messages.GUI_HELP_FRAMESET_TITLE_0)));
+            result.append("</h1>\n");
+            // print navigation if property template-elements is set to sitemap
+            result.append(getJsp().getContent(getParamHelpresource(), "body", getLocale()));
+            try {
+                // additionally allow appending content of dynamic pages whose path may be specified 
+                // as value of property PROPERTY_TEMPLATE_ELEMENTS (currently sitemap.jsp and search.jsp are used)
+                CmsProperty elements = getCms().readPropertyObject(
+                    getParamHelpresource(),
+                    CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS,
+                    false);
+                if (!elements.isNullProperty()) {
+                    try {
+                        // trigger an exception here as getContent won't throw anything!
+                        getJsp().getCmsObject().readFile(elements.getValue());
+                        // Ok, ressource exists: switsch from the online project to turn of static export links. 
+                        String elementName = elements.getValue();
+                        // check, wether the "dynamic resource" wants to be exported or not:
+                        boolean export = false;
+                        CmsProperty exportProp = getCms().readPropertyObject(
+                            elementName,
+                            CmsPropertyDefinition.PROPERTY_EXPORT,
+                            true);
+
+                        if (!exportProp.isNullProperty()) {
+                            export = Boolean.valueOf(exportProp.getValue("false")).booleanValue();
+                        }
+                        if (!export) {
+                            // switch back from online project to avoid export:
+                            getJsp().getRequestContext().setCurrentProject(m_offlineProject);
+                        }
+                        result.append(getJsp().getContent(elements.getValue()));
+
+                    } catch (Throwable t) {
+                        CmsVfsResourceNotFoundException e2 = new CmsVfsResourceNotFoundException(
+                            Messages.get().container(
+                                Messages.GUI_HELP_ERR_CONTENT_APPEND_2,
+                                this.getParamHelpresource(),
+                                elements.getValue(),
+                                CmsPropertyDefinition.PROPERTY_TEMPLATE_ELEMENTS),
+                            t);
+                        throw e2;
+                    }
                 }
-            }
-        } catch (CmsException e1) {
+            } catch (CmsException e1) {
 
-            if (LOG.isErrorEnabled()) {
-                LOG.error(e1);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(e1);
+                }
+                result.append("<br>\n<div class=\"dialogerror\">");
+                // getLocale() does not work in this context!?!
+                result.append(e1.getMessageContainer().key(Locale.GERMAN));
+                result.append("</div>");
             }
-            result.append("<br>\n<div class=\"dialogerror\">");
-            // getLocale() does not work in this context!?!
-            result.append(e1.getMessageContainer().key(Locale.GERMAN));
-            result.append("</div>");
+            result.append("\t</td>\n");
+            result.append("</tr>\n");
+            result.append("</table>\n");
+            result.append(buildHtmlHelpEnd());
+            return result.toString();
+        } finally {
+            getJsp().getRequestContext().setCurrentProject(m_offlineProject);
         }
-        result.append("\t</td>\n");
-        result.append("</tr>\n");
-        result.append("</table>\n");
-        result.append(buildHtmlHelpEnd());
-        // set back to current project
-        getJsp().getRequestContext().setCurrentProject(project);
-
-        return result.toString();
     }
 
     /**
@@ -319,118 +342,121 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
         int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
 
-        // store current project
-        CmsProject project = getJsp().getRequestContext().currentProject();
-        // change to online project to increase display performance
-        getJsp().getRequestContext().setCurrentProject(m_onlineProject);
-        String resourcePath = getJsp().link("/system/modules/" + MODULE_NAME + "/resources/");
+        // change to online project to allow exporting
+        try {
+            getJsp().getRequestContext().setCurrentProject(m_onlineProject);
+            String resourcePath = getJsp().link("/system/modules/" + MODULE_NAME + "/resources/");
 
-        result.append(buildHtmlHelpStart("workplace.css", false));
-        result.append("<body class=\"buttons-head\" unselectable=\"on\">\n");
-        result.append("<script type=\"text/javascript\" src=\"");
-        result.append(getJsp().link("/system/modules/org.opencms.workplace.help/resources/search.js"));
-        result.append("\"></script>\n");
+            result.append(buildHtmlHelpStart("workplace.css", false));
+            result.append("<body class=\"buttons-head\" unselectable=\"on\">\n");
+            result.append("<script type=\"text/javascript\" src=\"");
+            result.append(getJsp().link("/system/modules/org.opencms.workplace.help/resources/search.js"));
+            result.append("\"></script>\n");
 
-        // store home link in JS variable to use it in body frame
-        result.append("<script type=\"text/javascript\">\n<!--\n");
-        result.append("\tvar homeLink = \"");
-        result.append(getParamHomelink());
-        result.append("\";\n\n");
-        result.append("//-->\n</script>\n");
+            // store home link in JS variable to use it in body frame
+            result.append("<script type=\"text/javascript\">\n<!--\n");
+            result.append("\tvar homeLink = \"");
+            result.append(getJsp().link(getParamHomelink()));
+            result.append("\";\n\n");
+            result.append("//-->\n</script>\n");
 
-        // search form with invisible elements 
+            // search form with invisible elements 
 
-        StringBuffer submitAction = new StringBuffer();
-        submitAction.append("parseSearchQuery(document.forms[\'searchform\'],\'");
-        submitAction.append(
-            Messages.get().key(getLocale(), Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1, new Object[] {new Integer(3)})).append(
-            "\');");
+            StringBuffer submitAction = new StringBuffer();
+            submitAction.append("parseSearchQuery(document.forms[\'searchform\'],\'");
+            submitAction.append(
+                Messages.get().key(
+                    getLocale(),
+                    Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1,
+                    new Object[] {new Integer(3)})).append("\');");
 
-        result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
-        String searchLink = getJsp().link(
-            new StringBuffer("/system/workplace/locales/").append(getLocale().getLanguage()).append("/help/search.html").toString());
-        result.append(searchLink);
-        result.append("\" target=\"body\"");
-        result.append(" onsubmit=\"");
-        result.append(submitAction.toString());
-        result.append("\">\n");
-        result.append("  <input type=\"hidden\" name=\"action\" value=\"search\" />\n");
-        result.append("  <input type=\"hidden\" name=\"query\" value=\"\" />\n");
-        result.append("  <input type=\"hidden\" name=\"index\" value=\"German online help\" />\n");
-        result.append("  <input type=\"hidden\" name=\"page\" value=\"1\" />\n");
+            result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
+            String searchLink = getJsp().link(
+                new StringBuffer("/system/modules/org.opencms.workplace.help/elements/search.jsp?").append(
+                    CmsLocaleManager.PARAMETER_LOCALE).append("=").append(getLocale()).toString());
+            result.append(searchLink);
+            result.append("\" target=\"body\"");
+            result.append(" onsubmit=\"");
+            result.append(submitAction.toString());
+            result.append("\">\n");
+            result.append("  <input type=\"hidden\" name=\"action\" value=\"search\" />\n");
+            result.append("  <input type=\"hidden\" name=\"query\" value=\"\" />\n");
+            result.append("  <input type=\"hidden\" name=\"index\" value=\"German online help\" />\n");
+            result.append("  <input type=\"hidden\" name=\"page\" value=\"1\" />\n");
 
-        result.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");
-        result.append("<tr>\n");
-        result.append("\t<td align=\"left\">\n");
+            result.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");
+            result.append("<tr>\n");
+            result.append("\t<td align=\"left\">\n");
 
-        // display navigation buttons
-        result.append(buttonBar(HTML_START));
-        result.append(buttonBarStartTab(0, 5));
-        result.append(button(
-            "javascript:history.back();",
-            null,
-            "back.png",
-            Messages.GUI_HELP_BUTTON_BACK_0,
-            buttonStyle,
-            resourcePath));
-        result.append(button(
-            "javascript:history.forward();",
-            null,
-            "next.png",
-            Messages.GUI_HELP_BUTTON_NEXT_0,
-            buttonStyle,
-            resourcePath));
-        //search
-        result.append("<td style=\"vertical-align: top;\">");
-        result.append("<input type=\"text\" name=\"query2\" class=\"onlineform\" style=\"width: 120px\" value=\"");
-        result.append("");
-        result.append(" \">");
-        result.append("</td>\n");
+            // display navigation buttons
+            result.append(buttonBar(HTML_START));
+            result.append(buttonBarStartTab(0, 5));
+            result.append(button(
+                "javascript:history.back();",
+                null,
+                "back.png",
+                Messages.GUI_HELP_BUTTON_BACK_0,
+                buttonStyle,
+                resourcePath));
+            result.append(button(
+                "javascript:history.forward();",
+                null,
+                "next.png",
+                Messages.GUI_HELP_BUTTON_NEXT_0,
+                buttonStyle,
+                resourcePath));
+            //search
+            result.append("<td style=\"vertical-align: top;\">");
+            result.append("<input type=\"text\" name=\"query2\" class=\"onlineform\" style=\"width: 120px\" value=\"");
+            result.append("");
+            result.append(" \">");
+            result.append("</td>\n");
 
-        result.append(button(
-            new StringBuffer("javascript:").append(submitAction.toString()).toString(),
-            null,
-            null,
-            Messages.GUI_HELP_BUTTON_SEARCH_0,
-            2,
-            null));
+            result.append(button(
+                new StringBuffer("javascript:").append(submitAction.toString()).toString(),
+                null,
+                null,
+                Messages.GUI_HELP_BUTTON_SEARCH_0,
+                2,
+                null));
 
-        result.append(buttonBar(HTML_END));
+            result.append(buttonBar(HTML_END));
 
-        result.append("</td>\n");
-        result.append("\t<td align=\"right\" width=\"100%\">\n");
+            result.append("</td>\n");
+            result.append("\t<td align=\"right\" width=\"100%\">\n");
 
-        // display close button
-        result.append(buttonBar(HTML_START));
-        result.append(buttonBarSeparator(5, 0));
-        result.append(button(
-            "javascript:top.close();",
-            null,
-            "close",
-            Messages.GUI_HELP_BUTTON_CLOSE_0,
-            buttonStyle,
-            resourcePath));
-        result.append(buttonBar(HTML_END));
+            // display close button
+            result.append(buttonBar(HTML_START));
+            result.append(buttonBarSeparator(5, 0));
+            result.append(button(
+                "javascript:top.close();",
+                null,
+                "close",
+                Messages.GUI_HELP_BUTTON_CLOSE_0,
+                buttonStyle,
+                resourcePath));
+            result.append(buttonBar(HTML_END));
 
-        result.append("\t</td>\n");
-        result.append("\t<td>&nbsp;</td>\n");
-        result.append("<td>");
+            result.append("\t</td>\n");
+            result.append("\t<td>&nbsp;</td>\n");
+            result.append("<td>");
 
-        // display logo
-        result.append("<span style=\"display: block; width: 80px; height: 22px; background-image: url(\'");
-        result.append(getSkinUri());
-        result.append("commons/workplace.png");
-        result.append("\'); \"></span>");
-        result.append("</td>");
-        result.append("</tr>\n");
-        result.append("</table>\n");
-        result.append("</form>\n");
-        result.append(buildHtmlHelpEnd());
+            // display logo
+            result.append("<span style=\"display: block; width: 80px; height: 22px; background-image: url(\'");
+            result.append(getSkinUri());
+            result.append("commons/workplace.png");
+            result.append("\'); \"></span>");
+            result.append("</td>");
+            result.append("</tr>\n");
+            result.append("</table>\n");
+            result.append("</form>\n");
+            result.append(buildHtmlHelpEnd());
 
-        // set back to current project
-        getJsp().getRequestContext().setCurrentProject(project);
-
-        return result.toString();
+            return result.toString();
+        } finally {
+            // set back to offline project
+            getJsp().getRequestContext().setCurrentProject(m_offlineProject);
+        }
     }
 
     /**
@@ -442,20 +468,13 @@ public class CmsHelpTemplateBean extends CmsDialog {
     public String displayHelp() throws IOException {
 
         String result = "";
-        // store current project
-        CmsProject project = getJsp().getRequestContext().currentProject();
+        // change to online project to allow static export / export links 
         try {
-            // change to online project to increase display performance
-            getJsp().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
-        } catch (CmsException e) {
-            // failed to switch to project
-        } finally {
+            getJsp().getRequestContext().setCurrentProject(m_onlineProject);
 
             if (isBuildFrameset()) {
                 // build the online help frameset
                 result = displayFrameset();
-                // set back to current project
-                getJsp().getRequestContext().setCurrentProject(project);
             } else {
                 // redirect to the help body
                 StringBuffer bodyLink = new StringBuffer(8);
@@ -472,11 +491,12 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 String bodyLinkWithParams = attachRequestString(bodyLink.toString());
                 String redirectLink = getJsp().link(bodyLinkWithParams);
                 // set back to current project
-                getJsp().getRequestContext().setCurrentProject(project);
                 getJsp().getResponse().sendRedirect(redirectLink);
             }
+            return result;
+        } finally {
+            getJsp().getRequestContext().setCurrentProject(m_onlineProject);
         }
-        return result;
     }
 
     /**
@@ -568,7 +588,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
      * 
      * @return the HTML for the end of the page
      */
-    protected String buildHtmlHelpEnd() {
+    public String buildHtmlHelpEnd() {
 
         StringBuffer result = new StringBuffer(4);
         result.append("</body>\n");
@@ -583,7 +603,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
      */
     protected String buildHtmlHelpNavigation() {
 
-        StringBuffer result = new StringBuffer(16);
+        StringBuffer result = new StringBuffer(512);
         // determine current URI
         String currentUri = getParamHelpresource();
         // ignore ressources outside content folder: e.g. the search.html which 
@@ -621,9 +641,22 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 result.append("px 1px;\" href=\"");
                 if (nav.isFolderLink()) {
                     // append file name to folder links to avoid static export issues
-                    result.append(getJsp().link(nav.getResourceName() + "index.html"));
+                    result.append(getJsp().link(
+                        "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
+                            + nav.getResourceName()
+                            + "index.html&"
+                            + CmsLocaleManager.PARAMETER_LOCALE
+                            + "="
+                            + getLocale()));
                 } else {
-                    result.append(getJsp().link(nav.getResourceName()));
+                    result.append(getJsp().link(
+                        "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource="
+                            + nav.getResourceName()
+                            + "&"
+                            + CmsLocaleManager.PARAMETER_LOCALE
+                            + "="
+                            + getLocale()));
+                    //                    result.append(getJsp().link(nav.getResourceName()));
                 }
                 result.append("\">");
                 result.append(nav.getNavText());
@@ -640,7 +673,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
      * @param transitional if true, transitional doctype is used
      * @return the HTML for the start of the page
      */
-    protected String buildHtmlHelpStart(String cssFile, boolean transitional) {
+    public String buildHtmlHelpStart(String cssFile, boolean transitional) {
 
         StringBuffer result = new StringBuffer(8);
         if (transitional) {
@@ -650,8 +683,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         }
         result.append("<html>\n");
         result.append("<head>\n");
-        result.append("\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
-        result.append(getCms().getRequestContext().getEncoding());
+        result.append("\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8");
         result.append("\">\n");
         result.append("\t<title>");
         if (CmsStringUtil.isNotEmpty(getParamHelpresource())) {
@@ -690,9 +722,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
         result.append("\t\ttop.location.href = \"" + getJsp().link(getJsp().getRequestContext().getUri()) + "\";\n");
         result.append("\t}\n");
         result.append("//-->\n</script>\n");
-        result.append("<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=");
-        result.append(getEncoding());
-        result.append("\">\n");
+        result.append("<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=utf-8\">\n");
 
         result.append("</head>\n\n");
         result.append("<frameset rows=\"24,*\" border=\"0\" frameborder=\"0\" framespacing=\"0\">\n");
@@ -739,49 +769,58 @@ public class CmsHelpTemplateBean extends CmsDialog {
      */
     protected void getMappedHelpUri() {
 
-        if (CmsStringUtil.isNotEmpty(getParamWorkplaceresource())) {
-            // found a workplace resource parameter, try to get a mapping for it
-            String helpResource = null;
-            if (getCms().existsResource(
-                resolveMacros(getParamWorkplaceresource()),
-                CmsResourceFilter.requireType(CmsResourceTypeXmlPage.getStaticTypeId()))) {
-                // given workplace resource is a page in VFS, use it as start point
-                helpResource = resolveMacros(getParamWorkplaceresource());
-                setParamHomelink(getJsp().link(helpResource));
-            } else {
-                // given workplace resource does not exist, resolve mapping
-                try {
-                    // try to read the mappings from the current module
-                    String absolutePath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(RFS_HELPMAPPINGS);
-                    ExtendedProperties props = CmsPropertyUtils.loadProperties(absolutePath);
+        try {
+            getJsp().getRequestContext().setCurrentProject(m_onlineProject);
+            if (CmsStringUtil.isNotEmpty(getParamWorkplaceresource())) {
+                // found a workplace resource parameter, try to get a mapping for it
+                String helpResource = null;
+                String wpResource = getParamWorkplaceresource();
+                if (getCms().existsResource(
+                    // todo: get thsis too.
+                    resolveMacros(getParamWorkplaceresource()),
+                    CmsResourceFilter.requireType(CmsResourceTypeXmlPage.getStaticTypeId()))) {
+                    // given workplace resource is a page in VFS, use it as start point
+                    helpResource = resolveMacros(getParamWorkplaceresource());
+                    setParamHomelink(getJsp().link(helpResource));
+                } else {
+                    // given workplace resource does not exist, resolve mapping
+                    try {
 
-                    String wpResource = getParamWorkplaceresource();
-                    if (wpResource.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
-                        // remove context from workplace path
-                        wpResource = wpResource.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
-                    }
-                    // determine mapping for workplace resource
-                    while (wpResource != null && CmsStringUtil.isEmpty(helpResource)) {
-                        helpResource = props.getString(wpResource, null);
-                        wpResource = CmsResource.getParentFolder(wpResource);
-                    }
-                } catch (IOException e) {
-                    // no mappings found in module, ignore              
-                }
+                        // try to read the mappings from the current module
+                        String absolutePath = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
+                            resolveMacros(RFS_HELPMAPPINGS));
+                        ExtendedProperties props = CmsPropertyUtils.loadProperties(absolutePath);
 
-                if (CmsStringUtil.isEmpty(helpResource)) {
-                    // no mapping found, use default help URI
-                    helpResource = DEFAULT_HELPFILE;
+                        if (wpResource.startsWith(OpenCms.getSystemInfo().getOpenCmsContext())) {
+                            // remove context from workplace path
+                            wpResource = wpResource.substring(OpenCms.getSystemInfo().getOpenCmsContext().length());
+                        }
+                        // determine mapping for workplace resource
+                        while (wpResource != null && CmsStringUtil.isEmpty(helpResource)) {
+                            helpResource = props.getString(wpResource, null);
+                            wpResource = CmsResource.getParentFolder(wpResource);
+                        }
+                    } catch (IOException e) {
+                        // no mappings found in module, ignore              
+                    }
+
+                    if (CmsStringUtil.isEmpty(helpResource)) {
+                        // no mapping found, use default help URI
+                        helpResource = DEFAULT_HELPFILE;
+                    }
+                    // create path to the help resource
+                    helpResource = resolveMacros(PATH_HELP) + helpResource;
+                    if (!getCms().existsResource(helpResource, CmsResourceFilter.IGNORE_EXPIRATION)) {
+                        helpResource = resolveMacros(PATH_HELP) + DEFAULT_HELPFILE;
+                    }
+                    setParamHomelink(getJsp().link(resolveMacros(PATH_HELP) + DEFAULT_HELPFILE));
                 }
-                // create path to the help resource
-                helpResource = resolveMacros(PATH_HELP) + helpResource;
-                if (!getCms().existsResource(helpResource, CmsResourceFilter.IGNORE_EXPIRATION)) {
-                    helpResource = resolveMacros(PATH_HELP) + DEFAULT_HELPFILE;
-                }
-                setParamHomelink(getJsp().link(resolveMacros(PATH_HELP) + DEFAULT_HELPFILE));
+                // set URI to found help page URI
+                getJsp().getRequestContext().setUri(helpResource);
             }
-            // set URI to found help page URI
-            getJsp().getRequestContext().setUri(helpResource);
+
+        } finally {
+            getJsp().getRequestContext().setCurrentProject(m_offlineProject);
         }
     }
 

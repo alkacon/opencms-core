@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Sun, 17 Jul 2005 12:36:07 GMT</createdate>
+		<createdate>Mon, 25 Jul 2005 16:00:45 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,9 +17,9 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.30</version>
-		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
-		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<version>0.31</version>
+		<authorname><![CDATA[Achim Westermann]]></authorname>
+		<authoremail><![CDATA[a.westermann@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
@@ -42,7 +42,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Jul 2005 07:26:38 GMT</datecreated>
+			<datecreated>Fri, 22 Jul 2005 08:53:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -104,18 +104,23 @@ Install this module if you want to use the german version of the OpenCms Workpla
 		<file>
 			<destination>system/workplace/locales/de</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 14:27:53 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[de]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/locales/de/help</destination>
 			<type>folder</type>
-			<datelastmodified>Sun, 17 Jul 2005 12:21:08 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 08:41:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -128,6 +133,14 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>export</name>
 					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params]]></value>
+				</property>
+				<property>
+					<name>exportname</name>
+					<value><![CDATA[/onlinehelp/de/]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -185,7 +198,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/index.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>c6b931dc-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Thu, 14 Jul 2005 14:54:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 10:36:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:49 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -210,40 +223,6 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Die OpenCms Online Hilfe]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/locales/de/help/search.html</source>
-			<destination>system/workplace/locales/de/help/search.html</destination>
-			<type>xmlpage</type>
-			<uuidresource>a5c8c4b4-f505-11d9-a9a0-55fa789c6c3d</uuidresource>
-			<datelastmodified>Fri, 15 Jul 2005 14:40:01 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Jul 2005 07:54:18 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[FÃ¼hrt eine Suche aufgrund von Parametern aus und stellt die Ergebnisse dar.]]></value>
-				</property>
-				<property>
-					<name>template-elements</name>
-					<value><![CDATA[/system/modules/org.opencms.workplace.help/elements/search.jsp]]></value>
-				</property>
-				<property>
-					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Suchergebnisse]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -450,7 +429,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Erlaubt die Ansicht sowie das Ã„ndern aller Daten einer Gruppen.]]></value>
+					<value><![CDATA[Erlaubt die Ansicht sowie das Ändern aller Daten einer Gruppen.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -458,11 +437,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[GruppenÃ¼bersicht]]></value>
+					<value><![CDATA[Gruppenübersicht]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[GruppenÃ¼bersicht]]></value>
+					<value><![CDATA[Gruppenübersicht]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -492,11 +471,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Gruppen zum Benutzer hinzufÃ¼gen]]></value>
+					<value><![CDATA[Gruppen zum Benutzer hinzufügen]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Gruppen zum Benutzer hinzufÃ¼gen]]></value>
+					<value><![CDATA[Gruppen zum Benutzer hinzufügen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -542,7 +521,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Benutzer zu Gruppen hinzufÃ¼gen]]></value>
+					<value><![CDATA[Benutzer zu Gruppen hinzufügen]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -550,11 +529,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Benutzer zu Gruppen hinzufÃ¼gen]]></value>
+					<value><![CDATA[Benutzer zu Gruppen hinzufügen]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Benutzer zu Gruppen hinzufÃ¼gen]]></value>
+					<value><![CDATA[Benutzer zu Gruppen hinzufügen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -598,7 +577,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Erlaubt die Ansicht sowie das Ã„ndern aller Daten eines Nutzers.]]></value>
+					<value><![CDATA[Erlaubt die Ansicht sowie das Ändern aller Daten eines Nutzers.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -606,11 +585,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[BenutzerÃ¼bersicht]]></value>
+					<value><![CDATA[Benutzerübersicht]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[BenutzerÃ¼bersicht]]></value>
+					<value><![CDATA[Benutzerübersicht]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -652,7 +631,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung der Bedienung widerkehrender Elemente der BenutzeroberflÃ¤che.]]></value>
+					<value><![CDATA[Beschreibung der Bedienung widerkehrender Elemente der Benutzeroberfläche.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -664,7 +643,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Generelle Elemente der BenutzeroberflÃ¤che]]></value>
+					<value><![CDATA[Generelle Elemente der Benutzeroberfläche]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -686,7 +665,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rung der Bedienung des Listen-Widgets.]]></value>
+					<value><![CDATA[Erklärung der Bedienung des Listen-Widgets.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -868,11 +847,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[VerÃ¶ffentlichung von Projekten]]></value>
+					<value><![CDATA[Veröffentlichung von Projekten]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[VerÃ¶ffentlichung von Projekten]]></value>
+					<value><![CDATA[Veröffentlichung von Projekten]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1034,7 +1013,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung des Editors fÃ¼r Quelltexte (non - WYSIWYG).]]></value>
+					<value><![CDATA[Beschreibung des Editors für Quelltexte (non - WYSIWYG).]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1068,7 +1047,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung des Editors fÃ¼r Xmlcontent .]]></value>
+					<value><![CDATA[Beschreibung des Editors für Xmlcontent .]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1198,7 +1177,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Hier finden Sie tiefergehende Informationen Ã¼ber das Arbeiten mit Ressourcen im Explorer.]]></value>
+					<value><![CDATA[Hier finden Sie tiefergehende Informationen über das Arbeiten mit Ressourcen im Explorer.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1228,7 +1207,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rung des Sperrmechanismus fÃ¼r Dateien zum konkurrierenden Arbeiten an gleichen Ressourcen.]]></value>
+					<value><![CDATA[Erklärung des Sperrmechanismus für Dateien zum konkurrierenden Arbeiten an gleichen Ressourcen.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1262,11 +1241,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Verschiedene Arten von Ã„nderungen an Dateien und Ihre Unterscheidung.]]></value>
+					<value><![CDATA[Verschiedene Arten von Änderungen an Dateien und Ihre Unterscheidung.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Datei - Ã„nderungen]]></value>
+					<value><![CDATA[Datei - Änderungen]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1274,7 +1253,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Datei - Ã„nderungen]]></value>
+					<value><![CDATA[Datei - Änderungen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1296,11 +1275,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rung des Begriffes und des Verhaltens von VerknÃ¼pfungen im Kontext von OpenCms.]]></value>
+					<value><![CDATA[Erklärung des Begriffes und des Verhaltens von Verknüpfungen im Kontext von OpenCms.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[VerknÃ¼pfungen]]></value>
+					<value><![CDATA[Verknüpfungen]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1308,7 +1287,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[VerknÃ¼pfungen]]></value>
+					<value><![CDATA[Verknüpfungen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1388,7 +1367,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibung der Zugriffsarten auf Ressourcen und ihrer AbkÃ¼rzungen.]]></value>
+					<value><![CDATA[Beschreibung der Zugriffsarten auf Ressourcen und ihrer Abkürzungen.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1448,7 +1427,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rung des Prinzps der Vererbung von Berechtigung bei Ressourcen.]]></value>
+					<value><![CDATA[Erklärung des Prinzps der Vererbung von Berechtigung bei Ressourcen.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1484,7 +1463,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Die SchaltflÃ¤che "Neu"]]></value>
+					<value><![CDATA[Die Schaltfläche "Neu"]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1506,7 +1485,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man im OpenCms Explorer einen neuen erweiterten Ordner erstellt.]]></value>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer einen neuen erweiterten Ordner erstellt.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1540,7 +1519,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man im OpenCms Explorer einen neuen Ordner erstellt.]]></value>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer einen neuen Ordner erstellt.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1570,7 +1549,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man im OpenCms Explorer neue Ressourcen erstellt.]]></value>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer neue Ressourcen erstellt.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1578,7 +1557,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Die SchaltflÃ¤che "Neu"]]></value>
+					<value><![CDATA[Die Schaltfläche "Neu"]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1600,7 +1579,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man im OpenCms Explorer eine neue Seite erstellt.]]></value>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer eine neue Seite erstellt.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1634,11 +1613,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man im OpenCms Explorer eine neue externe VerknÃ¼pfung erstellt.]]></value>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer eine neue externe Verknüpfung erstellt.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Externe VerknÃ¼pfung]]></value>
+					<value><![CDATA[Externe Verknüpfung]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1646,7 +1625,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Externe VerknÃ¼pfung]]></value>
+					<value><![CDATA[Externe Verknüpfung]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1668,7 +1647,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man im OpenCms Explorer einen neuen Strukturierten Inhalt erstellen erstellt.]]></value>
+					<value><![CDATA[Erklärt, wie man im OpenCms Explorer einen neuen Strukturierten Inhalt erstellen erstellt.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -1760,11 +1739,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man den Typ von Ressourcen Ã¤ndern kann.]]></value>
+					<value><![CDATA[Erklärt, wie man den Typ von Ressourcen ändern kann.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Ressource-Typen Ã¤ndern]]></value>
+					<value><![CDATA[Ressource-Typen ändern]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1772,7 +1751,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Ressource-Typen Ã¤ndern]]></value>
+					<value><![CDATA[Ressource-Typen ändern]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1794,7 +1773,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man Dateien kopiert.]]></value>
+					<value><![CDATA[Erklärt, wie man Dateien kopiert.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1828,7 +1807,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man Verzeichnisse kopiert.]]></value>
+					<value><![CDATA[Erklärt, wie man Verzeichnisse kopiert.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1862,11 +1841,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man Ressourcen LÃ¶schen kann.]]></value>
+					<value><![CDATA[Erklärt, wie man Ressourcen Löschen kann.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[LÃ¶schen]]></value>
+					<value><![CDATA[Löschen]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1874,7 +1853,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[LÃ¶schen]]></value>
+					<value><![CDATA[Löschen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1896,7 +1875,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Direkt VerÃ¶ffentlichen]]></value>
+					<value><![CDATA[Direkt Veröffentlichen]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1904,7 +1883,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Direkt VerÃ¶ffentlichen]]></value>
+					<value><![CDATA[Direkt Veröffentlichen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1926,11 +1905,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man externe VerknÃ¼pfungen editieren kann.]]></value>
+					<value><![CDATA[Erklärt, wie man externe Verknüpfungen editieren kann.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[VerknÃ¼pfung editieren]]></value>
+					<value><![CDATA[Verknüpfung editieren]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1938,7 +1917,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[VerknÃ¼pfung editieren]]></value>
+					<value><![CDATA[Verknüpfung editieren]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1986,7 +1965,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Eine Beschreibung des kontextsensitiven Popup - MenÃ¼s fÃ¼r Dateien im OpenCms Explorer.]]></value>
+					<value><![CDATA[Eine Beschreibung des kontextsensitiven Popup - Menüs für Dateien im OpenCms Explorer.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1994,7 +1973,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Das Datei - MenÃ¼]]></value>
+					<value><![CDATA[Das Datei - Menü]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2016,7 +1995,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man Ressourcen Umbenennen / Schieben kann.]]></value>
+					<value><![CDATA[Erklärt, wie man Ressourcen Umbenennen / Schieben kann.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -2050,7 +2029,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man die Navigation der Ressource Ã¤ndern kann.]]></value>
+					<value><![CDATA[Erklärt, wie man die Navigation der Ressource ändern kann.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -2058,11 +2037,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Navigation Ã¤ndern]]></value>
+					<value><![CDATA[Navigation ändern]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Navigation Ã¤ndern]]></value>
+					<value><![CDATA[Navigation ändern]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2084,7 +2063,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man Berechtigungen an Dateien und Verzeichnisse setzt.]]></value>
+					<value><![CDATA[Erklärt, wie man Berechtigungen an Dateien und Verzeichnisse setzt.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -2118,7 +2097,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt die Funktion von Eigenschaften und wie man sie an Ressourcen setzt.]]></value>
+					<value><![CDATA[Erklärt die Funktion von Eigenschaften und wie man sie an Ressourcen setzt.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -2152,7 +2131,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt das Sichern / Exportieren von Ressourcen.]]></value>
+					<value><![CDATA[Erklärt das Sichern / Exportieren von Ressourcen.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -2186,7 +2165,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt die Bedutung der Anzeige von VernkÃ¼pfungen.]]></value>
+					<value><![CDATA[Erklärt die Bedutung der Anzeige von Vernküpfungen.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -2194,11 +2173,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[VerknÃ¼pfungen anzeigen]]></value>
+					<value><![CDATA[Verknüpfungen anzeigen]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[VerknÃ¼pfungen anzeigen]]></value>
+					<value><![CDATA[Verknüpfungen anzeigen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2254,11 +2233,11 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[ErklÃ¤rt, wie man noch nicht verÃ¶ffentlichte Ã„nderungen verwerfen kann.]]></value>
+					<value><![CDATA[Erklärt, wie man noch nicht veröffentlichte Änderungen verwerfen kann.]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[Ã„nderungen verwerfen]]></value>
+					<value><![CDATA[Änderungen verwerfen]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -2266,7 +2245,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Ã„nderungen verwerfen]]></value>
+					<value><![CDATA[Änderungen verwerfen]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2371,7 +2350,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Beschreibt das Hochladen von Dateien auf den OpenCms Server mit der Standard- BrowserfunktionalitÃ¤t.]]></value>
+					<value><![CDATA[Beschreibt das Hochladen von Dateien auf den OpenCms Server mit der Standard- Browserfunktionalität.]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -2586,7 +2565,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<properties>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[Darstellung des KontextmenÃ¼s zur Ãœbernahme einer fremden Sperrung.]]></value>
+					<value><![CDATA[Darstellung des Kontextmenüs zur Übernahme einer fremden Sperrung.]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

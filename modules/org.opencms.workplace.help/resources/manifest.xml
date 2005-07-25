@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Sun, 17 Jul 2005 12:35:56 GMT</createdate>
+		<createdate>Mon, 25 Jul 2005 16:00:33 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p>
 <p><i>(c) 2004-2005 by Alkacon Software</i></p>]]></description>
-		<version>1.0.3</version>
+		<version>1.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,7 +38,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 15 Jul 2005 07:26:38 GMT</datecreated>
+			<datecreated>Fri, 22 Jul 2005 08:53:24 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -177,7 +177,7 @@
 			<destination>system/modules/org.opencms.workplace.help/elements/search.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d3c11c0e-f505-11d9-a9a0-55fa789c6c3d</uuidresource>
-			<datelastmodified>Sun, 17 Jul 2005 11:32:55 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 14:11:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Jul 2005 07:55:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -199,7 +199,7 @@
 			<destination>system/modules/org.opencms.workplace.help/elements/sitemap.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>3aff1091-f3a8-11d9-8d82-91fe884058f0</uuidresource>
-			<datelastmodified>Thu, 14 Jul 2005 09:04:25 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 09:15:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 13 Jul 2005 14:13:05 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -207,7 +207,7 @@
 			<properties>
 				<property type="shared">
 					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<value><![CDATA[true]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -224,6 +224,7 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -231,19 +232,23 @@
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help</destination>
 			<type>jsp</type>
 			<uuidresource>51129e3d-d435-11d9-83b9-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 14:10:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>content-encoding</name>
+					<value><![CDATA[utf-8]]></value>
 				</property>
-				<property type="shared">
+				<property>
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>template-elements</name>
@@ -265,23 +270,23 @@
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d5e0b9c1-d1c4-11d9-926a-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 25 Jul 2005 12:40:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
-				<property type="shared">
-					<name>cache</name>
-					<value><![CDATA[bypass]]></value>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
 				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[true]]></value>
 				</property>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
+					<name>cache</name>
+					<value><![CDATA[uri;element;params]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -291,7 +296,7 @@
 			<destination>system/modules/org.opencms.workplace.help/jsptemplates/help_head.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d5e9e187-d1c4-11d9-926a-01ff5ab8f021</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 22 Jul 2005 13:35:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -300,10 +305,6 @@
 				<property type="shared">
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
