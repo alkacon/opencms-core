@@ -25,7 +25,7 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
 			<layouts>
-				<layout element="FieldType" widget="SelectorWidget" configuration="text*:${key.form.field.type.text}|textarea:${key.form.field.type.textarea}|checkbox:${key.form.field.type.checkbox}|radio:${key.form.field.type.radio}|select:${key.form.field.type.select}|hidden:${key.form.field.type.hidden}|email:${key.form.field.type.email}|captcha:${key.form.field.type.captcha}" />
+				<layout element="FieldType" widget="SelectorWidget" configuration="text*:${key.form.field.type.text}|textarea:${key.form.field.type.textarea}|checkbox:${key.form.field.type.checkbox}|radio:${key.form.field.type.radio}|select:${key.form.field.type.select}|hidden:${key.form.field.type.hidden}|email:${key.form.field.type.email}" />
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  
