@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/06/24 11:24:57 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/25 15:59:36 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,9 +80,6 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
 
     /** Request parameter name for the job id. */
     public static final String PARAM_JOBID = "jobid";
-
-    /** Request parameter name for the job name. */
-    public static final String PARAM_JOBNAME = "jobname";
 
     /** The job info object that is edited on this dialog. */
     private CmsScheduledJobInfo m_jobInfo;

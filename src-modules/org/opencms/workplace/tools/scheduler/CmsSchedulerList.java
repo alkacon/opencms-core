@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/25 15:59:36 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,8 +239,6 @@ public class CmsSchedulerList extends A_CmsListDialog {
             // forward to the edit job screen with additional parameters               
             Map params = new HashMap();
             params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBID, jobId);
-            String jobName = (String)getSelectedItem().get(LIST_COLUMN_NAME);
-            params.put(CmsEditScheduledJobInfoDialog.PARAM_JOBNAME, jobName);
             // set action parameter to initial dialog call
             params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
             getToolManager().jspForwardTool(this, "/scheduler/edit", params);
