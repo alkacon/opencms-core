@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/07/08 19:14:11 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/25 16:03:20 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0
  */
@@ -424,8 +424,9 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             + N_STATICEXPORT_RESOURCESTORENDER
             + "/"
             + N_STATICEXPORT_REGEX, "setExportFolderPattern", 0);
-        // export-rules
-        digester.addCallMethod("*/"
+
+        // export-rules configuration
+        String exportRulePath = "*/"
             + N_STATICEXPORT
             + "/"
             + N_STATICEXPORT_RENDERSETTINGS
@@ -434,182 +435,43 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
             + "/"
             + N_STATICEXPORT_EXPORTRULES
             + "/"
-            + N_STATICEXPORT_EXPORTRULE, "addExportRule", 2);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_EXPORTRULES
-            + "/"
-            + N_STATICEXPORT_EXPORTRULE
-            + "/"
-            + N_STATICEXPORT_NAME, 0);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_EXPORTRULES
-            + "/"
-            + N_STATICEXPORT_EXPORTRULE
-            + "/"
-            + N_STATICEXPORT_DESCRIPTION, 1);
-        digester.addCallMethod("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_EXPORTRULES
-            + "/"
-            + N_STATICEXPORT_EXPORTRULE
-            + "/"
-            + N_STATICEXPORT_MODIFIED
-            + "/"
-            + N_STATICEXPORT_REGEX, "addExportRuleRegex", 1);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_EXPORTRULES
-            + "/"
-            + N_STATICEXPORT_EXPORTRULE
-            + "/"
-            + N_STATICEXPORT_MODIFIED
-            + "/"
-            + N_STATICEXPORT_REGEX, 0);
-        digester.addCallMethod("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_EXPORTRULES
-            + "/"
-            + N_STATICEXPORT_EXPORTRULE
-            + "/"
-            + N_STATICEXPORT_EXPORT
-            + "/"
-            + N_STATICEXPORT_URI, "addExportRuleUri", 1);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RESOURCESTORENDER
-            + "/"
-            + N_STATICEXPORT_EXPORTRULES
-            + "/"
-            + N_STATICEXPORT_EXPORTRULE
-            + "/"
-            + N_STATICEXPORT_EXPORT
-            + "/"
-            + N_STATICEXPORT_URI, 0);
+            + N_STATICEXPORT_EXPORTRULE;
+        digester.addCallMethod(exportRulePath, "addExportRule", 2);
+        digester.addCallParam(exportRulePath + "/" + N_STATICEXPORT_NAME, 0);
+        digester.addCallParam(exportRulePath + "/" + N_STATICEXPORT_DESCRIPTION, 1);
+        digester.addCallMethod(
+            exportRulePath + "/" + N_STATICEXPORT_MODIFIED + "/" + N_STATICEXPORT_REGEX,
+            "addExportRuleRegex",
+            1);
+        digester.addCallParam(exportRulePath + "/" + N_STATICEXPORT_MODIFIED + "/" + N_STATICEXPORT_REGEX, 0);
+        digester.addCallMethod(
+            exportRulePath + "/" + N_STATICEXPORT_EXPORT + "/" + N_STATICEXPORT_URI,
+            "addExportRuleUri",
+            1);
+        digester.addCallParam(exportRulePath + "/" + N_STATICEXPORT_EXPORT + "/" + N_STATICEXPORT_URI, 0);
 
         // rfs-rules configuration
-        digester.addCallMethod("*/"
+        String rfsRulePath = "*/"
             + N_STATICEXPORT
             + "/"
             + N_STATICEXPORT_RENDERSETTINGS
             + "/"
             + N_STATICEXPORT_RFS_RULES
             + "/"
-            + N_STATICEXPORT_RFS_RULE, "addRfsRule", 6);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_NAME, 0);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_DESCRIPTION, 1);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_SOURCE, 2);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_RFS_PREFIX, 3);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_EXPORTPATH, 4);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_RELATIVELINKS, 5);
+            + N_STATICEXPORT_RFS_RULE;
+        digester.addCallMethod(rfsRulePath, "addRfsRule", 6);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_NAME, 0);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_DESCRIPTION, 1);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_SOURCE, 2);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RFS_PREFIX, 3);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_EXPORTPATH, 4);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATIVELINKS, 5);
         // rfs-rule related system resources
-        digester.addCallMethod("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_RELATED_SYSTEM_RES
-            + "/"
-            + N_STATICEXPORT_REGEX, "addRfsRuleSystemRes", 1);
-        digester.addCallParam("*/"
-            + N_STATICEXPORT
-            + "/"
-            + N_STATICEXPORT_RENDERSETTINGS
-            + "/"
-            + N_STATICEXPORT_RFS_RULES
-            + "/"
-            + N_STATICEXPORT_RFS_RULE
-            + "/"
-            + N_STATICEXPORT_RELATED_SYSTEM_RES
-            + "/"
-            + N_STATICEXPORT_REGEX, 0);
+        digester.addCallMethod(
+            rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX,
+            "addRfsRuleSystemRes",
+            1);
+        digester.addCallParam(rfsRulePath + "/" + N_STATICEXPORT_RELATED_SYSTEM_RES + "/" + N_STATICEXPORT_REGEX, 0);
     }
 
     /**
@@ -819,7 +681,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 rfsRuleElement.addElement(N_STATICEXPORT_RFS_PREFIX).addText(rule.getRfsPrefixConfigured());
                 rfsRuleElement.addElement(N_STATICEXPORT_EXPORTPATH).addText(rule.getExportPathConfigured());
                 if (rule.getUseRelativeLinks() != null) {
-                    rfsRuleElement.addElement(N_STATICEXPORT_RELATIVELINKS).addText(rule.getUseRelativeLinks().toString());
+                    rfsRuleElement.addElement(N_STATICEXPORT_RELATIVELINKS).addText(
+                        rule.getUseRelativeLinks().toString());
                 }
                 Element relatedSystemRes = rfsRuleElement.addElement(N_STATICEXPORT_RELATED_SYSTEM_RES);
                 Iterator itSystemRes = rule.getRelatedSystemResources().iterator();
