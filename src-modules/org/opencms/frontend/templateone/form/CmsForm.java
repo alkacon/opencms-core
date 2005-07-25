@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/25 12:18:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -1298,6 +1298,25 @@ public class CmsForm {
      */
     public boolean hasCaptchaField() {
         return m_captchaField != null;
+    }
+    
+    /**
+     * Removes the captcha field from the list of all fields, if present.<p>
+     * 
+     * @return the removed captcha field, or null
+     */
+    public CmsField removeCaptchaField() {
+
+        for (int i = 0, n = m_fields.size(); i < n; i++) {
+
+            CmsField field = (CmsField)m_fields.get(i);
+            if (CmsField.TYPE_CAPTCHA.equalsIgnoreCase(field.getType())) {
+                m_fields.remove(i);
+                return field;
+            }
+        }
+
+        return null;
     }
 
 }

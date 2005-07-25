@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/07/25 12:18:53 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -454,11 +454,10 @@ public class CmsFormHandler extends CmsJspActionElement {
     public boolean showCheck() {
         
         boolean result = false;
-        boolean validationCorrect = validate();
         
         if (getFormConfiguration().getShowCheck() && ACTION_SUBMIT.equals(getRequest().getParameter(PARAM_FORMACTION))) {
             result = true;
-        } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && ACTION_CONFIRMED.equals(getRequest().getParameter(PARAM_FORMACTION)) && !validationCorrect) {
+        } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && ACTION_CONFIRMED.equals(getRequest().getParameter(PARAM_FORMACTION)) && !validate()) {
             result = true;
         }
         
@@ -473,25 +472,27 @@ public class CmsFormHandler extends CmsJspActionElement {
     public boolean showForm() {
 
         boolean result = false;
-        boolean validationCorrect = validate();
         
         if (isInitial()) {
             // inital call
             result = true;
-        } else if (ACTION_CORRECT_INPUT.equals(getRequest().getParameter(PARAM_FORMACTION))) {
+        } else if (ACTION_CORRECT_INPUT.equalsIgnoreCase(getRequest().getParameter(PARAM_FORMACTION))) {
             // user decided to modify his inputs
             result = true;
-        } else if (!getFormConfiguration().hasCaptchaField() && !validationCorrect) {
+        } else if (ACTION_SUBMIT.equalsIgnoreCase(getRequest().getParameter(PARAM_FORMACTION)) && !validate()) {
             // input field validation failed
             result = true;
-        } else {
-            if (getFormConfiguration().captchaFieldIsOnInputPage() && !validationCorrect) {
-                // input or captcha field validation failed
-                result = true;
-            } else if (getFormConfiguration().captchaFieldIsOnCheckPage() && !validationCorrect) {
-                // captcha field validation failed- redisplay the check page, not the input page!
-                result = false;
+            
+            if (getFormConfiguration().hasCaptchaField() && getFormConfiguration().captchaFieldIsOnCheckPage()) {
+                // if there is a captcha field and a check page configured, we do have to remove the already
+                // initialized captcha field from the form again. the captcha field gets initialized together with
+                // the form, in this moment it is not clear yet whether we have validation errors or and need to
+                // to go back to the input form...
+                getFormConfiguration().removeCaptchaField();
             }
+        } else if (ACTION_CONFIRMED.equalsIgnoreCase(getRequest().getParameter(PARAM_FORMACTION)) && getFormConfiguration().captchaFieldIsOnCheckPage() && !validate()) {
+            // captcha field validation on check page failed- redisplay the check page, not the input page!
+            result = false;
         }
         
         return result;
