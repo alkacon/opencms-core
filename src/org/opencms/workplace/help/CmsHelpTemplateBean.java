@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/25 16:22:29 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/26 12:54:55 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -356,7 +356,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             // store home link in JS variable to use it in body frame
             result.append("<script type=\"text/javascript\">\n<!--\n");
             result.append("\tvar homeLink = \"");
-            result.append(getJsp().link(getParamHomelink()));
+            result.append(getParamHomelink());
             result.append("\";\n\n");
             result.append("//-->\n</script>\n");
 
@@ -403,6 +403,14 @@ public class CmsHelpTemplateBean extends CmsDialog {
                 null,
                 "next.png",
                 Messages.GUI_HELP_BUTTON_NEXT_0,
+                buttonStyle,
+                resourcePath));
+
+            result.append(button(
+                "javascript:top.body.location.href='" + getParamHomelink() + "';",
+                null,
+                "contents.png",
+                Messages.GUI_HELP_BUTTON_CONTENTS_0,
                 buttonStyle,
                 resourcePath));
             //search

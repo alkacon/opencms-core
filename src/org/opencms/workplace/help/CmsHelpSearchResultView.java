@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2005/07/25 16:22:30 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/07/26 12:54:55 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  * 
  * @since 6.0.0
  */
@@ -199,7 +199,10 @@ public class CmsHelpSearchResultView {
                     CmsSearchResult entry = (CmsSearchResult)iterator.next();
                     result.append("\n<div class=\"searchResult\"><a class=\"navhelp\" href=\"");
 
-                    result.append(m_jsp.link(new StringBuffer(m_jsp.getRequestContext().removeSiteRoot(entry.getPath())).toString()));
+                    result.append(m_jsp.link(new StringBuffer(
+                        "/system/modules/org.opencms.workplace.help/jsptemplates/help_body.jsp?helpresource=").append(
+                        m_jsp.getRequestContext().removeSiteRoot(entry.getPath())).append("&").append(
+                        CmsLocaleManager.PARAMETER_LOCALE).append("=").append(m_jsp.getRequestContext().getLocale()).toString()));
                     result.append("\">\n");
                     result.append(entry.getTitle());
                     result.append("</a>");
@@ -330,7 +333,8 @@ public class CmsHelpSearchResultView {
         search.setIndex(request.getParameter("index"));
         search.setMatchesPerPage(5);
         search.setDisplayPages(7);
-        search.setSearchRoot("/system/workplace/locales/de/help/");
+        search.setSearchRoot(new StringBuffer("/system/workplace/locales/").append(
+            m_jsp.getRequestContext().getLocale()).append("/help/").toString());
 
         String query = request.getParameter("query");
         search.setQuery(query);
