@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Tue, 26 Jul 2005 12:05:06 GMT</createdate>
+		<createdate>Tue, 26 Jul 2005 14:44:29 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.33</version>
+		<version>0.34</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -120,7 +120,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 		<file>
 			<destination>system/workplace/locales/de/help</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 25 Jul 2005 08:41:05 GMT</datelastmodified>
+			<datelastmodified>Tue, 26 Jul 2005 14:42:19 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -137,10 +137,6 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>cache</name>
 					<value><![CDATA[uri;params]]></value>
-				</property>
-				<property>
-					<name>exportname</name>
-					<value><![CDATA[/onlinehelp/de/]]></value>
 				</property>
 				<property>
 					<name>template</name>
@@ -1322,6 +1318,40 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Verknüpfungen]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/explorer/generalTopics/sites.html</source>
+			<destination>system/workplace/locales/de/help/explorer/generalTopics/sites.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>babb2029-fdd4-11d9-b447-0334e4183c08</uuidresource>
+			<datelastmodified>Tue, 26 Jul 2005 14:38:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Jul 2005 12:56:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Erklärung des Begriffes und des Verhaltens von Sites  im Kontext von OpenCms.]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Sites]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Sites]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2719,6 +2749,24 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/images/expl_siteconf.png</source>
+			<destination>system/workplace/locales/de/help/images/expl_siteconf.png</destination>
+			<type>image</type>
+			<uuidresource>249e4b1c-fde2-11d9-b4b2-0334e4183c08</uuidresource>
+			<datelastmodified>Tue, 26 Jul 2005 14:32:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Jul 2005 14:32:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[expl_siteconf]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
