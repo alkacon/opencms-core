@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 25 Jul 2005 16:00:45 GMT</createdate>
+		<createdate>Tue, 26 Jul 2005 12:05:06 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.31</version>
+		<version>0.33</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -361,7 +361,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/administration/accounts/groups/edit-create.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>55fab833-ee02-11d9-bde2-21bd740a33b2</uuidresource>
-			<datelastmodified>Thu, 14 Jul 2005 14:54:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 26 Jul 2005 11:46:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Wed, 06 Jul 2005 09:42:58 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -500,6 +500,40 @@ Install this module if you want to use the german version of the OpenCms Workpla
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Benutzer]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/help/administration/accounts/users/edit-create.html</source>
+			<destination>system/workplace/locales/de/help/administration/accounts/users/edit-create.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>fb431a0f-fdca-11d9-b447-0334e4183c08</uuidresource>
+			<datelastmodified>Tue, 26 Jul 2005 11:59:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 26 Jul 2005 11:47:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Beschreibt das Erstellen und Bearbeiten eines Benutzers]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Benutzer erstellen und bearbeiten]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.workplace.help/jsptemplates/help]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Benutzer erstellen und bearbeiten]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
