@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/07/26 13:13:41 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.7 $
+     * @version $Revision: 1.8 $
      * 
      * @since 6.0.0
      */
@@ -103,6 +103,9 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
 
     }
 
+    /** Cache for element list. */
+    private List m_cache;
+
     /** List of objects. */
     private final List m_objectList = new ArrayList();
 
@@ -132,6 +135,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      */
     public void addIdentifiableObject(String id, Object idObject) {
 
+        m_cache = null;
         if (m_uniqueIds && m_objectsById.get(id) != null) {
             removeObject(id);
         }
@@ -164,6 +168,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      */
     public void addIdentifiableObject(String id, Object idObject, float position) {
 
+        m_cache = null;
         if (m_uniqueIds && m_objectsById.get(id) != null) {
             removeObject(id);
         }
@@ -201,6 +206,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      */
     public void clear() {
 
+        m_cache = null;
         m_objectList.clear();
         m_objectsById.clear();
     }
@@ -210,6 +216,9 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      */
     public List elementList() {
 
+        if (m_cache != null) {
+            return m_cache;
+        }
         if (m_relativeOrdered) {
             List objectList = new ArrayList();
             Iterator itObjs = m_objectList.iterator();
@@ -217,11 +226,11 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
                 CmsIdObjectElement object = (CmsIdObjectElement)itObjs.next();
                 objectList.add(object.getObject());
             }
-            return Collections.unmodifiableList(objectList);
+            m_cache = Collections.unmodifiableList(objectList);
         } else {
-            return Collections.unmodifiableList(m_objectList);
+            m_cache = Collections.unmodifiableList(m_objectList);
         }
-
+        return m_cache;
     }
 
     /**
@@ -248,6 +257,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      */
     private void removeObject(String id) {
 
+        m_cache = null;
         if (m_relativeOrdered) {
             Object o = getObject(id);
             Iterator itObjs = m_objectList.iterator();
