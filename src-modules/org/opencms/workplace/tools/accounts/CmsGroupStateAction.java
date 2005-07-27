@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/27 11:19:33 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.list.A_CmsListAction;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
@@ -47,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,7 +142,24 @@ public class CmsGroupStateAction extends CmsListDefaultAction {
             html.append(A_CmsHtmlIconButton.defaultHelpHtml("x" + super.getId(), helptext2));
         }
         return html.toString();
+    }
+    
+    
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
+     */
+    public String confirmationTextHtml(CmsWorkplace wp) {
 
+        StringBuffer html = new StringBuffer(512);
+        // enabled
+        String ct = super.getConfirmationMessage().key(wp.getLocale());
+        String conftext = new MessageFormat(ct, wp.getLocale()).format(new Object[] {""});
+        if (getColumn() == null
+            || conftext.equals(new MessageFormat(ct, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+            html.append(A_CmsListAction.defaultConfirmationHtml(super.getId(), conftext));
+            html.append(A_CmsListAction.defaultConfirmationHtml("x" + super.getId(), conftext));
+        }
+        return html.toString();
     }
 
     /**
