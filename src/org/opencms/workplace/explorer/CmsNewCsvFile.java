@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/22 13:22:12 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/27 13:30:28 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,14 +188,14 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                 if ((headerColSpan != null) && (headerColSpan.length > i) && (headerColSpan[i] > 1)) {
                     xml.append(" colspan=\"").append(headerColSpan[i]).append("\"");
                 } 
-                xml.append(">").append(removeStringDelimiters(words[i])).append("</td>\n");
+                xml.append(">").append(toXmlBody(removeStringDelimiters(words[i]))).append("</td>\n");
             }
             xml.append("</tr>\n");
             while ((line = br.readLine()) != null) {
                 xml.append("<tr>\n");
                 words = CmsStringUtil.splitAsArray(line, delimiter);
                 for (int i = 0; i < words.length; i++) {
-                    xml.append("\t<td>").append(removeStringDelimiters(words[i])).append("</td>\n");
+                    xml.append("\t<td>").append(toXmlBody(removeStringDelimiters(words[i]))).append("</td>\n");
                 }
                 xml.append("</tr>\n");
             }
@@ -228,6 +228,29 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         // replace excel protected quotations marks ("") by single quotation marks
         k = CmsStringUtil.substitute(k, "\"\"", "\"");
         return k;
+    }
+    
+    /**
+     * Embeds the given content as cdata if neccessary.<p>
+     * Contents starting with "<" and ending with ">" are NOT embedded in order to allow content with tags.
+     * 
+     * @param content the content
+     * @return the embedded content
+     */
+    private static String toXmlBody(String content) {
+        
+        StringBuffer xmlBody = new StringBuffer(1024);
+        content = content.trim();
+        
+        if (content.startsWith("<") && content.endsWith(">")) {
+            return content;
+        } else {
+            xmlBody.append("<![CDATA[");
+            xmlBody.append(content);
+            xmlBody.append("]]>");
+        }
+
+        return xmlBody.toString();
     }
 
     /**
@@ -408,8 +431,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         if (result.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")) {
             return result.substring(38);   
         } else {
-            return result;
-        }
+        	return result;
+    	}
     }
 
     /**
