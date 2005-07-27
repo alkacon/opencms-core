@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/07/26 12:54:55 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/27 14:25:37 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -157,6 +157,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
     public CmsHelpTemplateBean(CmsJspActionElement jsp) {
 
         super(jsp);
+
         try {
             m_onlineProject = getCms().readProject(CmsProject.ONLINE_PROJECT_ID);
             m_offlineProject = jsp.getRequestContext().currentProject();
@@ -362,6 +363,13 @@ public class CmsHelpTemplateBean extends CmsDialog {
 
             // search form with invisible elements 
 
+            // search index may be attached to resource /system/modules/org.opencms.workplace.help/elements/search.jsp,   
+            // property search.index.
+            String index = getJsp().property(
+                "search.index",
+                "/system/modules/org.opencms.workplace.help/elements/search.jsp",
+                "German online help",
+                false);
             StringBuffer submitAction = new StringBuffer();
             submitAction.append("parseSearchQuery(document.forms[\'searchform\'],\'");
             submitAction.append(
@@ -381,7 +389,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             result.append("\">\n");
             result.append("  <input type=\"hidden\" name=\"action\" value=\"search\" />\n");
             result.append("  <input type=\"hidden\" name=\"query\" value=\"\" />\n");
-            result.append("  <input type=\"hidden\" name=\"index\" value=\"German online help\" />\n");
+            result.append("  <input type=\"hidden\" name=\"index\" value=\"" + index + "\" />\n");
             result.append("  <input type=\"hidden\" name=\"page\" value=\"1\" />\n");
 
             result.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");

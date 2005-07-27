@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 25 Jul 2005 16:00:33 GMT</createdate>
+		<createdate>Wed, 27 Jul 2005 14:21:45 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p>
 <p><i>(c) 2004-2005 by Alkacon Software</i></p>]]></description>
-		<version>1.0.4</version>
+		<version>1.0.7</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -177,7 +177,7 @@
 			<destination>system/modules/org.opencms.workplace.help/elements/search.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d3c11c0e-f505-11d9-a9a0-55fa789c6c3d</uuidresource>
-			<datelastmodified>Mon, 25 Jul 2005 14:11:48 GMT</datelastmodified>
+			<datelastmodified>Wed, 27 Jul 2005 14:20:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Fri, 15 Jul 2005 07:55:36 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -186,6 +186,10 @@
 				<property type="shared">
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>search.index</name>
+					<value><![CDATA[German online help]]></value>
 				</property>
 				<property>
 					<name>Title</name>
