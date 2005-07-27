@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/06/28 16:01:52 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/07/27 10:26:50 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -292,11 +292,22 @@ public class CmsExplorer extends CmsWorkplace {
                 }
             }
         }
-
+        // set the right project
+        CmsProject project;
+        if (projectView) {
+            try {
+                project = getCms().readProject(getSettings().getProject());
+            } catch (CmsException ex) {
+                project = getCms().getRequestContext().currentProject();
+            }
+        } else {
+            project = getCms().getRequestContext().currentProject();
+        }
+        
         // read the list of project resource to select which resource is "inside" or "outside" 
-        List projectResources;
+        List projectResources;        
         try {
-            projectResources = getCms().readProjectResources(getCms().getRequestContext().currentProject());
+            projectResources = getCms().readProjectResources(project);
         } catch (CmsException e) {
             // use an empty list (all resources are "outside")
             if (LOG.isInfoEnabled()) {

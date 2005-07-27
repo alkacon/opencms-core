@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/27 10:26:51 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,14 +95,18 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
      */
     public String defaultActionHtml() {
 
+        String params = allParamsAsRequest();
+        if (params.indexOf("projectid=") < 0) {
+            params += "&projectid=" + getParamProjectid();
+        }
         String titleSrc = getFrameSource("tool_title", getJsp().link(
             CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/tool-title.html")
             + "?"
-            + allParamsAsRequest());
+            + params);
         String contentSrc = getFrameSource("tool_content", getJsp().link(
             "/system/workplace/admin/projects/project_files.html")
             + "?"
-            + allParamsAsRequest());
+            + params);
         StringBuffer html = new StringBuffer(1024);
         html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
         html.append("<html>\n");
@@ -217,7 +221,7 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
 
         // retrieve the stored project id
         Object o = getDialogObject();
-        if (o != null) {
+        if (o != null && CmsStringUtil.isEmptyOrWhitespaceOnly(getParamProjectid())) {
             setParamProjectid(o.toString());
         }
     }

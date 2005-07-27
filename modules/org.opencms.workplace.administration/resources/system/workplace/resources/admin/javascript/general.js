@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/general.js,v $
- * Date   : $Date: 2005/06/23 13:46:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/27 10:26:51 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -98,7 +98,7 @@ function getContext() {
  */
 function setActiveItemByName(name) {
     try {
-        return parent.admin_menu.setActiveItem(name);
+        parent.admin_menu.setActiveItem(name);
     } catch (e) {
         try {
              parent.parent.admin_menu.setActiveItem(name);
