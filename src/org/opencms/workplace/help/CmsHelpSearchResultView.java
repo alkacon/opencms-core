@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2005/07/26 12:54:55 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/07/27 14:24:24 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  * 
  * @since 6.0.0
  */
@@ -322,14 +322,9 @@ public class CmsHelpSearchResultView {
         //  Collect the objects required to access the OpenCms VFS from the request
         CmsObject cmsObject = m_jsp.getCmsObject();
 
-        //     get locale and message properties
-        String locale = m_jsp.property("locale", "search", "en").toLowerCase();
-
         ServletRequest request = m_jsp.getRequest();
         search.init(cmsObject);
         search.setField(new String[] {"title", "keywords", "description", "content"});
-        String index = m_jsp.property("Title", "/", m_jsp.getRequestContext().getSiteRoot());
-        index += " (" + locale + ")";
         search.setIndex(request.getParameter("index"));
         search.setMatchesPerPage(5);
         search.setDisplayPages(7);
