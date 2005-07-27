@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProjectResourcesDisplayMode.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/27 14:07:47 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,14 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.7 $
  * 
  * @since 6.0.0
  */
 public final class CmsProjectResourcesDisplayMode implements Serializable {
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -3500530124487718583L;
+    private static final long serialVersionUID = 923124162399716633L;
 
     /** Constant for the all changes view. */
     public static final CmsProjectResourcesDisplayMode ALL_CHANGES = new CmsProjectResourcesDisplayMode("all");
