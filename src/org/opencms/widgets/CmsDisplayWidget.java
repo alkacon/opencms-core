@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/06/29 12:59:11 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/28 15:20:49 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 /**
@@ -40,11 +41,14 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDisplayWidget extends A_CmsWidget {
+
+    /** Key post fix, so you can display different help text if used a "normal" widget, and a display widget. */
+    private static final String DISABLED_POSTFIX = ".disabled";
 
     /**
      * Creates a new input widget.<p>
@@ -96,11 +100,45 @@ public class CmsDisplayWidget extends A_CmsWidget {
     }
 
     /**
+     * Returns the localized help key for the provided widget parameter.<p>
+     * 
+     * @param param the widget parameter to return the localized help key for
+     * 
+     * @return the localized help key for the provided widget parameter
+     */
+    private String getDisabledHelpKey(I_CmsWidgetParameter param) {
+        
+        StringBuffer result = new StringBuffer(64);
+        result.append(LABEL_PREFIX);
+        result.append(param.getKey());
+        result.append(HELP_POSTFIX);
+        result.append(DISABLED_POSTFIX);
+        return result.toString();
+    }
+    /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
-        return "<td>&nbsp;</td>";
+        StringBuffer result = new StringBuffer(128);
+        String locKey = getDisabledHelpKey(param);
+        String locValue = widgetDialog.getMessages().key(locKey, true);
+        if (locValue == null) {
+            // there was no help message found for this key, so return a spacer cell
+            return widgetDialog.dialogHorizontalSpacer(16);
+        } else {
+            result.append("<td>");
+            result.append("<img name=\"img");
+            result.append(locKey);
+            result.append("\" id=\"img");
+            result.append(locKey);
+            result.append("\" src=\"");
+            result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.png"));
+            result.append("\" alt=\"\" border=\"0\"");
+            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            result.append("></td>");
+            return result.toString();
+        }
     }
 
     /**
@@ -108,7 +146,23 @@ public class CmsDisplayWidget extends A_CmsWidget {
      */
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
-        return "";
+        StringBuffer result = new StringBuffer(128);
+        // calculate the key
+        String locKey = getDisabledHelpKey(param);
+        String locValue = widgetDialog.getMessages().key(locKey, true);
+        if (locValue == null) {
+            // there was no help message found for this key, so return an empty string
+            return "";
+        } else {
+            result.append("<div class=\"help\" id=\"help");
+            result.append(locKey);
+            result.append("\"");
+            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            result.append(">");
+            result.append(locValue);
+            result.append("</div>");
+            return result.toString();
+        }
     }
 
     /**
