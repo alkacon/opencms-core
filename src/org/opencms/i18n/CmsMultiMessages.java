@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/28 15:18:32 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.MissingResourceException;
 
 import org.apache.commons.logging.Log;
 
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  * @author Alexnader Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,7 +170,7 @@ public class CmsMultiMessages extends CmsMessages {
                 try {
                     result = ((CmsMessages)m_messages.get(i)).getString(keyName);
                     // if no exception is thrown here we have found the result
-                } catch (MissingResourceException e) {
+                } catch (CmsMessageException e) {
                     // can usually be ignored
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(e.getMessage(), e);

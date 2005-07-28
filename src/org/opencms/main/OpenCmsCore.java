@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/07/21 13:36:03 $
- * Version: $Revision: 1.214 $
+ * Date   : $Date: 2005/07/28 15:18:32 $
+ * Version: $Revision: 1.215 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.214 $ 
+ * @version $Revision: 1.215 $ 
  * 
  * @since 6.0.0 
  */
@@ -578,6 +578,16 @@ public final class OpenCmsCore {
     protected CmsSecurityManager getSecurityManager() {
 
         return m_securityManager;
+    }
+
+    /**
+     * Returns the initialized OpenCms configuration manager.<p>
+     * 
+     * @return the initialized OpenCms configuration manager
+     */
+    protected CmsConfigurationManager getConfigurationManager() {
+
+        return m_configurationManager;
     }
 
     /**

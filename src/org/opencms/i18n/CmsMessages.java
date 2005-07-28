@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/28 15:18:32 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -296,14 +296,24 @@ public class CmsMessages {
      * 
      * @param keyName the key  
      * @return the resource string for the given key
-     * @throws MissingResourceException in case the key is not found or the bundle is not initialized
+     * 
+     * @throws CmsMessageException in case the key is not found or the bundle is not initialized
      */
-    public String getString(String keyName) throws MissingResourceException {
+    public String getString(String keyName) throws CmsMessageException {
 
         if (m_resourceBundle != null) {
-            return m_resourceBundle.getString(keyName);
+            try {
+                return m_resourceBundle.getString(keyName);
+            } catch (MissingResourceException e) {
+                throw new CmsMessageException(Messages.get().container(
+                    Messages.ERR_CANT_FIND_RESOURCE_FOR_BUNDLE_2,
+                    keyName, 
+                    m_baseName));
+            }
         } else {
-            throw new MissingResourceException("ResourceBundle not initialized", this.getClass().getName(), keyName);
+            throw new CmsMessageException(Messages.get().container(
+                Messages.ERR_MESSAGE_BUNDLE_NOT_INITIALIZED_1,
+                m_baseName));
         }
     }
 

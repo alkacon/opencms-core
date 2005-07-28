@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.9 $
+* Date   : $Date: 2005/07/28 15:18:31 $
+* Version: $Revision: 1.10 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,12 +35,13 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.10 $ $Date: 2005/07/28 15:18:31 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.i18n.CmsMessageException;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -193,7 +194,7 @@ public class CmsXmlLanguageFile {
         if (DEBUG > 0) System.err.println("CmsXmlLanguageFile.getEncoding(): looking up encoding for locale " + m_locale);
         try {
             result = m_messages.getString(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING);
-        } catch (MissingResourceException e) {
+        } catch (CmsMessageException e) {
             // exception - just use the default encoding
             result = m_workplaceDefaultEncoding;
         }
@@ -236,7 +237,7 @@ public class CmsXmlLanguageFile {
         if (DEBUG > 2) System.err.println("CmsXmlLanguageFile.getLanguageValue(): looking key " + keyName);
         try {
             return m_messages.getString(keyName);
-        } catch (MissingResourceException e) {}
+        } catch (CmsMessageException e) {}
 
         // key was not found in default workplace bundles
         if (DEBUG > 1) System.err.println("CmsXmlLanguageFile.getLanguageValue(): '" + keyName + "' not found in workplace messages");
