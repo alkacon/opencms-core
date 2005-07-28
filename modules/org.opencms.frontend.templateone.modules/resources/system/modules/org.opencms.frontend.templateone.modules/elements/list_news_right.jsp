@@ -12,12 +12,16 @@ pageContext.setAttribute("locale", locale);
 String folder = request.getParameter("folder");
 String folderTitle = cms.property("Title", folder, "");
 
-%><fmt:setLocale value="${locale}" /><%--
+%><cms:contentload collector="${param.collector}" param="${param.folder}news_${number}.html|news|${param.count}" preload="true"><%--
+
+--%><cms:contentinfo var="contentInfo" scope="request" /><%--
+--%><c:if test="${! contentInfo.emptyResult}"><%--
+--%><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
 --%><div class="sidelist">
 <p class="sidelisthead"><% if (!"".equals(folderTitle)) { out.print(folderTitle); } else { %><fmt:message key="news.headline" /><% } %></p>
-<cms:contentload collector="${param.collector}" param="${param.folder}news_${number}.html|news|${param.count}" editable="true">
+<cms:contentload editable="true">
 
 <p class="sidelistitem"><a class="sidelistitemhead" href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><cms:contentshow element="Title" /></a><br>
 <c:set var="dateString">
@@ -30,4 +34,4 @@ String folderTitle = cms.property("Title", folder, "");
 </p>
 
 </cms:contentload></div><%--
---%></fmt:bundle>
+--%></fmt:bundle></c:if></cms:contentload>

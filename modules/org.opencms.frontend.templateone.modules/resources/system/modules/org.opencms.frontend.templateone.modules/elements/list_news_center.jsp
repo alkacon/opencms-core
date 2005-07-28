@@ -12,10 +12,14 @@ pageContext.setAttribute("locale", locale);
 boolean showNumber = Integer.parseInt(request.getParameter("elementcount")) == Integer.MAX_VALUE;
 pageContext.setAttribute("shownumber", "" + showNumber);
 
-%><fmt:setLocale value="${locale}" /><%--
+%><cms:contentload collector="${param.collector}" param="${param.folder}news_${number}.html|news|${param.elementcount}" preload="true"><%--
+
+--%><cms:contentinfo var="contentInfoOuter" scope="request" /><%--
+--%><c:if test="${! contentInfoOuter.emptyResult}"><%--
+--%><fmt:setLocale value="${locale}" /><%--
 --%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
 
---%><cms:contentload collector="${param.collector}" param="${param.folder}news_${number}.html|news|${param.elementcount}" editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
+--%><cms:contentload editable="true" pageSize="${param.count}" pageIndex="${param.pageIndex}" pageNavLength="10"><%--
 --%><cms:contentinfo var="contentInfo" scope="request" /><%--
 
 --%><c:if test="${(contentInfo.resultIndex % contentInfo.pageSize) == 1}"><%--
@@ -56,4 +60,4 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>
 </cms:contentload><%--
---%></fmt:bundle>
+--%></fmt:bundle></c:if></cms:contentload>
