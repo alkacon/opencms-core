@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -499,7 +499,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         cms.unlockResource("/folder1/");
         
         // publish the project (this did cause an exception because of primary key violation!)
-        CmsUUID publishId = cms.publishResource("/folder1/", true, new CmsShellReport());
+        CmsUUID publishId = cms.publishResource("/folder1/", true, new CmsShellReport(cms.getRequestContext().getLocale()));
         
         // read the published resources from the history
         List publishedResources = cms.readPublishedResources(publishId);

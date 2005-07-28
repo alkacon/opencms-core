@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.15 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -138,8 +138,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
      */
     public void testCmsSearchIndexer() throws Throwable {
 
-        I_CmsReport report = new CmsShellReport();
-        OpenCms.getSearchManager().updateIndex(report);
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
     }
 
     /**
@@ -172,8 +172,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         }
 
         // publish the project and update the search index
-        I_CmsReport report = new CmsShellReport();
-        OpenCms.getSearchManager().updateIndex(INDEX_OFFLINE, report);
+        I_CmsReport report = new CmsShellReport(cms.getRequestContext().getLocale());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, report);
 
         // search for "pdf"
         CmsSearch cmsSearchBean = new CmsSearch();
@@ -316,7 +316,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         searchIndex.setProjectName("Offline");
         // important: use german locale for a special treat on term analyzing
         searchIndex.setLocale(Locale.GERMAN.toString());
-        searchIndex.setRebuildMode(CmsSearchIndex.AUTO_REBUILD);
+        searchIndex.setRebuildMode(CmsSearchIndex.REBUILD_MODE_AUTO);
         // available pre-configured in the test configuration files opencms-search.xml
         searchIndex.addSourceName("source1");
 
@@ -326,8 +326,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         // add the search index to the manager
         OpenCms.getSearchManager().addSearchIndex(searchIndex);
         
-        I_CmsReport report = new CmsShellReport();
-        OpenCms.getSearchManager().updateIndex(report);
+        I_CmsReport report = new CmsShellReport(Locale.ENGLISH);
+        OpenCms.getSearchManager().rebuildAllIndexes(report);
         
         // perform a search on the newly generated index
         CmsSearch searchBean = new CmsSearch();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/06/28 13:47:22 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.10 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -58,7 +58,7 @@ import org.opencms.report.I_CmsReport;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,9 +137,9 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
         try {
 
             if (m_indexName == null) {
-                OpenCms.getSearchManager().updateIndex(getReport());
+                OpenCms.getSearchManager().rebuildAllIndexes(getReport());
             } else {
-                OpenCms.getSearchManager().updateIndex(m_indexName, getReport());
+                OpenCms.getSearchManager().rebuildIndex(m_indexName, getReport());
             }
             getReport().println(
                 Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_END_0),

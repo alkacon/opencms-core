@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.21 $
  * 
  * @since 6.0.0
  */
@@ -360,7 +360,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         assertEquals(validateNewElement, wp.getParamValidateNewElement());
         echo("CmsElementRename class initialized successfully");
         echo("Xml Page Element Rename Start");
-        wp.actionRename(new CmsShellReport());
+        wp.actionRename(new CmsShellReport(Locale.ENGLISH));
         echo("Xml Page Element Rename End");
     }
 

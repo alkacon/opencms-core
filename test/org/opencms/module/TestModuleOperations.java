@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleOperations.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  */
 public class TestModuleOperations extends OpenCmsTestCase {
 
@@ -177,7 +177,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         assertEquals("Offline", cms.getRequestContext().currentProject().getName());
 
         // delete the module
-        OpenCms.getModuleManager().deleteModule(cms, module.getName(), false, new CmsShellReport());
+        OpenCms.getModuleManager().deleteModule(cms, module.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
         assertEquals(true, TestModuleActionImpl.m_moduleUninstall);
 
         // reset module action values
@@ -272,7 +272,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         boolean caughtException = false;
         try {
-            OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+            OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
         } catch (CmsException e) {
             // any other CmsException means test failure
             caughtException = true;
@@ -341,7 +341,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         }
 
         // now try the import again, this time it must work
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         module = OpenCms.getModuleManager().getModule(moduleName);
         // check the module data
@@ -360,7 +360,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         // now try to delete the dependencies, this must generate an error
         caughtException = false;
         try {
-            OpenCms.getModuleManager().deleteModule(cms, dep1.getName(), false, new CmsShellReport());
+            OpenCms.getModuleManager().deleteModule(cms, dep1.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
         } catch (CmsConfigurationException e) {
             caughtException = true;
         }
@@ -369,7 +369,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         }
         caughtException = false;
         try {
-            OpenCms.getModuleManager().deleteModule(cms, dep2.getName(), false, new CmsShellReport());
+            OpenCms.getModuleManager().deleteModule(cms, dep2.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
         } catch (CmsConfigurationException e) {
             caughtException = true;
         }
@@ -394,11 +394,11 @@ public class TestModuleOperations extends OpenCmsTestCase {
         }
 
         // delete the imported module
-        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport());
+        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // delete the dependencies (must work now since dependency is removed)
-        OpenCms.getModuleManager().deleteModule(cms, dep1.getName(), false, new CmsShellReport());
-        OpenCms.getModuleManager().deleteModule(cms, dep2.getName(), false, new CmsShellReport());
+        OpenCms.getModuleManager().deleteModule(cms, dep1.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
+        OpenCms.getModuleManager().deleteModule(cms, dep2.getName(), false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // publish the current project
         cms.publishProject();
@@ -457,10 +457,10 @@ public class TestModuleOperations extends OpenCmsTestCase {
         moduleExportHandler.setDescription("Module export of " + moduleExportHandler.getModuleName());
 
         // export the module
-        OpenCms.getImportExportManager().exportData(cms, moduleExportHandler, new CmsShellReport());
+        OpenCms.getImportExportManager().exportData(cms, moduleExportHandler, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // now delete the module from the manager
-        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport());
+        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // ensure that the module was deleted
         if (OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -468,7 +468,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
         }
 
         // now import the module again
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -503,7 +503,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages/" + moduleName + ".zip");
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -539,7 +539,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "packages/" + moduleName + ".zip");
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // basic check if the module was imported correctly
         if (!OpenCms.getModuleManager().hasModule(moduleName)) {
@@ -577,7 +577,7 @@ public class TestModuleOperations extends OpenCmsTestCase {
 
         if (OpenCms.getModuleManager().hasModule(dep.getName())) {
             // remove other version of dependency if it exists
-            OpenCms.getModuleManager().deleteModule(cms, dep.getName(), true, new CmsShellReport());
+            OpenCms.getModuleManager().deleteModule(cms, dep.getName(), true, new CmsShellReport(cms.getRequestContext().getLocale()));
         }
 
         CmsModule module = new CmsModule(

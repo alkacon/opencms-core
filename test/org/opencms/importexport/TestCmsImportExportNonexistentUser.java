@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExportNonexistentUser.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import junit.framework.TestSuite;
  * Tests exporting/import VFS data with nonexistent users.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
 
@@ -147,7 +147,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             vfsExportHandler.setIncludeSystem(false);
             vfsExportHandler.setIncludeUnchanged(true);
             vfsExportHandler.setExportUserdata(false);
-            OpenCms.getImportExportManager().exportData(cms, vfsExportHandler, new CmsShellReport());
+            OpenCms.getImportExportManager().exportData(cms, vfsExportHandler, new CmsShellReport(cms.getRequestContext().getLocale()));
             
             // delete the dummy plain text file
             cms.lockResource(filename);
@@ -157,7 +157,7 @@ public class TestCmsImportExportNonexistentUser extends OpenCmsTestCase {
             cms.publishResource(filename);
             
             // re-import the exported dummy plain text file
-            OpenCms.getImportExportManager().importData(cms, zipExportFilename, "/", new CmsShellReport());
+            OpenCms.getImportExportManager().importData(cms, zipExportFilename, "/", new CmsShellReport(cms.getRequestContext().getLocale()));
         } catch (Exception e) {
             
             fail(e.toString());

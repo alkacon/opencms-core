@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/importexport/TestCmsImportExport.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -189,7 +189,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         
         // import the files
         String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
-        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());        
+        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport(cms.getRequestContext().getLocale()));        
 
         // now switch to "mysite"
         cms.getRequestContext().setSiteRoot("/sites/mysite/");
@@ -344,7 +344,7 @@ public class TestCmsImportExport extends OpenCmsTestCase {
         
         // import the files
         String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
-        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());        
+        OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport(cms.getRequestContext().getLocale()));        
                         
         
         // check the results of the import

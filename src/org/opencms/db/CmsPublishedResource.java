@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,13 +47,13 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0
  * 
  * @see org.opencms.db.I_CmsProjectDriver#readPublishedResources(CmsDbContext, int, CmsUUID)
  */
-public class CmsPublishedResource implements Serializable, Cloneable {
+public class CmsPublishedResource implements Serializable, Cloneable, Comparable {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -1054065812825770479L;
@@ -132,6 +132,22 @@ public class CmsPublishedResource implements Serializable, Cloneable {
     }
 
     /**
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object obj) {
+
+        if (obj == this) {
+            return 0;
+        }
+        if (obj instanceof CmsPublishedResource) {
+            if (m_rootPath != null) {
+                return m_rootPath.compareTo(((CmsPublishedResource)obj).m_rootPath);
+            }
+        }
+        return 0;
+    }
+
+    /**
      * @see java.lang.Object#equals(java.lang.Object)
      */
     public boolean equals(Object obj) {
@@ -140,7 +156,11 @@ public class CmsPublishedResource implements Serializable, Cloneable {
             return true;
         }
         if (obj instanceof CmsPublishedResource) {
-            return ((CmsPublishedResource)obj).m_structureId.equals(m_structureId);
+            if (m_structureId.isNullUUID()) {
+                return ((CmsPublishedResource)obj).m_resourceId.equals(m_resourceId);
+            } else {
+                return ((CmsPublishedResource)obj).m_structureId.equals(m_structureId);
+            }
         }
         return false;
     }
@@ -220,7 +240,7 @@ public class CmsPublishedResource implements Serializable, Cloneable {
      */
     public int hashCode() {
 
-        return m_structureId.hashCode();
+        return m_structureId.isNullUUID() ? m_resourceId.hashCode() : m_structureId.hashCode();
     }
 
     /**

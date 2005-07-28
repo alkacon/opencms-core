@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/test/OpenCmsTestCase.java,v $
- * Date   : $Date: 2005/07/12 09:26:45 $
- * Version: $Revision: 1.88 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.89 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.dom4j.util.NodeComparator;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.88 $
+ * @version $Revision: 1.89 $
  * 
  * @since 6.0.0
  */
@@ -524,6 +524,33 @@ public class OpenCmsTestCase extends TestCase {
     }
 
     /**
+     * Restarts the OpenCms shell.<p>
+     */
+    public static void restartOpenCms() {
+
+        // turn off exceptions after error logging during setup (won't work otherwise)
+        OpenCmsTestLogAppender.setBreakOnError(false);
+        // output a message 
+        System.out.println("\n\n\n----- Restarting OpenCms -----");
+
+        // kill any old shell that might have remained from a previous test 
+        if (m_shell != null) {
+            try {
+                m_shell.exit();
+                m_shell = null;
+            } catch (Throwable t) {
+                // ignore
+            }
+        }
+
+        // create a shell instance
+        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
+
+        // turn on exceptions after error logging
+        OpenCmsTestLogAppender.setBreakOnError(true);
+    }
+
+    /**
      * Sets the additional connection name.<p>
      * 
      * @param additionalConnectionName the additional connection name
@@ -563,6 +590,7 @@ public class OpenCmsTestCase extends TestCase {
     /**
      * Sets up a complete OpenCms instance, creating the usual projects,
      * and importing a default database.<p>
+     * 
      * @param importFolder the folder to import in the "real" FS
      * @param targetFolder the target folder of the import in the VFS
      * @param configFolder the folder to copy the configuration files
@@ -595,7 +623,7 @@ public class OpenCmsTestCase extends TestCase {
 
         // create a new database first
         setupDatabase();
-        
+
         // create a shell instance
         m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
 
@@ -624,6 +652,12 @@ public class OpenCmsTestCase extends TestCase {
                 // import the "simpletest" files
                 importResources(cms, importFolder, targetFolder);
             }
+
+            // create the default projects by script
+            script = new File(getTestDataPath("scripts/script_default_projects.txt"));
+            stream = new FileInputStream(script);
+            m_shell.start(stream);
+
             if (publish) {
                 // publish the current project by script
                 script = new File(getTestDataPath("scripts/script_publish.txt"));
@@ -632,11 +666,6 @@ public class OpenCmsTestCase extends TestCase {
             } else {
                 cms.unlockProject(cms.readProject("_setupProject").getId());
             }
-
-            // create the default projects by script
-            script = new File(getTestDataPath("scripts/script_default_projects.txt"));
-            stream = new FileInputStream(script);
-            m_shell.start(stream);
 
             // switch to the "Offline" project
             cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
@@ -654,30 +683,6 @@ public class OpenCmsTestCase extends TestCase {
         return cms;
     }
 
-    public static void restartOpenCms() {
-        
-        // turn off exceptions after error logging during setup (won't work otherwise)
-        OpenCmsTestLogAppender.setBreakOnError(false);
-        // output a message 
-        System.out.println("\n\n\n----- Restarting OpenCms -----");
-
-        // kill any old shell that might have remained from a previous test 
-        if (m_shell != null) {
-            try {
-                m_shell.exit();
-                m_shell = null;
-            } catch (Throwable t) {
-                // ignore
-            }
-        }  
-        
-        // create a shell instance
-        m_shell = new CmsShell(getTestDataPath("WEB-INF" + File.separator), null, null, "${user}@${project}>", null);
-        
-        // turn on exceptions after error logging
-        OpenCmsTestLogAppender.setBreakOnError(true);
-    }       
-        
     /**
      * Adds an additional path to the list of test data configuration files.<p>
      * 
@@ -822,7 +827,7 @@ public class OpenCmsTestCase extends TestCase {
             cms,
             getTestDataPath(File.separator + "imports" + File.separator + importFile),
             targetPath,
-            new CmsShellReport());
+            new CmsShellReport(cms.getRequestContext().getLocale()));
     }
 
     /**

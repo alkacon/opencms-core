@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleIssues.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $
+ * @version $Revision: 1.12 $
  */
 public class TestModuleIssues extends OpenCmsTestCase {
   
@@ -103,7 +103,7 @@ public class TestModuleIssues extends OpenCmsTestCase {
               
         String moduleName = "org.opencms.test.modules.test3";        
         String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/" + moduleName + ".zip");
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
         
         // basic check if the module was imported correctly
         if (! OpenCms.getModuleManager().hasModule(moduleName)) {

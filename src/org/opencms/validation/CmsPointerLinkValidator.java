@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidator.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,7 +101,7 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
     public String launch(CmsObject cms, Map parameters) throws CmsException {
 
         if (Boolean.valueOf((String)parameters.get("writeLog")).booleanValue()) {
-            m_report = new CmsLogReport(I_CmsReport.BUNDLE_NAME, cms.getRequestContext().getLocale(), getClass());
+            m_report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPointerLinkValidator.class);
         }
 
         validateLinks(cms);
@@ -128,7 +128,7 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
     public void validateLinks(CmsObject cms) throws CmsException {
 
         if (m_report == null) {
-            m_report = new CmsLogReport();
+            m_report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsPointerLinkValidator.class);
         }
 
         m_report.println(

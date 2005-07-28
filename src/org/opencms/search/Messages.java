@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,7 +70,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INDEX_NOT_FOUND_1 = "ERR_INDEX_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_INDEX_RESOURCE_FAILED_2 = "ERR_INDEX_RESOURCE_FAILED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_INDEX_SOURCE_ASSOCIATION_1 = "ERR_INDEX_SOURCE_ASSOCIATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IO_INDEX_WRITER_OPEN_2 = "ERR_IO_INDEX_WRITER_OPEN_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOAD_ANALYZER_1 = "ERR_LOAD_ANALYZER_1";
@@ -106,9 +112,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_BASE_QUERY_1 = "LOG_BASE_QUERY_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_CLOSE_INDEX_WRITER_FAILED_0 = "LOG_CLOSE_INDEX_WRITER_FAILED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATING_INDEX_DOC_0 = "LOG_CREATING_INDEX_DOC_0";
 
     /** Message constant for key in the resource bundle. */
@@ -118,37 +121,46 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_EVENT_CLEAR_CACHES_0 = "LOG_EVENT_CLEAR_CACHES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_EVENT_PUBLISH_PROJECT_1 = "LOG_EVENT_PUBLISH_PROJECT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_EVENT_PUBLISH_PROJECT_FINISHED_1 = "LOG_EVENT_PUBLISH_PROJECT_FINISHED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEX_ACCESS_FAILED_1 = "LOG_INDEX_ACCESS_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEX_FAILED_1 = "LOG_INDEX_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEX_WRITER_CREATION_FAILED_1 = "LOG_INDEX_WRITER_CREATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEXER_CREATION_FAILED_1 = "LOG_INDEXER_CREATION_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEXING_0 = "LOG_INDEXING_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEXING_DOC_ROOT_1 = "LOG_INDEXING_DOC_ROOT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEXING_FAILED_1 = "LOG_INDEXING_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_INDEXING_PATH_FAILED_1 = "LOG_INDEXING_PATH_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String LOG_INDEXING_TIMEOUT_1 = "LOG_INDEXING_TIMEOUT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INDEXING_WITH_FACTORY_2 = "LOG_INDEXING_WITH_FACTORY_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_DOCUMENT_DELETE_2 = "LOG_IO_INDEX_DOCUMENT_DELETE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_READER_CLOSE_2 = "LOG_IO_INDEX_READER_CLOSE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_READER_OPEN_2 = "LOG_IO_INDEX_READER_OPEN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_WRITER_CLOSE_2 = "LOG_IO_INDEX_WRITER_CLOSE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IO_INDEX_WRITER_OPTIMIZE_1 = "LOG_IO_INDEX_WRITER_OPTIMIZE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_1 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_CATEGORY_FAILED_1 = "LOG_READ_CATEGORY_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_READING_CHANGED_RESOURCES_FAILED_1 = "LOG_READING_CHANGED_RESOURCES_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REBUILD_INDEX_FAILED_1 = "LOG_REBUILD_INDEX_FAILED_1";
@@ -187,6 +199,18 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_THREADS_LEFT_1 = "LOG_THREADS_LEFT_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNABLE_TO_READ_RESOURCE_2 = "LOG_UNABLE_TO_READ_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNABLE_TO_READ_SIBLINGS_2 = "LOG_UNABLE_TO_READ_SIBLINGS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UNABLE_TO_READ_SOURCE_2 = "LOG_UNABLE_TO_READ_SOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_UPDATE_INDEX_FAILED_1 = "LOG_UPDATE_INDEX_FAILED_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_WAITING_ABANDONED_THREADS_2 = "LOG_WAITING_ABANDONED_THREADS_2";
 
     /** Message constant for key in the resource bundle. */
@@ -196,28 +220,31 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_WRITING_INDEX_TO_WRITER_1 = "LOG_WRITING_INDEX_TO_WRITER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_SEARCH_INDEXING_BEGIN_0 = "RPT_SEARCH_INDEXING_BEGIN_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_SEARCH_INDEXING_END_0 = "RPT_SEARCH_INDEXING_END_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FAILED_0 = "RPT_SEARCH_INDEXING_FAILED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_FILE_BEGIN_0 = "RPT_SEARCH_INDEXING_FILE_BEGIN_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_SEARCH_INDEXING_FOLDER_0 = "RPT_SEARCH_INDEXING_FOLDER_0";
+    public static final String RPT_SEARCH_INDEXING_REBUILD_BEGIN_1 = "RPT_SEARCH_INDEXING_REBUILD_BEGIN_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String RPT_SEARCH_INDEXING_FOLDER_FAILED_2 = "RPT_SEARCH_INDEXING_FOLDER_FAILED_2";
+    public static final String RPT_SEARCH_INDEXING_REBUILD_END_1 = "RPT_SEARCH_INDEXING_REBUILD_END_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_STATS_4 = "RPT_SEARCH_INDEXING_STATS_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_SEARCH_INDEXING_TIMEOUT_1 = "RPT_SEARCH_INDEXING_TIMEOUT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_UPDATE_BEGIN_1 = "RPT_SEARCH_INDEXING_UPDATE_BEGIN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_SEARCH_INDEXING_UPDATE_END_1 = "RPT_SEARCH_INDEXING_UPDATE_END_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_UNABLE_TO_READ_SOURCE_2 = "RPT_UNABLE_TO_READ_SOURCE_2";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.search.messages";

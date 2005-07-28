@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -192,7 +192,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         cms.unlockResource("/types/");
 
         // update the search index used
-        OpenCms.getSearchManager().updateIndex(INDEX_OFFLINE, new CmsShellReport());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_OFFLINE);
@@ -427,7 +427,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         String query = "OpenCms";
 
         // update the search index used
-        OpenCms.getSearchManager().updateIndex(INDEX_OFFLINE, new CmsShellReport());
+        OpenCms.getSearchManager().rebuildIndex(INDEX_OFFLINE, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         searchBean.init(cms);
         searchBean.setIndex(INDEX_OFFLINE);

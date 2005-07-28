@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/synchronize/TestSynchronize.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * 
  * @author Thomas Weckert  
  *  
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.20 $
  * 
  * @since 6.0.0
  */
@@ -196,7 +196,7 @@ public class TestSynchronize extends OpenCmsTestCase {
                 + syncSettings.getDestinationPathInRfs());
 
             // synchronize everything to the RFS
-            new CmsSynchronize(cms, syncSettings, new CmsShellReport());
+            new CmsSynchronize(cms, syncSettings, new CmsShellReport(cms.getRequestContext().getLocale()));
 
             // modify resources in the RFS
             List tree = getSubtree(cms, source);
@@ -216,7 +216,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             Thread.sleep(2000);
 
             // synchronize everything back to the VFS
-            new CmsSynchronize(cms, syncSettings, new CmsShellReport());
+            new CmsSynchronize(cms, syncSettings, new CmsShellReport(cms.getRequestContext().getLocale()));
 
             // assert if the synchronization worked fine
             for (int i = 0, n = tree.size(); i < n; i++) {
@@ -278,7 +278,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             storeResources(cms, "/");
 
             // synchronize everything to the RFS
-            new CmsSynchronize(cms, syncSettings, new CmsShellReport());
+            new CmsSynchronize(cms, syncSettings, new CmsShellReport(cms.getRequestContext().getLocale()));
 
             Iterator it = syncSettings.getSourceListInVfs().iterator();
             List tree = new ArrayList();
@@ -305,7 +305,7 @@ public class TestSynchronize extends OpenCmsTestCase {
             Thread.sleep(2000);
 
             // synchronize everything back to the VFS
-            new CmsSynchronize(cms, syncSettings, new CmsShellReport());
+            new CmsSynchronize(cms, syncSettings, new CmsShellReport(cms.getRequestContext().getLocale()));
 
             // assert if the synchronization worked fine
             for (int i = 0, n = tree.size(); i < n; i++) {

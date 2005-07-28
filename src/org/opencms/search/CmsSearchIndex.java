@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.54 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.55 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,24 +67,16 @@ import org.apache.lucene.search.TermQuery;
 
 /**
  * Implements the search within an index and the management of the index configuration.<p>
- *   
- * @version $Revision: 1.54 $
  * 
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.54 $ 
+ * @version $Revision: 1.55 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
-
-    /** Automatic rebuild. */
-    public static final String AUTO_REBUILD = "auto";
-
-    /** Manual rebuild as default value. */
-    public static final String DEFAULT_REBUILD = "manual";
 
     /** Constant for a field list that cointains only the "meta" field. */
     public static final String[] DOC_META_FIELDS = new String[] {
@@ -97,8 +89,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** Constant for additional param to enable permission checks (default: true). */
     public static final String PERMISSIONS = CmsSearchIndex.class.getName() + ".checkPermissions";
 
-    /** Contsnat for additional param to set the thread priority during search. */
+    /** Constant for additional param to set the thread priority during search. */
     public static final String PRIORITY = CmsSearchIndex.class.getName() + ".priority";
+
+    /** Automatic ("auto") index rebuild mode. */
+    public static final String REBUILD_MODE_AUTO = "auto";
+
+    /** Manual ("manual") index rebuild mode. */
+    public static final String REBUILD_MODE_MANUAL = "manual";
 
     /** Special root path append token for optimized path queries. */
     public static final String ROOT_PATH_SUFFIX = "@o.c";
@@ -118,6 +116,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndex.class);
 
+    /** The list of configured index sources. */
+    List m_sources;
+
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
 
@@ -127,16 +128,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The permission check mode for this index. */
     private boolean m_dontCheckPermissions;
 
-    /** The incremental mode for this index. */
-    private boolean m_incremental;
-
     /** The language filter of this index. */
     private String m_locale;
 
     /** The name of this index. */
     private String m_name;
 
-    /** Path to index data. */
+    /** The path where this index stores it's data in the "real" file system. */
     private String m_path;
 
     /** The thread priority for a search. */
@@ -291,11 +289,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Gets the set of documenttypes of a folder or channel.<p>
-     * The set contains Strings with the names of the documenttypes.
+     * Returns the configured document types of this index for the given resource path.<p>
      * 
-     * @param path path of the folder or channel
-     * @return the name set of documenttypes of a folder
+     * The result List contains Strings with the names of the document types.<p>
+     * 
+     * @param path path of the folder 
+     * 
+     * @return the configured document types of this index for the given resource path
      */
     public List getDocumenttypes(String path) {
 
@@ -319,36 +319,35 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Returns a new index writer for this index.<p>
      * 
+     * @param create if <code>true</code> a whole new index is created, if <code>false</code> an existing index is updated
+     * 
      * @return a new instance of IndexWriter
-     * @throws CmsIndexException if something goes wrong
+     * @throws CmsIndexException if the index can not be opened
      */
-    public IndexWriter getIndexWriter() throws CmsIndexException {
+    public IndexWriter getIndexWriter(boolean create) throws CmsIndexException {
 
         IndexWriter indexWriter;
         Analyzer analyzer = OpenCms.getSearchManager().getAnalyzer(m_locale);
 
         try {
-
             File f = new File(m_path);
-
             if (f.exists()) {
-
-                indexWriter = new IndexWriter(m_path, analyzer, !m_incremental);
-
+                // index already exists
+                indexWriter = new IndexWriter(m_path, analyzer, create);
             } else {
+                // index does not exist yet
                 f = f.getParentFile();
                 if (f != null && !f.exists()) {
-                    f.mkdir();
+                    // create the parent folders if required
+                    f.mkdirs();
                 }
-
                 indexWriter = new IndexWriter(m_path, analyzer, true);
-
             }
 
-        } catch (Exception exc) {
+        } catch (Exception e) {
             throw new CmsIndexException(
-                Messages.get().container(Messages.LOG_INDEX_WRITER_CREATION_FAILED_1, m_name),
-                exc);
+                Messages.get().container(Messages.ERR_IO_INDEX_WRITER_OPEN_2, m_path, m_name),
+                e);
         }
 
         return indexWriter;
@@ -372,6 +371,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public String getName() {
 
         return m_name;
+    }
+
+    /**
+     * Returns the path where this index stores it's data in the "real" file system.<p>
+     * 
+     * @return the path where this index stores it's data in the "real" file system
+     */
+    public String getPath() {
+
+        return m_path;
     }
 
     /**
@@ -405,6 +414,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns all configured index sources of this search index.<p>
+     * 
+     * @return all configured index sources of this search index
+     */
+    public List getSources() {
+
+        return m_sources;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
@@ -424,6 +443,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         List searchIndexSourceDocumentTypes = null;
         List resourceNames = null;
         String resourceName = null;
+        m_sources = new ArrayList();
 
         m_path = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             OpenCms.getSearchManager().getDirectory() + "/" + m_name);
@@ -433,6 +453,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             try {
                 sourceName = (String)m_sourceNames.get(i);
                 indexSource = OpenCms.getSearchManager().getIndexSource(sourceName);
+                m_sources.add(indexSource);
 
                 resourceNames = indexSource.getResourcesNames();
                 searchIndexSourceDocumentTypes = indexSource.getDocumentTypes();

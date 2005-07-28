@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -188,7 +188,7 @@ public class TestPublishing extends OpenCmsTestCase {
 
         // publish a modified resource with siblings, publish the siblings as well
         //
-        cms.publishResource(resource3, true, new CmsShellReport());
+        cms.publishResource(resource3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // the online file must the offline changes
         cms.getRequestContext().setCurrentProject(onlineProject);
@@ -261,7 +261,7 @@ public class TestPublishing extends OpenCmsTestCase {
        cms.unlockResource(resource2);
        
        // this test makes only sense when siblings are published
-       cms.publishResource(resource2, false, new CmsShellReport());
+       cms.publishResource(resource2, false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
        // the online file must be deleted
        cms.getRequestContext().setCurrentProject(onlineProject);
@@ -292,7 +292,7 @@ public class TestPublishing extends OpenCmsTestCase {
       
       // publish a deleted resource with siblings, delete the siblings
       //
-      cms.publishResource(resource3, true, new CmsShellReport());
+      cms.publishResource(resource3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
       
       // the online files must be deleted
       cms.getRequestContext().setCurrentProject(onlineProject);
@@ -473,7 +473,7 @@ public class TestPublishing extends OpenCmsTestCase {
         
         // publish a sibling and all other siblings of it
         //
-        cms.publishResource(destination3, true, new CmsShellReport());
+        cms.publishResource(destination3, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         // the file and its siblings must be now available in the online project
         cms.getRequestContext().setCurrentProject(onlineProject);
         try {
@@ -554,7 +554,7 @@ public class TestPublishing extends OpenCmsTestCase {
         cms.unlockResource(source);
         
         storeResources(cms, newSibling);
-        cms.publishResource(source, true, new CmsShellReport());
+        cms.publishResource(source, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         assertFilter(cms, newSibling, OpenCmsTestResourceFilter.FILTER_EQUAL);
         
         // publishing the test project will not publish the new file or the new sibling
@@ -663,7 +663,7 @@ public class TestPublishing extends OpenCmsTestCase {
         assertState(cms, res4, CmsResource.STATE_NEW);
         
         // publish the root folder of the test project within the test project
-        cms.publishResource(path, true, new CmsShellReport());
+        cms.publishResource(path, true, new CmsShellReport(cms.getRequestContext().getLocale()));
         
         // the resource inside the test project must not be published (still not in test project)
         assertState(cms, res3, CmsResource.STATE_NEW);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/07/08 09:59:17 $
- * Version: $Revision: 1.237 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.238 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.237 $
+ * @version $Revision: 1.238 $
  * 
  * @since 6.0.0 
  */
@@ -616,7 +616,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
             report.print(Messages.get().container(Messages.RPT_DELETE_FOLDER_0), I_CmsReport.FORMAT_NOTE);
             report.print(org.opencms.report.Messages.get().container(
                 org.opencms.report.Messages.RPT_ARGUMENT_1,
-                currentFolder.getRootPath()));
+                dbc.removeSiteRoot(currentFolder.getRootPath())));
             report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
             try {
@@ -717,7 +717,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEL_FOLDER_3,
-                        dbc.removeSiteRoot(currentFolder.getRootPath()),
+                        currentFolder.getRootPath(),
                         String.valueOf(m),
                         String.valueOf(n)));
                 }
@@ -773,7 +773,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 report.print(Messages.get().container(Messages.RPT_DELETE_FILE_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    offlineResource.getRootPath()));
+                    dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
@@ -905,7 +905,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEL_FILE_3,
-                        dbc.removeSiteRoot(offlineResource.getRootPath()),
+                        offlineResource.getRootPath(),
                         String.valueOf(m),
                         String.valueOf(n)));
                 }
@@ -918,7 +918,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 report.print(Messages.get().container(Messages.RPT_PUBLISH_FILE_0), I_CmsReport.FORMAT_NOTE);
                 report.print(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    offlineResource.getRootPath()));
+                    dbc.removeSiteRoot(offlineResource.getRootPath())));
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 try {
@@ -1063,7 +1063,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_PUBLISHING_FILE_3,
-                        dbc.removeSiteRoot(offlineResource.getRootPath()),
+                        offlineResource.getRootPath(),
                         String.valueOf(m),
                         String.valueOf(n)));
                 }
@@ -1194,7 +1194,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(
                             Messages.LOG_PUBLISHING_FILE_3,
-                            dbc.removeSiteRoot(offlineResource.getRootPath()),
+                            offlineResource.getRootPath(),
                             String.valueOf(m),
                             String.valueOf(n)));
                     }

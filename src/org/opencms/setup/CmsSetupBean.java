@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/07/21 16:10:44 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -701,6 +701,17 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     }
 
     /**
+     * Returns a map with lists of dependent module package names keyed by module package names.<p>
+     * 
+     * @return a map with lists of dependent module package names keyed by module package names
+     */
+    public Map getModuleDependencies() {
+
+        getAvailableModules();
+        return m_moduleDependencies;
+    }
+
+    /**
      * Returns A list with the package names of the modules to be installed.<p>
      *
      * @return A list with the package names of the modules to be installed
@@ -711,17 +722,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             return Collections.EMPTY_LIST;
         }
         return Collections.unmodifiableList(m_installModules);
-    }
-
-    /**
-     * Returns a map with lists of dependent module package names keyed by module package names.<p>
-     * 
-     * @return a map with lists of dependent module package names keyed by module package names
-     */
-    public Map getModuleDependencies() {
-
-        getAvailableModules();
-        return m_moduleDependencies;
     }
 
     /**
@@ -1594,7 +1594,11 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
-        OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(
+            m_cms,
+            fileName,
+            null,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /** 

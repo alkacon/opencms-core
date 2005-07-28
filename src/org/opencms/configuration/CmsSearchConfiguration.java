@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -272,7 +272,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         // <indexes>
         Element indexesElement = searchElement.addElement(N_INDEXES);
-        Iterator indexIterator = m_searchManager.getSearchIndexs().iterator();
+        Iterator indexIterator = m_searchManager.getSearchIndexes().iterator();
         while (indexIterator.hasNext()) {
             CmsSearchIndex searchIndex = (CmsSearchIndex)indexIterator.next();
             // add the next <index> element

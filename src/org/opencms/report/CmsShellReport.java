@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsShellReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,6 @@
 
 package org.opencms.report;
 
-import org.opencms.workplace.CmsWorkplace;
-
 import java.util.Locale;
 
 /**
@@ -43,34 +41,20 @@ import java.util.Locale;
  * @author Alexander Kandzior  
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsShellReport extends A_CmsReport {
 
     /**
-     * Empty default constructor. 
-     * 
-     * @see java.lang.Object#Object()
+     * Constructs a new report using the provided locale for the output language.<p>
+     *  
+     * @param locale the locale to use for the output language
      */
-    public CmsShellReport() {
+    public CmsShellReport(Locale locale) {
 
-        // generate a message object with the default (english) locale
-        this(BUNDLE_NAME, CmsWorkplace.DEFAULT_LOCALE);
-    }
-
-    /**
-     * Constructs a new report using the provided locale and resource bundle
-     * for the output language.<p>
-     * 
-     * @param locale the locale to use for the report output messages
-     * @param bundleName the name of the resource bundle with localized strings
-     */
-    public CmsShellReport(String bundleName, Locale locale) {
-
-        init(locale);
-        addBundle(bundleName);
+        init(locale, null);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/07/28 15:18:32 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.i18n;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.List;
@@ -51,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Alexnader Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,8 +74,8 @@ public class CmsMultiMessages extends CmsMessages {
      * Constructor for creating a new messages object
      * initialized with the provided bundles.<p>
      * 
-     * @param message1 a message
-     * @param message2 a message
+     * @param message1 a message instance
+     * @param message2 a message instance
      */
     public CmsMultiMessages(CmsMessages message1, CmsMessages message2) {
 
@@ -85,7 +86,7 @@ public class CmsMultiMessages extends CmsMessages {
      * Constructor for creating a new messages object
      * initialized with the provided array of bundles.<p>
      * 
-     * @param messages array of <code>{@link CmsMessages}</code>, should not be null or empty
+     * @param messages array of <code>{@link CmsMessages}</code>, must not be null or empty
      */
     public CmsMultiMessages(CmsMessages[] messages) {
 
@@ -96,7 +97,7 @@ public class CmsMultiMessages extends CmsMessages {
      * Constructor for creating a new messages object
      * initialized with the provided list of bundles.<p>
      * 
-     * @param messages list of <code>{@link CmsMessages}</code>, should not be null or empty
+     * @param messages list of <code>{@link CmsMessages}</code>, must not be null or empty
      * 
      * @throws CmsIllegalArgumentException if the given <code>List</code> is null or empty
      */
@@ -107,12 +108,49 @@ public class CmsMultiMessages extends CmsMessages {
         if ((messages == null) || (messages.size() == 0)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
         }
+
         // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
         m_messageCache = new Hashtable();
-        // set messages
-        m_messages = messages;
+
+        // set messages        
+        m_messages = new ArrayList(messages);
+
         // set the locale
         m_locale = ((CmsMessages)m_messages.get(0)).getLocale();
+    }
+
+    /**
+     * Adds a messages instance to this multi message bundle.<p> 
+     * 
+     * @param message the messages instance to add
+     * 
+     * @throws CmsIllegalArgumentException if the locale of the given <code>CmsMessages</code> does not match the locale of this multi messages
+     */
+    public void addMessage(CmsMessages message) throws CmsIllegalArgumentException {
+
+        if (!m_locale.equals(message.getLocale())) {
+            // only add matching locales
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2,
+                message.getLocale(),
+                m_locale));
+        }
+        if (!m_messages.contains(message)) {
+            if (m_messageCache != null) {
+                m_messageCache = new Hashtable();
+            }
+            m_messages.add(message);
+        }
+    }
+
+    /**
+     * Returns the list of all individual message objects in this multi message instance.<p>
+     * 
+     * @return the list of all individual message objects in this multi message instance
+     */
+    public List getMessages() {
+
+        return m_messages;
     }
 
     /**

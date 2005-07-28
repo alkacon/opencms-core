@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -249,7 +249,7 @@ public class TestSiblings extends OpenCmsTestCase {
             
             // import the files
             String importFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/testimport01.zip");
-            OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport());                                    
+            OpenCms.getImportExportManager().importData(cms, importFile, "/", new CmsShellReport(cms.getRequestContext().getLocale()));                                    
             
             // clean up for the next test
             cms.getRequestContext().setSiteRoot("/");        

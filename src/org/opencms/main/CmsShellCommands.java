@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -312,7 +312,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         long oneWeek = 604800000;
         long maxDate = System.currentTimeMillis() - (weeks * oneWeek);
-        m_cms.deleteBackups(maxDate, 100, new CmsShellReport());
+        m_cms.deleteBackups(maxDate, 100, new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -372,7 +372,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         vfsExportHandler.setIncludeUnchanged(true);
         vfsExportHandler.setExportUserdata(false);
 
-        OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());
+        OpenCms.getImportExportManager().exportData(
+            m_cms,
+            vfsExportHandler,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -411,7 +414,10 @@ class CmsShellCommands implements I_CmsShellCommands {
             new Object[] {moduleExportHandler.getModuleName()}));
 
         // export the module
-        OpenCms.getImportExportManager().exportData(m_cms, moduleExportHandler, new CmsShellReport());
+        OpenCms.getImportExportManager().exportData(
+            m_cms,
+            moduleExportHandler,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -443,7 +449,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         vfsExportHandler.setIncludeUnchanged(true);
         vfsExportHandler.setExportUserdata(false);
 
-        OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());
+        OpenCms.getImportExportManager().exportData(
+            m_cms,
+            vfsExportHandler,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -475,7 +484,10 @@ class CmsShellCommands implements I_CmsShellCommands {
         vfsExportHandler.setIncludeUnchanged(true);
         vfsExportHandler.setExportUserdata(true);
 
-        OpenCms.getImportExportManager().exportData(m_cms, vfsExportHandler, new CmsShellReport());
+        OpenCms.getImportExportManager().exportData(
+            m_cms,
+            vfsExportHandler,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -551,7 +563,11 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void importModule(String importFile) throws Exception {
 
-        OpenCms.getImportExportManager().importData(m_cms, importFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(
+            m_cms,
+            importFile,
+            null,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -567,7 +583,11 @@ class CmsShellCommands implements I_CmsShellCommands {
         String exportPath = OpenCms.getSystemInfo().getPackagesRfsPath();
         String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             exportPath + CmsSystemInfo.FOLDER_MODULES + importFile);
-        OpenCms.getImportExportManager().importData(m_cms, fileName, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(
+            m_cms,
+            fileName,
+            null,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -591,7 +611,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms,
             OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(importFile),
             importPath,
-            new CmsShellReport());
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
 
     /**
@@ -612,7 +632,11 @@ class CmsShellCommands implements I_CmsShellCommands {
         int id = project.getId();
         m_cms.getRequestContext().setCurrentProject(project);
         m_cms.copyResourceToProject("/");
-        OpenCms.getImportExportManager().importData(m_cms, importFile, "/", new CmsShellReport());
+        OpenCms.getImportExportManager().importData(
+            m_cms,
+            importFile,
+            "/",
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
         m_cms.unlockProject(id);
         m_cms.publishProject();
     }
@@ -874,6 +898,29 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Rebuilds (if required creates) all configured search indexes.<p>
+     * 
+     * @throws Exception if something goes wrong
+     * @see org.opencms.search.CmsSearchManager#rebuildAllIndexes(org.opencms.report.I_CmsReport)
+     */
+    public void rebuildAllIndexes() throws Exception {
+
+        OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(m_cms.getRequestContext().getLocale()), true);
+    }
+
+    /**
+     * Rebuilds (if required creates) the given search index.<p>
+     * 
+     * @param index name of the index to update
+     * @throws Exception if something goes wrong
+     * @see org.opencms.search.CmsSearchManager#rebuildIndex(String, org.opencms.report.I_CmsReport)
+     */
+    public void rebuildIndex(String index) throws Exception {
+
+        OpenCms.getSearchManager().rebuildIndex(index, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
      * Sets the current project to the provided project id.<p>
      * 
      * @param id the project id to set
@@ -966,29 +1013,6 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void unlockCurrentProject() throws Exception {
 
         m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
-    }
-
-    /**
-     * Updates all configured search indexes.<p>
-     * 
-     * @throws Exception if something goes wrong
-     * @see org.opencms.search.CmsSearchManager#updateIndex(org.opencms.report.I_CmsReport)
-     */
-    public void updateIndex() throws Exception {
-
-        OpenCms.getSearchManager().updateIndex(new CmsShellReport(), true);
-    }
-
-    /**
-     * Updates the given search index.<p>
-     * 
-     * @param index name of the index to update
-     * @throws Exception if something goes wrong
-     * @see org.opencms.search.CmsSearchManager#updateIndex(String, org.opencms.report.I_CmsReport)
-     */
-    public void updateIndex(String index) throws Exception {
-
-        OpenCms.getSearchManager().updateIndex(index, new CmsShellReport());
     }
 
     /**

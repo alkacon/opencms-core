@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/Attic/TestModuleLegacy.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.13 $
  */
 public class TestModuleLegacy extends OpenCmsTestCase {
     
@@ -114,7 +114,7 @@ public class TestModuleLegacy extends OpenCmsTestCase {
         
         String moduleName = "org.opencms.legacy.compatibility";
         String moduleFile = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("packages/" + moduleName + ".zip");
-        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport());
+        OpenCms.getImportExportManager().importData(cms, moduleFile, null, new CmsShellReport(cms.getRequestContext().getLocale()));
         
         // basic check if the module was imported correctly
         if (! OpenCms.getModuleManager().hasModule(moduleName)) {

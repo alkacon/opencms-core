@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Attic/CmsVfsIndexResource.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.search.documents.A_CmsVfsDocument;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,7 +58,7 @@ public class CmsVfsIndexResource extends A_CmsIndexResource {
     public CmsVfsIndexResource(CmsResource res) {
 
         m_data = res;
-        m_id = res.getResourceId();
+        m_id = res.getStructureId();
         m_name = res.getName();
 
         try {

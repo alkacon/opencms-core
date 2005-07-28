@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,10 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.report.I_CmsReport;
 
+import java.util.List;
+
 import org.apache.lucene.document.Document;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 
 /**
@@ -44,40 +47,21 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsIndexer {
 
     /**
-     * Initializes the indexer.<p>
+     * Incremental index update - delete the index entry for all resources in the given list.<p> 
      * 
-     * @param report the report
-     * @param index the search index
-     * @param indexSource the search index source
-     * @param writer writer to write the search index in the physical file system
-     * @param threadManager the tread manager
+     * @param reader the index reader to delete the entries from
+     * @param resourcesToDelete a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be deleted
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void init(
-        I_CmsReport report,
-        CmsSearchIndex index,
-        CmsSearchIndexSource indexSource,
-        IndexWriter writer,
-        CmsIndexingThreadManager threadManager) throws CmsIndexException;
-
-    /**
-     * Creates new index entries for all resources below the given path.<p>
-     * 
-     * @param cms the current user's CmsObject
-     * @param source the source of the resources
-     * @param path the path to the root of the subtree to index
-     * 
-     * @throws CmsIndexException if something goes wrong
-     */
-    void updateIndex(CmsObject cms, String source, String path) throws CmsIndexException;
+    void deleteResources(IndexReader reader, List resourcesToDelete) throws CmsIndexException;
 
     /**
      * Returns an index resource for a specified Lucene search result document.<p>
@@ -87,12 +71,64 @@ public interface I_CmsIndexer {
      * 
      * If this check fails, the implementation must return null as a result.<p>
      * 
-     * @param cms the current user's CmsObject
+     * @param cms the OpenCms context to use when reading resources from the VFS
      * @param doc the Lucene search result document
      * @return a new index resource
+     * 
      * @throws CmsException if something goes wrong
+     * 
      * @see A_CmsIndexResource
      */
     A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException;
 
+    /**
+     * Calculates the data for an incremental search index update.<p>
+     * 
+     * @param source the search index source to update
+     * @param publishedResources a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> objects that are to be updated
+     * 
+     * @return a container with the information about the resources to delete and / or update
+     * 
+     * @throws CmsIndexException if something goes wrong
+     */
+    CmsSearchIndexUpdateData getUpdateData(CmsSearchIndexSource source, List publishedResources)
+    throws CmsIndexException;
+
+    /**
+     * Creates and initializes a new instance of this indexer implementation.<p>
+     * 
+     * @param cms the OpenCms user context to use when reading resources from the VFS during indexing
+     * @param report the report to write the indexing output to
+     * @param index the search index to update
+     * 
+     * @return a new instance of this indexer implementation
+     */
+    I_CmsIndexer newInstance(CmsObject cms, I_CmsReport report, CmsSearchIndex index);
+
+    /**
+     * Rebuilds the index for the given configured index source.<p>
+     * 
+     * This is used when the index is fully rebuild, not for updating only some parts
+     * of an existing index.<p>
+     * 
+     * @param writer the index writer to write the update to
+     * @param source the search index source to update
+     * @param threadManager the thread manager to use when extracting the document text
+     * 
+     * @throws CmsIndexException if something goes wrong
+     */
+    void rebuildIndex(IndexWriter writer, CmsIndexingThreadManager threadManager, CmsSearchIndexSource source)
+    throws CmsIndexException;
+
+    /**
+     * Incremental index update - create a new index entry for all resources in the given list.<p> 
+     * 
+     * @param writer the index writer to write the update to
+     * @param resourcesToUpdate a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be updated
+     * @param threadManager the thread manager to use when extracting the document text
+     * 
+     * @throws CmsIndexException if something goes wrong
+     */
+    void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate)
+    throws CmsIndexException;
 }

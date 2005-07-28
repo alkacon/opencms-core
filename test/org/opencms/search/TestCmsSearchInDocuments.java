@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -177,7 +177,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         cms.unlockResource(path3);
 
         // update the search indexes
-        OpenCms.getSearchManager().updateIndex(new CmsShellReport());
+        OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
@@ -277,7 +277,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertEquals(expected, resources.size());
 
         // update the search indexes
-        OpenCms.getSearchManager().updateIndex(new CmsShellReport());
+        OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
@@ -333,7 +333,7 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         cms.unlockResource(path3);
 
         // update the search indexes
-        OpenCms.getSearchManager().updateIndex(new CmsShellReport());
+        OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // perform the same search again in the online index - must be same result as before
         searchBean.setIndex(INDEX_ONLINE);
@@ -438,10 +438,10 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
         assertTrue(cms.existsResource("/search/test1.ppt"));
 
         // publish the project
-        cms.publishProject(new CmsShellReport());
+        cms.publishProject(new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // update the search indexes
-        OpenCms.getSearchManager().updateIndex(new CmsShellReport());
+        OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(cms.getRequestContext().getLocale()));
 
         // check the online project
         cms.getRequestContext().setCurrentProject(cms.readProject("Online"));

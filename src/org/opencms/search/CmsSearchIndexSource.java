@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchIndexSource implements Cloneable {
+public class CmsSearchIndexSource {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);
@@ -208,7 +208,6 @@ public class CmsSearchIndexSource implements Cloneable {
             m_indexer = (I_CmsIndexer)Class.forName(m_indexerClassName).newInstance();
         } catch (Exception exc) {
             LOG.error(Messages.get().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName), exc);
-
         }
     }
 

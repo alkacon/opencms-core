@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsPublishJob.java,v $
- * Date   : $Date: 2005/07/19 14:59:48 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,7 @@ public class CmsPublishJob implements I_CmsScheduledJob {
                 cms.unlockProject(project.getId());
             }
             // publish the project, the publish output will be put in the logfile
-            cms.publishProject(new CmsLogReport(this.getClass()));
+            cms.publishProject(new CmsLogReport(cms.getRequestContext().getLocale(), CmsPublishJob.class));
             finishMessage = Messages.get().key(Messages.LOG_PUBLISH_FINISHED_1, project.getName());
         } catch (CmsException e) {
             // there was an error, so create an output for the logfile

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/module/TestModuleDeleteThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import junit.framework.TestSuite;
  * @author Olaf Watteroth
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.4 $
+ * @version $Revision: 1.5 $
  */
 public class TestModuleDeleteThread extends OpenCmsTestCase {
 
@@ -329,7 +329,7 @@ public class TestModuleDeleteThread extends OpenCmsTestCase {
         assertEquals(4, module1.getResources().size());
 
         echo("Now try to delete it *the normal way*");
-        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport());
+        OpenCms.getModuleManager().deleteModule(cms, moduleName, false, new CmsShellReport(cms.getRequestContext().getLocale()));
 
         module1 = OpenCms.getModuleManager().getModule(moduleName);
         // now it should be null

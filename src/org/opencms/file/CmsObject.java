@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.142 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.143 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.142 $
+ * @version $Revision: 1.143 $
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,10 @@ public final class CmsObject {
 
     /**
      * Connects an OpenCms user context to a running database.<p>
+     * 
+     * <b>Please note:</b> This constructor is internal to OpenCms and not for public use.
+     * If you want to create a new instance of a <code>{@link CmsObject}</code> in your application,
+     * use <code>{@link org.opencms.main.OpenCms#initCmsObject(String)}</code>.<p>
      * 
      * @param securityManager the security manager
      * @param context the request context that contains the user authentification
@@ -1322,6 +1326,9 @@ public final class CmsObject {
      * of the current site root using 
      * <code>{@link CmsRequestContext#removeSiteRoot(String)}</code>.<p>
      * 
+     * If the resource root path does not start with the current site root,
+     * it is left untouched.<p>
+     * 
      * @param resource the resource to get the adjusted site root path for
      * 
      * @return the absolute resource path adjusted for the current site
@@ -1837,7 +1844,7 @@ public final class CmsObject {
      */
     public CmsUUID publishProject() throws Exception {
 
-        return publishProject(new CmsShellReport());
+        return publishProject(new CmsShellReport(m_context.getLocale()));
     }
 
     /**
@@ -1913,7 +1920,7 @@ public final class CmsObject {
      */
     public CmsUUID publishResource(String resourcename) throws Exception {
 
-        return publishResource(resourcename, false, new CmsShellReport());
+        return publishResource(resourcename, false, new CmsShellReport(m_context.getLocale()));
     }
 
     /**

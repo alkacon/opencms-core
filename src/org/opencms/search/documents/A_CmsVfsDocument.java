@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/07/13 10:06:02 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsVfsDocument.class);
-    
+
     /**
      * Name of the documenttype.
      */
@@ -97,8 +97,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
     public String getDocumentKey(String resourceType) throws CmsIndexException {
 
         try {
-            return VFS_DOCUMENT_KEY_PREFIX
-                + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
+            return VFS_DOCUMENT_KEY_PREFIX + ((I_CmsResourceType)Class.forName(resourceType).newInstance()).getTypeId();
         } catch (Exception exc) {
             throw new CmsIndexException(Messages.get().container(
                 Messages.ERR_RESOURCE_TYPE_INSTANTIATION_1,
@@ -231,7 +230,8 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         field.setBoost(0);
         document.add(field);
         // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
+        // must be indexed as a keyword ONLY to be able to use this when deleting a resource from the index
+        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
 
         // add date of creation and last modification as keywords (for sorting)
         field = Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, new Date(res.getDateCreated()));

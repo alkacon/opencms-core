@@ -152,7 +152,7 @@
 		<indexes>
 			<index>
 				<name>Online project (VFS)</name>
-				<rebuild>auto</rebuild>
+				<rebuild>manual</rebuild>
 				<project>Online</project>
 				<locale>en</locale>			
 				<sources>
@@ -161,7 +161,7 @@
 			</index>
 			<index>
 				<name>Offline project (VFS)</name>
-				<rebuild>auto</rebuild>
+				<rebuild>manual</rebuild>
 				<project>Offline</project>
 				<locale>en</locale>			
 				<sources>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/I_CmsReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,14 +44,11 @@ import java.util.Locale;
  * @author Alexander Kandzior  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsReport {
-
-    /** The name of the property file. */
-    String BUNDLE_NAME = "org.opencms.workplace.workplace";
 
     /** Indicates default formatting. */
     int FORMAT_DEFAULT = 0;
@@ -76,13 +73,6 @@ public interface I_CmsReport {
 
     /** Request parameter value that this report should create a "simple" output. */
     String REPORT_TYPE_SIMPLE = "simple";
-
-    /**
-     * Adds a bundle specified by it's name to the List of resource bundles.<p>
-     * 
-     * @param bundleName the name of the resource bundle with localized strings
-     */
-    void addBundle(String bundleName);
 
     /**
      * Adds an error object to the list of errors that occured during the report.<p>
@@ -131,24 +121,19 @@ public interface I_CmsReport {
     long getRuntime();
 
     /**
+     * Returns the original site root of the user who started this report,
+     * or <code>null</code> if the original site root has not been set.<p>
+     * 
+     * @return the original site root of the user who started this report
+     */
+    String getSiteRoot();
+
+    /**
      * Returns if the report generated an error output.<p>
      * 
      * @return true if the report generated an error, otherwise false
      */
     boolean hasError();
-
-    /**
-     * Gets the localized resource string for a given message key.<p>
-     * 
-     * The internal implementation should be passing the
-     * <code>keyName</code> to the class {@link org.opencms.i18n.CmsMessages}.<p>
-     *
-     * @param keyName the key for the desired string
-     * @return the resource string for the given key
-     * 
-     * @see org.opencms.i18n.CmsMessages#key(String)
-     */
-    String key(String keyName);
 
     /**
      * Prints a localized message to the report.<p>
@@ -222,6 +207,22 @@ public interface I_CmsReport {
      * 
      */
     void printMessageWithParam(int m, int n, CmsMessageContainer container, Object param);
+
+    /**
+     * Removes the report site root prefix from the absolute path in the resource name,
+     * that is adjusts the resource name for the report site root.<p> 
+     * 
+     * If the site root for this report has not been set,
+     * or the resource name does not start with the report site root,
+     * the name it is left untouched.<p>
+     * 
+     * @param resourcename the resource name (full path)
+     * 
+     * @return the resource name adjusted for the report site root
+     * 
+     * @see org.opencms.file.CmsRequestContext#removeSiteRoot(String)
+     */
+    String removeSiteRoot(String resourcename);
 
     /**
      * Resets the runtime to 0 milliseconds.<p>

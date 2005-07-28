@@ -169,21 +169,12 @@
 				</sources>		
 			</index>	
 			<index>
-				<name>System folder</name>
-				<rebuild>auto</rebuild>
-				<project>Online</project>
-				<locale>en</locale>			
-				<sources>
-					<source>source2</source>
-				</sources>		
-			</index>	
-			<index>
 				<name>German online help</name>
 				<rebuild>auto</rebuild>
 				<project>Online</project>
 				<locale>de</locale>			
 				<sources>
-					<source>source3</source>
+					<source>source2</source>
 				</sources>		
 			</index>	
 		</indexes>
@@ -197,7 +188,6 @@
 				<documenttypes-indexed>
 	                <name>xmlpage</name>
 					<name>xmlcontent</name>
-	                <name>page</name>
 	                <name>text</name>
 	                <name>pdf</name>
 	                <name>rtf</name>
@@ -211,27 +201,6 @@
 			</indexsource>
 			<indexsource>
 				<name>source2</name>
-				<indexer class="org.opencms.search.CmsVfsIndexer" />
-				<resources>
-					<resource>/system/</resource>
-				</resources>		
-				<documenttypes-indexed>
-	                <name>xmlpage</name>
-					<name>xmlcontent</name>
-	                <name>page</name>
-	                <name>text</name>
-	                <name>pdf</name>
-	                <name>rtf</name>
-	                <name>html</name>
-	                <name>msword</name>
-	                <name>msexcel</name>
-	                <name>mspowerpoint</name>
-	                <name>image</name>
-	                <name>generic</name>
-				</documenttypes-indexed>
-			</indexsource>	
-			<indexsource>
-				<name>source3</name>
 				<indexer class="org.opencms.search.CmsVfsIndexer" />
 				<resources>
 					<resource>/system/workplace/locales/</resource>

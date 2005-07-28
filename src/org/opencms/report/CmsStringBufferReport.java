@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsStringBufferReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,35 +43,23 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsStringBufferReport extends A_CmsReport {
 
+    /** The StringBuffer to write to. */
     private StringBuffer m_strBuf;
 
     /**
-     * Creates a new string buffer report.<p>
-     * 
-     * @param locale the locale to use for the report output messages 
+     * Constructs a new report using the provided locale for the output language.<p>
+     *  
+     * @param locale the locale to use for the output language
      */
     public CmsStringBufferReport(Locale locale) {
 
-        this(BUNDLE_NAME, locale);
-    }
-
-    /**
-     * Constructs a new string buffer report using the specified locale and resource bundle
-     * for the output language.<p>
-     * 
-     * @param locale the locale to use for the report output messages
-     * @param bundleName the name of the resource bundle with localized strings
-     */
-    public CmsStringBufferReport(String bundleName, Locale locale) {
-
-        init(locale);
-        addBundle(bundleName);
+        init(locale, null);
 
         m_strBuf = new StringBuffer();
     }

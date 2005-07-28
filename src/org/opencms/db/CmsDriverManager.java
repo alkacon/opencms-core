@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.549 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.550 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.549 $
+ * @version $Revision: 1.550 $
  * 
  * @since 6.0.0
  */
@@ -6678,7 +6678,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             // the report may be null if the export point update was started by an event on a remote server
             if (report == null) {
-                report = new CmsLogReport();
+                report = new CmsLogReport(dbc.getRequestContext().getLocale(), CmsDriverManager.class);
             }
 
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
@@ -6953,7 +6953,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             // the report may be null if the export point write was started by an event on a remote server
             if (report == null) {
-                report = new CmsLogReport();
+                report = new CmsLogReport(dbc.getRequestContext().getLocale(), CmsDriverManager.class);
             }
 
             // iterate over all published resources to export them eventually

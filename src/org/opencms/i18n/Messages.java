@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/Messages.java,v $
- * Date   : $Date: 2005/07/28 15:18:32 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ package org.opencms.i18n;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MULTIMSG_EMPTY_LIST_0 = "ERR_MULTIMSG_EMPTY_LIST_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2 = "ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_ENCODING_PROP_1 = "ERR_READ_ENCODING_PROP_1";

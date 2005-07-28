@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/07/13 10:06:01 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.26 $
+ * @version $Revision: 1.27 $
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,26 @@ public final class CmsRequestContext {
     }
 
     /**
+     * Returns the adjusted site root for a resoure using the provided site root as a base.<p>
+     * 
+     * Usually, this would be the site root for the current site.
+     * However, if a resource from the <code>/system/</code> folder is requested,
+     * this will be the empty String.<p>
+     * 
+     * @param siteRoot the site root to use
+     * @param resourcename the resource name to get the adjusted site root for
+     * @return the adjusted site root for the resoure
+     */
+    public static String getAdjustedSiteRoot(String siteRoot, String resourcename) {
+
+        if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+            return "";
+        } else {
+            return siteRoot;
+        }
+    }
+
+    /**
      * Adds the current site root of this context to the given resource name,
      * and also translates the resource name with the configured the directory translator.<p>
      * 
@@ -199,26 +219,6 @@ public final class CmsRequestContext {
     public String getAdjustedSiteRoot(String resourcename) {
 
         return getAdjustedSiteRoot(m_siteRoot, resourcename);
-    }
-
-    /**
-     * Returns the adjusted site root for a resoure using the provided site root as a base.<p>
-     * 
-     * Usually, this would be the site root for the current site.
-     * However, if a resource from the /system/ folder is requested,
-     * this will be the empty String.<p>
-     * 
-     * @param siteRoot the site root to use
-     * @param resourcename the resource name to get the adjusted site root for
-     * @return the adjusted site root for the resoure
-     */
-    public String getAdjustedSiteRoot(String siteRoot, String resourcename) {
-
-        if (resourcename.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
-            return "";
-        } else {
-            return siteRoot;
-        }
     }
 
     /**
@@ -319,6 +319,9 @@ public final class CmsRequestContext {
      * of the current site root using 
      * <code>{@link CmsRequestContext#removeSiteRoot(String)}</code>.<p>
      * 
+     * If the resource root path does not start with the current site root,
+     * it is left untouched.<p>
+     * 
      * @param resource the resource to get the adjusted site root path for
      * 
      * @return the absolute resource path adjusted for the current site
@@ -368,6 +371,9 @@ public final class CmsRequestContext {
     /**
      * Removes the current site root prefix from the absolute path in the resource name,
      * that is adjusts the resource name for the current site root.<p> 
+     * 
+     * If the resource name does not start with the current site root,
+     * it is left untouched.<p>
      * 
      * @param resourcename the resource name
      * 

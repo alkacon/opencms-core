@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReportThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,18 +223,7 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     protected void initHtmlReport(Locale locale) {
 
-        m_report = new CmsHtmlReport(locale);
-    }
-
-    /**
-     * Initialize a HTML report for this Thread with a specified resource bundle.<p>
-     * 
-     * @param locale the locale for the report output messages
-     * @param bundleName the name of the resource bundle with localized strings
-     */
-    protected void initHtmlReport(Locale locale, String bundleName) {
-
-        m_report = new CmsHtmlReport(bundleName, locale);
+        m_report = new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot());
     }
 
     /**
@@ -247,6 +236,6 @@ public abstract class A_CmsReportThread extends Thread implements I_CmsReportThr
      */
     protected void initOldHtmlReport(Locale locale) {
 
-        m_report = new CmsHtmlReport(locale, true);
+        m_report = new CmsHtmlReport(locale, m_cms.getRequestContext().getSiteRoot(), true);
     }
 }

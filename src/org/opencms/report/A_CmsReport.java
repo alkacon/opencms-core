@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,8 @@
 
 package org.opencms.report;
 
+import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -46,7 +46,7 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,23 +58,11 @@ public abstract class A_CmsReport implements I_CmsReport {
     /** The locale this report is written in. */
     private Locale m_locale;
 
-    /** Localized message access object. */
-    private List m_messages;
+    /** The original site root of the user who started this report. */
+    private String m_siteRoot;
 
     /** Runtime of the report. */
     private long m_starttime;
-
-    /**
-     * @see org.opencms.report.I_CmsReport#addBundle(String)
-     */
-    public void addBundle(String bundleName) {
-
-        CmsMessages msg = new CmsMessages(bundleName, getLocale());
-        if (m_messages.contains(msg)) {
-            m_messages.remove(msg);
-        }
-        m_messages.add(msg);
-    }
 
     /**
      * @see org.opencms.report.I_CmsReport#addError(java.lang.Object)
@@ -117,27 +105,22 @@ public abstract class A_CmsReport implements I_CmsReport {
     }
 
     /**
+     * Returns the original site root of the user who started this report,
+     * or <code>null</code> if the original site root has not been set.<p>
+     * 
+     * @return the original site root of the user who started this report
+     */
+    public String getSiteRoot() {
+
+        return m_siteRoot;
+    }
+
+    /**
      * @see org.opencms.report.I_CmsReport#hasError()
      */
     public boolean hasError() {
 
         return (m_errors.size() > 0);
-    }
-
-    /**
-     * @see org.opencms.report.I_CmsReport#key(java.lang.String)
-     */
-    public String key(String keyName) {
-
-        for (int i = 0, l = m_messages.size(); i < l; i++) {
-            CmsMessages msg = (CmsMessages)m_messages.get(i);
-            String key = msg.key(keyName, (i < (l - 1)));
-            if (key != null) {
-                return key;
-            }
-        }
-        // if not found, check in 
-        return CmsMessages.formatUnknownKey(keyName);
     }
 
     /**
@@ -194,6 +177,34 @@ public abstract class A_CmsReport implements I_CmsReport {
     }
 
     /**
+     * Removes the report site root prefix from the absolute path in the resource name,
+     * that is adjusts the resource name for the report site root.<p> 
+     * 
+     * If the site root for this report has not been set,
+     * or the resource name does not start with the report site root,
+     * the name it is left untouched.<p>
+     * 
+     * @param resourcename the resource name (full path)
+     * 
+     * @return the resource name adjusted for the report site root
+     * 
+     * @see CmsRequestContext#removeSiteRoot(String)
+     */
+    public String removeSiteRoot(String resourcename) {
+
+        if (m_siteRoot == null) {
+            // site root has not been set
+            return resourcename;
+        }
+
+        String siteRoot = CmsRequestContext.getAdjustedSiteRoot(m_siteRoot, resourcename);
+        if ((siteRoot == m_siteRoot) && resourcename.startsWith(siteRoot)) {
+            resourcename = resourcename.substring(siteRoot.length());
+        }
+        return resourcename;
+    }
+
+    /**
      * @see org.opencms.report.I_CmsReport#resetRuntime()
      */
     public void resetRuntime() {
@@ -205,12 +216,13 @@ public abstract class A_CmsReport implements I_CmsReport {
      * Initializes some member variables for this report.<p>
      * 
      * @param locale the locale for this report
+     * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
      */
-    protected void init(Locale locale) {
+    protected void init(Locale locale, String siteRoot) {
 
         m_starttime = System.currentTimeMillis();
-        m_messages = new ArrayList();
         m_locale = locale;
+        m_siteRoot = siteRoot;
     }
 
     /**

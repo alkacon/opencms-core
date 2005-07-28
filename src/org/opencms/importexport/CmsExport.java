@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.79 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.80 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.79 $ 
+ * @version $Revision: 1.80 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,7 +172,8 @@ public class CmsExport {
         boolean includeUnchanged)
     throws CmsImportExportException, CmsRoleViolationException {
 
-        this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport());
+        this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport(
+            cms.getRequestContext().getLocale()));
     }
 
     /**

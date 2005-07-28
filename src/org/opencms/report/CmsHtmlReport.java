@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.30 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,63 +79,26 @@ public class CmsHtmlReport extends A_CmsReport {
     private boolean m_writeHtml;
 
     /**
-     * Constructs a new report using the provided locale and the default OpenCms 
-     * workplace resource bundle for the output language.<p>
+     * Constructs a new report using the provided locale for the output language.<p>
      * 
-     * @param locale a locale to use for the output language
-     * @see I_CmsReport#BUNDLE_NAME 
+     * @param locale the locale to use for the output language
+     * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
      */
-    public CmsHtmlReport(Locale locale) {
+    public CmsHtmlReport(Locale locale, String siteRoot) {
 
-        this(BUNDLE_NAME, locale, false);
+        this(locale, siteRoot, false);
     }
 
     /**
-     * Constructs a new report using the provided locale and the default OpenCms 
-     * workplace resource bundle for the output language.<p>
-     * 
-     * This constructor is reserved for older report threads that still use
-     * XML templates to generate their output. It allows to specifiy to write 
-     * HTML instead of JavaScript output.<p>
-     * 
-     * @param locale the locale to use for the report output messages
-     * @param writeHtml true, if this report should generate HTML instead of JavaScript output
-     * @see I_CmsReport#BUNDLE_NAME 
-     */
-    public CmsHtmlReport(Locale locale, boolean writeHtml) {
-
-        this(BUNDLE_NAME, locale, writeHtml);
-    }
-
-    /**
-     * Constructs a new report using the provided locale and resource bundle
-     * for the output language.<p>
-     * 
-     * @param locale the locale to use for the report output messages
-     * @param bundleName the name of the resource bundle with localized strings
-     */
-    public CmsHtmlReport(String bundleName, Locale locale) {
-
-        this(bundleName, locale, false);
-    }
-
-    /**
-     * Constructs a new report using the provided locale and resource bundle
-     * for the output language.<p>
-     * 
-     * This constructor is reserved for older report threads that still use
-     * XML templates to generate their output. It allows to specifiy to write 
-     * HTML instead of JavaScript output.<p>
+     * Constructs a new report using the provided locale for the output language.<p>
      *  
-     * @param bundleName the name of the resource bundle with localized strings
-     * @param locale the locale to use for the report output messages
-     * @param writeHtml true, if this report should generate HTML instead of JavaScript output
+     * @param locale the locale to use for the output language
+     * @param siteRoot the site root of the user who started this report (may be <code>null</code>)
+     * @param writeHtml if <code>true</code>, this report should generate HTML instead of JavaScript output
      */
-    protected CmsHtmlReport(String bundleName, Locale locale, boolean writeHtml) {
+    protected CmsHtmlReport(Locale locale, String siteRoot, boolean writeHtml) {
 
-        init(locale);
-        addBundle(bundleName);
-
+        init(locale, siteRoot);
         m_content = new ArrayList(256);
         m_showExceptionStackTracke = true;
         m_writeHtml = writeHtml;

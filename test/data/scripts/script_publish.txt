@@ -1,5 +1,8 @@
 #
-# Script: Publish the current project and generate the default "Offline" project
+# Script: Publish the setup project
+
+# Switch to the setup project
+setCurrentProject "_setupProject"
 
 # Publish the project
 unlockCurrentProject

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsXmlDocumentLinkValidator.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert
  *   
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +99,7 @@ public class CmsXmlDocumentLinkValidator {
      */
     public Map validateResources(CmsObject cms, List offlineResources) {
 
-        return validateResources(cms, offlineResources, new CmsShellReport());
+        return validateResources(cms, offlineResources, new CmsShellReport(cms.getRequestContext().getLocale()));
     }
 
     /**

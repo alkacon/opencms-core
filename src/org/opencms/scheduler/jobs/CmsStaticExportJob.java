@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsStaticExportJob.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/28 15:53:10 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.ServletException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,7 +65,7 @@ public class CmsStaticExportJob implements I_CmsScheduledJob {
         I_CmsReport report = null;
 
         try {
-            report = new CmsLogReport(CmsStaticExportJob.class);
+            report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsStaticExportJob.class);
             OpenCms.getStaticExportManager().exportFullStaticRender(true, report);
         } catch (CmsException e) {
             report.println(e);
