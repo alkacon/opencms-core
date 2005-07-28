@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/29 15:08:40 $
- * Version: $Revision: 1.139 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.140 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.139 $
+ * @version $Revision: 1.140 $
  * 
  * @since 6.0.0 
  */
@@ -414,44 +414,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             } else {
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
                     Messages.ERR_BACKUP_FILE_NOT_FOUND_1,
-                    resourcePath.toString()));
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return file;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsBackupDriver#readBackupFileHeader(org.opencms.db.CmsDbContext, int, java.lang.String)
-     */
-    public CmsBackupResource readBackupFileHeader(CmsDbContext dbc, int tagId, String resourcePath)
-    throws CmsDataAccessException {
-
-        CmsBackupResource file = null;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, "C_RESOURCES_READ_BACKUP");
-            stmt.setString(1, resourcePath);
-            stmt.setInt(2, tagId);
-            res = stmt.executeQuery();
-            if (res.next()) {
-                file = createBackupResource(res, false);
-                while (res.next()) {
-                    // do nothing only move through all rows because of mssql odbc driver
-                }
-            } else {
-                throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_BACKUP_FILE_HEADER_NOT_FOUND_1,
                     resourcePath.toString()));
             }
         } catch (SQLException e) {
@@ -1176,25 +1138,6 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
 
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsBackupDriver#writeBackupResourceContent(org.opencms.db.CmsDbContext, int, org.opencms.file.CmsResource, org.opencms.file.CmsBackupResource)
-     */
-    public void writeBackupResourceContent(
-        CmsDbContext dbc,
-        int projectId,
-        CmsResource resource,
-        CmsBackupResource backupResource) throws CmsDataAccessException {
-
-        if (!this.internalValidateBackupResource(dbc, resource, backupResource.getTagId())) {
-            internalWriteBackupFileContent(
-                dbc,
-                backupResource.getBackupId(),
-                resource,
-                backupResource.getTagId(),
-                backupResource.getVersionId());
-        }
     }
 
     /**

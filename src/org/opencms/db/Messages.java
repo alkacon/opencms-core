@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/06/29 15:18:11 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.36 $
+ * @version $Revision: 1.37 $
  * 
  * @since 6.0.0 
  */
@@ -352,7 +352,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_ALL_BKP_FILE_HEADERS_1 = "ERR_READ_ALL_BKP_FILE_HEADERS_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_READ_ALL_PROPDEF_MAPPING_TYPE_1 = "ERR_READ_ALL_PROPDEF_MAPPING_TYPE_1";
+    public static final String ERR_READ_ALL_PROPDEF_0 = "ERR_READ_ALL_PROPDEF_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_BKP_FILE_2 = "ERR_READ_BKP_FILE_2";

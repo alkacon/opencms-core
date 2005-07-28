@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.252 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.253 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.252 $
+ * @version $Revision: 1.253 $
  * 
  * @since 6.0.0 
  */
@@ -1072,69 +1072,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFiles(org.opencms.db.CmsDbContext, int)
-     */
-    public List readFiles(CmsDbContext dbc, int projectId) throws CmsDataAccessException {
-
-        List resources = new ArrayList();
-        CmsResource currentResource;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_CHANGED_FILEHEADERS");
-
-            res = stmt.executeQuery();
-            while (res.next()) {
-                currentResource = createResource(res, projectId);
-                resources.add(currentResource);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return resources;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFiles(org.opencms.db.CmsDbContext, int, int)
-     */
-    public List readFiles(CmsDbContext dbc, int projectId, int resourcetype) throws CmsDataAccessException {
-
-        List files = new ArrayList();
-        CmsFile file;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_FILESBYTYPE");
-            stmt.setInt(1, resourcetype);
-
-            res = stmt.executeQuery();
-            while (res.next()) {
-                file = createFile(res, projectId, true);
-                files.add(file);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return files;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#readFolder(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID)
      */
     public CmsFolder readFolder(CmsDbContext dbc, int projectId, CmsUUID folderId) throws CmsDataAccessException {
@@ -1213,37 +1150,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readFolders(org.opencms.db.CmsDbContext, int)
-     */
-    public List readFolders(CmsDbContext dbc, int projectId) throws CmsDataAccessException {
-
-        List folders = new ArrayList();
-        CmsFolder currentFolder;
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_READ_CHANGED_FOLDERS_BY_PROJECT");
-
-            res = stmt.executeQuery();
-            while (res.next()) {
-                currentFolder = createFolder(res, projectId, true);
-                folders.add(currentFolder);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return folders;
-    }
-
-    /**
      * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinition(org.opencms.db.CmsDbContext, java.lang.String, int)
      */
     public CmsPropertyDefinition readPropertyDefinition(CmsDbContext dbc, String name, int projectId)
@@ -1282,9 +1188,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(org.opencms.db.CmsDbContext, int, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readPropertyDefinitions(org.opencms.db.CmsDbContext, int)
      */
-    public List readPropertyDefinitions(CmsDbContext dbc, int projectId, int mappingtype) throws CmsDataAccessException {
+    public List readPropertyDefinitions(CmsDbContext dbc, int projectId) throws CmsDataAccessException {
 
         ArrayList propertyDefinitions = new ArrayList();
         ResultSet res = null;
@@ -1581,40 +1487,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     "C_RESOURCES_GET_RESOURCE_IN_PROJECT_IGNORE_STATE");
                 stmt.setInt(1, projectId);
             }
-
-            res = stmt.executeQuery();
-            while (res.next()) {
-                CmsResource resource = createResource(res, projectId);
-                result.add(resource);
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return result;
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResources(org.opencms.db.CmsDbContext, int, long, long)
-     */
-    public List readResources(CmsDbContext dbc, int projectId, long starttime, long endtime)
-    throws CmsDataAccessException {
-
-        List result = new ArrayList();
-
-        ResultSet res = null;
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_GET_RESOURCE_IN_TIMERANGE");
-            stmt.setLong(1, starttime);
-            stmt.setLong(2, endtime);
 
             res = stmt.executeQuery();
             while (res.next()) {
@@ -1949,41 +1821,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         } finally {
             m_sqlManager.closeAll(dbc, conn, stmt, null);
         }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsVfsDriver#validateContentIdExists(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID)
-     */
-    public boolean validateContentIdExists(CmsDbContext dbc, int projectId, CmsUUID contentId)
-    throws CmsDataAccessException {
-
-        Connection conn = null;
-        PreparedStatement stmt = null;
-        ResultSet res = null;
-        boolean result = false;
-        int count = 0;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc, projectId);
-            stmt = m_sqlManager.getPreparedStatement(conn, projectId, "C_RESOURCES_SELECT_CONTENT_ID");
-            stmt.setString(1, contentId.toString());
-
-            res = stmt.executeQuery();
-            if (res.next()) {
-                count = res.getInt(1);
-                result = (count == 1);
-            } else {
-                result = false;
-            }
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, res);
-        }
-
-        return result;
     }
 
     /**

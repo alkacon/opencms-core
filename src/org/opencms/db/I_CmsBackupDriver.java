@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsBackupDriver.java,v $
- * Date   : $Date: 2005/06/29 15:08:39 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.52 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.51 $
+ * @version $Revision: 1.52 $
  * 
  * @since 6.0.0
  */
@@ -155,18 +155,6 @@ public interface I_CmsBackupDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     CmsBackupResource readBackupFile(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException;
-
-    /**
-     * Reads a backup file header excluding the file content.<p>
-     *
-     * @param dbc the current database context
-     * @param tagId the tagId of the file
-     * @param resourcePath the path of the file to read
-     * 
-     * @return CmsBackupResource the backup file
-     * @throws CmsDataAccessException is something goes wrong
-     */
-    CmsBackupResource readBackupFileHeader(CmsDbContext dbc, int tagId, String resourcePath) throws CmsDataAccessException;
 
     /**
      * Reads all backup file headers  excluding the file content.<p>.
@@ -350,21 +338,5 @@ public interface I_CmsBackupDriver {
         int tagId,
         long publishDate,
         int maxVersions) throws CmsDataAccessException;
-
-    /**
-     * Writes a resource content to the backup.<p>
-     * 
-     * @param context the current database context
-     * @param projectId the project to read from
-     * @param resource the resource (file header) to read the content from
-     * @param backupResource the backup resource to write the backup content to
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void writeBackupResourceContent(
-        CmsDbContext context,
-        int projectId,
-        CmsResource resource,
-        CmsBackupResource backupResource) throws CmsDataAccessException;
 
 }

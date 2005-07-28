@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/07/22 07:10:33 $
- * Version: $Revision: 1.548 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.549 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.548 $
+ * @version $Revision: 1.549 $
  * 
  * @since 6.0.0
  */
@@ -4499,15 +4499,14 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
      * Reads all property definitions for the given mapping type.<p>
      *
      * @param dbc the current database context
-     * @param mappingtype the mapping type to read the property definitions for
      * 
      * @return a list with the <code>{@link CmsPropertyDefinition}</code> objects (may be empty)
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllPropertyDefinitions(CmsDbContext dbc, int mappingtype) throws CmsException {
+    public List readAllPropertyDefinitions(CmsDbContext dbc) throws CmsException {
 
-        List returnValue = m_vfsDriver.readPropertyDefinitions(dbc, dbc.currentProject().getId(), mappingtype);
+        List returnValue = m_vfsDriver.readPropertyDefinitions(dbc, dbc.currentProject().getId());
         Collections.sort(returnValue);
         return returnValue;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/07/19 09:26:34 $
- * Version: $Revision: 1.141 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.142 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.141 $
+ * @version $Revision: 1.142 $
  * 
  * @since 6.0.0 
  */
@@ -1962,7 +1962,7 @@ public final class CmsObject {
      */
     public List readAllPropertyDefinitions() throws CmsException {
 
-        return m_securityManager.readAllPropertyDefinitions(m_context, CmsPropertyDefinition.PROPERYDEFINITION_RESOURCE);
+        return m_securityManager.readAllPropertyDefinitions(m_context);
     }
 
     /**

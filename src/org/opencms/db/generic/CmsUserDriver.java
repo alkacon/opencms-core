@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.106 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.107 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.106 $
+ * @version $Revision: 1.107 $
  * 
  * @since 6.0.0 
  */
@@ -1290,33 +1290,6 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
             stmt.setString(1, resource.toString());
             stmt.setString(2, principal.toString());
-            stmt.executeUpdate();
-
-        } catch (SQLException e) {
-            throw new CmsDbSqlException(Messages.get().container(
-                Messages.ERR_GENERIC_SQL_1,
-                CmsDbSqlException.getErrorQuery(stmt)), e);
-        } finally {
-            m_sqlManager.closeAll(dbc, conn, stmt, null);
-        }
-    }
-
-    /**
-     * @see org.opencms.db.I_CmsUserDriver#undeleteAccessControlEntries(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
-     */
-    public void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
-    throws CmsDataAccessException {
-
-        PreparedStatement stmt = null;
-        Connection conn = null;
-
-        try {
-            conn = m_sqlManager.getConnection(dbc);
-            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_ACCESS_RESETFLAGS_ALL");
-
-            stmt.setInt(1, CmsAccessControlEntry.ACCESS_FLAGS_DELETED);
-            stmt.setString(2, resource.toString());
-
             stmt.executeUpdate();
 
         } catch (SQLException e) {

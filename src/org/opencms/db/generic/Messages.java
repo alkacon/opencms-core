@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,14 +40,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Thomas Weckert 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_BACKUP_FILE_HEADER_NOT_FOUND_1 = "ERR_BACKUP_FILE_HEADER_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUP_FILE_NOT_FOUND_1 = "ERR_BACKUP_FILE_NOT_FOUND_1";

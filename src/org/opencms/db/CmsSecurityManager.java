@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.91 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.92 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.91 $
+ * @version $Revision: 1.92 $
  * 
  * @since 6.0.0
  */
@@ -2880,23 +2880,20 @@ public final class CmsSecurityManager {
      * Reads all propertydefinitions for the given mapping type.<p>
      *
      * @param context the current request context
-     * @param mappingtype the mapping type to read the propertydefinitions for
      * 
      * @return a list with the <code>{@link CmsPropertyDefinition}</code> objects (may be empty)
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readAllPropertyDefinitions(CmsRequestContext context, int mappingtype) throws CmsException {
+    public List readAllPropertyDefinitions(CmsRequestContext context) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            result = m_driverManager.readAllPropertyDefinitions(dbc, mappingtype);
+            result = m_driverManager.readAllPropertyDefinitions(dbc);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_ALL_PROPDEF_MAPPING_TYPE_1,
-                (mappingtype == CmsProperty.RESOURCE_RECORD_MAPPING) ? "CmsProperty.C_RESOURCE_RECORD_MAPPING"
-                : "CmsProperty.C_STRUCTURE_RECORD_MAPPING"), e);
+                Messages.ERR_READ_ALL_PROPDEF_0), e);
         } finally {
             dbc.clear();
         }

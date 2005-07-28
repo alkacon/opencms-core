@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.111 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.111 $
+ * @version $Revision: 1.112 $
  * 
  * @since 6.0.0 
  */
@@ -273,31 +273,6 @@ public interface I_CmsVfsDriver {
     throws CmsDataAccessException;
 
     /**
-     * Reads all files that are either new, changed or deleted.<p>
-     *
-     * @param dbc the current database context
-     * @param projectId a project id for reading online or offline resources
-     * 
-     * @return a list of files
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readFiles(CmsDbContext dbc, int projectId) throws CmsDataAccessException;
-
-    /**
-     * Reads all modified files of a given resource type that are either new, changed or deleted.<p>
-     * 
-     * The files in the result list include the file content.<p>
-     * 
-     * @param dbc the current database context
-     * @param projectId a project id for reading online or offline resources
-     * @param resourcetype the resourcetype of the files
-     * 
-     * @return a list of files
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readFiles(CmsDbContext dbc, int projectId, int resourcetype) throws CmsDataAccessException;
-
-    /**
      * Reads a folder specified by it's structure ID.<p>
      *
      * @param dbc the current database context
@@ -322,17 +297,6 @@ public interface I_CmsVfsDriver {
     CmsFolder readFolder(CmsDbContext dbc, int projectId, String foldername) throws CmsDataAccessException;
 
     /**
-     * Reads all folders that are new, changed or deleted.<p>
-     *
-     * @param dbc the current database context
-     * @param projectId the project in which the folders are
-     * 
-     * @return a list of folders
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    List readFolders(CmsDbContext dbc, int projectId) throws CmsDataAccessException;
-
-    /**
      * Reads a property definition for the soecified resource type.<p>
      * 
      * If no property definition with the given name is found, 
@@ -355,13 +319,12 @@ public interface I_CmsVfsDriver {
      *
      * @param dbc the current database context
      * @param projectId the id of the project
-     * @param mappingtype the mapping type to read the property definitions for
      * 
      * @return a list with the <code>{@link CmsPropertyDefinition}</code> objects (may be empty)
      * 
      * @throws CmsDataAccessException if something goes wrong
      */
-    List readPropertyDefinitions(CmsDbContext dbc, int projectId, int mappingtype) throws CmsDataAccessException;
+    List readPropertyDefinitions(CmsDbContext dbc, int projectId) throws CmsDataAccessException;
 
     /**
      * Reads a property object from the database specified by it's key name mapped to a resource.<p>
@@ -433,21 +396,6 @@ public interface I_CmsVfsDriver {
      * @throws CmsDataAccessException if somethong goes wrong
      */
     List readResources(CmsDbContext dbc, int currentProject, int state, int mode) throws CmsDataAccessException;
-
-    /**
-     * Reads all resources with a modification date within a given time range.<p>
-     * 
-     * @param dbc the current database context
-     * @param currentProject the current project
-     * @param starttime the begin of the time range
-     * @param endtime the end of the time range
-     * 
-     * @return a list with all resources that where read
-     * 
-     * @throws CmsDataAccessException if something goes wrong 
-     */
-    List readResources(CmsDbContext dbc, int currentProject, long starttime, long endtime)
-    throws CmsDataAccessException;
 
     /**
      * Reads all resources that have a value set for the specified property (definition), in the given path.<p>
@@ -576,18 +524,6 @@ public interface I_CmsVfsDriver {
      */
     void replaceResource(CmsDbContext dbc, CmsResource newResource, byte[] newResourceContent, int newResourceType)
     throws CmsDataAccessException;
-
-    /**
-     * Validates if the specified content ID in the tables of the specified project {offline|online} exists.<p>
-     * 
-     * @param dbc the current database context
-     * @param projectId the ID of current project
-     * @param contentId the content id
-     * 
-     * @return true, if the specified content ID in the tables of the specified project {offline|online} exists
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    boolean validateContentIdExists(CmsDbContext dbc, int projectId, CmsUUID contentId) throws CmsDataAccessException;
 
     /**
      * Validates if the specified resource ID in the tables of the specified project {offline|online} exists.<p>

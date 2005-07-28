@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/07/28 10:53:54 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.57 $
+ * @version $Revision: 1.58 $
  * 
  * @since 6.0.0 
  */
@@ -523,17 +523,6 @@ public interface I_CmsUserDriver extends I_CmsDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void removeAccessControlEntry(CmsDbContext dbc, CmsProject project, CmsUUID resource, CmsUUID principal)
-    throws CmsDataAccessException;
-
-    /**
-     * Undeletes all access control entries belonging to a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param project the project to write the entry
-     * @param resource the id of the resource
-     * @throws CmsDataAccessException if something goes wrong
-     */
-    void undeleteAccessControlEntries(CmsDbContext dbc, CmsProject project, CmsUUID resource)
     throws CmsDataAccessException;
 
     /**
