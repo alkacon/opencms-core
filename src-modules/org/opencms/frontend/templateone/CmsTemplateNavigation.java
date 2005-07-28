@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/07/20 15:21:07 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/07/28 13:25:12 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** Request parameter name for the head navigation flag to mark the current top level folder. */
     public static final String PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
+    
+    /** Request parameter name for the head navigation flag to manually configure the head navigation. */
+    public static final String PARAM_HEADNAV_MANUAL = "headnavmanual";
 
     /** Request parameter name for the head navigation flag to expand the submenus on click (true) or mouseover (false). */
     public static final String PARAM_HEADNAV_MENUCLICK = "headnavmenuclick";
@@ -142,6 +145,9 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
 
     /** The default behaviour to include items in head navigation menu if property <code>style_head_nav_showitem</code> is not set. */
     private boolean m_headNavItemDefaultValue;
+    
+    /** Determines if the head navigation menu should be created from a manual configuration file. */
+    private boolean m_headNavManual;
 
     /** Determines if the currently active top folder should be marked in the head navigation. */
     private boolean m_headNavMarkCurrent;
@@ -1020,6 +1026,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
         m_headNavFolder = req.getParameter(PARAM_HEADNAV_FOLDER);
         m_showHeadNavImages = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_IMAGES)).booleanValue();
         m_headNavItemDefaultValue = true;
+        m_headNavManual = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MANUAL)).booleanValue();
         m_headNavMarkCurrent = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MARKCURRENT)).booleanValue();
         m_headNavMenuClick = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MENUCLICK)).booleanValue();
         m_menuDepth = Integer.parseInt(req.getParameter(PARAM_HEADNAV_MENUDEPTH));
@@ -1207,7 +1214,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
      */
     private boolean isHeadNavManual() {
 
-        return Boolean.valueOf(getConfigurationValue("headnav.manual", "false")).booleanValue();
+        return m_headNavManual;
     }
 
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/07/22 12:14:36 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/07/28 13:25:12 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -696,18 +696,34 @@ public class CmsTemplateBean extends CmsJspActionElement {
      * @return the substituted URI of the CSS style sheet
      */
     public String getStyleSheetUri(String resPath, String config, String site, Locale locale) {
-
-        String fileName = FILE_CSS;
+        
+        StringBuffer result = new StringBuffer(16);
+        
+        // create absolute path to VFS module resource folder
+        result.append(CmsWorkplace.VFS_PATH_MODULES);
+        result.append(MODULE_NAME);
+        result.append("/resources/");
+        
         if (showAccessibleVersion()) {
             // use accessible CSS version
-            fileName = FILE_CSS_ACCESSIBLE;
+            result.append(FILE_CSS_ACCESSIBLE);
+        } else {
+            // use common CSS version
+            result.append(FILE_CSS);
         }
-        fileName += "?respath=" + resPath;
-        fileName += "&config=" + config;
-        fileName += "&site=" + site;
-        fileName += "&__locale=" + locale;
+        
+        // append the request parameters for the style sheet
+        result.append("?respath=");
+        result.append(resPath);
+        result.append("&config=");
+        result.append(config);
+        result.append("&site=");
+        result.append(site);
+        result.append("&__locale=");
+        result.append(locale);
+        
         // generate substituted style sheet URI
-        return link(CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/resources/" + fileName);
+        return link(result.toString());
     }
 
     /**
@@ -955,6 +971,8 @@ public class CmsTemplateBean extends CmsJspActionElement {
         getProperties().put(
             CmsTemplateNavigation.PARAM_HEADNAV_IMAGES,
             getConfigurationValue("headnav.images", "false"));
+        getProperties().put(CmsTemplateNavigation.PARAM_HEADNAV_MANUAL, 
+            getConfigurationValue("headnav.manual", "false"));
         getProperties().put(
             CmsTemplateNavigation.PARAM_HEADNAV_MARKCURRENT,
             getConfigurationValue("headnav.markcurrent", "false"));
