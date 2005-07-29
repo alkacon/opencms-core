@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/06/26 12:51:32 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/07/29 10:13:57 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +117,47 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
         result.append('/');
         result.append(name);
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#copyLocale(java.util.Locale, java.util.Locale)
+     */
+    public void copyLocale(Locale source, Locale destination) throws CmsXmlException {
+
+        if (!hasLocale(source)) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
+        }
+        if (hasLocale(destination)) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_LOCALE_ALREADY_EXISTS_1, destination));
+        }
+
+        Element sourceElement = null;
+        Element rootNode = m_document.getRootElement();
+        Iterator i = rootNode.elementIterator();
+        String localeStr = source.toString();
+        while (i.hasNext()) {
+            Element element = (Element)i.next();
+            String language = element.attributeValue(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, null);
+            if ((language != null) && (localeStr.equals(language))) {
+                // detach node with the locale
+                sourceElement = element.createCopy();
+                // there can be only one node for the locale
+                break;
+            }
+        }
+
+        if (sourceElement == null) {
+            // should not happen since this was checked already, just to make sure...
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_LOCALE_NOT_AVAILABLE_1, source));
+        }
+
+        // switch locale value in attribute of copied node
+        sourceElement.addAttribute(CmsXmlContentDefinition.XSD_ATTRIBUTE_VALUE_LANGUAGE, destination.toString());
+        // attach the copied node to the root node
+        rootNode.add(sourceElement);
+
+        // re-initialize the document bookmarks
+        initDocument(m_document, m_encoding, m_contentDefinition);
     }
 
     /**
@@ -375,6 +416,15 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public byte[] marshal() throws CmsXmlException {
 
         return ((ByteArrayOutputStream)marshal(new ByteArrayOutputStream(), m_encoding)).toByteArray();
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#moveLocale(java.util.Locale, java.util.Locale)
+     */
+    public void moveLocale(Locale source, Locale destination) throws CmsXmlException {
+
+        copyLocale(source, destination);
+        removeLocale(source);
     }
 
     /**

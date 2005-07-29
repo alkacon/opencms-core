@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/I_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/07/29 10:13:57 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Locale;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +61,16 @@ public interface I_CmsXmlDocument {
      * @throws CmsXmlException in case the locale already existed, or if something else goes wrong
      */
     void addLocale(CmsObject cms, Locale locale) throws CmsXmlException;
+
+    /**
+     * Copies the content of the given source locale to the given destination locale in this XML document.<p>
+     * 
+     * @param source the source locale 
+     * @param destination the destination locale
+     * 
+     * @throws CmsXmlException in case either the source locale did not exist, or the destination locale already exists in the document, or if something else goes wrong
+     */
+    void copyLocale(Locale source, Locale destination) throws CmsXmlException;
 
     /**
      * Returns the content definition object for this xml content object.<p>
@@ -289,6 +299,16 @@ public interface I_CmsXmlDocument {
      *      and that value is enabled, false otherwise
      */
     boolean isEnabled(String name, Locale locale, int index);
+
+    /**
+     * Moves the content of the given source locale to the given destination locale in this XML document.<p>
+     * 
+     * @param source the source locale 
+     * @param destination the destination locale
+     * 
+     * @throws CmsXmlException in case either the source locale did not exist, or the destination locale already exists in the document, or if something else goes wrong
+     */
+    void moveLocale(Locale source, Locale destination) throws CmsXmlException;
 
     /**
      * Removes the given locale from this XML document.

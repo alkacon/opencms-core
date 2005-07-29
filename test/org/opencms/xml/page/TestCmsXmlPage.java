@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPage.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/07/29 10:13:57 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.18 $
  * 
  * @since 6.0.0
  */
@@ -316,7 +316,7 @@ public class TestCmsXmlPage extends TestCase {
     }
 
     /**
-     * Tests acessing XML page values via lovales.<p> 
+     * Tests acessing XML page values via locales.<p> 
      *
      * @throws Exception in case something goes wrong
      */
@@ -343,6 +343,50 @@ public class TestCmsXmlPage extends TestCase {
         assertTrue(locales.contains(Locale.ENGLISH));
     }
 
+    
+    /**
+     * Tests copying, moving and removing locales from a XML page.<p> 
+     *
+     * @throws Exception in case something goes wrong
+     */
+    public void testXmlPageLocaleCopyMoveRemove() throws Exception {
+
+        // create a XML entity resolver
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+
+        CmsXmlPage page;
+        String content;
+
+        content = CmsFileUtil.readFile("org/opencms/xml/page/xmlpage-2.xml", UTF8);
+        page = CmsXmlPageFactory.unmarshal(content, UTF8, resolver);
+
+        
+        assertEquals(2, page.getLocales().size());
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        assertTrue(page.hasLocale(Locale.GERMAN));
+
+        page.copyLocale(Locale.GERMAN, Locale.FRENCH);
+        assertEquals(3, page.getLocales().size());
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        assertTrue(page.hasLocale(Locale.GERMAN));
+        assertTrue(page.hasLocale(Locale.FRENCH));
+
+        page.moveLocale(Locale.FRENCH, Locale.ITALIAN);
+        assertEquals(3, page.getLocales().size());
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        assertTrue(page.hasLocale(Locale.GERMAN));
+        assertTrue(page.hasLocale(Locale.ITALIAN));
+        
+        page.removeLocale(Locale.ITALIAN);
+        assertEquals(2, page.getLocales().size());
+        assertTrue(page.hasLocale(Locale.ENGLISH));
+        assertTrue(page.hasLocale(Locale.GERMAN));
+        
+        page.removeLocale(Locale.ENGLISH);
+        assertEquals(1, page.getLocales().size());
+        assertTrue(page.hasLocale(Locale.GERMAN));
+    }
+    
     /**
      * Tests reading elements from the updated, final version of the XML page.<p> 
      * 

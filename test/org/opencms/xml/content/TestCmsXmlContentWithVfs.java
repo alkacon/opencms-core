@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/07/07 11:27:19 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/07/29 10:13:57 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -116,6 +116,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testLayoutWidgetMapping"));
         suite.addTest(new TestCmsXmlContentWithVfs("testLinkResolver"));
         suite.addTest(new TestCmsXmlContentWithVfs("testEmptyLocale"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testCopyMoveRemoveLocale"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidation"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationExtended"));
         suite.addTest(new TestCmsXmlContentWithVfs("testValidationLocale"));
@@ -622,7 +623,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     /**
      * Tests the Locale settings of XMLContents with only optional elements and no element present.<p>
      * 
-     * @throws Exception in case something goes wrong
+     * @throws Exception if the test fails
      */
     public void testEmptyLocale() throws Exception {
 
@@ -660,6 +661,65 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         locales = xmlcontent.getLocales();
         assertEquals(1, locales.size());
         assertEquals(Locale.ENGLISH, locales.get(0));
+    }
+    
+    /**
+     * Tests locale copy, move and remove operation on an XML content.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testCopyMoveRemoveLocale() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing locale copy, move and remove operation on an XML content");
+
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String iso = "ISO-8859-1";
+
+        String content;
+        CmsXmlContent xmlcontent;
+
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-8.xsd", CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_8, content.getBytes(iso));
+
+        // read an existing (empty) XML content with just one locale node
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-8.xml", iso);
+        xmlcontent = CmsXmlContentFactory.unmarshal(content, iso, resolver);
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        List locales = xmlcontent.getLocales();
+        assertEquals(1, locales.size());
+        assertEquals(Locale.ENGLISH, locales.get(0));
+
+        xmlcontent.copyLocale(Locale.ENGLISH, Locale.GERMANY);
+        assertEquals(2, xmlcontent.getLocales().size());
+        assertTrue(xmlcontent.hasLocale(Locale.ENGLISH));
+        assertTrue(xmlcontent.hasLocale(Locale.GERMANY));
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        xmlcontent.moveLocale(Locale.GERMANY, Locale.FRENCH);
+        assertEquals(2, xmlcontent.getLocales().size());
+        assertTrue(xmlcontent.hasLocale(Locale.ENGLISH));
+        assertTrue(xmlcontent.hasLocale(Locale.FRENCH));
+        assertFalse(xmlcontent.hasLocale(Locale.GERMANY));
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+
+        xmlcontent.removeLocale(Locale.ENGLISH);
+        assertEquals(1, xmlcontent.getLocales().size());
+        assertTrue(xmlcontent.hasLocale(Locale.FRENCH));
+        assertFalse(xmlcontent.hasLocale(Locale.ENGLISH));
+        assertFalse(xmlcontent.hasLocale(Locale.GERMANY));
+        assertEquals(Locale.FRENCH, xmlcontent.getLocales().get(0));
+
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
     }
 
     /**

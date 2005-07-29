@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/29 10:13:57 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,6 +96,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_XCC_TYPE_REGISTERED_0 = "ERR_INVALID_XCC_TYPE_REGISTERED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOCALE_ALREADY_EXISTS_1 = "ERR_LOCALE_ALREADY_EXISTS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCALE_NOT_AVAILABLE_1 = "ERR_LOCALE_NOT_AVAILABLE_1";

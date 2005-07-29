@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/07/29 10:13:57 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -81,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -484,6 +485,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
         m_document = document;
         m_elementLocales = new HashMap();
         m_elementNames = new HashMap();
+        m_locales = new HashSet();
 
         // convert pre 5.3.6 XML page documents
         if (!NODE_PAGES.equals(m_document.getRootElement().getName())) {
