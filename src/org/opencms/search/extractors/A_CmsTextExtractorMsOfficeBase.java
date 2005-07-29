@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractorMsOfficeBase.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/07/29 10:35:06 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.poi.poifs.eventfilesystem.POIFSReaderListener;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,17 +83,27 @@ public abstract class A_CmsTextExtractorMsOfficeBase extends A_CmsTextExtractor 
     public void processPOIFSReaderEvent(POIFSReaderEvent event) {
 
         try {
-            if (event.getName().startsWith(SummaryInformation.DEFAULT_STREAM_NAME)) {
+            if ((m_summary == null) && event.getName().startsWith(SummaryInformation.DEFAULT_STREAM_NAME)) {
                 m_summary = (SummaryInformation)PropertySetFactory.create(event.getStream());
                 return;
             }
-            if (event.getName().startsWith(DocumentSummaryInformation.DEFAULT_STREAM_NAME)) {
+            if ((m_documentSummary == null)
+                && event.getName().startsWith(DocumentSummaryInformation.DEFAULT_STREAM_NAME)) {
                 m_documentSummary = (DocumentSummaryInformation)PropertySetFactory.create(event.getStream());
                 return;
             }
         } catch (Exception e) {
             // ignore
         }
+    }
+
+    /**
+     * Cleans up some internal memory.<p> 
+     */
+    protected void cleanup() {
+
+        m_summary = null;
+        m_documentSummary = null;
     }
 
     /**
