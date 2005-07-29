@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/07/29 12:13:00 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,6 +255,9 @@ public class CmsIndexingThreadManager extends Thread {
                 new Integer(m_abandonedCounter),
                 m_report.formatRuntime()});
 
+        if (m_report != null) {
+            m_report.println(message);
+        }        
         if (LOG.isInfoEnabled()) {
             LOG.info(message.key());
         }

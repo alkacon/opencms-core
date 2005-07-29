@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/CmsExtractionResult.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/07/29 12:13:00 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,5 +94,17 @@ public class CmsExtractionResult implements I_CmsExtractionResult {
     public Map getMetaInfo() {
 
         return m_metaInfo;
+    }
+
+    /**
+     * @see org.opencms.search.extractors.I_CmsExtractionResult#release()
+     */
+    public void release() {
+
+        if (!m_metaInfo.isEmpty()) {
+            m_metaInfo.clear();
+        }
+        m_metaInfo = null;
+        m_content = null;
     }
 }

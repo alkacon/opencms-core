@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosDocument.java,v $
- * Date   : $Date: 2005/06/27 23:27:46 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/07/29 12:13:00 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.lucene.document.Field;
  * Lucene document factory class to extract index data from a cos resource 
  * of any type derived from <code>CmsMasterDataSet</code>.<p>
  * 
- * @version $Revision: 1.9 $ $Date: 2005/06/27 23:27:46 $
+ * @version $Revision: 1.10 $ $Date: 2005/07/29 12:13:00 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
@@ -223,9 +223,10 @@ public class CmsCosDocument implements I_CmsDocumentFactory {
         document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_PATH, path));
         document.add(Field.UnIndexed(CmsCosDocument.DOC_CONTENT_ID, resource.getId().toString()));
 
-        document
-            .add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extractContent(cms, resource, language).getContent()));
-
+        I_CmsExtractionResult extract = extractContent(cms, resource, language);
+        document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, extract.getContent()));
+        extract.release();
+            
         return document;
     }
 }

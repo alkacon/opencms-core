@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/CmsDocumentXmlPage.java,v $
- * Date   : $Date: 2005/06/23 11:11:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/07/29 12:13:00 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Locale;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,7 +120,9 @@ public class CmsDocumentXmlPage extends A_CmsVfsDocument {
 
                 if (ext instanceof I_CmsSearchExtractor) {
                     I_CmsSearchExtractor extra = (I_CmsSearchExtractor)ext;
-                    result = result + "\n" + extra.extractContent(cms, indexResource, language).getContent();
+                    I_CmsExtractionResult extract = extra.extractContent(cms, indexResource, language);
+                    result = result + "\n" + extract.getContent();
+                    extract.release();
                 } else {
                     throw new CmsIndexException(Messages.get().container(
                         Messages.ERR_EXTRACTION_CLASS_2,
