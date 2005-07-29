@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/24 09:11:44 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/07/29 15:38:42 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -1069,7 +1070,13 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                     result.append("error.png");
                     result.append("\" border=\"0\" alt=\"\"></td><td class=\"xmlTdError maxwidth\">");
                     while (t != null) {
-                        result.append(CmsStringUtil.escapeHtml(t.getLocalizedMessage()));
+                        String message = "";
+                        if (t instanceof I_CmsThrowable) {
+                            message = ((I_CmsThrowable)t).getLocalizedMessage(getLocale());
+                        } else {
+                            message = t.getLocalizedMessage();    
+                        }
+                        result.append(CmsStringUtil.escapeHtml(message));
                         t = t.getCause();
                         if (t != null) {
                             result.append("<br>");

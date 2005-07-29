@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/06/23 15:39:30 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/07/29 15:38:42 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,50 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENTLOCALE_DIALOG_TEMPLATE_ALL_0 = "GUI_CHANGEELEMENTLOCALE_DIALOG_TEMPLATE_ALL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_CHANGEELEMENTLOCALE_LOCALE_EQUAL_0 = "ERR_CHANGEELEMENTLOCALE_LOCALE_EQUAL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHANGEELEMENTLOCALE_NEWLOCALE_1 = "RPT_CHANGEELEMENTLOCALE_NEWLOCALE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHANGEELEMENTLOCALE_OLDLOCALE_1 = "RPT_CHANGEELEMENTLOCALE_OLDLOCALE_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHANGEELEMENTLOCALE_NOTLOCKED_0 = "RPT_CHANGEELEMENTLOCALE_NOTLOCKED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHANGEELEMENTLOCALE_TEMPLATE_0 = "RPT_CHANGEELEMENTLOCALE_TEMPLATE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHANGEELEMENTLOCALE_BEGIN_2 = "RPT_CHANGEELEMENTLOCALE_BEGIN_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_CHANGEELEMENTLOCALE_END_0 = "RPT_CHANGEELEMENTLOCALE_END_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENTLOCALE_THREAD_NAME_0 = "GUI_CHANGEELEMENTLOCALE_THREAD_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0 = "GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_NAME_0 = "GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_NAME_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_HELP_0 = "GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENTLOCALE_DIALOG_BLOCK_SETTINGS_0 = "GUI_CHANGEELEMENTLOCALE_DIALOG_BLOCK_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
