@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/07/29 10:13:36 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,8 +175,8 @@ public class CmsIndexingThread extends Thread {
                     m_report.println(exc);
 
                 }
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(
                         Messages.ERR_INDEX_RESOURCE_FAILED_2,
                         m_res.getRootPath(),
                         m_index.getName()), exc);
