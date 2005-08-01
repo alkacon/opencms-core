@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/07/25 12:18:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/08/01 08:09:55 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -1154,10 +1154,9 @@ public class CmsForm {
      * Initializes the optional captcha field.<p>
      * 
      * @param jsp the initialized CmsJspActionElement to access the OpenCms API
+     * @param xmlContent the XML configuration content
      * @param locale the currently active Locale
      * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
-     * @param content the XML configuration content
-     * @param messages the localized messages
      */
     private void initCaptchaField(CmsJspActionElement jsp, CmsXmlContent xmlContent, Locale locale, boolean initial) {
         
