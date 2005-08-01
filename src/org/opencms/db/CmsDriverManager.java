@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.550 $
+ * Date   : $Date: 2005/08/01 15:25:29 $
+ * Version: $Revision: 1.551 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.550 $
+ * @version $Revision: 1.551 $
  * 
  * @since 6.0.0
  */
@@ -619,7 +619,8 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS);
                     forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_USERS);
                     if (forbidden.contains(groupname)) {
-                        throw new CmsSecurityException(Messages.get().container(Messages.ERR_WEBUSER_GROUP_1, forbidden));
+                        throw new CmsSecurityException(
+                            Messages.get().container(Messages.ERR_WEBUSER_GROUP_1, forbidden));
                     }
                 }
 
@@ -676,57 +677,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         Map additionalInfos)
     throws CmsException, CmsSecurityException, CmsIllegalArgumentException, CmsDbEntryNotFoundException {
 
-        // no space before or after the name
-        name = name.trim();
-        // check the username
-        validUsername(name);
-        // check the password
-        validatePassword(password);
-
-        if ((name.length() > 0)) {
-            CmsUser newUser = m_userDriver.createUser(
-                dbc,
-                name,
-                password,
-                description,
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                additionalInfos,
-                " ",
-                CmsUser.USER_TYPE_WEBUSER);
-            CmsUser user;
-            CmsGroup usergroup;
-
-            user = m_userDriver.readUser(dbc, newUser.getName(), CmsUser.USER_TYPE_WEBUSER);
-
-            //check if the user exists
-            if (user != null) {
-                usergroup = readGroup(dbc, group);
-                //check if group exists
-                if (usergroup != null) {
-                    //add this user to the group
-                    m_userDriver.createUserInGroup(dbc, user.getId(), usergroup.getId(), null);
-                    // update the cache
-                    m_userGroupsCache.clear();
-                } else {
-                    throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, group));
-                }
-            } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1,
-                    user.getName()));
-            }
-
-            return newUser;
-        } else {
-            throw new CmsIllegalArgumentException(org.opencms.main.Messages.get().container(
-                Messages.ERR_BAD_USER_1,
-                name));
-        }
-
+        return addWebUser(dbc, name, password, group, description, null, additionalInfos);
     }
 
     /**
@@ -761,68 +712,37 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         Map additionalInfos)
     throws CmsException, CmsDbEntryNotFoundException, CmsIllegalArgumentException, CmsSecurityException {
 
-        // no space before or after the name
-        name = name.trim();
-        // check the username
-        validUsername(name);
-        // check the password
-        validatePassword(password);
-
-        if ((name.length() > 0)) {
-            CmsUser newUser = m_userDriver.createUser(
-                dbc,
-                name,
-                password,
-                description,
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                additionalInfos,
-                " ",
-                CmsUser.USER_TYPE_WEBUSER);
-            CmsUser user;
-            CmsGroup usergroup;
-            CmsGroup addGroup;
-
-            user = m_userDriver.readUser(dbc, newUser.getName(), CmsUser.USER_TYPE_WEBUSER);
-            //check if the user exists
-            if (user != null) {
-                usergroup = readGroup(dbc, group);
-                //check if group exists
-                if (usergroup != null && isWebgroup(dbc, usergroup)) {
+        CmsUser newUser = createUser(dbc, name, password, description, additionalInfos, CmsUser.USER_TYPE_WEBUSER);
+        CmsUser user = m_userDriver.readUser(dbc, newUser.getName(), CmsUser.USER_TYPE_WEBUSER);
+        //check if the user exists
+        if (user != null) {
+            CmsGroup usergroup = readGroup(dbc, group);
+            //check if group exists
+            if (usergroup != null && isWebgroup(dbc, usergroup)) {
+                //add this user to the group
+                m_userDriver.createUserInGroup(dbc, user.getId(), usergroup.getId(), null);
+                // update the cache
+                m_userGroupsCache.clear();
+            } else {
+                throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, group));
+            }
+            // if an additional groupname is given and the group does not belong to
+            // Users, Administrators or Projectmanager add the user to this group
+            if (CmsStringUtil.isNotEmpty(additionalGroup)) {
+                CmsGroup addGroup = readGroup(dbc, additionalGroup);
+                if (addGroup != null && isWebgroup(dbc, addGroup)) {
                     //add this user to the group
-                    m_userDriver.createUserInGroup(dbc, user.getId(), usergroup.getId(), null);
+                    m_userDriver.createUserInGroup(dbc, user.getId(), addGroup.getId(), null);
                     // update the cache
                     m_userGroupsCache.clear();
                 } else {
                     throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_GROUP_1, group));
                 }
-                // if an additional groupname is given and the group does not belong to
-                // Users, Administrators or Projectmanager add the user to this group
-                if (CmsStringUtil.isNotEmpty(additionalGroup)) {
-                    addGroup = readGroup(dbc, additionalGroup);
-                    if (addGroup != null && isWebgroup(dbc, addGroup)) {
-                        //add this user to the group
-                        m_userDriver.createUserInGroup(dbc, user.getId(), addGroup.getId(), null);
-                        // update the cache
-                        m_userGroupsCache.clear();
-                    } else {
-                        throw new CmsDbEntryNotFoundException(Messages.get().container(
-                            Messages.ERR_UNKNOWN_GROUP_1,
-                            group));
-                    }
-                }
-            } else {
-                throw new CmsDbEntryNotFoundException(Messages.get().container(
-                    Messages.ERR_UNKNOWN_USER_1,
-                    user.getName()));
             }
-            return newUser;
         } else {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, user.getName()));
         }
+        return newUser;
     }
 
     /**
@@ -1245,7 +1165,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             dateLastModified = source.getDateLastModified();
             userLastModified = source.getUserLastModified();
         }
-        
+
         // check the resource flags
         int flags = source.getFlags();
         if (source.isLabeled()) {
@@ -1759,7 +1679,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
 
             // lock the created resource
             lockResource(dbc, newResource, CmsLock.COMMON);
-            
+
         } finally {
 
             // clear the internal caches
@@ -2082,6 +2002,34 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public CmsUser createUser(CmsDbContext dbc, String name, String password, String description, Map additionalInfos)
     throws CmsException, CmsIllegalArgumentException {
 
+        return createUser(dbc, name, password, description, additionalInfos, CmsUser.USER_TYPE_SYSTEMUSER);
+    }
+
+    /**
+     * Creates a new user.<p>
+     *
+     * @param dbc the current database context
+     * @param name the name for the new user
+     * @param password the password for the new user
+     * @param description the description for the new user
+     * @param additionalInfos the additional infos for the user
+     * @param type the type of the user to create
+     *
+     * @return the created user
+     * 
+     * @see CmsObject#createUser(String, String, String, Map, int)
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the name for the user is not valid
+     */
+    private CmsUser createUser(
+        CmsDbContext dbc,
+        String name,
+        String password,
+        String description,
+        Map additionalInfos,
+        int type) throws CmsException, CmsIllegalArgumentException {
+
         // no space before or after the name
         name = name.trim();
         // check the username
@@ -2089,22 +2037,23 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         // check the password
         validatePassword(password);
 
-        CmsUser newUser = m_userDriver.createUser(
-            dbc,
-            name,
-            password,
-            description,
-            " ",
-            " ",
-            " ",
-            0,
-            I_CmsPrincipal.FLAG_ENABLED,
-            additionalInfos,
-            " ",
-            CmsUser.USER_TYPE_SYSTEMUSER);
-
-        return newUser;
-
+        if ((name.length() > 0)) {
+            return m_userDriver.createUser(
+                dbc,
+                name,
+                password,
+                description,
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                additionalInfos,
+                " ",
+                type);
+        } else {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
+        }
     }
 
     /**
@@ -4485,7 +4434,10 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
     public List readAllBackupFileHeaders(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
         // read the backup resources
-        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(dbc, resource.getRootPath(), resource.getResourceId());
+        List backupFileHeaders = m_backupDriver.readBackupFileHeaders(
+            dbc,
+            resource.getRootPath(),
+            resource.getResourceId());
 
         if (backupFileHeaders != null && backupFileHeaders.size() > 1) {
             // change the order of the list
@@ -6832,7 +6784,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                 throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
             }
         }
-        
+
         // check for filenames that have only dots (which will cause issues in the static export)
         boolean onlydots = true;
         String name = CmsResource.getName(filename);
@@ -6842,7 +6794,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             if ((c != '.') && (c != '/')) {
                 onlydots = false;
             }
-        }        
+        }
         if (onlydots) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
         }
