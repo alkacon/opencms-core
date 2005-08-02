@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.48 $
+ * Date   : $Date: 2005/08/02 10:30:01 $
+ * Version: $Revision: 1.49 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.48 $ 
+ * @version $Revision: 1.49 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,11 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
         StringBuffer result = new StringBuffer(128);
         result.append(EXPORT_PREFIX);
-        result.append(pointer);
+        if (pointer.indexOf(':') < 0) {
+            result.append(OpenCms.getLinkManager().substituteLink(cms, pointer)); 
+        } else {
+            result.append(pointer);
+        }
         result.append(EXPORT_SUFFIX);
         load(cms, resource, req, res);
         return result.toString().getBytes(OpenCms.getSystemInfo().getDefaultEncoding());
@@ -217,6 +221,10 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
                 Messages.ERR_INVALID_POINTER_FILE_1,
                 resource.getName()));
         }
+        if (pointer.indexOf(':') < 0) {
+            pointer = OpenCms.getLinkManager().substituteLink(cms, pointer); 
+        }
+        
         res.sendRedirect(pointer);
     }
 
