@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/08/02 10:29:29 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,23 +273,18 @@ public class CmsNewResource extends CmsDialog {
      */
     public void actionSelect() throws IOException, ServletException {
 
-        String nextUri = PATH_DIALOGS + getParamNewResourceUri();
-        if (nextUri.indexOf("initial=true") == -1) {
-            setParamAction(DIALOG_NEWFORM);
-            String[] uri = CmsRequestUtil.splitUri(nextUri);
-            Map params = CmsRequestUtil.createParameterMap(uri[2]);
-            params.putAll(paramsAsParameterMap());
-            sendForward(uri[0], params);
-        } else {
-            try {
-                getJsp().include(nextUri);
-            } catch (JspException e) {
-                // can usually be ignored
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
-                }
-            }
+        String nextUri = getParamNewResourceUri();
+        if (!nextUri.startsWith("/")) {
+            // no absolute path given, use default dialog path
+            nextUri = PATH_DIALOGS + nextUri;    
         }
+        
+        setParamAction(DIALOG_NEWFORM);
+        String[] uri = CmsRequestUtil.splitUri(nextUri);
+        Map params = CmsRequestUtil.createParameterMap(uri[2]);
+        params.putAll(paramsAsParameterMap());
+        sendForward(uri[0], params);
+        
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/08/02 10:29:29 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,33 +125,53 @@ public class CmsExplorerContextMenu {
         if (entries == null) { 
             CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
             // entries not yet in Map, so generate them
-            StringBuffer result = new StringBuffer(3072);
+            StringBuffer result = new StringBuffer(4096);
             String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.PATH_WORKPLACE);  
 
             // create the JS for the resource object
-            result.append("\nvi.resource[" + resTypeId + "]=new res(\"" + settings.getName() + "\", ");
-            result.append("\"" + messages.key(settings.getKey()) + "\", vi.skinPath + \"filetypes/" + settings.getIcon() + "\", \"" + settings.getNewResourceUri() + "\", true);\n");
+            result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append("\", ");
+            result.append("\"");
+            result.append(messages.key(settings.getKey()));
+            result.append("\", vi.skinPath + \"filetypes/");
+            result.append(settings.getIcon());
+            result.append("\", \"");
+            result.append(settings.getNewResourceUri());
+            result.append("\", true);\n");
             
             Iterator i = getAllEntries().iterator();
             while (i.hasNext()) {
                 // create the context menu items
                 CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
-                result.append("addMenuEntry(" + resTypeId + ", ");
+                result.append("addMenuEntry(");
+                result.append(resTypeId);
+                result.append(", ");
                 if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                     // create a menu entry
-                    result.append("\"" + messages.key(item.getKey()) + "\", ");
-                    result.append("\"" + jspWorkplaceUri + item.getUri() + "\", ");
+                    result.append("\"").append(messages.key(item.getKey())).append("\", ");
+                    result.append("\"");
+                    if (item.getUri().startsWith("/")) {
+                        result.append(OpenCms.getLinkManager().substituteLink(cms, item.getUri()));
+                    } else {
+                        result.append(jspWorkplaceUri);
+                        result.append(item.getUri());
+                    }
+                    
+                    result.append("\", ");
                     // check the item target
                     String target = item.getTarget();
                     if (target == null) {
                         target = "";
                     }
-                    result.append("\"'" + target + "'\", ");
+                    result.append("\"'");
+                    result.append(target);
+                    result.append("'\", ");
                     // remove all blanks from the rule String
                     String rules = CmsStringUtil.substitute(item.getRules(), " ", "");
                     // parse the rules to create the autolock column
                     rules = parseRules(rules, item.getKey());
-                    result.append("\"" + rules + "\");\n");
+                    result.append("\"");
+                    result.append(rules);
+                    result.append("\");\n");
                     // result: addMenuEntry([id], "[language_key]", "[dialogURI]", "'[target]'", "ddiiiiaaaiaaaiddddddddddddiiiidddd");
                 } else {
                     // create a separator entry
