@@ -716,7 +716,7 @@
 			<properties>
 				<property>
 					<name>cache</name>
-					<value><![CDATA[uri;element;locale]]></value>
+					<value><![CDATA[uri;element;locale;params=(accessible)]]></value>
 				</property>
 				<property type="shared">
 					<name>export</name>

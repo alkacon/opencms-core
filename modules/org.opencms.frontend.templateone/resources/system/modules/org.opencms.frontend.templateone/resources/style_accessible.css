@@ -225,8 +225,8 @@ div.linkshead {
 	font-size: 0.80em;
 }
 
-/* head image row */
-div.imagehead {
+/* head image row & head editable element */
+div.imagehead, div.edithead {
 	width: 100%;
 	background-color: <%= headImgBg %>;
 	text-align: left;

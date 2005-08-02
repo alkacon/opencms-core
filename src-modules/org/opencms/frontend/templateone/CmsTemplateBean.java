@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/07/28 13:25:12 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/08/02 10:27:56 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,6 +132,9 @@ public class CmsTemplateBean extends CmsJspActionElement {
 
     /** Name of the property key to set the head default link. */
     public static final String PROPERTY_HEAD_DEFAULTLINK = "style_head_links_defaultlink";
+    
+    /** Name of the property key to set the head element URI. */
+    public static final String PROPERTY_HEAD_ELEMENTURI = "style_head_elementuri";
 
     /** Name of the property key to set the head image height. */
     public static final String PROPERTY_HEAD_IMGHEIGHT = "style_head_img_height";
@@ -452,6 +455,20 @@ public class CmsTemplateBean extends CmsJspActionElement {
             }
         }
         return CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME + "/" + relFilePath;
+    }
+    
+    /**
+     * Returns the URI of the editable head element or "none" if no element is specified.<p>
+     * 
+     * @return the URI of the editable head element or "none" if no element is specified
+     */
+    public String getHeadElementUri() {
+        
+        String elemUri = (String)getProperties().get(PROPERTY_HEAD_ELEMENTURI);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(elemUri)) {
+            elemUri = PROPERTY_VALUE_NONE;
+        }
+        return elemUri;
     }
 
     /**

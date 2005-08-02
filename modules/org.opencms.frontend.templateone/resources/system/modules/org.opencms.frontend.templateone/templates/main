@@ -76,9 +76,12 @@ if (cms.template("head")) {
             // include head links row
             cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_links.jsp");
         }
-        if (cms.showHeadImage()) {
-            // include head image row
+        String headElemUri = cms.getHeadElementUri();
+        if (cms.showHeadImage() || !CmsTemplateBean.PROPERTY_VALUE_NONE.equals(headElemUri)) {
+            // include head element & image row
             cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, "search", ""));
+            cms.getProperties().put("headelemuri", headElemUri);
+            cms.getProperties().put("showheadimage", String.valueOf(cms.showHeadImage()));
             cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
         }
         if (cms.showHeadNavigation()) {
@@ -145,9 +148,12 @@ if (cms.template("head")) {
             // include head links row
             cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_links.jsp");
         }
-        if (cms.showHeadImage()) {
-            // include head image row
+        String headElemUri = cms.getHeadElementUri();
+        if (cms.showHeadImage() || !CmsTemplateBean.PROPERTY_VALUE_NONE.equals(headElemUri)) {
+            // include head element & image row
             cms.getProperties().put("imagelink", cms.property(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, "search", ""));
+            cms.getProperties().put("headelemuri", headElemUri);
+            cms.getProperties().put("showheadimage", String.valueOf(cms.showHeadImage()));
             cms.include(CmsTemplateBean.FOLDER_ELEMENTS + "head_image.jsp", null, cms.getProperties());
         }
         if (cms.showHeadNavigation()) {

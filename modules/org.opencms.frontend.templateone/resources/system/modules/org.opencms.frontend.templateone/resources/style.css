@@ -201,8 +201,8 @@ div.linkshead {
 	padding-top: 1px;
 }
 
-/* head image row */
-div.imagehead {
+/* head image row & head editable area */
+div.imagehead, div.edithead {
 	width: <%= tabWidth %>px;
 	background-color: <%= headImgBg %>;
 	text-align: left;

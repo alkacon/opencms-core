@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/08/02 10:27:56 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +87,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         CmsTemplateBean.PROPERTY_SHOWHEADIMAGE,
         CmsTemplateBean.PROPERTY_HEAD_IMGURI,
         CmsTemplateBean.PROPERTY_HEAD_IMGLINK,
+        CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI,
         CmsTemplateBean.PROPERTY_SHOW_HEADNAV,
         CmsTemplateBean.PROPERTY_SHOW_NAVLEFT,
         CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI,
@@ -293,6 +294,10 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         // build image link search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, KEY_PREFIX
             + CmsTemplateBean.PROPERTY_HEAD_IMGLINK, editable));
+        
+        // build head element search input 
+        result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, KEY_PREFIX
+            + CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, editable));
 
         // build head navigation radio buttons   
         result.append(buildRadioButtons(CmsTemplateBean.PROPERTY_SHOW_HEADNAV, ENABLE, null, editable));
