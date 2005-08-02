@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/08/02 10:15:48 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
@@ -51,7 +52,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -257,8 +258,9 @@ public class CmsIndexingThreadManager extends Thread {
 
         if (m_report != null) {
             m_report.println(message);
-        }        
-        if (LOG.isInfoEnabled()) {
+        }
+        if (!(m_report instanceof CmsLogReport) && LOG.isInfoEnabled()) {
+            // only write to the log if report is not already a log report
             LOG.info(message.key());
         }
     }

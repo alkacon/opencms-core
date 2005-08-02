@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/08/02 10:15:48 $
+ * Version: $Revision: 1.56 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.56 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,13 +261,27 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Adds a source name to this search index.<p>
+     * Adds am index source to this search index.<p>
      * 
-     * @param sourceName a source name
+     * @param sourceName the index source name to add
      */
     public void addSourceName(String sourceName) {
 
         m_sourceNames.add(sourceName);
+    }
+
+    /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsSearchIndex) {
+            return ((CmsSearchIndex)obj).m_name.equals(m_name);
+        }
+        return false;
     }
 
     /**
@@ -424,6 +438,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_name != null ? m_name.hashCode() : 0;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#initConfiguration()
      */
     public void initConfiguration() {
@@ -468,6 +490,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     sourceName), exc);
             }
         }
+    }
+
+    /**
+     * Removes an index source from this search index.<p>
+     * 
+     * @param sourceName the index source name to remove
+     */
+    public void removeSourceName(String sourceName) {
+
+        m_sourceNames.remove(sourceName);
     }
 
     /**

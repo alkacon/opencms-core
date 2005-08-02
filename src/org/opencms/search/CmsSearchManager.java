@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/08/02 10:15:48 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,11 +68,17 @@ import org.apache.lucene.search.Similarity;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
+
+    /** Scheduler parameter: Update only a specified list of indexes. */
+    public static final String JOB_PARAM_INDEXLIST = "indexList";
+
+    /** Scheduler parameter: Write the output of the update to the logfile. */
+    public static final String JOB_PARAM_WRITELOG = "writeLog";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchManager.class);
@@ -164,9 +170,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
-     * Adds a search index configuration.<p>
+     * Adds a search index to the configuration.<p>
      * 
-     * @param searchIndex a search index configuration
+     * @param searchIndex the search index to add
      */
     public void addSearchIndex(CmsSearchIndex searchIndex) {
 
@@ -178,7 +184,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 searchIndex.getName(),
                 searchIndex.getProject()));
         }
-
     }
 
     /**
@@ -196,7 +201,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 searchIndexSource.getName(),
                 searchIndexSource.getIndexerClassName()));
         }
-
     }
 
     /**
@@ -407,8 +411,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resultCache", hashMap);
         }
 
-        initAvailableDocumentTypes();
-        initSearchIndexes();
+        initializeIndexes();
 
         // register the modified default similarity implementation
         Similarity.setDefault(new CmsSearchSimilarity());
@@ -417,6 +420,17 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         OpenCms.addCmsEventListener(this, new int[] {
             I_CmsEventListener.EVENT_CLEAR_CACHES,
             I_CmsEventListener.EVENT_PUBLISH_PROJECT});
+    }
+
+    /**
+     * Initializes all configured document types and search indexes.<p>
+     * 
+     * This methods needs to be called if after a change in the index configuration has been made.
+     */
+    public void initializeIndexes() {
+
+        initAvailableDocumentTypes();
+        initSearchIndexes();
     }
 
     /**
@@ -436,22 +450,46 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchManager manager = OpenCms.getSearchManager();
 
         I_CmsReport report = null;
-        boolean writeLog = Boolean.valueOf((String)parameters.get("writeLog")).booleanValue();
+        boolean writeLog = Boolean.valueOf((String)parameters.get(JOB_PARAM_WRITELOG)).booleanValue();
 
         if (writeLog) {
             report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
         }
 
-        int todo = 0;
-        // TODO: Add parameter to allow a list of index names to be specified
+        List updateList = null;
+        String indexList = (String)parameters.get(JOB_PARAM_INDEXLIST);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(indexList)) {
+            // index list has been provided as job parameter
+            updateList = new ArrayList();
+            String[] indexNames = CmsStringUtil.splitAsArray(indexList, '|');
+            for (int i = 0; i < indexNames.length; i++) {
+                // check if the index actually exists
+                if (manager.getIndex(indexNames[i]) != null) {
+                    updateList.add(indexNames[i]);
+                } else {
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexNames[i]));
+                    }
+                }
+            }
+        }
 
         long startTime = System.currentTimeMillis();
-        manager.rebuildAllIndexes(report);
+
+        if (updateList == null) {
+            // all indexes need to be updated
+            manager.rebuildAllIndexes(report);
+        } else {
+            // rebuild only the selected indexes
+            manager.rebuildIndexes(updateList, report);
+        }
+
         long runTime = System.currentTimeMillis() - startTime;
 
         String finishMessage = Messages.get().key(
             Messages.LOG_REBUILD_INDEXES_FINISHED_1,
             CmsStringUtil.formatRuntime(runTime));
+
         if (LOG.isInfoEnabled()) {
             LOG.info(finishMessage);
         }
@@ -502,6 +540,72 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchIndex index = getIndex(indexName);
         // update the index 
         updateIndex(index, report, false, null, null);
+    }
+
+    /**
+     * Rebuilds (if required creates) the List of indexes with the given name.<p>
+     * 
+     * @param indexNames the names (String) of the index to rebuild
+     * @param report the report object to write messages (or <code>null</code>)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void rebuildIndexes(List indexNames, I_CmsReport report) throws CmsException {
+
+        Iterator i = indexNames.iterator();
+        while (i.hasNext()) {
+            String indexName = (String)i.next();
+            // get the search index by name
+            CmsSearchIndex index = getIndex(indexName);
+            if (index != null) {
+                // update the index 
+                updateIndex(index, report, false, null, null);
+            } else {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
+                }
+            }
+        }
+    }
+
+    /**
+     * Removes a search index from the configuration.<p>
+     * 
+     * @param searchIndex the search index to remove
+     */
+    public void removeSearchIndex(CmsSearchIndex searchIndex) {
+
+        m_indexes.remove(searchIndex);
+
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
+                Messages.LOG_REMOVE_SEARCH_INDEX_2,
+                searchIndex.getName(),
+                searchIndex.getProject()));
+        }
+    }
+
+    /**
+     * Removes all indexes included in the given list (which must contain the name of an index to remove).<p>
+     * 
+     * @param indexNames the names of the index to remove
+     */
+    public void removeSearchIndexes(List indexNames) {
+
+        Iterator i = indexNames.iterator();
+        while (i.hasNext()) {
+            String indexName = (String)i.next();
+            // get the search index by name
+            CmsSearchIndex index = getIndex(indexName);
+            if (index != null) {
+                // remove the index 
+                removeSearchIndex(index);
+            } else {
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
+                }
+            }
+        }
     }
 
     /**
@@ -690,7 +794,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 if (className == null) {
                     throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_CLASS_DEF_0));
                 }
-
                 if (resourceTypes.size() == 0) {
                     throw new CmsIndexException(Messages.get().container(Messages.ERR_DOCTYPE_NO_RESOURCETYPE_DEF_0));
                 }
@@ -728,7 +831,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     protected void initSearchIndexes() {
 
         CmsSearchIndex index = null;
-
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = (CmsSearchIndex)m_indexes.get(i);
             try {

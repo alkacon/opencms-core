@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/08/02 10:15:48 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,6 +154,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_IO_INDEX_WRITER_OPTIMIZE_1 = "LOG_IO_INDEX_WRITER_OPTIMIZE_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_NO_INDEX_WITH_NAME_1 = "LOG_NO_INDEX_WITH_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_PARSE_EXCERPT_LENGTH_FAILED_1 = "LOG_PARSE_EXCERPT_LENGTH_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -167,6 +170,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REBUILD_INDEXES_FINISHED_1 = "LOG_REBUILD_INDEXES_FINISHED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_REMOVE_SEARCH_INDEX_2 = "LOG_REMOVE_SEARCH_INDEX_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_RESULT_ITERATION_FAILED_0 = "LOG_RESULT_ITERATION_FAILED_0";
