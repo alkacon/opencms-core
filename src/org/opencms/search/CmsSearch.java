@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/08/02 08:17:07 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.lucene.search.SortField;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.39 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +84,7 @@ public class CmsSearch implements Cloneable {
         new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, true),
         SortField.FIELD_SCORE});
 
-    /** Default sort order (by document score - for this <code>null</code> gived best performance). */
+    /** Default sort order (by document score - for this <code>null</code> gave best performance). */
     public static final Sort SORT_DEFAULT = null;
 
     /** Sort result documents by title, then score. */
