@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/08/02 13:34:08 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,7 +185,19 @@ public class CmsDisplayResource extends CmsDialog {
                 String url = getJsp().link(getParamResource());
                 // if in online project
                 if (url.indexOf("//:")<0 && getCms().getRequestContext().currentProject().isOnlineProject()) {
-                    url = CmsSiteManager.getSite(getCms().getRequestContext().getSiteRoot()).getUrl() + url;
+                    String site = getCms().getRequestContext().getSiteRoot();
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
+                        site = OpenCms.getSiteManager().getDefaultUri();
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
+                            url = OpenCms.getSiteManager().getWorkplaceServer() + url;
+                        } else if (CmsSiteManager.getSite(site) == null) {
+                            url = OpenCms.getSiteManager().getWorkplaceServer() + url;
+                        } else {
+                            url = CmsSiteManager.getSite(site).getUrl() + url;
+                        }
+                    } else {
+                        url = CmsSiteManager.getSite(site).getUrl() + url;
+                    }
                     try {
                         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
                         HttpURLConnection.setFollowRedirects(false);
