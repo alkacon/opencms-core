@@ -14,11 +14,17 @@
 # Define here the properties which can be edited in the new resource dialog.
 # If the enabled attribute is false, the special property dialog will not be used.
 # If the shownavigation attribute is true, navigation properties can be editied in the special property dialog.
+#
+# Use the property element to define the shown default properties for the special property dialog.
+# Note: for module configuration files, use the defaultproperty element instead. 
 -->
-<!ELEMENT defaultproperties (property*)>
+<!ELEMENT defaultproperties (property|defaultproperty)*>
 <!ATTLIST defaultproperties 
     enabled (true|false|TRUE|FALSE) #REQUIRED
 	shownavigation (true|false|TRUE|FALSE) #IMPLIED>
+	
+<!ELEMENT defaultproperty EMPTY>
+<!ATTLIST defaultproperty name CDATA #REQUIRED>
 
 <!--
 # This defines the context menu appearance of the current explorer type.

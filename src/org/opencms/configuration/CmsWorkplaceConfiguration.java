@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/08/02 10:30:36 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0
  */
@@ -101,6 +101,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the context menu node. */
     public static final String N_CONTEXTMENU = "contextmenu";
+    
+    /** The name of the default property node. */
+    public static final String N_DEFAULTPROPERTY = "defaultproperty";
 
     /** The name of the default properties node. */
     public static final String N_DEFAULTPROPERTIES = "defaultproperties";
@@ -423,6 +426,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_DEFAULTPROPERTIES
             + "/"
             + N_PROPERTY, 0, A_NAME);
+        
+        digester.addCallMethod("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_DEFAULTPROPERTY, "addProperty", 1);
+        digester.addCallParam("*/"
+            + N_EXPLORERTYPE
+            + "/"
+            + N_EDITOPTIONS
+            + "/"
+            + N_DEFAULTPROPERTIES
+            + "/"
+            + N_DEFAULTPROPERTY, 0, A_NAME);
 
         digester.addCallMethod(
             "*/" + N_EXPLORERTYPE + "/" + N_EDITOPTIONS + "/" + N_CONTEXTMENU + "/" + N_ENTRY,
@@ -527,8 +547,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     defaultPropertiesElement.addAttribute(A_ENABLED, String.valueOf(settings.isPropertiesEnabled()));
                     defaultPropertiesElement.addAttribute(A_SHOWNAVIGATION, String.valueOf(settings.isShowNavigation()));
                     Iterator m = settings.getProperties().iterator();
+                    String propNode = N_PROPERTY;
+                    if (module) {
+                        propNode = N_DEFAULTPROPERTY;    
+                    }
                     while (m.hasNext()) {
-                        defaultPropertiesElement.addElement(N_PROPERTY).addAttribute(A_NAME, (String)m.next());
+                        defaultPropertiesElement.addElement(propNode).addAttribute(A_NAME, (String)m.next());
                     }
                     Element contextMenuElement = editOptionsElement.addElement(N_CONTEXTMENU);
                     m = settings.getContextMenuEntries().iterator();
