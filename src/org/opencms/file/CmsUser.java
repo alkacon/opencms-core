@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/08/03 08:58:53 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0
  * 
@@ -420,7 +420,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean getDisabled() {
 
-        return (getFlags() == I_CmsPrincipal.FLAG_DISABLED);
+        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == I_CmsPrincipal.FLAG_DISABLED;
     }
 
     /**
@@ -571,7 +571,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public boolean isEnabled() {
 
-        return (getFlags() == I_CmsPrincipal.FLAG_ENABLED);
+        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == 0;
     }
 
     /**
@@ -673,7 +673,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setDisabled() {
 
-        setFlags(I_CmsPrincipal.FLAG_DISABLED);
+        if (isEnabled()) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
+        }
     }
 
     /**
@@ -692,7 +694,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public void setEnabled() {
 
-        setFlags(I_CmsPrincipal.FLAG_ENABLED);
+        if (getDisabled()) {
+            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
+        }
     }
 
     /**
@@ -706,9 +710,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     public void setEnabled(boolean enabled) {
 
         if (enabled) {
-            setFlags(I_CmsPrincipal.FLAG_ENABLED);
+            setEnabled();
         } else {
-            setFlags(I_CmsPrincipal.FLAG_DISABLED);
+            setDisabled();
         }
     }
 

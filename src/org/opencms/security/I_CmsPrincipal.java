@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/08/03 08:58:54 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,6 +65,9 @@ public interface I_CmsPrincipal {
 
     /** Identifier for user principals. */
     String PRINCIPAL_USER = "USER";
+
+    /** Upper limit for core flags, any principal object with flags greater than this value will be filtered out. */
+    int FLAG_CORE_LIMIT = 65536;  // 2^16
 
     /**
      * Compares the given object with this principal.<p>

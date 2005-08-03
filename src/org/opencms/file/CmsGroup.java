@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/07/06 13:10:21 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/08/03 08:58:53 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.util.CmsUUID;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0 
  * 
@@ -146,7 +146,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getDisabled() {
 
-        return (m_flags & I_CmsPrincipal.FLAG_DISABLED) != 0;
+        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == I_CmsPrincipal.FLAG_DISABLED;
     }
 
     /**
@@ -196,7 +196,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getProjectCoWorker() {
 
-        return (m_flags & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) != 0;
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_USER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_USER;
     }
 
     /**
@@ -206,7 +206,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getProjectManager() {
 
-        return (m_flags & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) != 0;
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER) == I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER;
     }
 
     /**
@@ -216,7 +216,7 @@ public class CmsGroup implements I_CmsPrincipal {
      */
     public boolean getRole() {
 
-        return (m_flags & I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE) != 0;
+        return (getFlags() & I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE) == I_CmsPrincipal.FLAG_GROUP_WORKFLOW_ROLE;
     }
 
     /**
@@ -283,13 +283,9 @@ public class CmsGroup implements I_CmsPrincipal {
     public void setEnabled(boolean enabled) {
 
         if (enabled) {
-            if (getDisabled()) {
-                setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
-            }
+            setEnabled();
         } else {
-            if (!getDisabled()) {
-                setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
-            }
+            setDisabled();
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/08/01 15:25:29 $
- * Version: $Revision: 1.551 $
+ * Date   : $Date: 2005/08/03 08:58:53 $
+ * Version: $Revision: 1.552 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.551 $
+ * @version $Revision: 1.552 $
  * 
  * @since 6.0.0
  */
@@ -677,7 +677,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         Map additionalInfos)
     throws CmsException, CmsSecurityException, CmsIllegalArgumentException, CmsDbEntryNotFoundException {
 
-        return addWebUser(dbc, name, password, group, description, null, additionalInfos);
+        return addWebUser(dbc, name, password, group, null, description, additionalInfos);
     }
 
     /**
@@ -3940,7 +3940,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             }
         }
         // check if the "enabled" flag is set for the user
-        if (newUser.getFlags() != I_CmsPrincipal.FLAG_ENABLED) {
+        if (!newUser.isEnabled()) {
             // user is disabled, throw a securiy exception
             throw new CmsAuthentificationException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3,
