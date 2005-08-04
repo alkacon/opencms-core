@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/08/04 07:56:46 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -326,7 +326,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * property does not include path information.<p>
      * 
      * For the icon path you can specify 2 paths separated by a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code>, 
-     * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). <p>
+     * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). The paths are relative
+     * to the /system/workplace/resources/ folder. If the tool is disabled, the names of the icons are composed as 
+     * ${name}_disabled.${ext}<p>
      * 
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
      */
