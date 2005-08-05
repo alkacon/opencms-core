@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/08/05 08:09:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/08/05 08:29:14 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.swing.border.Border;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  * 
@@ -176,8 +176,6 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
                 group.add(m_selections[i]);
             }
         }
-        //m_view.setMaximumSize(getMaxSize());
-        getMaxSize();
         getContentPane().add(m_view, BorderLayout.CENTER);
 
         m_buttons.setBorder(BorderFactory.createEmptyBorder(
@@ -301,16 +299,5 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
             return m_allList;
         }
         return m_promptTask.getDefaultValue().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR);
-    }
-    
-    /**
-     * Returns a max size for the scroll pane.<p>
-     * 
-     * @return max size for the scroll pane.
-     */
-    private Dimension getMaxSize() {
-        
-        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
-        return new Dimension(screen.width, screen.height - 500);        
     }
 }
