@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/07/22 10:37:20 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/08/05 15:53:03 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -487,6 +487,10 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * if you just need the "best" default locale for a resource, 
      * use <code>{@link #getDefaultLocale(CmsObject, String)}</code>.<p>
      * 
+     * The default locales are either configured in the configuration file 
+     * <code>opencms-system.xml</code>, or individually on a resource using the property
+     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE_DEFAULT}</code> in a comma separated list.<p>
+     * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
      * @return an array of default locale names
@@ -497,7 +501,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         String defaultNames = null;
         try {
-            defaultNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+            defaultNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE_DEFAULT, true).getValue();
         } catch (CmsException e) {
             LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
         }
