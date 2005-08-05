@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.107 $
+ * Date   : $Date: 2005/08/05 08:50:30 $
+ * Version: $Revision: 1.108 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.107 $
+ * @version $Revision: 1.108 $
  * 
  * @since 6.0.0 
  */
@@ -1524,18 +1524,18 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         ObjectInputStream oin = new ObjectInputStream(bin);
 
         Map info;
-        if (m_adminUserName.equals(userName)) {
-            // ensure the admin user can be read even if it's additional infos are defect
-            try {
-                info = (Map)oin.readObject();
-            } catch (IOException e) {
-                info = new HashMap();
-            }
-        } else {
-            // no exception handling for normal users
+        // ensure the user is read even if it's additional infos are defect
+        try {
             info = (Map)oin.readObject();
-        }
-
+        } catch (IOException e) {
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_READING_ADDITIONAL_INFO_1,
+                userName);
+            LOG.error(message.key());
+            
+            info = new HashMap();
+        }        
+        
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID"))),
             userName,
