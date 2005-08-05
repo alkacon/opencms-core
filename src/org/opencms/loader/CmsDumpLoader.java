@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.62 $
+ * Date   : $Date: 2005/08/05 14:17:01 $
+ * Version: $Revision: 1.63 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,14 +43,18 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.apache.commons.collections.ExtendedProperties;
 
 /**
  * Dump loader for binary or other unprocessed resource types.<p>
@@ -60,7 +64,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.62 $ 
+ * @version $Revision: 1.63 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,12 +73,18 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 1;
 
+    /** The resource loader configuration. */
+    private Map m_configuration;
+
+    /** The maximum age for dumped contents in the clients cache. */
+    private static long m_clientCacheMaxAge;
+    
     /**
      * The constructor of the class is empty and does nothing.<p>
      */
     public CmsDumpLoader() {
 
-        // NOOP
+        m_configuration = new TreeMap();
     }
 
     /**
@@ -82,7 +92,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void addConfigurationParameter(String paramName, String paramValue) {
 
-        // this resource loader requires no parameters     
+        m_configuration.put(paramName, paramValue);     
     }
 
     /** 
@@ -142,7 +152,8 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public Map getConfiguration() {
 
-        return null;
+        // return the configuration in an immutable form
+        return Collections.unmodifiableMap(m_configuration);
     }
 
     /**
@@ -170,7 +181,20 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public void initConfiguration() {
 
+        ExtendedProperties config = new ExtendedProperties();
+        config.putAll(m_configuration);
+        
+        String maxAge = config.getString("client.cache.maxage");
+        if (maxAge == null) {
+            m_clientCacheMaxAge = -1;
+        } else {
+            m_clientCacheMaxAge = Long.parseLong(maxAge);
+        }
+            
         if (CmsLog.INIT.isInfoEnabled()) {
+            if (maxAge != null) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
+            }
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
@@ -220,12 +244,12 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
             // check if the request contains a last modified header
             long lastModifiedHeader = req.getDateHeader(CmsRequestUtil.HEADER_IF_MODIFIED_SINCE);
             if (lastModifiedHeader > -1) {
-                // last modified header is set, compare it to the requested resource
+                // last modified header is set, compare it to the requested resource 
                 if ((resource.getState() == CmsResource.STATE_UNCHANGED)
                     && (resource.getDateLastModified() == lastModifiedHeader)) {
                     long now = System.currentTimeMillis();
                     if ((resource.getDateReleased() < now) && (resource.getDateExpired() > now)) {
-                        CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired());
+                        CmsFlexController.setDateExpiresHeader(res, resource.getDateExpired(), m_clientCacheMaxAge);
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         return;
                     }
@@ -256,8 +280,19 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
                     expireTime--;
                     // flex controller will automatically reduce this to a reasonable value
                 }
+                
+                if (m_clientCacheMaxAge >= 0L) {
+                    res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, "max-age=" + (m_clientCacheMaxAge/1000L));
+                }
+                
+                // TODO: what if the content of a resource with an expire date set is exchanged
+                // - in this case, the content might be still buffered at the client side until the
+                // former expiration date is reached
+                
                 // now set "Expire" header        
-                CmsFlexController.setDateExpiresHeader(res, expireTime);
+                CmsFlexController.setDateExpiresHeader(res, expireTime, m_clientCacheMaxAge);
+                
+                
             }
         }
 

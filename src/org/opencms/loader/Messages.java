@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/08/05 14:17:01 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,6 +147,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WEBAPP_PATH_1 = "INIT_WEBAPP_PATH_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_CLIENT_CACHE_MAX_AGE_1 = "INIT_CLIENT_CACHE_MAX_AGE_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ACCESS_DENIED_1 = "LOG_ACCESS_DENIED_1";
 

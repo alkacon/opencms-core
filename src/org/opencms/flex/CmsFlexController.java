@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/08/05 14:17:01 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -281,9 +281,10 @@ public class CmsFlexController {
      * Sets the "expires" date header for a given http request.<p>
      * 
      * @param res the reponse to set the "expires" date header for
+     * @param maxAge maximum amount of time in milliseconds the response remains valid
      * @param dateExpires the date to set (if this is not in the future, it is ignored)
      */
-    public static void setDateExpiresHeader(HttpServletResponse res, long dateExpires) {
+    public static void setDateExpiresHeader(HttpServletResponse res, long dateExpires, long maxAge) {
 
         long now = System.currentTimeMillis();
         if ((dateExpires > now) && (dateExpires != CmsResource.DATE_EXPIRED_DEFAULT)) {
@@ -291,10 +292,16 @@ public class CmsFlexController {
             // to avoid re-loading of pages that are not expired
             // while this is right in general, no changes before the expiration date
             // will be displayed
-            // therefore it is better to not use an expiration to far in the future            
-            if ((dateExpires - now) > 86400000) {
+            // therefore it is better to not use an expiration to far in the future 
+            
+            // if no valid max age is set, restrict it to 24 hrs
+            if (maxAge < 0L) {
+                maxAge = 86400000;    
+            }
+            
+            if ((dateExpires - now) > maxAge) {
                 // set "Expires" header max one day into the future
-                dateExpires = now + 86400000;
+                dateExpires = now + maxAge;
             }
             res.setDateHeader(CmsRequestUtil.HEADER_EXPIRES, dateExpires);
         }

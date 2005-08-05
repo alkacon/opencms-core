@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/07/14 12:02:13 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2005/08/05 14:17:01 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.95 $ 
+ * @version $Revision: 1.96 $ 
  * 
  * @since 6.0.0 
  * 
@@ -140,6 +140,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** The directory to store the generated JSP pages in (relative path in web application). */
     private static String m_jspWebAppRepository;
 
+    /** The maximum age for dumped contents in the clients cache. */
+    private static long m_clientCacheMaxAge;
+    
     /** The CmsFlexCache used to store generated cache entries in. */
     private CmsFlexCache m_cache;
 
@@ -298,6 +301,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         m_jspRepository = CmsFileUtil.normalizePath(m_jspRepository + m_jspWebAppRepository);
 
+        String maxAge = config.getString("client.cache.maxage");
+        if (maxAge == null) {
+            m_clientCacheMaxAge = -1;
+        } else {
+            m_clientCacheMaxAge = Long.parseLong(maxAge);
+        }
+        
         // get the "error pages are commited or not" flag from the configuration
         m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
 
@@ -305,9 +315,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1,
-                new Boolean(m_errorPagesAreNotCommited)));
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1, new Boolean(m_errorPagesAreNotCommited)));
+            if (maxAge != null) {
+                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
+            }
+            
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
         }
     }
@@ -460,7 +472,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                             // only use "expires" header on pages that have no parameters,
                             // otherwise some browsers (e.g. IE 6) will not even try to request 
                             // updated versions of the page
-                            CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                            CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires(), m_clientCacheMaxAge);
                         }
                         res.setStatus(HttpServletResponse.SC_NOT_MODIFIED);
                         return null;
@@ -491,7 +503,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                                     // and that are cachable (i.e. 'date last modified' is set)
                                     // otherwise some browsers (e.g. IE 6) will not even try to request 
                                     // updated versions of the page
-                                    CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires());
+                                    CmsFlexController.setDateExpiresHeader(res, controller.getDateExpires(), m_clientCacheMaxAge);
                                 }
                             }
                             // set response status to "200 - OK" (required for static export "on-demand")
