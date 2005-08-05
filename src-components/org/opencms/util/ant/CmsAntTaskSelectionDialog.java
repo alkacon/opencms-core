@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/07/03 09:41:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/08/05 08:09:47 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.swing.border.Border;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  * 
@@ -66,11 +66,11 @@ import javax.swing.border.Border;
  */
 public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -8439685952987222098L;
-
     /** Constant for border width. */
     private static final int C_BORDER_SIZE = 10;
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -8439685952987222098L;
 
     /** Aborted flag. */
     protected boolean m_aborted = true;
@@ -176,6 +176,8 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
                 group.add(m_selections[i]);
             }
         }
+        //m_view.setMaximumSize(getMaxSize());
+        getMaxSize();
         getContentPane().add(m_view, BorderLayout.CENTER);
 
         m_buttons.setBorder(BorderFactory.createEmptyBorder(
@@ -247,8 +249,12 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension window = getSize();
         //ensure that no parts of the dialog will be off-screen
+        int height = window.height;
+        int width = window.width;
         if (window.height > screen.height) {
             window.height = screen.height;
+            height = screen.height - 50;
+            width = width + 50;
         }
         if (window.width > screen.width) {
             window.width = screen.width;
@@ -256,6 +262,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         int xCoord = (screen.width / 2 - window.width / 2);
         int yCoord = (screen.height / 2 - window.height / 2);
         setLocation(xCoord, yCoord);
+        setSize(width, height);
     }
 
     /**
@@ -294,5 +301,16 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
             return m_allList;
         }
         return m_promptTask.getDefaultValue().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR);
+    }
+    
+    /**
+     * Returns a max size for the scroll pane.<p>
+     * 
+     * @return max size for the scroll pane.
+     */
+    private Dimension getMaxSize() {
+        
+        Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
+        return new Dimension(screen.width, screen.height - 500);        
     }
 }
