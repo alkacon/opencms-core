@@ -56,7 +56,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <%
 	cms.setDate("dateString");
 %>
-<small><fmt:message key="eventarticle.eventdate" />: <fmt:formatDate value="${date}" dateStyle="long" type="date" /></small><br>
+<fmt:message key="eventarticle.eventdate" />: <fmt:formatDate value="${date}" dateStyle="long" type="date" /><br>
 <cms:contentcheck ifexists="RegistrationClose">
 <c:set var="dateString">
 	<cms:contentshow element="RegistrationClose" />
@@ -64,7 +64,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <%
 	cms.setDate("dateString");
 %>
-<small><fmt:message key="eventarticle.registrationclose" />: <fmt:formatDate value="${date}" /></small><br>
+<fmt:message key="eventarticle.registrationclose" />: <fmt:formatDate value="${date}" /><br>
 </cms:contentcheck>
 <small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>

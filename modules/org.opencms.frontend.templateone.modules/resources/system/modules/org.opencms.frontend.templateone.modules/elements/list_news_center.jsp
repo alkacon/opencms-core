@@ -55,7 +55,7 @@ pageContext.setAttribute("shownumber", "" + showNumber);
 <%
 	cms.setDate("dateString");
 %>
-<small><fmt:formatDate value="${date}" type="date" dateStyle="long"  /> - <cms:contentshow element="Teaser" /></small>
+<fmt:formatDate value="${date}" type="date" dateStyle="long"  /> - <cms:contentshow element="Teaser" />
 </cms:contentcheck>
 <small><a href="<cms:link><cms:contentshow element="${opencms.filename}" />?uri=<%= cms.getRequestContext().getUri() %></cms:link>"><fmt:message key="item.readmore" /></a></small>
 </p>

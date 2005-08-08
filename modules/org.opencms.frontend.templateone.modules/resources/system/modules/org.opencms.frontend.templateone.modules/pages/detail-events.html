@@ -74,7 +74,7 @@ pageContext.setAttribute("locale", locale);
 	--%><cms:contentshow element="StartDate" /><%--
 --%></c:set><%
 	cms.setDate("startdateString");
-%><c:if test="${next == 'true'}">; </c:if><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><fmt:message key="eventarticle.eventtime" /><c:set var="next" value="true" /><%--
+%><c:if test="${next == 'true'}">;<br></c:if><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><fmt:message key="eventarticle.eventtime" /><c:set var="next" value="true" /><%--
 --%><cms:contentcheck ifexists="EndDate"> <fmt:message key="eventarticle.eventend" /> <%--
 
 --%><c:set var="enddateString"><%--
