@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/07/28 13:25:12 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/08/08 15:13:43 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -334,7 +334,7 @@ public class CmsTemplateNavigation extends CmsJspActionElement {
             result.append(homeLabel);
             result.append("</a>\n");
             firstItem = false;
-        } else {
+        } else if (showHeadNavImages()) {
             // create a table to allow vertical alignment of images
             result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>");
         }

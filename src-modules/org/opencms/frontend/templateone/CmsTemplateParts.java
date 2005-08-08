@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/07/15 15:22:35 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/08/08 15:13:43 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.frontend.templateone;
 
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -50,12 +51,15 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsTemplateParts implements I_CmsEventListener {
-
+    
+    /** Key name for an illegal key. */
+    public static final String KEY_ILLEGAL = "illpart";
+    
     /** Name of the runtime property to store the class instance.<p> */
     public static final String RUNTIME_PROPERTY_NAME = "__templateone_parts";
 
@@ -80,7 +84,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
     private CmsTemplateParts() {
 
         // create new Map
-        LRUMap cacheParts = new LRUMap(256);
+        LRUMap cacheParts = new LRUMap(512);
         m_parts = Collections.synchronizedMap(cacheParts);
         if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_1_CORE_OBJECT) {
             if ((OpenCms.getMemoryMonitor() != null) && OpenCms.getMemoryMonitor().enabled()) {
@@ -128,7 +132,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      *
      * @param event CmsEvent that has occurred
      */
-    public void cmsEvent(org.opencms.main.CmsEvent event) {
+    public void cmsEvent(CmsEvent event) {
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
@@ -170,6 +174,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
 
         // generate a unique key for the included part
         String partKey = generateKey(target, element, layout);
+        
         // try to get the part String from the stored Map
         String part = null;
         try {
@@ -179,9 +184,12 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                 part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());
                 if (part != null && !part.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
                     // only add part to map if a valid content was found
-                    m_parts.put(partKey, part);
-                    // save modified class to runtime properties
-                    OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
+                    if (!partKey.equals(KEY_ILLEGAL)) {
+                        // only store part if valid part key was found
+                        m_parts.put(partKey, part);
+                        // save modified class to runtime properties
+                        OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
+                    }
                 } else {
                     // prevent displaying rubbish
                     part = "";
@@ -207,10 +215,13 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @param value the value to cache
      */
     public void setPart(String partKey, Object value) {
-
-        m_parts.put(partKey, value);
-        // save modified class to runtime properties
-        OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
+        
+        if (!partKey.equals(KEY_ILLEGAL)) {
+            // only store part if valid part key was found
+            m_parts.put(partKey, value);
+            // save modified class to runtime properties
+            OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
+        }
     }
 
     /**
@@ -222,23 +233,28 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @return a unique part key
      */
     private String generateKey(String target, String element, String layout) {
-
-        if (element == null) {
-            // set element name to empty String for key generation
-            element = "";
+        
+        try {
+            if (element == null) {
+                // set element name to empty String for key generation
+                element = "";
+            }
+            // generate the key to identify the current part
+            StringBuffer partKey = new StringBuffer(32);
+            partKey.append(target);
+            partKey.append("_");
+            partKey.append(element);
+            partKey.append("_");
+            partKey.append(layout);
+            partKey.append("_");
+            partKey.append(getJsp().getRequestContext().getLocale());
+            partKey.append("_");
+            partKey.append(getProject());
+            return partKey.toString();
+        } catch (Exception e) {
+            // error creating key
+            return KEY_ILLEGAL;
         }
-        // generate the key to identify the current part
-        StringBuffer partKey = new StringBuffer(32);
-        partKey.append(target);
-        partKey.append("_");
-        partKey.append(element);
-        partKey.append("_");
-        partKey.append(layout);
-        partKey.append("_");
-        partKey.append(getJsp().getRequestContext().getLocale());
-        partKey.append("_");
-        partKey.append(getProject());
-        return partKey.toString();
     }
 
     /**
