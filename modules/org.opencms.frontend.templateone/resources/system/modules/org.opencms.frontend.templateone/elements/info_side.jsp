@@ -28,6 +28,11 @@ if (showSide) {
     out.print(" class=\"infobox\">\n");
     out.println("<!-- Side info box start -->\n");
     
+    if (showSideUri) {    	
+		cms.includeSilent(sideUri, "text1", true);
+    	out.println(spacer);
+    }
+    
     if (showList) {
     	cms.includeRightLists();
     	if (showSideUri || showXmlDemo) {
@@ -43,7 +48,7 @@ if (showSide) {
 	}
     
     if (showSideUri) {    	
-		cms.includeSilent(sideUri, "text1", true);
+		cms.includeSilent(sideUri, "text2", true);
     }
     
     out.println("<!-- Side info box end -->");
