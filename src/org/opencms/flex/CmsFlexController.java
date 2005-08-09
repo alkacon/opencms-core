@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/08/05 14:17:01 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/08/09 09:02:28 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,6 +304,7 @@ public class CmsFlexController {
                 dateExpires = now + maxAge;
             }
             res.setDateHeader(CmsRequestUtil.HEADER_EXPIRES, dateExpires);
+            res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + (maxAge/1000L));
         }
     }
 
