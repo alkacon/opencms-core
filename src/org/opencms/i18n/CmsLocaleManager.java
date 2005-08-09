@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/08/05 15:53:03 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/08/09 11:45:05 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -645,6 +645,37 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         // return the merged values
         return new CmsI18nInfo(locale, encoding);
+    }
+
+    /**
+     * Returns the first matching locale for a resource.<p>
+     * 
+     * First looking for the <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> property,
+     * and then for the <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE_DEFAULT}</code> property.
+     * 
+     * @param cms the cms context
+     * @param resourceName the resource name
+     * 
+     * @return the best matching locale for the resource
+     */
+    public Locale getLocaleForResource(CmsObject cms, String resourceName) {
+
+        String localeNames = null;
+        try {
+            localeNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+        } catch (CmsException e) {
+            LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+        }
+
+        List result = null;
+        if (localeNames != null) {
+            result = getAvailableLocales(localeNames);
+        }
+        if ((result == null) || (result.size() == 0)) {
+            return (Locale)m_defaultLocales.get(0); // getDefaultLocale(cms, resourceName);
+        } else {
+            return (Locale)result.get(0);
+        }
     }
 
     /**

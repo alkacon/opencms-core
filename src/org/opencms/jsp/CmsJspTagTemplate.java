@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagTemplate.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/08/09 11:45:05 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  * Used to select various template elements form a JSP template that
  * is included in another file.<p>
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,7 +119,7 @@ public class CmsJspTagTemplate extends BodyTagSupport {
                     if ((locales != null) && (locales.size() != 0)) {
                         locale = OpenCms.getLocaleManager().getBestMatchingLocale(
                             controller.getCmsObject().getRequestContext().getLocale(),
-                            OpenCms.getLocaleManager().getDefaultLocales(controller.getCmsObject(), absolutePath),
+                            Collections.singletonList(OpenCms.getLocaleManager().getLocaleForResource(controller.getCmsObject(), absolutePath)),
                             locales);
                     }
                     if ((locale != null) && content.hasValue(el, locale) && content.isEnabled(el, locale)) {

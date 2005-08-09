@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsRequestContext.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/08/09 11:45:05 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.27 $
+ * @version $Revision: 1.28 $
  * 
  * @since 6.0.0 
  */
@@ -412,7 +412,7 @@ public final class CmsRequestContext {
     public synchronized void saveSiteRoot() throws RuntimeException {
 
         if (m_savedSiteRoot != null) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NONEMPTY_SITEROOT_1));
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_NONEMPTY_SITEROOT_1, m_savedSiteRoot));
         }
         m_savedSiteRoot = m_siteRoot;
     }
