@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/08/03 08:58:53 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/08/09 08:11:59 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0
  * 
@@ -240,7 +240,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
      */
     public static void checkLogin(String login) {
 
-        if (!CmsStringUtil.validateRegex(login, "[\\w\\.-~_]*", false)) {
+        if (!CmsStringUtil.validateRegex(login, "[\\w\\.\\-~_]*", false)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, login));
         }
     }
