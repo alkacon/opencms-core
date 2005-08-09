@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/08/08 15:13:43 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/08/09 07:39:00 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,6 +204,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
             }
+            part = "";
         }
         return part;
     }
