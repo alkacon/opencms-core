@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestSiblings.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/08/10 14:44:25 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypeFolder;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -40,6 +41,7 @@ import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 import org.opencms.util.CmsResourceTranslator;
 
+import java.util.Collections;
 import java.util.List;
 
 import junit.extensions.TestSetup;
@@ -50,7 +52,7 @@ import junit.framework.TestSuite;
  * Unit test for operations on siblings.<p>
  * 
  * @author Thomas Weckert  
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  */
 public class TestSiblings extends OpenCmsTestCase {
 
@@ -78,6 +80,7 @@ public class TestSiblings extends OpenCmsTestCase {
         suite.addTest(new TestSiblings("testSiblingsCopy"));
         suite.addTest(new TestSiblings("testSiblingsCreate"));
         suite.addTest(new TestSiblings("testSiblingIssueAfterImport"));
+        suite.addTest(new TestSiblings("testDeleteAllSiblings"));
         
         TestSetup wrapper = new TestSetup(suite) {
             
@@ -299,5 +302,48 @@ public class TestSiblings extends OpenCmsTestCase {
 
     }
     */
+    
+    /**
+     * Tests deletion of a resource together with all siblings.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testDeleteAllSiblings() throws Throwable {
+
+        echo("Creating a new resource with 2 siblings, then deleting it with all siblings again");
+        CmsObject cms = getCmsObject();
+        
+        String sib1Name = "/folder1/sib1.txt";
+        String sib2Name = "/folder1/sib2.txt";
+        String sib3Name = "/folder1/sib3.txt";
+
+        cms.createResource(sib1Name, CmsResourceTypePlain.getStaticTypeId());
+        cms.createSibling(sib1Name, sib2Name, Collections.EMPTY_LIST);
+        cms.createSibling(sib1Name, sib3Name, Collections.EMPTY_LIST);
+        
+        cms.deleteResource(sib1Name, CmsResource.DELETE_REMOVE_SIBLINGS);
+        
+        CmsResource sib2Resource = null;
+        try {
+            sib2Resource = cms.readResource(sib2Name);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // intentionally left blank
+        }
+        
+        if (sib2Resource != null) {
+            fail("Sibling " + sib2Name + " has not been deleted!");
+        }
+        
+        CmsResource sib3Resource = null;
+        try {
+            sib3Resource = cms.readResource(sib3Name);
+        } catch (CmsVfsResourceNotFoundException e) {
+            // intentionally left blank
+        }
+        
+        if (sib3Resource != null) {
+            fail("Sibling " + sib3Name + " has not been deleted!");
+        }
+    }
 
 }

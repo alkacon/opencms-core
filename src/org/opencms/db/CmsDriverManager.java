@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/08/10 12:47:01 $
- * Version: $Revision: 1.553 $
+ * Date   : $Date: 2005/08/10 14:44:25 $
+ * Version: $Revision: 1.554 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,11 +112,11 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.553 $
+ * @version $Revision: 1.554 $
  * 
  * @since 6.0.0
  */
-public final class CmsDriverManager extends Object implements I_CmsEventListener {
+public final class CmsDriverManager implements I_CmsEventListener {
 
     /**
      * Provides a method to build cache keys for groups and users that depend either on 
@@ -2475,6 +2475,11 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
         if (siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
             resources = new ArrayList(readSiblings(dbc, resource, CmsResourceFilter.ALL));
             allSiblingsRemoved = true;
+            
+            // ensure that the resource requested to be deleted is the last resource that gets actually deleted
+            // to keep the shared locks of the siblings while those get deleted.
+            resources.remove(resource);
+            resources.add(resource);
         } else {
             // only delete the resource, no siblings
             resources = Collections.singletonList(resource);
@@ -2550,7 +2555,7 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
                     // ensure an exclusive lock is removed in the lock manager for a deleted new resource,
                     // otherwise it would "stick" in the lock manager, preventing other users from creating 
                     // a file with the same name (issue with tempfiles in editor)
-                    m_lockManager.removeResource(this, dbc, currentResource, true);
+                    m_lockManager.removeDeletedResource(this, dbc, currentResource.getRootPath());
 
                 } else {
                     // the resource exists online => mark the resource as deleted

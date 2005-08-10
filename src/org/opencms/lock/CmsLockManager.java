@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/lock/CmsLockManager.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/08/10 14:44:25 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDbContext;
 import org.opencms.db.CmsDriverManager;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsUUID;
 
@@ -57,7 +58,7 @@ import java.util.Map;
  * @author Thomas Weckert  
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  * 
@@ -67,7 +68,7 @@ import java.util.Map;
 public final class CmsLockManager {
 
     /** The shared lock manager instance. */
-    private static CmsLockManager sharedInstance;
+    private static CmsLockManager sharedInstance = null;
 
     /** A map holding the exclusive CmsLocks. */
     private Map m_exclusiveLocks;
@@ -386,6 +387,33 @@ public final class CmsLockManager {
         }
 
         return lock;
+    }
+    
+    /**
+     * Removes a resource after it has been deleted by the driver manager.<p>
+     * 
+     * @param driverManager the driver manager
+     * @param dbc the current database context
+     * @param resourceName the root path of the deleted resource
+     * @throws CmsException if something goes wrong
+     */
+    public void removeDeletedResource(CmsDriverManager driverManager, CmsDbContext dbc, String resourceName) throws CmsException {
+        
+        boolean resourceExists;
+        try {
+            driverManager.getVfsDriver().readResource(dbc, dbc.currentProject().getId(), resourceName, false);
+            resourceExists = true;
+        } catch (CmsVfsResourceNotFoundException e) {
+            resourceExists = false;
+        }
+        
+        if (resourceExists) {            
+            throw new CmsLockException(Messages.get().container(
+                Messages.ERR_REMOVING_UNDELETED_RESOURCE_1,
+                dbc.getRequestContext().removeSiteRoot(resourceName)));
+        }
+
+        m_exclusiveLocks.remove(resourceName);
     }
 
     /**
