@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/08/10 14:45:11 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * Creates captcha images and validates the pharses submitted by a request parameter.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsCaptchaField extends CmsField {
     
@@ -95,6 +95,7 @@ public class CmsCaptchaField extends CmsField {
     public void writeCaptchaImage(CmsJspActionElement cms) throws IOException {
 
         ByteArrayOutputStream captchaImageOutput = new ByteArrayOutputStream();
+        ServletOutputStream out = null;     
         
         try {
             
@@ -104,6 +105,15 @@ public class CmsCaptchaField extends CmsField {
             BufferedImage captchaImage = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings).getImageChallengeForID(sessionId, locale);
             JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(captchaImageOutput);
             jpegEncoder.encode(captchaImage);
+            
+            cms.getResponse().setHeader("Cache-Control", "no-store");
+            cms.getResponse().setHeader("Pragma", "no-cache");
+            cms.getResponse().setDateHeader("Expires", 0);
+            cms.getResponse().setContentType("image/jpeg");
+            
+            out = cms.getResponse().getOutputStream();
+            out.write(captchaImageOutput.toByteArray());
+            out.flush();
         } catch (Exception e) {
             
             if (LOG.isErrorEnabled()) {
@@ -111,18 +121,16 @@ public class CmsCaptchaField extends CmsField {
             }
             
             cms.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            return;
+        } finally {
+            
+            try {
+                if (out != null) {
+                    out.close();
+                }
+            } catch (Throwable t) {
+                // intentionally left blank
+            }
         }
-
-        cms.getResponse().setHeader("Cache-Control", "no-store");
-        cms.getResponse().setHeader("Pragma", "no-cache");
-        cms.getResponse().setDateHeader("Expires", 0);
-        cms.getResponse().setContentType("image/jpeg");
-        
-        ServletOutputStream out = cms.getResponse().getOutputStream();
-        out.write(captchaImageOutput.toByteArray());
-        out.flush();
-        out.close();
     }
     
     /**

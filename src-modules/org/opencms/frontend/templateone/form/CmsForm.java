@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/08/01 08:09:55 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/08/10 14:45:01 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -924,13 +924,19 @@ public class CmsForm {
             // no prefix present
             setMailSubjectPrefix("");
         }
-        // get the mail text as plain text
+        
         CmsXmlHtmlValue mailTextValue = (CmsXmlHtmlValue)content.getValue(NODE_MAILTEXT, locale);
-        stringValue = mailTextValue.getPlainText(cms);
-        setMailTextPlain(getConfigurationValue(stringValue, ""));
-        // get the mail text
-        stringValue = mailTextValue.getStringValue(cms);
-        setMailText(getConfigurationValue(stringValue, ""));
+        if (mailTextValue != null) {
+            // get the mail text as plain text
+            stringValue = mailTextValue.getPlainText(cms);
+            setMailTextPlain(getConfigurationValue(stringValue, ""));
+            // get the mail text
+            stringValue = mailTextValue.getStringValue(cms);
+            setMailText(getConfigurationValue(stringValue, ""));
+        } else {
+            setMailTextPlain("");
+            setMailText("");
+        }
 
         // optional configuration options
         String pathPrefix = NODE_OPTIONALCONFIGURATION + "/";
@@ -978,12 +984,19 @@ public class CmsForm {
             // get the confirmation mail subject
             stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILSUBJECT, locale);
             setConfirmationMailSubject(getConfigurationValue(stringValue, ""));
-            // get the confirmation mail text
+           
             mailTextValue = (CmsXmlHtmlValue)content.getValue(pathPrefix + NODE_CONFIRMATIONMAILTEXT, locale);
-            stringValue = mailTextValue.getPlainText(cms);
-            setConfirmationMailTextPlain(getConfigurationValue(stringValue, ""));
-            stringValue = mailTextValue.getStringValue(cms);
-            setConfirmationMailText(getConfigurationValue(stringValue, ""));
+            if (mailTextValue != null) {
+                // get the confirmation mail text
+                stringValue = mailTextValue.getPlainText(cms);
+                setConfirmationMailTextPlain(getConfigurationValue(stringValue, ""));
+                stringValue = mailTextValue.getStringValue(cms);
+                setConfirmationMailText(getConfigurationValue(stringValue, ""));
+            } else {
+                setConfirmationMailTextPlain("");
+                setConfirmationMailText("");
+            }
+            
             // get the confirmation mail field index number
             stringValue = content.getStringValue(cms, pathPrefix + NODE_CONFIRMATIONMAILFIELD, locale);
             int fieldIndex = 1;
