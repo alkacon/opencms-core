@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/08/02 13:34:08 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/08/10 12:51:55 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,12 +163,17 @@ public class CmsDisplayResource extends CmsDialog {
             byte[] result = getBackupResourceContent(getCms(), getParamResource(), getParamVersionid());
             if (result != null) {
                 // get the top level response to change the content type
-                m_controller.getTopResponse().setContentType(
-                    OpenCms.getResourceManager().getMimeType(
-                        getParamResource(),
-                        getCms().getRequestContext().getEncoding()));
+                String contentType = OpenCms.getResourceManager().getMimeType(
+                    getParamResource(),
+                    getCms().getRequestContext().getEncoding());
+               
+                m_controller.getTopResponse().setContentType(contentType);
+                
                 m_controller.getTopResponse().setContentLength(result.length);
-
+               
+                m_controller.getTopResponse().setHeader("Pragma", "no-pragma");
+                m_controller.getTopResponse().setHeader("Content-Disposition", "attachment; filename=" + getParamResource());
+                
                 try {
                     getJsp().getResponse().getOutputStream().write(result);
                     getJsp().getResponse().getOutputStream().flush();
