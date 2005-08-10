@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/08/09 11:45:05 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/08/10 14:43:44 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -487,10 +487,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
      * if you just need the "best" default locale for a resource, 
      * use <code>{@link #getDefaultLocale(CmsObject, String)}</code>.<p>
      * 
-     * The default locales are either configured in the configuration file 
-     * <code>opencms-system.xml</code>, or individually on a resource using the property
-     * <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE_DEFAULT}</code> in a comma separated list.<p>
-     * 
      * @param cms the current cms permission object
      * @param resourceName the name of the resource
      * @return an array of default locale names
@@ -501,7 +497,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         String defaultNames = null;
         try {
-            defaultNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE_DEFAULT, true).getValue();
+            defaultNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
         } catch (CmsException e) {
             LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
         }
@@ -645,37 +641,6 @@ public class CmsLocaleManager implements I_CmsEventListener {
 
         // return the merged values
         return new CmsI18nInfo(locale, encoding);
-    }
-
-    /**
-     * Returns the first matching locale for a resource.<p>
-     * 
-     * First looking for the <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE}</code> property,
-     * and then for the <code>{@link CmsPropertyDefinition#PROPERTY_LOCALE_DEFAULT}</code> property.
-     * 
-     * @param cms the cms context
-     * @param resourceName the resource name
-     * 
-     * @return the best matching locale for the resource
-     */
-    public Locale getLocaleForResource(CmsObject cms, String resourceName) {
-
-        String localeNames = null;
-        try {
-            localeNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
-        } catch (CmsException e) {
-            LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
-        }
-
-        List result = null;
-        if (localeNames != null) {
-            result = getAvailableLocales(localeNames);
-        }
-        if ((result == null) || (result.size() == 0)) {
-            return (Locale)m_defaultLocales.get(0); // getDefaultLocale(cms, resourceName);
-        } else {
-            return (Locale)result.get(0);
-        }
     }
 
     /**

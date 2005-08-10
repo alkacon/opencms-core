@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/08/09 11:45:05 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/08/10 14:43:44 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -367,7 +367,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 for (int i = 0; i < siblings.size(); i++) {
                     // get filename
                     String filename = ((CmsResource)siblings.get(i)).getRootPath();
-                    Locale locale = OpenCms.getLocaleManager().getLocaleForResource(cms, filename);
+                    Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
 
                     if (!locale.equals(value.getLocale())) {
                         // only map property if the locale fits
@@ -887,7 +887,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
                         // get sibline filename and locale
                         String filename = ((CmsResource)siblings.get(i)).getRootPath();
-                        Locale locale = OpenCms.getLocaleManager().getLocaleForResource(cms, filename);
+                        Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
 
                         if (!content.hasLocale(locale)) {
                             // only remove property if the locale fits
