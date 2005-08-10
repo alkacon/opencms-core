@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/08/03 08:58:53 $
- * Version: $Revision: 1.552 $
+ * Date   : $Date: 2005/08/10 12:47:01 $
+ * Version: $Revision: 1.553 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.flex.CmsFlexRequestContextInfo;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.lock.CmsLock;
 import org.opencms.lock.CmsLockException;
@@ -111,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.552 $
+ * @version $Revision: 1.553 $
  * 
  * @since 6.0.0
  */
@@ -6904,8 +6905,9 @@ public final class CmsDriverManager extends Object implements I_CmsEventListener
             CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
 
             // the report may be null if the export point write was started by an event on a remote server
-            if (report == null) {
-                report = new CmsLogReport(dbc.getRequestContext().getLocale(), CmsDriverManager.class);
+            if (report == null) {    
+                // cw/100805 must use default locale here since there is no request context available
+                report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), CmsDriverManager.class);
             }
 
             // iterate over all published resources to export them eventually
