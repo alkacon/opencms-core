@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/08/10 12:51:55 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/08/11 12:34:06 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,17 +166,21 @@ public class CmsDisplayResource extends CmsDialog {
                 String contentType = OpenCms.getResourceManager().getMimeType(
                     getParamResource(),
                     getCms().getRequestContext().getEncoding());
-               
-                m_controller.getTopResponse().setContentType(contentType);
-                
-                m_controller.getTopResponse().setContentLength(result.length);
-               
-                m_controller.getTopResponse().setHeader("Pragma", "no-pragma");
-                m_controller.getTopResponse().setHeader("Content-Disposition", "attachment; filename=" + getParamResource());
-                
+
+                HttpServletResponse res = getJsp().getResponse();
+                HttpServletRequest req = getJsp().getRequest();
+
+                res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
+                    getParamResource()).append("\"").toString());
+                res.setContentLength(result.length);
+
+                CmsFlexController controller = CmsFlexController.getController(req);
+                res = controller.getTopResponse();
+                res.setContentType(contentType);
+           
                 try {
-                    getJsp().getResponse().getOutputStream().write(result);
-                    getJsp().getResponse().getOutputStream().flush();
+                    res.getOutputStream().write(result);
+                    res.getOutputStream().flush();
                 } catch (IOException e) {
                     // can usually be ignored
                     if (LOG.isInfoEnabled()) {
