@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/08/11 08:54:02 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,14 +186,20 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     // the resource is "inside" this index source
                     if (resource.isNew()) {
                         // new resource just needs to be updated
-                        result.addResourceToUpdate(resource);
+                        if (isResourceInTimeWindow(resource)) {
+                            // update only if resource is in time window
+                            result.addResourceToUpdate(resource);
+                        }
                     } else if (resource.isDeleted()) {
                         // deleted resource just needs to be removed
                         result.addResourceToDelete(resource);
                     } else if (resource.isChanged()) {
                         // changed resource must be removed first, and then updated
                         result.addResourceToDelete(resource);
-                        result.addResourceToUpdate(resource);
+                        if (isResourceInTimeWindow(resource)) {
+                            // update only if resource is in time window
+                            result.addResourceToUpdate(resource);
+                        }
                     }
                 }
             }
@@ -318,6 +324,17 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             }
         }
     }
+    
+    /**
+     * Checks if the published resource is inside the time window set with release and expiration date.<p>
+     * 
+     * @param resource the published resource to check
+     * @return true if the published resource is inside the time window, otherwise false
+     */
+    protected boolean isResourceInTimeWindow(CmsPublishedResource resource) {
+        
+        return m_cms.existsResource(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.DEFAULT);
+    }
 
     /**
      * Updates (writes) a single resource in the index.<p>
@@ -376,4 +393,5 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 m_index.getName()));
         }
     }
+    
 }
