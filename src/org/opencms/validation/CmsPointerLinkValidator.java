@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidator.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/08/15 10:48:46 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,10 +78,12 @@ public class CmsPointerLinkValidator implements I_CmsScheduledJob {
         try {
             if (url.toLowerCase().startsWith("/")) {
                 return cms.existsResource(cms.getRequestContext().removeSiteRoot(url));
-            } else {
+            } else if (url.startsWith("http")) {
                 URL checkedUrl = new URL(url);
                 HttpURLConnection httpcon = (HttpURLConnection)checkedUrl.openConnection();
                 return (httpcon.getResponseCode() == 200);
+            } else {
+                return true;
             }
         } catch (MalformedURLException mue) {
             return false;
