@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/08/26 09:59:41 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,13 +114,15 @@ public class CmsHtmlConverter {
     List m_mode;
 
     /** regular expression for replace. */
-    String[] m_replacePatterns = {"&#160;"};
+    String[] m_replacePatterns = {"&#160;",
+                                  "\\r\\n\\r\\n"};
 
     /** patterns for replace. */
     Pattern[] m_replaceStyle;
 
     /** values for replace. */
-    String[] m_replaceValues = {"&nbsp;"};
+    String[] m_replaceValues = {"&nbsp;",
+                                ""};
 
     /** the tidy to use. */
     Tidy m_tidy;
@@ -244,11 +246,12 @@ public class CmsHtmlConverter {
 
                 parsedRun = parse(parsedContent.getBytes(m_encoding), m_encoding);
                 if (parsedRun.length == oldSize) {
-                    break;
+                   break;
                 } else {
                     oldSize = parsedRun.length;
                     count++;
                 }
+                parsedRun = regExp(new String(parsedRun, m_encoding)).getBytes(m_encoding);
             }
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.LOG_PARSING_RUNS_2, this.getClass().getName(), new Integer(count)));
@@ -487,6 +490,8 @@ public class CmsHtmlConverter {
         m_tidy.setShowWarnings(false);
         // allow comments in the output
         m_tidy.setHideComments(false);
+        // set no line break before a <br>
+        m_tidy.setBreakBeforeBR(false);
 
         // extract all operation mode
         m_mode = extractModes(mode);
