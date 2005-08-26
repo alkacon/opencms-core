@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/08/10 14:44:25 $
- * Version: $Revision: 1.554 $
+ * Date   : $Date: 2005/08/26 09:59:00 $
+ * Version: $Revision: 1.555 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,23 +33,7 @@ package org.opencms.db;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSystemConfiguration;
-import org.opencms.file.CmsBackupProject;
-import org.opencms.file.CmsBackupResource;
-import org.opencms.file.CmsDataAccessException;
-import org.opencms.file.CmsFile;
-import org.opencms.file.CmsFolder;
-import org.opencms.file.CmsGroup;
-import org.opencms.file.CmsObject;
-import org.opencms.file.CmsProject;
-import org.opencms.file.CmsProperty;
-import org.opencms.file.CmsPropertyDefinition;
-import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.CmsUser;
-import org.opencms.file.CmsVfsException;
-import org.opencms.file.CmsVfsResourceAlreadyExistsException;
-import org.opencms.file.CmsVfsResourceNotFoundException;
+import org.opencms.file.*;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.I_CmsResourceType;
@@ -86,18 +70,7 @@ import org.opencms.workflow.CmsTask;
 import org.opencms.workflow.CmsTaskLog;
 import org.opencms.workflow.CmsTaskService;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.ListIterator;
-import java.util.Map;
-import java.util.Set;
-import java.util.Stack;
-import java.util.StringTokenizer;
+import java.util.*;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -112,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.554 $
+ * @version $Revision: 1.555 $
  * 
  * @since 6.0.0
  */
@@ -2874,7 +2847,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         // return the list of projects
-        return new ArrayList(projects);
+        ArrayList accessibleProjects = new ArrayList(projects);
+        Collections.sort(accessibleProjects);
+        return accessibleProjects;
     }
 
     /**

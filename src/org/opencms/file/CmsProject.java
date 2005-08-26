@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProject.java,v $
- * Date   : $Date: 2005/07/06 13:10:21 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/08/26 09:59:01 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,11 +46,11 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  *
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.19 $
  * 
  * @since 6.0.0 
  */
-public class CmsProject implements Cloneable {
+public class CmsProject implements Cloneable, Comparable {
 
     /** The id of the online project. */
     public static final int ONLINE_PROJECT_ID = 1;
@@ -239,6 +239,29 @@ public class CmsProject implements Cloneable {
             m_flags,
             m_dateCreated,
             m_type);
+    }
+
+    /**
+     * Compares this instance to another given object instance of this class .<p>
+     * 
+     * @param o the other given object instance to compare with
+     * @return integer value for sorting the objects
+     */
+    public int compareTo(Object o) {
+
+        if (o == this) {
+            return 0;
+        }
+
+        if (o instanceof CmsProject) {
+            try {
+                // compare the names
+                return m_name.compareTo(((CmsProject)o).getName());
+            } catch (Exception e) {
+                // ignore, return 0
+            }
+        }
+        return 0;
     }
 
     /**
