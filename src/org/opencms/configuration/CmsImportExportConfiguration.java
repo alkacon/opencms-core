@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2005/07/25 16:03:20 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/08/30 13:54:19 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0
  */
@@ -687,7 +687,8 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
                 Element relatedSystemRes = rfsRuleElement.addElement(N_STATICEXPORT_RELATED_SYSTEM_RES);
                 Iterator itSystemRes = rule.getRelatedSystemResources().iterator();
                 while (itSystemRes.hasNext()) {
-                    relatedSystemRes.addElement(N_STATICEXPORT_REGEX).addText(itSystemRes.next().toString());
+                    Pattern sysRes = (Pattern)itSystemRes.next();
+                    relatedSystemRes.addElement(N_STATICEXPORT_REGEX).addText(sysRes.pattern());
                 }
             }
 
