@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/08/31 15:04:22 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/08/31 16:20:24 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,8 @@ import org.opencms.search.documents.I_CmsDocumentFactory;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.lucene.document.Document;
@@ -61,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,54 +94,21 @@ public class CmsVfsIndexer implements I_CmsIndexer {
         while (i.hasNext()) {
             // iterate all resources in the given list of resources to delete
             CmsPublishedResource res = (CmsPublishedResource)i.next();
-
-            List rootPaths = new ArrayList();
-            if (res.getSiblingCount() > 0) {
-                // the published resource has siblings, all siblings must be updated since they share the same content
-                List siblings = null;
+            String rootPath = res.getRootPath();
+            if (!resourcesAlreadyDeleted.contains(rootPath)) {
+                // ensure siblings are only deleted once per update
+                resourcesAlreadyDeleted.add(rootPath);
+                // search for an exact match on the document root path
+                Term term = new Term(I_CmsDocumentFactory.DOC_PATH, rootPath);
                 try {
-                    siblings = m_cms.readSiblings(res.getRootPath(), CmsResourceFilter.DEFAULT);
-                } catch (CmsException e) {
+                    // delete all documents with this term from the index
+                    reader.delete(term);
+                } catch (IOException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().key(
-                            Messages.LOG_UNABLE_TO_READ_SIBLINGS_2,
-                            res.getRootPath(),
+                            Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2,
+                            rootPath,
                             m_index.getName()), e);
-                    }
-                }
-                if (siblings != null) {
-                    // update all siblings
-                    Iterator j = siblings.iterator();
-                    while (j.hasNext()) {
-                        CmsResource sibling = (CmsResource)j.next();
-                        rootPaths.add(sibling.getRootPath());
-                    }
-                } else {
-                    // error, make sure at last the "known" sibling is updated
-                    rootPaths.add(res.getRootPath());
-                }
-            } else {
-                // no siblings, just use path of the single resource
-                rootPaths.add(res.getRootPath());
-            }
-            Iterator j = rootPaths.iterator();
-            while (j.hasNext()) {
-                String rootPath = (String)j.next();
-                if (!resourcesAlreadyDeleted.contains(rootPath)) {
-                    // ensure siblings are only deleted once per update
-                    resourcesAlreadyDeleted.add(rootPath);
-                    // search for an exact match on the document root path
-                    Term term = new Term(I_CmsDocumentFactory.DOC_PATH, rootPath);
-                    try {
-                        // delete all documents with this term from the index
-                        reader.delete(term);
-                    } catch (IOException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().key(
-                                Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2,
-                                rootPath,
-                                m_index.getName()), e);
-                        }
                     }
                 }
             }
@@ -195,8 +160,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     } else if (resource.isDeleted()) {
                         // deleted resource just needs to be removed
                         result.addResourceToDelete(resource);
-                    } else if (resource.isChanged()) {
-                        // changed resource must be removed first, and then updated
+                    } else if (resource.isChanged() || resource.isUnChanged()) {
+                        // changed (or unchaged) resource must be removed first, and then updated
+                        // note: unchanged resources can be siblings that have been added from the online project,
+                        //       these must be treated as if the resource had changed
                         result.addResourceToDelete(resource);
                         if (isResourceInTimeWindow(resource)) {
                             // update only if resource is in time window
@@ -206,7 +173,6 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 }
             }
         }
-
         return result;
     }
 
@@ -265,9 +231,9 @@ public class CmsVfsIndexer implements I_CmsIndexer {
     }
 
     /**
-     * @see org.opencms.search.I_CmsIndexer#updateResources(org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager, java.util.List, java.util.List)
+     * @see org.opencms.search.I_CmsIndexer#updateResources(org.apache.lucene.index.IndexWriter, org.opencms.search.CmsIndexingThreadManager, java.util.List)
      */
-    public void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate, List sources)
+    public void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate)
     throws CmsIndexException {
 
         if ((resourcesToUpdate == null) || resourcesToUpdate.isEmpty()) {
@@ -275,15 +241,6 @@ public class CmsVfsIndexer implements I_CmsIndexer {
             return;
         }
 
-        // collect all source folders of the index, required for later sibling check
-        Set sourceFolderSet = new HashSet();
-        Iterator k = sources.iterator();
-        while (k.hasNext()) {            
-            CmsSearchIndexSource source = (CmsSearchIndexSource)k.next();
-            sourceFolderSet.addAll(source.getResourcesNames());
-        }
-        List sourceFolders = new ArrayList(sourceFolderSet);
-        
         // contains all resources already updated to avoid multiple updates in case of siblings
         List resourcesAlreadyUpdated = new ArrayList(resourcesToUpdate.size());
 
@@ -303,50 +260,15 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 }
             }
             if (resource != null) {
-                List resources = new ArrayList();
-                if (resource.getSiblingCount() > 0) {
-                    // resource has siblings, all siblings must be updated (since the content is the same)
-                    try {
-                        List siblings = m_cms.readSiblings(resource.getRootPath(), CmsResourceFilter.DEFAULT);
-                        Iterator it = siblings.iterator();
-                        while (it.hasNext()) {
-                            // check if the sibling is part of one of the index sources
-                            CmsResource sibling = (CmsResource)it.next();
-                            // use utility method from CmsProject to check if published resource is "inside" this index source
-                            if (CmsProject.isInsideProject(sourceFolders, sibling)) {
-                                // the sibling is "inside" this index
-                                resources.add(sibling);
-                            }
-                        }                        
-                        
-                    } catch (CmsException e) {
-                        if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().key(
-                                Messages.LOG_UNABLE_TO_READ_SIBLINGS_2,
-                                resource.getRootPath(),
-                                m_index.getName()), e);
-                        }
-                        // ensure at last the "known" sibling is updated
-                        resources.add(resource);
-                    }
-                } else {
-                    // resource has no siblings, only one update required    
-                    resources.add(resource);
-                }
-                // update all siblings
-                Iterator j = resources.iterator();
-                while (j.hasNext()) {
-                    CmsResource r = (CmsResource)j.next();
-                    if (!resourcesAlreadyUpdated.contains(r.getRootPath())) {
-                        // ensure resources are only indexed once per update
-                        resourcesAlreadyUpdated.add(r.getRootPath());
-                        updateResource(writer, threadManager, r);
-                    }
+                if (!resourcesAlreadyUpdated.contains(resource.getRootPath())) {
+                    // ensure resources are only indexed once per update
+                    resourcesAlreadyUpdated.add(resource.getRootPath());
+                    updateResource(writer, threadManager, resource);
                 }
             }
         }
     }
-    
+
     /**
      * Checks if the published resource is inside the time window set with release and expiration date.<p>
      * 
@@ -354,8 +276,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @return true if the published resource is inside the time window, otherwise false
      */
     protected boolean isResourceInTimeWindow(CmsPublishedResource resource) {
-        
-        return m_cms.existsResource(m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()), CmsResourceFilter.DEFAULT);
+
+        return m_cms.existsResource(
+            m_cms.getRequestContext().removeSiteRoot(resource.getRootPath()),
+            CmsResourceFilter.DEFAULT);
     }
 
     /**
@@ -415,5 +339,4 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 m_index.getName()));
         }
     }
-    
 }

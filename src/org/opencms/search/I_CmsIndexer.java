@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/I_CmsIndexer.java,v $
- * Date   : $Date: 2005/08/31 15:04:22 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/08/31 16:20:24 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,10 +126,9 @@ public interface I_CmsIndexer {
      * @param writer the index writer to write the update to
      * @param resourcesToUpdate a list of <code>{@link org.opencms.db.CmsPublishedResource}</code> instances that must be updated
      * @param threadManager the thread manager to use when extracting the document text
-     * @param sources the configured index sources (required to sort out siblings)
      * 
      * @throws CmsIndexException if something goes wrong
      */
-    void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate, List sources)
+    void updateResources(IndexWriter writer, CmsIndexingThreadManager threadManager, List resourcesToUpdate)
     throws CmsIndexException;
 }

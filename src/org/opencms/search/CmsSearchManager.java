@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/08/31 15:04:22 $
- * Version: $Revision: 1.52 $
+ * Date   : $Date: 2005/08/31 16:20:24 $
+ * Version: $Revision: 1.53 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ package org.opencms.search;
 
 import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -68,7 +70,7 @@ import org.apache.lucene.search.Similarity;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.52 $ 
+ * @version $Revision: 1.53 $ 
  * 
  * @since 6.0.0 
  */
@@ -232,7 +234,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
                 break;
             default:
-        // no operation
+                // no operation
         }
     }
 
@@ -871,7 +873,42 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 continue;
             }
             if (res.isDeleted() || res.isNew() || res.isChanged()) {
-                updateResources.add(res);
+                if (updateResources.contains(res)) {
+                    // resource may have been added as a sibling of another resource
+                    // in this case we make sure to use the value from the publih list because of the "deleted" flag
+                    updateResources.remove(res);
+                    // "equals()" implementation of published resource only checks for path, 
+                    // so the removed value may have a different "deleted" or "modified" status value
+                    updateResources.add(res);
+                } else {
+                    // resource not yet contained in the list
+                    updateResources.add(res);
+                    // check for the siblings
+                    if (res.getSiblingCount() > 1) {
+                        // this resource has siblings                    
+                        try {
+                            // read siblings from the online project
+                            List siblings = adminCms.readSiblings(res.getRootPath(), CmsResourceFilter.ALL);
+                            Iterator itSib = siblings.iterator();
+                            while (itSib.hasNext()) {
+                                // check all siblings
+                                CmsResource sibling = (CmsResource)itSib.next();
+                                CmsPublishedResource sib = new CmsPublishedResource(sibling);
+                                if (!updateResources.contains(sib)) {
+                                    // ensure sibling is added only once
+                                    updateResources.add(sib);
+                                }
+                            }
+                        } catch (CmsException e) {
+                            // ignore, just use the original resource
+                            if (LOG.isWarnEnabled()) {
+                                LOG.warn(
+                                    Messages.get().key(Messages.LOG_UNABLE_TO_READ_SIBLINGS_1, res.getRootPath()),
+                                    e);
+                            }
+                        }
+                    }
+                }
             }
         }
 
@@ -1096,8 +1133,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                                 updateCollection.getIndexer().updateResources(
                                     writer,
                                     threadManager,
-                                    updateCollection.getResourcesToUpdate(),
-                                    index.getSources());
+                                    updateCollection.getResourcesToUpdate());
                             }
                         }
                     } finally {
