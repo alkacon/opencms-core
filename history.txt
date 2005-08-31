@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/07/29 10:36:58 $
- * Version: $Revision: 1.677 $
+ * Date   : $Date: 2005/08/31 11:39:29 $
+ * Version: $Revision: 1.678 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ OpenCms 6.0.1 - ???, 2005
 * Fixed issue 912: NullPointerException in "recommend page" of templateone
 ! Search indexes are now incrementally updated after publishing of resoures if rebuild mode is "auto"
 ! Added methods to copy and move the content of a locale in XML pages or XML contents
+! Added "site" parameter to Flex cache language for creating elements for a specific site only
 
 OpenCms 6.0.0 - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler

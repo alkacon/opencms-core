@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/08/31 11:39:29 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,32 +56,88 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsFlexCacheKey {
 
-    /** The list of keywords of the Flex cache language. */
-    private static final List CACHE_COMMANDS = Arrays.asList(new String[] {"always", // 0
-        "never", // 1
-        "uri", // 2
-        "user", // 3
-        "params", // 4
-        "no-params", // 5
-        "timeout", // 6
-        "session", // 7
-        "schemes", // 8
-        "ports", // 9
-        "false", // 10
-        "parse-error", // 11
-        "true", // 12
-        "ip", // 13
-        "element", // 14
-        "locale", // 15
-        "encoding"}); // 16
+    /** Flex cache keyword: always. */
+    private static final String CACHE_00_ALWAYS = "always";
 
-    /** Marker to identify use of certain String key members (m_uri, m_ip). */
+    /** Flex cache keyword: never. */
+    private static final String CACHE_01_NEVER = "never";
+
+    /** Flex cache keyword: uri. */
+    private static final String CACHE_02_URI = "uri";
+
+    /** Flex cache keyword: user. */
+    private static final String CACHE_03_USER = "user";
+
+    /** Flex cache keyword: params. */
+    private static final String CACHE_04_PARAMS = "params";
+
+    /** Flex cache keyword: no-params. */
+    private static final String CACHE_05_NO_PARAMS = "no-params";
+
+    /** Flex cache keyword: timeout. */
+    private static final String CACHE_06_TIMEOUT = "timeout";
+
+    /** Flex cache keyword: session. */
+    private static final String CACHE_07_SESSION = "session";
+
+    /** Flex cache keyword: schemes. */
+    private static final String CACHE_08_SCHEMES = "schemes";
+
+    /** Flex cache keyword: ports. */
+    private static final String CACHE_09_PORTS = "ports";
+
+    /** Flex cache keyword: false. */
+    private static final String CACHE_10_FALSE = "false";
+
+    /** Flex cache keyword: parse-error. */
+    private static final String CACHE_11_PARSE_ERROR = "parse-error";
+
+    /** Flex cache keyword: true. */
+    private static final String CACHE_12_TRUE = "true";
+
+    /** Flex cache keyword: ip. */
+    private static final String CACHE_13_IP = "ip";
+
+    /** Flex cache keyword: element. */
+    private static final String CACHE_14_ELEMENT = "element";
+
+    /** Flex cache keyword: locale. */
+    private static final String CACHE_15_LOCALE = "locale";
+
+    /** Flex cache keyword: encoding. */
+    private static final String CACHE_16_ENCODING = "encoding";
+
+    /** Flex cache keyword: site. */
+    private static final String CACHE_17_SITE = "site";
+
+    /** The list of keywords of the Flex cache language. */
+    private static final List CACHE_COMMANDS = Arrays.asList(new String[] {
+        CACHE_00_ALWAYS,
+        CACHE_01_NEVER,
+        CACHE_02_URI,
+        CACHE_03_USER,
+        CACHE_04_PARAMS,
+        CACHE_05_NO_PARAMS,
+        CACHE_06_TIMEOUT,
+        CACHE_07_SESSION,
+        CACHE_08_SCHEMES,
+        CACHE_09_PORTS,
+        CACHE_10_FALSE,
+        CACHE_11_PARSE_ERROR,
+        CACHE_12_TRUE,
+        CACHE_13_IP,
+        CACHE_14_ELEMENT,
+        CACHE_15_LOCALE,
+        CACHE_16_ENCODING,
+        CACHE_17_SITE});
+
+    /** Marker to identify use of certain String key members (uri, ip etc.). */
     private static final String IS_USED = "/ /";
 
     /** The log object for this class. */
@@ -123,13 +179,16 @@ public class CmsFlexCacheKey {
     /** Cache key variable: List of session variables. */
     private Set m_session;
 
-    /** Cache key variable: timeout of the resource. */
+    /** Cache key variable: The current site root. */
+    private String m_site;
+
+    /** Cache key variable: Timeout of the resource. */
     private long m_timeout;
 
-    /** Cache key variable: the uri of the original request. */
+    /** Cache key variable: The uri of the original request. */
     private String m_uri;
 
-    /** Cache key variable: the user id. */
+    /** Cache key variable: The user id. */
     private String m_user;
 
     /** The cache behaviour description for the resource. */
@@ -177,6 +236,25 @@ public class CmsFlexCacheKey {
     public static String getKeyName(String resourcename, boolean online) {
 
         return resourcename.concat(online ? CmsFlexCache.CACHE_ONLINESUFFIX : CmsFlexCache.CACHE_OFFLINESUFFIX);
+    }
+
+    /**
+     * Appends a flex cache key value to the given buffer.<p> 
+     *  
+     * @param str the buffer to append to
+     * @param key the key to append
+     * @param value the value to append
+     */
+    private static void appendKeyValue(StringBuffer str, String key, String value) {
+
+        str.append(key);
+        if (value == IS_USED) {
+            str.append(";");
+        } else {
+            str.append("=(");
+            str.append(value);
+            str.append(");");
+        }
     }
 
     /**
@@ -237,48 +315,41 @@ public class CmsFlexCacheKey {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_ALWAYS_0));
             }
-            str.append("always");
+            str.append(CACHE_00_ALWAYS);
             return str.toString();
         }
 
         if (m_uri != null) {
-            str.append("uri=(");
-            str.append(key.getUri());
-            str.append(");");
+            appendKeyValue(str, CACHE_02_URI, key.getUri());
+        }
+
+        if (m_site != null) {
+            appendKeyValue(str, CACHE_17_SITE, key.getSite());
         }
 
         if (m_element != null) {
-            str.append("element=(");
-            str.append(key.getElement());
-            str.append(");");
+            appendKeyValue(str, CACHE_14_ELEMENT, key.getElement());
         }
 
         if (m_locale != null) {
-            str.append("locale=(");
-            str.append(key.getLocale());
-            str.append(");");
+            appendKeyValue(str, CACHE_15_LOCALE, key.getLocale());
         }
 
         if (m_encoding != null) {
-            str.append("encoding=(");
-            str.append(key.getEncoding());
-            str.append(");");
+            appendKeyValue(str, CACHE_16_ENCODING, key.getEncoding());
         }
 
         if (m_ip != null) {
-            str.append("ip=(");
-            str.append(key.getIp());
-            str.append(");");
+            appendKeyValue(str, CACHE_13_IP, key.getIp());
         }
 
         if (m_user != null) {
-            str.append("user=(");
-            str.append(key.getUser());
-            str.append(");");
+            appendKeyValue(str, CACHE_03_USER, key.getUser());
         }
 
         if (m_params != null) {
-            str.append("params=(");
+            str.append(CACHE_04_PARAMS);
+            str.append("=(");
             Map keyParams = key.getParams();
             if (keyParams != null) {
                 if (m_params.size() > 0) {
@@ -313,13 +384,14 @@ public class CmsFlexCacheKey {
                     }
                 }
             }
-            str.append(")");
+            str.append(");");
         }
 
         if (m_session != null) {
             StringBuffer buf = new StringBuffer(32);
             boolean found = false;
-            buf.append("session=(");
+            buf.append(CACHE_07_SESSION);
+            buf.append("=(");
             HttpSession keySession = key.getSession();
             if (keySession != null) {
                 // match only session attributes listed in cache directives
@@ -339,7 +411,7 @@ public class CmsFlexCacheKey {
                 }
             }
             if (found) {
-                buf.append(")");
+                buf.append(");");
                 str.append(buf);
             }
         }
@@ -349,9 +421,7 @@ public class CmsFlexCacheKey {
             if ((m_schemes.size() > 0) && (!m_schemes.contains(s))) {
                 return null;
             }
-            str.append("schemes=(");
-            str.append(s);
-            str.append(");");
+            appendKeyValue(str, CACHE_08_SCHEMES, s);
         }
 
         if (m_ports != null) {
@@ -359,13 +429,15 @@ public class CmsFlexCacheKey {
             if ((m_ports.size() > 0) && (!m_ports.contains(i))) {
                 return null;
             }
-            str.append("ports=(");
+            str.append(CACHE_09_PORTS);
+            str.append("=(");
             str.append(i);
             str.append(");");
         }
 
         if (m_timeout > 0) {
-            str.append("timeout=(");
+            str.append(CACHE_06_TIMEOUT);
+            str.append("=(");
             str.append(m_timeout);
             str.append(");");
         }
@@ -387,18 +459,20 @@ public class CmsFlexCacheKey {
         StringBuffer str = new StringBuffer(100);
 
         if (m_always < 0) {
-            str.append("never");
+            str.append(CACHE_01_NEVER);
             if (m_parseError) {
-                str.append(";parse-error");
+                str.append(";");
+                str.append(CACHE_11_PARSE_ERROR);
             }
             return str.toString();
         }
         if (m_noparams != null) {
             // add "no-cachable" parameters
+            str.append(CACHE_05_NO_PARAMS);
             if (m_noparams.size() == 0) {
-                str.append("no-params;");
+                str.append(";");
             } else {
-                str.append("no-params=(");
+                str.append("=(");
                 Iterator i = m_noparams.iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
@@ -411,77 +485,48 @@ public class CmsFlexCacheKey {
             }
         }
         if (m_always > 0) {
-            str.append("always");
+            str.append(CACHE_00_ALWAYS);
             if (m_parseError) {
-                str.append(";parse-error");
+                str.append(";");
+                str.append(CACHE_11_PARSE_ERROR);
             }
             return str.toString();
         }
         if (m_uri != null) {
-            if (m_uri == IS_USED) {
-                str.append("uri;");
-            } else {
-                str.append("uri=(");
-                str.append(m_uri);
-                str.append(");");
-            }
+            // add uri
+            appendKeyValue(str, CACHE_02_URI, m_uri);
+        }
+        if (m_site != null) {
+            // add site
+            appendKeyValue(str, CACHE_17_SITE, m_site);
         }
         if (m_element != null) {
             // add element
-            if (m_element == IS_USED) {
-                str.append("element;");
-            } else {
-                str.append("element=(");
-                str.append(m_element);
-                str.append(");");
-            }
+            appendKeyValue(str, CACHE_14_ELEMENT, m_element);
         }
         if (m_locale != null) {
             // add locale
-            if (m_locale == IS_USED) {
-                str.append("locale;");
-            } else {
-                str.append("locale=(");
-                str.append(m_locale);
-                str.append(");");
-            }
+            appendKeyValue(str, CACHE_15_LOCALE, m_locale);
         }
         if (m_encoding != null) {
             // add encoding
-            if (m_encoding == IS_USED) {
-                str.append("encoding;");
-            } else {
-                str.append("encoding=(");
-                str.append(m_encoding);
-                str.append(");");
-            }
+            appendKeyValue(str, CACHE_16_ENCODING, m_encoding);
         }
         if (m_ip != null) {
             // add ip
-            if (m_ip == IS_USED) {
-                str.append("ip;");
-            } else {
-                str.append("ip=(");
-                str.append(m_ip);
-                str.append(");");
-            }
+            appendKeyValue(str, CACHE_13_IP, m_ip);
         }
         if (m_user != null) {
-            // add user data
-            if (m_user == IS_USED) {
-                str.append("user;");
-            } else {
-                str.append("user=(");
-                str.append(m_user);
-                str.append(");");
-            }
+            // add user
+            appendKeyValue(str, CACHE_03_USER, m_user);
         }
         if (m_params != null) {
             // add parameters
+            str.append(CACHE_04_PARAMS);
             if (m_params.size() == 0) {
-                str.append("params;");
+                str.append(";");
             } else {
-                str.append("params=(");
+                str.append("=(");
                 Iterator i = m_params.iterator();
                 while (i.hasNext()) {
                     Object o = i.next();
@@ -498,7 +543,8 @@ public class CmsFlexCacheKey {
         }
         if (m_session != null) {
             // add session variables
-            str.append("session=(");
+            str.append(CACHE_07_SESSION);
+            str.append("=(");
             Iterator i = m_session.iterator();
             while (i.hasNext()) {
                 Object o = i.next();
@@ -511,16 +557,18 @@ public class CmsFlexCacheKey {
         }
         if (m_timeout >= 0) {
             // add timeout 
-            str.append("timeout=(");
+            str.append(CACHE_06_TIMEOUT);
+            str.append("=(");
             str.append(m_timeout);
             str.append(");");
         }
         if (m_schemes != null) {
             // add schemes
+            str.append(CACHE_08_SCHEMES);
             if (m_schemes.size() == 0) {
-                str.append("schemes;");
+                str.append(";");
             } else {
-                str.append("schemes=(");
+                str.append("=(");
                 Iterator i = m_schemes.iterator();
                 while (i.hasNext()) {
                     str.append(i.next());
@@ -533,10 +581,11 @@ public class CmsFlexCacheKey {
         }
         if (m_ports != null) {
             // add ports
+            str.append(CACHE_09_PORTS);
             if (m_ports.size() == 0) {
-                str.append("ports;");
+                str.append(";");
             } else {
-                str.append("ports=(");
+                str.append("=(");
                 Iterator i = m_ports.iterator();
                 while (i.hasNext()) {
                     str.append(i.next());
@@ -549,7 +598,7 @@ public class CmsFlexCacheKey {
         }
 
         if (m_parseError) {
-            str.append("parse-error;");
+            str.append(CACHE_11_PARSE_ERROR);
         }
         return str.toString();
     }
@@ -623,14 +672,14 @@ public class CmsFlexCacheKey {
                 }
                 switch (CACHE_COMMANDS.indexOf(k)) {
                     case 0: // always
-                    case 12:
+                    case 12: // true
                         m_always = 1;
-                        // Continue processing (make sure we find a "never" behind "always")
+                        // continue processing (make sure we find a "never" behind "always")
                         break;
                     case 1: // never
-                    case 10:
+                    case 10: // false
                         m_always = -1;
-                        // No need for any further processing
+                        // no need for any further processing
                         return;
                     case 2: // uri
                         m_uri = IS_USED; // marks m_uri as being used
@@ -651,10 +700,10 @@ public class CmsFlexCacheKey {
                         break;
                     case 5: // no-params
                         if (v != null) {
-                            // No-params are present
+                            // no-params are present
                             m_noparams = parseValueList(v);
                         } else {
-                            // Never cache with parameters
+                            // never cache with parameters
                             m_noparams = new HashSet(0);
                         }
                         break;
@@ -688,12 +737,15 @@ public class CmsFlexCacheKey {
                     case 16: // encoding
                         m_encoding = IS_USED;
                         break;
+                    case 17: // site
+                        m_site = IS_USED;
+                        break;
                     default: // unknown directive, throw error
                         m_parseError = true;
                 }
             }
         } catch (Exception e) {
-            // Any Exception here indicates a parsing error
+            // any Exception here indicates a parsing error
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
             }
