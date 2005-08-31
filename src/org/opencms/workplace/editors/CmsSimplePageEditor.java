@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/08/31 14:46:19 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,13 +127,33 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                 m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
             } catch (CmsException e) {
-                // error during initialization
-                try {
-                    showErrorPage(this, e);
-                } catch (JspException exc) {
-                    // should usually never happen
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(exc);
+                if (e instanceof CmsVfsResourceNotFoundException) {
+                    // the tempfile is missing, maybe someone else has deleted it
+                    // try to create a new one and redo the initalization
+                    try {
+                        setParamTempfile(createTempFile());
+                        m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
+                        m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
+                    } catch (CmsException e1) {
+                        // error during initialization
+                        try {
+                            showErrorPage(this, e1);
+                        } catch (JspException exc) {
+                            // should usually never happen
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(exc);
+                            }
+                        }
+                    }
+                } else {
+                    // error during initialization
+                    try {
+                        showErrorPage(this, e);
+                    } catch (JspException exc) {
+                        // should usually never happen
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(exc);
+                        }
                     }
                 }
             }
