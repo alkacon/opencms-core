@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/08/02 10:30:36 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/08/31 07:29:39 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0
  */
@@ -101,12 +101,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the context menu node. */
     public static final String N_CONTEXTMENU = "contextmenu";
-    
-    /** The name of the default property node. */
-    public static final String N_DEFAULTPROPERTY = "defaultproperty";
 
     /** The name of the default properties node. */
     public static final String N_DEFAULTPROPERTIES = "defaultproperties";
+
+    /** The name of the default property node. */
+    public static final String N_DEFAULTPROPERTY = "defaultproperty";
 
     /** The node name of the dialogs defaultsettings node. */
     public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
@@ -131,9 +131,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The subname of the rfsfilesettings/enabled node. */
     public static final String N_ENABLED = "enabled";
-
-    /** The subname of the rfsfilesettings/isLogfile node. */
-    public static final String N_ISLOGFILE = "isLogfile";
 
     /** The node name of the file entries node. */
     public static final String N_ENTRIES = "entries";
@@ -180,6 +177,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the inform role members node. */
     public static final String N_INFORMROLEMEMBERS = "informrolemembers";
 
+    /** The subname of the rfsfilesettings/isLogfile node. */
+    public static final String N_ISLOGFILE = "isLogfile";
+
     /** The node name of the locale node. */
     public static final String N_LOCALE = "locale";
 
@@ -219,6 +219,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the show lock node. */
     public static final String N_SHOWLOCK = "showlock";
 
+    /** The node name of the show messages node. */
+    public static final String N_SHOWMESSAGES = "showmessages";
+
     /** The node name of the showprojects node. */
     public static final String N_SHOWPROJECTS = "showprojects";
 
@@ -230,6 +233,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The subname of the rfsfilesettings/windowSize node. */
     public static final String N_WINDOWSIZE = "windowSize";
+
+    /** The node name of the workflow node. */
+    public static final String N_WORKFLOW = "workflow";
 
     /** The node name of the workflow default settings node. */
     public static final String N_WORKFLOWDEFAULTSETTINGS = "workflow-defaultsettings";
@@ -426,7 +432,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_DEFAULTPROPERTIES
             + "/"
             + N_PROPERTY, 0, A_NAME);
-        
+
         digester.addCallMethod("*/"
             + N_EXPLORERTYPE
             + "/"
@@ -549,7 +555,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                     Iterator m = settings.getProperties().iterator();
                     String propNode = N_PROPERTY;
                     if (module) {
-                        propNode = N_DEFAULTPROPERTY;    
+                        propNode = N_DEFAULTPROPERTY;
                     }
                     while (m.hasNext()) {
                         defaultPropertiesElement.addElement(propNode).addAttribute(A_NAME, (String)m.next());
@@ -694,6 +700,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             "addLocalizedFolder",
             1);
         digester.addCallParam("*/" + N_WORKPLACE + "/" + N_LOCALIZEDFOLDERS + "/" + N_RESOURCE, 0, A_URI);
+
+        // add workflow settings
+        digester.addCallMethod("*/" + N_WORKPLACE + "/" + N_WORKFLOW + "/" + N_SHOWMESSAGES, "setWorkflowMessage", 0);
 
         // add fileViewSettings rules
         digester.addObjectCreate("*/" + N_RFSFILEVIEWESETTINGS, CmsRfsFileViewer.class);
@@ -1230,6 +1239,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         i = m_workplaceManager.getLabelSiteFolders().iterator();
         while (i.hasNext()) {
             labeledElement.addElement(N_RESOURCE).addAttribute(A_URI, (String)i.next());
+        }
+
+        // add <workflow> node
+        if (m_workplaceManager.isEnableWorkflowMessages()) {
+            Element workflow = workplaceElement.addElement(N_WORKFLOW);
+            workflow.addElement(N_SHOWMESSAGES).setText(
+                new Boolean(m_workplaceManager.isEnableWorkflowMessages()).toString());
         }
 
         // add <rfsfileviewsettings> node

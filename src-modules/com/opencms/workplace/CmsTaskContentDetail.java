@@ -1,31 +1,30 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
-* Date   : $Date: 2005/06/27 23:22:07 $
-* Version: $Revision: 1.6 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org 
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskContentDetail.java,v $
+ * Date   : $Date: 2005/08/31 07:29:39 $
+ * Version: $Revision: 1.7 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org 
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.workplace;
 
@@ -55,39 +54,14 @@ import java.util.Hashtable;
  * 
  * @author Andreas Schouten
  * @author Mario Stanke
- * @version $Revision: 1.6 $ $Date: 2005/06/27 23:22:07 $
+ * @version $Revision: 1.7 $ $Date: 2005/08/31 07:29:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsTaskContentDetail extends CmsWorkplaceDefault {
-        
-    /**
-     * This private helper method generates a string-representation of a button.
-     * @param xmlTemplateDocument The xml-document in which the buttons are defined.
-     * @param name The name of the button to generate.
-     * @param enabled True, if the button is enabled, else false.
-     * @return the string-representation of the button.
-     * @throws Throws CmsException, if something goes wrong.
-     */
-    
-    private String getButton(CmsXmlWpTemplateFile xmlTemplateDocument, String name, boolean enabled) throws CmsException {
-        if(enabled) {
-            
-            // the button is enabled
-            xmlTemplateDocument.setData("disabled", "");
-        }
-        else {
-            
-            // the button is disabled
-            xmlTemplateDocument.setData("disabled", "disabled");
-        }
-        
-        // return the generated button
-        return xmlTemplateDocument.getProcessedDataValue(name, this);
-    }
-    
+
     /**
      * Gets the content of a defined section in a given template file and its subtemplates
      * with the given parameters. 
@@ -99,142 +73,159 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
      * @param parameters Hashtable with all template class parameters.
      * @param templateSelector template section that should be processed.
      */
-    
-    public byte[] getContent(CmsObject cms, String templateFile, String elementName, Hashtable parameters, 
-            String templateSelector) throws CmsException {
-        if(CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
-            CmsLog.getLog(this).debug("Getting content of element " + ((elementName==null)?"<root>":elementName));
+
+    public byte[] getContent(
+        CmsObject cms,
+        String templateFile,
+        String elementName,
+        Hashtable parameters,
+        String templateSelector) throws CmsException {
+
+        if (CmsLog.getLog(this).isDebugEnabled() && C_DEBUG) {
+            CmsLog.getLog(this).debug("Getting content of element " + ((elementName == null) ? "<root>" : elementName));
             CmsLog.getLog(this).debug("Template file is: " + templateFile);
-            CmsLog.getLog(this).debug("Selected template section is: " + ((templateSelector==null)?"<default>":templateSelector));
+            CmsLog.getLog(this).debug(
+                "Selected template section is: " + ((templateSelector == null) ? "<default>" : templateSelector));
         }
         CmsRequestContext context = cms.getRequestContext();
-        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(cms, templateFile, 
-                elementName, parameters, templateSelector);
+        CmsXmlWpTemplateFile xmlTemplateDocument = (CmsXmlWpTemplateFile)getOwnTemplateFile(
+            cms,
+            templateFile,
+            elementName,
+            parameters,
+            templateSelector);
         CmsTask task;
         int taskid = -1;
         I_CmsSession session = CmsXmlTemplateLoader.getSession(cms.getRequestContext(), true);
-        
+
         CmsTaskService taskService = cms.getTaskService();
         // getting the URL to which we need to return when we're done
         String lastUrl;
         String lastRelUrl = (String)parameters.get("lastrelurl");
-        if(lastRelUrl != null) {
-            
+        if (lastRelUrl != null) {
+
             // have a URL relative to the workplace action path (when clicking on the task name)
             lastUrl = getConfigFile(cms).getWorkplaceActionPath() + lastRelUrl;
             session.putValue("lasturl", lastUrl);
-        }
-        else {
-            
+        } else {
+
             // have the complete path (when using the context menu)
             lastUrl = this.getLastUrl(cms, parameters);
         }
         try {
             Integer sessionTaskid = (Integer)session.getValue("taskid");
-            if(sessionTaskid != null) {
+            if (sessionTaskid != null) {
                 taskid = sessionTaskid.intValue();
             }
             try {
                 taskid = Integer.parseInt((String)parameters.get("taskid"));
-            }
-            catch(Exception exc) {
-                
-            
-            // no new taskid use the one from session
+            } catch (Exception exc) {
+
+                // no new taskid use the one from session
             }
             session.putValue("taskid", new Integer(taskid));
             parameters.put("taskid", taskid + "");
             task = taskService.readTask(taskid);
-            if("acceptok".equals(parameters.get("action"))) {
-                
+            if ("acceptok".equals(parameters.get("action"))) {
+
                 // accept the task
                 CmsTaskAction.accept(cms, taskid);
-            }
-            else {
-                if("accept".equals(parameters.get("action"))) {
-                    
+            } else {
+                if ("accept".equals(parameters.get("action"))) {
+
                     // show dialog
                     templateSelector = "accept";
-                }
-                else {
-                    if("take".equals(parameters.get("action"))) {
-                        
+                } else {
+                    if ("take".equals(parameters.get("action"))) {
+
                         // show dialog
                         templateSelector = "take";
-                    }
-                    else {
-                        if("takeok".equals(parameters.get("action"))) {
-                            
+                    } else {
+                        if ("takeok".equals(parameters.get("action"))) {
+
                             // take the task
                             CmsTaskAction.take(cms, taskid);
-                        }
-                        else {
-                            if("forwardok".equals(parameters.get("action"))) {
-                                
+                        } else {
+                            if ("forwardok".equals(parameters.get("action"))) {
+
                                 // forward the task 
-                                CmsTaskAction.forward(cms, taskid, (String)parameters.get("USER"), (String)parameters.get("TEAM"));
-                            }
-                            else {
-                                if("due".equals(parameters.get("action"))) {
-                                    
+                                CmsTaskAction.forward(
+                                    cms,
+                                    taskid,
+                                    (String)parameters.get("USER"),
+                                    (String)parameters.get("TEAM"));
+                            } else {
+                                if ("due".equals(parameters.get("action"))) {
+
                                     // show dialog
                                     templateSelector = "due";
-                                }
-                                else {
-                                    if("dueok".equals(parameters.get("action"))) {
-                                        
+                                } else {
+                                    if ("dueok".equals(parameters.get("action"))) {
+
                                         // change the due-date of the task
                                         CmsTaskAction.due(cms, taskid, (String)parameters.get("DATE"));
-                                    }
-                                    else {
-                                        if("priorityok".equals(parameters.get("action"))) {
-                                            
+                                    } else {
+                                        if ("priorityok".equals(parameters.get("action"))) {
+
                                             // change the priority of the task
                                             CmsTaskAction.priority(cms, taskid, (String)parameters.get("PRIORITY"));
-                                        }
-                                        else {
-                                            if("reaktok".equals(parameters.get("action"))) {
-                                                
+                                        } else {
+                                            if ("reaktok".equals(parameters.get("action"))) {
+
                                                 // reaktivate the task
-                                                CmsTaskAction.reakt(cms, taskid, (String)parameters.get("USER"), 
-                                                (String)parameters.get("TEAM"), (String)parameters.get("TASK"), 
-                                                (String)parameters.get("DESCRIPTION"), (String)parameters.get("DATE"), 
-                                                (String)parameters.get("PRIORITY"), (String)parameters.get("MSG_ACCEPTATION"), 
-                                                (String)parameters.get("MSG_ALL"), (String)parameters.get("MSG_COMPLETION"), 
-                                                (String)parameters.get("MSG_DELIVERY"));
-                                            }
-                                            else {
-                                                if("okok".equals(parameters.get("action"))) {
-                                                    
+                                                CmsTaskAction.reakt(
+                                                    cms,
+                                                    taskid,
+                                                    (String)parameters.get("USER"),
+                                                    (String)parameters.get("TEAM"),
+                                                    (String)parameters.get("TASK"),
+                                                    (String)parameters.get("DESCRIPTION"),
+                                                    (String)parameters.get("DATE"),
+                                                    (String)parameters.get("PRIORITY"),
+                                                    (String)parameters.get("MSG_ACCEPTATION"),
+                                                    (String)parameters.get("MSG_ALL"),
+                                                    (String)parameters.get("MSG_COMPLETION"),
+                                                    (String)parameters.get("MSG_DELIVERY"));
+                                            } else {
+                                                if ("okok".equals(parameters.get("action"))) {
+
                                                     // ok the task
                                                     CmsTaskAction.end(cms, taskid);
-                                                }
-                                                else {
-                                                    if("ok".equals(parameters.get("action"))) {
-                                                        
+                                                } else {
+                                                    if ("ok".equals(parameters.get("action"))) {
+
                                                         // show dialog
                                                         templateSelector = "ok";
-                                                    }
-                                                    else {
-                                                        if("comment".equals(parameters.get("action"))) {
-                                                            
+                                                    } else {
+                                                        if ("comment".equals(parameters.get("action"))) {
+
                                                             // add comment
-                                                            String comment = (String)parameters.get("DESCRIPTION");
-                                                            if((comment != null) && (comment.length() != 0)) {
-                                                                taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_COMMENT);
-                                                            }
-                                                        }
-                                                        else {
-                                                            if("messageok".equals(parameters.get("action"))) {
-                                                                
+                                                            // String comment = (String)parameters.get("DESCRIPTION");
+                                                            // if((comment != null) && (comment.length() != 0)) {
+                                                            //     taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_COMMENT);
+                                                            // }
+                                                            // add message
+                                                            CmsTaskAction.comment(
+                                                                cms,
+                                                                taskid,
+                                                                (String)parameters.get("DESCRIPTION"));
+
+                                                        } else {
+                                                            if ("messageok".equals(parameters.get("action"))) {
+
                                                                 // add message
-                                                                CmsTaskAction.message(cms, taskid, (String)parameters.get("DESCRIPTION"));
-                                                            }
-                                                            else {
-                                                                if("queryok".equals(parameters.get("action"))) {
-                                                                    
+                                                                CmsTaskAction.message(
+                                                                    cms,
+                                                                    taskid,
+                                                                    (String)parameters.get("DESCRIPTION"));
+                                                            } else {
+                                                                if ("queryok".equals(parameters.get("action"))) {
+
                                                                     // add message
-                                                                    CmsTaskAction.query(cms, taskid, (String)parameters.get("DESCRIPTION"));
+                                                                    CmsTaskAction.query(
+                                                                        cms,
+                                                                        taskid,
+                                                                        (String)parameters.get("DESCRIPTION"));
                                                                 }
                                                             }
                                                         }
@@ -249,42 +240,35 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                     }
                 }
             }
-            
+
             // update the task-data            
             // it maybe had been changed
             task = taskService.readTask(taskid);
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
             throw new CmsLegacyException(CmsLegacyException.C_UNKNOWN_EXCEPTION, exc);
         }
         CmsUser owner = null;
         try {
             owner = taskService.readOwner(task);
-        }
-        catch(Exception exc) {
-            
-        
-        // ignore the exception
+        } catch (Exception exc) {
+
+            // ignore the exception
         }
         CmsUser editor = null;
         try {
             editor = taskService.readAgent(task);
-        }
-        catch(Exception exc) {
-            
-        
-        // ignore the exception
+        } catch (Exception exc) {
+
+            // ignore the exception
         }
         CmsGroup role = null;
         String roleName = "";
         try {
             role = taskService.readGroup(task);
             roleName = role.getName();
-        }
-        catch(Exception exc) {
-            
-        
-        // ignore the exception
+        } catch (Exception exc) {
+
+            // ignore the exception
         }
         String priority;
         String projectname = "?";
@@ -303,15 +287,19 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         cal.set(Calendar.MINUTE, 0);
         cal.set(Calendar.SECOND, 0);
         cal.set(Calendar.MILLISECOND, 0);
-        GregorianCalendar newcal = new GregorianCalendar(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH), 0, 0, 0);
+        GregorianCalendar newcal = new GregorianCalendar(
+            cal.get(Calendar.YEAR),
+            cal.get(Calendar.MONTH),
+            cal.get(Calendar.DAY_OF_MONTH),
+            0,
+            0,
+            0);
         long now = newcal.getTime().getTime();
         try {
             projectname = taskService.readTask(task.getRoot()).getName();
-        }
-        catch(Exception exc) {
-            
-        
-        // no root?!
+        } catch (Exception exc) {
+
+            // no root?!
         }
         priority = xmlTemplateDocument.getProcessedDataValue("priority" + task.getPriority(), this);
         startTime = task.getStartTime().getTime();
@@ -319,20 +307,16 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         String due = "";
         try {
             due = CmsDateUtil.getDateShort(timeout);
-        }
-        catch(Exception exc) {
-            
-        
-        // ignore the exception
+        } catch (Exception exc) {
+
+            // ignore the exception
         }
         String from = "";
         try {
             from = CmsDateUtil.getDateShort(startTime);
-        }
-        catch(Exception exc) {
-            
-        
-        // ignore the exception
+        } catch (Exception exc) {
+
+            // ignore the exception
         }
         xmlTemplateDocument.setData("taskid", task.getId() + "");
         boolean isOwner = context.currentUser().equals(owner);
@@ -340,17 +324,15 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         boolean isInRole = false;
         try {
             isInRole = cms.userInGroup(context.currentUser().getName(), roleName);
+        } catch (Exception exc) {
+
+            // ignore the exception
         }
-        catch(Exception exc) {
-            
-        
-        // ignore the exception
-        }
-        
+
         // choose the right style and buttons
-        if(task.getState() == CmsTaskService.TASK_STATE_ENDED) {
-            if(isOwner) {
-                
+        if (task.getState() == CmsTaskService.TASK_STATE_ENDED) {
+            if (isOwner) {
+
                 // this is the owner of the task
                 button1 = getButton(xmlTemplateDocument, "button_message", false);
                 button2 = getButton(xmlTemplateDocument, "button_accept", false);
@@ -358,10 +340,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                 button4 = getButton(xmlTemplateDocument, "button_priority", false);
                 button5 = getButton(xmlTemplateDocument, "button_comment", false);
                 button6 = getButton(xmlTemplateDocument, "button_reakt", true);
-            }
-            else {
-                if(isEditor) {
-                    
+            } else {
+                if (isEditor) {
+
                     // this user is the editor for this task
                     button1 = getButton(xmlTemplateDocument, "button_query", false);
                     button2 = getButton(xmlTemplateDocument, "button_forward", false);
@@ -369,10 +350,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                     button4 = getButton(xmlTemplateDocument, "button_priority", false);
                     button5 = getButton(xmlTemplateDocument, "button_comment", false);
                     button6 = getButton(xmlTemplateDocument, "button_reakt", false);
-                }
-                else {
-                    if(isInRole) {
-                        
+                } else {
+                    if (isInRole) {
+
                         // this user is in the role for this task
                         button1 = getButton(xmlTemplateDocument, "button_query", false);
                         button2 = getButton(xmlTemplateDocument, "button_take", false);
@@ -380,9 +360,8 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                         button4 = getButton(xmlTemplateDocument, "button_priority", false);
                         button5 = getButton(xmlTemplateDocument, "button_comment", false);
                         button6 = getButton(xmlTemplateDocument, "button_reakt", false);
-                    }
-                    else {
-                        
+                    } else {
+
                         // all other users
                         button1 = getButton(xmlTemplateDocument, "button_query", false);
                         button2 = getButton(xmlTemplateDocument, "button_take", false);
@@ -393,17 +372,15 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                     }
                 }
             }
-            if(timeout < now) {
+            if (timeout < now) {
+                style = xmlTemplateDocument.getProcessedDataValue("style_ok", this);
+            } else {
                 style = xmlTemplateDocument.getProcessedDataValue("style_ok", this);
             }
-            else {
-                style = xmlTemplateDocument.getProcessedDataValue("style_ok", this);
-            }
-        }
-        else {
-            if(task.getPercentage() == 0) {
-                if(isOwner && isEditor) {
-                    
+        } else {
+            if (task.getPercentage() == 0) {
+                if (isOwner && isEditor) {
+
                     // this is a task from me and for me
                     button1 = getButton(xmlTemplateDocument, "button_query", true);
                     button2 = getButton(xmlTemplateDocument, "button_accept", true);
@@ -411,10 +388,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                     button4 = getButton(xmlTemplateDocument, "button_priority", true);
                     button5 = getButton(xmlTemplateDocument, "button_comment", true);
                     button6 = getButton(xmlTemplateDocument, "button_ok", false);
-                }
-                else {
-                    if(isOwner) {
-                        
+                } else {
+                    if (isOwner) {
+
                         // this is the owner of the task
                         button1 = getButton(xmlTemplateDocument, "button_message", true);
                         button2 = getButton(xmlTemplateDocument, "button_forward", true);
@@ -422,10 +398,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                         button4 = getButton(xmlTemplateDocument, "button_priority", true);
                         button5 = getButton(xmlTemplateDocument, "button_comment", true);
                         button6 = getButton(xmlTemplateDocument, "button_ok", false);
-                    }
-                    else {
-                        if(isEditor) {
-                            
+                    } else {
+                        if (isEditor) {
+
                             // this user is the editor for this task
                             button1 = getButton(xmlTemplateDocument, "button_query", true);
                             button2 = getButton(xmlTemplateDocument, "button_accept", true);
@@ -433,10 +408,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                             button4 = getButton(xmlTemplateDocument, "button_priority", false);
                             button5 = getButton(xmlTemplateDocument, "button_comment", true);
                             button6 = getButton(xmlTemplateDocument, "button_ok", false);
-                        }
-                        else {
-                            if(isInRole) {
-                                
+                        } else {
+                            if (isInRole) {
+
                                 // this user is in the role for this task
                                 button1 = getButton(xmlTemplateDocument, "button_query", false);
                                 button2 = getButton(xmlTemplateDocument, "button_take", true);
@@ -444,9 +418,8 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                                 button4 = getButton(xmlTemplateDocument, "button_priority", false);
                                 button5 = getButton(xmlTemplateDocument, "button_comment", false);
                                 button6 = getButton(xmlTemplateDocument, "button_ok", false);
-                            }
-                            else {
-                                
+                            } else {
+
                                 // all other users
                                 button1 = getButton(xmlTemplateDocument, "button_query", false);
                                 button2 = getButton(xmlTemplateDocument, "button_take", false);
@@ -458,16 +431,14 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                         }
                     }
                 }
-                if(timeout < now) {
+                if (timeout < now) {
                     style = xmlTemplateDocument.getProcessedDataValue("style_alert", this);
-                }
-                else {
+                } else {
                     style = xmlTemplateDocument.getProcessedDataValue("style_new", this);
                 }
-            }
-            else {
-                if(isOwner && isEditor) {
-                    
+            } else {
+                if (isOwner && isEditor) {
+
                     // this is a task from me and for me
                     button1 = getButton(xmlTemplateDocument, "button_query", true);
                     button2 = getButton(xmlTemplateDocument, "button_forward", true);
@@ -475,10 +446,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                     button4 = getButton(xmlTemplateDocument, "button_priority", true);
                     button5 = getButton(xmlTemplateDocument, "button_comment", true);
                     button6 = getButton(xmlTemplateDocument, "button_ok", true);
-                }
-                else {
-                    if(isOwner) {
-                        
+                } else {
+                    if (isOwner) {
+
                         // this is the owner of the task
                         button1 = getButton(xmlTemplateDocument, "button_message", true);
                         button2 = getButton(xmlTemplateDocument, "button_forward", true);
@@ -486,10 +456,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                         button4 = getButton(xmlTemplateDocument, "button_priority", true);
                         button5 = getButton(xmlTemplateDocument, "button_comment", true);
                         button6 = getButton(xmlTemplateDocument, "button_ok", false);
-                    }
-                    else {
-                        if(isEditor) {
-                            
+                    } else {
+                        if (isEditor) {
+
                             // this user is the editor for this task
                             button1 = getButton(xmlTemplateDocument, "button_query", true);
                             button2 = getButton(xmlTemplateDocument, "button_forward", true);
@@ -497,10 +466,9 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                             button4 = getButton(xmlTemplateDocument, "button_priority", false);
                             button5 = getButton(xmlTemplateDocument, "button_comment", true);
                             button6 = getButton(xmlTemplateDocument, "button_ok", true);
-                        }
-                        else {
-                            if(isInRole) {
-                                
+                        } else {
+                            if (isInRole) {
+
                                 // this user is in the role for this task
                                 button1 = getButton(xmlTemplateDocument, "button_query", false);
                                 button2 = getButton(xmlTemplateDocument, "button_take", true);
@@ -508,9 +476,8 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                                 button4 = getButton(xmlTemplateDocument, "button_priority", false);
                                 button5 = getButton(xmlTemplateDocument, "button_comment", false);
                                 button6 = getButton(xmlTemplateDocument, "button_ok", false);
-                            }
-                            else {
-                                
+                            } else {
+
                                 // all other users
                                 button1 = getButton(xmlTemplateDocument, "button_query", false);
                                 button2 = getButton(xmlTemplateDocument, "button_take", false);
@@ -522,15 +489,14 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
                         }
                     }
                 }
-                if(timeout < now) {
+                if (timeout < now) {
                     style = xmlTemplateDocument.getProcessedDataValue("style_alert", this);
-                }
-                else {
+                } else {
                     style = xmlTemplateDocument.getProcessedDataValue("style_activ", this);
                 }
             }
         }
-        
+
         // get the processed list.
         xmlTemplateDocument.setData("style", style);
         xmlTemplateDocument.setData("priority", priority);
@@ -541,7 +507,7 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData("due", due);
         xmlTemplateDocument.setData("from", from);
         xmlTemplateDocument.setData("project", projectname);
-        
+
         // now setting the buttons
         xmlTemplateDocument.setData("button1", button1);
         xmlTemplateDocument.setData("button2", button2);
@@ -549,34 +515,32 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
         xmlTemplateDocument.setData("button4", button4);
         xmlTemplateDocument.setData("button5", button5);
         xmlTemplateDocument.setData("button6", button6);
-        
+
         // now check where to go back
-        if((templateSelector == null || templateSelector == "") && lastUrl != null) {
-            
+        if ((templateSelector == null || templateSelector == "") && lastUrl != null) {
+
             // tasks either completed or aborted, go back
             try {
-                if(lastUrl.startsWith("http:")) {
-                    
+                if (lastUrl.startsWith("http:")) {
+
                     // complete path 
                     CmsXmlTemplateLoader.getResponse(context).sendRedirect(lastUrl);
-                }
-                else {
-                    
+                } else {
+
                     // relative to the opencms path
                     CmsXmlTemplateLoader.getResponse(context).sendCmsRedirect(lastUrl);
                 }
                 session.removeValue("lasturl");
-            }
-            catch(IOException exc) {
+            } catch (IOException exc) {
                 throw new CmsLegacyException("Could not redirect to " + lastUrl, exc);
             }
             return null;
         }
-        
+
         // Now load the template file and start the processing
         return startProcessing(cms, xmlTemplateDocument, elementName, parameters, templateSelector);
     }
-    
+
     /**
      * Indicates if the results of this class are cacheable.
      * 
@@ -587,9 +551,40 @@ public class CmsTaskContentDetail extends CmsWorkplaceDefault {
      * @param templateSelector template section that should be processed.
      * @return <EM>true</EM> if cacheable, <EM>false</EM> otherwise.
      */
-    
-    public boolean isCacheable(CmsObject cms, String templateFile, String elementName, 
-            Hashtable parameters, String templateSelector) {
+
+    public boolean isCacheable(
+        CmsObject cms,
+        String templateFile,
+        String elementName,
+        Hashtable parameters,
+        String templateSelector) {
+
         return false;
+    }
+
+    /**
+     * This private helper method generates a string-representation of a button.
+     * @param xmlTemplateDocument The xml-document in which the buttons are defined.
+     * @param name The name of the button to generate.
+     * @param enabled True, if the button is enabled, else false.
+     * @return the string-representation of the button.
+     * @throws Throws CmsException, if something goes wrong.
+     */
+
+    private String getButton(CmsXmlWpTemplateFile xmlTemplateDocument, String name, boolean enabled)
+    throws CmsException {
+
+        if (enabled) {
+
+            // the button is enabled
+            xmlTemplateDocument.setData("disabled", "");
+        } else {
+
+            // the button is disabled
+            xmlTemplateDocument.setData("disabled", "disabled");
+        }
+
+        // return the generated button
+        return xmlTemplateDocument.getProcessedDataValue(name, this);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.71 $
+ * Date   : $Date: 2005/08/31 07:29:39 $
+ * Version: $Revision: 1.72 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.71 $ 
+ * @version $Revision: 1.72 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,11 +101,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The default encoding for the workplace (UTF-8). */
     public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
 
-    /** Key name for the session workplace settings. */
-    public static final String SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
-
     /** The id of the "requestedResource" parameter for the OpenCms login form. */
     public static final String PARAM_LOGIN_REQUESTED_RESOURCE = "requestedResource";
+
+    /** Key name for the session workplace settings. */
+    public static final String SESSION_WORKPLACE_SETTINGS = "__CmsWorkplace.WORKPLACE_SETTINGS";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceManager.class);
@@ -194,6 +194,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The configured workplace views. */
     private List m_views;
 
+    /** The workflow settings. */
+    private boolean m_workflowMessage;
+
     /**
      * Creates a new instance for the workplace manager, will be called by the workplace configuration manager.<p>
      */
@@ -221,6 +224,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_defaultAccess = new CmsExplorerTypeAccess();
         m_galleries = new HashMap();
         m_messages = new HashMap();
+        m_workflowMessage = false;
 
         // important to set this to null to avoid unneccessary overhead during configuration phase
         m_explorerTypeSettings = null;
@@ -813,6 +817,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         return m_enableAdvancedPropertyTabs;
     }
 
+    /**
+     * Returns if messages should be includes in workflow mails.<p>
+     *
+     * @return true if messages should be includes, otherwise false
+     */
+    public boolean isEnableWorkflowMessages() {
+
+        return m_workflowMessage;
+    }
+
     /** 
      * Removes the list of explorer type settings from the given module.<p>
      * 
@@ -1035,6 +1049,21 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Sets if workflow message emails contain the message text.<p>
+     *
+     * @param workflowMessage true if messages should be includes, otherwise false
+     */
+    public void setWorkflowMessage(String workflowMessage) {
+
+        m_workflowMessage = Boolean.valueOf(workflowMessage).booleanValue();
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(
+                m_workflowMessage ? Messages.INIT_WORKFLOW_MESSAGES_SHOW_MESSAGE_0
+                : Messages.INIT_WORKFLOW_MESSAGES_HIDE_MESSAGE_0));
+        }
+    }
+
+    /**
      * Returns if the user/group icon in the administration view should be shown.<p>
      * 
      * @return true if the user/group icon in the administration view should be shown, otherwise false
@@ -1133,9 +1162,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             viewFolders = cms.getSubFolders(CmsWorkplace.VFS_PATH_VIEWS);
         } catch (CmsException e) {
             if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING && LOG.isErrorEnabled()) {
-                LOG.error(
-                    Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS),
-                    e);
+                LOG.error(Messages.get().key(Messages.LOG_WORKPLACE_INIT_NO_VIEWS_1, CmsWorkplace.VFS_PATH_VIEWS), e);
             }
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             viewFolders = new ArrayList();

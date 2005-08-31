@@ -1,31 +1,30 @@
 /*
-* File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
-* Date   : $Date: 2005/07/18 10:10:35 $
-* Version: $Revision: 1.6 $
-*
-* This library is part of OpenCms -
-* the Open Source Content Mananagement System
-*
-* Copyright (C) 2001  The OpenCms Group
-*
-* This library is free software; you can redistribute it and/or
-* modify it under the terms of the GNU Lesser General Public
-* License as published by the Free Software Foundation; either
-* version 2.1 of the License, or (at your option) any later version.
-*
-* This library is distributed in the hope that it will be useful,
-* but WITHOUT ANY WARRANTY; without even the implied warranty of
-* MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-* Lesser General Public License for more details.
-*
-* For further information about OpenCms, please see the
-* OpenCms Website: http://www.opencms.org
-*
-* You should have received a copy of the GNU Lesser General Public
-* License along with this library; if not, write to the Free Software
-* Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
-*/
-
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsTaskAction.java,v $
+ * Date   : $Date: 2005/08/31 07:29:39 $
+ * Version: $Revision: 1.7 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (C) 2001  The OpenCms Group
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about OpenCms, please see the
+ * OpenCms Website: http://www.opencms.org
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package com.opencms.workplace;
 
@@ -62,14 +61,13 @@ import javax.mail.internet.InternetAddress;
  * <P>
  *
  * @author Andreas Schouten
- * @version $Revision: 1.6 $ $Date: 2005/07/18 10:10:35 $
+ * @version $Revision: 1.7 $ $Date: 2005/08/31 07:29:39 $
  * @see com.opencms.workplace.CmsXmlWpTemplateFile
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 
 public class CmsTaskAction {
-
 
     /**
      * Constant for generating user javascriptlist
@@ -85,6 +83,7 @@ public class CmsTaskAction {
      */
 
     public static void accept(CmsObject cms, int taskid) throws CmsException {
+
         CmsTaskService taskService = cms.getTaskService();
         taskService.acceptTask(taskid);
         String comment = "";
@@ -93,7 +92,7 @@ public class CmsTaskAction {
         // send an email if "Benachrichtigung bei Annahme" was selected.
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = taskService.readTask(taskid);
-        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION) != null) {
+        if (taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION) != null) {
             StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.accept.content"));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.project"));
@@ -101,11 +100,9 @@ public class CmsTaskAction {
             String projectname = "?";
             try {
                 projectname = taskService.readTask(task.getRoot()).getName();
-            }
-            catch(Exception exc) {
+            } catch (Exception exc) {
 
-
-            // no root?!
+                // no root?!
             }
             contentBuf.append(projectname);
             contentBuf.append("\n");
@@ -114,19 +111,77 @@ public class CmsTaskAction {
             contentBuf.append(task.getName());
             int projectid = taskService.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, taskid, projectid));
-            String subject = lang.getLanguageValue("task.email.accept.subject") + " " + CmsUser.getFullName(taskService.readAgent(task));
-            CmsUser[] users =  {
-                taskService.readOwner(task)
-            };
+            String subject = lang.getLanguageValue("task.email.accept.subject")
+                + " "
+                + CmsUser.getFullName(taskService.readAgent(task));
+            CmsUser[] users = {taskService.readOwner(task)};
             try {
-                CmsSimpleMail mail = createMail(taskService.readAgent(task),
-                        users, subject, contentBuf.toString());
+                CmsSimpleMail mail = createMail(taskService.readAgent(task), users, subject, contentBuf.toString());
                 new CmsMailTransport(mail).send();
-            }
-            catch(Exception exc) {
-                if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+            } catch (Exception exc) {
+                if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                     CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                 }
+            }
+        }
+    }
+
+    /**
+     * Sends a comment to the editor of the task.
+     * @param cms The cms-object.
+     * @param int taskid The id of the task.
+     * @param message The text of the message.
+     * @throws CmsException Throws CmsExceptions, that are be
+     * thrown in calling methods.
+     */
+
+    public static void comment(CmsObject cms, int taskid, String message) throws CmsException {
+
+        CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
+        CmsTaskService taskService = cms.getTaskService();
+        CmsTask task = taskService.readTask(taskid);
+        String comment = "";
+        if ((message != null) && (message.length() != 0)) {
+            comment += message;
+            taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_COMMENT);
+        }
+
+        // send an email
+        StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.message.content"));
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.project"));
+        contentBuf.append(": ");
+        String projectname = "?";
+        try {
+            projectname = taskService.readTask(task.getRoot()).getName();
+        } catch (Exception exc) {
+
+            // no root?!
+        }
+        contentBuf.append(projectname);
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.task"));
+        contentBuf.append(": ");
+        contentBuf.append(task.getName());
+        contentBuf.append("\n");
+        contentBuf.append(lang.getLanguageValue("task.label.actuator"));
+        contentBuf.append(": ");
+        contentBuf.append(CmsUser.getFullName(taskService.readOwner(task)));
+        int projectid = taskService.readProject(task).getId();
+        contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
+
+        contentBuf.append(addTaskText(task, taskService));
+
+        String subject = lang.getLanguageValue("task.email.message.subject")
+            + " "
+            + CmsUser.getFullName(taskService.readOwner(task));
+        CmsUser[] users = {taskService.readAgent(task)};
+        try {
+            CmsSimpleMail mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
+            new CmsMailTransport(mail).send();
+        } catch (Exception exc) {
+            if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
     }
@@ -150,9 +205,19 @@ public class CmsTaskAction {
      * thrown in calling methods.
      */
 
-    public static void create(CmsObject cms, String agentName, String roleName, String taskName,
-            String taskcomment, String timeoutString, String priorityString, String paraAcceptation,
-            String paraAll, String paraCompletion, String paraDelivery) throws CmsException {
+    public static void create(
+        CmsObject cms,
+        String agentName,
+        String roleName,
+        String taskName,
+        String taskcomment,
+        String timeoutString,
+        String priorityString,
+        String paraAcceptation,
+        String paraAll,
+        String paraCompletion,
+        String paraDelivery) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         // TODO: CW: check effects of this
         // if(roleName.equals(C_ALL_ROLES)) {
@@ -164,8 +229,13 @@ public class CmsTaskAction {
 
         // create a long from the overgiven date.
         String splittetDate[] = CmsStringUtil.splitAsArray(timeoutString, '.');
-        GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-                Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
+        GregorianCalendar cal = new GregorianCalendar(
+            Integer.parseInt(splittetDate[2]),
+            Integer.parseInt(splittetDate[1]) - 1,
+            Integer.parseInt(splittetDate[0]),
+            0,
+            0,
+            0);
         long timeout = cal.getTime().getTime();
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.createTask(agentName, roleName, taskName, timeout, priority);
@@ -174,7 +244,10 @@ public class CmsTaskAction {
         taskService.setTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION, paraCompletion);
         taskService.setTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY, paraDelivery);
         String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
-        comment += lang.getLanguageValue("task.label.editor") + ": " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + "\n";
+        comment += lang.getLanguageValue("task.label.editor")
+            + ": "
+            + CmsUser.getFullName(cms.readUser(task.getAgentUser()))
+            + "\n";
         comment += taskcomment;
         taskService.writeTaskLog(task.getId(), comment, CmsWorkplaceDefault.C_TASKLOGTYPE_CREATED);
 
@@ -187,11 +260,9 @@ public class CmsTaskAction {
         String projectname = "?";
         try {
             projectname = taskService.readTask(task.getRoot()).getName();
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
 
-
-        // no root?!
+            // no root?!
         }
         contentBuf.append(projectname);
         contentBuf.append("\n");
@@ -204,36 +275,40 @@ public class CmsTaskAction {
         contentBuf.append(CmsUser.getFullName(taskService.readOwner(task)));
         int projectid = taskService.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.create.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
-        CmsUser[] users =  {
-            taskService.readAgent(task)
-        };
+
+        contentBuf.append(addTaskText(task, taskService));
+
+        String subject = lang.getLanguageValue("task.email.create.subject")
+            + " "
+            + CmsUser.getFullName(cms.readUser(task.getAgentUser()))
+            + " / "
+            + roleName;
+        CmsUser[] users = {taskService.readAgent(task)};
         CmsSimpleMail mail = null;
         try {
             mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
-        }
-        catch(CmsException e) {
-            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                CmsLog.getLog(CmsTaskAction.class).warn("Could not generate mail while creating task for "
-                        + taskService.readOwner(task).getName(), e);
+        } catch (CmsException e) {
+            if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                CmsLog.getLog(CmsTaskAction.class).warn(
+                    "Could not generate mail while creating task for " + taskService.readOwner(task).getName(),
+                    e);
             }
         }
 
         // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
-        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL) != null) {
+        if (taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL) != null) {
 
             // the news deliver always "checked" or ""
-            if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL).equals("checked")) {
+            if (taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL).equals("checked")) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
                     List groupUser = cms.getUsersOfGroup(group.getName());
-                    mail = createMail(taskService.readOwner(task), groupUser,
-                            subject, contentBuf.toString(), true);
-                }
-                catch(CmsException e) {
-                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
-                        CmsLog.getLog(CmsTaskAction.class).warn("Could not generate mail while creating task for "
-                                + taskService.readOwner(task).getName(), e);
+                    mail = createMail(taskService.readOwner(task), groupUser, subject, contentBuf.toString(), true);
+                } catch (CmsException e) {
+                    if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                        CmsLog.getLog(CmsTaskAction.class).warn(
+                            "Could not generate mail while creating task for " + taskService.readOwner(task).getName(),
+                            e);
                     }
                 }
             }
@@ -242,7 +317,7 @@ public class CmsTaskAction {
             new CmsMailTransport(mail).send();
         }
     }
-    
+
     /**
      * Helper method to create an email object.<p>
      * 
@@ -253,7 +328,9 @@ public class CmsTaskAction {
      * @return the mail object to send
      * @throws CmsException if creating the mail object fails
      */
-    public static CmsSimpleMail createMail(CmsUser from, CmsUser[] to, String subject, String content) throws CmsException {
+    public static CmsSimpleMail createMail(CmsUser from, CmsUser[] to, String subject, String content)
+    throws CmsException {
+
         Vector v = new Vector(to.length);
         for (int i = 0; i < to.length; i++) {
             if (to[i].getEmail() == null) {
@@ -263,21 +340,32 @@ public class CmsTaskAction {
                 continue;
             }
             if (to[i].getEmail().indexOf("@") == -1 || to[i].getEmail().indexOf(".") == -1) {
-                throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsLegacyException.C_BAD_NAME);
+                throw new CmsLegacyException("["
+                    + CmsTaskAction.class.getName()
+                    + "] "
+                    + "Error in sending email, Invalid recipient email address: "
+                    + to[i].getEmail(), CmsLegacyException.C_BAD_NAME);
             }
             try {
                 v.addElement(new InternetAddress(to[i].getEmail()));
             } catch (AddressException e) {
-                throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, Invalid recipient email address: " + to[i].getEmail(), CmsLegacyException.C_BAD_NAME);
+                throw new CmsLegacyException("["
+                    + CmsTaskAction.class.getName()
+                    + "] "
+                    + "Error in sending email, Invalid recipient email address: "
+                    + to[i].getEmail(), CmsLegacyException.C_BAD_NAME);
             }
         }
-        
+
         if (v.size() == 0) {
-            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsLegacyException.C_BAD_NAME);
+            throw new CmsLegacyException("["
+                + CmsTaskAction.class.getName()
+                + "] "
+                + "Error in sending email,Unknown recipient email address.", CmsLegacyException.C_BAD_NAME);
         }
         return createMail(from, v, subject, content, false);
     }
-    
+
     /**
      * Helper method to create an email object.<p>
      * @param from the mail sender
@@ -289,40 +377,62 @@ public class CmsTaskAction {
      * @return the mail object to send
      * @throws CmsException if creating the mail object fails
      */
-    public static CmsSimpleMail createMail(CmsUser from, List to, String subject, String content, boolean createAddresses) throws CmsException {
+    public static CmsSimpleMail createMail(
+        CmsUser from,
+        List to,
+        String subject,
+        String content,
+        boolean createAddresses) throws CmsException {
+
         CmsSimpleMail mail = new CmsSimpleMail();
         //      check sender email address
         String fromAddress = from.getEmail();
         if (fromAddress == null || fromAddress.equals("")) {
             fromAddress = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
         }
-        if (fromAddress == null || fromAddress.equals("")) {            
-            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address.", CmsLegacyException.C_BAD_NAME);
+        if (fromAddress == null || fromAddress.equals("")) {
+            throw new CmsLegacyException("["
+                + CmsTaskAction.class.getName()
+                + "] "
+                + "Error in sending email,Unknown sender email address.", CmsLegacyException.C_BAD_NAME);
         }
         if (fromAddress.indexOf("@") == -1 || fromAddress.indexOf(".") == -1) {
-            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown sender email address: " + fromAddress, CmsLegacyException.C_BAD_NAME);
+            throw new CmsLegacyException("["
+                + CmsTaskAction.class.getName()
+                + "] "
+                + "Error in sending email,Unknown sender email address: "
+                + fromAddress, CmsLegacyException.C_BAD_NAME);
         }
-        
+
         if (to.size() == 0) {
-            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email,Unknown recipient email address.", CmsLegacyException.C_BAD_NAME);
+            throw new CmsLegacyException("["
+                + CmsTaskAction.class.getName()
+                + "] "
+                + "Error in sending email,Unknown recipient email address.", CmsLegacyException.C_BAD_NAME);
         } else if (createAddresses) {
             List receivers = new ArrayList(to.size());
-            for (int i=0; i<to.size(); i++) {
+            for (int i = 0; i < to.size(); i++) {
                 CmsUser rec = (CmsUser)to.get(i);
                 try {
                     receivers.add(new InternetAddress(rec.getEmail()));
                 } catch (AddressException e) {
-                    throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid recipient email address.", CmsLegacyException.C_BAD_NAME);
+                    throw new CmsLegacyException("["
+                        + CmsTaskAction.class.getName()
+                        + "] "
+                        + "Error in sending email, invalid recipient email address.", CmsLegacyException.C_BAD_NAME);
                 }
             }
             mail.setTo(receivers);
         } else {
-            mail.setTo(to);    
+            mail.setTo(to);
         }
         try {
             mail.setFrom(fromAddress);
         } catch (MessagingException e) {
-            throw new CmsLegacyException("[" + CmsTaskAction.class.getName() + "] " + "Error in sending email, invalid sender email address.", CmsLegacyException.C_BAD_NAME);
+            throw new CmsLegacyException("["
+                + CmsTaskAction.class.getName()
+                + "] "
+                + "Error in sending email, invalid sender email address.", CmsLegacyException.C_BAD_NAME);
         }
         mail.setSubject(subject == null ? "" : subject);
         mail.setMsg(content == null ? "" : content);
@@ -340,12 +450,18 @@ public class CmsTaskAction {
      */
 
     public static void due(CmsObject cms, int taskid, String timeoutString) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.readTask(taskid);
         String splittetDate[] = CmsStringUtil.splitAsArray(timeoutString, '.');
-        GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]),
-                Integer.parseInt(splittetDate[1]) - 1, Integer.parseInt(splittetDate[0]), 0, 0, 0);
+        GregorianCalendar cal = new GregorianCalendar(
+            Integer.parseInt(splittetDate[2]),
+            Integer.parseInt(splittetDate[1]) - 1,
+            Integer.parseInt(splittetDate[0]),
+            0,
+            0,
+            0);
         long timeout = cal.getTime().getTime();
         taskService.setTimeout(taskid, timeout);
 
@@ -367,6 +483,7 @@ public class CmsTaskAction {
      */
 
     public static void end(CmsObject cms, int taskid) throws CmsException {
+
         CmsTaskService taskService = cms.getTaskService();
         taskService.endTask(taskid);
         String comment = "";
@@ -375,7 +492,7 @@ public class CmsTaskAction {
         // send an email if "Benachrichtigung bei Abhacken" was selected.
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTask task = taskService.readTask(taskid);
-        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION) != null) {
+        if (taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_COMPLETION) != null) {
             StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.end.content"));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.project"));
@@ -383,11 +500,9 @@ public class CmsTaskAction {
             String projectname = "?";
             try {
                 projectname = taskService.readTask(task.getRoot()).getName();
-            }
-            catch(Exception exc) {
+            } catch (Exception exc) {
 
-
-            // no root?!
+                // no root?!
             }
             contentBuf.append(projectname);
             contentBuf.append("\n");
@@ -404,17 +519,15 @@ public class CmsTaskAction {
             contentBuf.append(CmsUser.getFullName(taskService.readAgent(task)));
             int projectid = taskService.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-            String subject = lang.getLanguageValue("task.email.end.subject") + " " + CmsUser.getFullName(taskService.readAgent(task));
-            CmsUser[] users =  {
-                taskService.readOwner(task)
-            };
+            String subject = lang.getLanguageValue("task.email.end.subject")
+                + " "
+                + CmsUser.getFullName(taskService.readAgent(task));
+            CmsUser[] users = {taskService.readOwner(task)};
             try {
-                CmsSimpleMail mail = createMail(taskService.readAgent(task),
-                        users, subject, contentBuf.toString());
+                CmsSimpleMail mail = createMail(taskService.readAgent(task), users, subject, contentBuf.toString());
                 new CmsMailTransport(mail).send();
-            }
-            catch(Exception exc) {
-                if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+            } catch (Exception exc) {
+                if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                     CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                 }
             }
@@ -432,6 +545,7 @@ public class CmsTaskAction {
      */
 
     public static void forward(CmsObject cms, int taskid, String newEditorName, String newRoleName) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsUser newEditor = cms.readUser(newEditorName);
         // TODO: CW: check effects of this
@@ -447,7 +561,7 @@ public class CmsTaskAction {
 
         // send an email if "Benachrichtigung bei Weiterleitung" was selected.
         CmsTask task = taskService.readTask(taskid);
-        if(taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY) != null) {
+        if (taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_DELIVERY) != null) {
             StringBuffer contentBuf = new StringBuffer(lang.getLanguageValue("task.email.forward.content"));
             contentBuf.append("\n");
             contentBuf.append(lang.getLanguageValue("task.label.project"));
@@ -455,11 +569,9 @@ public class CmsTaskAction {
             String projectname = "?";
             try {
                 projectname = taskService.readTask(task.getRoot()).getName();
-            }
-            catch(Exception exc) {
+            } catch (Exception exc) {
 
-
-            // no root?!
+                // no root?!
             }
             contentBuf.append(projectname);
             contentBuf.append("\n");
@@ -480,52 +592,58 @@ public class CmsTaskAction {
             contentBuf.append(CmsUser.getFullName(taskService.readAgent(task)));
             int projectid = taskService.readProject(task).getId();
             contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-            String subject = lang.getLanguageValue("task.email.forward.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + newRoleName;
+            String subject = lang.getLanguageValue("task.email.forward.subject")
+                + " "
+                + CmsUser.getFullName(cms.readUser(task.getAgentUser()))
+                + " / "
+                + newRoleName;
 
             // if "Alle Rollenmitglieder von Aufgabe Benachrichtigen" checkbox is selected.
             String sendToAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
-            if(!CmsStringUtil.isEmpty(sendToAll)) {
+            if (!CmsStringUtil.isEmpty(sendToAll)) {
                 try {
                     CmsGroup group = taskService.readGroup(task);
                     List users = cms.getUsersOfGroup(group.getName());
-                    CmsSimpleMail mail = createMail(cms.getRequestContext().currentUser(),
-                        users, subject, contentBuf.toString(), true);
+                    CmsSimpleMail mail = createMail(
+                        cms.getRequestContext().currentUser(),
+                        users,
+                        subject,
+                        contentBuf.toString(),
+                        true);
                     new CmsMailTransport(mail).send();
-                }
-                catch(Exception exc) {
-                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                } catch (Exception exc) {
+                    if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                         CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                     }
                 }
-            }
-            else {
+            } else {
 
                 // send a mail to user
-                CmsUser[] user =  {
-                    taskService.readAgent(task)
-                };
+                CmsUser[] user = {taskService.readAgent(task)};
                 try {
-                    CmsSimpleMail mail1 = createMail(cms.getRequestContext().currentUser(), 
-                            user, subject, contentBuf.toString());
+                    CmsSimpleMail mail1 = createMail(
+                        cms.getRequestContext().currentUser(),
+                        user,
+                        subject,
+                        contentBuf.toString());
                     new CmsMailTransport(mail1).send();
-                }
-                catch(Exception exc) {
-                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                } catch (Exception exc) {
+                    if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                         CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                     }
                 }
 
                 // send a mail to owner
-                CmsUser[] owner =  {
-                    taskService.readOwner(task)
-                };
+                CmsUser[] owner = {taskService.readOwner(task)};
                 try {
-                    CmsSimpleMail mail2 = createMail(cms.getRequestContext().currentUser(),
-                            owner, subject, contentBuf.toString());
+                    CmsSimpleMail mail2 = createMail(
+                        cms.getRequestContext().currentUser(),
+                        owner,
+                        subject,
+                        contentBuf.toString());
                     new CmsMailTransport(mail2).send();
-                }
-                catch(Exception exc) {
-                    if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+                } catch (Exception exc) {
+                    if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                         CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
                     }
                 }
@@ -544,25 +662,44 @@ public class CmsTaskAction {
      */
 
     public static String getDescription(CmsObject cms, int taskid) throws CmsException {
+
         StringBuffer retValue = new StringBuffer("");
         CmsTaskLog tasklog;
         List taskdocs = cms.getTaskService().readTaskLogs(taskid);
 
         // go through all tasklogs to find the comment
-        for(int i = 1;i <= taskdocs.size();i++) {
+        for (int i = 1; i <= taskdocs.size(); i++) {
             tasklog = (CmsTaskLog)taskdocs.get(taskdocs.size() - i);
             int type = tasklog.getType();
 
             // check if this is a type "created" or "new"
-            if((type == CmsWorkplaceDefault.C_TASKLOGTYPE_CREATED) || (type == CmsWorkplaceDefault.C_TASKLOGTYPE_REACTIVATED)) {
+            if ((type == CmsWorkplaceDefault.C_TASKLOGTYPE_CREATED)
+                || (type == CmsWorkplaceDefault.C_TASKLOGTYPE_REACTIVATED)) {
                 String comment[] = CmsStringUtil.splitAsArray(tasklog.getComment(), '\n');
-                for(int j = 2;j < comment.length;j++) {
+                for (int j = 2; j < comment.length; j++) {
                     retValue.append(comment[j] + "\n");
                 }
                 break;
             }
         }
         return retValue.toString();
+    }
+
+    public static String getTaskUrl(CmsObject cms, int taskid, int projectid) {
+
+        String frameLink = OpenCms.getLinkManager().substituteLink(cms, CmsFrameset.JSP_WORKPLACE_URI);
+        String taskViewLink = OpenCms.getLinkManager().substituteLink(
+            cms,
+            CmsWorkplaceAction.PATH_XML_WORKPLACE + "tasks.html")
+            + "%3Ftaskid%3D"
+            + taskid;
+
+        return OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString()
+            + frameLink
+            + "?"
+            + CmsFrameset.PARAM_WP_VIEW
+            + "="
+            + taskViewLink;
     }
 
     /**
@@ -575,11 +712,12 @@ public class CmsTaskAction {
      */
 
     public static void message(CmsObject cms, int taskid, String message) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.readTask(taskid);
         String comment = lang.getLanguageValue("task.dialog.message.head") + " ";
-        if((message != null) && (message.length() != 0)) {
+        if ((message != null) && (message.length() != 0)) {
             comment += CmsUser.getFullName(taskService.readAgent(task)) + "\n";
             comment += message;
             taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_CALL);
@@ -593,11 +731,9 @@ public class CmsTaskAction {
         String projectname = "?";
         try {
             projectname = taskService.readTask(task.getRoot()).getName();
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
 
-
-        // no root?!
+            // no root?!
         }
         contentBuf.append(projectname);
         contentBuf.append("\n");
@@ -610,16 +746,18 @@ public class CmsTaskAction {
         contentBuf.append(CmsUser.getFullName(taskService.readOwner(task)));
         int projectid = taskService.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.message.subject") + " " + CmsUser.getFullName(taskService.readOwner(task));
-        CmsUser[] users =  {
-            taskService.readAgent(task)
-        };
+
+        contentBuf.append(addTaskText(task, taskService));
+
+        String subject = lang.getLanguageValue("task.email.message.subject")
+            + " "
+            + CmsUser.getFullName(taskService.readOwner(task));
+        CmsUser[] users = {taskService.readAgent(task)};
         try {
             CmsSimpleMail mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
             new CmsMailTransport(mail).send();
-        }
-        catch(Exception exc) {
-            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+        } catch (Exception exc) {
+            if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                 CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
@@ -636,6 +774,7 @@ public class CmsTaskAction {
      */
 
     public static void priority(CmsObject cms, int taskid, String priorityString) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.readTask(taskid);
@@ -661,11 +800,12 @@ public class CmsTaskAction {
      */
 
     public static void query(CmsObject cms, int taskid, String message) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.readTask(taskid);
         String comment = lang.getLanguageValue("task.dialog.query.head") + " ";
-        if((message != null) && (message.length() != 0)) {
+        if ((message != null) && (message.length() != 0)) {
             comment += CmsUser.getFullName(taskService.readOwner(task)) + "\n";
             comment += message;
             taskService.writeTaskLog(taskid, comment, CmsWorkplaceDefault.C_TASKLOGTYPE_CALL);
@@ -679,11 +819,9 @@ public class CmsTaskAction {
         String projectname = "?";
         try {
             projectname = taskService.readTask(task.getRoot()).getName();
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
 
-
-        // no root?!
+            // no root?!
         }
         contentBuf.append(projectname);
         contentBuf.append("\n");
@@ -696,17 +834,18 @@ public class CmsTaskAction {
         contentBuf.append(CmsUser.getFullName(taskService.readAgent(task)));
         int projectid = taskService.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.query.subject") + " " + CmsUser.getFullName(taskService.readAgent(task));
-        CmsUser[] users =  {
-            taskService.readOwner(task)
-        };
+
+        contentBuf.append(addTaskText(task, taskService));
+
+        String subject = lang.getLanguageValue("task.email.query.subject")
+            + " "
+            + CmsUser.getFullName(taskService.readAgent(task));
+        CmsUser[] users = {taskService.readOwner(task)};
         try {
-            CmsSimpleMail mail = createMail(taskService.readAgent(task),
-                    users, subject, contentBuf.toString());
+            CmsSimpleMail mail = createMail(taskService.readAgent(task), users, subject, contentBuf.toString());
             new CmsMailTransport(mail).send();
-        }
-        catch(Exception exc) {
-            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+        } catch (Exception exc) {
+            if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                 CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
@@ -732,9 +871,20 @@ public class CmsTaskAction {
      * thrown in calling methods.
      */
 
-    public static void reakt(CmsObject cms, int taskid, String agentName, String roleName, String taskName,
-            String taskcomment, String timeoutString, String priorityString,
-            String paraAcceptation, String paraAll, String paraCompletion, String paraDelivery) throws CmsException {
+    public static void reakt(
+        CmsObject cms,
+        int taskid,
+        String agentName,
+        String roleName,
+        String taskName,
+        String taskcomment,
+        String timeoutString,
+        String priorityString,
+        String paraAcceptation,
+        String paraAll,
+        String paraCompletion,
+        String paraDelivery) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsTaskService taskService = cms.getTaskService();
         CmsTask task = taskService.readTask(taskid);
@@ -751,8 +901,13 @@ public class CmsTaskAction {
 
         // create a long from the overgiven date.
         String splittetDate[] = CmsStringUtil.splitAsArray(timeoutString, '.');
-        GregorianCalendar cal = new GregorianCalendar(Integer.parseInt(splittetDate[2]), Integer.parseInt(splittetDate[1]) - 1,
-                Integer.parseInt(splittetDate[0]), 0, 0, 0);
+        GregorianCalendar cal = new GregorianCalendar(
+            Integer.parseInt(splittetDate[2]),
+            Integer.parseInt(splittetDate[1]) - 1,
+            Integer.parseInt(splittetDate[0]),
+            0,
+            0,
+            0);
         long timeout = cal.getTime().getTime();
         taskService.setTimeout(taskid, timeout);
         taskService.setTaskPar(taskid, CmsWorkplaceDefault.C_TASKPARA_ACCEPTATION, paraAcceptation);
@@ -761,7 +916,10 @@ public class CmsTaskAction {
         taskService.setTaskPar(taskid, CmsWorkplaceDefault.C_TASKPARA_DELIVERY, paraDelivery);
         taskService.forwardTask(taskid, roleName, agentName);
         String comment = lang.getLanguageValue("task.label.forrole") + ": " + roleName + "\n";
-        comment += lang.getLanguageValue("task.label.editor") + ": " + CmsUser.getFullName(cms.readUser(agentName)) + "\n";
+        comment += lang.getLanguageValue("task.label.editor")
+            + ": "
+            + CmsUser.getFullName(cms.readUser(agentName))
+            + "\n";
         comment += taskcomment;
         taskService.writeTaskLog(task.getId(), comment, CmsWorkplaceDefault.C_TASKLOGTYPE_REACTIVATED);
 
@@ -773,11 +931,9 @@ public class CmsTaskAction {
         String projectname = "?";
         try {
             projectname = taskService.readTask(task.getRoot()).getName();
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
 
-
-        // no root?!
+            // no root?!
         }
         contentBuf.append(projectname);
         contentBuf.append("\n");
@@ -786,25 +942,25 @@ public class CmsTaskAction {
         contentBuf.append(task.getName());
         int projectid = taskService.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
-        String subject = lang.getLanguageValue("task.email.reakt.subject") + " " + CmsUser.getFullName(cms.readUser(task.getAgentUser())) + " / " + roleName;
-        CmsUser[] users =  {
-            taskService.readAgent(task)
-        };
+        String subject = lang.getLanguageValue("task.email.reakt.subject")
+            + " "
+            + CmsUser.getFullName(cms.readUser(task.getAgentUser()))
+            + " / "
+            + roleName;
+        CmsUser[] users = {taskService.readAgent(task)};
         CmsSimpleMail mail;
         mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
 
         String sendToAll = taskService.getTaskPar(task.getId(), CmsWorkplaceDefault.C_TASKPARA_ALL);
-        if(!CmsStringUtil.isEmpty(sendToAll)) {
+        if (!CmsStringUtil.isEmpty(sendToAll)) {
             CmsGroup group = taskService.readGroup(task);
             List groupUsers = cms.getUsersOfGroup(group.getName());
-            mail = createMail(taskService.readOwner(task), groupUsers,
-                    subject, contentBuf.toString(), true);
+            mail = createMail(taskService.readOwner(task), groupUsers, subject, contentBuf.toString(), true);
         }
         try {
             new CmsMailTransport(mail).send();
-        }
-        catch(Exception exc) {
-            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+        } catch (Exception exc) {
+            if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                 CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
@@ -819,6 +975,7 @@ public class CmsTaskAction {
      */
 
     public static void take(CmsObject cms, int taskid) throws CmsException {
+
         CmsXmlLanguageFile lang = new CmsXmlLanguageFile(cms);
         CmsRequestContext context = cms.getRequestContext();
         CmsTaskService taskService = cms.getTaskService();
@@ -827,7 +984,7 @@ public class CmsTaskAction {
         CmsGroup oldRole = taskService.readGroup(task);
 
         // has the user the correct role?
-        if(cms.userInGroup(newEditor.getName(), oldRole.getName())) {
+        if (cms.userInGroup(newEditor.getName(), oldRole.getName())) {
             taskService.forwardTask(taskid, oldRole.getName(), newEditor.getName());
             taskService.acceptTask(taskid);
             String comment = lang.getLanguageValue("task.dialog.take.logmessage");
@@ -843,11 +1000,9 @@ public class CmsTaskAction {
         String projectname = "?";
         try {
             projectname = taskService.readTask(task.getRoot()).getName();
-        }
-        catch(Exception exc) {
+        } catch (Exception exc) {
 
-
-        // no root?!
+            // no root?!
         }
         contentBuf.append(projectname);
         contentBuf.append("\n");
@@ -861,26 +1016,37 @@ public class CmsTaskAction {
         int projectid = taskService.readProject(task).getId();
         contentBuf.append("\n\n\n" + getTaskUrl(cms, task.getId(), projectid));
         String subject = lang.getLanguageValue("task.email.take.subject") + " " + CmsUser.getFullName(newEditor);
-        CmsUser[] users =  {
-            taskService.readAgent(task)
-        };
+        CmsUser[] users = {taskService.readAgent(task)};
         try {
-            CmsSimpleMail mail = createMail(taskService.readOwner(task),
-                    users, subject, contentBuf.toString());
+            CmsSimpleMail mail = createMail(taskService.readOwner(task), users, subject, contentBuf.toString());
             new CmsMailTransport(mail).send();
-        }
-        catch(Exception exc) {
-            if(CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
+        } catch (Exception exc) {
+            if (CmsLog.getLog(CmsTaskAction.class).isWarnEnabled()) {
                 CmsLog.getLog(CmsTaskAction.class).warn("Error while sending task mail", exc);
             }
         }
     }
 
-    public static String getTaskUrl(CmsObject cms, int taskid, int projectid) {
+    /**
+     * Adds the message text to the generated mail text.<p>
+     * @param task the current task
+     * @param taskService the task log containing the task message
+     * @return StringBuffer containing the message texgt
+     * @throws CmsException if something goes wrong
+     */
+    private static StringBuffer addTaskText(CmsTask task, CmsTaskService taskService) throws CmsException {
 
-       String frameLink = OpenCms.getLinkManager().substituteLink(cms, CmsFrameset.JSP_WORKPLACE_URI);
-       String taskViewLink = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplaceAction.PATH_XML_WORKPLACE + "tasks.html") + "%3Ftaskid%3D" + taskid;
-        
-       return OpenCms.getSiteManager().getWorkplaceSiteMatcher().toString() + frameLink + "?" + CmsFrameset.PARAM_WP_VIEW + "=" + taskViewLink; 
+        StringBuffer text = new StringBuffer();
+        if (OpenCms.getWorkplaceManager().isEnableWorkflowMessages()) {
+            text.append("\n\n\n");
+            List taskLog = taskService.readTaskLogs(task.getId());
+            if (taskLog != null && taskLog.size() > 0) {
+                CmsTaskLog log = (CmsTaskLog)taskLog.get(taskLog.size() - 1);
+                if (log != null) {
+                    text.append(log.getComment());
+                }
+            }
+        }
+        return text;
     }
 }

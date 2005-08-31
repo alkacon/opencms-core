@@ -16,12 +16,13 @@
 	editorhandler, 
 	editoraction, 
 	exportpoints, 
-	autolock?, 
-	enableusermanagement?, 
+	autolock?, 	
+	enableusermanagement?, 	
 	defaultpropertiesonstructure,
 	enableadvancedpropertytabs,
 	maxfileuploadsize?, 
 	labeledfolders?,
+	workflow?,
 	rfsfileviewsettings?,
 	explorertypes+,
 	default-preferences )>
@@ -71,6 +72,14 @@
 <!ELEMENT exportpoints (exportpoint+)>
 <!ELEMENT exportpoint EMPTY>
 <!ATTLIST exportpoint uri CDATA #REQUIRED destination CDATA #REQUIRED>
+
+<!--
+# Optional workflow settings. 
+# The showmessages tag either contains "true" or "false" to add the workflow messages in the 
+# workflow mails or not. Default is "false".
+-->
+<!ELEMENT workflow (showmessages)>
+<!ELEMENT showmessages (#PCDATA)>
 
 <!--
 # Enables or disables the automatic locking of resources in the explorer view.
