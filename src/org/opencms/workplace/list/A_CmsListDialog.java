@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/08/03 08:58:53 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/08/31 10:46:07 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -774,7 +774,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Lazzy initialization for detail data.<p>
+     * Lazy initialization for detail data.<p>
      * 
      * Should fill the given detail column for every list item in <code>{@link CmsHtmlList#getAllContent()}</code>
      * 

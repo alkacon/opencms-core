@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesListDeleteReport.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/08/31 10:46:57 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,7 +111,7 @@ public class CmsModulesListDeleteReport extends A_CmsListReport {
     }
 
     /**
-     * Extracts all modules to deelte form the module parameter.<p>
+     * Extracts all modules to delete form the module parameter.<p>
      * @return list of module names
      */
     private List extractModuleNames() {
