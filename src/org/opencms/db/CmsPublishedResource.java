@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/08/31 16:21:49 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.28 $
+ * @version $Revision: 1.29 $
  * 
  * @since 6.0.0
  * 
@@ -197,6 +197,9 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
 
     /**
      * Returns the count of siblings of the published resource.<p>
+     * 
+     * If a resource has no sibling, the total sibling count for this resource is <code>1</code>, 
+     * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p> 
      * 
      * @return the count of siblings of the published resource
      */

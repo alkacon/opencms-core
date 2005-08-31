@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/08/31 16:21:49 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.42 $
+ * @version $Revision: 1.43 $
  * 
  * @since 6.0.0 
  */
@@ -645,7 +645,10 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
     }
 
     /**
-     * Returns the number of siblings of the resource.<p>
+     * Returns the number of siblings of the resource, also counting this resource.<p>
+     * 
+     * If a resource has no sibling, the total sibling count for this resource is <code>1</code>, 
+     * if a resource has <code>n</code> siblings, the sibling count is <code>n + 1</code>.<p> 
      * 
      * @return the number of siblings
      */
