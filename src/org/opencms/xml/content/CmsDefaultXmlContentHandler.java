@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/08/10 14:43:44 $
- * Version: $Revision: 1.42 $
+ * Date   : $Date: 2005/09/02 08:27:47 $
+ * Version: $Revision: 1.43 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.42 $ 
+ * @version $Revision: 1.43 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +133,9 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
+    
+    /** Macro for resolving the preview URI. */
+    public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
@@ -248,8 +251,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
-
-        return m_previewLocation;
+        
+        CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
+        resolver.addMacro(MACRO_PREVIEW_TEMPFILE, resourcename);
+        
+        return resolver.resolveMacros(m_previewLocation);
     }
 
     /**
