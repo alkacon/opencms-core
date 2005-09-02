@@ -1,9 +1,10 @@
-<%@ page import="org.opencms.workplace.commons.*" %>
+<%@ page import="org.opencms.workplace.commons.*,org.opencms.jsp.CmsJspActionElement,org.opencms.file.CmsBackupResourceHandler" %>
 <%	
 
 	// initialize the workplace class
 	CmsHistory wp = new CmsHistory(pageContext, request, response);
-	
+	CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);	
+
 //////////////////// start of switch statement 
 	
 switch (wp.getAction()) {
@@ -45,7 +46,8 @@ default:
 	}
 	
 	function viewVersion(resourcename, versionid) {
-        	window.open("displayresource.jsp?<%= wp.PARAM_RESOURCE %>="+resourcename+"&<%= wp.PARAM_VERSIONID %>="+versionid,'version','scrollbars=yes, resizable=yes, width=800, height=600');
+		
+		window.open("<%=cms.link(CmsBackupResourceHandler.BACKUP_HANDLER) %>" + resourcename+"?<%= wp.PARAM_VERSIONID %>="+versionid,'version','scrollbars=yes, resizable=yes, width=800, height=600');
 	}
 //-->
 </script>

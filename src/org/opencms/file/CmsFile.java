@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/09/02 08:31:28 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.22 $
+ * @version $Revision: 1.23 $
  * 
  * @since 6.0.0 
  */
@@ -176,7 +176,8 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      * @throws CmsException if something goes wrong
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
-
+        
+        // test if we have a file already
         if (resource instanceof CmsFile) {
             // resource is already a file
             CmsFile file = (CmsFile)resource;
@@ -185,6 +186,21 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                 return file;
             }
         }
+        
+        // test if we have a backupresource already
+        if (resource instanceof CmsBackupResource) {
+            // resource is already a backup resource
+            CmsFile file = (CmsFile)resource;
+            if ((file.getContents() != null) && (file.getContents().length > 0)) {
+                // file has the contents already available
+                return file;
+            } else {
+                CmsBackupResource backupResource = (CmsBackupResource)resource;
+                backupResource = cms.readBackupFile(backupResource.getRootPath(), backupResource.getVersionId());
+                return backupResource;
+            }
+        }
+        
         // resource is no file, or contents are not available
         String filename = cms.getSitePath(resource);
         // read and return the file

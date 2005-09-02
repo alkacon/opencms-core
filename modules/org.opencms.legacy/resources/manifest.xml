@@ -31,9 +31,7 @@
 		<exportpoints/>
 		<resources>
 			<resource uri="/system/shared/bodyloader"/>
-			<resource uri="/system/shared/bodyloader.html"/>
-			<resource uri="/system/shared/page.dtd"/>
-			<resource uri="/system/shared/showversion.html"/>
+			<resource uri="/system/shared/bodyloader.html"/>		
 			<resource uri="/system/workplace/action/"/>
 			<resource uri="/system/workplace/administration/"/>
 			<resource uri="/system/workplace/scripts/"/>
@@ -500,41 +498,6 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/shared/page.dtd</source>
-			<destination>system/shared/page.dtd</destination>
-			<type>plain</type>
-			<uuidresource>12b2baac-2013-11d8-8648-e9bd5c4e5b38</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[true]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/shared/showversion.html</source>
-			<destination>system/shared/showversion.html</destination>
-			<type>jsp</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[true]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

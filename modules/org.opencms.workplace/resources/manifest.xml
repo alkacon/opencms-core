@@ -29,6 +29,8 @@
 		<resources>
 			<resource uri="/system/login/"/>
 			<resource uri="/system/lost-found/"/>
+			<resource uri="/system/shared/page.dtd"/>
+			<resource uri="/system/shared/showversion"/>
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/galleries/"/>
@@ -366,6 +368,62 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/shared</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/showversion</source>
+			<destination>system/shared/showversion</destination>
+			<type>plain</type>
+			<uuidresource>58c48863-1af7-11da-8179-11c9c0330e35</uuidresource>
+			<datelastmodified>Thu, 01 Sep 2005 14:48:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 01 Sep 2005 14:47:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>36</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<source>system/shared/page.dtd</source>
+			<destination>system/shared/page.dtd</destination>
+			<type>plain</type>
+			<uuidresource>12b2baac-2013-11d8-8648-e9bd5c4e5b38</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>

@@ -22,7 +22,9 @@
 		</mail>
 		<scheduler />	
 	   	<versionhistory enabled="true" count="10"/>		   	
-		<resourceinit />
+		<resourceinit>
+            <resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/>
+        </resourceinit>
 		<requesthandlers />
 		<passwordhandler class="org.opencms.security.CmsDefaultPasswordHandler">
 			<encoding>UTF-8</encoding>
