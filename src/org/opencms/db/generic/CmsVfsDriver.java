@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.253 $
+ * Date   : $Date: 2005/09/05 15:13:05 $
+ * Version: $Revision: 1.254 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -75,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.253 $
+ * @version $Revision: 1.254 $
  * 
  * @since 6.0.0 
  */
@@ -2452,6 +2453,24 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             resource.getRootPath()));
     }
 
+    
+    /**
+     * Escapes the database wildcards within the resource path.<p>
+     * 
+     * This method is required if a resource path is used with a "like" comperator
+     * in the sql-query.<p>
+     * It will escape the following chars: 
+     * <ul>
+     * <li>"_" to "\_"</li>
+     * </ul>
+     * 
+     * @param path the resource path
+     * @return the escaped resourcepath
+     */
+    private String escapeDbWildcard(String path) {       
+        return  CmsStringUtil.substitute(path, "_", "|_");
+    }
+
     /**
      * Appends the appropriate selection criteria related with the parentPath.<p>
      * 
@@ -2486,9 +2505,13 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         conditions.append(BEGIN_INCLUDE_CONDITION);
         conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PATH_PREFIX"));
         conditions.append(END_CONDITION);
-        params.add(addTrailingSeparator(parent) + "%");
+        params.add(addTrailingSeparator(escapeDbWildcard(parent)) + "%");
     }
-
+    
+    
+    
+    
+    
     /**
      * Appends the appropriate selection criteria related with the projectId.<p>
      * 
