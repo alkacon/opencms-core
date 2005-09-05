@@ -53,7 +53,7 @@
     <target name="init" 
     	description="Checks if all required libraries are available">
     	
-    	<for list="${module.dependencies}" param="dependency">
+    	<for list="${module.dependencies}" param="dependency" trim="true">
     	  <sequential>
         	<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
     		<property name="@{dependency}.output.classes" location="${opencms.build}/classes-@{dependency}" />
@@ -69,7 +69,7 @@
     	  </sequential>
     	</for>
     	
-    	<for list="${module.libs}" param="library">
+    	<for list="${module.libs}" param="library" trim="true">
     		<sequential>
 		    	<condition property="@{library}.available">
 		    		<and>		
@@ -88,7 +88,7 @@
             <else>
                 <var name="module.input.src.test" value="${module.input.src.shared}" />
                 <var name="module.package" value="" />
-                <for list="${module.name}" param="package" delimiter="." >
+                <for list="${module.name}" param="package" delimiter="." trim="true">
                     <sequential>
                         <var name="module.input.src.test" value="${module.input.src.test}/@{package}" />
                         <var name="module.package" value="${module.package}@{package}/" />
@@ -177,7 +177,7 @@
     </target>	     
 	
     <target name="builddeps" description="Generates all the modules dependencies">
-    	<for list="${module.dependencies}" param="dependency">
+    	<for list="${module.dependencies}" param="dependency" trim="true">
     		<sequential>
 	    		<if>
 		    		 <not>
@@ -198,7 +198,7 @@
     	depends="init, builddeps" description="Stop target if libraries required for compilation are missing">
     	
     	<var name="module.libs.missing" value="" />
-    	<for list="${module.libs}" param="library">
+    	<for list="${module.libs}" param="library" trim="true">
     		<sequential>
     			<if>
     				<not>
@@ -237,7 +237,7 @@
                 <mkdir dir="${module.output.classes}" /> 
         
                 <var name="module.dependencies.path" value="." />
-                <for list="${module.dependencies}" param="dependency">
+                <for list="${module.dependencies}" param="dependency" trim="true">
                     <sequential>
 						<if>
 							<available file="${@{dependency}.output.jar}" />
@@ -257,7 +257,7 @@
                 <!--echo message="${module.dependencies.path}" /-->
         
                 <var name="module.libs.path" value="." />
-                <for list="${module.libs}" param="library">
+                <for list="${module.libs}" param="library" trim="true">
                     <sequential>
                         <var name="module.libs.path" value="${module.libs.path}:${opencms.input.libs}/@{library}" />
                     </sequential>
@@ -308,10 +308,10 @@
                      	<if>
                             <equals arg1="${src.mode}" arg2="multishared" />
                      		<then>
-	                            <for list="${module.packages}" param="mpackage" >
+	                            <for list="${module.packages}" param="mpackage" trim="true">
 	                                <sequential>
 	                                    <var name="package.dir" value="" />
-	                                    <for list="@{mpackage}" param="package" delimiter="." >
+	                                    <for list="@{mpackage}" param="package" delimiter="." trim="true">
 	                                        <sequential>
 	                                            <var name="module.input.src.test" value="${module.input.src.test}/@{package}" />
 	    	                                    <var name="package.dir" value="${package.dir}@{package}/" />
@@ -390,7 +390,7 @@
                     jarfile="${module.output.jar}/${module.name}.jar"
                     basedir="${module.output.classes}" />
                 
-                <for list="${module.dependencies}" param="dependency">
+                <for list="${module.dependencies}" param="dependency" trim="true">
                     <sequential>
                     	<if>
                     		<available file="${@{dependency}.output.jar}" />
