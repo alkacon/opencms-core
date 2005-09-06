@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/07/28 15:18:32 $
- * Version: $Revision: 1.215 $
+ * Date   : $Date: 2005/09/06 09:37:40 $
+ * Version: $Revision: 1.216 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.215 $ 
+ * @version $Revision: 1.216 $ 
  * 
  * @since 6.0.0 
  */
@@ -993,9 +993,6 @@ public final class OpenCmsCore {
             // initialize the scheduler
             m_scheduleManager.initialize(initCmsObject(adminCms));
 
-            // initialize the workplace manager
-            m_workplaceManager.initialize(initCmsObject(adminCms));
-
             // initialize the locale manager
             m_localeManager = systemConfiguration.getLocaleManager();
             m_localeManager.initialize(initCmsObject(adminCms));
@@ -1017,6 +1014,9 @@ public final class OpenCmsCore {
 
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
+            
+            // initialize the workplace manager
+            m_workplaceManager.initialize(initCmsObject(adminCms));
         } catch (CmsException e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_MANAGERS_0), e);
         }
