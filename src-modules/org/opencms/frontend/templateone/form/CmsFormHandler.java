@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/07/25 12:18:53 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/09/06 09:26:15 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.regex.Pattern;
-import java.util.regex.PatternSyntaxException;
 
 import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
@@ -65,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,8 +200,8 @@ public class CmsFormHandler extends CmsJspActionElement {
             // iterate the form fields
             Iterator i = getFormConfiguration().getFields().iterator();
             while (i.hasNext()) {
-                CmsField currentField = (CmsField)i.next();
-                if (CmsField.TYPE_CHECKBOX.equals(currentField.getType())) {
+                I_CmsField currentField = (I_CmsField)i.next();
+                if (CmsCheckboxField.getStaticType().equals(currentField.getType())) {
                     // special case: checkbox, can have more than one value
                     Iterator k = currentField.getItems().iterator();
                     while (k.hasNext()) {
@@ -260,7 +258,7 @@ public class CmsFormHandler extends CmsJspActionElement {
 
             // validate each form field
             for (int i = 0; i < fieldSize; i++) {
-                CmsField currentField = (CmsField)getFormConfiguration().getFields().get(i);
+                I_CmsField currentField = (I_CmsField)getFormConfiguration().getFields().get(i);
                 CmsFieldValue fieldValue = new CmsFieldValue(currentField);
                 // add field field value object to list
                 result.add(fieldValue);
@@ -350,7 +348,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     public void sendConfirmationMail() throws Exception {
 
         // get the field which contains the confirmation email address
-        CmsField mailField = (CmsField)getFormConfiguration().getFields().get(
+        I_CmsField mailField = (I_CmsField)getFormConfiguration().getFields().get(
             getFormConfiguration().getConfirmationMailField());
         String mailTo = mailField.getValue();
 
@@ -518,58 +516,17 @@ public class CmsFormHandler extends CmsJspActionElement {
         // validate each form field
         while (i.hasNext()) { 
             
-            CmsField currentField = (CmsField)i.next();
+            I_CmsField currentField = (I_CmsField)i.next();
             
-            if (CmsField.TYPE_CAPTCHA.equalsIgnoreCase(currentField.getType())) {
+            if (CmsCaptchaField.getStaticType().equalsIgnoreCase(currentField.getType())) {
                 // the captcha field doesn't get validated here...
                 continue;
             }
             
-            if (currentField.isMandatory()) {
-                // check if the field has a value
-                if (currentField.needsItems()) {
-                    // check if at least one item has been selected
-                    Iterator k = currentField.getItems().iterator();
-                    boolean isSelected = false;
-                    while (k.hasNext()) {
-                        CmsFieldItem currentItem = (CmsFieldItem)k.next();
-                        if (currentItem.isSelected()) {
-                            isSelected = true;
-                            continue;
-                        }
-                    }
-                    if (!isSelected) {
-                        // no item has been selected, create an error message
-                        getErrors().put(currentField.getName(), ERROR_MANDATORY);
-                        allOk = false;
-                        continue;
-                    }
-                } else {
-                    // check if the field has been filled out
-                    if (CmsStringUtil.isEmpty(currentField.getValue())) {
-                        getErrors().put(currentField.getName(), ERROR_MANDATORY);
-                        allOk = false;
-                        continue;
-                    }
-                }
-            }
-            // validate non-empty values with given regular expression
-            if (CmsStringUtil.isNotEmpty(currentField.getValue())
-                && !currentField.needsItems()
-                && !"".equals(currentField.getValidationExpression())) {
-                Pattern pattern = null;
-                try {
-                    pattern = Pattern.compile(currentField.getValidationExpression());
-                    if (!pattern.matcher(currentField.getValue()).matches()) {
-                        getErrors().put(currentField.getName(), ERROR_VALIDATION);
-                        allOk = false;
-                    }
-                } catch (PatternSyntaxException e) {
-                    // syntax error in regular expression, log to opencms.log
-                    if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(Messages.LOG_ERR_PATTERN_SYNTAX_0), e);
-                    }
-                }
+            String validationError = currentField.validate();
+            if (CmsStringUtil.isNotEmpty(validationError)) {
+                getErrors().put(currentField.getName(), validationError);
+                allOk = false;
             }
         }
                 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2005/08/29 07:32:03 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/09/06 09:26:15 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -54,9 +55,9 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * Creates captcha images and validates the pharses submitted by a request parameter.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
-public class CmsCaptchaField extends CmsField {
+public class CmsCaptchaField extends A_CmsField {
     
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCaptchaField.class);
@@ -66,6 +67,9 @@ public class CmsCaptchaField extends CmsField {
     
     /** The settings to render captcha images. */
     private CmsCaptchaSettings m_captchaSettings;
+
+    /** HTML field type: captcha image. */
+    private static final String TYPE = "captcha";
     
     /**
      * Creates a new captcha field.<p>
@@ -79,13 +83,92 @@ public class CmsCaptchaField extends CmsField {
         
         m_captchaSettings = captchaSettings;
         
-        setType(CmsField.TYPE_CAPTCHA);
         setName(C_PARAM_CAPTCHA_PHRASE);
         setValue(fieldValue);
         setLabel(fieldLabel);
         setMandatory(true);
     }
 
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
+     */
+    public String getType() {
+
+        return TYPE;
+    }
+    
+    /**
+     * Returns the type of the input field, e.g. "text" or "select".<p>
+     * 
+     * @return the type of the input field
+     */
+    public static String getStaticType() {
+        
+        return TYPE;
+    }
+    
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsJspActionElement, CmsForm, org.opencms.i18n.CmsMessages, String)
+     */
+    public String buildHtml(CmsJspActionElement jsp, CmsForm formConfiguration, CmsMessages messages, String errorKey) {
+        
+        StringBuffer buf = new StringBuffer();
+        String fieldLabel = getLabel();
+        String errorMessage = "";
+        String mandatory = "";
+        
+        CmsCaptchaSettings captchaSettings = getCaptchaSettings();
+        
+        if (CmsStringUtil.isNotEmpty(errorKey)) {
+            
+            if (CmsFormHandler.ERROR_MANDATORY.equals(errorKey)) {
+                errorMessage = messages.key("form.error.mandatory");
+            } else {
+                errorMessage = messages.key("form.error.validation");
+            }
+            
+            errorMessage = messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end");
+            fieldLabel = messages.key("form.html.label.error.start") + fieldLabel + messages.key("form.html.label.error.end");
+        }
+        
+        if (isMandatory()) {
+            mandatory = messages.key("form.html.mandatory");
+        }
+        
+        // line #1
+        buf.append(messages.key("form.html.row.start")).append("\n");
+        
+        // line #2
+        buf.append(messages.key("form.html.label.start"))
+            .append(fieldLabel)
+            .append(mandatory)
+            .append(messages.key("form.html.label.end")).append("\n");
+        
+        // line #3
+        buf.append(messages.key("form.html.field.start")).append("\n");
+        
+        // line #4
+        buf.append("<img src=\"")
+            .append(jsp.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?" + captchaSettings.toRequestParams(jsp)))
+            .append("\" width=\"").append(captchaSettings.getImageWidth())
+            .append("\" height=\"").append(captchaSettings.getImageHeight())
+            .append("\" alt=\"\">").append("\n"); 
+        
+        // line #5
+        buf.append("<br>\n");
+        
+        // line #6
+        buf.append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append("\"")
+            .append(formConfiguration.getFormFieldAttributes())
+            .append(">")
+            .append(errorMessage)
+            .append(messages.key("form.html.field.end")).append("\n");
+        
+        // line #7
+        buf.append(messages.key("form.html.row.end")).append("\n");
+        
+        return buf.toString();
+    }
 
     /**
      * Writes a Captcha JPEG image to the servlet response output stream.<p>

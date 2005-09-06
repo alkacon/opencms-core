@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/08/10 14:45:01 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/06 09:26:15 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,11 +57,14 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsForm {
+    
+    /** Resource type ID of XML content forms. */
+    private static final String TYPE_NAME = "emailform";
 
     /** Mail type: html mail. */
     public static final String MAILTYPE_HTML = "html";
@@ -257,6 +260,15 @@ public class CmsForm {
     throws Exception {
 
         init(jsp, messages, initial, formConfigUri);
+    }
+    
+    /**
+     * Returns the resource type name of XML content forms.<p>
+     * 
+     * @return the resource type name of XML content forms
+     */
+    public static String getStaticType() {
+        return TYPE_NAME;
     }
 
     /**
@@ -571,7 +583,7 @@ public class CmsForm {
     public String readSelectedFromRequest(HttpServletRequest request, String fieldType, String fieldName, String value) {
 
         String result = "";
-        if (CmsField.TYPE_CHECKBOX.equals(fieldType)) {
+        if (CmsCheckboxField.getStaticType().equals(fieldType)) {
             // this is a checkbox
             String[] values = request.getParameterValues(fieldName);
             if (values != null) {
@@ -853,10 +865,9 @@ public class CmsForm {
      * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
      * @return the checkbox field to activate the confirmation mail in the input form
      */
-    private CmsField createConfirmationMailCheckbox(CmsJspActionElement jsp, CmsMessages messages, boolean initial) {
+    private I_CmsField createConfirmationMailCheckbox(CmsJspActionElement jsp, CmsMessages messages, boolean initial) {
 
-        CmsField field = new CmsField();
-        field.setType(CmsField.TYPE_CHECKBOX);
+        A_CmsField field = new CmsCheckboxField();
         field.setName(PARAM_SENDCONFIRMATION);
         field.setLabel(messages.key("form.confirmation.label"));
         // check the field status
@@ -1038,14 +1049,17 @@ public class CmsForm {
         List fieldValues = content.getValues(NODE_INPUTFIELD, locale);
         int fieldValueSize = fieldValues.size();
         List fields = new ArrayList(fieldValueSize);
+        CmsFieldFactory fieldFactory = CmsFieldFactory.getSharedInstance();
+        
         for (int i = 0; i < fieldValueSize; i++) {
             I_CmsXmlContentValue inputField = (I_CmsXmlContentValue)fieldValues.get(i);
             String inputFieldPath = inputField.getPath() + "/";
-            CmsField field = new CmsField();
+            A_CmsField field = null;
 
-            // get the field type
+            // get the field from the factory for the specified type
             String stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDTYPE, locale);
-            field.setType(getConfigurationValue(stringValue, CmsField.TYPE_TEXT));
+            field = fieldFactory.getField(stringValue);
+            
             // create the field name
             field.setName(inputFieldPath.substring(0, inputFieldPath.length() - 1));
             // get the field label
@@ -1062,7 +1076,7 @@ public class CmsForm {
                 }
             } else {
                 // get field value from request for standard fields
-                if (!field.getType().equals(CmsField.TYPE_CHECKBOX)) {
+                if (!field.getType().equals(CmsCheckboxField.getStaticType())) {
                     String fieldValue = jsp.getRequest().getParameter(field.getName());
                     if (fieldValue == null) {
                         // set empty String as value for non present request parameters
@@ -1073,12 +1087,12 @@ public class CmsForm {
             }
 
             // fill object members in case this is no hidden field
-            if (!CmsField.TYPE_HIDDEN.equals(field.getType())) {
+            if (!CmsHiddenField.getStaticType().equals(field.getType())) {
                 // get the field validation regular expression
                 stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDVALIDATION, locale);
-                if (CmsField.TYPE_EMAIL.equals(field.getType()) && CmsStringUtil.isEmpty(stringValue)) {
+                if (CmsEmailField.getStaticType().equals(field.getType()) && CmsStringUtil.isEmpty(stringValue)) {
                     // set default email validation expression for confirmation email address input field
-                    field.setValidationExpression(CmsField.VALIDATION_EMAIL);
+                    field.setValidationExpression(CmsEmailField.VALIDATION_REGEX);
                 } else {
                     field.setValidationExpression(getConfigurationValue(stringValue, ""));
                 }
@@ -1238,17 +1252,17 @@ public class CmsForm {
 
         if (isConfirmationMailEnabled()) {
             // confirmation mail is enabled, make simple field check to avoid errors
-            CmsField confirmField = new CmsField();
+            I_CmsField confirmField = new CmsTextField();
             try {
                 // try to get the confirmation email field
-                confirmField = (CmsField)getFields().get(getConfirmationMailField());
+                confirmField = (I_CmsField)getFields().get(getConfirmationMailField());
             } catch (IndexOutOfBoundsException e) {
                 // specified confirmation email field does not exist
                 getConfigurationErrors().add(messages.key("form.configuration.error.emailfield.notfound"));
                 setConfirmationMailEnabled(false);
                 return;
             }
-            if (!CmsField.TYPE_EMAIL.equals(confirmField.getType())) {
+            if (!CmsEmailField.getStaticType().equals(confirmField.getType())) {
                 // specified confirmation mail input field has wrong field type
                 getConfigurationErrors().add(messages.key("form.configuration.error.emailfield.type"));
             }
@@ -1317,12 +1331,12 @@ public class CmsForm {
      * 
      * @return the removed captcha field, or null
      */
-    public CmsField removeCaptchaField() {
+    public I_CmsField removeCaptchaField() {
 
         for (int i = 0, n = m_fields.size(); i < n; i++) {
 
-            CmsField field = (CmsField)m_fields.get(i);
-            if (CmsField.TYPE_CAPTCHA.equalsIgnoreCase(field.getType())) {
+            I_CmsField field = (I_CmsField)m_fields.get(i);
+            if (CmsCaptchaField.getStaticType().equalsIgnoreCase(field.getType())) {
                 m_fields.remove(i);
                 return field;
             }

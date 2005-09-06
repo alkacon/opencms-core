@@ -66,30 +66,12 @@ if (! showForm) {
 	while (i.hasNext()) {
 		
 		// loop through all form input fields 
-		CmsField field = (CmsField)i.next();
+		I_CmsField field = (I_CmsField)i.next();
 		String fieldType = field.getType();	
 		String fieldLabel = field.getLabel();	
-		// get the error message and mandatory marker for the current field
 		String errorMessage = (String)cms.getErrors().get(field.getName());
-		String mandatory = "";
-		if (errorMessage != null) {
-			// create the error message for the field
-			if (CmsFormHandler.ERROR_MANDATORY.equals(errorMessage)) {
-				errorMessage = messages.key("form.error.mandatory");
-			} else {
-				errorMessage = messages.key("form.error.validation");
-			}
-			errorMessage = messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end");
-			fieldLabel = messages.key("form.html.label.error.start") + fieldLabel + messages.key("form.html.label.error.end");
-		} else {
-			errorMessage = "";
-		}
-		if (field.isMandatory()) {
-			mandatory = messages.key("form.html.mandatory");
-		}
-		
-		// generate the input field
-		%><%@ include file="../jsptemplates/inputfields.txt" %><%
+
+		out.println(field.buildHtml(cms, formConfiguration, messages, errorMessage));
 	}
 	
 	// create the form foot 

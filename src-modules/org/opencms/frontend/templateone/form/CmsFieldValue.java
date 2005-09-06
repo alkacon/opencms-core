@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldValue.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/09/06 09:26:15 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.frontend.templateone.form;
 
+
 import java.util.Iterator;
 
 /**
@@ -41,7 +42,7 @@ import java.util.Iterator;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +57,7 @@ public class CmsFieldValue {
      * 
      * @param field the form field to create the value from 
      */
-    public CmsFieldValue(CmsField field) {
+    public CmsFieldValue(I_CmsField field) {
 
         if (field.needsItems()) {
             // check which item has been selected
@@ -79,7 +80,7 @@ public class CmsFieldValue {
             m_value = field.getValue();
         }
 
-        if (CmsField.TYPE_HIDDEN.equals(field.getType())) {
+        if (CmsHiddenField.getStaticType().equals(field.getType())) {
             // for hidden fields, set show field flag to false
             m_show = false;
         } else {
