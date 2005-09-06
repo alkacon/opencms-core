@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/06 15:25:20 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * Spatial uniqueness is derived from
  * ethernet address (MAC, 802.1); temporal from system clock.<p>
  * 
- * For more information about the algorith used, please see 
+ * For more information about the algorithm used, please see 
  * <a href="http://www.opengroup.org/dce/info/draft-leach-uuids-guids-01.txt">
  * draft-leach-uuids-guids-01.txt</a>.<p>
  * 
@@ -59,7 +59,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
