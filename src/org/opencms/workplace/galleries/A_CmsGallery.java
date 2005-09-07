@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/07/18 07:32:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/09/07 14:04:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,8 +55,11 @@ import org.opencms.workplace.explorer.CmsNewResource;
 import org.opencms.workplace.explorer.CmsNewResourceUpload;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -71,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -586,6 +589,7 @@ public abstract class A_CmsGallery extends CmsDialog {
                 values.add(path);
 
             }
+            selectedIndex = sortOptions(options, values);
             String attrs = "name=\"" + PARAM_GALLERYPATH;
             attrs += "\" size=\"1\" style=\"width: 100%;\" onchange=\"displayGallery();\"";
             return buildSelect(attrs, options, values, selectedIndex);
@@ -598,6 +602,49 @@ public abstract class A_CmsGallery extends CmsDialog {
             result.append("\">");
             return result.toString();
         }
+    }
+    
+    /**
+     * Sorts the options and associated values in alphabetical order.<p>
+     * 
+     * @param options a list of options
+     * @param values a list of associated values
+     * @return the new index of the currently selected option according to the new order
+     */
+    protected int sortOptions(List options, List values) {
+        
+        int selectedIndex = -1;
+        Map valuesByOption = new HashMap();
+        
+        // save the values in a map keyed by their associated option
+        for (int i = 0, n = options.size(); i < n; i++) {
+            
+            String option = (String)options.get(i);
+            String value = (String)values.get(i);
+            
+            if (CmsStringUtil.isNotEmpty(option) && CmsStringUtil.isNotEmpty(value)) {
+                valuesByOption.put(option, value);
+            }
+        }
+        
+        // sort the options
+        Collections.sort(options);
+        values.clear();
+        
+        // bring the values in the new order according to the sorted options
+        for (int i = 0, n = options.size(); i < n; i++) {
+            
+            String option = (String)options.get(i);
+            String value = (String)valuesByOption.get(option);
+            
+            values.add(value);
+            
+            if (value.equals(getParamGalleryPath())) {
+                selectedIndex = i;
+            }
+        }
+        
+        return selectedIndex;
     }
 
     /**
