@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/09/07 08:28:17 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,6 +110,9 @@ public class CmsForm {
     
     /** Configuration node name for the field validation node. */
     public static final String NODE_FIELDVALIDATION = "FieldValidation";
+    
+    /** Configuration node name for the field error message node. */
+    public static final String NODE_FIELDERRORMESSAGE = "FieldErrorMessage";
 
     /** Configuration node name for the form attributes node. */
     public static final String NODE_FORMATTRIBUTES = "FormAttributes";
@@ -1065,6 +1068,9 @@ public class CmsForm {
             // get the field label
             stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDLABEL, locale);
             field.setLabel(getConfigurationValue(stringValue, ""));
+            // validation error message
+            stringValue = content.getStringValue(cms, inputFieldPath + NODE_FIELDERRORMESSAGE, locale);
+            field.setErrorMessage(stringValue);
             // get the field value
             if (initial) {
                 // only fill in values from configuration file if called initially

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextareaField.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/07 08:28:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text area.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsTextareaField extends A_CmsField {
 
@@ -78,6 +78,8 @@ public class CmsTextareaField extends A_CmsField {
             
             if (CmsFormHandler.ERROR_MANDATORY.equals(errorKey)) {
                 errorMessage = messages.key("form.error.mandatory");
+            } else if (CmsStringUtil.isNotEmpty(getErrorMessage())) {
+                errorMessage = getErrorMessage();
             } else {
                 errorMessage = messages.key("form.error.validation");
             }

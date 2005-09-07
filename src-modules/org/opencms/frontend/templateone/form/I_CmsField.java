@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/I_CmsField.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/07 08:28:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.List;
  * Defines the methods required for form fields.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public interface I_CmsField {
 
@@ -92,6 +92,13 @@ public interface I_CmsField {
      * @return the initial value of the field
      */
     String getValue();
+    
+    /**
+     * Returns a optional, custom error message to be displayed instead of the standard validation error message.<p>
+     * 
+     * @return a custom error message for validation errors, or null
+     */
+    String getErrorMessage();
 
     /**
      * Returns if this input field is mandatory.<p>

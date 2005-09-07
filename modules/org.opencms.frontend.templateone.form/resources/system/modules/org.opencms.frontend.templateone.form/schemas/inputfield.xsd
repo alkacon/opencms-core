@@ -17,6 +17,7 @@
 			<xsd:element name="FieldMandatory" type="OpenCmsBoolean" />
 			<xsd:element name="FieldDefault" type="OpenCmsString" minOccurs="0" />
 			<xsd:element name="FieldValidation" type="OpenCmsString" minOccurs="0" />
+			<xsd:element name="FieldErrorMessage" type="OpenCmsString" minOccurs="0" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>

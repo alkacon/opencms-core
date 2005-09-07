@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCheckboxField.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/07 08:28:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Iterator;
  * Represents a check box.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsCheckboxField extends A_CmsField {
 
@@ -80,6 +80,8 @@ public class CmsCheckboxField extends A_CmsField {
             
             if (CmsFormHandler.ERROR_MANDATORY.equals(errorKey)) {
                 errorMessage = messages.key("form.error.mandatory");
+            } else if (CmsStringUtil.isNotEmpty(getErrorMessage())) {
+                errorMessage = getErrorMessage();
             } else {
                 errorMessage = messages.key("form.error.validation");
             }

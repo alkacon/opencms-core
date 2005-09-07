@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/07 08:28:17 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -61,6 +61,7 @@ public abstract class A_CmsField implements I_CmsField {
     private String m_name;
     private String m_validationExpression;
     private String m_value;
+    private String m_errorMessage;
 
     /**
      * Default constructor.<p>
@@ -268,7 +269,7 @@ public abstract class A_CmsField implements I_CmsField {
     protected String validateValue() {
         
         // validate non-empty values with given regular expression
-        if (CmsStringUtil.isNotEmpty(m_value) && !needsItems() && !"".equals(m_validationExpression)) {
+        if (CmsStringUtil.isNotEmpty(m_value) /*&& !needsItems()*/ && !"".equals(m_validationExpression)) {
             
             Pattern pattern = null;
             try {
@@ -303,6 +304,22 @@ public abstract class A_CmsField implements I_CmsField {
         }
         
         return validationError;
+    }
+    
+    /**
+     * Sets the error message if validation failed.<p>
+     * 
+     * @param errorMessage the error message if validation failed
+     */
+    protected void setErrorMessage(String errorMessage) {
+        m_errorMessage = errorMessage;
+    }
+    
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#getErrorMessage()
+     */
+    public String getErrorMessage() {
+        return m_errorMessage;
     }
 
 }
