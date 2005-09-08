@@ -30,11 +30,12 @@ function runConfirmValues() {
 
 <table border="0" style="margin-top: 14px;">
 <%
-List resultList = formHandler.createValuesFromFields();
-Iterator i = resultList.iterator();
+Map resultMap = formHandler.createValuesFromFields();
 
-while(i.hasNext()) {
-	CmsFieldValue current = (CmsFieldValue)i.next();
+for (int i = 0, n = resultMap.size(); i < n; i++) {
+	String fieldName = "InputField[" + (i + 1) + "]";
+	System.out.println(fieldName);
+	CmsFieldValue current = (CmsFieldValue)resultMap.get(fieldName);
 	if (current.isShow()) {
 		out.print("<tr>\n\t<td valign=\"top\">" + current.getLabel() + "</td>");
 		out.print("\n\t<td valign=\"top\" style=\"font-weight: bold;\">" + formHandler.convertToHtmlValue(current.getValue()) + "</td></tr>\n");
