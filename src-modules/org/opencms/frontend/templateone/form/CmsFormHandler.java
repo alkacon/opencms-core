@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/08 06:55:21 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsFormHandler extends CmsJspActionElement {
     private Map m_errors;
 
     /** Temporarily stores the submitted field values for output generation. */
-    private List m_fieldValues;
+    private Map m_fieldValuesByName;
 
     /** The form configuration object. */
     private CmsForm m_formConfiguration;
@@ -243,9 +243,9 @@ public class CmsFormHandler extends CmsJspActionElement {
      * 
      * @return list of field values to create an output for email or confirmation pages
      */
-    public List createValuesFromFields() {
+    public Map createValuesFromFields() {
 
-        if (m_fieldValues == null) {
+        if (m_fieldValuesByName == null) {
             // get the form field size
             int fieldSize = getFormConfiguration().getFields().size();
             if (getFormConfiguration().isConfirmationMailEnabled()
@@ -254,21 +254,22 @@ public class CmsFormHandler extends CmsJspActionElement {
                 fieldSize -= 1;
             }
             // create the empty result list
-            List result = new ArrayList(fieldSize);
+            Map result = new HashMap();
 
             // validate each form field
             for (int i = 0; i < fieldSize; i++) {
                 I_CmsField currentField = (I_CmsField)getFormConfiguration().getFields().get(i);
                 CmsFieldValue fieldValue = new CmsFieldValue(currentField);
                 // add field field value object to list
-                result.add(fieldValue);
+                result.put(currentField.getName(), fieldValue);
 
             }
             // store the generated list for further usage to avoid unnecessary rebuilding
-            m_fieldValues = result;
+            m_fieldValuesByName = result;
         }
+        
         // return generated list of field values
-        return m_fieldValues;
+        return m_fieldValuesByName;
     }
 
     /**
@@ -321,13 +322,15 @@ public class CmsFormHandler extends CmsJspActionElement {
     public void init(HttpServletRequest req, String formConfigUri) throws Exception {
 
         setErrors(new HashMap());
-        m_fieldValues = null;
+        m_fieldValuesByName = null;
         m_isValidatedCorrect = null;
         setInitial(CmsStringUtil.isEmpty(req.getParameter(PARAM_FORMACTION)));
         // get the localized messages
         setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
         // get the form configuration
         setFormConfiguration(new CmsForm(this, getMessages(), isInitial(), formConfigUri));
+        // turn the request values into field value objects
+        createValuesFromFields();
     }
 
     /**
@@ -581,8 +584,8 @@ public class CmsFormHandler extends CmsJspActionElement {
      */
     protected String createMailTextFromFields(boolean isHtmlMail, boolean isConfirmationMail) {
 
-        List resultList = createValuesFromFields();
-        StringBuffer result = new StringBuffer(resultList.size() * 8);
+        Map fieldValuesByName = createValuesFromFields();
+        StringBuffer result = new StringBuffer(fieldValuesByName.size() * 8);
         if (isHtmlMail) {
             // create html head with style definitions and body
             result.append("<html><head>\n");
@@ -649,9 +652,10 @@ public class CmsFormHandler extends CmsJspActionElement {
             result.append("\n\n");
         }
         // generate output for submitted form fields
-        Iterator i = resultList.iterator();
+        Iterator i = fieldValuesByName.keySet().iterator();
         while (i.hasNext()) {
-            CmsFieldValue current = (CmsFieldValue)i.next();
+            String fieldName = (String)i.next();
+            CmsFieldValue current = (CmsFieldValue)fieldValuesByName.get(fieldName);
             if (isHtmlMail) {
                 // format output as HTML
                 result.append("<tr><td class=\"fieldlabel\">");
@@ -734,6 +738,18 @@ public class CmsFormHandler extends CmsJspActionElement {
     protected void setMessages(CmsMessages messages) {
 
         m_messages = messages;
+    }
+    
+    /**
+     * Returns the value for a field specified by it's Xpath.<p>
+     * 
+     * @param fieldName the field's Xpath
+     * @return the field value, or null
+     */
+    public String getFieldValue(String fieldName) {
+        
+        CmsFieldValue fieldValue = (CmsFieldValue)m_fieldValuesByName.get(fieldName);
+        return (fieldValue != null) ? fieldValue.getValue() : "";
     }
 
 }
