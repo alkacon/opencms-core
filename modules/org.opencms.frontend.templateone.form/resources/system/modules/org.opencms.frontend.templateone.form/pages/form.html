@@ -21,6 +21,8 @@ if (! showForm) {
 		// show optional check page
 		request.setAttribute("formhandler", cms);
 		cms.include("../elements/check.jsp");
+	} else if (cms.getFormConfiguration().hasTargetUri()) {
+		response.sendRedirect(cms.link(cms.getFormConfiguration().getTargetUri()));
 	} else {
 		// try to send a notification email with the submitted form field values
 		if (cms.sendMail()) {
@@ -62,16 +64,15 @@ if (! showForm) {
 	<%= messages.key("form.html.start") %><%= formConfiguration.getFormAttributes() %>>
 		<%
 	// create the html output to display the form fields
-	Iterator i = fields.iterator();	
-	while (i.hasNext()) {
+	for( int i = 0, n = fields.size(); i < n; i++) {
 		
 		// loop through all form input fields 
-		I_CmsField field = (I_CmsField)i.next();
+		I_CmsField field = (I_CmsField)fields.get(i);
 		String fieldType = field.getType();	
 		String fieldLabel = field.getLabel();	
 		String errorMessage = (String)cms.getErrors().get(field.getName());
 
-		out.println(field.buildHtml(cms, formConfiguration, messages, errorMessage));
+		out.println(field.buildHtml(cms, messages, errorMessage));
 	}
 	
 	// create the form foot 

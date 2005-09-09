@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Wed, 07 Sep 2005 07:48:39 GMT</createdate>
+		<createdate>Fri, 09 Sep 2005 10:21:09 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.0.6</version>
+		<version>1.0.7</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -175,7 +175,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Thu, 21 Jul 2005 12:18:53 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 10:14:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -188,7 +188,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>ef61baa7-695b-11d9-8aac-f55bb5376c24</uuidresource>
-			<datelastmodified>Thu, 21 Jul 2005 12:25:14 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 10:15:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -200,7 +200,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Thu, 21 Jul 2005 12:18:53 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 10:14:08 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -250,7 +250,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/elements/check.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>9f6e5555-654f-11d9-ba18-f55bb5376c24</uuidresource>
-			<datelastmodified>Fri, 22 Jul 2005 12:35:38 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 09:20:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -268,7 +268,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/elements/confirmation.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ea1cd525-6884-11d9-9876-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 09:20:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -368,7 +368,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages/form.html</destination>
 			<type>jsp</type>
 			<uuidresource>ffb9f73b-63b8-11d9-ab74-f55bb5376c24</uuidresource>
-			<datelastmodified>Tue, 06 Sep 2005 09:04:12 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 10:16:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -405,7 +405,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Thu, 21 Jul 2005 12:36:35 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 10:19:41 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -423,7 +423,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/inputfield.xsd</destination>
 			<type>plain</type>
 			<uuidresource>adf38d6e-630b-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Wed, 20 Jul 2005 15:28:37 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 10:19:46 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
