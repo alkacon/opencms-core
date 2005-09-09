@@ -21,7 +21,9 @@
 			<xsd:element name="MailSubject" type="OpenCmsString" />
 			<xsd:element name="MailText" type="OpenCmsHtml" />						
 			<xsd:element name="FormText" type="OpenCmsHtml" />		
-			<xsd:element name="InputField" type="OpenCmsInputField" maxOccurs="unbounded" /> 			
+			<xsd:element name="InputField" type="OpenCmsInputField" maxOccurs="unbounded" />
+			<xsd:element name="TargetUri" type="OpenCmsVfsFile" minOccurs="0" /> 	
+			<xsd:element name="ReturnUri" type="OpenCmsInternalLink" minOccurs="0" /> 			
 			<xsd:element name="FormConfirmation" type="OpenCmsHtml" />
 			<xsd:element name="FormCaptcha" type="OpenCmsFormCaptcha" minOccurs="0" maxOccurs="1" />
 			<xsd:element name="OptionalFormConfiguration" type="OpenCmsOptionalFormConfiguration" minOccurs="0" />

@@ -9,10 +9,9 @@ CmsFormHandler formHandler = (CmsFormHandler)request.getAttribute("formhandler")
 <table border="0" style="margin-top: 14px;">
 <%
 List resultList = formHandler.createValuesFromFields();
-Iterator i = resultList.iterator();
 
-while(i.hasNext()) {
-	CmsFieldValue current = (CmsFieldValue)i.next();
+for (int i = 0, n = resultList.size(); i < n; i++) {
+	CmsFieldValue current = (CmsFieldValue)resultList.get(i);
 	if (current.isShow()) {
 		out.print("<tr>\n\t<td valign=\"top\">" + current.getLabel() + "</td>");
 		out.print("\n\t<td valign=\"top\" style=\"font-weight: bold;\">" + formHandler.convertToHtmlValue(current.getValue()) + "</td></tr>\n");
