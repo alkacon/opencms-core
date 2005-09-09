@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/06/29 14:59:45 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/09/09 11:06:11 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -736,7 +736,8 @@ public class CmsXmlContentDefinition implements Cloneable {
 
         Document doc = DocumentHelper.createDocument();
 
-        Element root = doc.addElement(getInnerName() + "s");
+        Element root = doc.addElement(getOuterName());
+        
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/09/09 11:06:11 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.dom4j.io.XMLWriter;
  * Tests for generating an XML content definition.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.11 $
  */
 public class TestCmsXmlContentDefinition extends TestCase {
 
@@ -145,6 +145,20 @@ public class TestCmsXmlContentDefinition extends TestCase {
         } catch (CmsXmlException e) {
             // this is expected, so no error
         }
+        
+        String schemaUri2 = "http://www.opencms.org/test2.xsd";
+        CmsXmlContentDefinition cd2 = new CmsXmlContentDefinition("ArticleList", "Article", schemaUri2);         
+       
+        cd2.addType(new CmsXmlStringValue("Author", "1", "1"));
+        cd2.addType(new CmsXmlStringValue("Teaser", "1", "1"));        
+        cd2.addType(new CmsXmlStringValue("Text", "1", "1"));
+        cd2.addType(new CmsXmlDateTimeValue("Date", "1", "1"));
+        cd2.addType(new CmsXmlStringValue("Option", "0", "1")); 
+        
+        CmsXmlEntityResolver.cacheSystemId(schemaUri2, cd2.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
+        CmsXmlEntityResolver resolver2 = new CmsXmlEntityResolver(null);
+        CmsXmlContent content2 = CmsXmlContentFactory.createDocument(null, Locale.ENGLISH, CmsEncoder.ENCODING_UTF_8, cd2);        
+        content2.validateXmlStructure(resolver2);
         
         // output the schema XML
         System.out.println(content.toString());
