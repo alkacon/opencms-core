@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2005/09/07 08:28:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -151,7 +151,7 @@ public abstract class A_CmsField implements I_CmsField {
      */
     public boolean needsItems() {
 
-        return (CmsCheckboxField.getStaticType().equals(getType()) || CmsSelectionField.getStaticType().equals(getType()) || CmsRadioButtonField.getStaticType().equals(this.getType()));
+        return (CmsCheckboxField.class.isAssignableFrom(getClass()) || CmsSelectionField.class.isAssignableFrom(getClass()) || CmsRadioButtonField.class.isAssignableFrom(getClass()));
     }
 
     /**
@@ -291,9 +291,9 @@ public abstract class A_CmsField implements I_CmsField {
     }
     
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#validate()
+     * @see org.opencms.frontend.templateone.form.I_CmsField#validate(CmsFormHandler)
      */
-    public String validate() {
+    public String validate(CmsFormHandler formHandler) {
         
         // validate the constraints
         String validationError = validateConstraints();

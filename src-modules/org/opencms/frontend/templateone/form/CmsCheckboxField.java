@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCheckboxField.java,v $
- * Date   : $Date: 2005/09/07 08:28:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
@@ -41,7 +40,7 @@ import java.util.Iterator;
  * Represents a check box.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsCheckboxField extends A_CmsField {
 
@@ -67,9 +66,9 @@ public class CmsCheckboxField extends A_CmsField {
     }
     
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsJspActionElement, CmsForm, org.opencms.i18n.CmsMessages, String)
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
-    public String buildHtml(CmsJspActionElement jsp, CmsForm formConfiguration, CmsMessages messages, String errorKey) {
+    public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
         
         StringBuffer buf = new StringBuffer();
         String fieldLabel = getLabel();

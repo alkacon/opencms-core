@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsHiddenField.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,12 @@
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.CmsJspActionElement;
 
 /**
  * Represents a hidden field.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsHiddenField extends A_CmsField {
 
@@ -64,9 +63,9 @@ public class CmsHiddenField extends A_CmsField {
     }
     
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsJspActionElement, CmsForm, org.opencms.i18n.CmsMessages, String)
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
-    public String buildHtml(CmsJspActionElement jsp, CmsForm formConfiguration, CmsMessages messages, String errorKey) {
+    public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
         
         StringBuffer buf = new StringBuffer();
         buf.append("<input type=\"hidden\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append("\">\n");

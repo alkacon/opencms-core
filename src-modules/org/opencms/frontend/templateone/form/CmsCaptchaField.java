@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2005/09/07 08:28:17 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
  * Creates captcha images and validates the pharses submitted by a request parameter.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.5 $
+ * @version $Revision: 1.6 $
  */
 public class CmsCaptchaField extends A_CmsField {
     
@@ -108,9 +108,9 @@ public class CmsCaptchaField extends A_CmsField {
     }
     
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsJspActionElement, CmsForm, org.opencms.i18n.CmsMessages, String)
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
-    public String buildHtml(CmsJspActionElement jsp, CmsForm formConfiguration, CmsMessages messages, String errorKey) {
+    public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
         
         StringBuffer buf = new StringBuffer();
         String fieldLabel = getLabel();
@@ -151,7 +151,7 @@ public class CmsCaptchaField extends A_CmsField {
         
         // line #4
         buf.append("<img src=\"")
-            .append(jsp.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?" + captchaSettings.toRequestParams(jsp)))
+            .append(formHandler.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?" + captchaSettings.toRequestParams(formHandler)))
             .append("\" width=\"").append(captchaSettings.getImageWidth())
             .append("\" height=\"").append(captchaSettings.getImageHeight())
             .append("\" alt=\"\">").append("\n"); 
@@ -161,7 +161,7 @@ public class CmsCaptchaField extends A_CmsField {
         
         // line #6
         buf.append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append("\"")
-            .append(formConfiguration.getFormFieldAttributes())
+            .append(formHandler.getFormConfiguration().getFormFieldAttributes())
             .append(">")
             .append(errorMessage)
             .append(messages.key("form.html.field.end")).append("\n");

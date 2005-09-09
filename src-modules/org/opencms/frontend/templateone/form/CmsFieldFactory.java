@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,14 +33,12 @@ package org.opencms.frontend.templateone.form;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -50,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public final class CmsFieldFactory {
     
@@ -90,7 +88,7 @@ public final class CmsFieldFactory {
             // register all custom field types declared in a property file.
             // since custom fields are optional, the property file doesn't have to exist necessarily in the file system.
             // this file should contain a mapping of field type names to a Java classes separated by a colo ":", e.g.:
-            // FIELDS=deluxe:org.opencms.frontend.templateone.form.CmsDeluxeField,...,super:org.opencms.frontend.templateone.form.CmsSuperField
+            // FIELDS=<fieldtype>:<java class>,...,<fieldtype>:<java class>
             
             propertyFile = new File(CUSTOM_FORM_FIELD_PROPERTIES);
             if (propertyFile.exists()) {
@@ -106,15 +104,14 @@ public final class CmsFieldFactory {
                         continue;
                     }
                         
-                    String value = (String)fieldProperties.get(key);                        
-                    if (CmsStringUtil.isEmpty(value)) {
+                    String[] values = fieldProperties.getStringArray(key);                  
+                    if (values == null || values.length == 0) {
                         continue;
                     }
                         
-                    List fields = CmsStringUtil.splitAsList(value, ",", true);
-                    for (int j = 0, n = fields.size(); j < n; j++) {
+                    for (int j = 0, n = values.length; j < n; j++) {
                         
-                        String field = (String)fields.get(j);
+                        String field = values[j];
                         int index = -1;
                         if ((index = field.indexOf(":")) == -1) {
                             continue;

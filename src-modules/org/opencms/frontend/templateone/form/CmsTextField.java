@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextField.java,v $
- * Date   : $Date: 2005/09/07 08:28:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,13 @@
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
 
 /**
  * Represents a text input field.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public class CmsTextField extends A_CmsField {
 
@@ -65,9 +64,9 @@ public class CmsTextField extends A_CmsField {
     }
     
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsJspActionElement, CmsForm, org.opencms.i18n.CmsMessages, String)
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
      */
-    public String buildHtml(CmsJspActionElement jsp, CmsForm formConfiguration, CmsMessages messages, String errorKey) {
+    public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
         
         StringBuffer buf = new StringBuffer();
         String fieldLabel = getLabel();
@@ -104,7 +103,7 @@ public class CmsTextField extends A_CmsField {
         // line #3
         buf.append(messages.key("form.html.field.start"))
             .append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append("\"")
-            .append(formConfiguration.getFormFieldAttributes())
+            .append(formHandler.getFormConfiguration().getFormFieldAttributes())
             .append(">")
             .append(errorMessage)
             .append(messages.key("form.html.field.end")).append("\n");

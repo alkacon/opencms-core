@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/I_CmsField.java,v $
- * Date   : $Date: 2005/09/07 08:28:17 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/09/09 10:31:59 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.CmsJspActionElement;
 
 import java.util.List;
 
@@ -40,7 +39,7 @@ import java.util.List;
  * Defines the methods required for form fields.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public interface I_CmsField {
 
@@ -117,20 +116,20 @@ public interface I_CmsField {
     /**
      * Validates this field by validating it's constraints and input value.<p>
      * 
+     * @param formHandler the handler of the current form
      * @return null in case of no error, {@link CmsFormHandler#ERROR_VALIDATION} if validation of the input value failed, {@link CmsFormHandler#ERROR_VALIDATION} if validation of the input value failed
      */
-    String validate();
+    String validate(CmsFormHandler formHandler);
     
     /**
      * Builds the HTML input element for this element to be used in a frontend JSP.<p>
      * 
-     * @param jsp the action element of the current JSP
-     * @param formConfiguration the configuration of the current form
+     * @param formHandler the handler of the current form
      * @param messages a resource bundle containing HTML snippets to build the HTML element
      * @param errorKey the key of the current error message
      * 
      * @return the HTML input element for this element to be used in a frontend JSP
      */
-    String buildHtml(CmsJspActionElement jsp, CmsForm formConfiguration, CmsMessages messages, String errorKey);
+    String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey);
     
 }
