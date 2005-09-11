@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/07/27 13:30:28 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -148,63 +148,79 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     }
 
     /**
-     * Converts CSV data to xml.<p>
+     * Converts a delimiter separated format string int o colgroup html fragment.<p>
+     * @param formatString the formatstring to convert
+     * @param delimiter the delimiter the formats (l,r or c) are delimited with
      * 
-     * @return a XML representation of the csv data
-     * 
-     * @param csvData the csv data to convert
-     * @param colGroup the format definitions for the table columns, can be null
-     * @param delimiter the delimiter to separate the values with
-     * 
-     * @throws IOException if there is an IO problem
+     * @return the resulting colgroup HTML
      */
-    private String getTableHtml() throws IOException {
+    private static String getColGroup(String formatString, String delimiter) {
 
-        String csvData = getParamCsvContent();
-        String lineSeparator = System.getProperty("line.separator");
-        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator)); 
-        String delimiter = getParamDelimiter();
-        int[] headerColSpan = null;
-        
-        StringBuffer xml = new StringBuffer("<table>");
-        if (isFormattingInformation(formatString, delimiter)) {
-            // transform formatting to HTML colgroup
-            xml.append(getColGroup(formatString, delimiter));
-            // cut of first line
-            csvData = csvData.substring(formatString.length() + lineSeparator.length());
-            headerColSpan = getColSpans(formatString, delimiter);
-        }   
-          
-        
-        // first line
-        
-        String line;
-        BufferedReader br = new BufferedReader(new StringReader(csvData));
-        if ((line = br.readLine()) != null) {
-            xml.append("<tr>\n");
-            String[] words = CmsStringUtil.splitAsArray(line, delimiter);
-            for (int i = 0; i < words.length; i++) {
-                xml.append("\t<td align=\"center\"");
-                if ((headerColSpan != null) && (headerColSpan.length > i) && (headerColSpan[i] > 1)) {
-                    xml.append(" colspan=\"").append(headerColSpan[i]).append("\"");
-                } 
-                xml.append(">").append(toXmlBody(removeStringDelimiters(words[i]))).append("</td>\n");
+        StringBuffer colgroup = new StringBuffer(128);
+        String[] formatStrings = formatString.split(delimiter);
+        colgroup.append("<colgroup>");
+        for (int i = 0; i < formatStrings.length; i++) {
+            colgroup.append("<col align=\"");
+            char align = formatStrings[i].trim().charAt(0);
+            switch (align) {
+                case 'l':
+                    colgroup.append("left");
+                    break;
+                case 'c':
+                    colgroup.append("center");
+                    break;
+                case 'r':
+                    colgroup.append("right");
+                    break;
+                default:
+                    throw new RuntimeException("invalid format option");
             }
-            xml.append("</tr>\n");
-            while ((line = br.readLine()) != null) {
-                xml.append("<tr>\n");
-                words = CmsStringUtil.splitAsArray(line, delimiter);
-                for (int i = 0; i < words.length; i++) {
-                    xml.append("\t<td>").append(toXmlBody(removeStringDelimiters(words[i]))).append("</td>\n");
-                }
-                xml.append("</tr>\n");
+            colgroup.append("\"/>");
+        }
+        return colgroup.append("</colgroup>").toString();
+    }
+
+    /**
+     * Converts a delimiter separated format string int o colgroup html fragment.<p>
+     * @param formatString the formatstring to convert
+     * @param delimiter the delimiter the formats (l,r or c) are delimited with
+     * 
+     * @return the resulting colgroup HTML
+     */
+    private static int[] getColSpans(String formatString, String delimiter) {
+
+        String[] formatStrings = formatString.split(delimiter);
+        int[] colSpans = new int[formatStrings.length];
+        for (int i = 0; i < formatStrings.length; i++) {
+            String colSpan = formatStrings[i].trim().substring(1);
+            if (CmsStringUtil.isEmpty(colSpan)) {
+                colSpans[i] = 1;
+                continue;
+            } else {
+                colSpans[i] = Integer.parseInt(colSpan);
             }
         }
-
-        return xml.append("</table>").toString();
+        return colSpans;
     }
-    
-    
+
+    /**
+     * Tests if the given string is a <code>delimiter</code> separated list of Formatting Information.<p>
+     * 
+     * @param formatString the string to check
+     * @param delimiter the list separators
+     * 
+     * @return true if the string is a <code>delimiter</code> separated list of Formatting Information
+     */
+    private static boolean isFormattingInformation(String formatString, String delimiter) {
+
+        String[] formatStrings = formatString.split(delimiter);
+        for (int i = 0; i < formatStrings.length; i++) {
+            if (!formatStrings[i].trim().matches("[lcr][1-9]?")) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**                                                                                                                              
      * Removes the string delimiters from a key (as well as any white space                                                          
@@ -229,7 +245,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         k = CmsStringUtil.substitute(k, "\"\"", "\"");
         return k;
     }
-    
+
     /**
      * Embeds the given content as cdata if neccessary.<p>
      * Contents starting with "<" and ending with ">" are NOT embedded in order to allow content with tags.
@@ -238,10 +254,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
      * @return the embedded content
      */
     private static String toXmlBody(String content) {
-        
+
         StringBuffer xmlBody = new StringBuffer(1024);
         content = content.trim();
-        
+
         if (content.startsWith("<") && content.endsWith(">")) {
             return content;
         } else {
@@ -280,16 +296,15 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             int resTypeId = OpenCms.getResourceManager().getDefaultTypeForName(newResname).getTypeId();
 
             CmsProperty styleProp = CmsProperty.getNullProperty();
-            
+
             // set the delimiter
-            String delimiter = getParamDelimiter(); 
+            String delimiter = getParamDelimiter();
             if (TABULATOR.equals(delimiter)) {
                 delimiter = "\t";
             } else if (BEST_DELIMITER.equals(delimiter)) {
                 delimiter = getPreferredDelimiter(getParamCsvContent());
             }
             setParamDelimiter(delimiter);
-            
 
             // transform csv to html
             String xmlContent = "";
@@ -298,13 +313,15 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             } catch (IOException e) {
                 throw new CmsXmlException(Messages.get().container(Messages.ERR_CSV_XML_TRANSFORMATION_FAILED_0));
             }
-            
+
             // if xslt file parameter is set, transform the raw html and set the css stylesheet property
             // of the converted file to that of the stylesheet
-            if (CmsStringUtil.isNotEmpty(getParamXsltFile())) { 
+            if (CmsStringUtil.isNotEmpty(getParamXsltFile())) {
                 xmlContent = applyXslTransformation(getParamXsltFile(), xmlContent);
-                styleProp = getCms().readPropertyObject(getParamXsltFile(),
-                    CmsPropertyDefinition.PROPERTY_STYLESHEET, true);
+                styleProp = getCms().readPropertyObject(
+                    getParamXsltFile(),
+                    CmsPropertyDefinition.PROPERTY_STYLESHEET,
+                    true);
             }
 
             byte[] content = xmlContent.getBytes();
@@ -327,81 +344,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             includeErrorpage(this, e);
         }
     }
-    
-    /**
-     * Tests if the given string is a <code>delimiter</code> separated list of Formatting Information.<p>
-     * 
-     * @param formatString the string to check
-     * @param delimiter the list separators
-     * 
-     * @return true if the string is a <code>delimiter</code> separated list of Formatting Information
-     */
-    private static boolean isFormattingInformation(String formatString, String delimiter) {
-        String[] formatStrings = formatString.split(delimiter);
-        for (int i = 0; i < formatStrings.length; i++) {
-            if (!formatStrings[i].trim().matches("[lcr][1-9]?")) {
-                return false;
-            }    
-        } 
-        return true;
-    }
-    
-    /**
-     * Converts a delimiter separated format string int o colgroup html fragment.<p>
-     * @param formatString the formatstring to convert
-     * @param delimiter the delimiter the formats (l,r or c) are delimited with
-     * 
-     * @return the resulting colgroup HTML
-     */
-    private static String getColGroup(String formatString, String delimiter) {
 
-        StringBuffer colgroup = new StringBuffer(128);
-        String[] formatStrings = formatString.split(delimiter);
-        colgroup.append("<colgroup>");
-        for (int i = 0; i < formatStrings.length; i++) {
-            colgroup.append("<col align=\"");
-            char align = formatStrings[i].trim().charAt(0);
-            switch (align) {
-                case 'l':
-                    colgroup.append("left");
-                    break;
-                case 'c':
-                    colgroup.append("center");
-                    break;
-                case 'r':
-                    colgroup.append("right");
-                    break;
-                default:
-                    throw new RuntimeException("invalid format option");
-            }
-            colgroup.append("\"/>");
-        }
-        return colgroup.append("</colgroup>").toString();
-    }    
-
-    /**
-     * Converts a delimiter separated format string int o colgroup html fragment.<p>
-     * @param formatString the formatstring to convert
-     * @param delimiter the delimiter the formats (l,r or c) are delimited with
-     * 
-     * @return the resulting colgroup HTML
-     */
-    private static int[] getColSpans(String formatString, String delimiter) {
-
-        String[] formatStrings = formatString.split(delimiter);
-        int[] colSpans = new int[formatStrings.length];
-        for (int i = 0; i < formatStrings.length; i++) {
-            String colSpan = formatStrings[i].trim().substring(1);
-            if (CmsStringUtil.isEmpty(colSpan)) {
-                colSpans[i] = 1;
-                continue;
-            } else {
-               colSpans[i] = Integer.parseInt(colSpan);
-            }
-        }
-        return colSpans;
-    } 
-    
     /**
      * Applies a XSLT Transformation to the xmlContent.<p>
      * 
@@ -420,7 +363,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         Source xmlSource = new StreamSource(new StringReader(xmlContent));
         String xsltString = new String(getCms().readFile(xsltFile).getContents());
         Source xsltSource = new StreamSource(new StringReader(xsltString));
-        
+
         TransformerFactory transFact = TransformerFactory.newInstance();
         Transformer trans = transFact.newTransformer(xsltSource);
 
@@ -429,10 +372,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         String result = writer.toString();
         // cut of the prefacing declaration '<?xml version="1.0" encoding="UTF-8"?>'
         if (result.startsWith("<?xml version=\"1.0\" encoding=\"UTF-8\"?>")) {
-            return result.substring(38);   
+            return result.substring(38);
         } else {
-        	return result;
-    	}
+            return result;
+        }
     }
 
     /**
@@ -673,6 +616,62 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     public void setParamXsltFile(String xsltFile) {
 
         m_paramXsltFile = xsltFile;
+    }
+
+    /**
+     * Converts CSV data to xml.<p>
+     * 
+     * @return a XML representation of the csv data
+     * 
+     * @param csvData the csv data to convert
+     * @param colGroup the format definitions for the table columns, can be null
+     * @param delimiter the delimiter to separate the values with
+     * 
+     * @throws IOException if there is an IO problem
+     */
+    private String getTableHtml() throws IOException {
+
+        String csvData = getParamCsvContent();
+        String lineSeparator = System.getProperty("line.separator");
+        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator));
+        String delimiter = getParamDelimiter();
+        int[] headerColSpan = null;
+
+        StringBuffer xml = new StringBuffer("<table>");
+        if (isFormattingInformation(formatString, delimiter)) {
+            // transform formatting to HTML colgroup
+            xml.append(getColGroup(formatString, delimiter));
+            // cut of first line
+            csvData = csvData.substring(formatString.length() + lineSeparator.length());
+            headerColSpan = getColSpans(formatString, delimiter);
+        }
+
+        // first line
+
+        String line;
+        BufferedReader br = new BufferedReader(new StringReader(csvData));
+        if ((line = br.readLine()) != null) {
+            xml.append("<tr>\n");
+            String[] words = CmsStringUtil.splitAsArray(line, delimiter);
+            for (int i = 0; i < words.length; i++) {
+                xml.append("\t<td align=\"center\"");
+                if ((headerColSpan != null) && (headerColSpan.length > i) && (headerColSpan[i] > 1)) {
+                    xml.append(" colspan=\"").append(headerColSpan[i]).append("\"");
+                }
+                xml.append(">").append(toXmlBody(removeStringDelimiters(words[i]))).append("</td>\n");
+            }
+            xml.append("</tr>\n");
+            while ((line = br.readLine()) != null) {
+                xml.append("<tr>\n");
+                words = CmsStringUtil.splitAsArray(line, delimiter);
+                for (int i = 0; i < words.length; i++) {
+                    xml.append("\t<td>").append(toXmlBody(removeStringDelimiters(words[i]))).append("</td>\n");
+                }
+                xml.append("</tr>\n");
+            }
+        }
+
+        return xml.append("</table>").toString();
     }
 
 }

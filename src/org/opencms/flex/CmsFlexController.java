@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/08/09 09:03:58 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -278,9 +278,14 @@ public class CmsFlexController {
     }
 
     /**
-     * Sets the "expires" date header for a given http request.<p>
+     * Sets the <code>Expires</code> date header for a given http request.<p>
      * 
-     * @param res the reponse to set the "expires" date header for
+     * Also sets the <code>cache-control: max-age</code> header to the time of the expiration.
+     * A certain upper limit is imposed on the expiration date parameter to ensure the resources are
+     * not cached to long in proxies. This can be controlled by the <code>maxAge</code> parameter. 
+     * If <code>maxAge</code> is lower then 0, then a default max age of 86400000 msec (1 day) is used.<p> 
+     * 
+     * @param res the reponse to set the "Expires" date header for
      * @param maxAge maximum amount of time in milliseconds the response remains valid
      * @param dateExpires the date to set (if this is not in the future, it is ignored)
      */
@@ -288,25 +293,27 @@ public class CmsFlexController {
 
         long now = System.currentTimeMillis();
         if ((dateExpires > now) && (dateExpires != CmsResource.DATE_EXPIRED_DEFAULT)) {
+
             // important: many caches (browsers or proxy) use the "Expires" header
             // to avoid re-loading of pages that are not expired
             // while this is right in general, no changes before the expiration date
             // will be displayed
             // therefore it is better to not use an expiration to far in the future 
-            
+
             // if no valid max age is set, restrict it to 24 hrs
             if (maxAge < 0L) {
-                maxAge = 86400000;    
+                maxAge = 86400000;
             }
-            
+
             if ((dateExpires - now) > maxAge) {
                 // set "Expires" header max one day into the future
                 dateExpires = now + maxAge;
             }
             res.setDateHeader(CmsRequestUtil.HEADER_EXPIRES, dateExpires);
-            
-            // cw/080805 setting the expire header is not sufficient - even expired documents seems to be cached
-            res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + (maxAge/1000L));
+
+            // setting the "Expires" header only is not sufficient - even expired documents seems to be cached
+            // therefore, the "cache-control: max-age" is also set
+            res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + (maxAge / 1000L));
         }
     }
 

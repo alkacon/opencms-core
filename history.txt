@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/09/09 11:06:11 $
- * Version: $Revision: 1.679 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.680 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,11 @@ OpenCms 6.0.1 - ???, 2005
 ! Added "site" parameter to Flex cache language for creating elements for a specific site only
 * Fixed issue in XML content so that "Articles"-"Article" node naming schema 
   is not longer required for creation of new content items
+* Fixed issue with client side caching of expired documents because of missing http headers
+* Fixed issue with display of historic resource versions in external programs (*.doc, *.pdf)
+* Fixed issue in external link checker if link is not a http link
+! Added support for maxDB/sapDB contributed by Clovis Wichoski and Fabiano Rech
+* Included (experimental) fix to disable multiple setting of "Content-Type" header contributed by Jason Trump 
 
 OpenCms 6.0.0 - June 30, 2005
 * Improved implementation of request "forwarding" in Flex JSP handler

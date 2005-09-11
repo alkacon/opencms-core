@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/08/11 12:34:06 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,9 +83,6 @@ public class CmsDisplayResource extends CmsDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDisplayResource.class);
-
-    /** The controller. */
-    private CmsFlexController m_controller;
 
     /** The version id parameter. */
     private String m_paramVersionid;
@@ -110,7 +107,6 @@ public class CmsDisplayResource extends CmsDialog {
     public CmsDisplayResource(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
-        m_controller = CmsFlexController.getController(req);
     }
 
     /**
@@ -170,14 +166,15 @@ public class CmsDisplayResource extends CmsDialog {
                 HttpServletResponse res = getJsp().getResponse();
                 HttpServletRequest req = getJsp().getRequest();
 
-                res.setHeader("Content-Disposition", new StringBuffer("attachment; filename=\"").append(
-                    getParamResource()).append("\"").toString());
+                res.setHeader(
+                    CmsRequestUtil.HEADER_CONTENT_DISPOSITION,
+                    new StringBuffer("attachment; filename=\"").append(getParamResource()).append("\"").toString());
                 res.setContentLength(result.length);
 
                 CmsFlexController controller = CmsFlexController.getController(req);
                 res = controller.getTopResponse();
                 res.setContentType(contentType);
-           
+
                 try {
                     res.getOutputStream().write(result);
                     res.getOutputStream().flush();
@@ -193,7 +190,7 @@ public class CmsDisplayResource extends CmsDialog {
             if (getCms().existsResource(getParamResource(), CmsResourceFilter.DEFAULT)) {
                 String url = getJsp().link(getParamResource());
                 // if in online project
-                if (url.indexOf("//:")<0 && getCms().getRequestContext().currentProject().isOnlineProject()) {
+                if (url.indexOf("//:") < 0 && getCms().getRequestContext().currentProject().isOnlineProject()) {
                     String site = getCms().getRequestContext().getSiteRoot();
                     if (CmsStringUtil.isEmptyOrWhitespaceOnly(site)) {
                         site = OpenCms.getSiteManager().getDefaultUri();
@@ -211,20 +208,25 @@ public class CmsDisplayResource extends CmsDialog {
                         CmsStaticExportManager manager = OpenCms.getStaticExportManager();
                         HttpURLConnection.setFollowRedirects(false);
                         // try to export it
-                        URL exportUrl = new URL(manager.getExportUrl() + manager.getRfsName(getCms(), getParamResource()));
+                        URL exportUrl = new URL(manager.getExportUrl()
+                            + manager.getRfsName(getCms(), getParamResource()));
                         HttpURLConnection urlcon = (HttpURLConnection)exportUrl.openConnection();
                         // setup the connection and request the resource
                         urlcon.setRequestMethod("GET");
-                        urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, "true");
+                        urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, Boolean.TRUE.toString());
                         if (manager.getAcceptLanguageHeader() != null) {
-                            urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_LANGUAGE, manager.getAcceptLanguageHeader());
+                            urlcon.setRequestProperty(
+                                CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
+                                manager.getAcceptLanguageHeader());
                         } else {
                             urlcon.setRequestProperty(
                                 CmsRequestUtil.HEADER_ACCEPT_LANGUAGE,
                                 manager.getDefaultAcceptLanguageHeader());
                         }
                         if (manager.getAcceptCharsetHeader() != null) {
-                            urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_CHARSET, manager.getAcceptCharsetHeader());
+                            urlcon.setRequestProperty(
+                                CmsRequestUtil.HEADER_ACCEPT_CHARSET,
+                                manager.getAcceptCharsetHeader());
                         } else {
                             urlcon.setRequestProperty(
                                 CmsRequestUtil.HEADER_ACCEPT_CHARSET,

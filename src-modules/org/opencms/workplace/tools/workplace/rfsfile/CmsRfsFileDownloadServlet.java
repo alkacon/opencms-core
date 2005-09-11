@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/06/26 13:06:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,14 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsRfsFileDownloadServlet extends HttpServlet {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -2408134516284724987L;
 
     /**
      * Default constructor for this stateless class. 

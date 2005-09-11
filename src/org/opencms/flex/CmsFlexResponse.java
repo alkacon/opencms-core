@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/07/06 13:14:30 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.flex;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsDateUtil;
+import org.opencms.util.CmsRequestUtil;
 
 import java.io.BufferedWriter;
 import java.io.ByteArrayOutputStream;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -249,6 +250,9 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /** Indicates if this response is suspended (probably because of a redirect). */
     private boolean m_suspended;
 
+    /** State bit indicating whether content type has been set, type may only be set once according to spec. */    
+    private boolean m_typeSet;
+
     /** Indicates that the OutputStream m_out should write ONLY in the buffer. */
     private boolean m_writeOnlyToBuffer;
 
@@ -415,6 +419,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public void addHeader(String name, String value) {
 
         if (isSuspended()) {
+            return;
+        }
+
+        if (CmsRequestUtil.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
+            setContentType(value);
             return;
         }
 
@@ -601,7 +610,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                         m_controller.getCurrentRequest().getElementUri(),
                         location));
                 }
-            }            
+            }
             m_controller.getTopResponse().sendRedirect(location);
         }
 
@@ -620,7 +629,10 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         }
         // only if this is the "Top-Level" element, do set the content type    
         // otherwise an included JSP could reset the type with some unwanted defaults  
-        if (m_isTopElement) {
+        if (!m_typeSet && m_isTopElement) {
+            int todo = 0;
+            // TODO: check if the typeSet fix does not introduce unwanted side-effects on main target platfroms
+            m_typeSet = true;
             super.setContentType(type);
             return;
         }
@@ -644,6 +656,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public void setHeader(String name, String value) {
 
         if (isSuspended()) {
+            return;
+        }
+
+        if (CmsRequestUtil.HEADER_CONTENT_TYPE.equalsIgnoreCase(name)) {
+            setContentType(value);
             return;
         }
 

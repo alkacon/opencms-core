@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2005/09/02 08:31:28 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.23 $
+ * @version $Revision: 1.24 $
  * 
  * @since 6.0.0 
  */
@@ -177,7 +177,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
      */
     public static CmsFile upgrade(CmsResource resource, CmsObject cms) throws CmsException {
         
-        // test if we have a file already
+        // test if we already have a file
         if (resource instanceof CmsFile) {
             // resource is already a file
             CmsFile file = (CmsFile)resource;
@@ -185,16 +185,14 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
                 // file has the contents already available
                 return file;
             }
-        }
-        
-        // test if we have a backupresource already
-        if (resource instanceof CmsBackupResource) {
-            // resource is already a backup resource
+        } else if (resource instanceof CmsBackupResource) {
+            // resource is a backup resource (extends file)
             CmsFile file = (CmsFile)resource;
             if ((file.getContents() != null) && (file.getContents().length > 0)) {
-                // file has the contents already available
+                // backup resource has the contents already available
                 return file;
             } else {
+                // no content available in backup resource
                 CmsBackupResource backupResource = (CmsBackupResource)resource;
                 backupResource = cms.readBackupFile(backupResource.getRootPath(), backupResource.getVersionId());
                 return backupResource;

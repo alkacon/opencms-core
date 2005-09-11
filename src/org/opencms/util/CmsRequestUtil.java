@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/07/14 12:02:14 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +77,12 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Cache-Control". */
     public static final String HEADER_CACHE_CONTROL = "Cache-Control";
+
+    /** The "Content-Disposition" http header. */
+    public static final String HEADER_CONTENT_DISPOSITION = "Content-Disposition";
+
+    /** The "Content-Type" http header. */
+    public static final String HEADER_CONTENT_TYPE = "Content-Type";
 
     /** HTTP Header "Expires". */
     public static final String HEADER_EXPIRES = "Expires";

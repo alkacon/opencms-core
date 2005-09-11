@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexCacheEntry.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/maxdb/Attic/CmsSqlManager.java,v $
  * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.6 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,46 +29,33 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.flex;
-
-import junit.framework.TestCase;
+package org.opencms.db.maxdb;
 
 /**
- * Tests for the CmsFlexCacheEntry.<p>
+ * MaxDB/SapDB implementation of the SQL manager.<p>
  * 
- * @author Michael Emmerich 
+ * @author Thomas Weckert 
+ * @author Clovis Wichoski
+ * @author Fabiano Rech  
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.1 $
+ * 
+ * @since 6.0.0 
  */
-public class TestCmsFlexCacheEntry extends TestCase {
+public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -4644765734741432392L;
+
+    /** The filename/path of the SQL query properties. */
+    private static final String QUERY_PROPERTIES = "org/opencms/db/maxdb/query.properties";
 
     /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
+     * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
      */
-    public TestCmsFlexCacheEntry(String arg0) {
+    public CmsSqlManager() {
 
-        super(arg0);
+        super();
+        loadQueryProperties(QUERY_PROPERTIES);
     }
-
-    /**
-     * Tests the method getAbsoluteUri.<p>
-     */
-    public void testSetDateLastModifiedToPreviousTimeout() {
-
-        CmsFlexCacheEntry entry = new CmsFlexCacheEntry();
-        long timeout = 1;
-
-        entry.complete();
-        entry.setDateExpiresToNextTimeout(timeout);
-        entry.setDateLastModifiedToPreviousTimeout(timeout);
-
-        long timeExpire = entry.getDateExpires();
-        long timeLastMod = entry.getDateLastModified();
-        long timeoutDiff = (timeExpire - timeLastMod) / 60000;
-        assertEquals(timeout, timeoutDiff);
-
-    }
-
 }

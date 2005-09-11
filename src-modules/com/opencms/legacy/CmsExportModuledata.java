@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
- * Date   : $Date: 2005/06/27 23:27:46 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,11 +79,14 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.11 $ $Date: 2005/06/27 23:27:46 $
+ * @version $Revision: 1.12 $ $Date: 2005/09/11 13:27:06 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
 public class CmsExportModuledata extends CmsExport implements Serializable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -8416442909693060452L;
 
     /** Manifest tag: master. */
     public static String C_EXPORT_TAG_MASTER = "master";

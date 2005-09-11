@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/09/02 08:31:28 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,9 +73,7 @@ public class CmsHistory extends CmsDialog {
     /** Request parameter value for the action: restore the version. */
     public static final String DIALOG_RESTORE = "restore";
     
-    /** Request parameter name for versionid. */
-    public static final String PARAM_VERSIONID = "versionid";
-    
+    /** The value of the version ID parameter. */
     private String m_paramVersionid;
     
     /**

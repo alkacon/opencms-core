@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/flex/TestCmsFlexCacheEntry.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/maxdb/Attic/CmsVfsDriver.java,v $
  * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.6 $
+ * Version: $Revision: 1.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,46 +29,28 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.flex;
+package org.opencms.db.maxdb;
 
-import junit.framework.TestCase;
+import org.opencms.db.generic.CmsSqlManager;
 
 /**
- * Tests for the CmsFlexCacheEntry.<p>
+ * MaxDB/SapDB implementation of the VFS driver methods.<p>
  * 
- * @author Michael Emmerich 
+ * @author Thomas Weckert 
+ * @author Clovis Wichoski
+ * @author Fabiano Rech
+ *   
+ * @version $Revision: 1.1 $
  * 
- * @version $Revision: 1.6 $
+ * @since 6.0.0 
  */
-public class TestCmsFlexCacheEntry extends TestCase {
+public class CmsVfsDriver extends org.opencms.db.generic.CmsVfsDriver {
 
     /**
-     * Default JUnit constructor.<p>
-     * 
-     * @param arg0 JUnit parameters
+     * @see org.opencms.db.I_CmsVfsDriver#initSqlManager(String)
      */
-    public TestCmsFlexCacheEntry(String arg0) {
+    public org.opencms.db.generic.CmsSqlManager initSqlManager(String classname) {
 
-        super(arg0);
+        return CmsSqlManager.getInstance(classname);
     }
-
-    /**
-     * Tests the method getAbsoluteUri.<p>
-     */
-    public void testSetDateLastModifiedToPreviousTimeout() {
-
-        CmsFlexCacheEntry entry = new CmsFlexCacheEntry();
-        long timeout = 1;
-
-        entry.complete();
-        entry.setDateExpiresToNextTimeout(timeout);
-        entry.setDateLastModifiedToPreviousTimeout(timeout);
-
-        long timeExpire = entry.getDateExpires();
-        long timeLastMod = entry.getDateLastModified();
-        long timeoutDiff = (timeExpire - timeLastMod) / 60000;
-        assertEquals(timeout, timeoutDiff);
-
-    }
-
 }

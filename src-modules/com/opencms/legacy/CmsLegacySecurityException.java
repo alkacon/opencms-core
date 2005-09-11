@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsLegacySecurityException.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,13 +43,15 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Jan Baudisch (j.baudisch@alkacon.com)
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.10 $
  * @since 5.1.4
  */
 public class CmsLegacySecurityException extends CmsSecurityException {
     
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -5680076356022909019L;
+
     /** 
-     * 
      * MessageContainer with string-constructor, to be used only in this class.
      * CmsLegacyMessageContainers are not localized. <p>
      */

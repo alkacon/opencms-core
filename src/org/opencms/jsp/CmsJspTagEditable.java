@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagEditable.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.jsp;
 
 import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.flex.CmsFlexController;
@@ -52,9 +53,9 @@ import javax.servlet.jsp.PageContext;
 import javax.servlet.jsp.tagext.BodyTagSupport;
 
 /**
- * Implementation of editor tag used to provide settings to include tag.<p>
+ * Implementation of "editable" tag, also used to provide generate the direct edit buttons in the "include" tag.<p>
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,6 +104,11 @@ public class CmsJspTagEditable extends BodyTagSupport {
     public static void editableTagAction(PageContext context, String filename, ServletRequest req, ServletResponse res)
     throws JspException {
 
+        if (CmsBackupResourceHandler.isBackupRequest(req)) {
+            // don't display direct edit buttons on a backup resource
+            return;
+        }
+
         try {
             CmsObject cms = CmsFlexController.getCmsObject(req);
             if (cms.getRequestContext().currentProject().getId() != CmsProject.ONLINE_PROJECT_ID) {
@@ -122,14 +128,15 @@ public class CmsJspTagEditable extends BodyTagSupport {
                 }
             }
         } catch (Throwable t) {
-            // never thrown
+            // should never happen
             throw new JspException(t);
         }
     }
 
     /**
-     * Includes the "direct edit" element that add HTML for the editable area to 
+     * Includes the "direct edit" element that adds HTML for the editable area to 
      * the output page.<p>
+     * 
      * @param context the current JSP page context
      * @param element the editor element to include       
      * @param editTarget the direct edit target
@@ -262,7 +269,6 @@ public class CmsJspTagEditable extends BodyTagSupport {
         if (CmsFlexController.isCmsRequest(req)) {
 
             editableTagAction(pageContext, m_file, req, res);
-
             release();
         }
 

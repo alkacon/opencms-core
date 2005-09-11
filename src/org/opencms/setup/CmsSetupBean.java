@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/09/11 13:27:06 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.44 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,13 +103,16 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /** Name of the property file containing HTML fragments for setup wizard and error dialog. */
     public static final String HTML_MESSAGE_FILE = "org/opencms/setup/htmlmsg.properties";
 
-    /** DB provider constant. */
+    /** DB provider constant for maxdb. */
+    public static final String MAXDB_PROVIDER = "maxdb";
+
+    /** DB provider constant for mysql. */
     public static final String MYSQL_PROVIDER = "mysql";
 
-    /** DB provider constant. */
+    /** DB provider constant for oracle. */
     public static final String ORACLE_PROVIDER = "oracle";
 
-    /** DB provider constant. */
+    /** DB provider constant for postgresql. */
     public static final String POSTGRESQL_PROVIDER = "postgresql";
 
     /** Required files per database server setup. */
@@ -820,7 +823,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                 sortedDatabases.add(database);
                 mappedDatabases.remove(key);
             }
-            m_sortedDatabaseKeys = new ArrayList(databases.size());
             m_sortedDatabaseKeys = sortedDatabases;
         }
         return m_sortedDatabaseKeys;
@@ -1376,7 +1378,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                 }
                 setReplacer(replacer);
 
-                if (provider.equals(GENERIC_PROVIDER) || provider.equals(ORACLE_PROVIDER)) {
+                if (provider.equals(GENERIC_PROVIDER)
+                    || provider.equals(ORACLE_PROVIDER)
+                    || provider.equals(MAXDB_PROVIDER)) {
                     request.getSession().setAttribute("createTables", createTables);
                 }
                 request.getSession().setAttribute("createDb", createDb);
@@ -1386,7 +1390,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                 if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(request.getContextPath())) {
                     dbName = request.getContextPath().substring(1);
                 }
-                if (provider.equals(ORACLE_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
+                if (provider.equals(ORACLE_PROVIDER)
+                    || provider.equals(POSTGRESQL_PROVIDER)
+                    || provider.equals(MAXDB_PROVIDER)) {
                     setDbWorkUser(dbName);
                 } else {
                     setDb(dbName);

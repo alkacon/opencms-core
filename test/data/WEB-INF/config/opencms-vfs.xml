@@ -11,6 +11,7 @@
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
 				<loader class="org.opencms.loader.CmsXmlContentLoader" />
+				<loader class="org.opencms.flex.CmsFlexDummyLoader"/>
 			</resourceloaders>
 			<resourcetypes>
 				<type class="org.opencms.file.types.CmsResourceTypeFolder" name="folder" id="0"/>
