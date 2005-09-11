@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/ImagePreview.java,v $
- * Date   : $Date: 2005/06/27 14:21:17 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/09/11 13:29:50 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,12 +54,15 @@ import javax.swing.JFileChooser;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
 public class ImagePreview extends JComponent implements PropertyChangeListener {
 
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 4851280416316056303L;
+    
     private static final int C_MODE_EMPTY = 0;
     private static final int C_MODE_IMAGE = 1;
     private static final int C_MODE_TEXT = 2;

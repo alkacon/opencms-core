@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2005/06/27 14:21:17 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/09/11 13:29:50 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,11 +62,14 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
 public class FileUploadApplet extends JApplet implements Runnable {
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -3710093915699772777L;
 
     /** Applet thread. */
     Thread m_runner;
