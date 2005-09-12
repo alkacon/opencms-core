@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbContext.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/12 09:57:12 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.opencms.util.CmsRequestUtil;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0
  */
@@ -131,7 +131,7 @@ public class CmsDbContext {
     }
 
     /**
-     * Retruns true if the database context uses the default implementation.<p>
+     * Returns true if the database context uses the default implementation.<p>
      * 
      * @return true if the database context uses the default implementation
      */
