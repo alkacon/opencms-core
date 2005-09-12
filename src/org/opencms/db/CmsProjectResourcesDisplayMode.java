@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProjectResourcesDisplayMode.java,v $
- * Date   : $Date: 2005/07/27 14:07:47 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/09/12 09:57:49 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,16 +46,16 @@ import java.util.List;
  * 
  * The possibles values are:<br>
  * <ul>
- *   <li>ALL_CHANGES</li>
- *   <li>NEW_FILES</li>
- *   <li>DELETED_FILES</li>
- *   <li>MODIFIED_FILES</li>
+ *   <li>{@link #ALL_CHANGES}</li>
+ *   <li>{@link #NEW_FILES}</li>
+ *   <li>{@link #DELETED_FILES}</li>
+ *   <li>{@link #MODIFIED_FILES}</li>
  * </ul>
  * <p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0
  */
@@ -120,7 +120,7 @@ public final class CmsProjectResourcesDisplayMode implements Serializable {
         }
         throw new CmsIllegalArgumentException(Messages.get().container(
             Messages.ERR_MODE_ENUM_PARSE_2,
-            new Integer(value),
+            value,
             CmsProjectResourcesDisplayMode.class.getName()));
     }
 
