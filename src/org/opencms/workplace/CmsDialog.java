@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/07/12 17:21:38 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2005/09/12 10:06:43 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.92 $ 
+ * @version $Revision: 1.93 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,7 +437,7 @@ public class CmsDialog extends CmsToolDialog {
             }
             return retValue.toString();
         } else {
-            return "</div>\n</div>\n<!-- 3D block end -->";
+            return "</div>\n</div>\n<!-- 3D block end -->\n";
         }
     }
 
@@ -640,7 +640,7 @@ public class CmsDialog extends CmsToolDialog {
             result.append("<!-- dialogcontent start -->\n");
             return result.toString();
         } else {
-            return "<!-- dialogcontent end -->\n</div>";
+            return "<!-- dialogcontent end -->\n</div>\n";
         }
     }
 
