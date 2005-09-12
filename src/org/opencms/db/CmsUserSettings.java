@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/09/12 09:59:29 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.33 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0
  */
@@ -835,12 +835,12 @@ public class CmsUserSettings {
             m_projectSettings = new CmsUserProjectSettings();
             m_projectSettings.setDeleteAfterPublishing(false);
             try {
-                m_projectSettings.setManagerGroup(cms.readGroup(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS).getId());
+                m_projectSettings.setManagerGroup(cms.readGroup(OpenCms.getDefaultUsers().getGroupProjectmanagers()).getId());
             } catch (Exception e) {
                 // ignore
             }
             try {
-                m_projectSettings.setUserGroup(cms.readGroup(CmsDefaultUsers.DEFAULT_GROUP_USERS).getId());
+                m_projectSettings.setUserGroup(cms.readGroup(OpenCms.getDefaultUsers().getGroupUsers()).getId());
             } catch (Exception e) {
                 // ignore
             }
