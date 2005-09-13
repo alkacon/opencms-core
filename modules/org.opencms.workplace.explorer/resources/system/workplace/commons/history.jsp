@@ -40,14 +40,14 @@ default:
 <!--
 	function restore(versionid) {
 		if(confirm("<%=wp.key(Messages.GUI_HISTORY_CONFIRMATION_0)%>")) {
-			document.main.<%= wp.PARAM_VERSIONID %>.value = versionid;
+			document.main.<%= CmsBackupResourceHandler.PARAM_VERSIONID %>.value = versionid;
 			document.main.submit();	
 		}	
 	}
 	
 	function viewVersion(resourcename, versionid) {
 		
-		window.open("<%=cms.link(CmsBackupResourceHandler.BACKUP_HANDLER) %>" + resourcename+"?<%= wp.PARAM_VERSIONID %>="+versionid,'version','scrollbars=yes, resizable=yes, width=800, height=600');
+		window.open("<%=cms.link(CmsBackupResourceHandler.BACKUP_HANDLER) %>" + resourcename+"?<%= CmsBackupResourceHandler.PARAM_VERSIONID %>="+versionid,'version','scrollbars=yes, resizable=yes, width=800, height=600');
 	}
 //-->
 </script>
@@ -63,7 +63,7 @@ default:
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
-<input type="hidden" name="<%= wp.PARAM_VERSIONID %>" value="">
+<input type="hidden" name="<%= CmsBackupResourceHandler.PARAM_VERSIONID %>" value="">
 
 <%= wp.dialogWhiteBoxStart() %>
 <%= wp.buildVersionList() %>
