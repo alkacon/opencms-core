@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/09/14 13:46:57 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  * 
@@ -704,6 +704,7 @@ public class CmsImportExportManager {
         cms.checkRole(CmsRole.IMPORT_DATABASE);
 
         try {
+            OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
             I_CmsImportExportHandler handler = getImportExportHandler(importFile);
             handler.importData(cms, importFile, importPath, report);
         } finally {
