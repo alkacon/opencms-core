@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.556 $
+ * Date   : $Date: 2005/09/14 14:31:58 $
+ * Version: $Revision: 1.557 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.556 $
+ * @version $Revision: 1.557 $
  * 
  * @since 6.0.0
  */
@@ -616,9 +616,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 // Administrators, Projectmanagers or Users
                 if (user.getType() == CmsUser.USER_TYPE_WEBUSER) {
                     List forbidden = new ArrayList();
-                    forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_ADMINISTRATORS);
-                    forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_PROJECTMANAGERS);
-                    forbidden.add(CmsDefaultUsers.DEFAULT_GROUP_USERS);
+                    forbidden.add(OpenCms.getDefaultUsers().getGroupAdministrators());
+                    forbidden.add(OpenCms.getDefaultUsers().getGroupProjectmanagers());
+                    forbidden.add(OpenCms.getDefaultUsers().getGroupUsers());
                     if (forbidden.contains(groupname)) {
                         throw new CmsSecurityException(
                             Messages.get().container(Messages.ERR_WEBUSER_GROUP_1, forbidden));
@@ -2475,7 +2475,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (siblingMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
             resources = new ArrayList(readSiblings(dbc, resource, CmsResourceFilter.ALL));
             allSiblingsRemoved = true;
-            
+
             // ensure that the resource requested to be deleted is the last resource that gets actually deleted
             // to keep the shared locks of the siblings while those get deleted.
             resources.remove(resource);
@@ -3912,6 +3912,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsUser loginUser(CmsDbContext dbc, String userName, String password, String remoteAddress, int userType)
     throws CmsAuthentificationException, CmsDataAccessException, CmsPasswordEncryptionException {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1));
+        }
         CmsUser newUser;
         try {
             // read the user from the driver to avoid the cache
@@ -5974,8 +5977,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 groupname));
         }
 
-        if (username.equals(CmsDefaultUsers.DEFAULT_USER_ADMIN)
-            && groupname.equals(CmsDefaultUsers.DEFAULT_GROUP_ADMINISTRATORS)) {
+        if (username.equals(OpenCms.getDefaultUsers().getUserAdmin())
+            && groupname.equals(OpenCms.getDefaultUsers().getGroupAdministrators())) {
             // the admin user cannot be removed from the administrators group, throw exception
             throw new CmsIllegalStateException(Messages.get().container(
                 Messages.ERR_ADMIN_REMOVED_FROM_ADMINISTRATORS_0));
@@ -6912,7 +6915,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsExportPointDriver exportPointDriver = new CmsExportPointDriver(exportPoints);
 
             // the report may be null if the export point write was started by an event
-            if (report == null) {    
+            if (report == null) {
                 // default locale must be used here since there may be no request context available
                 report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), CmsDriverManager.class);
             }

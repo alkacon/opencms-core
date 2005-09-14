@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.92 $
+ * Date   : $Date: 2005/09/14 14:31:58 $
+ * Version: $Revision: 1.93 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.92 $
+ * @version $Revision: 1.93 $
  * 
  * @since 6.0.0
  */
@@ -5386,7 +5386,7 @@ public final class CmsSecurityManager {
         checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, filter);
 
         // access was granted - return the resource
-        return resource;
+        return resource; 
     }
 
     /**
@@ -5405,6 +5405,9 @@ public final class CmsSecurityManager {
             throw new CmsSecurityException(org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_CANT_DELETE_DEFAULT_USER_1,
                 user.getName()));
+        }
+        if (context.currentUser().equals(user)) {
+            throw new CmsSecurityException(Messages.get().container(Messages.ERR_USER_CANT_DELETE_ITSELF_USER_0));
         }
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {

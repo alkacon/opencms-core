@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsEditWebuserDialog.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/14 14:31:58 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.db.CmsDefaultUsers;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.util.Map;
 
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,7 @@ public class CmsEditWebuserDialog extends A_CmsEditUserDialog {
      */
     protected CmsUser createUser(String name, String pwd, String desc, Map info) throws CmsException {
 
-        return getCms().addWebUser(name, pwd, CmsDefaultUsers.DEFAULT_GROUP_GUESTS, desc, info);
+        return getCms().addWebUser(name, pwd, OpenCms.getDefaultUsers().getGroupGuests(), desc, info);
     }
 
     /**

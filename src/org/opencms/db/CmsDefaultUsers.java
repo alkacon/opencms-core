@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/09/14 14:31:58 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,32 +41,32 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0
  */
 public class CmsDefaultUsers {
 
     /** Default name for the "Administrators" group. */
-    public static final String DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
+    protected static final String DEFAULT_GROUP_ADMINISTRATORS = "Administrators";
 
     /** Default name for the "Guests" group. */
-    public static final String DEFAULT_GROUP_GUESTS = "Guests";
+    protected static final String DEFAULT_GROUP_GUESTS = "Guests";
 
     /** Default name for the "Projectmanagers" group. */
-    public static final String DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
+    protected static final String DEFAULT_GROUP_PROJECTMANAGERS = "Projectmanagers";
 
     /** Default name for the "Users" group. */
-    public static final String DEFAULT_GROUP_USERS = "Users";
+    protected static final String DEFAULT_GROUP_USERS = "Users";
 
     /** Default name for the "Admin" user. */
-    public static final String DEFAULT_USER_ADMIN = "Admin";
+    protected static final String DEFAULT_USER_ADMIN = "Admin";
 
     /** Default name for the "Export" user. */
-    public static final String DEFAULT_USER_EXPORT = "Export";
+    protected static final String DEFAULT_USER_EXPORT = "Export";
 
     /** Default name for the "Guest" user. */
-    public static final String DEFAULT_USER_GUEST = "Guest";
+    protected static final String DEFAULT_USER_GUEST = "Guest";
 
     // member variables    
     private String m_groupAdministrators;
