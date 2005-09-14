@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/09/14 13:25:44 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.37 $
+ * @version $Revision: 1.38 $
  * 
  * @since 6.0.0 
  */
@@ -433,6 +433,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_RESOURCES_1 = "ERR_READ_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1 = "ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_RESOURCES_FOR_PROP_SET_2 = "ERR_READ_RESOURCES_FOR_PROP_SET_2";
 
     /** Message constant for key in the resource bundle. */
@@ -547,6 +550,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNSUPPORTED_OPERATION_2 = "ERR_UNSUPPORTED_OPERATION_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_USER_CANT_DELETE_ITSELF_USER_0 = "ERR_USER_CANT_DELETE_ITSELF_USER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_USER_GROUP_NAMES_EMPTY_0 = "ERR_USER_GROUP_NAMES_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -623,6 +629,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DEFAULT_USER_NAMES_INITIALIZED_0 = "INIT_DEFAULT_USER_NAMES_INITIALIZED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_DELETED_RESOURCE_USER_1 = "INIT_DELETED_RESOURCE_USER_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_DRIVER_INIT_FINISHED_0 = "INIT_DRIVER_INIT_FINISHED_0";
