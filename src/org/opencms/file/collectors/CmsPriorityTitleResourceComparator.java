@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsPriorityTitleResourceComparator.java,v $
- * Date   : $Date: 2005/07/07 16:25:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/14 15:30:40 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 
+import java.text.Collator;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +52,7 @@ import java.util.Map;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.14 $
  * 
  * @since 6.0.0 
  */
@@ -128,8 +129,10 @@ public class CmsPriorityTitleResourceComparator implements Comparator {
         if (key0.getPriority() < key1.getPriority()) {
             return 1;
         }
-
-        return key0.getTitle().compareTo(key1.getTitle());
+        
+        // sort by title property dependingon the locale
+        Collator collator = Collator.getInstance(m_cms.getRequestContext().getLocale());
+        return collator.compare(key0.getTitle(), key1.getTitle());
     }
 
     /**
