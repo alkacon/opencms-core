@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/08/31 14:46:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/14 15:29:42 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,8 +135,8 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                         m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                         m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
                     } catch (CmsException e1) {
-                        // error during initialization
-                        try {
+                // error during initialization
+                try {
                             showErrorPage(this, e1);
                         } catch (JspException exc) {
                             // should usually never happen
@@ -148,15 +148,15 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 } else {
                     // error during initialization
                     try {
-                        showErrorPage(this, e);
-                    } catch (JspException exc) {
-                        // should usually never happen
-                        if (LOG.isInfoEnabled()) {
-                            LOG.info(exc);
-                        }
+                    showErrorPage(this, e);
+                } catch (JspException exc) {
+                    // should usually never happen
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(exc);
                     }
                 }
             }
+        }
         }
 
         // set the action for the JSP switch 
@@ -214,6 +214,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 // error during initialization
                 try {
                     showErrorPage(this, e);
+                    return;
                 } catch (JspException exc) {
                     // should usually never happen
                     if (LOG.isInfoEnabled()) {
