@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.680 $
+ * Date   : $Date: 2005/09/14 13:15:15 $
+ * Version: $Revision: 1.681 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.0.1 - ???, 2005
+OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
 * Fixed issue with CmsDriverManager#getChilds()
 * Fixed issue with "search" causing JavaScript errors in new Administration
