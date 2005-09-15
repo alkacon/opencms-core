@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/09/15 15:05:05 $
+ * Version: $Revision: 1.26.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -94,6 +94,24 @@ public class CmsModule implements Comparable {
 
     /** The name of the author of this module. */
     private String m_authorName;
+
+    /** Flag to create the classes folders when creating the module. */
+    private boolean m_createClassesFolder;
+
+    /** Flag to create the elements folder when creating the module. */
+    private boolean m_createElementsFolder;
+
+    /** Flag to create the lib folder when creating the module. */
+    private boolean m_createLibFolder;
+
+    /** Flag to create the module folder when creating the module. */
+    private boolean m_createModuleFolder;
+
+    /** Flag to create the resources folder when creating the module. */
+    private boolean m_createResourcesFolder;
+
+    /** Flag to create the template folder when creating the module. */
+    private boolean m_createTemplateFolder;
 
     /** The date this module was created by the author. */
     private long m_dateCreated;
@@ -147,6 +165,7 @@ public class CmsModule implements Comparable {
 
         m_version = new CmsModuleVersion(CmsModuleVersion.DEFAULT_VERSION);
         m_resources = Collections.EMPTY_LIST;
+        m_exportPoints = Collections.EMPTY_LIST;
         // noop
     }
 
@@ -337,7 +356,15 @@ public class CmsModule implements Comparable {
             result.setDependencies(new ArrayList(getDependencies()));
         }
 
+        result.setCreateClassesFolder(m_createClassesFolder);
+        result.setCreateElementsFolder(m_createElementsFolder);
+        result.setCreateLibFolder(m_createLibFolder);
+        result.setCreateModuleFolder(m_createModuleFolder);
+        result.setCreateResourcesFolder(m_createResourcesFolder);
+        result.setCreateTemplateFolder(m_createTemplateFolder);
+
         result.setResources(new ArrayList(m_resources));
+        result.setExportPoints(new ArrayList(m_exportPoints));
         return result;
     }
 
@@ -596,6 +623,66 @@ public class CmsModule implements Comparable {
     }
 
     /**
+     * Returns the createClassesFolder flag.<p>
+     *
+     * @return the createClassesFolder flag
+     */
+    public boolean isCreateClassesFolder() {
+
+        return m_createClassesFolder;
+    }
+
+    /**
+     * Returns the createElementsFolder flag.<p>
+     *
+     * @return the createElementsFolder flag
+     */
+    public boolean isCreateElementsFolder() {
+
+        return m_createElementsFolder;
+    }
+
+    /**
+     * Returns the createLibFolder flag.<p>
+     *
+     * @return the createLibFolder flag
+     */
+    public boolean isCreateLibFolder() {
+
+        return m_createLibFolder;
+    }
+
+    /**
+     * Returns the createModuleFolder flag.<p>
+     *
+     * @return the createModuleFolder flag
+     */
+    public boolean isCreateModuleFolder() {
+
+        return m_createModuleFolder;
+    }
+
+    /**
+     * Returns the createResourcesFolder flag.<p>
+     *
+     * @return the createResourcesFolder flag
+     */
+    public boolean isCreateResourcesFolder() {
+
+        return m_createResourcesFolder;
+    }
+
+    /**
+     * Returns the createTemplateFolder flag.<p>
+     *
+     * @return the createTemplateFolder flag
+     */
+    public boolean isCreateTemplateFolder() {
+
+        return m_createTemplateFolder;
+    }
+
+    /**
      * Checks if this module is identical with another module.<p>
      * 
      * Modules A, B are <b>identical</b> if <i>all</i> values of A are equal to B.
@@ -667,17 +754,6 @@ public class CmsModule implements Comparable {
     }
 
     /**
-     * Sets the module action instance for this module.<p>
-     * 
-     * @param actionInstance the module action instance for this module
-     */
-    /*package*/void setActionInstance(I_CmsModuleAction actionInstance) {
-
-        m_actionInstance = actionInstance;
-
-    }
-
-    /**
      * Sets the author email of this module.<p>
      * 
      * 
@@ -705,6 +781,66 @@ public class CmsModule implements Comparable {
 
         checkFrozen();
         m_authorName = value.trim();
+    }
+
+    /**
+     * Sets the createClassesFolder flag.<p>
+     *
+     * @param createClassesFolder the createClassesFolder flag to set
+     */
+    public void setCreateClassesFolder(boolean createClassesFolder) {
+
+        m_createClassesFolder = createClassesFolder;
+    }
+
+    /**
+     * Sets the createElementsFolder flag.<p>
+     *
+     * @param createElementsFolder the createElementsFolder flag to set
+     */
+    public void setCreateElementsFolder(boolean createElementsFolder) {
+
+        m_createElementsFolder = createElementsFolder;
+    }
+
+    /**
+     * Sets the createLibFolder flag.<p>
+     *
+     * @param createLibFolder the createLibFolder flag to set
+     */
+    public void setCreateLibFolder(boolean createLibFolder) {
+
+        m_createLibFolder = createLibFolder;
+    }
+
+    /**
+     * Sets the createModuleFolder flag.<p>
+     *
+     * @param createModuleFolder the createModuleFolder flag to set
+     */
+    public void setCreateModuleFolder(boolean createModuleFolder) {
+
+        m_createModuleFolder = createModuleFolder;
+    }
+
+    /**
+     * Sets the createResourcesFolder flag.<p>
+     *
+     * @param createResourcesFolder the createResourcesFolder flag to set
+     */
+    public void setCreateResourcesFolder(boolean createResourcesFolder) {
+
+        m_createResourcesFolder = createResourcesFolder;
+    }
+
+    /**
+     * Sets the createTemplateFolder flag .<p>
+     *
+     * @param createTemplateFolder the createTemplateFolder flag to set
+     */
+    public void setCreateTemplateFolder(boolean createTemplateFolder) {
+
+        m_createTemplateFolder = createTemplateFolder;
     }
 
     /**
@@ -917,6 +1053,17 @@ public class CmsModule implements Comparable {
 
         m_frozen = true;
         m_resources = Collections.unmodifiableList(m_resources);
+    }
+
+    /**
+     * Sets the module action instance for this module.<p>
+     * 
+     * @param actionInstance the module action instance for this module
+     */
+    /*package*/void setActionInstance(I_CmsModuleAction actionInstance) {
+
+        m_actionInstance = actionInstance;
+
     }
 
     /**

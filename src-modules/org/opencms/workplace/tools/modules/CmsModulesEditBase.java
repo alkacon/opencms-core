@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEditBase.java,v $
- * Date   : $Date: 2005/06/28 13:33:29 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/09/15 15:05:05 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.workplace.tools.modules;
 
+import org.opencms.db.CmsExportPoint;
+import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -38,10 +40,13 @@ import org.opencms.module.CmsModule;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -52,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +68,21 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
 
     /** Defines which pages are valid for this dialog. */
     public static final String[] PAGES = {"page1"};
+
+    /** Classes folder within the module. */
+    public static final String PATH_CLASSES = "classes/";
+
+    /** Elements folder within the module. */
+    public static final String PATH_ELEMENTS = "elements/";
+
+    /** Lib folder within the module. */
+    public static final String PATH_LIB = "lib/";
+
+    /** Resources folder within the module. */
+    public static final String PATH_RESOURCES = "resources/";
+
+    /** Template folder within the module. */
+    public static final String PATH_TEMPLATES = "templates/";
 
     /** The module object that is edited on this dialog. */
     protected CmsModule m_module;
@@ -109,6 +129,7 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
                 }
             } else {
                 try {
+                    m_module = createModuleFolders((CmsModule)m_module.clone());
                     OpenCms.getModuleManager().addModule(getCms(), m_module);
                 } catch (CmsException e) {
                     addCommitError(e);
@@ -240,6 +261,79 @@ public class CmsModulesEditBase extends CmsWidgetDialog {
                 throw new Exception();
             }
         }
+    }
+
+    /**
+     * Creates all module folders that are selected in the input form.<p>
+     * @param module the module
+     */
+    private CmsModule createModuleFolders(CmsModule module) throws CmsException {
+
+        String modulePath = CmsWorkplace.VFS_PATH_MODULES + module.getName() + "/";
+        List exportPoints = module.getExportPoints();
+        List resources = module.getResources();
+
+        // set the createModuleFolder flag if any other flag is set
+        if (module.isCreateClassesFolder()
+            || module.isCreateElementsFolder()
+            || module.isCreateLibFolder()
+            || module.isCreateResourcesFolder()
+            || module.isCreateTemplateFolder()) {
+            module.setCreateModuleFolder(true);
+        }
+
+        // check if we have to create the module folder
+        if (module.isCreateModuleFolder()) {
+            getCms().createResource(modulePath, CmsResourceTypeFolder.getStaticTypeId());
+            // add the module folder to the resource list        
+            resources.add(modulePath);
+            module.setResources(resources);
+        }
+
+        // check if we have to create the template folder
+        if (module.isCreateTemplateFolder()) {
+            String path = modulePath + PATH_TEMPLATES;
+            getCms().createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+        }
+
+        // check if we have to create the elements folder
+        if (module.isCreateElementsFolder()) {
+            String path = modulePath + PATH_ELEMENTS;
+            getCms().createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+        }
+
+        // check if we have to create the resources folder
+        if (module.isCreateTemplateFolder()) {
+            String path = modulePath + PATH_RESOURCES;
+            getCms().createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+        }
+
+        // check if we have to create the lib folder
+        if (module.isCreateLibFolder()) {
+            String path = modulePath + PATH_LIB;
+            getCms().createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+            CmsExportPoint exp = new CmsExportPoint(path, "WEB-INF/lib/");
+            exportPoints.add(exp);
+            module.setExportPoints(exportPoints);
+        }
+
+        // check if we have to create the classes folder
+        if (module.isCreateClassesFolder()) {
+            String path = modulePath + PATH_CLASSES;
+            getCms().createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+            CmsExportPoint exp = new CmsExportPoint(path, "WEB-INF/classes/");
+            exportPoints.add(exp);
+            module.setExportPoints(exportPoints);
+
+            // now create all subfolders for the package structure
+            StringTokenizer tok = new StringTokenizer(m_module.getName(), ".");
+            while (tok.hasMoreTokens()) {
+                String folder = tok.nextToken();
+                path += folder + "/";
+                getCms().createResource(path, CmsResourceTypeFolder.getStaticTypeId());
+            }
+        }
+        return module;
     }
 
     /**
