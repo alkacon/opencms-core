@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/09/15 15:28:50 $
+ * Version: $Revision: 1.23.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
@@ -80,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -568,11 +569,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
         List result = new ArrayList();
         try {
-            int resourceTypeGenericXmlContent = OpenCms.getResourceManager().getResourceType("xmlcontent").getTypeId();
             // find all files of generic xmlcontent in the modules folder
-            Iterator xmlFiles = getCms().readResources(
-                CmsWorkplace.VFS_PATH_MODULES,
-                CmsResourceFilter.DEFAULT_FILES.addRequireType(resourceTypeGenericXmlContent),
+            Iterator xmlFiles = getCms().readResources(CmsWorkplace.VFS_PATH_MODULES,
+                CmsResourceFilter.DEFAULT_FILES.addRequireType(CmsResourceTypePlain.getStaticTypeId()),
                 true).iterator();
             while (xmlFiles.hasNext()) {
                 CmsResource xmlFile = (CmsResource)xmlFiles.next();
