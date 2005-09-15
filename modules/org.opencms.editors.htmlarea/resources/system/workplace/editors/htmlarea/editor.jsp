@@ -526,9 +526,16 @@ config.registerButton("tablegallery", "<%= wp.key("button.tablelist") %>", __edi
 
 // determine if customized button should be shown
 String ocDirectPublish = ""; 
+
 if (options.showElement("button.customized", displayOptions)) {
+	I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
 	ocDirectPublish = "\"oc-direct-publish\", ";
-	%>config.registerButton("oc-direct-publish", "<%= wp.key("explorer.context.publish") %>", __editor.imgURL("images/opencms/publish.gif"), true, function(e) { buttonAction(9); });<%
+	if (actionClass.isButtonActive(wp.getJsp(), wp.getParamResource())) {
+		%>config.registerButton("oc-direct-publish", "<%= wp.key("explorer.context.publish") %>", __editor.imgURL("images/opencms/publish.gif"), true, function(e) { buttonAction(9); });<%
+	} else {
+		%>config.registerButton("oc-direct-publish", "<%= wp.key("explorer.context.publish") %>", __editor.imgURL("images/opencms/publish_in.gif"), true, function(e) { });<%
+	
+	}
 }
 
 // determine if the toggle source code button should be shown
