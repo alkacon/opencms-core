@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/15 15:06:32 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,10 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsNewResource;
 import org.opencms.workplace.explorer.CmsNewResourceUpload;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -60,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -262,5 +266,46 @@ public class CmsLinkGallery extends A_CmsGallery {
         headline.append("</tr>");
 
         return headline.toString();
+    }
+
+    /**
+     * Returns a list of hit items.<p>
+     * 
+     * Searches by the title property value, resource name and stored external link.<p> 
+     * 
+     * @param items a list of resource items
+     * @return a list of hit items
+     */
+    protected List getSearchHits(List items) {
+
+        String searchword = getParamSearchWord().toLowerCase();
+        List hitlist = new ArrayList();
+        if (items != null) {
+            Iterator i = items.iterator();
+            while (i.hasNext()) {
+                try {
+                    CmsResource res = (CmsResource)i.next();
+                    String resname = res.getName().toLowerCase();
+                    String restitle = getJsp().property(
+                        CmsPropertyDefinition.PROPERTY_TITLE,
+                        getCms().getSitePath(res),
+                        resname).toLowerCase();
+                    // get the link    
+                    CmsFile file = CmsFile.upgrade(res, getCms());
+                    String link = new String(file.getContents());
+
+                    if (restitle.indexOf(searchword) != -1
+                        || resname.indexOf(searchword) != -1
+                        || link.indexOf(searchword) != -1) {
+                        // add this resource to the hitlist
+                        hitlist.add(res);
+                    }
+                } catch (CmsException e) {
+                    // this should never happen, but in case it does, skip this resource
+                }
+            }
+        }
+
+        return hitlist;
     }
 }
