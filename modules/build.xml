@@ -29,8 +29,10 @@
 	  </classpath>
 	</taskdef>
 	
-    <target name="init" 
-    	description="(internal target) initializes the selection mode">
+	<!-- 
+	  -	initializes the selection mode
+	  -->
+    <target name="init" >
 
     	<property file="${basedir}/all-modules.properties" />
     	<echo message="all: ${basedir}"/>
@@ -94,7 +96,10 @@
         <sortlist property="modules.var" value="${modules.var}" override="true" />
     </target>
 
-	<target name="dependencies" description="Build dependencies - internal target" >
+	<!-- 
+	  -	Build dependencies
+	  -->
+	<target name="dependencies" >
 		<!-- just redirect back to the calling build-single script, for avoiding ant's recursive loop check -->
 	  	<ant antfile="${basedir}/build-single.xml" target="dist" inheritAll="false" >
 	  		<property name="module.name" value="${module.name}" />
