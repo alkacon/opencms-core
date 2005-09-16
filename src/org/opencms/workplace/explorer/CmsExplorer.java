@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/07/27 10:26:50 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/09/16 08:29:38 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -475,7 +475,7 @@ public class CmsExplorer extends CmsWorkplace {
                 if (release != CmsResource.DATE_RELEASED_DEFAULT) {
                     content.append(getMessages().getDateTime(release));
                 } else {
-                    content.append(CmsTouch.RELEASE_EXPIRE_DEFAULT);
+                    content.append(CmsTouch.DEFAULT_DATE_STRING);
                 }
                 content.append("\",");
 
@@ -490,7 +490,7 @@ public class CmsExplorer extends CmsWorkplace {
                 if (expire != CmsResource.DATE_EXPIRED_DEFAULT) {
                     content.append(getMessages().getDateTime(expire));
                 } else {
-                    content.append(CmsTouch.RELEASE_EXPIRE_DEFAULT);
+                    content.append(CmsTouch.DEFAULT_DATE_STRING);
                 }
                 content.append("\",");
 
