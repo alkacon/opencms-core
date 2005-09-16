@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/08/05 15:53:03 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/16 08:47:37 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.13.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the description. */
     public static final String PROPERTY_DESCRIPTION = "Description";
 
+    /** Property for the resource title. */
+    public static final String PROPERTY_ENABLE_NOTIFICATION = "enable-notification";
+
     /** Property for the static export. */
     public static final String PROPERTY_EXPORT = "export";
 
@@ -87,10 +90,10 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     public static final String PROPERTY_KEYWORDS = "Keywords";
 
     /** Property for the current locale. */
-    public static final String PROPERTY_LOCALE_DEFAULT = "locale-default";
+    public static final String PROPERTY_LOCALE = "locale";
 
     /** Property for the current locale. */
-    public static final String PROPERTY_LOCALE = "locale";
+    public static final String PROPERTY_LOCALE_DEFAULT = "locale-default";
     
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
@@ -107,6 +110,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for the navigation text. */
     public static final String PROPERTY_NAVTEXT = "NavText";
 
+    /** Property for the resource title. */
+    public static final String PROPERTY_NOTIFICATION_INTERVAL = "notification-interval";
+    
     /** Property for the relative root link substitution. */
     public static final String PROPERTY_RELATIVEROOT = "relativeroot";
 
@@ -133,7 +139,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the resource title. */
     public static final String PROPERTY_TITLE = "Title";
-
+    
     /** Property for the visible method in the administration view. */
     public static final String PROPERTY_VISIBLE = "visiblemethod";
 
