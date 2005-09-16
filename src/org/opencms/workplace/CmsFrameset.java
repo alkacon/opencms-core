@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2005/09/16 09:01:26 $
+ * Version: $Revision: 1.84.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.84.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,14 +83,8 @@ public class CmsFrameset extends CmsWorkplace {
     /** The names of the supported frames in a list. */
     public static final List FRAMES_LIST = Arrays.asList(FRAMES);
 
-    /** The request parameter for the selection of the frame. */
-    public static final String PARAM_WP_FRAME = "wpFrame";
-
-    /** The request parameter for the workplace project selection. */
-    public static final String PARAM_WP_PROJECT = "wpProject";
-
-    /** The request parameter for the workplace site selection. */
-    public static final String PARAM_WP_SITE = "wpSite";
+    /** Path to the JSP workplace frame loader file. */
+    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_WORKPLACE + "views/workplace.jsp";
 
     /** The request parameter for the workplace start selection. */
     public static final String PARAM_WP_START = "wpStart";
@@ -104,8 +98,8 @@ public class CmsFrameset extends CmsWorkplace {
     /** Indicates if a reload of the main body frame is required. */
     private boolean m_reloadRequired;
 
-    /** Path to the JSP workplace frame loader file. */
-    public static final String JSP_WORKPLACE_URI = CmsWorkplace.VFS_PATH_WORKPLACE + "views/workplace.jsp";
+    /** The request parameter for the selection of the frame. */
+    public static final String PARAM_WP_FRAME = "wpFrame";
 
     /**
      * Public constructor.<p>
@@ -321,7 +315,7 @@ public class CmsFrameset extends CmsWorkplace {
 
     /**
      * Returns the startup URI for display in the main body frame, this can 
-     * eihter be the user default view, or (if set) a sepcific startup resource.<p> 
+     * either be the user default view, or (if set) a sepcific startup resource.<p> 
      * 
      * @return the startup URI for display in the main body frame
      */
@@ -335,7 +329,7 @@ public class CmsFrameset extends CmsWorkplace {
             // reset the startup URI, so that it is not displayed again on reload of the frameset
             getSettings().setViewStartup(null);
         }
-        return CmsRequestUtil.appendParameter(result, PARAM_WP_FRAME, FRAMES[2]);
+        return CmsRequestUtil.appendParameter(result, CmsFrameset.PARAM_WP_FRAME, FRAMES[2]);
     }
 
     /**
@@ -444,13 +438,14 @@ public class CmsFrameset extends CmsWorkplace {
         return (siteCount > 1);
     }
 
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // check if a startup page has been set
-        String frame = CmsRequestUtil.getNotEmptyDecodedParameter(request, PARAM_WP_FRAME);
+        String frame = CmsRequestUtil.getNotEmptyDecodedParameter(request, CmsFrameset.PARAM_WP_FRAME);
         if ((frame == null) || (FRAMES_LIST.indexOf(frame) < 0)) {
             // illegal or no frame selected, assume the "top" frame
             frame = FRAMES[0];
@@ -460,22 +455,16 @@ public class CmsFrameset extends CmsWorkplace {
             // top frame requested - execute special reload actions
             topFrameReload(settings);
         }
-
-        // check if the user requested a project change
-        String project = request.getParameter(PARAM_WP_PROJECT);
-        if (project != null) {
+        
+        // check if a startup page has been set
+        String startup = CmsRequestUtil.getNotEmptyDecodedParameter(request, CmsFrameset.PARAM_WP_START);
+        if (startup != null) {
             m_reloadRequired = true;
-            try {
-                getCms().readProject(Integer.parseInt(project));
-            } catch (Exception e) {
-                // project not found, set online project
-                project = String.valueOf(CmsProject.ONLINE_PROJECT_ID);
-            }
-            settings.setProject(Integer.parseInt(project));
+            settings.setViewStartup(startup);
         }
-
+        
         // check if the user requested a view change
-        String view = request.getParameter(PARAM_WP_VIEW);
+        String view = request.getParameter(CmsFrameset.PARAM_WP_VIEW);
         if (view != null) {
             m_reloadRequired = true;
             settings.setViewUri(view);
@@ -483,20 +472,8 @@ public class CmsFrameset extends CmsWorkplace {
             settings.getFrameUris().put("body", view);
             settings.getFrameUris().put("admin_content", "/system/workplace/action/administration_content_top.html");
         }
-
-        // check if the user requested a site change
-        String site = request.getParameter(PARAM_WP_SITE);
-        if (site != null) {
-            m_reloadRequired = true;
-            settings.setSite(site);
-        }
-
-        // check if a startup page has been set
-        String startup = CmsRequestUtil.getNotEmptyDecodedParameter(request, PARAM_WP_START);
-        if (startup != null) {
-            m_reloadRequired = true;
-            settings.setViewStartup(startup);
-        }
+        
+        m_reloadRequired = initSettings(settings, request) || m_reloadRequired;
     }
 
     /**

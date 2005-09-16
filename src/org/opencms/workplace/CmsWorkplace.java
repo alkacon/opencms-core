@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2005/09/16 09:01:26 $
+ * Version: $Revision: 1.146.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146 $ 
+ * @version $Revision: 1.146.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,6 +227,9 @@ public abstract class CmsWorkplace {
     /** Path to locales. */
     public static final String VFS_PATH_LOCALES = VFS_PATH_WORKPLACE + "locales/";
 
+    /** Path to commons. */
+    public static final String VFS_PATH_COMMONS = VFS_PATH_WORKPLACE + "commons/";
+    
     /** Path to system image folder. */
     public static final String VFS_PATH_RESOURCES = VFS_PATH_WORKPLACE + "resources/";
 
@@ -1259,6 +1262,68 @@ public abstract class CmsWorkplace {
     }
     
     /**
+     * Sets site and project in the workplace settings with the request values of parameters 
+     * <code>{@link CmsWorkplace#PARAM_WP_SITE}</code> and <code>{@link CmsWorkplace#PARAM_WP_PROJECT}</code>.<p>
+     * 
+     * @param settings the workplace settings
+     * @param request the current request
+     * 
+     * @return true, if a reload of the main body frame is required
+     */
+    public boolean initSettings(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // check if the user requested a project change
+        String project = request.getParameter(PARAM_WP_PROJECT);
+        boolean reloadRequired = false;
+        if (project != null) {
+            reloadRequired = true;
+            try {
+                getCms().readProject(Integer.parseInt(project));
+            } catch (Exception e) {
+                // project not found, set online project
+                project = String.valueOf(CmsProject.ONLINE_PROJECT_ID);
+            }
+            try {
+                m_cms.getRequestContext().setCurrentProject(getCms().readProject(Integer.parseInt(project)));
+            } catch (Exception e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+            }   
+            settings.setProject(Integer.parseInt(project));
+        }
+
+        // check if the user requested a site change
+        String site = request.getParameter(PARAM_WP_SITE);
+        if (site != null) {
+            reloadRequired = true;
+            m_cms.getRequestContext().setSiteRoot(site);
+            settings.setSite(site);
+        }
+
+        // check which resource was requested
+        String explorerResource = request.getParameter(PARAM_WP_EXPLORER_RESOURCE);
+        if (explorerResource != null) {
+            reloadRequired = true;
+            settings.setExplorerResource(explorerResource);
+        }
+        
+        return reloadRequired;
+    }
+    
+    /**
+     * First sets site and project in the workplace settings, then fills all class parameter values from the data 
+     * provided in the current request.<p>
+     * 
+     * @param settings the workplace settings
+     * @param request the current request
+     */
+    public void fillParamValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        
+        initSettings(settings, request);
+        fillParamValues(request);
+    }    
+    
+    /**
      * Returns the message String for the broadcast message alert of the workplace.<p>
      * 
      * Caution: returns the pure message String (not escaped) or null, if no message is pending.<p>
@@ -2174,4 +2239,13 @@ public abstract class CmsWorkplace {
         }
         return list;
     }
+
+    /** The request parameter for the workplace project selection. */
+    public static final String PARAM_WP_EXPLORER_RESOURCE = "wpExplorerResource";
+    
+    /** The request parameter for the workplace project selection. */
+    public static final String PARAM_WP_PROJECT = "wpProject";
+
+    /** The request parameter for the workplace site selection. */
+    public static final String PARAM_WP_SITE = "wpSite";
 }

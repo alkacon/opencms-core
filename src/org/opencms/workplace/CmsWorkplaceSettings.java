@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.55 $
+ * Date   : $Date: 2005/09/16 09:01:26 $
+ * Version: $Revision: 1.55.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.55 $ 
+ * @version $Revision: 1.55.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -521,16 +521,6 @@ public class CmsWorkplaceSettings {
     public synchronized void setExplorerShowLinks(boolean b) {
 
         m_explorerShowLinks = b;
-    }
-
-    /**
-     * Sets the frame URIs of the currently loaded frameset, with the frame names as keys.<p>
-     * 
-     * @param frameUris the frame URIs of the currently loaded frameset
-     */
-    public synchronized void setFrameUris(Map frameUris) {
-
-        m_frameUris = frameUris;
     }
 
     /**
