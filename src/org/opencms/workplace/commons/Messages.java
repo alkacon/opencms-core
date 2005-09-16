@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/07/19 15:00:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/16 08:55:29 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,26 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NO_MORE_NOTIFICATIONS_0 = "GUI_NO_MORE_NOTIFICATIONS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMED_NOTIFICATION_INTERVAL_1 = "GUI_CONFIRMED_NOTIFICATION_INTERVAL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMED_OUTDATED_RESOURCE_1 = "GUI_CONFIRMED_OUTDATED_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMED_RELEASE_1 = "GUI_CONFIRMED_RELEASE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONFIRMED_EXPIRATION_1 = "GUI_CONFIRMED_EXPIRATION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BUILDING_RESTYPE_LIST_1 = "ERR_BUILDING_RESTYPE_LIST_1";
@@ -110,12 +125,36 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_XMLPAGE_DIALOG_1 = "ERR_REDIRECT_XMLPAGE_DIALOG_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_DELETED_2 = "ERR_RESOURCE_DELETED_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_DOES_NOT_EXIST_3 = "ERR_RESOURCE_DOES_NOT_EXIST_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1 = "ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_FILE_NOT_FOUND_0 = "ERR_UPLOAD_FILE_NOT_FOUND_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_0 = "GUI_AVAILABILITY_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_ENABLE_NOTIFICATION_0 = "GUI_AVAILABILITY_ENABLE_NOTIFICATION_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_MODIFY_SIBLINGS_0 = "GUI_AVAILABILITY_MODIFY_SIBLINGS_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_NO_RESPONSIBLES_0 = "GUI_AVAILABILITY_NO_RESPONSIBLES_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_NOTIFICATION_SETTINGS_1 = "GUI_AVAILABILITY_NOTIFICATION_SETTINGS_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_AVAILABILITY_RESPONSIBLES_0 = "GUI_AVAILABILITY_RESPONSIBLES_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CALENDAR_CHOOSE_DATE_0 = "GUI_CALENDAR_CHOOSE_DATE_0";
@@ -281,12 +320,12 @@ public final class Messages extends A_CmsMessageBundle {
  
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_OK_0 = "GUI_LABEL_OK_0";
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_LABEL_OWNER_0 = "GUI_LABEL_OWNER_0";
  
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_PERMISSIONS_0 = "GUI_LABEL_PERMISSIONS_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_RESPONSIBLE_0 = "GUI_LABEL_RESPONSIBLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_SEARCH_0 = "GUI_LABEL_SEARCH_0";
@@ -353,6 +392,12 @@ public final class Messages extends A_CmsMessageBundle {
  
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEW_INVITATION_0 = "GUI_NEW_INVITATION_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_INTERVAL_0 = "GUI_NOTIFICATION_INTERVAL_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_NOTIFICATION_SETTINGS_0 = "GUI_NOTIFICATION_SETTINGS_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PERMISSION_0 = "GUI_PERMISSION_0";
