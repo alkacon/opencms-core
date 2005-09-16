@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/29 10:18:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/09/16 09:02:25 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,14 +171,6 @@ public class CmsLogin extends CmsJspLoginBean {
         CmsObject cms = getCmsObject();
 
         m_message = null;
-        m_requestedResource = CmsRequestUtil.getNotEmptyDecodedParameter(
-            getRequest(),
-            CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
-        if (m_requestedResource == null) {
-            // no resource was requested, use default workplace URI
-            m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
-        }
-
         if (cms.getRequestContext().currentUser().isGuestUser()) {
 
             // user is not currently logged in
@@ -198,6 +190,18 @@ public class CmsLogin extends CmsJspLoginBean {
             m_actionLogout = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGOUT);
         }
 
+        m_requestedResource = CmsRequestUtil.getNotEmptyParameter(
+            getRequest(),
+            CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
+        if (m_requestedResource == null) {
+            // no resource was requested, use default workplace URI
+            m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
+        } else {
+            if (m_actionLogin != null) {
+                m_requestedResource = CmsEncoder.decode(m_requestedResource);    
+            }
+        }
+        
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
 
             // login was requested
