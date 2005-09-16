@@ -29,10 +29,12 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
+		    <resource uri="/system/workplace/commons/availability.jsp"/>
 			<resource uri="/system/workplace/commons/chacc.jsp"/>
 			<resource uri="/system/workplace/commons/chaccbrowser.jsp"/>
 			<resource uri="/system/workplace/commons/chnav.jsp"/>
 			<resource uri="/system/workplace/commons/chtype.jsp"/>
+			<resource uri="/system/workplace/commons/confirm_content_notification.jsp"/>
 			<resource uri="/system/workplace/commons/copy.jsp"/>
 			<resource uri="/system/workplace/commons/copytoproject.jsp"/>
 			<resource uri="/system/workplace/commons/delete.jsp"/>
@@ -146,6 +148,28 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/availability.jsp</source>
+			<destination>system/workplace/commons/availability.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>68e3be9b-f052-11d8-ba65-db33cc8f19d7</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Change access]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/chacc.jsp</source>
 			<destination>system/workplace/commons/chacc.jsp</destination>
 			<type>jsp</type>
@@ -229,6 +253,28 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Change resource type]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/confirm_content_notification.jsp</source>
+			<destination>system/workplace/commons/confirm_content_notification.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>bae30fab-13b2-11da-ba0b-9151fb616b67</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Confirm notification]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
