@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/09/16 09:07:14 $
- * Version: $Revision: 1.112.2.1 $
+ * Date   : $Date: 2005/09/16 13:16:16 $
+ * Version: $Revision: 1.112.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.112.2.1 $
+ * @version $Revision: 1.112.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -398,6 +398,39 @@ public interface I_CmsVfsDriver {
     List readResources(CmsDbContext dbc, int currentProject, int state, int mode) throws CmsDataAccessException;
 
     /**
+     * Returns all resources associated to a given principal via an ACE.<p> 
+     * 
+     * @param dbc the current database context
+     * @param project the to read the entries from
+     * @param principalId the id of the principal
+
+     * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException;
+
+    /**
+     * Returns all resources associated to a given principal through some of following attributes.<p> 
+     * 
+     * <ul>
+     *    <li>User Created</li>
+     *    <li>User Last Modified</li>
+     * </ul><p>
+     * 
+     * @param dbc the current database context
+     * @param project the to read the entries from
+     * @param principalId the id of the principal
+
+     * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException;
+
+    /**
      * Reads all resources that have a value set for the specified property (definition), in the given path.<p>
      * 
      * Both individual and shared properties of a resource are checked.<p>
@@ -532,6 +565,24 @@ public interface I_CmsVfsDriver {
      */
     void replaceResource(CmsDbContext dbc, CmsResource newResource, byte[] newResourceContent, int newResourceType)
     throws CmsDataAccessException;
+
+    /**
+     * Transfers the attributes of a resource from to the given users.<p>
+     * 
+     * @param dbc the current database context
+     * @param project the current project
+     * @param resource the resource to modify
+     * @param createdUser the id of the user to be set as the creator of the resource
+     * @param lastModifiedUser the id of the user to be set as the las modificator of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void transferResource(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsResource resource,
+        CmsUUID createdUser,
+        CmsUUID lastModifiedUser) throws CmsDataAccessException;
 
     /**
      * Validates if the specified resource ID in the tables of the specified project {offline|online} exists.<p>
@@ -674,5 +725,4 @@ public interface I_CmsVfsDriver {
      */
     void writeResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
     throws CmsDataAccessException;
-
 }

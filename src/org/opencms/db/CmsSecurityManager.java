@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/09/16 09:07:14 $
- * Version: $Revision: 1.93.2.1 $
+ * Date   : $Date: 2005/09/16 13:16:16 $
+ * Version: $Revision: 1.93.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,11 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.93.2.1 $
+<<<<<<< CmsSecurityManager.java
+ * @version $Revision: 1.93.2.2 $
+=======
+ * @version $Revision: 1.93.2.2 $
+>>>>>>> 1.93.2.1
  * 
  * @since 6.0.0
  */
@@ -1292,6 +1296,43 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Deletes a group, where all permissions, users and childs of the group
+     * are transfered to a replacement group.<p>
+     * 
+     * @param context the current request context
+     * @param groupId the id of the group to be deleted
+     * @param replacementId the id of the group to be transfered, can be <code>null</code>
+     *
+     * @throws CmsException if operation was not succesful
+     * @throws CmsSecurityException if the group is a default group.
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
+     */
+    public void deleteGroup(CmsRequestContext context, CmsUUID groupId, CmsUUID replacementId)
+    throws CmsException, CmsRoleViolationException, CmsSecurityException {
+
+        CmsGroup group = readGroup(context, groupId);
+        if (OpenCms.getDefaultUsers().isDefaultGroup(group.getName())) {
+            throw new CmsSecurityException(Messages.get().container(
+                Messages.ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1,
+                group.getName()));
+        }
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            // catch own exception as special cause for general "Error deleting group". 
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
+            m_driverManager.deleteGroup(dbc, group, replacementId);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, group.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Delete a user group.<p>
      *
      * Only groups that contain no subgroups can be deleted.<p> 
@@ -1316,6 +1357,10 @@ public final class CmsSecurityManager {
         try {
             // catch own exception as special cause for general "Error deleting group". 
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
             m_driverManager.deleteGroup(dbc, name);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
@@ -1456,7 +1501,27 @@ public final class CmsSecurityManager {
     public void deleteUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
         CmsUser user = readUser(context, userId);
-        deleteUser(context, user);
+        deleteUser(context, user, null);
+    }
+
+    /**
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user.<p>
+     *
+     * @param context the current request context
+     * @param userId the id of the user to be deleted
+     * @param replacementId the id of the user to be transfered
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteUser(CmsRequestContext context, CmsUUID userId, CmsUUID replacementId) throws CmsException {
+
+        CmsUser user = readUser(context, userId);
+        CmsUser replacementUser = null;
+        if (replacementId != null && !replacementId.isNullUUID()) {
+            replacementUser = readUser(context, replacementId);
+        }
+        deleteUser(context, user, replacementUser);
     }
 
     /**
@@ -1470,7 +1535,7 @@ public final class CmsSecurityManager {
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsUser user = readUser(context, username, CmsUser.USER_TYPE_SYSTEMUSER);
-        deleteUser(context, user);
+        deleteUser(context, user, null);
     }
 
     /**
@@ -1484,7 +1549,7 @@ public final class CmsSecurityManager {
     public void deleteWebUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
         CmsUser user = readUser(context, userId);
-        deleteUser(context, user);
+        deleteUser(context, user, null);
     }
 
     /**
@@ -2031,6 +2096,45 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Returns all resources associated to a given principal via an ACE with the given permissions.<p> 
+     * 
+     * If the <code>includeAttr</code> flag is set it returns also all resources associated to 
+     * a given principal through some of following attributes.<p> 
+     * 
+     * <ul>
+     *    <li>User Created</li>
+     *    <li>User Last Modified</li>
+     * </ul><p>
+     * 
+     * @param context the current request context
+     * @param principalId the id of the principal
+     * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
+     * @param includeAttr a flag to include resources associated by attributes
+     * 
+     * @return a list of <code>{@link CmsResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourcesForPrincipal(
+        CmsRequestContext context,
+        CmsUUID principalId,
+        CmsPermissionSet permissions,
+        boolean includeAttr) throws CmsException {
+
+        List dependencies;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            dependencies = m_driverManager.getResourcesForPrincipal(dbc, dbc.currentProject(), principalId, permissions, includeAttr);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1, principalId), e);
+            dependencies = new ArrayList();
+        } finally {
+            dbc.clear();
+        }
+        return dependencies;
     }
 
     /**
@@ -2893,8 +2997,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAllPropertyDefinitions(dbc);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_ALL_PROPDEF_0), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ALL_PROPDEF_0), e);
         } finally {
             dbc.clear();
         }
@@ -5495,20 +5598,23 @@ public final class CmsSecurityManager {
         checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, filter);
 
         // access was granted - return the resource
-        return resource; 
+        return resource;
     }
 
     /**
-     * Deletes a user.<p>
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user, if given.<p>
      *
      * @param context the current request context
      * @param user the user to be deleted
+     * @param replacement the user to be transfered, can be <code>null</code>
      * 
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * @throws CmsSecurityException in case the user is a default user 
      * @throws CmsException if something goes wrong
      */
-    private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException, CmsSecurityException, CmsRoleViolationException {
+    private void deleteUser(CmsRequestContext context, CmsUser user, CmsUser replacement)
+    throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
         if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
             throw new CmsSecurityException(org.opencms.security.Messages.get().container(
@@ -5521,7 +5627,15 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
-            m_driverManager.deleteUser(dbc, context.currentProject(), user.getId());
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
+            if (replacement == null) {
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
+            } else {
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
+            }
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
         } finally {
