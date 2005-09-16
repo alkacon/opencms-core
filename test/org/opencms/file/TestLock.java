@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestLock.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/16 08:28:04 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $
+ * @version $Revision: 1.18.2.1 $
  */
 public class TestLock extends OpenCmsTestCase {
   
@@ -620,7 +620,7 @@ public class TestLock extends OpenCmsTestCase {
         
         needLock = false;
         try {
-            cms.touch(source, timestamp, timestamp, timestamp, false);            
+            cms.setDateLastModified(source, timestamp, false);            
         } catch (CmsLockException e) {
             // must throw a security exception because resource is not locked
             needLock = true;

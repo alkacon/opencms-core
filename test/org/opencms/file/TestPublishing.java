@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/09/16 08:28:03 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.19.2.1 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -550,7 +550,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // direct publish of another sibling will not publish the new sibling
         echo ("Publishing another sibling");
         cms.lockResource(source);
-        cms.touch(source, System.currentTimeMillis(), CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.setDateLastModified(source, System.currentTimeMillis(), false);
         cms.unlockResource(source);
         
         storeResources(cms, newSibling);
@@ -611,7 +611,7 @@ public class TestPublishing extends OpenCmsTestCase {
         // change first resource in the offline project
         cms.getRequestContext().setCurrentProject(cms.readProject("Offline"));
         cms.lockResource(res1);
-        cms.touch(res1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.setDateLastModified(res1, timestamp, false);
         
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         
@@ -622,7 +622,7 @@ public class TestPublishing extends OpenCmsTestCase {
         
         // and change another resource in this project
         cms.lockResource(res2);
-        cms.touch(res2, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.setDateLastModified(res2, timestamp, false);
         cms.unlockProject(cms.getRequestContext().currentProject().getId());
         storeResources(cms, res2);
         

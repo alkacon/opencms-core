@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestTouch.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/09/16 08:28:04 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "touch" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.2.1 $
  */
 public class TestTouch extends OpenCmsTestCase {
   
@@ -101,7 +101,7 @@ public class TestTouch extends OpenCmsTestCase {
 
         long timestamp = System.currentTimeMillis();
         cms.lockResource(resource1);
-        cms.touch(resource1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.setDateLastModified(resource1, timestamp, false);
         cms.unlockResource(resource1);
 
         // now evaluate the result
@@ -129,7 +129,7 @@ public class TestTouch extends OpenCmsTestCase {
          
         long timestamp = System.currentTimeMillis();
         cms.lockResource(resource1);
-        cms.touch(resource1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.setDateLastModified(resource1, timestamp, false);
         cms.unlockResource(resource1);
 
         // now evaluate the result
@@ -169,7 +169,7 @@ public class TestTouch extends OpenCmsTestCase {
         
         long timestamp = System.currentTimeMillis();
         cms.lockResource(resource1);
-        cms.touch(resource1, timestamp, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, true);
+        cms.setDateLastModified(resource1, timestamp, true);
         cms.unlockResource(resource1);
 
         // now evaluate the result

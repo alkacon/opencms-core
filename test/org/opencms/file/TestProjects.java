@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProjects.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/09/16 08:28:04 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.14.2.1 $
  */
 public class TestProjects extends OpenCmsTestCase {
   
@@ -195,7 +195,7 @@ public class TestProjects extends OpenCmsTestCase {
         
         // do some changes to the project
         cms.lockResource(resource);
-        cms.touch("/folder1/", System.currentTimeMillis(), CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, true);
+        cms.setDateLastModified("/folder1/", System.currentTimeMillis(), true);
         cms.deleteResource("/folder2/", CmsResource.DELETE_REMOVE_SIBLINGS);        
         cms.createResource("/folder3/", CmsResourceTypeFolder.getStaticTypeId(), null, Collections.EMPTY_LIST);
         cms.createResource("/folder3/test.txt", CmsResourceTypePlain.getStaticTypeId(), "".getBytes(), Collections.EMPTY_LIST);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestReadResourceTree.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/09/16 08:28:04 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * Unit test for the "readResources" method of the CmsObject to test reading resource lists within a subtree.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  */
 public class TestReadResourceTree extends OpenCmsTestCase {
 
@@ -289,7 +289,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         // touch/create/delete some resources
         resourcename = path + "/subfolder21/subsubfolder211/jsp1.jsp";
         cms.lockResource(resourcename);
-        cms.touch(resourcename, System.currentTimeMillis(), 0L, 0L, false);
+        cms.setDateLastModified(resourcename, System.currentTimeMillis(), false);
 
         resourcename = path + "/subfolder22/subsubfolder221/page1.html";
         cms.lockResource(resourcename);
@@ -359,7 +359,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
         // now touch a resource with a timestamp before timestamp1 and check that it is now modified before timestamp1
         resourcename = path + "/subfolder12/index.html";
         cms.lockResource(resourcename);
-        cms.touch(resourcename, timestamp1 - 1, 0L, 0L, false);
+        cms.setDateLastModified(resourcename, timestamp1 - 1, false);
 
         // store all resources of the expected result
         storeResources(cms, resourcename, false);
@@ -385,7 +385,7 @@ public class TestReadResourceTree extends OpenCmsTestCase {
 
         // now touch the resource with a timestamp after timestamp2 and check that it is now modified after timestamp2
         cms.lockResource(resourcename);
-        cms.touch(resourcename, timestamp2 + 1, 0L, 0L, false);
+        cms.setDateLastModified(resourcename, timestamp2 + 1, false);
 
         // store all resources of the expected result
         storeResources(cms, resourcename, false);
