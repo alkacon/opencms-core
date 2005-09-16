@@ -54,8 +54,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
@@ -97,8 +98,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
 						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
@@ -148,8 +150,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
@@ -193,8 +196,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
@@ -236,8 +240,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
@@ -276,8 +281,9 @@
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.replace" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
@@ -319,8 +325,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
@@ -358,8 +365,9 @@
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.replace" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
@@ -433,8 +441,9 @@
 						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
 						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="200"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="210"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
 						<separator order="240"/>
 						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
 						<separator order="260"/>
