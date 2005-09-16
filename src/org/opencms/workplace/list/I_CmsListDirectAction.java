@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/I_CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,7 +60,7 @@ public interface I_CmsListDirectAction extends I_CmsListAction {
      * 
      * @return the id of the column to use 
      */
-    String getColumn();
+    String getColumnForTexts();
 
     /**
      * Returns the current item.<p>
@@ -83,7 +83,7 @@ public interface I_CmsListDirectAction extends I_CmsListAction {
      * 
      * @param columnId the id of the column to use
      */
-    void setColumn(String columnId);
+    void setColumnForTexts(String columnId);
 
     /**
      * Sets the current item, should be called before the <code>{@link #buttonHtml(org.opencms.workplace.CmsWorkplace)}</code> method.<p>

@@ -1,8 +1,6 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*"%>
 <%	
 	// initialize the workplace class
-	CmsGroupsList wp = new CmsGroupsList(pageContext, request, response);
-	
-	// perform the dialog action
-        wp.actionDeleteGroup();
+	CmsGroupDependenciesList wp = new CmsGroupDependenciesList(pageContext, request, response);
+	wp.displayDialog();	
 %>

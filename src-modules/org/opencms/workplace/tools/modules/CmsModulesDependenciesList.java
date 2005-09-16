@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesDependenciesList.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/16 13:11:14 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -309,7 +309,7 @@ public class CmsModulesDependenciesList extends A_CmsListDialog {
         nameColAction.setEnabled(true);
         nameColAction.setConfirmationMessage(null);
         // set action for the name column
-        nameCol.setDefaultAction(nameColAction);
+        nameCol.addDefaultAction(nameColAction);
         metadata.addColumn(nameCol);
 
         // add column for version

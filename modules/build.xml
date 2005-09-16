@@ -17,13 +17,13 @@
 	-->
 	<property name="modules.selection.mode"				value="interactive" />
 	
- 	<taskdef resource="net/sf/antcontrib/antlib.xml">
+ 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
 	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
 	  </classpath>
 	</taskdef>
 	
-	<taskdef resource="org/opencms/util/ant/taskdefs.properties" > 
+	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms"> 
 	  <classpath>
 	    <pathelement location="${opencms.input.libs}/ant-opencms-1.0.jar"/>
 	  </classpath>

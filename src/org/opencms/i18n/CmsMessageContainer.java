@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessageContainer.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  *   
@@ -124,6 +124,9 @@ public class CmsMessageContainer {
      */
     public String key() {
 
+        if (getBundle() == null) {
+            return getKey();
+        }
         return getBundle().key(getKey(), getArgs());
     }
 
@@ -135,6 +138,9 @@ public class CmsMessageContainer {
      */
     public String key(Locale locale) {
 
+        if (getBundle() == null) {
+            return getKey();
+        }
         return getBundle().key(locale, getKey(), getArgs());
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/09/16 08:50:50 $
- * Version: $Revision: 1.216.2.1 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.216.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216.2.1 $ 
+ * @version $Revision: 1.216.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -835,14 +835,15 @@ public final class OpenCmsCore {
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "config/"));
+        // store the configuration read from "opencms.properties" in the configuration manager 
+        m_configurationManager.setConfiguration(configuration);
+
         // now load the XML configuration
         try {
             m_configurationManager.loadXmlConfiguration();
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_XML_0), e);
         }
-        // store the configuration read from "opencms.properties" in the configuration manager 
-        m_configurationManager.setConfiguration(configuration);
 
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);

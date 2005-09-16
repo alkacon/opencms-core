@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupUsersList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/09/16 13:11:11 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
@@ -58,7 +57,7 @@ import javax.servlet.jsp.JspException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,37 +222,18 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         iconCol.setWidth("20");
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         iconCol.setSorteable(false);
-        // state action
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
-        if (!getListId().equals(CmsNotUserGroupsList.LIST_ID)) {
-            iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_NAME_0));
-            iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_INGROUP_HELP_0));
-        } else {
-            iconAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_AVAILABLE_NAME_0));
-            iconAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_AVAILABLE_HELP_0));
-        }
-        iconAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "user.png");
-        iconAction.setEnabled(false);
-        iconCol.addDirectAction(iconAction);
+        // set icon action
+        setIconAction(iconCol);
         // add it to the list definition
         metadata.addColumn(iconCol);
 
-        if (!getListId().equals(CmsShowGroupUsersList.LIST_ID)) {
-            // create column for state change
-            CmsListColumnDefinition stateCol = new CmsListColumnDefinition(LIST_COLUMN_STATE);
-            stateCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_STATE_0));
-            stateCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_STATE_HELP_0));
-            stateCol.setWidth("20");
-            stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-            stateCol.setSorteable(false);
-            // add it to the list definition
-            metadata.addColumn(stateCol);
-        }
+        setStateActionCol(metadata);
 
         // create column for login
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
         loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
         loginCol.setWidth("35%");
+        setDefaultAction(loginCol);
         // add it to the list definition
         metadata.addColumn(loginCol);
 
@@ -265,6 +245,27 @@ public abstract class A_CmsGroupUsersList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(fullnameCol);
     }
+
+    /**
+     * Sets the optional login default action.<p>
+     * 
+     * @param loginCol the login column
+     */
+    protected abstract void setDefaultAction(CmsListColumnDefinition loginCol);
+    
+    /**
+     * Sets the optional state change action column.<p>
+     * 
+     * @param metadata the list metadata object
+     */
+    protected abstract void setStateActionCol(CmsListMetadata metadata);
+    
+    /**
+     * Sets the needed icon action(s).<p>
+     * 
+     * @param iconCol the list column for edition.
+     */
+    protected abstract void setIconAction(CmsListColumnDefinition iconCol);
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/09/16 08:48:17 $
- * Version: $Revision: 1.143.2.1 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.143.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.143.2.1 $
+ * @version $Revision: 1.143.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -705,6 +705,20 @@ public final class CmsObject {
     }
 
     /**
+     * Deletes a group, where all permissions, users and childs of the group
+     * are transfered to a replacement group.<p>
+     * 
+     * @param groupId the id of the group to be deleted
+     * @param replacementId the id of the group to be transfered, can be <code>null</code>
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteGroup(CmsUUID groupId, CmsUUID replacementId) throws CmsException {
+
+        m_securityManager.deleteGroup(m_context, groupId, replacementId);
+    }
+
+    /**
      * Deletes a user group.<p>
      *
      * Only groups that contain no subgroups can be deleted.<p>
@@ -810,6 +824,20 @@ public final class CmsObject {
     public void deleteUser(CmsUUID userId) throws CmsException {
 
         m_securityManager.deleteUser(m_context, userId);
+    }
+
+    /**
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user.<p>
+     *
+     * @param userId the id of the user to be deleted
+     * @param replacementId the id of the user to be transfered, can be <code>null</code>
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteUser(CmsUUID userId, CmsUUID replacementId) throws CmsException {
+
+        m_securityManager.deleteUser(m_context, userId, replacementId);
     }
 
     /**
@@ -1278,6 +1306,37 @@ public final class CmsObject {
         return m_context;
     }
     
+    /**
+     * Returns all resources associated to a given principal via an ACE with the given permissions.<p> 
+     * 
+     * If the <code>includeAttr</code> flag is set it returns also all resources associated to 
+     * a given principal through some of following attributes.<p> 
+     * 
+     * <ul>
+     *    <li>User Created</li>
+     *    <li>User Last Modified</li>
+     * </ul><p>
+     * 
+     * @param principalId the id of the principal
+     * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
+     * @param includeAttr a flag to include resources associated by attributes
+     * 
+     * @return a list of <code>{@link CmsResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourcesForPrincipal(
+        CmsUUID principalId,
+        CmsPermissionSet permissions,
+        boolean includeAttr) throws CmsException {
+
+        return m_securityManager.getResourcesForPrincipal(
+            getRequestContext(),
+            principalId,
+            permissions,
+            includeAttr);
+    }
+
     /**
      * Returns all child resources of a resource, that is the resources
      * contained in a folder.<p>

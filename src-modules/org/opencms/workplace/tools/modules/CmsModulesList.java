@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/09/16 13:11:14 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -380,7 +380,6 @@ public class CmsModulesList extends A_CmsListDialog {
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: delete module
         CmsListDirectAction delModule = new CmsListDirectAction(LIST_ACTION_DELETE);
-        delModule.setColumn(LIST_COLUMN_NICENAME);
         delModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_NAME_0));
         delModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_CONF_0));
         delModule.setIconPath(ICON_DELETE);
@@ -402,7 +401,7 @@ public class CmsModulesList extends A_CmsListDialog {
         nameColAction.setEnabled(true);
         nameColAction.setConfirmationMessage(null);
         // set action for the name column
-        nameCol.setDefaultAction(nameColAction);
+        nameCol.addDefaultAction(nameColAction);
         metadata.addColumn(nameCol);
 
         // add column for nicename

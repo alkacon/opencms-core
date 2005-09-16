@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupStateAction.java,v $
- * Date   : $Date: 2005/07/27 11:19:33 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/09/16 13:11:11 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,160 +33,100 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.list.A_CmsListAction;
-import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListDefaultAction;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
-import java.text.MessageFormat;
 import java.util.List;
 
 /**
- * Shows direct/indirect assigned groups and enabled/disabled a remove action.<p>
+ * Show diferent states depending on user direct/indirect group assignment.<p>
  * 
- * @author Michael Moossen  
- * 
- * @version $Revision: 1.9 $ 
+ * @author Michael Moossen 
+ *  
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsGroupStateAction extends CmsListDefaultAction {
 
-    /** The cms context. */
-    private CmsObject m_cms;
+    /** Cms context. */
+    private final CmsObject m_cms;
 
-    /** The user name. */
+    /** Direct group flag. */
+    private final boolean m_direct;
+
+    /** Current user name. */
     private String m_userName;
 
     /**
-     * Default Constructor.<p>
+     * Default constructor.<p>
      * 
-     * @param id the unique id
+     * @param id the id of the action
      * @param cms the cms context
-     * @param userName the user name
+     * @param direct the direct group flag
      */
-    protected CmsGroupStateAction(String id, CmsObject cms, String userName) {
+    public CmsGroupStateAction(String id, CmsObject cms, boolean direct) {
 
         super(id);
-        m_userName = userName;
         m_cms = cms;
+        m_direct = direct;
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getHelpText()
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
      */
-    public CmsMessageContainer getHelpText() {
+    public boolean isVisible() {
 
-        if (isEnabled()) {
-            return super.getHelpText();
-        }
-        return Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0);
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getIconPath()
-     */
-    public String getIconPath() {
-
-        if (isEnabled()) {
-            return super.getIconPath();
-        } else if (super.getIconPath() == null) {
-            return null;
-        } else {
-            return A_CmsListDialog.ICON_DISABLED;
-        }
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#getId()
-     */
-    public String getId() {
-
-        if (!isEnabled()) {
-            return "x" + super.getId();
-        }
-        return super.getId();
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#getName()
-     */
-    public CmsMessageContainer getName() {
-
-        if (!isEnabled()) {
-            return Messages.get().container(Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_NAME_0);
-        }
-        return super.getName();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.CmsListDirectAction#helpTextHtml(org.opencms.workplace.CmsWorkplace)
-     */
-    public String helpTextHtml(CmsWorkplace wp) {
-
-        StringBuffer html = new StringBuffer(512);
-        // enabled
-        String ht = super.getHelpText().key(wp.getLocale());
-        String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
-        if (getColumn() == null
-            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
-            html.append(A_CmsHtmlIconButton.defaultHelpHtml(super.getId(), helptext));
-        }
-        // disabled
-        String ht2 = Messages.get().key(wp.getLocale(), Messages.GUI_USERGROUPS_LIST_ACTION_STATE_DISABLED_HELP_0, null);
-        String helptext2 = new MessageFormat(ht2, wp.getLocale()).format(new Object[] {""});
-        if (getColumn() == null
-            || helptext2.equals(new MessageFormat(ht2, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
-            html.append(A_CmsHtmlIconButton.defaultHelpHtml("x" + super.getId(), helptext2));
-        }
-        return html.toString();
-    }
-    
-    
-    /**
-     * @see org.opencms.workplace.list.CmsListDirectAction#confirmationTextHtml(org.opencms.workplace.CmsWorkplace)
-     */
-    public String confirmationTextHtml(CmsWorkplace wp) {
-
-        StringBuffer html = new StringBuffer(512);
-        // enabled
-        String ct = super.getConfirmationMessage().key(wp.getLocale());
-        String conftext = new MessageFormat(ct, wp.getLocale()).format(new Object[] {""});
-        if (getColumn() == null
-            || conftext.equals(new MessageFormat(ct, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
-            html.append(A_CmsListAction.defaultConfirmationHtml(super.getId(), conftext));
-            html.append(A_CmsListAction.defaultConfirmationHtml("x" + super.getId(), conftext));
-        }
-        return html.toString();
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isEnabled()
-     */
-    public boolean isEnabled() {
-
-        if (getItem() != null) {
+        try {
             String groupName = (String)getItem().get(A_CmsUserGroupsList.LIST_COLUMN_NAME);
-            try {
-                List dGroups = m_cms.getDirectGroupsOfUser(m_userName);
-                CmsGroup group = m_cms.readGroup(groupName);
+            List dGroups = getCms().getDirectGroupsOfUser(getUserName());
+            CmsGroup group = getCms().readGroup(groupName);
+            if (isDirect()) {
                 return dGroups.contains(group);
-            } catch (Exception e) {
-                // ignore
+            } else {
+                return !dGroups.contains(group);
             }
+        } catch (Exception e) {
+            return false;
         }
-        return super.isEnabled();
     }
 
     /**
-     * Sets the userName.<p>
+     * Returns the user Name.<p>
      *
-     * @param userName the userName to set
+     * @return the user Name
+     */
+    public String getUserName() {
+
+        return m_userName;
+    }
+
+    /**
+     * Sets the user Name.<p>
+     *
+     * @param userName the user Name to set
      */
     public void setUserName(String userName) {
 
         m_userName = userName;
+    }
+
+    /**
+     * Returns the cms context.<p>
+     *
+     * @return the cms context
+     */
+    public CmsObject getCms() {
+
+        return m_cms;
+    }
+
+    /**
+     * Returns the direct group flag.<p>
+     *
+     * @return the direct group flag
+     */
+    public boolean isDirect() {
+
+        return m_direct;
     }
 }

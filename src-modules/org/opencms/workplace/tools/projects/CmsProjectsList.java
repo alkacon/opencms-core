@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,9 +86,6 @@ public class CmsProjectsList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_LOCK = "al";
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_PUBLISH = "ap";
 
     /** list action id constant. */
     public static final String LIST_ACTION_PUBLISH_DISABLED = "apd";
@@ -389,24 +386,56 @@ public class CmsProjectsList extends A_CmsListDialog {
         lockCol.setWidth("20");
         lockCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         lockCol.setListItemComparator(new CmsListItemActionIconComparator());
+
         // lock action
-        CmsListDirectAction lockAction = new CmsListDirectAction(LIST_ACTION_LOCK);
+        CmsListDirectAction lockAction = new CmsListDirectAction(LIST_ACTION_LOCK) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    try {
+                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) == 0;
+                    } catch (CmsException e) {
+                        // noop
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         lockAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_LOCK_NAME_0));
         lockAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_LOCK_HELP_0));
         lockAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_LOCK_CONF_0));
         lockAction.setIconPath(PATH_BUTTONS + "project_lock.png");
         lockAction.setEnabled(false);
+        lockCol.addDirectAction(lockAction);
+
         // unlock action
-        CmsListDirectAction unlockAction = new CmsListDirectAction(LIST_ACTION_UNLOCK);
+        CmsListDirectAction unlockAction = new CmsListDirectAction(LIST_ACTION_UNLOCK) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    try {
+                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) != 0;
+                    } catch (CmsException e) {
+                        // noop
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         unlockAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_NAME_0));
         unlockAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_HELP_0));
         unlockAction.setConfirmationMessage(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_UNLOCK_CONF_0));
         unlockAction.setIconPath(PATH_BUTTONS + "project_unlock.png");
-        // adds a lock/unlock direct action
-        CmsProjectLockAction projectAction = new CmsProjectLockAction(LIST_ACTION_LOCK, getCms());
-        projectAction.setFirstAction(lockAction);
-        projectAction.setSecondAction(unlockAction);
-        lockCol.addDirectAction(projectAction);
+        lockCol.addDirectAction(unlockAction);
+
         // add it to the list definition
         metadata.addColumn(lockCol);
 
@@ -417,16 +446,51 @@ public class CmsProjectsList extends A_CmsListDialog {
         publishCol.setWidth("20");
         publishCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         publishCol.setSorteable(false);
+
         // publish enabled action
-        CmsListDirectAction publishEnabledAction = new CmsListDirectAction(LIST_ACTION_PUBLISH_ENABLED);
+        CmsListDirectAction publishEnabledAction = new CmsListDirectAction(LIST_ACTION_PUBLISH_ENABLED) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    try {
+                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) == 0;
+                    } catch (CmsException e) {
+                        // noop
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         publishEnabledAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_NAME_0));
         publishEnabledAction.setHelpText(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_HELP_0));
         publishEnabledAction.setConfirmationMessage(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_ENABLED_CONF_0));
         publishEnabledAction.setIconPath(PATH_BUTTONS + "project_publish.png");
+        publishCol.addDirectAction(publishEnabledAction);
+
         // publish disabled action
-        CmsListDirectAction publishDisabledAction = new CmsListDirectAction(LIST_ACTION_PUBLISH_DISABLED);
+        CmsListDirectAction publishDisabledAction = new CmsListDirectAction(LIST_ACTION_PUBLISH_DISABLED) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    try {
+                        return getCms().countLockedResources(new Integer(getItem().getId()).intValue()) != 0;
+                    } catch (CmsException e) {
+                        // noop
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         publishDisabledAction.setName(Messages.get().container(
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_NAME_0));
         publishDisabledAction.setHelpText(Messages.get().container(
@@ -435,11 +499,8 @@ public class CmsProjectsList extends A_CmsListDialog {
             Messages.GUI_PROJECTS_LIST_ACTION_PUBLISH_DISABLED_CONF_0));
         publishDisabledAction.setIconPath(PATH_BUTTONS + "project_publish_disabled.png");
         publishDisabledAction.setEnabled(false);
-        // adds a publish enabled/disabled direct action
-        CmsPublishProjectAction publishAction = new CmsPublishProjectAction(LIST_ACTION_PUBLISH, getCms());
-        publishAction.setFirstAction(publishEnabledAction);
-        publishAction.setSecondAction(publishDisabledAction);
-        publishCol.addDirectAction(publishAction);
+        publishCol.addDirectAction(publishDisabledAction);
+
         // add it to the list definition
         metadata.addColumn(publishCol);
 
@@ -484,7 +545,7 @@ public class CmsProjectsList extends A_CmsListDialog {
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_FILES);
         defEditAction.setName(Messages.get().container(Messages.GUI_PROJECTS_LIST_DEFACTION_EDIT_NAME_0));
         defEditAction.setHelpText(Messages.get().container(Messages.GUI_PROJECTS_LIST_DEFACTION_EDIT_HELP_0));
-        nameCol.setDefaultAction(defEditAction);
+        nameCol.addDefaultAction(defEditAction);
         // add it to the list definition
         metadata.addColumn(nameCol);
 

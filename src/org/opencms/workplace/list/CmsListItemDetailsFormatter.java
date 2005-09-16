@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemDetailsFormatter.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +74,7 @@ public class CmsListItemDetailsFormatter implements I_CmsListFormatter {
         html.append(message);
         html.append("&nbsp;:&nbsp;\n");
         html.append("\t\t</td>\n");
-        html.append("\t\t<td class='listdetailitem'>\n");
+        html.append("\t\t<td class='listdetailitem' style='white-space:normal;'>\n");
         html.append("\t\t\t");
         html.append(data == null ? "" : data);
         html.append("\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDefaultAction.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,26 +31,23 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
-import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * Implementation of a default action in a html list column.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListDefaultAction extends CmsListDirectAction {
 
-    /** Id of the column. */
-    private String m_column;
+    /** the id of column to use for the link. */
+    private String m_columnForLink;
 
     /**
      * Default Constructor.<p>
@@ -63,74 +60,45 @@ public class CmsListDefaultAction extends CmsListDirectAction {
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsListDirectAction#buttonHtml(CmsWorkplace)
+     * Sets the id of column to use for the link.<p>
+     *
+     * @param columnForLink the id of column to use for the link to set
      */
-    public String buttonHtml(CmsWorkplace wp) {
+    public void setColumnForLink(String columnForLink) {
 
-        if (m_column == null) {
-            return super.buttonHtml(wp);
-        }
-        String id = getId() + getItem().getId();
-        String name = (getItem().get(m_column) != null) ? getItem().get(m_column).toString() : getName().key(
-            wp.getLocale());
-        String confirmationMessage = getConfirmationMessage().key(wp.getLocale());
-        String helpText = getHelpText().key(wp.getLocale());
-        if (getColumn() != null && getItem().get(getColumn()) != null) {
-            confirmationMessage = new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {getItem().get(
-                getColumn())});
-            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
-        }
-        StringBuffer onClic = new StringBuffer(128);
-        onClic.append("listAction('");
-        onClic.append(getListId());
-        onClic.append("', '");
-        onClic.append(getId());
-        onClic.append("', '");
-        if (getColumn() == null
-            || getItem().get(getColumn()) != null
-            || confirmationMessage.equals(new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {""}))) {
-            onClic.append("conf" + getId());
-        } else {
-            onClic.append(CmsStringUtil.escapeJavaScript(confirmationMessage));
-        }
-        onClic.append("', '");
-        onClic.append(CmsStringUtil.escapeJavaScript(getItem().getId()));
-        onClic.append("');");
-
-        if (getColumn() == null
-            || getItem().get(getColumn()) == null
-            || helpText.equals(new MessageFormat(helpText, wp.getLocale()).format(new Object[] {""}))) {
-            return A_CmsHtmlIconButton.defaultButtonHtml(
-                wp.getJsp(),
-                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                id,
-                getId(),
-                name,
-                helpText,
-                isEnabled(),
-                getIconPath(),
-                onClic.toString(), true);
-        }
-
-        return A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            id,
-            name,
-            helpText,
-            isEnabled(),
-            getIconPath(),
-            onClic.toString());
+        m_columnForLink = columnForLink;
     }
 
     /**
-     * The id of the column to use.<p>
-     * 
-     * @param column the column id
+     * @see org.opencms.workplace.list.CmsListDirectAction#resolveButtonStyle()
      */
-    public void setColumn(String column) {
+    protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
 
-        m_column = column;
+        if (getColumnForLink() == null) {
+            return super.resolveButtonStyle();
+        }
+        return CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT;
     }
 
+    /**
+     * @see org.opencms.workplace.list.CmsListDirectAction#resolveName(java.util.Locale)
+     */
+    protected String resolveName(Locale locale) {
+
+        if (getColumnForLink() == null) {
+            return super.resolveName(locale);
+        }
+        return (getItem().get(getColumnForLink()) != null) ? getItem().get(getColumnForLink()).toString()
+        : getName().key(locale);
+    }
+
+    /**
+     * Resturns the id of column to use for the link.<p>
+     * 
+     * @return the id of column to use for the link
+     */
+    private String getColumnForLink() {
+
+        return m_columnForLink;
+    }
 }

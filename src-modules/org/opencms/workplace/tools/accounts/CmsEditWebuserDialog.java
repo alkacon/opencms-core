@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsEditWebuserDialog.java,v $
- * Date   : $Date: 2005/09/14 14:31:58 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/09/16 13:11:11 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.2.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,14 @@ public class CmsEditWebuserDialog extends A_CmsEditUserDialog {
     protected String getListRootPath() {
 
         return "/accounts/webusers";
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsEditUserDialog#isEditable(org.opencms.file.CmsUser)
+     */
+    protected boolean isEditable(CmsUser user) {
+
+        return true;
     }
 
     /**

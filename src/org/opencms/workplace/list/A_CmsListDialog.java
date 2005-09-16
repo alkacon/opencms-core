@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/08/31 10:46:07 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,19 +204,23 @@ public abstract class A_CmsListDialog extends CmsDialog {
         String searchableColId) {
 
         super(jsp);
+        // set list id
+        m_listId = listId;
+        // set active flag for 2 lists dialog
+        m_active = (getListId() + "-form").equals(getParamFormName());
+        setParamFormName(getListId() + "-form");
+        // abort if already forwarded
         if (isForwarded()) {
             return;
         }
-
-        m_listId = listId;
         // try to read the list from the session
         listRecovery(listId);
         // initialization 
         if (getList() == null) {
             // create the list
-            setList(new CmsHtmlList(listId, listName, getMetadata(listId)));
+            setList(new CmsHtmlList(listId, listName, getMetadata(this.getClass().getName(), listId)));
             if (searchableColId != null && getList().getMetadata().getColumnDefinition(searchableColId) != null) {
-                setSearchAction(listId, getList().getMetadata().getColumnDefinition(searchableColId));
+                setSearchAction(searchableColId);
             }
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
@@ -279,7 +283,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (isForwarded()) {
             return;
         }
-        // TODO: check the need for this
+        // TODO: check the need for this, improve caching
         refreshList();
         switch (getAction()) {
             //////////////////// ACTION: default actions
@@ -291,7 +295,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
             //////////////////// ACTION: execute single list action
             case ACTION_LIST_SINGLE_ACTION:
-                executeListSingleActions();
+                if (getSelectedItem() != null) {
+                    executeListSingleActions();
+                }
                 break;
 
             //////////////////// ACTION: execute multiple list actions
@@ -309,67 +315,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
                 // ACTION: show dialog (default)
                 setParamAction(DIALOG_INITIAL);
         }
-    }
-
-    /**
-     * Returns the html code for the default action content.<p>
-     * 
-     * @return html code
-     */
-    public String defaultActionHtmlContent() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append(dialogContentStart(getParamTitle()));
-        result.append("<form name='");
-        result.append(getList().getId());
-        result.append("-form' action='");
-        result.append(getDialogUri());
-        result.append("' method='post' class='nomargin'");
-        if (getMetadata(getListId()).isSearchable()) {
-            result.append(" onsubmit=\"listSearchAction('");
-            result.append(getListId());
-            result.append("', '");
-            result.append(getMetadata(getListId()).getSearchAction().getId());
-            result.append("', '");
-            result.append(getMetadata(getListId()).getSearchAction().getConfirmationMessage().key(getLocale()));
-            result.append("');\"");
-        }
-        result.append(">\n");
-        result.append(allParamsAsHidden());
-        result.append("\n");
-        result.append(getList().listHtml(this));
-        result.append("\n</form>\n");
-        result.append(dialogContentEnd());
-        return result.toString();
-    }
-
-    /**
-     * Generates the dialog ending html code.<p>
-     * 
-     * @return html code
-     */
-    public String defaultActionHtmlEnd() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append(dialogEnd());
-        result.append(bodyEnd());
-        result.append(htmlEnd());
-        return result.toString();
-    }
-
-    /**
-     * Generates the dialog starting html code.<p>
-     * 
-     * @return html code
-     */
-    public String defaultActionHtmlStart() {
-
-        StringBuffer result = new StringBuffer(2048);
-        result.append(htmlStart(null));
-        result.append(getList().listJs(getLocale()));
-        result.append(bodyStart("dialog", null));
-        result.append(dialogStart());
-        return result.toString();
     }
 
     /**
@@ -474,7 +419,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public CmsHtmlList getList() {
 
         if (m_list != null && m_list.getMetadata() == null) {
-            m_list.setMetadata(getMetadata(m_list.getId()));
+            m_list.setMetadata(getMetadata(this.getClass().getName(), m_list.getId()));
         }
         return m_list;
     }
@@ -484,7 +429,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      *
      * @return the list Id
      */
-    public String getListId() {
+    public final String getListId() {
 
         return m_listId;
     }
@@ -556,7 +501,12 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     public CmsListItem getSelectedItem() {
 
-        return getList().getItem(getParamSelItems());
+        try {
+            return getList().getItem(
+                CmsStringUtil.splitAsArray(getParamSelItems(), CmsHtmlList.ITEM_SEPARATOR)[0].trim());
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -618,16 +568,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
-     * Sets the activation flag.<p>
-     *
-     * @param active the activation flag to set
-     */
-    public void setActive(boolean active) {
-
-        m_active = active;
-    }
-
-    /**
      * Sets the list.<p>
      *
      * @param list the list to set
@@ -649,7 +589,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // null object: remove the entry from the map
             getListObjectMap(getSettings()).remove(listDialog.getName());
         } else {
-            listObject.setMetadata(null);
+            if (listObject.getMetadata() != null && listObject.getMetadata().isVolatile()) {
+                listObject.setMetadata(null);
+            }
             getListObjectMap(getSettings()).put(listDialog.getName(), listObject);
         }
     }
@@ -729,6 +671,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
     }
 
     /**
+     * Can be overwritten to add some code after the list.<p>
+     * 
+     * @return custom html code
+     */
+    protected String customHtmlEnd() {
+
+        return dialogContentEnd();
+    }
+
+    /**
+     * Can be overwritten to add some code before the list.<p>
+     * 
+     * @return custom html code
+     */
+    protected String customHtmlStart() {
+
+        return "";
+    }
+
+    /**
      * Generates the dialog starting html code.<p>
      * 
      * @return html code
@@ -740,8 +702,70 @@ public abstract class A_CmsListDialog extends CmsDialog {
         }
         StringBuffer result = new StringBuffer(2048);
         result.append(defaultActionHtmlStart());
+        result.append(customHtmlStart());
         result.append(defaultActionHtmlContent());
+        result.append(customHtmlEnd());
         result.append(defaultActionHtmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Returns the html code for the default action content.<p>
+     * 
+     * @return html code
+     */
+    protected String defaultActionHtmlContent() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append("<form name='");
+        result.append(getList().getId());
+        result.append("-form' action='");
+        result.append(getDialogRealUri());
+        result.append("' method='post' class='nomargin'");
+        if (getList().getMetadata().isSearchable()) {
+            result.append(" onsubmit=\"listSearchAction('");
+            result.append(getList().getId());
+            result.append("', '");
+            result.append(getList().getMetadata().getSearchAction().getId());
+            result.append("', '");
+            result.append(getList().getMetadata().getSearchAction().getConfirmationMessage().key(getLocale()));
+            result.append("');\"");
+        }
+        result.append(">\n");
+        result.append(allParamsAsHidden());
+        result.append("\n");
+        result.append(getList().listHtml(this));
+        result.append("\n</form>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the dialog ending html code.<p>
+     * 
+     * @return html code
+     */
+    protected String defaultActionHtmlEnd() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(dialogEnd());
+        result.append(bodyEnd());
+        result.append(htmlEnd());
+        return result.toString();
+    }
+
+    /**
+     * Generates the dialog starting html code.<p>
+     * 
+     * @return html code
+     */
+    protected String defaultActionHtmlStart() {
+
+        StringBuffer result = new StringBuffer(2048);
+        result.append(htmlStart(null));
+        result.append(getList().listJs(getLocale()));
+        result.append(bodyStart("dialog", null));
+        result.append(dialogStart());
+        result.append(dialogContentStart(getParamTitle()));
         return result.toString();
     }
 
@@ -797,22 +821,23 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * Should generate the metadata definition for the list, and return the 
      * corresponding <code>{@link CmsListMetadata}</code> object.<p>
      * 
+     * @param listDialogName the name of the class generating the list
      * @param listId the id of the list
      * 
      * @return The metadata for the given list
      */
-    protected synchronized CmsListMetadata getMetadata(String listId) {
+    protected synchronized CmsListMetadata getMetadata(String listDialogName, String listId) {
 
-        if (m_metadatas.get(listId) == null) {
+        if (m_metadatas.get(listDialogName) == null || ((CmsListMetadata)m_metadatas.get(listDialogName)).isVolatile()) {
             CmsListMetadata metadata = new CmsListMetadata(listId);
 
             setColumns(metadata);
             setIndependentActions(metadata);
             setMultiActions(metadata);
             metadata.checkIds();
-            m_metadatas.put(listId, metadata);
+            m_metadatas.put(listDialogName, metadata);
         }
-        return (CmsListMetadata)m_metadatas.get(listId);
+        return (CmsListMetadata)m_metadatas.get(listDialogName);
     }
 
     /**
@@ -844,7 +869,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         } else if (LIST_MULTI_ACTION.equals(getParamAction())) {
             setAction(ACTION_LIST_MULTI_ACTION);
         }
-
+        setParamStyle("new");
         // test the needed parameters
         try {
             validateParamaters();
@@ -872,9 +897,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
         CmsHtmlList list = getListObject(this.getClass(), getSettings());
         if (list != null && !list.getId().equals(listId)) {
             list = null;
-        }
-        if (list != null) {
-            list.setMetadata(getMetadata(listId));
         }
         setList(list);
     }
@@ -919,16 +941,16 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * Can be overriden for more sofisticated search.<p>
      * 
-     * @param listId the id of the list
-     * @param columnDefinition the column to search into
+     * @param columnId the if of the column to search into
      */
-    protected void setSearchAction(String listId, CmsListColumnDefinition columnDefinition) {
+    protected void setSearchAction(String columnId) {
 
-        if (((CmsListMetadata)m_metadatas.get(listId)).getSearchAction() == null) {
+        if (getList().getMetadata().getSearchAction() == null) {
             // makes the list searchable
-            CmsListSearchAction searchAction = new CmsListSearchAction(columnDefinition);
+            CmsListSearchAction searchAction = new CmsListSearchAction(getList().getMetadata().getColumnDefinition(
+                columnId));
             searchAction.useDefaultShowAllAction();
-            ((CmsListMetadata)m_metadatas.get(listId)).setSearchAction(searchAction);
+            getList().getMetadata().setSearchAction(searchAction);
         }
     }
 

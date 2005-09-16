@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/08/04 07:56:46 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspNavBuilder;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -49,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,13 +156,23 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * Returns the needed parameters.<p>
-     *
-     * @return the parameters
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#getParameters(org.opencms.workplace.CmsWorkplace)
      */
-    public String getParameters() {
+    public Map getParameters(CmsWorkplace wp) {
 
-        return m_parameters;
+        Map argMap = new HashMap();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_parameters)) {
+            String toolParams = wp.resolveMacros(m_parameters);
+            Iterator itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
+            while (itArgs.hasNext()) {
+                String arg = (String)itArgs.next();
+                int pos = arg.indexOf("=");
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(arg.substring(pos + 1))) {
+                    argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
+                }
+            }
+        }
+        return argMap;
     }
 
     /**
@@ -257,13 +268,13 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     }
 
     /**
-     * Sets the parameters.<p>
+     * Sets the parameter string.<p>
      *
-     * @param parameters the parameters to set
+     * @param paramString the parameter string to set
      */
-    public void setParameters(String parameters) {
+    public void setParameterString(String paramString) {
 
-        m_parameters = parameters;
+        m_parameters = paramString;
     }
 
     /**
@@ -439,7 +450,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                     path = (String)argsMap.get(ARG_PATH_NAME);
                 }
                 if (argsMap.get(ARG_PARAM_NAME) != null) {
-                    setParameters((String)argsMap.get(ARG_PARAM_NAME));
+                    setParameterString((String)argsMap.get(ARG_PARAM_NAME));
                 }
             }
         } catch (CmsException e) {

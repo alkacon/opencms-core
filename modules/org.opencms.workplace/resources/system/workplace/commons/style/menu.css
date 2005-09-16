@@ -496,7 +496,7 @@ table.dialogbox {
 	background-color: ThreeDFace;
 	<% } %>
 	<% if(style == NEW_ADMIN) { %>
-	padding: 1px;
+	padding-top: 10px;	
 	<% } %>
         <% if(style == WORKPLACE) { %>
 	background-color: ThreeDFace;
@@ -504,7 +504,7 @@ table.dialogbox {
 	border-top: 1px solid ThreeDHighlight;
 	border-right: 1px solid ThreeDShadow;
 	border-bottom: 1px solid ThreeDShadow;
-	padding: 1px;	
+	padding-top: 1px;	
 	<% } %>
 }
 
@@ -647,8 +647,8 @@ span.separator {
 	border-right: 2px solid ThreeDShadow;
 	border-bottom: 2px solid ThreeDShadow;
 	margin: 8px;
-	<% } %>
 	padding: 15px;
+	<% } %>
 	<% if(style == NEW_ADMIN) { %>
     width: 95%;
     margin: auto;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserOverviewDialog.java,v $
- * Date   : $Date: 2005/07/12 17:21:12 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,16 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
 
+import java.util.ArrayList;
 import java.util.Date;
 
 import javax.servlet.http.HttpServletRequest;
@@ -43,20 +48,35 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
 /**
- * The system user overview and user info widget dialog.<p>
+ * Dialog to edit new or existing user in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsUserOverviewDialog extends CmsEditUserDialog {
+public class CmsUserOverviewDialog extends CmsWidgetDialog {
+
+    /** localized messages Keys prefix. */
+    public static final String KEY_PREFIX = "user.ov";
+
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGES = {"page1"};
+
+    /** Request parameter name for the user id. */
+    public static final String PARAM_USERID = "userid";
 
     /** Formatter for the last login property. */
     private static final CmsListDateMacroFormatter LAST_LOGIN_FORMATTER = new CmsListDateMacroFormatter(
         Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1),
         Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0));
+
+    /** The user object that is edited on this dialog. */
+    protected CmsUser m_user;
+
+    /** Stores the value of the request parameter for the user id. */
+    private String m_paramUserid;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -66,7 +86,6 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
     public CmsUserOverviewDialog(CmsJspActionElement jsp) {
 
         super(jsp);
-
     }
 
     /**
@@ -82,6 +101,15 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
     }
 
     /**
+     * Commits the edited user to the db.<p>
+     */
+    public void actionCommit() {
+
+        // no saving is done
+        setCommitErrors(new ArrayList());
+    }
+
+    /**
      * Returns the last login.<p>
      *
      * Auxiliary Property for better representation of the bean parentId property.<p>
@@ -91,6 +119,16 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
     public String getLastlogin() {
 
         return LAST_LOGIN_FORMATTER.format(new Date(m_user.getLastlogin()), getLocale());
+    }
+
+    /**
+     * Returns the user id parameter value.<p>
+     * 
+     * @return the user id parameter value
+     */
+    public String getParamUserid() {
+
+        return m_paramUserid;
     }
 
     /**
@@ -104,6 +142,16 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
 
         // never used
         lastlogin.length();
+    }
+
+    /**
+     * Sets the user id parameter value.<p>
+     * 
+     * @param userId the user id parameter value
+     */
+    public void setParamUserid(String userId) {
+
+        m_paramUserid = userId;
     }
 
     /**
@@ -131,6 +179,7 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             if (!isOverview()) {
+                result.append(createWidgetTableEnd());
                 return result.toString();
             }
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0)));
@@ -188,6 +237,38 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
+    }
+
+    /**
+     * Initializes the user object.<p>
+     */
+    protected void initUserObject() {
+
+        try {
+            // edit an existing user, get the user object from db
+            m_user = getCms().readUser(new CmsUUID(getParamUserid()));
+        } catch (CmsException e) {
+            // should never happen
+        }
+    }
+
+    /**
      * Overridden to set a custom online help path. <p>
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
@@ -199,12 +280,21 @@ public class CmsUserOverviewDialog extends CmsEditUserDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        getCms().readUser(new CmsUUID(getParamUserid())).getName();
+    }
+
+    /**
      * Checks if the User overview has to be displayed.<p>
      * 
      * @return <code>true</code> if the user overview has to be displayed
      */
     private boolean isOverview() {
 
-        return getCurrentToolPath().equals("/accounts/users/edit");
+        return getCurrentToolPath().endsWith("/users/edit");
     }
 }

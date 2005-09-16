@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/09/16 08:46:10 $
- * Version: $Revision: 1.255.2.1 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.255.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.255.2.1 $
+ * @version $Revision: 1.255.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -1506,6 +1506,73 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesForPrincipalACE(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public List readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        CmsResource currentResource = null;
+        List resources = new ArrayList();
+
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_SELECT_RESOURCES_FOR_PRINCIPAL_ACE");
+
+            stmt.setString(1, principalId.toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                currentResource = createFile(res, project.getId(), false);
+                resources.add(currentResource);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return resources;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesForPrincipalAttr(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public List readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        CmsResource currentResource = null;
+        List resources = new ArrayList();
+
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_SELECT_RESOURCES_FOR_PRINCIPAL_ATTR");
+
+            stmt.setString(1, principalId.toString());
+            stmt.setString(2, principalId.toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                currentResource = createFile(res, project.getId(), false);
+                resources.add(currentResource);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return resources;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, String)
      */
     public List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDef, String path)
@@ -1821,6 +1888,41 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(3, newResource.getResourceId().toString());
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#transferResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void transferResource(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsResource resource,
+        CmsUUID createdUser,
+        CmsUUID lastModifiedUser) throws CmsDataAccessException {
+
+        if (createdUser == null) {
+            createdUser = resource.getUserCreated();
+        }
+        if (lastModifiedUser == null) {
+            lastModifiedUser = resource.getUserLastModified();
+        }
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_TRANSFER_RESOURCE");
+            stmt.setString(1, createdUser.toString());
+            stmt.setString(2, lastModifiedUser.toString());
+            stmt.setString(3, resource.getResourceId().toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,

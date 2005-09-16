@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2005/06/25 12:45:06 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.tools.A_CmsToolHandler;
 
@@ -41,11 +42,23 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAccountsToolHandler extends A_CmsToolHandler {
+
+    /** Visibility flag module parameter name. */
+    private static final String PARAM_VISIBILITY_FLAG = "visibility";
+
+    /** Visibility parameter value constant. */
+    private static final String VISIBILITY_ALL = "all";
+
+    /** Visibility parameter value constant. */
+    private static final String VISIBILITY_NONE = "none";
+
+    /** Visibility parameter value constant. */
+    private static final String VISIBILITY_WEBUSERSONLY = "webusersonly";
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
@@ -60,6 +73,29 @@ public class CmsAccountsToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        return cms.hasRole(CmsRole.ACCOUNT_MANAGER);
+        if (getVisibilityFlag().equals(VISIBILITY_NONE)) {
+            return false;
+        }
+        if (getVisibilityFlag().equals(VISIBILITY_ALL)) {
+            return cms.hasRole(CmsRole.ACCOUNT_MANAGER);
+        }
+        if (getVisibilityFlag().equals(VISIBILITY_WEBUSERSONLY)) {
+            boolean visible = cms.hasRole(CmsRole.ACCOUNT_MANAGER);
+            visible = visible && (getPath().equals("/accounts") || getPath().indexOf("/webusers") > 0 || getPath().indexOf("/groups") > 0);
+            return visible;
+        }
+        return true;
+    }
+
+    /**
+     * Returns the visibility flag module parameter value.<p>
+     * 
+     * @return the visibility flag module parameter value
+     */
+    private String getVisibilityFlag() {
+
+        return OpenCms.getModuleManager().getModule(this.getClass().getPackage().getName()).getParameter(
+            PARAM_VISIBILITY_FLAG,
+            VISIBILITY_ALL);
     }
 }

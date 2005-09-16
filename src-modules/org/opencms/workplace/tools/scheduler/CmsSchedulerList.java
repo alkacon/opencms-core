@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/07/25 15:59:36 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/09/16 13:11:13 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -388,23 +388,51 @@ public class CmsSchedulerList extends A_CmsListDialog {
         activateCol.setWidth("20");
         activateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         activateCol.setListItemComparator(new CmsListItemActionIconComparator());
-        // create direct action to activate/deactivate job
-        CmsActionActivateJob activateJob = new CmsActionActivateJob(LIST_ACTION_ACTIVATE, getCms());
+
         // direct action: activate job
-        CmsListDirectAction userActAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE);
-        userActAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0));
-        userActAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
-        userActAction.setIconPath(ICON_INACTIVE);
-        userActAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0));
-        activateJob.setFirstAction(userActAction);
+        CmsListDirectAction jobActAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    String jobId = getItem().getId();
+                    CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
+                    return !job.isActive();
+                }
+                return super.isVisible();
+            }
+        };
+        jobActAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_NAME_0));
+        jobActAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_CONF_0));
+        jobActAction.setIconPath(ICON_INACTIVE);
+        jobActAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_ACTIVATE_HELP_0));
+        activateCol.addDirectAction(jobActAction);
+
         // direct action: deactivate job
-        CmsListDirectAction userDeactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE);
-        userDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
-        userDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
-        userDeactAction.setIconPath(ICON_ACTIVE);
-        userDeactAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0));
-        activateJob.setSecondAction(userDeactAction);
-        activateCol.addDirectAction(activateJob);
+        CmsListDirectAction jobDeactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    String jobId = getItem().getId();
+                    CmsScheduledJobInfo job = OpenCms.getScheduleManager().getJob(jobId);
+                    return job.isActive();
+                }
+                return super.isVisible();
+            }
+        };
+        jobDeactAction.setName(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_NAME_0));
+        jobDeactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_CONF_0));
+        jobDeactAction.setIconPath(ICON_ACTIVE);
+        jobDeactAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_DEACTIVATE_HELP_0));
+        activateCol.addDirectAction(jobDeactAction);
+
         metadata.addColumn(activateCol);
 
         // add column for copy action
@@ -451,7 +479,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         nameColAction.setHelpText(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_HELP_0));
         nameColAction.setConfirmationMessage(Messages.get().container(Messages.GUI_JOBS_LIST_ACTION_EDIT_CONF_0));
         // set action for the name column
-        nameCol.setDefaultAction(nameColAction);
+        nameCol.addDefaultAction(nameColAction);
         metadata.addColumn(nameCol);
 
         // add column for class

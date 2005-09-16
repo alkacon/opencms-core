@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUserGroupsList.java,v $
- * Date   : $Date: 2005/06/29 13:02:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.16.2.1 $
  * 
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,27 +40,21 @@ import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.I_CmsListDirectAction;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
-
-import javax.servlet.ServletException;
-import javax.servlet.jsp.JspException;
 
 /**
  * Generalized user groups view.<p>
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -118,15 +112,6 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#actionDialog()
-     */
-    public void actionDialog() throws JspException, ServletException, IOException {
-
-        updateUserList();
-        super.actionDialog();
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getList()
      */
     public CmsHtmlList getList() {
@@ -139,8 +124,8 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
                 Iterator it = col.getDirectActions().iterator();
                 while (it.hasNext()) {
                     I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
-                    if (action instanceof CmsGroupDisabledStateAction) {
-                        ((CmsGroupDisabledStateAction)action).setUserName(m_paramUsername);
+                    if (action instanceof CmsGroupStateAction) {
+                        ((CmsGroupStateAction)action).setUserName(m_paramUsername);
                     }
                 }
             }
@@ -176,17 +161,6 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     public void setParamUserid(String userId) {
 
         m_paramUserid = userId;
-    }
-
-    /**
-     * Updates the main user list.<p>
-     */
-    public void updateUserList() {
-
-        Map objects = (Map)getSettings().getListObject();
-        if (objects != null) {
-            objects.remove(A_CmsUsersList.class.getName());
-        }
     }
 
     /**
@@ -250,53 +224,20 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
         iconCol.setWidth("20");
         iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         iconCol.setSorteable(false);
-        if (!getListId().equals(CmsNotUserGroupsList.LIST_ID) && !getListId().equals(CmsNotWebuserGroupsList.LIST_ID)) {
-            // state action
-            CmsGroupDisabledStateAction iconAction = new CmsGroupDisabledStateAction(
-                LIST_ACTION_ICON,
-                getCms(),
-                m_paramUsername);
-            // adds a direct group icon
-            CmsListDirectAction dirAction = new CmsListDirectAction(LIST_ACTION_ICON_DIRECT);
-            dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
-            dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
-            dirAction.setIconPath(getGroupIcon());
-            iconAction.setFirstAction(dirAction);
-            // adds an indirect group icon
-            CmsListDirectAction indirAction = new CmsListDirectAction(LIST_ACTION_ICON_INDIRECT);
-            indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
-            indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
-            indirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group_indirect.png");
-            iconAction.setSecondAction(indirAction);
-            iconCol.addDirectAction(iconAction);
-        } else {
-            // state action
-            CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
-            iconAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_AVAILABLE_NAME_0));
-            iconAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_AVAILABLE_HELP_0));
-            iconAction.setIconPath(getGroupIcon());
-            iconAction.setEnabled(false);
-            iconCol.addDirectAction(iconAction);
-        }
+        // add icon actions
+        setIconAction(iconCol);
         // add it to the list definition
         metadata.addColumn(iconCol);
-
-        if (!getListId().equals(CmsShowUserGroupsList.LIST_ID)) {
-            // create column for state change
-            CmsListColumnDefinition stateCol = new CmsListColumnDefinition(LIST_COLUMN_STATE);
-            stateCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_STATE_0));
-            stateCol.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_STATE_HELP_0));
-            stateCol.setWidth("20");
-            stateCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-            stateCol.setSorteable(false);
-            // add it to the list definition
-            metadata.addColumn(stateCol);
-        }
+        // add state column and actions 
+        setStateActionCol(metadata);
 
         // create column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_COLS_NAME_0));
         nameCol.setWidth("35%");
+        // add default actions
+        setDefaultAction(nameCol);
+
         // add it to the list definition
         metadata.addColumn(nameCol);
 
@@ -310,6 +251,20 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
+     * Sets the optional login default action.<p>
+     * 
+     * @param nameCol the group name column
+     */
+    protected abstract void setDefaultAction(CmsListColumnDefinition nameCol);
+
+    /**
+     * Sets the needed icon action(s).<p>
+     * 
+     * @param iconCol the list column for edition.
+     */
+    protected abstract void setIconAction(CmsListColumnDefinition iconCol);
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
@@ -318,25 +273,18 @@ public abstract class A_CmsUserGroupsList extends A_CmsListDialog {
     }
 
     /**
+     * Sets the optional state change action column.<p>
+     * 
+     * @param metadata the list metadata object
+     */
+    protected abstract void setStateActionCol(CmsListMetadata metadata);
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
      */
     protected void validateParamaters() throws Exception {
 
         // test the needed parameters
         m_paramUsername = getCms().readUser(new CmsUUID(getParamUserid())).getName();
-    }
-
-    /**
-     * Returns the path to the group icon.<p>
-     * 
-     * @return the path to the group icon
-     */
-    private String getGroupIcon() {
-
-        if (getCurrentToolPath().indexOf("webuser") != -1) {
-            return A_CmsUsersList.PATH_BUTTONS + "webuser_groups.png";
-        } else {
-            return A_CmsUsersList.PATH_BUTTONS + "group.png";
-        }
     }
 }

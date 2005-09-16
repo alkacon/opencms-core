@@ -13,7 +13,6 @@
     <property name="module.input.lib" 					location="${module.input.res}/system/modules/${module.name}/lib" />
     <property name="module.input.src.single"            location="${module.input}/src" />
     <property name="module.input.src.shared"            location="${opencms.input}/src-modules" />
-	<property file="${module.input}/module.properties" />
 	<property name="module.output.classes"				location="${opencms.build}/classes-${module.name}" />
     <property name="module.output.jar"              	location="${opencms.build}/jars-${module.name}" />
 	<property name="module.output.zip"					location="${opencms.output}/zip" /> 
@@ -29,7 +28,7 @@
 	
 	<property file="${basedir}/opencms.properties" />
 	
-	<taskdef resource="net/sf/antcontrib/antlib.xml">
+	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
 	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
 	  </classpath>
@@ -53,6 +52,28 @@
     <target name="init" 
     	description="Checks if all required libraries are available">
     	
+    	<condition property="module.available">
+    		<and>		
+    			<available file="${module.input}" type="dir"/>
+       		</and>
+    	</condition>
+    		
+    	<if>
+    		<not><isset property="module.available"/></not>    			
+    		<then>
+		    	<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number}" />
+    			<fail>Module Directory not found: ${module.input}</fail>
+	    	</then>
+	    </if>
+		<property file="${module.input}/module.properties" />
+    	<if>
+    		<not><isset property="module.dependencies"/></not>    			
+    		<then>
+		    	<echo message="Building OpenCms Common Module ${module.name} ${module.version} for OpenCms ${version.number}" />
+    			<fail>Module Configuration File not found: ${module.input}/module.properties</fail>
+	    	</then>
+	    </if>
+		
     	<for list="${module.dependencies}" param="dependency" trim="true">
     	  <sequential>
         	<property name="@{dependency}.input" value="${basedir}/@{dependency}" />
@@ -68,7 +89,7 @@
         	</condition>
     	  </sequential>
     	</for>
-    	
+	
     	<for list="${module.libs}" param="library" trim="true">
     		<sequential>
 		    	<condition property="@{library}.available">

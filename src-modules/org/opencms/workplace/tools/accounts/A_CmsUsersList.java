@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,9 +59,11 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 
@@ -70,7 +72,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +147,12 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/accounts/buttons/";
 
+    /** a set of action id's to use for deletion. */
+    private static Set m_deleteActionIds = new HashSet();
+
+    /** a set of action id's to use for edition. */
+    private static Set m_editActionIds = new HashSet();
+
     /**
      * Public constructor.<p>
      * 
@@ -155,19 +163,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
     public A_CmsUsersList(CmsJspActionElement jsp, String listId, CmsMessageContainer listName) {
 
         super(jsp, listId, listName, LIST_COLUMN_LOGIN, CmsListOrderEnum.ORDER_ASCENDING, null);
-    }
-
-    /**
-     * Deletes the user and closes the dialog.<p>
-     * 
-     * @throws Exception if something goes wrong
-     */
-    public void actionDeleteUser() throws Exception {
-
-        CmsUUID id = new CmsUUID(getJsp().getRequest().getParameter(A_CmsEditUserDialog.PARAM_USERID));
-        deleteUser(id);
-        refreshList();
-        actionCloseDialog();
     }
 
     /**
@@ -182,18 +177,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
         if (getParamListAction().equals(LIST_MACTION_DELETE)) {
             // execute the delete multiaction
-            List removedItems = new ArrayList();
+            Map params = new HashMap();
+            params.put(A_CmsEditUserDialog.PARAM_USERID, getParamSelItems());
+            // set action parameter to initial dialog call
+            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+
             try {
-                Iterator itItems = getSelectedItems().iterator();
-                while (itItems.hasNext()) {
-                    CmsListItem listItem = (CmsListItem)itItems.next();
-                    deleteUser(new CmsUUID(listItem.getId()));
-                    removedItems.add(listItem.getId());
-                }
-            } catch (CmsException e) {
+                getToolManager().jspForwardTool(this, getCurrentToolPath() + "/delete", params);
+            } catch (Exception e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_SELECTED_USERS_0), e);
-            } finally {
-                getList().removeAllItems(removedItems, getLocale());
             }
         } else if (getParamListAction().equals(LIST_MACTION_ACTIVATE)) {
             // execute the activate multiaction
@@ -250,21 +242,15 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
 
         if (getParamListAction().equals(LIST_DEFACTION_EDIT)) {
             // forward to the edit user screen
-            getToolManager().jspForwardTool(this, getEditRootPath(), params);
-        } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
-            getToolManager().jspForwardTool(this, getEditRootPath() + "/user", params);
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit", params);
+        } else if (m_editActionIds.contains(getParamListAction())) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/user", params);
         } else if (getParamListAction().equals(LIST_ACTION_GROUPS)) {
-            getToolManager().jspForwardTool(this, getEditRootPath() + "/groups", params);
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/groups", params);
         } else if (getParamListAction().equals(LIST_ACTION_ROLES)) {
-            getToolManager().jspForwardTool(this, getEditRootPath() + "/roles", params);
-        } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
-            // execute the delete action
-            try {
-                deleteUser(new CmsUUID(userId));
-                getList().removeItem(userId, getLocale());
-            } catch (CmsException e) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DELETE_USER_1, userName), e);
-            }
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/roles", params);
+        } else if (m_deleteActionIds.contains(getParamListAction())) {
+            getToolManager().jspForwardTool(this, getCurrentToolPath() + "/edit/delete", params);
         } else if (getParamListAction().equals(LIST_ACTION_ACTIVATE)) {
             // execute the activate action
             try {
@@ -288,15 +274,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         }
         listSave();
     }
-
-    /**
-     * Deletes the user.<p>
-     * 
-     * @param id the id of the user to delete
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    protected abstract void deleteUser(CmsUUID id) throws CmsException;
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
@@ -340,30 +317,12 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                 } else {
                     continue;
                 }
-                // roles
-                //            Iterator itRoles = getCms().getGroupsOfUser(user.getName()).iterator();
-                //            html = new StringBuffer(512);
-                //            while (itRoles.hasNext()) {
-                //                html.append(((CmsGroup)itRoles.next()).getName());
-                //                if (itRoles.hasNext()) {
-                //                    html.append("<br>");
-                //                }
-                //                html.append("\n");
-                //            }
-                //            item.set(LIST_DETAIL_ROLES, html.toString());
             } catch (Exception e) {
                 // noop
             }
             item.set(detailId, html.toString());
         }
     }
-
-    /**
-     * Returns the root path for the edition tools.<p>
-     * 
-     * @return the root path
-     */
-    protected abstract String getEditRootPath();
 
     /**
      * Returns the path the group icon.<p>
@@ -390,16 +349,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             item.set(LIST_COLUMN_LASTLOGIN, new Date(user.getLastlogin()));
             ret.add(item);
         }
-
         return ret;
     }
-
-    /**
-     * Returns the path the user icon.<p>
-     * 
-     * @return the path to the user icon
-     */
-    protected abstract String getUserIcon();
 
     /**
      * Returns a list of users.<p>
@@ -444,12 +395,10 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         editCol.setWidth("20");
         editCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         editCol.setSorteable(false);
+
         // add edit action
-        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
-        editAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_NAME_0));
-        editAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_HELP_0));
-        editAction.setIconPath(getUserIcon());
-        editCol.addDirectAction(editAction);
+        setEditAction(editCol);
+        m_editActionIds.addAll(editCol.getDirectActionIds());
         // add it to the list definition
         metadata.addColumn(editCol);
 
@@ -469,22 +418,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         // add it to the list definition
         metadata.addColumn(groupCol);
 
-        // create column for role edition
-        //        CmsListColumnDefinition roleCol = new CmsListColumnDefinition(LIST_COLUMN_ROLES);
-        //        roleCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ROLES_0));
-        //        roleCol.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ROLES_HELP_0));
-        //        roleCol.setWidth("20");
-        //        roleCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        //        roleCol.setSorteable(false);
-        // add roles action
-        //        CmsListDirectAction roleAction = new CmsListDirectAction(LIST_ID, LIST_ACTION_ROLES);
-        //        roleAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ROLES_NAME_0));
-        //        roleAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ROLES_HELP_0));
-        //        roleAction.setIconPath(PATH_BUTTONS + "role.png");
-        //        roleCol.addDirectAction(roleAction);
-        // add it to the list definition
-        //        metadata.addColumn(roleCol);
-
         // create column for activation/deactivation
         CmsListColumnDefinition actCol = new CmsListColumnDefinition(LIST_COLUMN_ACTIVATE);
         actCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_ACTIVATE_0));
@@ -492,23 +425,57 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         actCol.setWidth("20");
         actCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         actCol.setListItemComparator(new CmsListItemActionIconComparator());
+
         // activate action
-        CmsListDirectAction actAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE);
+        CmsListDirectAction actAction = new CmsListDirectAction(LIST_ACTION_ACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    String usrId = getItem().getId();
+                    try {
+                        return getCms().readUser(new CmsUUID(usrId)).getDisabled();
+                    } catch (CmsException e) {
+                        return false;
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         actAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_NAME_0));
         actAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_HELP_0));
         actAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_ACTIVATE_CONF_0));
         actAction.setIconPath(ICON_INACTIVE);
+        actCol.addDirectAction(actAction);
+
         // deactivate action
-        CmsListDirectAction deactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE);
+        CmsListDirectAction deactAction = new CmsListDirectAction(LIST_ACTION_DEACTIVATE) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    String usrId = getItem().getId();
+                    try {
+                        return getCms().readUser(new CmsUUID(usrId)).isEnabled();
+                    } catch (CmsException e) {
+                        return false;
+                    }
+                }
+                return super.isVisible();
+            }
+        };
         deactAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0));
         deactAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_HELP_0));
         deactAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DEACTIVATE_CONF_0));
         deactAction.setIconPath(ICON_ACTIVE);
-        // adds an activate/deactivate direct action
-        CmsUserActivateAction userAction = new CmsUserActivateAction(LIST_ACTION_ACTIVATE, getCms());
-        userAction.setFirstAction(actAction);
-        userAction.setSecondAction(deactAction);
-        actCol.addDirectAction(userAction);
+        actCol.addDirectAction(deactAction);
+
         // add it to the list definition
         metadata.addColumn(actCol);
 
@@ -520,12 +487,9 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         deleteCol.setSorteable(false);
         // add delete action
-        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
-        deleteAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0));
-        deleteAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0));
-        deleteAction.setConfirmationMessage(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_CONF_0));
-        deleteAction.setIconPath(ICON_DELETE);
-        deleteCol.addDirectAction(deleteAction);
+        setDeleteAction(deleteCol);
+        m_deleteActionIds.addAll(deleteCol.getDirectActionIds());
+
         // add it to the list definition
         metadata.addColumn(deleteCol);
 
@@ -533,11 +497,13 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         CmsListColumnDefinition loginCol = new CmsListColumnDefinition(LIST_COLUMN_LOGIN);
         loginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LOGIN_0));
         loginCol.setWidth("20%");
+
         // create default edit action
         CmsListDefaultAction defEditAction = new CmsListDefaultAction(LIST_DEFACTION_EDIT);
         defEditAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_NAME_0));
         defEditAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_DEFACTION_EDIT_HELP_0));
-        loginCol.setDefaultAction(defEditAction);
+        loginCol.addDefaultAction(defEditAction);
+
         // add it to the list definition
         metadata.addColumn(loginCol);
 
@@ -563,6 +529,20 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         lastLoginCol.setFormatter(lastLoginFormatter);
         metadata.addColumn(lastLoginCol);
     }
+
+    /**
+     * Sets the needed delete action(s).<p>
+     * 
+     * @param deleteCol the list column for deletion.
+     */
+    protected abstract void setDeleteAction(CmsListColumnDefinition deleteCol);
+
+    /**
+     * Sets the needed edit action(s).<p>
+     * 
+     * @param editCol the list column for edition.
+     */
+    protected abstract void setEditAction(CmsListColumnDefinition editCol);
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
@@ -594,19 +574,6 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
         userGroupsDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
             Messages.GUI_USERS_DETAIL_GROUPS_NAME_0)));
         metadata.addItemDetails(userGroupsDetails);
-
-        // add user roles details
-        //        CmsListItemDetails userRolesDetails = new CmsListItemDetails(LIST_ID, LIST_DETAIL_ROLES);
-        //        userRolesDetails.setAtColumn(LIST_COLUMN_LOGIN);
-        //        userRolesDetails.setVisible(false);
-        //        userRolesDetails.setShowActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ROLES_NAME_0));
-        //        userRolesDetails.setShowActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_SHOW_ROLES_HELP_0));
-        //        userRolesDetails.setHideActionName(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ROLES_NAME_0));
-        //        userRolesDetails.setHideActionHelpText(Messages.get().container(Messages.GUI_USERS_DETAIL_HIDE_ROLES_HELP_0));
-        //        userRolesDetails.setName(Messages.get().container(Messages.GUI_USERS_DETAIL_ROLES_NAME_0));
-        //        userRolesDetails.setFormatter(new CmsListItemDetailsFormatter(Messages.get().container(
-        //            Messages.GUI_USERS_DETAIL_ROLES_NAME_0)));
-        //        metadata.addItemDetails(userRolesDetails);
 
         // makes the list searchable
         CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_LOGIN));

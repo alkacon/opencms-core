@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/07/04 12:29:51 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/09/16 13:11:12 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +72,9 @@ public class CmsListMetadata {
 
     /** Search action. */
     private CmsListSearchAction m_searchAction;
+
+    /** <code>true</code> if this metadata object should not be cached.<p>. */
+    private boolean m_volatile = false;
 
     /**
      * Default Constructor.<p>
@@ -285,7 +288,7 @@ public class CmsListMetadata {
         Iterator itCols = m_columns.elementList().iterator();
         while (itCols.hasNext()) {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
-            if (col.getDefaultAction() != null || !col.getDirectActions().isEmpty()) {
+            if (!col.getDefaultActions().isEmpty() || !col.getDirectActions().isEmpty()) {
                 return true;
             }
         }
@@ -342,7 +345,6 @@ public class CmsListMetadata {
         html.append("</tr>\n");
         return html.toString();
     }
-
     /**
      * Returns the html code for the header of the list.<p>
      * 
@@ -445,7 +447,7 @@ public class CmsListMetadata {
                 }
                 html.append("<td colspan='");
                 html.append(spanCols);
-                html.append("' style='padding-left: 20px;'>\n");
+                html.append("' style='padding-left: 20px; white-space:normal;'>\n");
                 html.append(lid.htmlCell(item, wp));
                 html.append("\n</td>\n");
                 html.append("\n");
@@ -532,6 +534,16 @@ public class CmsListMetadata {
     }
 
     /**
+     * Returns <code>true</code> if this metadata object should not be cached.<p>
+     * 
+     * @return <code>true</code> if this metadata object should not be cached.<p>
+     */
+    public boolean isVolatile() {
+
+        return m_volatile;
+    }
+
+    /**
      * Sets the search action.<p>
      *
      * @param searchAction the search action to set
@@ -540,6 +552,16 @@ public class CmsListMetadata {
 
         m_searchAction = searchAction;
         m_searchAction.setListId(getListId());
+    }
+
+    /**
+     * Sets the volatile flag.<p>
+     *
+     * @param volatileFlag the volatile flag to set
+     */
+    public void setVolatile(boolean volatileFlag) {
+
+        m_volatile = volatileFlag;
     }
 
     /**
@@ -606,56 +628,26 @@ public class CmsListMetadata {
             }
             ids.add(col.getId());
             // default actions
-            if (col.getDefaultAction() != null) {
-                if (col.getDefaultAction() instanceof A_CmsListTwoStatesAction) {
-                    A_CmsListTwoStatesAction action = (A_CmsListTwoStatesAction)col.getDefaultAction();
-                    if (ids.contains(action.getFirstAction().getId())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_DUPLICATED_ID_1,
-                            action.getFirstAction().getId()));
-                    }
-                    ids.add(action.getFirstAction().getId());
-                    if (ids.contains(action.getSecondAction().getId())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_DUPLICATED_ID_1,
-                            action.getSecondAction().getId()));
-                    }
-                    ids.add(action.getSecondAction().getId());
-                } else {
-                    if (ids.contains(col.getDefaultAction().getId())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_DUPLICATED_ID_1,
-                            col.getDefaultAction().getId()));
-                    }
-                    ids.add(col.getDefaultAction().getId());
+            Iterator itDefaultActions = col.getDefaultActions().iterator();
+            while (itDefaultActions.hasNext()) {
+                CmsListDefaultAction action = (CmsListDefaultAction)itDefaultActions.next();
+                if (ids.contains(action.getId())) {
+                    throw new CmsIllegalStateException(Messages.get().container(
+                        Messages.ERR_DUPLICATED_ID_1,
+                        action.getId()));
                 }
+                ids.add(action.getId());
             }
             // direct actions
             Iterator itDirectActions = col.getDirectActions().iterator();
             while (itDirectActions.hasNext()) {
                 CmsListDirectAction action = (CmsListDirectAction)itDirectActions.next();
-                if (action instanceof A_CmsListTwoStatesAction) {
-                    A_CmsListTwoStatesAction action2 = (A_CmsListTwoStatesAction)action;
-                    if (ids.contains(action2.getFirstAction().getId())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_DUPLICATED_ID_1,
-                            action2.getFirstAction().getId()));
-                    }
-                    ids.add(action2.getFirstAction().getId());
-                    if (ids.contains(action2.getSecondAction().getId())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_DUPLICATED_ID_1,
-                            action2.getSecondAction().getId()));
-                    }
-                    ids.add(action2.getSecondAction().getId());
-                } else {
-                    if (ids.contains(action.getId())) {
-                        throw new CmsIllegalStateException(Messages.get().container(
-                            Messages.ERR_DUPLICATED_ID_1,
-                            action.getId()));
-                    }
-                    ids.add(action.getId());
+                if (ids.contains(action.getId())) {
+                    throw new CmsIllegalStateException(Messages.get().container(
+                        Messages.ERR_DUPLICATED_ID_1,
+                        action.getId()));
                 }
+                ids.add(action.getId());
             }
         }
     }
@@ -669,8 +661,9 @@ public class CmsListMetadata {
 
         col.setListId(getListId());
         // default actions
-        if (col.getDefaultAction() != null) {
-            col.getDefaultAction().setListId(getListId());
+        Iterator itDefaultActions = col.getDefaultActions().iterator();
+        while (itDefaultActions.hasNext()) {
+            ((CmsListDefaultAction)itDefaultActions.next()).setListId(getListId());
         }
         // direct actions
         Iterator itDirectActions = col.getDirectActions().iterator();
@@ -678,5 +671,4 @@ public class CmsListMetadata {
             ((CmsListDirectAction)itDirectActions.next()).setListId(getListId());
         }
     }
-
 }

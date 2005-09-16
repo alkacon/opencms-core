@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/09/16 08:44:24 $
- * Version: $Revision: 1.34.2.1 $
+ * Date   : $Date: 2005/09/16 13:11:13 $
+ * Version: $Revision: 1.34.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.1 $
+ * @version $Revision: 1.34.2.2 $
  * 
  * @since 6.0.0
  */
@@ -301,6 +301,9 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The node name for the user-guest node. */
     protected static final String N_USER_GUEST = "user-guest";
+
+    /** The node name for the user-deletedresource node. */
+    protected static final String N_USER_DELETEDRESOURCE = "user-deletedresource";
 
     /** The node name for the context user name. */
     protected static final String N_USERNAME = "user";
@@ -650,14 +653,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_RUNTIMECLASSES + "/" + N_RUNTIMEINFO, 0, A_CLASS);          
         
         // add default users rule
-        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 7);
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS, "setCmsDefaultUsers", 8);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_ADMIN, 0);    
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_GUEST, 1);
         digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_EXPORT, 2);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_ADMINISTRATORS, 3);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_PROJECTMANAGERS, 4);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 5);
-        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 6);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_USER_DELETEDRESOURCE, 3);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_ADMINISTRATORS, 4);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_PROJECTMANAGERS, 5);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_USERS, 6);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_DEFAULTUSERS + "/" + N_GROUP_GUESTS, 7);
         
         // add defaultContentEncoding rule
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_DEFAULT_CONTENT_ENCODING, "setDefaultContentEncoding", 1);
@@ -922,6 +926,10 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         defaultusersElement.addElement(N_USER_GUEST).addText(m_cmsDefaultUsers.getUserGuest());
         // create <user-export> subnode
         defaultusersElement.addElement(N_USER_EXPORT).addText(m_cmsDefaultUsers.getUserExport());
+        if (!m_cmsDefaultUsers.getUserDeletedResource().equals(m_cmsDefaultUsers.getUserAdmin())) {
+            // create <user-deletedresource> subnode
+            defaultusersElement.addElement(N_USER_DELETEDRESOURCE).addText(m_cmsDefaultUsers.getUserDeletedResource());
+        }
         // create <group-administrators> subnode
         defaultusersElement.addElement(N_GROUP_ADMINISTRATORS).addText(m_cmsDefaultUsers.getGroupAdministrators());
         // create <group-projectmanagers> subnode
@@ -1271,6 +1279,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
      * @param userAdmin the name of the default admin user
      * @param userGuest the name of the guest user
      * @param userExport the name of the export user
+     * @param userDeletedResource the name of the deleted resource user, can be <code>null</code>
      * @param groupAdministrators the name of the administrators group
      * @param groupProjectmanagers the name of the project managers group
      * @param groupUsers the name of the users group
@@ -1281,6 +1290,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         String userAdmin,
         String userGuest,
         String userExport,
+        String userDeletedResource,
         String groupAdministrators,
         String groupProjectmanagers,
         String groupUsers,
@@ -1290,6 +1300,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             userAdmin,
             userGuest,
             userExport,
+            userDeletedResource,
             groupAdministrators,
             groupProjectmanagers,
             groupUsers,
