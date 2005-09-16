@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2005/06/28 10:59:55 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/09/16 09:09:51 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,7 +162,7 @@ public class CmsEditorFrameset extends CmsEditor {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // fill the parameter values in the get/set methods
-        fillParamValues(request);
+        fillParamValues(settings, request);
 
         if (getDialogUri().endsWith("editor.jsp")) {
             // check the required permissions to edit the resource only in the main frame
