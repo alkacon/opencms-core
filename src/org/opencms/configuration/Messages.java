@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/09/16 08:44:24 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.2.1 $
  * 
  * @since 6.0.0
  */
@@ -80,6 +80,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
     public static final String INIT_PWD_HANDLER_SUCCESS_1 = "INIT_PWD_HANDLER_SUCCESS_1";
+    
+    /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
+    public static final String INIT_NOTIFICATION_TIME_1 = "INIT_NOTIFICATION_TIME_1";
+    
+    /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
+    public static final String INIT_NOTIFICATION_PROJECT_1 = "INIT_NOTIFICATION_PROJECT_1";
 
     /** Constant for message LOG_ADD_CONFIG_PARAM_CALLED_3. */
     public static final String INIT_REQUEST_HANDLER_INVALID_1 = "INIT_REQUEST_HANDLER_INVALID_1";

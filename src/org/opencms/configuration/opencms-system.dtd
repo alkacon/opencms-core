@@ -26,7 +26,8 @@
 	memorymonitor?,
 	flexcache,
 	http-authentication,
-	resultcache)>
+	resultcache,
+	content-notification?)>
 
 <!--
 # Version history settings.
@@ -387,6 +388,21 @@ Each job can have an optional list of parameters.
 <!ELEMENT size-accesscontrollists (#PCDATA)>
 
 <!--
-# The the size of the security manager's cache for permission checks.
+# The size of the security manager's cache for permission checks.
 -->
 <!ELEMENT size-permissions (#PCDATA)>
+
+<!--
+# Content notification settings.
+-->
+<!ELEMENT content-notification (notification-time?, notification-project)>
+
+<!--
+# The duration after which responsibles will be notified about out-dated content (in days).
+-->
+<!ELEMENT notification-time (#PCDATA)>
+
+<!--
+# The project in which timestamps for the content notification are read
+-->
+<!ELEMENT notification-project (#PCDATA)>

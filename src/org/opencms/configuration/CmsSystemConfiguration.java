@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/09/16 08:44:24 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.34.2.1 $
  * 
  * @since 6.0.0
  */
@@ -323,6 +323,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The name of the class to generate cache keys. */
     private static final String N_KEYGENERATOR = "keygenerator";
 
+    /** The duration after which responsibles will be notified about out-dated content. */
+    private static final String N_NOTIFICATION_TIME = "notification-time";
+
+    /** The duration after which responsibles will be notified about out-dated content. */
+    private static final String N_NOTIFICATION_PROJECT = "notification-project";
+
+    /** The duration after which responsibles will be notified about out-dated content. */
+    private static final String N_CONTENT_NOTIFICATION = "content-notification";
+    
     /** The size of the driver manager's cache for ACLS. */
     private static final String N_SIZE_ACLS = "size-accesscontrollists";
 
@@ -349,7 +358,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The size of the driver manager's cache for users. */
     private static final String N_SIZE_USERS = "size-users";
-
+    
     /** The settings of the driver manager. */
     private CmsCacheSettings m_cacheSettings;
 
@@ -375,13 +384,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The configured login manager. */
     private CmsLoginManager m_loginManager;
-
+    
     /** The configured login message. */
     private CmsLoginMessage m_loginMessage;
 
     /** The mail settings. */
     private CmsMailSettings m_mailSettings;
 
+    /** The duration after which responsibles will be notified about out-dated content (in days). */
+    // It is an Integer object so that it can be distinguished if this optional element was set or not
+    private Integer m_notificationTime; 
+
+    private String m_notificationProject;
+    
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
 
@@ -692,7 +707,15 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PROPERTIES, "setPropertyCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_ACLS, "setAclCacheSize", 0);
         digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CACHE + "/" + N_SIZE_PERMISSIONS, "setPermissionCacheSize", 0);
-        digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");        
+        digester.addSetNext("*/" + N_SYSTEM + "/" + N_CACHE, "setCacheSettings");
+        
+        // set the notification time
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_TIME, "setNotificationTime", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_TIME, 0);        
+        
+        // set the notification project
+        digester.addCallMethod("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_PROJECT, "setNotificationProject", 1);
+        digester.addCallParam("*/" + N_SYSTEM + "/" + N_CONTENT_NOTIFICATION + "/" + N_NOTIFICATION_PROJECT, 0);
     }
     
     /**
@@ -968,6 +991,17 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         cacheElement.addElement(N_SIZE_ACLS).setText(Integer.toString(m_cacheSettings.getAclCacheSize()));
         cacheElement.addElement(N_SIZE_PERMISSIONS).setText(Integer.toString(m_cacheSettings.getPermissionCacheSize())); 
         
+        // content notification settings
+        if (m_notificationTime != null || m_notificationProject != null) {
+            Element notificationElement = systemElement.addElement(N_CONTENT_NOTIFICATION);
+            if (m_notificationTime != null) {
+                notificationElement.addElement(N_NOTIFICATION_TIME).setText(m_notificationTime.toString());
+            }
+            if (m_notificationProject != null) {
+                notificationElement.addElement(N_NOTIFICATION_PROJECT).setText(m_notificationProject.toString());
+            }
+        }
+        
         // return the vfs node
         return systemElement;
     }
@@ -1083,7 +1117,31 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
 
         return m_mailSettings;
     }
+    
+    /**
+     * Returns the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * 
+     * @return the duration after which responsibles will be notified about out-dated content
+     */
+    public int getNotificationTime() {
 
+        if (m_notificationTime != null) {
+            return m_notificationTime.intValue();
+        } else {
+            return -1;
+        }
+    }    
+
+    /**
+     * Returns the project in which timestamps for the content notification are read.<p>
+     * 
+     * @return the project in which timestamps for the content notification are read
+     */
+    public String getNotificationProject() {
+
+        return m_notificationProject;
+    } 
+    
     /**
      * Returns the configured password handler.<p>
      * 
@@ -1351,6 +1409,36 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * 
+     * @param notificationTime the duration after which responsibles will be notified about out-dated content
+     */
+    public void setNotificationTime(String notificationTime) {
+
+        try {
+            m_notificationTime = new Integer(notificationTime);
+        } catch (Throwable t) {
+            m_notificationTime = new Integer(-1);
+        }
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NOTIFICATION_TIME_1, m_notificationTime));
+        }
+    }
+    
+    /**
+     * Sets the project in which timestamps for the content notification are read.<p>
+     * 
+     * @param notificationProject the project in which timestamps for the content notification are read
+     */
+    public void setNotificationProject(String notificationProject) {
+
+        m_notificationProject = notificationProject;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NOTIFICATION_PROJECT_1, m_notificationProject));
+        }
+    }
+
+    /**
      * Sets the password handler class.<p>
      * 
      * @param passwordHandler the password handler to set
@@ -1406,7 +1494,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_SITE_CONFIG_FINISHED_0));
         }
     }
-
+    
     /**
      * Sets the temporary file project id.<p>
      * 
