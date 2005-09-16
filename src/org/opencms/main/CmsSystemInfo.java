@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/09/16 08:50:50 $
+ * Version: $Revision: 1.45.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.45.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,9 +83,15 @@ public class CmsSystemInfo {
 
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
-
+    
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
+    
+    /** The project in which timestamps for the content notification are read. */
+    private String m_notificationProject;
+
+    /** The duration after which responsibles will be notified about out-dated content (in days). */
+    private int m_notificationTime;
 
     /** The OpenCms context and servlet path, e.g. <code>/opencms/opencms</code>. */
     private String m_openCmsContext;
@@ -256,7 +262,7 @@ public class CmsSystemInfo {
 
         return m_httpAuthenticationSettings;
     }
-
+    
     /**
      * Returns the filename of the logfile (in the "real" file system).<p>
      * 
@@ -278,6 +284,24 @@ public class CmsSystemInfo {
     public CmsMailSettings getMailSettings() {
 
         return m_mailSettings;
+    }
+    
+    /**
+     * Returns the project in which timestamps for the content notification are read.<p>
+     * 
+     * @return the project in which timestamps for the content notification are read
+     */
+    public String getNotificationProject() {
+        return m_notificationProject;
+    }
+    
+    /**
+     * Returns the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * 
+     * @return the duration after which responsibles will be notified about out-dated content
+     */
+    public int getNotificationTime() {
+        return m_notificationTime;
     }
 
     /**
@@ -454,6 +478,24 @@ public class CmsSystemInfo {
 
         // TODO: make configurable
         return true;
+    }
+
+    /**
+     * Sets the project in which timestamps for the content notification are read.<p>
+     * 
+     * @param notificationProject the project in which timestamps for the content notification are read
+     */
+    public void setNotificationProject(String notificationProject) {
+        m_notificationProject = notificationProject;
+    }
+    
+    /**
+     * Sets the duration after which responsibles will be notified about out-dated content (in days).<p>
+     * 
+     * @param notificationTime the duration after which responsibles will be notified about out-dated content
+     */
+    public void setNotificationTime(int notificationTime) {
+        m_notificationTime = notificationTime;
     }
 
     /**
