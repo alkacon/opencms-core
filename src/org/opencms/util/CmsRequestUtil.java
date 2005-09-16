@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/09/16 09:03:03 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -319,7 +319,7 @@ public final class CmsRequestUtil {
             for (int j = 0; j < values.length; j++) {
                 result.append(param);
                 result.append("=");
-                result.append(values[j]);
+                result.append(CmsEncoder.encode(values[j]));
                 if ((j + 1) < values.length) {
                     result.append("&");
                 }
