@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/09/16 08:49:34 $
+ * Version: $Revision: 1.49.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $
+ * @version $Revision: 1.49.2.1 $
  * 
  * @since 6.0.0
  */
@@ -157,6 +157,15 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
     public CmsMessages getBundle(Locale locale) {
 
         return new CmsMessages(getBundleName(), locale);
+    }
+
+    /**
+     * 
+     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.util.Locale, java.lang.String)
+     */
+    public String key(Locale locale, String key) {
+
+        return key(locale, key, new Object[] {});
     }
 
     /**
