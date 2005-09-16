@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/09/16 08:48:57 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -529,36 +529,68 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     void setAdditionalModuleResourceType(boolean additionalType);
 
     /**
-     * Changes the timestamp information of a resource.<p>
-     * 
-     * This method is used to set the "last modified" date
-     * of a resource, the "release" date of a resource, 
-     * and also the "expire" date of a resource.<p>
+     * Changes the "last modified" date of a resource.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param dateReleased the new release date of the changed resource,
-     *              set it to <code>{@link org.opencms.file.CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
-     * @param dateExpired the new expire date of the changed resource, 
-     *              set it to <code>{@link org.opencms.file.CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see CmsObject#touch(String, long, long, long, boolean)
-     * @see CmsSecurityManager#touch(org.opencms.file.CmsRequestContext, CmsResource, long, long, long)
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see CmsSecurityManager#setDateLastModified(org.opencms.file.CmsRequestContext, CmsResource, long)
      */
-    void touch(
+    void setDateLastModified(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        long dateReleased,
+        boolean recursive) throws CmsException;
+    
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to touch
+     * @param dateExpired the new expire date of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#setDateExpired(String, long, boolean)
+     * @see CmsSecurityManager#setDateExpired(org.opencms.file.CmsRequestContext, CmsResource, long)
+     */
+    void setDateExpired(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
         long dateExpired,
         boolean recursive) throws CmsException;
-
+    
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to touch
+     * @param dateReleased the new release date of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#setDateReleased(String, long, boolean)
+     * @see CmsSecurityManager#setDateReleased(org.opencms.file.CmsRequestContext, CmsResource, long)
+     */
+    void setDateReleased(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateReleased,
+        boolean recursive) throws CmsException;
+    
     /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
