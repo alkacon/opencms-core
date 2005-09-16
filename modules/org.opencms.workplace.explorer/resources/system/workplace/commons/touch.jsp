@@ -50,16 +50,6 @@ default:
 	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_NEWTIMESTAMP %>" id="<%= wp.PARAM_NEWTIMESTAMP %>" value="<%= wp.getCurrentDateTime() %>"></td>
 	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggercalendar" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
 </tr>
-<tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %>
-	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_RELEASEDATE %>" id="<%= wp.PARAM_RELEASEDATE %>" value="<%= wp.getCurrentReleaseDate() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewreleasedate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
-</tr>
-<tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %>
-	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_EXPIREDATE %>" id="<%= wp.PARAM_EXPIREDATE %>" value="<%= wp.getCurrentExpireDate() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewexpiredate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
-</tr>
 <%= wp.buildCheckRecursive() %>
 </table>
 
@@ -86,8 +76,6 @@ default:
      */
 
 %><%= wp.calendarInit(wp.PARAM_NEWTIMESTAMP, "triggercalendar", "cR", false, false, true, null, true) %>
-<%= wp.calendarInit(wp.PARAM_RELEASEDATE, "triggernewreleasedate", "cR", false, false, true, null, true) %>
-<%= wp.calendarInit(wp.PARAM_EXPIREDATE, "triggernewexpiredate", "cR", false, false, true, null, true) %>
 <%= wp.bodyEnd() %>
 <%= wp.htmlEnd() %>
 <%
