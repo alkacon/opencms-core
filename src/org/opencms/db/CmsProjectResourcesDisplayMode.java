@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Attic/CmsProjectResourcesDisplayMode.java,v $
- * Date   : $Date: 2005/09/12 09:57:49 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/09/16 09:08:13 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.db;
 
-import org.opencms.file.Messages;
 import org.opencms.main.CmsIllegalArgumentException;
 
 import java.io.Serializable;
@@ -55,7 +54,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.0.0
  */

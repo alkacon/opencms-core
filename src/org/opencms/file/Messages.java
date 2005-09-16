@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2005/09/02 08:31:28 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/09/16 09:08:13 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -69,9 +69,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOGIN_VALIDATION_1 = "ERR_LOGIN_VALIDATION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_MODE_ENUM_PARSE_2 = "ERR_MODE_ENUM_PARSE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_SAME_FOLDER_2 = "ERR_MOVE_SAME_FOLDER_2";
