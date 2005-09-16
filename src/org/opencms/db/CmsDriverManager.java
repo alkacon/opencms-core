@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/09/14 14:31:58 $
- * Version: $Revision: 1.557 $
+ * Date   : $Date: 2005/09/16 09:07:14 $
+ * Version: $Revision: 1.557.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.557 $
+ * @version $Revision: 1.557.2.1 $
  * 
  * @since 6.0.0
  */
@@ -242,7 +242,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
     }
-
+    
     /** Cache key for all properties. */
     public static final String CACHE_ALL_PROPERTIES = "_CAP_";
 
@@ -1044,12 +1044,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // update the "last modified" information
         if (updateLastModifiedInfo) {
-            touch(
-                dbc,
-                destination,
-                CmsResource.TOUCH_DATE_UNCHANGED,
-                CmsResource.TOUCH_DATE_UNCHANGED,
-                CmsResource.TOUCH_DATE_UNCHANGED);
+            setDateLastModified(dbc, destination, destination.getDateLastModified());
         }
 
         // clear the cache
@@ -2004,57 +1999,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException, CmsIllegalArgumentException {
 
         return createUser(dbc, name, password, description, additionalInfos, CmsUser.USER_TYPE_SYSTEMUSER);
-    }
-
-    /**
-     * Creates a new user.<p>
-     *
-     * @param dbc the current database context
-     * @param name the name for the new user
-     * @param password the password for the new user
-     * @param description the description for the new user
-     * @param additionalInfos the additional infos for the user
-     * @param type the type of the user to create
-     *
-     * @return the created user
-     * 
-     * @see CmsObject#createUser(String, String, String, Map, int)
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws CmsIllegalArgumentException if the name for the user is not valid
-     */
-    private CmsUser createUser(
-        CmsDbContext dbc,
-        String name,
-        String password,
-        String description,
-        Map additionalInfos,
-        int type) throws CmsException, CmsIllegalArgumentException {
-
-        // no space before or after the name
-        name = name.trim();
-        // check the username
-        validUsername(name);
-        // check the password
-        validatePassword(password);
-
-        if ((name.length() > 0)) {
-            return m_userDriver.createUser(
-                dbc,
-                name,
-                password,
-                description,
-                " ",
-                " ",
-                " ",
-                0,
-                I_CmsPrincipal.FLAG_ENABLED,
-                additionalInfos,
-                " ",
-                type);
-        } else {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
-        }
     }
 
     /**
@@ -3235,6 +3179,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsResource.STATE_UNCHANGED,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_INCLUDE_TREE
                     | CmsDriverManager.READMODE_INCLUDE_PROJECT
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
@@ -3248,6 +3196,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsDriverManager.READ_IGNORE_PARENT,
                 CmsDriverManager.READ_IGNORE_TYPE,
                 CmsResource.STATE_UNCHANGED,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_INCLUDE_TREE
@@ -3276,6 +3228,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 CmsResource.STATE_UNCHANGED,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_INCLUDE_TREE
                     | CmsDriverManager.READMODE_INCLUDE_PROJECT
                     | CmsDriverManager.READMODE_EXCLUDE_STATE
@@ -3289,6 +3245,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 directPublishResource.getRootPath(),
                 CmsDriverManager.READ_IGNORE_TYPE,
                 CmsResource.STATE_UNCHANGED,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READ_IGNORE_TIME,
                 CmsDriverManager.READMODE_INCLUDE_TREE
@@ -3357,6 +3317,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             CmsDriverManager.READ_IGNORE_STATE,
             starttime,
             endtime,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
+            CmsDriverManager.READ_IGNORE_TIME,
             CmsDriverManager.READMODE_INCLUDE_TREE);
     }
 
@@ -5490,6 +5454,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             filter.getState(),
             filter.getModifiedAfter(),
             filter.getModifiedBefore(),
+            filter.getReleaseAfter(),
+            filter.getReleaseBefore(),
+            filter.getExpireAfter(),
+            filter.getExpireBefore(),
             (readTree ? CmsDriverManager.READMODE_INCLUDE_TREE : CmsDriverManager.READMODE_EXCLUDE_TREE)
                 | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
                 | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0)
@@ -5532,7 +5500,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-    public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
+         public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
 
         List extractedResources = null;
 
@@ -5555,7 +5523,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return extractedResources;
     }
-
+    
     /**
      * Reads all resources that have a value (containing the given value string) set 
      * for the specified property (definition) in the given path.<p>
@@ -5597,7 +5565,61 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return extractedResources;
     }
+    
+    /**
+     * Returns the set of users that are responsible for a specific resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsibleUsers(CmsDbContext dbc, CmsResource resource) throws CmsException {
 
+        Set result = new HashSet();
+        Iterator principals = readResponsiblePrincipals(dbc, resource).iterator();
+        while (principals.hasNext()) {
+            I_CmsPrincipal principal = (I_CmsPrincipal)principals.next();
+            if (principal instanceof CmsGroup) {
+                try {
+                    result.addAll(getUsersOfGroup(dbc, principal.getName()));
+                } catch (CmsException e) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
+                    }
+                }    
+            } else {
+                result.add(principal);
+            }
+        }
+        return result;
+    }
+
+    /**
+     * Returns the set of users that are responsible for a specific resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsiblePrincipals(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        Set result = new HashSet();
+        Iterator aces = getAccessControlEntries(dbc, resource, true).iterator();
+        while (aces.hasNext()) {
+            CmsAccessControlEntry ace = (CmsAccessControlEntry)aces.next();
+            if (ace.isResponsible()) {
+                result.add(lookupPrincipal(dbc, ace.getPrincipal()));
+            }
+        }
+        return result;
+    }
+    
     /**
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
@@ -5937,20 +5959,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.removeAccessControlEntry(dbc, dbc.currentProject(), resource.getResourceId(), principal);
 
         // update the "last modified" information
-        touch(
-            dbc,
-            resource,
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED);
+        setDateLastModified(dbc, resource, resource.getDateLastModified());
 
         // clear the cache
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
+            Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -6038,12 +6054,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         resource.setUserLastModified(dbc.currentUser().getId());
 
-        touch(
-            dbc,
-            resource,
-            System.currentTimeMillis(),
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED);
+        setDateLastModified(dbc, resource, System.currentTimeMillis());
 
         m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
 
@@ -6328,40 +6339,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Change the timestamp information of a resource.<p>
-     * 
-     * This method is used to set the "last modified" date
-     * of a resource, the "release" date of a resource, 
-     * and also the "expires" date of a resource.<p>
+     * Changes the "release" date of a resource.<p>
      * 
      * @param dbc the current database context
      * @param resource the resource to touch
-     * @param dateLastModified the new last modified date of the resource
-     * @param dateReleased the new release date of the resource, 
-     *      use <code>{@link org.opencms.file.CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged
-     * @param dateExpired the new expire date of the resource, 
-     *      use <code>{@link org.opencms.file.CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged
+     * @param dateReleased the new release date of the resource
      * 
      * @throws CmsDataAccessException if something goes wrong
      * 
-     * @see CmsObject#touch(String, long, long, long, boolean)
-     * @see I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
+     * @see CmsObject#setDateReleased(String, long, boolean)
+     * @see I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
-    public void touch(CmsDbContext dbc, CmsResource resource, long dateLastModified, long dateReleased, long dateExpired)
+    public void setDateReleased(CmsDbContext dbc, CmsResource resource, long dateReleased)
     throws CmsDataAccessException {
 
-        // modify the last modification date if it's not set to TOUCH_DATE_UNCHANGED
-        if (dateLastModified != CmsResource.TOUCH_DATE_UNCHANGED) {
-            resource.setDateLastModified(dateLastModified);
-        }
-        // modify the release date if it's not set to TOUCH_DATE_UNCHANGED
-        if (dateReleased != CmsResource.TOUCH_DATE_UNCHANGED) {
-            resource.setDateReleased(dateReleased);
-        }
-        // modify the expired date if it's not set to TOUCH_DATE_UNCHANGED
-        if (dateReleased != CmsResource.TOUCH_DATE_UNCHANGED) {
-            resource.setDateExpired(dateExpired);
-        }
+        // modify the last modification date
+        resource.setDateReleased(dateReleased);
         if (resource.getState() == CmsResource.STATE_UNCHANGED) {
             resource.setState(CmsResource.STATE_CHANGED);
         }
@@ -6377,7 +6370,72 @@ public final class CmsDriverManager implements I_CmsEventListener {
             "resource",
             resource)));
     }
+    
+    /**
+     * Changes the "last modified" timestamp of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to touch
+     * @param dateLastModified the new last modified date of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateLastModified(CmsDbContext dbc, CmsResource resource, long dateLastModified)
+    throws CmsDataAccessException {
 
+        // modify the last modification date
+        resource.setDateLastModified(dateLastModified);
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+        resource.setUserLastModified(dbc.currentUser().getId());
+
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire the event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
+    }
+    
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to touch
+     * @param dateExpired the new expire date of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see CmsObject#setDateExpired(String, long, boolean)
+     * @see I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateExpired(CmsDbContext dbc, CmsResource resource, long dateExpired)
+    throws CmsDataAccessException {
+
+        resource.setDateExpired(dateExpired);
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+        resource.setUserLastModified(dbc.currentUser().getId());
+
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire the event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
+    }
+    
     /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
@@ -6664,6 +6722,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         filter.getState(),
                         filter.getModifiedAfter(),
                         filter.getModifiedBefore(),
+                        filter.getReleaseAfter(),
+                        filter.getReleaseBefore(),
+                        filter.getExpireAfter(),
+                        filter.getExpireBefore(),
                         CmsDriverManager.READMODE_INCLUDE_TREE
                             | (filter.excludeType() ? CmsDriverManager.READMODE_EXCLUDE_TYPE : 0)
                             | (filter.excludeState() ? CmsDriverManager.READMODE_EXCLUDE_STATE : 0));
@@ -6861,20 +6923,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_userDriver.writeAccessControlEntry(dbc, dbc.currentProject(), ace);
 
         // update the "last modified" information
-        touch(
-            dbc,
-            resource,
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED);
+        setDateLastModified(dbc, resource, resource.getDateLastModified());
 
         // clear the cache
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
+            Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -7551,6 +7607,57 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         removeUserFromCache(user);
         m_resourceListCache.clear();
+    }
+
+    /**
+     * Creates a new user.<p>
+     *
+     * @param dbc the current database context
+     * @param name the name for the new user
+     * @param password the password for the new user
+     * @param description the description for the new user
+     * @param additionalInfos the additional infos for the user
+     * @param type the type of the user to create
+     *
+     * @return the created user
+     * 
+     * @see CmsObject#createUser(String, String, String, Map, int)
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the name for the user is not valid
+     */
+    private CmsUser createUser(
+        CmsDbContext dbc,
+        String name,
+        String password,
+        String description,
+        Map additionalInfos,
+        int type) throws CmsException, CmsIllegalArgumentException {
+
+        // no space before or after the name
+        name = name.trim();
+        // check the username
+        validUsername(name);
+        // check the password
+        validatePassword(password);
+
+        if ((name.length() > 0)) {
+            return m_userDriver.createUser(
+                dbc,
+                name,
+                password,
+                description,
+                " ",
+                " ",
+                " ",
+                0,
+                I_CmsPrincipal.FLAG_ENABLED,
+                additionalInfos,
+                " ",
+                type);
+        } else {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_USER_1, name));
+        }
     }
 
     /**

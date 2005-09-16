@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2005/09/16 09:07:14 $
+ * Version: $Revision: 1.112.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.112.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -451,7 +451,11 @@ public interface I_CmsVfsDriver {
      * @param type the resource type of matching resources or C_READ_IGNORE_TYPES (meaning inverted by C_READMODE_EXCLUDE_TYPE)
      * @param state the state of matching resources or READ_IGNORE_STATE (meaning inverted by C_READMODE_EXCLUDE_STATE)
      * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
-     * @param endTime the end of the time range for the last modification date of mathcing resources or READ_IGNORE_TIME
+     * @param endTime the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
+     * @param releasedAfter the start of the time range for the release date of matching resources
+     * @param releasedBefore the end of the time range for the release date of matching resources
+     * @param expiredAfter the start of the time range for the expire date of matching resources
+     * @param expiredBefore the end of the time range for the expire date of matching resources
      * @param mode additional mode flags:
      *  C_READMODE_INCLUDE_TREE 
      *  C_READMODE_EXCLUDE_TREE
@@ -470,8 +474,12 @@ public interface I_CmsVfsDriver {
         int state,
         long startTime,
         long endTime,
+        long releasedAfter,
+        long releasedBefore,
+        long expiredAfter,
+        long expiredBefore,
         int mode) throws CmsDataAccessException;
-
+    
     /**
      * Reads all siblings that point to the resource record of a specified resource.<p>
      * 

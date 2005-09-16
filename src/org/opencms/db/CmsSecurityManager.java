@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/09/14 14:31:58 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2005/09/16 09:07:14 $
+ * Version: $Revision: 1.93.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,6 +76,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -91,7 +92,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.93.2.1 $
  * 
  * @since 6.0.0
  */
@@ -163,7 +164,7 @@ public final class CmsSecurityManager {
 
         return securityManager;
     }
-
+    
     /**
      * Updates the state of the given task as accepted by the current user.<p>
      * 
@@ -3853,6 +3854,54 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns a set of users that are responsible for a specific resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsibleUsers(CmsRequestContext context, CmsResource resource) throws CmsException {
+
+        Set result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readResponsibleUsers(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns a set of users that are responsible for a specific resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsiblePrincipals(CmsRequestContext context, CmsResource resource) throws CmsException {
+
+        Set result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readResponsiblePrincipals(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+    
+    /**
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
@@ -4561,19 +4610,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Changes the timestamp information of a resource.<p>
-     * 
-     * This method is used to set the "last modified" date
-     * of a resource, the "release" date of a resource, 
-     * and also the "expire" date of a resource.<p>
+     * Changes the "release" date of a resource.<p>
      * 
      * @param context the current request context
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param dateReleased the new release date of the changed resource,
-     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
-     * @param dateExpired the new expire date of the changed resource, 
-     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
+     * @param dateReleased the new release date of the changed resource
+     * @param dateExpired the new expire date of the changed resource
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
@@ -4581,29 +4624,95 @@ public final class CmsSecurityManager {
      * @see CmsObject#touch(String, long, long, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
      */
-    public void touch(
+    
+    /**
+     * Changes the "last modified" timestamp of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateLastModified(
         CmsRequestContext context,
         CmsResource resource,
-        long dateLastModified,
-        long dateReleased,
-        long dateExpired) throws CmsException, CmsSecurityException {
-
-        int todo = 0;
-        // TODO: Make 3 methods out of this (setDateLastModified, setDateReleased, setDateExpired) 
+        long dateLastModified) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
-            m_driverManager.touch(dbc, resource, dateLastModified, dateReleased, dateExpired);
+            m_driverManager.setDateLastModified(dbc, resource, dateLastModified);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_TOUCH_RESOURCE_4,
-                new Object[] {
-                    new Date(dateLastModified),
-                    new Date(dateReleased),
-                    new Date(dateExpired),
-                    context.getSitePath(resource)}), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_LAST_MODIFIED_2,
+                new Object[] {new Date(dateLastModified), context.getSitePath(resource)}), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+    
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateReleased the new release date of the changed resource
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#setDateReleased(String, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateReleased(
+        CmsRequestContext context,
+        CmsResource resource,
+        long dateReleased) throws CmsException, CmsSecurityException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            m_driverManager.setDateReleased(dbc, resource, dateReleased);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_RELEASED_2,
+                new Object[] {new Date(dateReleased), context.getSitePath(resource)}), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+    
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateExpired the new expire date of the changed resource
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#setDateExpired(String, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateExpired(
+        CmsRequestContext context,
+        CmsResource resource,
+        long dateExpired) throws CmsException, CmsSecurityException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            m_driverManager.setDateExpired(dbc, resource, dateExpired);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_EXPIRED_2,
+                new Object[] {new Date(dateExpired), context.getSitePath(resource)}), e);
         } finally {
             dbc.clear();
         }
