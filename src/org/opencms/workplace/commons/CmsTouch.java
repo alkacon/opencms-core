@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/09/16 08:55:00 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,31 +69,23 @@ public class CmsTouch extends CmsDialog {
     /** Value for the action: touch. */
     public static final int ACTION_TOUCH = 100;
 
-    /** default value for release or expire date. */
-    public static final String RELEASE_EXPIRE_DEFAULT = "-";
-
     /** The dialog type. */
     public static final String DIALOG_TYPE = "touch";
-    
-    /** Request parameter name for the expiredate. */
-    public static final String PARAM_EXPIREDATE = "expiredate";
 
     /** Request parameter name for timestamp. */
     public static final String PARAM_NEWTIMESTAMP = "newtimestamp";
     
     /** Request parameter name for the recursive flag. */
     public static final String PARAM_RECURSIVE = "recursive";
-    
-    /** Request parameter name for the releasedate. */
-    public static final String PARAM_RELEASEDATE = "releasedate";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTouch.class);
     
-    private String m_paramExpiredate;
     private String m_paramNewtimestamp;
     private String m_paramRecursive;
-    private String m_paramReleasedate;
+
+    /** Default value for date last modified, the release and expire date. */
+    public static final String DEFAULT_DATE_STRING = "-";
 
     /**
      * Public constructor.<p>
@@ -183,59 +175,6 @@ public class CmsTouch extends CmsDialog {
     }
 
     /**
-     * Returns the current expiredate as String formatted in localized pattern.<p>
-     * 
-     * @return the current expiredate as String formatted in localized pattern
-     */
-    public String getCurrentExpireDate() {
-
-        // get the expirationdate
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
-                return RELEASE_EXPIRE_DEFAULT;
-            } else {
-                return getCalendarLocalizedTime(res.getDateExpired());
-            }
-        } catch (CmsException e) {
-            return getCalendarLocalizedTime(System.currentTimeMillis());
-        }
-    }
-
-    /**
-     * Returns the current releasedate as String formatted in localized pattern.<p>
-     * 
-     * @return the current releasedate as String formatted in localized pattern
-     */
-    public String getCurrentReleaseDate() {
-
-        // get the releasedate
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
-                return RELEASE_EXPIRE_DEFAULT;
-            } else {
-                return getCalendarLocalizedTime(res.getDateReleased());
-            }
-        } catch (CmsException e) {
-            return getCalendarLocalizedTime(System.currentTimeMillis());
-        }
-    }
-
-    /**
-     * Returns the value of the new expiredate parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The releasedate parameter stores the new expiredate as String.<p>
-     * 
-     * @return the value of the new expiredate parameter
-     */
-    public String getParamExpiredate() {
-
-        return m_paramExpiredate;
-    }
-
-    /**
      * Returns the value of the new timestamp parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -263,29 +202,6 @@ public class CmsTouch extends CmsDialog {
     }
 
     /**
-     * Returns the value of the new releasedate parameter, 
-     * or null if this parameter was not provided.<p>
-     * 
-     * The releasedate parameter stores the new releasedate as String.<p>
-     * 
-     * @return the value of the new releasedate parameter
-     */
-    public String getParamReleasedate() {
-
-        return m_paramReleasedate;
-    }
-
-    /**
-     * Sets the value of the releasedate expiredate.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamExpiredate(String value) {
-
-        m_paramExpiredate = value;
-    }
-
-    /**
      * Sets the value of the new timestamp parameter.<p>
      * 
      * @param value the value to set
@@ -303,16 +219,6 @@ public class CmsTouch extends CmsDialog {
     public void setParamRecursive(String value) {
 
         m_paramRecursive = value;
-    }
-
-    /**
-     * Sets the value of the releasedate parameter.<p>
-     * 
-     * @param value the value to set
-     */
-    public void setParamReleasedate(String value) {
-
-        m_paramReleasedate = value;
     }
 
     /**
@@ -376,33 +282,13 @@ public class CmsTouch extends CmsDialog {
             throw new CmsException(Messages.get().container(Messages.ERR_PARSE_TIMESTAMP_1, getParamNewtimestamp()), e);
         }
 
-        // get the new releasedate for the resource(s) from request parameter
-        long releasedate = CmsResource.DATE_RELEASED_DEFAULT;
-        try {
-            if ((getParamReleasedate() != null) && (!getParamReleasedate().startsWith(RELEASE_EXPIRE_DEFAULT))) {
-                releasedate = getCalendarDate(getParamReleasedate(), true);
-            }
-        } catch (ParseException e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_RELEASEDATE_1, getParamReleasedate()), e);
-        }
-
-        // get the new expire for the resource(s) from request parameter
-        long expiredate = CmsResource.DATE_EXPIRED_DEFAULT;
-        try {
-            if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(RELEASE_EXPIRE_DEFAULT))) {
-                expiredate = getCalendarDate(getParamExpiredate(), true);
-            }
-        } catch (ParseException e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_EXPIREDATE_1, getParamExpiredate()), e);
-        }
-
         // get the flag if the touch is recursive from request parameter
         boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());
 
         // now touch the resource(s)
         // lock resource if autolock is enabled
         checkLock(getParamResource());
-        getCms().touch(filename, timeStamp, releasedate, expiredate, touchRecursive);
+        getCms().setDateLastModified(filename, timeStamp, touchRecursive);
         return true;
     }
 }
