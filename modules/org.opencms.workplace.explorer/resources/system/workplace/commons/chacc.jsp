@@ -87,6 +87,12 @@ function toggleDetail(id) {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
+<%= CmsChacc.buildSummaryDetailsButtons(wp) %>
+
+<!-- ###################################### responsible users ###################################### -->
+
+<%= wp.buildResponsibleList(wp.getSettings().getUserSettings().getDialogExpandInheritedPermissions() || wp.getShowInheritedPermissions()) %>
+
 <!-- ###################################### current users rights ###################################### -->
 
 <%= wp.buildErrorMessages() %>
