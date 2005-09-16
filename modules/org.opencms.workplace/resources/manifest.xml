@@ -31,6 +31,7 @@
 			<resource uri="/system/lost-found/"/>
 			<resource uri="/system/shared/page.dtd"/>
 			<resource uri="/system/shared/showversion"/>
+			<resource uri="/system/workplace/admin/notification/"/>
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/galleries/"/>
@@ -458,6 +459,82 @@
 					</permissionset>
 				</accessentry>
 			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/admin</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/notification</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Notification]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/notification/notification</source>
+			<destination>system/workplace/admin/notification/notification</destination>
+			<type>xmlcontent</type>
+			<uuidresource>5d60819c-1bbf-11da-ab78-9151fb616b67</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Content Notification]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/notification/notification.xsd</source>
+			<destination>system/workplace/admin/notification/notification.xsd</destination>
+			<type>plain</type>
+			<uuidresource>daf2e498-1bb6-11da-af9a-9151fb616b67</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schema Definition for Content Notifications]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/commons</destination>
