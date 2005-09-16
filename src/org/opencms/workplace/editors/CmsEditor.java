@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/09/16 09:09:24 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -512,7 +512,7 @@ public abstract class CmsEditor extends CmsDialog {
 
         m_paramBackLink = backLink;
     }
-
+   
     /**
      * Sets the content of the editor.<p>
      * 
@@ -704,11 +704,9 @@ public abstract class CmsEditor extends CmsDialog {
         // copy the file to edit to a temporary file
         try {
             getCms().copyResource(getCms().getSitePath(file), temporaryFilename, CmsResource.COPY_AS_NEW);
-            getCms().touch(
+            getCms().setDateLastModified(
                 temporaryFilename,
                 System.currentTimeMillis(),
-                CmsResource.DATE_RELEASED_DEFAULT,
-                CmsResource.DATE_EXPIRED_DEFAULT,
                 false);
             // set the temporary file flag
             int flags = getCms().readResource(temporaryFilename).getFlags();
