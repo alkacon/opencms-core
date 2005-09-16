@@ -9,5 +9,6 @@
 		<config class="org.opencms.configuration.CmsImportExportConfiguration"/>		              
 		<config class="org.opencms.configuration.CmsSearchConfiguration"/>	
 		<config class="org.opencms.configuration.CmsModuleConfiguration"/>	
+@OPENCMS_CONFIGURATION@
     </configuration>       
 </opencms>  

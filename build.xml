@@ -72,7 +72,7 @@
     
     <property environment="env" />
 
- 	<taskdef resource="net/sf/antcontrib/antlib.xml">
+ 	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
 	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
 	  </classpath>
@@ -366,6 +366,7 @@ ${opencms.inputlib.textextraction}
        			<exclude name="WEB-INF/lib/*" />
        			<exclude name="WEB-INF/config/opencms.properties" />
        			<exclude name="WEB-INF/config/opencms-system.xml" />
+       			<exclude name="WEB-INF/config/opencms.xml" />
        			<exclude name="WEB-INF/config/registry.xml" />
        			<exclude name="setup/versions.txt" />
        			<exclude name="setup/license.html" />
@@ -374,6 +375,7 @@ ${opencms.inputlib.textextraction}
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.properties" />
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms-system.xml" />
   			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="registry.xml" />  			
+  			<zipfileset dir="${opencms.output.classes}" prefix="WEB-INF/config" includes="opencms.xml" />  			
   			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="versions.txt" />
 			<zipfileset dir="${opencms.output.classes}" prefix="setup" includes="license.html" />
         </war>        
