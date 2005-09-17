@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/09/16 09:02:25 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2005/09/17 16:38:44 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUriSplitter;
 
 import java.io.IOException;
 import java.util.Date;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -272,7 +273,8 @@ public class CmsLogin extends CmsJspLoginBean {
             // clear message
             m_message = null;
             // login is successful, check if the requested resource can be read
-            String resource = CmsRequestUtil.splitUri(m_requestedResource)[0];
+            CmsUriSplitter splitter = new CmsUriSplitter(m_requestedResource, true);            
+            String resource = splitter.getPrefix();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
                 // bad resource name, use workplace as default
                 resource = CmsFrameset.JSP_WORKPLACE_URI;

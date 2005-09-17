@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/17 16:38:44 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
 
@@ -63,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,10 +162,10 @@ public class CmsNewResourceFolder extends CmsNewResource {
                 getSettings().setExplorerResource(newFolder);
                 String newUri = PATH_DIALOGS
                     + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
-                String[] uri = CmsRequestUtil.splitUri(newUri);
-                Map params = CmsRequestUtil.createParameterMap(uri[2]);
+                CmsUriSplitter splitter = new CmsUriSplitter(newUri);
+                Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
                 params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
-                sendForward(uri[0], params);
+                sendForward(splitter.getPrefix(), params);
             }
         }
         // edit properties and create index file not checked, close the dialog and update tree

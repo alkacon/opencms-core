@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/09/17 16:38:43 $
+ * Version: $Revision: 1.43.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.htmlparser.util.ParserException;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.43.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,7 +225,7 @@ public class CmsLinkProcessor {
     }
     
     /**
-     * Unescapes all <code>&amp;</code>, e.g. replaces them with a <code>&</code>.<p>
+     * Unescapes all <code>&amp;</code>, that is replaces them with a <code>&</code>.<p>
      * 
      * @param source the String to unescape
      * @return the unescaped String

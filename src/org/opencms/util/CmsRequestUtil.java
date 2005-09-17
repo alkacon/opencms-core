@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/09/16 09:03:03 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/09/17 16:38:43 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.main.OpenCms;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -270,10 +269,12 @@ public final class CmsRequestUtil {
             return new HashMap();
         }
         HashMap parameters = new HashMap();
+        // cut along the different parameters
         String[] params = CmsStringUtil.splitAsArray(query, '&');
         for (int i = 0; i < params.length; i++) {
             String key = null;
             String value = null;
+            // get key and value, separated by a '=' 
             int pos = params[i].indexOf('=');
             if (pos > 0) {
                 key = params[i].substring(0, pos);
@@ -282,11 +283,14 @@ public final class CmsRequestUtil {
                 key = params[i];
                 value = "";
             }
+            // now make sure the values are of type String[]
             if (key != null) {
                 String[] values = (String[])parameters.get(key);
                 if (values == null) {
+                    // this is the first value, create new array
                     values = new String[] {value};
                 } else {
+                    // append to the existing value array
                     String[] copy = new String[values.length + 1];
                     System.arraycopy(values, 0, copy, 0, values.length);
                     copy[copy.length - 1] = value;
@@ -374,9 +378,9 @@ public final class CmsRequestUtil {
     throws IOException, ServletException {
 
         // clear the current parameters
-        String[] uri = splitUri(target);
-        Map params = createParameterMap(uri[2]);
-        forwardRequest(uri[0], params, req, res);
+        CmsUriSplitter uri = new CmsUriSplitter(target);
+        Map params = createParameterMap(uri.getQuery());
+        forwardRequest(uri.getPrefix(), params, req, res);
     }
 
     /**
@@ -536,44 +540,5 @@ public final class CmsRequestUtil {
         res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + "0");
         res.addHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MUST_REVALIDATE);
         res.setHeader(CmsRequestUtil.HEADER_PRAGMA, CmsRequestUtil.HEADER_VALUE_NO_CACHE);
-    }
-
-    /**
-     * Splits the given uri string into its components <code>scheme://authority/path#fragment?query</code>.<p>
-     * 
-     * The result array will always be of size 3. Position 0 will contain the path, position 1 will contain the 
-     * fragment and position 2 will contain the query part.<p> 
-     * 
-     * If no fragment or query is part of the uri, then position 1 and/or 2 will be <code>null</code>.
-     * 
-     * @param uri the uri string to split
-     * @return the components of the uri in an array of size 3
-     */
-    public static String[] splitUri(String uri) {
-
-        String[] components = new String[3];
-        try {
-            URI u = new URI(uri);
-            components[0] = ((u.getScheme() != null) ? u.getScheme() + ":" : "") + u.getRawSchemeSpecificPart();
-            components[1] = u.getRawFragment();
-            components[2] = u.getRawQuery();
-            if (components[0] != null) {
-                int i = components[0].indexOf('?');
-                if (i != -1) {
-                    components[2] = components[0].substring(i + 1);
-                    components[0] = components[0].substring(0, i);
-                }
-            }
-            if (components[1] != null) {
-                int i = components[1].indexOf('?');
-                if (i != -1) {
-                    components[2] = components[1].substring(i + 1);
-                    components[1] = components[1].substring(0, i);
-                }
-            }
-        } catch (Exception exc) {
-            return null;
-        }
-        return components;
     }
 }

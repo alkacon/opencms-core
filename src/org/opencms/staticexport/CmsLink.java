@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Attic/CmsLink.java,v $
- * Date   : $Date: 2005/07/08 17:42:47 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/09/17 16:38:43 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.staticexport;
 
 import org.opencms.site.CmsSiteManager;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.util.Map;
@@ -45,7 +46,7 @@ import org.dom4j.Element;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -379,32 +380,24 @@ public class CmsLink {
      */
     private void setComponents(String uri) {
 
-        // split the uri into its components and store them in an Array 
-        String[] components = CmsRequestUtil.splitUri(uri);
-
-        // set components 
-        if (components != null) {
-            m_target = components[0];
-            m_anchor = components[1];
-            setQuery(components[2]);
-        } else {
-            m_target = uri;
-            m_anchor = null;
-            setQuery(null);
-        }
+        CmsUriSplitter splitter = new CmsUriSplitter(uri, true);
+        m_target = splitter.getPrefix();
+        m_anchor = splitter.getAnchor();
+        setQuery(splitter.getQuery());
 
         // initialize the parameter map
         m_parameters = CmsRequestUtil.createParameterMap(m_query);
     }
-    
+
     /**
      * Sets the query of the link.<p>
      * 
      * @param query the query to set.
      */
     private void setQuery(String query) {
+
         m_query = CmsLinkProcessor.unescapeLink(query);
-    }    
+    }
 
     /**
      * Joins the given components to one uri string.<p>

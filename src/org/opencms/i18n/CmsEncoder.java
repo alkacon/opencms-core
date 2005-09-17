@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/09/17 16:38:44 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.i18n;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -448,19 +449,22 @@ public final class CmsEncoder {
      */
     public static String escapeWBlanks(String source, String encoding) {
 
-        if (source == null) {
-            return null;
+        if (CmsStringUtil.isEmpty(source)) {
+            return source;
         }
-        StringBuffer ret = new StringBuffer();
+        StringBuffer ret = new StringBuffer(source.length() * 2);
 
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript
-        // encoding, except the blank which is not encoded into a %20.
+        // URLEncode the text string
+        // this produces a very similar encoding to JavaSscript encoding, 
+        // except the blank which is not encoded into "%20" instead of "+"
+        
         String enc = encode(source, encoding);
         for (int z = 0; z < enc.length(); z++) {
-            if (enc.charAt(z) == '+') {
+            char c = enc.charAt(z);
+            if (c == '+') {
                 ret.append("%20");
             } else {
-                ret.append(enc.charAt(z));
+                ret.append(c);
             }
         }
         return ret.toString();

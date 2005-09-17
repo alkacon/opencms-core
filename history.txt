@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/09/14 15:07:44 $
- * Version: $Revision: 1.682.2.1 $
+ * Date   : $Date: 2005/09/17 16:38:44 $
+ * Version: $Revision: 1.682.2.2 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,8 +19,11 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.2.0 - xxxx, 2005
-* This is a test entry for CVS branch / merge
+OpenCms 6.1.0 - xxxx, 2005
+! Added 'content nofification' function
+! Added improved handling of user deletions in Account manager tool
+! Added option to create default directories and export points in Module manager tool
+* Fixed issue with URI splitting causing an NPE if URI was invalid 
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes

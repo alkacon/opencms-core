@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/09/16 08:59:06 $
- * Version: $Revision: 1.93.2.1 $
+ * Date   : $Date: 2005/09/17 16:38:43 $
+ * Version: $Revision: 1.93.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.1 $ 
+ * @version $Revision: 1.93.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -991,11 +991,10 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String getParamCloseLink() {
 
-        if (m_paramCloseLink != null && !"null".equals(m_paramCloseLink)) {
-            return m_paramCloseLink;
-        } else {
+        if ((m_paramCloseLink == null) || "null".equals(m_paramCloseLink)) {
             return null;
         }
+        return m_paramCloseLink;
     }
 
     /**
@@ -1291,6 +1290,9 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void setParamCloseLink(String value) {
 
+        // ensure decoded chars are re-encoded again properly
+        
+        
         m_paramCloseLink = value;
     }
 
