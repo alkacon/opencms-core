@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaService.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/20 07:31:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.frontend.templateone.form;
 
+
 import com.octo.captcha.service.image.EhcacheManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
@@ -38,13 +39,12 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  * Provides the facility to create and cache the captcha images.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsCaptchaService extends EhcacheManageableImageCaptchaService implements ImageCaptchaService {
 
     /**
      * Creates a new captcha service.<p>
-     * 
      * @param captchaSettings the settings to render captcha images
      */
     public CmsCaptchaService(CmsCaptchaSettings captchaSettings) {

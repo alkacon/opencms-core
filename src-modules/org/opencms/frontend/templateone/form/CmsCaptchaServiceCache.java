@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaServiceCache.java,v $
- * Date   : $Date: 2005/07/22 15:47:09 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/09/20 07:31:03 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,14 +38,13 @@ import org.opencms.main.OpenCms;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.octo.captcha.service.image.DefaultManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 /**
  * Caches captcha services.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  */
 public final class CmsCaptchaServiceCache implements I_CmsEventListener {
     
@@ -119,6 +118,7 @@ public final class CmsCaptchaServiceCache implements I_CmsEventListener {
      * Returns the captcha service specified by the settings.<p>
      * 
      * @param captchaSettings the settings to render captcha images
+     * 
      * @return the captcha service
      */
     public synchronized ImageCaptchaService getCaptchaService(CmsCaptchaSettings captchaSettings) {
@@ -131,11 +131,6 @@ public final class CmsCaptchaServiceCache implements I_CmsEventListener {
         
         /*
         key = captchaSettings.getKey();
-        ImageCaptchaService captchaService = (ImageCaptchaService)m_captchaServices.get(key);
-        if (captchaService == null) {
-            captchaService = new CmsCaptchaService(captchaSettings);
-            m_captchaServices.put(key, captchaService);
-        }
         */
         
         /**
@@ -146,14 +141,11 @@ public final class CmsCaptchaServiceCache implements I_CmsEventListener {
          * see also: http://luminal.gotdns.com/jira/browse/FWK-2
          */
         
-        if (captchaSettings != null) {
-            // satisfies checkstyle...
-        }
-        
         key = "default";
+        
         ImageCaptchaService captchaService = (ImageCaptchaService)m_captchaServices.get(key);
         if (captchaService == null) {
-            captchaService = new DefaultManageableImageCaptchaService();
+            captchaService = new CmsCaptchaService(captchaSettings);
             m_captchaServices.put(key, captchaService);
         }
 

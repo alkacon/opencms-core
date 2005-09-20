@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/20 07:31:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,16 @@
 
 package org.opencms.frontend.templateone.form;
 
+import org.opencms.main.OpenCms;
+
+import java.awt.Color;
 import java.awt.image.ImageFilter;
+import java.io.File;
 import java.util.Locale;
 
 import com.jhlabs.image.WaterFilter;
 import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
-import com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator;
+import com.octo.captcha.component.image.backgroundgenerator.FileReaderRandomBackgroundGenerator;
 import com.octo.captcha.component.image.deformation.ImageDeformation;
 import com.octo.captcha.component.image.deformation.ImageDeformationByFilters;
 import com.octo.captcha.component.image.fontgenerator.FontGenerator;
@@ -45,8 +49,7 @@ import com.octo.captcha.component.image.textpaster.BaffleRandomTextPaster;
 import com.octo.captcha.component.image.textpaster.TextPaster;
 import com.octo.captcha.component.image.wordtoimage.DeformedComposedWordToImage;
 import com.octo.captcha.component.image.wordtoimage.WordToImage;
-import com.octo.captcha.component.wordgenerator.ComposeDictionaryWordGenerator;
-import com.octo.captcha.component.wordgenerator.FileDictionnary;
+import com.octo.captcha.component.wordgenerator.RandomWordGenerator;
 import com.octo.captcha.component.wordgenerator.WordGenerator;
 import com.octo.captcha.engine.image.ImageCaptchaEngine;
 import com.octo.captcha.image.ImageCaptcha;
@@ -57,7 +60,7 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
  * A captcha engine using a Gimpy factory to create captchas.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
@@ -82,6 +85,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
      */
     protected void initGimpyFactory() {
 
+        /*
         WaterFilter water = new WaterFilter();
         water.setAmplitude(3d);
         water.setAntialias(true);
@@ -113,6 +117,38 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
             postDeformation);
 
         m_factory = new GimpyFactory(dictionary, wordToImage);
+        */
+        
+        if (m_settings != null) {
+            // satisfies checkstyle...
+        }
+        
+        WaterFilter water= new WaterFilter();
+        water.setAmplitude(3d);
+        water.setAntialias(true);
+        water.setPhase(20d);
+        water.setWavelength(70d);
+
+
+        ImageDeformation backDef = new ImageDeformationByFilters(new ImageFilter[]{});
+        ImageDeformation textDef = new ImageDeformationByFilters(new ImageFilter[]{});
+        ImageDeformation postDef = new ImageDeformationByFilters(new ImageFilter[]{water});
+
+        WordGenerator randomWords = new RandomWordGenerator("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz");
+
+        TextPaster randomPaster = new BaffleRandomTextPaster(new Integer(5), new Integer(5), Color.black, new Integer(0), Color.white);
+        
+        BackgroundGenerator back =  new FileReaderRandomBackgroundGenerator(new Integer(200), new Integer(100), OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("gimpybackgrounds" + File.separatorChar));
+        FontGenerator shearedFont = new RandomFontGenerator(new Integer(40), new Integer(40));
+
+        WordToImage word2image = new DeformedComposedWordToImage(shearedFont, back, randomPaster,
+                        backDef,
+                        textDef,
+                        postDef
+                        );
+
+
+        m_factory = new GimpyFactory(randomWords, word2image);
     }
 
     /**

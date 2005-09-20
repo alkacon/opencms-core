@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Fri, 09 Sep 2005 10:21:09 GMT</createdate>
+		<createdate>Mon, 19 Sep 2005 12:54:00 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.0.7</version>
+		<version>1.0.12</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -26,6 +26,7 @@
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/classes/" destination="WEB-INF/classes/"/>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/lib/" destination="WEB-INF/lib/"/>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/" destination="WEB-INF/gimpybackgrounds/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.frontend.templateone.form/"/>
@@ -286,6 +287,53 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 19 Sep 2005 12:49:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Sep 2005 12:44:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.gif</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.gif</destination>
+			<type>image</type>
+			<uuidresource>874c0953-290a-11da-90bf-8f106d5078a1</uuidresource>
+			<datelastmodified>Mon, 19 Sep 2005 12:40:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Sep 2005 12:40:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[corner]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.jpg</destination>
+			<type>image</type>
+			<uuidresource>875cd237-290a-11da-90bf-8f106d5078a1</uuidresource>
+			<datelastmodified>Mon, 19 Sep 2005 12:40:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Sep 2005 12:40:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[corner]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.form/lib</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -405,7 +453,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Fri, 09 Sep 2005 10:19:41 GMT</datelastmodified>
+			<datelastmodified>Fri, 09 Sep 2005 13:50:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
