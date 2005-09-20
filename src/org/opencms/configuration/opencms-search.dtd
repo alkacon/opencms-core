@@ -44,7 +44,7 @@
 -->
 <!ELEMENT highlighter (#PCDATA)>
 
-<!ELEMENT documenttypes (documenttype+)>
+<!ELEMENT documenttypes (documenttype*)>
 
 <!--
 # Document types specify which factory class is used to pull the
@@ -115,10 +115,14 @@
 <!--
 # A list of index content sources in OpenCms of the search index.
 -->
-<!ELEMENT sources (source+)>
+<!ELEMENT sources (source*)>
 <!ELEMENT source (#PCDATA)>
 
-<!ELEMENT indexsources (indexsource+)>
+<!--
+# The same index sources as "sources" above but linked from global search configuration 
+# (CmsSearchManager) instead from a "index" element. 
+-->
+<!ELEMENT indexsources (indexsource*)>
 
 <!--
 # Configuration of an search index content source in OpenCms
@@ -143,13 +147,13 @@
 <!--
 # A list of resources to be indexed.
 -->
-<!ELEMENT resources (resource+)>
+<!ELEMENT resources (resource*)>
 <!ELEMENT resource (#PCDATA)>
 
 <!--
 # A list of documenttypes to be indexed wihthin this index source.
 -->
-<!ELEMENT documenttypes-indexed (name+)>
+<!ELEMENT documenttypes-indexed (name*)>
 
 <!--
 # An optional parameter of the index source.

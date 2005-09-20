@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchAdvancedFeatures.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/09/20 15:39:07 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * Unit test for advanced search features.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  */
 public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
@@ -377,6 +377,12 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
         }
 
         // another run of tests using categories that have been defined in "testSearchCategories()"
+        // reset search bean settings (restriction changed them) to initial values (see start of method)
+        searchBean = new CmsSearch();
+        searchBean.init(cms);
+        searchBean.setIndex(INDEX_OFFLINE);
+        searchBean.setMatchesPerPage(1000);
+        searchBean.setQuery(query);
         restriction = new CmsSearchParameters(
             null,
             null,
@@ -447,7 +453,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // second run use Title sort order
         String lastTitle = null;
-        searchBean.setSortOrder(CmsSearch.SORT_TITLE);
+        searchBean.setSortOrder(CmsSearchParameters.SORT_TITLE);
         searchResult = searchBean.getSearchResult();
         i = searchResult.iterator();
         System.out.println("Result sorted by title:");
@@ -466,7 +472,7 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         // third run use date last modified
         long lastTime = 0;
-        searchBean.setSortOrder(CmsSearch.SORT_DATE_LASTMODIFIED);
+        searchBean.setSortOrder(CmsSearchParameters.SORT_DATE_LASTMODIFIED);
         searchResult = searchBean.getSearchResult();
         i = searchResult.iterator();
         System.out.println("Result sorted by date last modified:");
@@ -486,5 +492,4 @@ public class TestCmsSearchAdvancedFeatures extends OpenCmsTestCase {
 
         assertNull(searchBean.getSearchResultCategories());
     }
-
 }

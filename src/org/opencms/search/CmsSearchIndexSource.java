@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/09/20 15:39:06 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.search;
 
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -46,11 +49,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsSearchIndexSource {
+public class CmsSearchIndexSource implements Comparable {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSearchIndexSource.class);
@@ -112,6 +115,59 @@ public class CmsSearchIndexSource {
     public void addResourceName(String resourceName) {
 
         m_resourcesNames.add(resourceName);
+    }
+
+    /**
+     * Compares the internal name Strings of this instance and the argument casted 
+     * to this type. <p>
+     * 
+     * Note that this method only should return 0 for the statement 
+     * <code>a.compareTo(a)</code> 
+     * as the name of a indexsource has 
+     * to be unique within OpenCms.<p>
+     * 
+     * @param o another indexsource.
+     * 
+     * @return the comparison result (as specified in {@link String#compareTo(java.lang.String)} for the 
+     *         name member of both indexsource instances involved.
+     * 
+     * @throws ClassCastException if the given argument is not assignable from this class. 
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) throws ClassCastException {
+
+        CmsSearchIndexSource other = (CmsSearchIndexSource)o;
+        String otherName = other.getName();
+        String myName = getName();
+        return myName.compareTo(otherName);
+    }
+
+    /**
+     * Implemented to be consistent with overridden method 
+     * <code>{@link #compareTo(Object)}</code>.<p>
+     * 
+     * Note that this method only should return true for the statement 
+     * <code>a.compareTo(a)</code> 
+     * as the name of a indexsource has 
+     * to be unique within OpenCms.<p>
+     * 
+     * @param obj another indexsource.
+     * 
+     * @return true if <code>{@link #compareTo(Object)}</code> with this argument returns 0, false else. 
+     * 
+     * @see java.lang.Object#equals(java.lang.Object) 
+     */
+    public boolean equals(Object obj) {
+
+        boolean ret = false;
+        try {
+            int cp = compareTo(obj);
+            ret = cp == 0;
+        } catch (Exception e) {
+            // remain false   
+        }
+        return ret;
     }
 
     /**
@@ -186,6 +242,29 @@ public class CmsSearchIndexSource {
     }
 
     /**
+     * Overriden to be consistents with overridden method 
+     * <code>{@link #equals(Object)}</code>. 
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_name.hashCode();
+    }
+
+    /**
+     * Removes the key/name of a document type.<p>
+     * 
+     * @param key the key/name of a document type 
+     * 
+     * @return true if the given key was contained before thus could be removed successfully, false else.
+     */
+    public boolean removeDocumentType(String key) {
+
+        return m_documentTypes.remove(key);
+    }
+
+    /**
      * Sets the list of Cms resource types to be indexed.<p>
      *
      * @param documentTypes the list of Cms resource types to be indexed
@@ -197,17 +276,26 @@ public class CmsSearchIndexSource {
 
     /**
      * Sets the class name of the indexer.<p>
+     * 
+     * An Exception is thrown to allow GUI-display of wrong input.<p>
      *
-     * @param indexerClassName the class name of the indexer
+     * @param indexerClassName the class name of the indexer 
+     * 
+     * @throws CmsIllegalArgumentException if the given String is not a fully qualified classname (within this Java VM)
      */
-    public void setIndexerClassName(String indexerClassName) {
-
-        m_indexerClassName = indexerClassName;
+    public void setIndexerClassName(String indexerClassName) throws CmsIllegalArgumentException {
 
         try {
-            m_indexer = (I_CmsIndexer)Class.forName(m_indexerClassName).newInstance();
+            m_indexer = (I_CmsIndexer)Class.forName(indexerClassName).newInstance();
+            m_indexerClassName = indexerClassName;
         } catch (Exception exc) {
-            LOG.error(Messages.get().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName), exc);
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName), exc);
+            }
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_INDEXSOURCE_INDEXER_CLASS_NAME_2,
+                indexerClassName,
+                I_CmsIndexer.class.getName()));
         }
     }
 
@@ -215,9 +303,28 @@ public class CmsSearchIndexSource {
      * Sets the logical key/name of this search index source.<p>
      *
      * @param name the logical key/name of this search index source
+     * 
+     * @throws CmsIllegalArgumentException if argument name is null, an empty or whitespace-only Strings 
+     *         or already used for another indexsource's name. 
      */
-    public void setName(String name) {
+    public void setName(String name) throws CmsIllegalArgumentException {
 
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_INDEXSOURCE_CREATE_MISSING_NAME_0));
+        }
+        // already used? Don't test this at xml-configuration time (no manager)
+        if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+            CmsSearchManager mngr = OpenCms.getSearchManager();
+            // don't test this if the indexsource is not new (widget invokes setName even if it was not changed) 
+            if (mngr.getIndexSource(name) != this) {
+                if (mngr.getSearchIndexSources().keySet().contains(name)) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_INDEXSOURCE_CREATE_INVALID_NAME_1,
+                        name));
+                }
+            }
+        }
         m_name = name;
     }
 
@@ -234,7 +341,7 @@ public class CmsSearchIndexSource {
     /**
      * Sets the list of Cms resources to be indexed.<p>
      *
-     * @param resources the list of Cms resources to be indexed
+     * @param resources the list of Cms resources (Strings) to be indexed
      */
     public void setResourcesNames(List resources) {
 

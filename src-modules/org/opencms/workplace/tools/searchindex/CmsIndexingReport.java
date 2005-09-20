@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReport.java,v $
- * Date   : $Date: 2005/06/28 13:47:22 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/09/20 15:39:06 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -60,7 +60,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public class CmsIndexingReport extends CmsReport {
             case ACTION_CONFIRMED:
             default:
 
-                CmsIndexingReportThread thread = new CmsIndexingReportThread(getCms());
+                CmsIndexingReportThread thread = new CmsIndexingReportThread(getCms(), null);
                 setParamAction(REPORT_BEGIN);
                 setParamThread(thread.getUUID().toString());
                 getJsp().include(FILE_REPORT_OUTPUT);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/08/02 10:15:48 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/09/20 15:39:06 $
+ * Version: $Revision: 1.56.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightFinder;
@@ -72,13 +72,13 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.56.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
-    /** Constant for a field list that cointains only the "meta" field. */
+    /** Constant for a field list that contains the "meta" field as well as the "content" field. */
     public static final String[] DOC_META_FIELDS = new String[] {
         I_CmsDocumentFactory.DOC_META,
         I_CmsDocumentFactory.DOC_CONTENT};
@@ -150,7 +150,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     private List m_sourceNames;
 
     /**
-     * Creates a new CmsSearchIndex.<p>
+     * Default constructor only intended to be used by the xml configuration. <p>
+     * 
+     * It is recommended to use the constructor <code>{@link #CmsSearchIndex(String)}</code> 
+     * as it enforces the mandatory name argument. <p>
+     * 
      */
     public CmsSearchIndex() {
 
@@ -158,6 +162,23 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_documenttypes = new HashMap();
         m_createExcerpt = true;
         m_priority = -1;
+    }
+
+    /**
+     * Creates a new CmsSearchIndex with the given name.<p>
+     * 
+     * @param name the system-wide unique name for the search index 
+     * 
+     * @throws org.opencms.main.CmsIllegalArgumentException 
+     *   if the given name is null, empty or already taken 
+     *   by another search index. 
+     * 
+     */
+    public CmsSearchIndex(String name)
+    throws CmsIllegalArgumentException {
+
+        this();
+        this.setName(name);
     }
 
     /**
@@ -213,16 +234,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // split the path
         String[] elements = CmsStringUtil.splitAsArray(path, '/');
-        int length = elements.length;
-        if (CmsResource.isFolder(path)) {
-            // last element would be empty String "", remove this
-            length--;
-        }
+        int length = elements.length + 1;
         String[] result = new String[length];
         result[0] = ROOT_PATH_TOKEN;
         for (int i = 1; i < length; i++) {
             // append suffix to all path elements
-            result[i] = elements[i] + ROOT_PATH_SUFFIX;
+            result[i] = elements[i - 1] + ROOT_PATH_SUFFIX;
 
         }
         return result;
@@ -508,16 +525,12 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      * The result is returned as List with entries of type I_CmsSearchResult.<p>
      * @param cms the current user's Cms object
      * @param params the parameters to use for the search
-     * @param page the page to calculate the search result list, or -1 to return all found documents in the search result
      * @param matchesPerPage the number of search results per page, or -1 to return all found documents in the search result
      * @return the List of results found or an empty list
      * @throws CmsSearchException if something goes wrong
      */
-    public synchronized CmsSearchResultList search(
-        CmsObject cms,
-        CmsSearchParameters params,
-        int page,
-        int matchesPerPage) throws CmsSearchException {
+    public synchronized CmsSearchResultList search(CmsObject cms, CmsSearchParameters params, int matchesPerPage)
+    throws CmsSearchException {
 
         long timeTotal = -System.currentTimeMillis();
         long timeLucene;
@@ -561,6 +574,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
             } else {
                 // just use the site root as the search root
+                // this permits searching in indexes that contain content of other sites than the current selected one?!?!
                 roots = new String[] {cms.getRequestContext().getSiteRoot()};
             }
 
@@ -661,7 +675,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             String excerpt = null;
 
             if (hits != null) {
-
+                int page = params.getSearchPage();
                 int start = -1, end = -1;
                 if (matchesPerPage > 0 && page > 0 && hitCount > 0) {
                     // calculate the final size of the search result
@@ -756,11 +770,53 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /**
      * Sets the logical key/name of this search index.<p>
      * 
-     * @param name the logical key/name of this search index
+     * @param name the logical key/name of this search index 
+     * 
+     * @throws org.opencms.main.CmsIllegalArgumentException 
+     *   if the given name is null, empty or already taken 
+     *   by another search index. 
      */
-    public void setName(String name) {
+    public void setName(String name) throws CmsIllegalArgumentException {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_SEARCHINDEX_CREATE_MISSING_NAME_0));
+        } else {
+
+            // check if already used, but only if the name was modified: 
+            // this is important as unmodifiable DisplayWidgets will also invoke this...
+            if (!name.equals(m_name)) {
+                // don't mess with xml-configuration
+                if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                    // Not needed at startup and additionally getSearchManager may return null
+                    Iterator itIdxNames = OpenCms.getSearchManager().getIndexNames().iterator();
+                    while (itIdxNames.hasNext()) {
+                        if (itIdxNames.next().equals(name)) {
+                            throw new CmsIllegalArgumentException(Messages.get().container(
+                                Messages.ERR_SEARCHINDEX_CREATE_INVALID_NAME_1,
+                                name));
+                        }
+                    }
+                }
+            }
+        }
 
         m_name = name;
+
+    }
+
+    /**
+     * Sets the name of the project used to index resources.<p>
+     * 
+     * A duplicate method of <code>{@link #setProjectName(String)}</code> that allows 
+     * to use instances of this class as a widget object (bean convention, 
+     * cp.: <code>{@link #getProject()}</code>.<p> 
+     * 
+     * @param projectName the name of the project used to index resources
+     */
+    public void setProject(String projectName) {
+
+        m_project = projectName;
     }
 
     /**
@@ -781,6 +837,18 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void setRebuildMode(String rebuildMode) {
 
         m_rebuild = rebuildMode;
+    }
+
+    /**
+     * Returns the name (<code>{@link #getName()}</code>) of this search index.<p>
+     *  
+     * @return the name (<code>{@link #getName()}</code>) of this search index
+     * 
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        return getName();
     }
 
     /**

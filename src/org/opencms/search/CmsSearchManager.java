@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/08/31 16:20:24 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/09/20 15:39:06 $
+ * Version: $Revision: 1.53.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,8 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -53,6 +55,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -70,7 +73,7 @@ import org.apache.lucene.search.Similarity;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53 $ 
+ * @version $Revision: 1.53.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,6 +181,28 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     public void addSearchIndex(CmsSearchIndex searchIndex) {
 
+        if (searchIndex.getSources() == null || searchIndex.getPath() == null) {
+            if (OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) {
+                try {
+                    searchIndex.initialize();
+                } catch (CmsSearchException e) {
+                    // should never happen
+                }
+            }
+        }
+
+        // name: not null or emtpy and unique
+        String name = searchIndex.getName();
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_SEARCHINDEX_CREATE_MISSING_NAME_0));
+        }
+        if (m_indexSources.keySet().contains(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_SEARCHINDEX_CREATE_INVALID_NAME_1,
+                name));
+        }
+
         m_indexes.add(searchIndex);
 
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -234,7 +259,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
                 break;
             default:
-                // no operation
+        // no operation
         }
     }
 
@@ -608,6 +633,50 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
         }
+    }
+
+    /**
+     * Removes this indexsource from the OpenCms configuration (if it is not used any more).<p>
+     * 
+     * 
+     *  
+     * @param indexsource the indexsource to remove from the configuration 
+     * 
+     * @return true if remove was successful, false if preconditions for removal are ok but the given 
+     *         searchindex was unknown to the manager.
+     * 
+     * @throws CmsIllegalStateException if the given indexsource is still used by at least one 
+     *         <code>{@link CmsSearchIndex}</code>.
+     *  
+     */
+    public boolean removeSearchIndexSource(CmsSearchIndexSource indexsource) throws CmsIllegalStateException {
+
+        // validation if removal will be granted
+        Iterator itIndexes = m_indexes.iterator();
+        CmsSearchIndex idx;
+        // the list for collecting indexes that use the given indexdsource
+        List referrers = new LinkedList();
+        // the current list of referred indexsources of the iterated index
+        List refsources;
+        while (itIndexes.hasNext()) {
+            idx = (CmsSearchIndex)itIndexes.next();
+            refsources = idx.getSources();
+            if (refsources != null) {
+                if (refsources.contains(indexsource)) {
+                    referrers.add(idx);
+                }
+            }
+        }
+        if (referrers.size() > 0) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_INDEX_SOURCE_DELETE_2,
+                indexsource.getName(),
+                referrers.toString()));
+        }
+
+        // remove operation (no exception) 
+        return m_indexSources.remove(indexsource.getName()) != null;
+
     }
 
     /**

@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<createdate>Tue, 20 Sep 2005 06:03:31 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,12 +13,10 @@
 		<nicename><![CDATA[OpenCms 6.0 Search index administration tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains tools related to the search capabilities of OpenCms.</p>
+		<description><![CDATA[<p>This module contains tools related to the search capabilities of OpenCms.</p>
 <p>Install this module if you nee search capabilities in OpenCms.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.0.0</version>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.0.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -40,7 +38,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Mon, 19 Sep 2005 10:33:13 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -83,13 +81,17 @@
 					<name>cache</name>
 					<value><![CDATA[bypass]]></value>
 				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/admin/searchindex</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 12 Sep 2005 09:16:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -102,6 +104,10 @@
 				<property>
 					<name>NavPos</name>
 					<value><![CDATA[80.0]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -117,7 +123,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.searchindex}:${key.icon.searchindex.short}]]></value>
+					<value><![CDATA[${key.GUI_NAVTEXT_SEARCHINDEX_SHORT_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -127,11 +133,427 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/admin/searchindex/search</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<source>system/workplace/admin/searchindex/index.html</source>
+			<destination>system/workplace/admin/searchindex/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>77ed82c7-ff54-11d9-a992-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 19 Sep 2005 15:06:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 28 Jul 2005 10:43:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex.png]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Search Index List]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-delete.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-delete.html</destination>
+			<type>jsp</type>
+			<uuidresource>1a116985-1af1-11da-accb-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:11:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 01 Sep 2005 14:02:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_DELETE_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource-delete.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_LIST_INDEXSOURCE_ACTION_DELETE_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit indexsource]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexsource=${param.indexsource}|path:/searchindex/indexsources/indexsource/delete]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-doctypes.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-doctypes.html</destination>
+			<type>jsp</type>
+			<uuidresource>36ee08ec-1b94-11da-bb23-0334e4183c08</uuidresource>
+			<datelastmodified>Tue, 20 Sep 2005 05:06:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 02 Sep 2005 09:30:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_LIST_DOCUMENTTYPES_NAME_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource-doctypes.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_LIST_SEARCHINDEX_ACTION_DOCUMENTS_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Assign doctypes to indexsource]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexsource=${param.indexsource}|path:/searchindex/indexsources/indexsource/doctypes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-edit.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-edit.html</destination>
+			<type>jsp</type>
+			<uuidresource>9d53a364-1ac3-11da-9610-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:10:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 01 Sep 2005 08:37:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_EDIT_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource-edit.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_EDIT_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Edit indexsource]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:indexsource=${param.indexsource}|path:/searchindex/indexsources/indexsource/edit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-index.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-index.html</destination>
+			<type>jsp</type>
+			<uuidresource>3a21c71b-1a32-11da-be9c-0334e4183c08</uuidresource>
+			<datelastmodified>Fri, 09 Sep 2005 08:36:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 31 Aug 2005 15:16:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_INDEX_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_INDEX_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[A list of all indexsources of the OpenCms installation]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/searchindex/indexsources|params:action=initial&indexsource=${param.indexsource}]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-new.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-new.html</destination>
+			<type>jsp</type>
+			<uuidresource>9fbf70d5-1a20-11da-904f-0334e4183c08</uuidresource>
+			<datelastmodified>Fri, 09 Sep 2005 08:36:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 31 Aug 2005 13:10:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_NEW_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource-new.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_NEW_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New indexsource]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/searchindex/indexsources/indexsource-new|params:action=initial]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-overview.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-overview.html</destination>
+			<type>jsp</type>
+			<uuidresource>f23558cf-1ac6-11da-af77-0334e4183c08</uuidresource>
+			<datelastmodified>Tue, 20 Sep 2005 05:04:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 01 Sep 2005 09:01:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_NEW_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_OVERVIEW_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Overview indexsource]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexsource=${param.indexsource}|path:/searchindex/indexsources/indexsource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/indexsource-resources.html</source>
+			<destination>system/workplace/admin/searchindex/indexsource-resources.html</destination>
+			<type>jsp</type>
+			<uuidresource>173f580b-1b03-11da-aa26-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:09:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 01 Sep 2005 16:11:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_INDEXSOURCE_TOOL_RESOURCES_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource-resources.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_LIST_INDEXSOURCE_ACTION_RESOURCES_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Assign ressources to indexsource]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexsource=${param.indexsource}|path:/searchindex/indexsources/indexsource/resources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/searchindex-new.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex-new.html</destination>
+			<type>jsp</type>
+			<uuidresource>c916ee62-0324-11da-a31c-0334e4183c08</uuidresource>
+			<datelastmodified>Fri, 09 Sep 2005 08:36:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Aug 2005 07:12:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_NEW_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex-new.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_NEW_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New search index]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial|path:/searchindex/searchindex-new]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/searchindex_delete.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_delete.html</destination>
+			<type>jsp</type>
+			<uuidresource>a569a01a-04b7-11da-a42b-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:08:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 04 Aug 2005 07:16:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -141,63 +563,43 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[2]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[5.0]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.searchindex.groups.search}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.search.description}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_DELETE_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/searchindex/icons/big/search.png]]></value>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex-delete.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.search}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_DELETE_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Search]]></value>
+					<value><![CDATA[Delete search index]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/searchindex/singleindex/delete|params:action=initial&indexname=${param.indexname}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/search/index.html</source>
-			<destination>system/workplace/admin/searchindex/search/index.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_edit.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_edit.html</destination>
 			<type>jsp</type>
-
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>3e49a7ec-035c-11da-92d5-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:08:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Search index page]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/workplace/admin/searchindex/updateindex</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 02 Aug 2005 13:49:27 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -207,71 +609,253 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[1.0]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.searchindex.groups.updateindex}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.updateindex.description}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
-					<value><![CDATA[tools/searchindex/icons/big/updateindex.png]]></value>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex-edit.png]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.updateindex}]]></value>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Update Index]]></value>
+					<value><![CDATA[New search index]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:indexname=${param.indexname}|path:/searchindex/singleindex/edit]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/updateindex/index.html</source>
-			<destination>system/workplace/admin/searchindex/updateindex/index.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_overview.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_overview.html</destination>
 			<type>jsp</type>
-
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>d1d08a5e-04ce-11da-bcc5-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 19 Sep 2005 11:57:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 04 Aug 2005 10:02:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_OVERVIEW_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_OVERVIEW_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Overview search index]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexname=${param.indexname}|path:/searchindex/singleindex]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/searchindex/updateindex/rebuild.html</source>
-			<destination>system/workplace/admin/searchindex/updateindex/rebuild.html</destination>
+			<source>system/workplace/admin/searchindex/searchindex_rebuild.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_rebuild.html</destination>
 			<type>jsp</type>
-
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>869783e9-2114-11da-886a-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:08:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Fri, 09 Sep 2005 09:31:40 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[3.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_REBUILD_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex-rebuild.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_REBUILD_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Update index page]]></value>
+					<value><![CDATA[Rebuild search indexes]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/searchindex/singleindex/rebuild|params:action=initial&indexname=${param.indexname}]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/searchindex_rebuild_report.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_rebuild_report.html</destination>
+			<type>jsp</type>
+			<uuidresource>20498eb1-0366-11da-9cfa-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:08:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 02 Aug 2005 15:00:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_REBUILD_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_REBUILD_REPORT_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Rebuild search indexes report]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/searchindex/singleindex/rebuildreport|params:action=initial&indexes=${param.indexname}]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/searchindex_search.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_search.html</destination>
+			<type>jsp</type>
+			<uuidresource>c2ae5904-07e2-11da-9a85-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 12 Sep 2005 09:08:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 08 Aug 2005 08:02:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[utf-8]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_SEARCH_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/searchindex-search.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_SEARCH_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[New search index]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexname=${param.indexname}|path:/searchindex/singleindex/search]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/searchindex/searchindex_sources.html</source>
+			<destination>system/workplace/admin/searchindex/searchindex_sources.html</destination>
+			<type>jsp</type>
+			<uuidresource>30bcaa94-1872-11da-9aff-0334e4183c08</uuidresource>
+			<datelastmodified>Tue, 20 Sep 2005 04:54:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Aug 2005 09:49:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[4.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_EDIT_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_LIST_SEARCHINDEX_COL_INDEXSOURCES_NAME_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[/tools/searchindex/icons/big/indexsource.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_GROUPS_SEARCHINDEX_TOOL_INDEXSOURCES_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Assign index sources]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial&indexname=${param.indexname}|path:/searchindex/singleindex/indexsources]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -332,42 +916,267 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/searchindex/icons/big/search.png</source>
-			<destination>system/workplace/resources/tools/searchindex/icons/big/search.png</destination>
+			<source>system/workplace/resources/tools/searchindex/icons/big/indexsource-delete.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/indexsource-delete.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>f96cce6d-1de3-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:51:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:06:34 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for indexsource with overlay for delete action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource-delete]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/indexsource-doctypes.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/indexsource-doctypes.png</destination>
+			<type>image</type>
+			<uuidresource>1601da82-1de4-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:51:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:07:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for indexsource with overlay for assign document types action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource-doctypes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/indexsource-edit.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/indexsource-edit.png</destination>
+			<type>image</type>
+			<uuidresource>22d27e47-1de4-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:51:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:07:43 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for indexsource with overlay for edit action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource-edit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/indexsource-new.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/indexsource-new.png</destination>
+			<type>image</type>
+			<uuidresource>4c310231-1de4-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 16:04:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:08:52 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for indexsource with overlay for create new action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource-new]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/indexsource-resources.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/indexsource-resources.png</destination>
+			<type>image</type>
+			<uuidresource>5a39fee6-1de4-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:51:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:09:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for indexsource with overlay for assign resources action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource-resources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/indexsource.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/indexsource.png</destination>
+			<type>image</type>
+			<uuidresource>445e7ec7-1873-11da-9aff-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 16:04:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Aug 2005 09:57:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for indexsource with no overlay.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/searchindex-delete.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/searchindex-delete.png</destination>
+			<type>image</type>
+			<uuidresource>2b51af13-1873-11da-9aff-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:53:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 29 Aug 2005 09:56:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for searchindex with overlay for delete action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[searchindex-delete]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/searchindex-edit.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/searchindex-edit.png</destination>
+			<type>image</type>
+			<uuidresource>df657cd3-1de4-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:53:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:12:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for searchindex with overlay for edit action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[searchindex-edit]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/searchindex-new.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/searchindex-new.png</destination>
+			<type>image</type>
+			<uuidresource>fa8db278-1de4-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:53:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:13:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for searchindex with overlay for create new action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[searchindex-new]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/searchindex-rebuild.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/searchindex-rebuild.png</destination>
+			<type>image</type>
+			<uuidresource>a717dfe4-fa8e-11d9-bc7c-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:54:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for searchindex with overlay for rebuild action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[searchindex-rebuild]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/big/searchindex-search.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/big/searchindex-search.png</destination>
+			<type>image</type>
+			<uuidresource>0db14b5d-1de5-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 07:54:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:14:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for searchindex with overlay for search action.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[searchindex-search]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/searchindex/icons/big/searchindex.png</source>
 			<destination>system/workplace/resources/tools/searchindex/icons/big/searchindex.png</destination>
 			<type>image</type>
-
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>a710b3f0-fa8e-11d9-bc7c-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 05 Sep 2005 08:11:17 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/searchindex/icons/big/updateindex.png</source>
-			<destination>system/workplace/resources/tools/searchindex/icons/big/updateindex.png</destination>
-			<type>image</type>
-
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Icon for searchindex with no overlay.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[searchindex]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -382,15 +1191,117 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/small/indexsource-doctype.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/small/indexsource-doctype.png</destination>
+			<type>image</type>
+			<uuidresource>b64b9852-1de3-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 08:39:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:04:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[List icon for a document type of a search indexsource.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Document type]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/small/indexsource-resources.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/small/indexsource-resources.png</destination>
+			<type>image</type>
+			<uuidresource>f1d155db-1f7a-11da-b0bd-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 08:40:19 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 07 Sep 2005 08:39:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[List - icon for indexsource - ressources.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[indexsource-resources]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/small/indexsource.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/small/indexsource.png</destination>
+			<type>image</type>
+			<uuidresource>cc929147-1de3-11da-8b1d-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 08:04:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 08:05:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[List icon for a search indexsource.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Indexsource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/small/multi-rebuild.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/small/multi-rebuild.png</destination>
+			<type>image</type>
+			<uuidresource>1056b5fa-1df2-11da-a3bb-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 16:19:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 09:47:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/searchindex/icons/small/rebuild.png</source>
+			<destination>system/workplace/resources/tools/searchindex/icons/small/rebuild.png</destination>
+			<type>image</type>
+			<uuidresource>fdf81ac4-1df1-11da-a3bb-0334e4183c08</uuidresource>
+			<datelastmodified>Wed, 07 Sep 2005 16:19:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 05 Sep 2005 09:46:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/tools/searchindex/icons/small/searchindex.png</source>
 			<destination>system/workplace/resources/tools/searchindex/icons/small/searchindex.png</destination>
 			<type>image</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>a7321eab-fa8e-11d9-bc7c-0334e4183c08</uuidresource>
+			<datelastmodified>Mon, 05 Sep 2005 08:04:29 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[List icon for searchindex.]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Searchindex]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

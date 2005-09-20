@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/09/20 15:39:07 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +67,9 @@ public final class CmsStringUtil {
 
     /** a convienient shorthand to the line separator constant. */
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    /** Context macro. */
+    public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
 
     /** a convienient shorthand for tabulations.  */
     public static final String TABULATOR = "  ";
@@ -83,6 +86,15 @@ public final class CmsStringUtil {
     /** Hour constant. */
     private static final long HOURS = 1000 * 60 * 60;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
+
+    /** OpenCms context replace String, static for performance reasons. */
+    private static String m_contextReplace;
+
+    /** OpenCms context search String, static for performance reasons. */
+    private static String m_contextSearch;
+
     /** Minute constant. */
     private static final long MINUTES = 1000 * 60;
 
@@ -96,18 +108,6 @@ public final class CmsStringUtil {
 
     /** Regex that matches an xml head. */
     private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
-
-    /** OpenCms context replace String, static for performance reasons. */
-    private static String m_contextReplace;
-
-    /** OpenCms context search String, static for performance reasons. */
-    private static String m_contextSearch;
-
-    /** Context macro. */
-    public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
 
     /** 
      * Default constructor (empty), private because this class has only 
@@ -570,18 +570,28 @@ public final class CmsStringUtil {
         int next = source.indexOf(delimiter);
         while (next != -1) {
             String item = source.substring(index, next);
-            if (trim) {
-                result.add(item.trim());
-            } else {
-                result.add(item);
+            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
+            int len = source.length();
+            if ((index < next) || (index > 0) && (index < len)) {
+                if (trim) {
+                    result.add(item.trim());
+                } else {
+                    result.add(item);
+                }
             }
             index = next + 1;
             next = source.indexOf(delimiter, index);
         }
-        if (trim) {
-            result.add(source.substring(index).trim());
-        } else {
-            result.add(source.substring(index));
+        // is there a non - empty String to cut from the tail? 
+        if (next < 0) {
+            next = source.length();
+        }
+        if (index < next) {
+            if (trim) {
+                result.add(source.substring(index).trim());
+            } else {
+                result.add(source.substring(index));
+            }
         }
         return result;
     }
@@ -612,8 +622,8 @@ public final class CmsStringUtil {
      */
     public static List splitAsList(String source, String delimiter, boolean trim) {
 
-        int len = delimiter.length();
-        if (len == 1) {
+        int delimlen = delimiter.length();
+        if (delimlen == 1) {
             // optimize for short strings
             return splitAsList(source, delimiter.charAt(0), trim);
         }
@@ -623,19 +633,28 @@ public final class CmsStringUtil {
         int next = source.indexOf(delimiter);
         while (next != -1) {
             String item = source.substring(index, next);
-            if (trim) {
-                result.add(item.trim());
-            } else {
-                result.add(item);
+            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
+            int len = source.length();
+            if ((index < next) || (index > 0) && (index < len)) {
+                if (trim) {
+                    result.add(item.trim());
+                } else {
+                    result.add(item);
+                }
             }
-
-            index = next + len;
+            index = next + delimlen;
             next = source.indexOf(delimiter, index);
         }
-        if (trim) {
-            result.add(source.substring(index).trim());
-        } else {
-            result.add(source.substring(index));
+        // is there a non - empty String to cut from the tail? 
+        if (next < 0) {
+            next = source.length();
+        }
+        if (index < next) {
+            if (trim) {
+                result.add(source.substring(index).trim());
+            } else {
+                result.add(source.substring(index));
+            }
         }
         return result;
     }
@@ -739,6 +758,36 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns the java String literal for the given String. <p>
+     *  
+     * This is the form of the String that had to be written into sourcecode 
+     * using the unicode escape sequence for special characters. <p> 
+     * 
+     * Example: "Ä" would be transformed to "\\u00C4".<p>
+     * 
+     * @param s a string that may contain non-ascii characters 
+     * 
+     * @return the java unicode escaped string Literal of the given input string
+     */
+    public static String toUnicodeLiteral(String s) {
+
+        StringBuffer result = new StringBuffer();
+        char[] carr = s.toCharArray();
+
+        String unicode;
+        for (int i = 0; i < carr.length; i++) {
+            result.append("\\u");
+            // append leading zeros
+            unicode = Integer.toHexString(carr[i]).toUpperCase();
+            for (int j = 4 - unicode.length(); j > 0; j--) {
+                result.append("0");
+            }
+            result.append(unicode);
+        }
+        return result.toString();
+    }
+
+    /**
      * Validates a value against a regular expression.<p>
      * 
      * @param value the value to test
@@ -748,7 +797,7 @@ public final class CmsStringUtil {
      * @return <code>true</code> if the value satisfies the validation
      */
     public static boolean validateRegex(String value, String regex, boolean allowEmpty) {
-        
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
             return allowEmpty;
         }
@@ -756,7 +805,7 @@ public final class CmsStringUtil {
         Matcher matcher = pattern.matcher(value);
         return matcher.matches();
     }
-    
+
     /**
      * Checks if the provided name is a valid resource name, that is contains only
      * valid characters.<p>
@@ -815,4 +864,5 @@ public final class CmsStringUtil {
 
         return true;
     }
+
 }

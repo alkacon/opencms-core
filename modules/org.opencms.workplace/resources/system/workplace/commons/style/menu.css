@@ -1258,6 +1258,68 @@ a.navhelp:hover, a.navhelp:active {
 }
  
 <% }
+   // for ONLINEHELP and NEW_ADMIN (search results)
+   if (style == ONLINEHELP || style == NEW_ADMIN) { %>
+.searchResult {
+	color: #000000; 
+	font-weight:bold;
+	background-color: infobackground;
+	border: 1px solid threedshadow;
+	padding: 4px;
+	margin-bottom:4px;
+	display:block;
+}
+ 
+.searchExcerpt {
+	color: #999999; 
+	font-weight:normal;
+	background-color: infobackground;
+	border: 0;
+	padding: 4px;
+	display:block;
+}
+/* navigation links and search result links for online help */
+/* search result links for  new admin searchindex tool */
+a.navhelp, a.navhelp:link, a.navhelp:visited {
+	color: #000000; 
+	text-decoration: none;
+}
+
+a.navhelp:hover, a.navhelp:active {
+	color: #000088;
+	text-decoration: underline;
+}
+
+.navhelp {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 11px;
+	float: left;
+	background-image: url(<%=cms.link("/system/modules/org.opencms.workplace.help/resources/nav_i.gif")%>);
+	padding-left: 10px; 
+  background-position: 0px 1px;
+	background-repeat:no-repeat;
+}
+
+/* navigation page links for online help and admin searchindex tool */
+a.searchlink, a.searchlink:link, a.searchlink:visited {
+	color: #CC0000; 
+	text-decoration: none;
+}
+a.searchlink:hover, a.searchlink:active { 
+	text-decoration: underline;
+}
+
+a.searchcategory, a.searchcategory:link, a.searchcategory:visited {
+	color: #CC0000; 
+	text-decoration: none;
+  font-weight: bold;
+}
+
+a.searchcategory:hover, a.searchcategory:active {
+  text-decoration: underline;
+}
+
+<% }
 
    // for all styles except onlinehelp!!
    if (style != ONLINEHELP) {

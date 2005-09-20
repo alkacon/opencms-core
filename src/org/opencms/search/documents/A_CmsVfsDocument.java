@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/07/29 12:13:00 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/20 15:39:07 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.A_CmsIndexResource;
 import org.opencms.search.CmsIndexException;
+import org.opencms.search.CmsSearchCategoryCollector;
 import org.opencms.search.CmsSearchIndex;
 import org.opencms.search.extractors.I_CmsExtractionResult;
 import org.opencms.util.CmsStringUtil;
@@ -64,7 +65,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -222,6 +223,10 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 field.setBoost(0);
                 document.add(field);
             }
+        } else {
+            // synthetic "unknown" category if no category property defined for resource
+            field = Field.Keyword(I_CmsDocumentFactory.DOC_CATEGORY, CmsSearchCategoryCollector.UNKNOWN_CATEGORY);
+            document.add(field);
         }
 
         // add the document root path, optimized for use with a phrase query

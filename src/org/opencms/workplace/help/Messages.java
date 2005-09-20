@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/Messages.java,v $
- * Date   : $Date: 2005/07/25 16:22:30 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/09/20 15:39:06 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,26 +40,11 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_BUTTON_BACK_0 = "GUI_HELP_BUTTON_BACK_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_BUTTON_CLOSE_0 = "GUI_HELP_BUTTON_CLOSE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_BUTTON_CONTENTS_0 = "GUI_HELP_BUTTON_CONTENTS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_BUTTON_NEXT_0 = "GUI_HELP_BUTTON_NEXT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_BUTTON_SEARCH_0 = "GUI_HELP_BUTTON_SEARCH_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_ERR_CONTENT_APPEND_2 = "GUI_HELP_ERR_CONTENT_APPEND_2";
@@ -75,18 +60,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HELP_NAVIGATION_HEAD_0 = "GUI_HELP_NAVIGATION_HEAD_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_SEARCH_NOMATCH_1 = "GUI_HELP_SEARCH_NOMATCH_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_SEARCH_RESULT_START_0 = "GUI_HELP_SEARCH_RESULT_START_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_SEARCH_RESULT_TITLE_0 = "GUI_HELP_SEARCH_RESULT_TITLE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HELP_SEARCH_UNAVAILABLE_0 = "GUI_HELP_SEARCH_UNAVAILABLE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.help.messages";

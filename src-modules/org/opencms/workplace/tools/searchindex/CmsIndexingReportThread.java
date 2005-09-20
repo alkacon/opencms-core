@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/09/20 15:39:06 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -53,12 +53,14 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
+import java.util.List;
+
 /**
  * Implements methods to utilize a report thread for <code>CmsIndexingReport</code>.<p>
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,41 +69,22 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
     /** The last error occured. */
     private Throwable m_error;
 
-    /** The name of the index to refresh or null for all indexes. */
-    private String m_indexName;
+    /** A list of names of the indexes to refresh or null for all indexes. */
+    private List m_indexNames;
 
     /**
      * Creates an indexing Thread for full update.<p>
      * 
      * @param cms the current OpenCms context object
+     * @param indexNames a list of names of the indexes to refresh or null for all indexes
      */
-    public CmsIndexingReportThread(CmsObject cms) {
+    public CmsIndexingReportThread(CmsObject cms, List indexNames) {
 
         super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_INDEXING_THREAD_NAME_0, null));
         initHtmlReport(cms.getRequestContext().getLocale());
 
-        m_indexName = null;
+        m_indexNames = indexNames;
 
-        start();
-    }
-
-    /**
-     * Creates an indexing thread for refreshing a single index.<p>
-     * 
-     * @param cms the cms object
-     * @param indexName the name of the index to refresh
-     */
-    public CmsIndexingReportThread(CmsObject cms, String indexName) {
-
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_INDEXING_THREAD_NAME_1,
-            new Object[] {indexName}));
-        initHtmlReport(cms.getRequestContext().getLocale());
-
-        m_indexName = indexName;
-
-        start();
     }
 
     /**
@@ -136,10 +119,10 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
             I_CmsReport.FORMAT_HEADLINE);
         try {
 
-            if (m_indexName == null) {
+            if (m_indexNames == null) {
                 OpenCms.getSearchManager().rebuildAllIndexes(getReport());
             } else {
-                OpenCms.getSearchManager().rebuildIndex(m_indexName, getReport());
+                OpenCms.getSearchManager().rebuildIndexes(m_indexNames, getReport());
             }
             getReport().println(
                 Messages.get().container(Messages.RPT_REBUILD_SEARCH_INDEXES_END_0),
