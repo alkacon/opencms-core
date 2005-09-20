@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2005/06/25 15:18:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/09/20 10:43:41 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -249,6 +249,7 @@ function getSelectedLink() {
 	            link["href"] = encodeURIComponent(foundLink.getAttribute("HREF", 2));
 	            link["target"] = foundLink.target;
 	            link["name"] = foundLink.getAttribute("NAME", 2);
+		    link["title"] = foundLink.getAttribute("TITLE", 2);
 	            if (USE_LINKSTYLEINPUTS) {
 	            	link["style"] = encodeURIComponent(foundLink.style.getAttribute("CSSTEXT", 2));
 	            	link["class"] = foundLink.getAttribute("CLASSNAME", 2);
@@ -269,6 +270,7 @@ function getSelectedLink() {
 	            link["href"] = encodeURIComponent(foundLink.getAttribute("HREF", 2));
 	            link["target"] = foundLink.target;
 	            link["name"] = foundLink.getAttribute("NAME", 2);
+		    link["title"] = foundLink.getAttribute("TITLE", 2);
 	            if (USE_LINKSTYLEINPUTS) {
 	            	link["style"] = encodeURIComponent(foundLink.style.getAttribute("CSSTEXT", 2));
 	            	link["class"] = foundLink.getAttribute("CLASSNAME", 2);
@@ -656,6 +658,7 @@ function doEditHTML(para) {
 			if (linkInformation != null) {
 				params += "&href=" + linkInformation["href"];
 				params += "&target=" + linkInformation["target"];
+				params += "&title= "+linkInformation["title"];
 				if (USE_LINKSTYLEINPUTS) {
 					params += "&style=" + linkInformation["style"];
 					params += "&class=" + linkInformation["class"];

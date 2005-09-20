@@ -37,10 +37,12 @@ function pasteLink() {
 	if (linkAnchor.length > 0) {
 		linkAnchor = checkContext(linkAnchor, true);
 	}
+	var linktitle = document.NEU.linktitle.value;
+
 	linkInformation["href"] = linkAnchor;
 	linkInformation["name"] = "";
 	linkInformation["target"] = linktarget;
-	linkInformation["title"] = "";
+	linkInformation["title"] = linktitle;
 	if (linkEditorStyleInputs) {
 		linkInformation["style"] = document.NEU.linkstyle.value;
 		linkInformation["class"] = document.NEU.linkstyleclass.value;
@@ -70,6 +72,11 @@ function init() {
 	if (anchor != "null") {
 		document.forms["NEU"].elements["neulink"].value = anchor;
 	}
+	var title= "<%= request.getParameter("title") %>";
+	if (title != "null") {
+		document.forms["NEU"].elements["linktitle"].value = title.trim();
+	}
+
 	if (linkEditorStyleInputs) {
 		var anchorStyle = "<%= request.getParameter("style") %>";
 		var anchorClass = "<%= request.getParameter("class") %>";
@@ -274,7 +281,15 @@ function checkContext(linkUrl, add) {
                       </select>
                       &nbsp;&nbsp;<span id="targetinput" class="maxwidth" style="visibility:hidden; text-align:right;"><input type="text" name="targetname" style="width:120px;" onchange="setNameTarget(true);" /></span></td>
                     <td>&nbsp;</td>
-                </tr>              
+                </tr>   
+                <tr>
+                    <td style="white-space: nowrap;"><%= wp.key("input.linktitle") %>:</td>
+                    <td class="maxwidth">
+                        <input type="text" name="linktitle"  class="maxwidth" value="" />
+                    </td>
+                    <td></td>
+                </tr>
+           
             </table>
 
 <%= wp.dialogContentEnd() %>

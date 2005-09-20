@@ -25,11 +25,11 @@
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.editors" version="1.0.0"/>
+			<dependency name="org.opencms.editors" version="1.0.1"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/workplace/editors/msdhtml"/>
+			<resource uri="/system/workplace/editors/msdhtml/"/>
 		</resources>
 		<parameters/>
 	</module>

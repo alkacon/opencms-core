@@ -4,6 +4,7 @@
 	org.opencms.workplace.editors.*,
 	org.opencms.workplace.help.*,
 	org.opencms.jsp.*,
+	org.opencms.main.*,
 	java.util.*"
 %><%
 	
@@ -193,6 +194,7 @@ function buttonAction(para) {
 			if (linkInformation != null) {
 				params += "&href=" + linkInformation["href"];
 				params += "&target=" + linkInformation["target"];
+				params += "&title= "+linkInformation["title"];
 				if (USE_LINKSTYLEINPUTS) {
 					params += "&style=" + linkInformation["style"];
 					params += "&class=" + linkInformation["class"];
@@ -396,6 +398,8 @@ function getSelectedLink() {
 		linkInformation["href"] = encodeURIComponent(linkUri);		
 		linkInformation["name"] = thelink.name;
 		linkInformation["target"] = thelink.target;
+		linkInformation["title"] = thelink.title;
+
 		if (USE_LINKSTYLEINPUTS) {
 			linkInformation["style"] = encodeURIComponent(thelink.style.getAttribute("CSSTEXT", 2));
 			linkInformation["class"] = thelink.className;
