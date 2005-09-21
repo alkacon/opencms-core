@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/09/21 10:40:53 $
- * Version: $Revision: 1.39.2.2 $
+ * Date   : $Date: 2005/09/21 10:48:15 $
+ * Version: $Revision: 1.39.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.2 $ 
+ * @version $Revision: 1.39.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,7 +251,7 @@ public class CmsSearch implements Cloneable {
             return links;
         }
         int startIndex, endIndex;
-        String link = m_cms.getRequestContext().getUri() + this.getSearchParameters() + "&searchpage=";
+        String link = m_cms.getRequestContext().getUri() + this.getSearchParameters() + "&searchPage=";
         if (getDisplayPages() < 1) {
             // number of displayed pages not limited, build a map with all available page links 
             startIndex = 1;
