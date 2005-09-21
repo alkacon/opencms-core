@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/09/20 15:39:07 $
- * Version: $Revision: 1.34.2.1 $
+ * Date   : $Date: 2005/09/21 07:38:25 $
+ * Version: $Revision: 1.34.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.1 $ 
+ * @version $Revision: 1.34.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -566,32 +566,28 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, char delimiter, boolean trim) {
 
         List result = new ArrayList();
-        int index = 0;
-        int next = source.indexOf(delimiter);
-        while (next != -1) {
-            String item = source.substring(index, next);
-            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
-            int len = source.length();
-            if ((index < next) || (index > 0) && (index < len)) {
-                if (trim) {
-                    result.add(item.trim());
-                } else {
-                    result.add(item);
+        int len = source.length();
+        int l = 0;
+        int s = 0;
+        // using char arrays to avoid synchronization overhead in StringBuffer
+        char[] in = source.toCharArray();
+        for (int i = 0; i < len; i++) {
+
+            char c = in[i];
+            if (c == delimiter) {
+                if (i > 0) {
+                    // ignore empty tokens at the start
+                    result.add(str(in, s, l, trim));
                 }
-            }
-            index = next + 1;
-            next = source.indexOf(delimiter, index);
-        }
-        // is there a non - empty String to cut from the tail? 
-        if (next < 0) {
-            next = source.length();
-        }
-        if (index < next) {
-            if (trim) {
-                result.add(source.substring(index).trim());
+                s = i + 1;
+                l = 0;
             } else {
-                result.add(source.substring(index));
+                l++;
             }
+        }
+        if (l > 0) {
+            // append last item if not empty
+            result.add(str(in, s, l, trim));
         }
         return result;
     }
@@ -614,7 +610,7 @@ public final class CmsStringUtil {
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as List of Substrings.<p>
      * 
-     * @param source source the String to split
+     * @param source the String to split
      * @param delimiter the delimiter to split at
      * @param trim flag to indicate if leading and trailing whitespaces should be omitted
      * 
@@ -622,99 +618,189 @@ public final class CmsStringUtil {
      */
     public static List splitAsList(String source, String delimiter, boolean trim) {
 
-        int delimlen = delimiter.length();
-        if (delimlen == 1) {
+        int dl = delimiter.length();
+        if (dl == 1) {
             // optimize for short strings
             return splitAsList(source, delimiter.charAt(0), trim);
         }
 
+        char[] delims = delimiter.toCharArray();
+        int dp = 0;
+        dl--;
+
         List result = new ArrayList();
-        int index = 0;
-        int next = source.indexOf(delimiter);
-        while (next != -1) {
-            String item = source.substring(index, next);
-            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
-            int len = source.length();
-            if ((index < next) || (index > 0) && (index < len)) {
-                if (trim) {
-                    result.add(item.trim());
+        int len = source.length();
+        int l = 0;
+        int s = 0;
+        // using char arrays to avoid synchronization overhead in StringBuffer
+        char[] in = source.toCharArray();
+        for (int i = 0; i < len; i++) {
+
+            char c = in[i];
+            if (c == delims[dp]) {
+                // this could be part of a delimiter 
+                if (dp < dl) {
+                    // delimiter still "in progess"
+                    dp++;
                 } else {
-                    result.add(item);
+                    // found a delimimter
+                    if (i > dl) {
+                        // ignore empty tokens at the start
+                        result.add(str(in, s, l, trim));
+                    }
+                    s = i + 1;
+                    l = 0;
+                    dp = 0;
+                }
+            } else {
+                if (dp > 0) {
+                    // copy "invalid" delimiter part to item
+                    l += dp;
+                    dp = 0;
+                }
+                if (c == delims[0]) {
+                    // this could be the start of a new delim
+                    dp++;
+                } else {
+                    l++;
                 }
             }
-            index = next + delimlen;
-            next = source.indexOf(delimiter, index);
         }
-        // is there a non - empty String to cut from the tail? 
-        if (next < 0) {
-            next = source.length();
+        if (dp > 0) {
+            l += dp;
         }
-        if (index < next) {
-            if (trim) {
-                result.add(source.substring(index).trim());
-            } else {
-                result.add(source.substring(index));
-            }
+        if (l > 0) {
+            // append last item if not empty
+            result.add(str(in, s, l, trim));
         }
         return result;
     }
 
     /**
-     * Substitutes searchString in content with replaceItem.<p>
+     * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
      * 
-     * @param content the content which is scanned
+     * This is a high-performance implementation which should be used as a replacement for 
+     * <code>{@link String#replaceAll(java.lang.String, java.lang.String)}</code> in case no
+     * regular expression evaluation is required.<p>
+     * 
+     * @param source the content which is scanned
      * @param searchString the String which is searched in content
-     * @param replaceItem the new String which replaces searchString
+     * @param replaceString the String which replaces <code>searchString</code>
+     * 
      * @return String the substituted String
      */
-    public static String substitute(String content, String searchString, String replaceItem) {
+    public static String substitute(String source, String searchString, String replaceString) {
 
         // high performance implementation to avoid regular expression overhead
-        int findLength;
-        if (content == null) {
+        int dl;
+        if (source == null) {
             return null;
         }
-        int stringLength = content.length();
-        if (searchString == null || (findLength = searchString.length()) == 0) {
-            return content;
+
+        if (searchString == null || (dl = searchString.length()) == 0) {
+            return source;
         }
-        if (replaceItem == null) {
-            replaceItem = "";
+
+        if (replaceString == null) {
+            replaceString = "";
         }
-        int replaceLength = replaceItem.length();
-        int length;
-        if (findLength == replaceLength) {
-            length = stringLength;
-        } else {
-            int count;
-            int start;
-            int end;
-            count = 0;
-            start = 0;
-            while ((end = content.indexOf(searchString, start)) != -1) {
-                count++;
-                start = end + findLength;
+
+        char[] delims = searchString.toCharArray();
+        int dp = 0;
+        dl--;
+
+        int len = source.length();
+        StringBuffer result = new StringBuffer(len * 2);
+        int l = 0;
+        int s = 0;
+        // using char arrays to avoid synchronization overhead in StringBuffer
+        char[] in = source.toCharArray();
+        for (int i = 0; i < len; i++) {
+
+            char c = in[i];
+            if (c == delims[dp]) {
+                // this could be part of a delimiter 
+                if (dp < dl) {
+                    // delimiter still "in progess"
+                    dp++;
+                } else {
+                    // found a delimimter
+                    result.append(new String(in, s, l));
+                    result.append(replaceString);
+                    s = i + 1;
+                    l = 0;
+                    dp = 0;
+                }
+            } else {
+                if (dp > 0) {
+                    // copy "invalid" delimiter part to item
+                    l += dp;
+                    dp = 0;
+                }
+                if (c == delims[0]) {
+                    // this could be the start of a new delim
+                    dp++;
+                } else {
+                    l++;
+                }
             }
-            if (count == 0) {
-                return content;
-            }
-            length = stringLength - (count * (findLength - replaceLength));
         }
-        int start = 0;
-        int end = content.indexOf(searchString, start);
-        if (end == -1) {
-            return content;
+        if (dp > 0) {
+            l += dp;
         }
-        StringBuffer sb = new StringBuffer(length);
-        while (end != -1) {
-            sb.append(content.substring(start, end));
-            sb.append(replaceItem);
-            start = end + findLength;
-            end = content.indexOf(searchString, start);
+        if (l > 0) {
+            // append last item if not empty
+            result.append(new String(in, s, l));
         }
-        end = stringLength;
-        sb.append(content.substring(start, end));
-        return sb.toString();
+        return result.toString();
+
+        //        int findLength;
+        //        if (source == null) {
+        //            return null;
+        //        }
+        //        
+        //        
+        //        if (searchString == null || (findLength = searchString.length()) == 0) {
+        //            return source;
+        //        }
+        //        
+        //        if (replaceString == null) {
+        //            replaceString = "";
+        //        }
+        //        int stringLength = source.length();
+        //        int replaceLength = replaceString.length();
+        //        int length;
+        //        if (findLength == replaceLength) {
+        //            length = stringLength;
+        //        } else {
+        //            int count = 0;
+        //            int start = 0;
+        //            int end;
+        //            while ((end = source.indexOf(searchString, start)) != -1) {
+        //                count++;
+        //                start = end + findLength;
+        //            }
+        //            if (count == 0) {
+        //                return source;
+        //            }
+        //            length = stringLength - (count * (findLength - replaceLength));
+        //        }
+        //        
+        //        int start = 0;
+        //        int end = source.indexOf(searchString, start);
+        //        if (end == -1) {
+        //            return source;
+        //        }
+        //        StringBuffer sb = new StringBuffer(length);
+        //        while (end != -1) {
+        //            sb.append(source.substring(start, end));
+        //            sb.append(replaceString);
+        //            start = end + findLength;
+        //            end = source.indexOf(searchString, start);
+        //        }
+        //        end = stringLength;
+        //        sb.append(source.substring(start, end));
+        //        return sb.toString();
     }
 
     /**
@@ -863,6 +949,24 @@ public final class CmsStringUtil {
         }
 
         return true;
+    }
+
+    /**
+     * Creates a String from a portion of a char array.<p>
+     * 
+     * @param c the char array to create the String from
+     * @param s the start position in the input char array
+     * @param l the number of chars to copy from the input char array
+     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     * 
+     * @return the String created from the given char array
+     */
+    private static String str(char[] c, int s, int l, boolean trim) {
+
+        if (trim) {
+            return (new String(c, s, l)).trim();
+        }
+        return new String(c, s, l);
     }
 
 }

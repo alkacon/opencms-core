@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2005/09/20 15:39:08 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2005/09/21 07:38:25 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * @author Andreas Zahner 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.10.2.2 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -236,476 +236,310 @@ public class TestCmsStringUtil extends TestCase {
     /**
      * Tests <code>{@link CmsStringUtil#splitAsArray(String, char)}</code>.<p>
      */
-    public void testSplitAsArrayStringChar() {
+    public void testSplitCharDelimiter() {
 
+        String toSplit;
+        char delimChar = '/';
+        String[] arrayResult;
+        List listResult;
+               
         // test usability for path-tokenization (e.g. admin tool of workplace)
-        String toSplit = "/system/workplace/admin/searchindex/";
-        String[] result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The string \""
-            + toSplit
-            + "\" split with separator '/'  should contain 4 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 4, result.length);
-
+        toSplit = "/system/workplace/admin/searchindex/";
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(4, arrayResult.length);
+        assertEquals("system", arrayResult[0]);
+        assertEquals("workplace", arrayResult[1]);
+        assertEquals("admin", arrayResult[2]);
+        assertEquals("searchindex", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test an empty String: 
         toSplit = "";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The empty String \"\" should contain zero tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 0, result.length);
-
-        // test a whitespace String with truncation:
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(0, arrayResult.length);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        // test a whitespace only String
         toSplit = "               ";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator '/'  should contain zero tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(1, arrayResult.length);
+        assertEquals(toSplit, arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        // with truncation
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar, true);
+        assertEquals(1, listResult.size());
+        assertEquals("", listResult.get(0));
+        
         // test a 1 separator-only String
         toSplit = "/";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator '/'  should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 0, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(0, arrayResult.length);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 2 separator-only String
         toSplit = "//";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator '/'  should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(1, arrayResult.length);
+        assertEquals("", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a single token String with starting delimiter
         toSplit = "/token";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator '/' should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(1, arrayResult.length);
+        assertEquals("token", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a single token String with ending delimiter
         toSplit = "token/";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator '/'   should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(1, arrayResult.length);
+        assertEquals("token", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 3 separator-only String
         toSplit = "///";
-        result = CmsStringUtil.splitAsArray(toSplit, '/');
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator '/' should contain 2 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 2, result.length);
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(2, arrayResult.length);
+        assertEquals("", arrayResult[0]);
+        assertEquals("", arrayResult[1]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        toSplit = "/a // b/ c /";
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
+        assertEquals(4, arrayResult.length);
+        assertEquals("a ", arrayResult[0]);
+        assertEquals("", arrayResult[1]);
+        assertEquals(" b", arrayResult[2]);
+        assertEquals(" c ", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        // with truncation
+        listResult = CmsStringUtil.splitAsList(toSplit, delimChar, true);
+        assertEquals(4, listResult.size());
+        assertEquals("a", listResult.get(0));
+        assertEquals("", listResult.get(1));
+        assertEquals("b", listResult.get(2));
+        assertEquals("c", listResult.get(3));
     }
 
     /**
      * Tests <code>{@link CmsStringUtil#splitAsArray(String, String)}</code>.<p>
      */
-    public void testSplitAsArrayStringString() {
+    public void testSplitStringDelimiter() {
 
-        // test usability for path-tokenization (e.g. admin tool of workplace)
-        String toSplit = "/system/workplace/admin/searchindex/";
-        String[] result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The string \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 4 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 4, result.length);
+        String toSplit;
+        String delimString = "/";
+        String[] arrayResult;
+        List listResult;
+        
+        toSplit = "/system/workplace/admin/searchindex/";
+
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("system", arrayResult[0]);
+        assertEquals("workplace", arrayResult[1]);
+        assertEquals("admin", arrayResult[2]);
+        assertEquals("searchindex", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
 
         // test an empty String: 
         toSplit = "";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The empty String \"\" should contain zero tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 0, result.length);
-
-        // test a whitespace String with truncation:
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(0, arrayResult.length);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        // whitespace only String
         toSplit = "               ";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain zero tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals(toSplit, arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        // with truncation
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString, true);
+        assertEquals(1, listResult.size());
+        assertEquals("", listResult.get(0));
+        
         // test a 1 separator-only String
         toSplit = "/";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 0, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(0, arrayResult.length);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 2 separator-only String
         toSplit = "//";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals("", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a single token String with starting delimiter
         toSplit = "/token";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals("token", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a single token String with ending delimiter
         toSplit = "token/";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"   should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals("token", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 3 separator-only String
         toSplit = "///";
-        result = CmsStringUtil.splitAsArray(toSplit, "/");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 2 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 2, result.length);
-
-        // repetition of the same tests with a separator longer than 1 (as splitAsList(String,String,boolean) 
-        // delegates to splitAsList(String, char, boolean) if separator's length is zero 
-        // test usability for path-tokenization (e.g. admin tool of workplace)
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(2, arrayResult.length);
+        assertEquals("", arrayResult[0]);
+        assertEquals("", arrayResult[1]);        
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        toSplit = "/a // b/ c /";
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("a ", arrayResult[0]);
+        assertEquals("", arrayResult[1]);
+        assertEquals(" b", arrayResult[2]);
+        assertEquals(" c ", arrayResult[3]);  
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
+        // with truncation
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString, true);
+        assertEquals(4, listResult.size());
+        assertEquals("a", listResult.get(0));
+        assertEquals("", listResult.get(1));
+        assertEquals("b", listResult.get(2));
+        assertEquals("c", listResult.get(3));
+        
+        // some tests with a separator longer than 1 
+        
+        delimString = ",,";
         toSplit = ",,system,,workplace,,admin,,searchindex,,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The string \""
-            + toSplit
-            + "\" split with separator \",,\"  should contain 4 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 4, result.length);
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("system", arrayResult[0]);
+        assertEquals("workplace", arrayResult[1]);
+        assertEquals("admin", arrayResult[2]);
+        assertEquals("searchindex", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
 
         // test an empty String: 
         toSplit = "";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The empty String \"\" should contain zero tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 0, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(0, arrayResult.length);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a whitespace String with truncation:
         toSplit = "               ";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain zero tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals(toSplit, arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 1 separator-only String
         toSplit = ",,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 2 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 0, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(0, arrayResult.length);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 2 separator-only String
         toSplit = ",,,,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\"  should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals("", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a single token String with starting delimiter
         toSplit = ",,token";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals("token", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a single token String with ending delimiter
         toSplit = "token,,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 1 token but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 1, result.length);
-
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(1, arrayResult.length);
+        assertEquals("token", arrayResult[0]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
+        
         // test a 3 separator-only String
         toSplit = ",,,,,,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 2 tokens but was split to: \""
-            + Arrays.asList(result)
-            + "\"!", 2, result.length);
-        
-        toSplit = ",a,,b,c,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",");
-        assertEquals("a", result[0]);
-        assertEquals("", result[1]);
-        assertEquals("b", result[2]);
-        assertEquals("c", result[3]);
-        assertEquals(4, result.length);
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(2, arrayResult.length);
+        assertEquals("", arrayResult[0]);
+        assertEquals("", arrayResult[1]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);
         
         toSplit = ",,a, aber nicht b,,,,b, aber nicht c,,c, but not a,,";
-        result = CmsStringUtil.splitAsArray(toSplit, ",,");
-        assertEquals("a, aber nicht b", result[0]);
-        assertEquals("", result[1]);
-        assertEquals("b, aber nicht c", result[2]);
-        assertEquals("c, but not a", result[3]);
-        assertEquals(4, result.length);
-    }
-
-    /**
-     * Tests <code>{@link CmsStringUtil#splitAsList(String, char, boolean)}</code>.<p>
-     */
-    public void testSplitAsListStringCharBoolean() {
-
-        // test usability for path-tokenization (e.g. admin tool of workplace)
-        String toSplit = "/system/workplace/admin/searchindex/";
-        List result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals("The string \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 4 tokens but was split to: \""
-            + result
-            + "\"!", 4, result.size());
-
-        // test an empty String: 
-        toSplit = "";
-        result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals(
-            "The empty String \"\" should contain zero tokens but was split to: \"" + result + "\"!",
-            0,
-            result.size());
-
-        // test a whitespace String with truncation:
-        toSplit = "               ";
-        result = CmsStringUtil.splitAsList(toSplit, '/', true);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain zero tokens but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a 1 separator-only String
-        toSplit = "/";
-        result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 0, result.size());
-
-        // test a 2 separator-only String
-        toSplit = "//";
-        result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a single token String with starting delimiter
-        toSplit = "/token";
-        result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a single token String with ending delimiter
-        toSplit = "token/";
-        result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"   should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a 3 separator-only String
-        toSplit = "///";
-        result = CmsStringUtil.splitAsList(toSplit, '/', false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 2, result.size());
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("a, aber nicht b", arrayResult[0]);
+        assertEquals("", arrayResult[1]);
+        assertEquals("b, aber nicht c", arrayResult[2]);
+        assertEquals("c, but not a", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);        
         
-        toSplit = ",a,,b,c,";
-        result = CmsStringUtil.splitAsList(toSplit, ',');
-        assertEquals("a", result.get(0));
-        assertEquals("", result.get(1));
-        assertEquals("b", result.get(2));
-        assertEquals("c", result.get(3));
-        assertEquals(4, result.size());        
-    }
-
-    /**
-     * Tests <code>{@link CmsStringUtil#splitAsList(String, String, boolean)}</code>.<p>
-     */
-    public void testSplitAsListStringStringBoolean() {
-
-        // test usability for path-tokenization (e.g. admin tool of workplace)
-        String toSplit = "/system/workplace/admin/searchindex/";
-        List result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals("The string \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 4 tokens but was split to: \""
-            + result
-            + "\"!", 4, result.size());
-
-        // test an empty String: 
-        toSplit = "";
-        result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals(
-            "The empty String \"\" should contain zero tokens but was split to: \"" + result + "\"!",
-            0,
-            result.size());
-
-        // test a whitespace String with truncation:
-        toSplit = "               ";
-        result = CmsStringUtil.splitAsList(toSplit, "/", true);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain zero tokens but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a 1 separator-only String
-        toSplit = "/";
-        result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 0, result.size());
-
-        // test a 2 separator-only String
-        toSplit = "//";
-        result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a single token String with starting delimiter
-        toSplit = "/token";
-        result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a single token String with ending delimiter
-        toSplit = "token/";
-        result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"   should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a 3 separator-only String
-        toSplit = "///";
-        result = CmsStringUtil.splitAsList(toSplit, "/", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \"/\"  should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 2, result.size());
-
-        // repetition of the same tests with a separator longer than 1 (as splitAsList(String,String,boolean) 
-        // delegates to splitAsList(String, char, boolean) if separator's length is zero 
-        // test usability for path-tokenization (e.g. admin tool of workplace)
-        toSplit = ",,system,,workplace,,admin,,searchindex,,";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals("The string \""
-            + toSplit
-            + "\" split with separator \",,\"  should contain 4 tokens but was split to: \""
-            + result
-            + "\"!", 4, result.size());
-
-        // test an empty String: 
-        toSplit = "";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals(
-            "The empty String \"\" should contain zero tokens but was split to: \"" + result + "\"!",
-            0,
-            result.size());
-
-        // test a whitespace String with truncation:
-        toSplit = "               ";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", true);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain zero tokens but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a 1 separator-only String
-        toSplit = ",,";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 0, result.size());
-
-        // test a 2 separator-only String
-        toSplit = ",,,,";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\"  should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a single token String with starting delimiter
-        toSplit = ",,token";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a single token String with ending delimiter
-        toSplit = "token,,";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 1 token but was split to: \""
-            + result
-            + "\"!", 1, result.size());
-
-        // test a 3 separator-only String
-        toSplit = ",,,,,,";
-        result = CmsStringUtil.splitAsList(toSplit, ",,", false);
-        assertEquals("The String \""
-            + toSplit
-            + "\" split with separator \",,\" should contain 2 tokens but was split to: \""
-            + result
-            + "\"!", 2, result.size());
+        delimString = "/delim/";
+        toSplit = "/delim fake at start/delim//not a delim//delim//delim//delim fake at end";
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("/delim fake at start", arrayResult[0]);
+        assertEquals("/not a delim/", arrayResult[1]);
+        assertEquals("", arrayResult[2]);
+        assertEquals("/delim fake at end", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);  
+        
+        toSplit = "/delim fake at start/delim//not a delim//delim//delim//delim";
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("/delim fake at start", arrayResult[0]);
+        assertEquals("/not a delim/", arrayResult[1]);
+        assertEquals("", arrayResult[2]);
+        assertEquals("/delim", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult); 
+        
+        toSplit = "/delim//delim fake at start/delim//not a delim//delim//delim//delim fake at end/delim/";
+        arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
+        assertEquals(4, arrayResult.length);
+        assertEquals("/delim fake at start", arrayResult[0]);
+        assertEquals("/not a delim/", arrayResult[1]);
+        assertEquals("", arrayResult[2]);
+        assertEquals("/delim fake at end", arrayResult[3]);
+        listResult = CmsStringUtil.splitAsList(toSplit, delimString);
+        assertEquals(Arrays.asList(arrayResult), listResult);  
     }
 
     /**
