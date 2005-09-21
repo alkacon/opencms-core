@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/09/14 14:31:58 $
- * Version: $Revision: 1.557 $
+ * Date   : $Date: 2005/09/21 10:23:50 $
+ * Version: $Revision: 1.558 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,7 +112,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.557 $
+ * @version $Revision: 1.558 $
  * 
  * @since 6.0.0
  */
@@ -5577,7 +5577,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List extractedResources = null;
 
-        String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path + "_" + propertyDefinition);
+        String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path + "_" + propertyDefinition + "_" + value);
 
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
 
