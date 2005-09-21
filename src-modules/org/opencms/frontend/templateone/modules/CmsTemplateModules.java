@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/modules/CmsTemplateModules.java,v $
- * Date   : $Date: 2005/07/05 12:54:47 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/09/21 08:02:57 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.frontend.templateone.CmsPropertyTemplateOne;
-import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.frontend.templateone.CmsTemplateBase;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -64,11 +64,11 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsTemplateModules extends CmsJspActionElement {
+public class CmsTemplateModules extends CmsTemplateBase {
 
     /** Request parameter name for the category folder. */
     public static final String PARAM_CATEGORYFOLDER = "categoryfolder";
@@ -92,7 +92,7 @@ public class CmsTemplateModules extends CmsJspActionElement {
     private boolean m_hasCategoryFolders;
 
     /**
-     * @see CmsJspActionElement#CmsJspActionElement(PageContext, HttpServletRequest, HttpServletResponse)
+     * @see org.opencms.jsp.CmsJspActionElement#CmsJspActionElement(PageContext, HttpServletRequest, HttpServletResponse)
      */
     public CmsTemplateModules(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
