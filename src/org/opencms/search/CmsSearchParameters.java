@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2005/09/20 15:39:07 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2005/09/21 09:21:08 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.5.2.1 $
+ * @version $Revision: 1.5.2.2 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.5.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,8 +182,6 @@ public class CmsSearchParameters {
         m_roots = roots;
         m_categories = (categories == null) ? new LinkedList() : categories;
         m_calculateCategories = calculateCategories;
-        // default search index to use
-        setSearchIndex(OpenCms.getSearchManager().getIndex("Online project (VFS)"));
         // null sort is allowed default
         m_sort = sort;
         m_page = 1;
