@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/08/08 15:13:43 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/09/21 07:52:28 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.CmsJspNavElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -80,11 +79,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsTemplateNavigation extends CmsJspActionElement {
+public class CmsTemplateNavigation extends CmsTemplateBase {
     
     /** Configuration file name for the optional manual head navigation configuration. */
     public static final String FILE_CONFIG_HEADNAV = "headnav";

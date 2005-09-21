@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/08/02 10:27:56 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/09/21 07:52:28 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,6 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.jsp.util.CmsTemplateContentListItem;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsException;
@@ -70,11 +69,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsTemplateBean extends CmsJspActionElement {
+public class CmsTemplateBean extends CmsTemplateBase {
 
     /** File name of the website area configuration file. */
     public static final String FILE_CONFIG_COMMON = "configuration_common";

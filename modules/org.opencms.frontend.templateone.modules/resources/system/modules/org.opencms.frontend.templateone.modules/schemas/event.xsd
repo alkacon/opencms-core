@@ -42,6 +42,7 @@
 				<mapping element="Expiration" mapto="attribute:dateexpired" />
 				<mapping element="Priority" mapto="property:collector.priority" />
 				<mapping element="EventDates/EventDate" mapto="property:collector.date" />
+				<mapping element="EventDates/EventEndDate" mapto="property:calendar.enddate" />
 			</mappings>
 			<layouts>
 				<layout element="Priority" widget="SelectorWidget" configuration="6:${key.priority.maximum}|5:${key.priority.veryhigh}|4:${key.priority.high}|3*:${key.priority.standard}|2:${key.priority.low}|1:${key.priority.verylow}|0:${key.priority.minimum}" />

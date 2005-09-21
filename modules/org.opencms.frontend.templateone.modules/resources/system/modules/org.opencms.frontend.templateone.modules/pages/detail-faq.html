@@ -5,13 +5,11 @@
 
 CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
 
-String uri = request.getParameter("uri");
-String oldUri = cms.getRequestContext().getUri();
-pageContext.setAttribute("detailfile", oldUri);
-boolean uriPresent = false;
-if (CmsStringUtil.isNotEmpty(uri)) {
-	cms.getRequestContext().setUri(uri);
-	uriPresent = true;
+cms.include("../elements/seturi.jsp");
+if (cms.isUriChanged()) {
+	pageContext.setAttribute("detailfile", cms.getOriginalUri());
+} else {
+	pageContext.setAttribute("detailfile", cms.getRequestContext().getUri());
 }
 
 // get currently active locale to initialize message bundle
@@ -42,7 +40,7 @@ pageContext.setAttribute("locale", locale);
 <%@ include file="../elements/detail-element-faqparagraph.txt" %>
 <%-- end images --%>
 
-<% if (uriPresent) { 
+<% if (cms.isUriChanged()) { 
 	
 	String catFolder = request.getParameter("categoryfolder");
 	if (catFolder != null && !"".equals(catFolder)) {

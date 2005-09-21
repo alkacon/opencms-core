@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/09/21 07:52:28 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.frontend.templateone;
 
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
@@ -53,11 +52,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsTemplateStyleSheet extends CmsJspActionElement {
+public class CmsTemplateStyleSheet extends CmsTemplateBase {
 
     /** Default file name of the CSS configuration file. */
     public static final String FILENAME_CONFIGFILE = "configuration_css";
