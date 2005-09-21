@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.39.2.1 $
+ * Date   : $Date: 2005/09/21 10:40:53 $
+ * Version: $Revision: 1.39.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.1 $ 
+ * @version $Revision: 1.39.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -457,7 +457,7 @@ public class CmsSearch implements Cloneable {
                     }
 
                     // re-calculate the URLs to browse forward and backward in the search result
-                    String url = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchpage=";
+                    String url = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchPage=";
                     if (m_parameters.getSearchPage() > 1) {
                         m_prevUrl = url + (m_parameters.getSearchPage() - 1);
                     }
