@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2005/09/21 07:38:25 $
- * Version: $Revision: 1.10.2.2 $
+ * Date   : $Date: 2005/09/21 16:34:34 $
+ * Version: $Revision: 1.10.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * @author Andreas Zahner 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.10.2.2 $
+ * @version $Revision: 1.10.2.3 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -561,8 +561,13 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(test, "<a href=\"/opencms/opencms/test.jpg\">");
 
         content = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pics/";
-        result = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";
+        result = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";               
         test = CmsStringUtil.substitute(content, "i", "u");
+        assertEquals(test, result);
+        
+        content = "/delim//delim fake at start/delim//not a delim//delim//delim//delim fake at end/delim/";
+        result = "REPLACED!/delim fake at startREPLACED!/not a delim/REPLACED!REPLACED!/delim fake at endREPLACED!";
+        test = CmsStringUtil.substitute(content, "/delim/", "REPLACED!");
         assertEquals(test, result);
     }
 }

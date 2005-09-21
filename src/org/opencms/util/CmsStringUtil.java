@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/09/21 07:38:25 $
- * Version: $Revision: 1.34.2.2 $
+ * Date   : $Date: 2005/09/21 16:34:34 $
+ * Version: $Revision: 1.34.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.2 $ 
+ * @version $Revision: 1.34.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -691,116 +691,52 @@ public final class CmsStringUtil {
      */
     public static String substitute(String source, String searchString, String replaceString) {
 
-        // high performance implementation to avoid regular expression overhead
-        int dl;
+        int sl;
         if (source == null) {
             return null;
         }
 
-        if (searchString == null || (dl = searchString.length()) == 0) {
+        if (searchString == null || (sl = searchString.length()) == 0) {
             return source;
         }
 
         if (replaceString == null) {
             replaceString = "";
         }
-
-        char[] delims = searchString.toCharArray();
-        int dp = 0;
-        dl--;
-
         int len = source.length();
-        StringBuffer result = new StringBuffer(len * 2);
-        int l = 0;
-        int s = 0;
-        // using char arrays to avoid synchronization overhead in StringBuffer
-        char[] in = source.toCharArray();
-        for (int i = 0; i < len; i++) {
-
-            char c = in[i];
-            if (c == delims[dp]) {
-                // this could be part of a delimiter 
-                if (dp < dl) {
-                    // delimiter still "in progess"
-                    dp++;
-                } else {
-                    // found a delimimter
-                    result.append(new String(in, s, l));
-                    result.append(replaceString);
-                    s = i + 1;
-                    l = 0;
-                    dp = 0;
-                }
-            } else {
-                if (dp > 0) {
-                    // copy "invalid" delimiter part to item
-                    l += dp;
-                    dp = 0;
-                }
-                if (c == delims[0]) {
-                    // this could be the start of a new delim
-                    dp++;
-                } else {
-                    l++;
-                }
+        int rl = replaceString.length();
+        int length;
+        if (sl == rl) {
+            length = len;
+        } else {
+            int c = 0;
+            int s = 0;
+            int e;
+            while ((e = source.indexOf(searchString, s)) != -1) {
+                c++;
+                s = e + sl;
             }
+            if (c == 0) {
+                return source;
+            }
+            length = len - (c * (sl - rl));
         }
-        if (dp > 0) {
-            l += dp;
-        }
-        if (l > 0) {
-            // append last item if not empty
-            result.append(new String(in, s, l));
-        }
-        return result.toString();
 
-        //        int findLength;
-        //        if (source == null) {
-        //            return null;
-        //        }
-        //        
-        //        
-        //        if (searchString == null || (findLength = searchString.length()) == 0) {
-        //            return source;
-        //        }
-        //        
-        //        if (replaceString == null) {
-        //            replaceString = "";
-        //        }
-        //        int stringLength = source.length();
-        //        int replaceLength = replaceString.length();
-        //        int length;
-        //        if (findLength == replaceLength) {
-        //            length = stringLength;
-        //        } else {
-        //            int count = 0;
-        //            int start = 0;
-        //            int end;
-        //            while ((end = source.indexOf(searchString, start)) != -1) {
-        //                count++;
-        //                start = end + findLength;
-        //            }
-        //            if (count == 0) {
-        //                return source;
-        //            }
-        //            length = stringLength - (count * (findLength - replaceLength));
-        //        }
-        //        
-        //        int start = 0;
-        //        int end = source.indexOf(searchString, start);
-        //        if (end == -1) {
-        //            return source;
-        //        }
-        //        StringBuffer sb = new StringBuffer(length);
-        //        while (end != -1) {
-        //            sb.append(source.substring(start, end));
-        //            sb.append(replaceString);
-        //            start = end + findLength;
-        //            end = source.indexOf(searchString, start);
-        //        }
-        //        end = stringLength;
-        //        sb.append(source.substring(start, end));
-        //        return sb.toString();
+        int s = 0;
+        int e = source.indexOf(searchString, s);
+        if (e == -1) {
+            return source;
+        }
+        StringBuffer sb = new StringBuffer(length);
+        while (e != -1) {
+            sb.append(source.substring(s, e));
+            sb.append(replaceString);
+            s = e + sl;
+            e = source.indexOf(searchString, s);
+        }
+        e = len;
+        sb.append(source.substring(s, e));
+        return sb.toString();
     }
 
     /**
