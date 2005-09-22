@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/09/21 16:34:34 $
- * Version: $Revision: 1.34.2.3 $
+ * Date   : $Date: 2005/09/22 05:56:26 $
+ * Version: $Revision: 1.34.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.3 $ 
+ * @version $Revision: 1.34.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -566,28 +566,23 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, char delimiter, boolean trim) {
 
         List result = new ArrayList();
-        int len = source.length();
-        int l = 0;
-        int s = 0;
-        // using char arrays to avoid synchronization overhead in StringBuffer
-        char[] in = source.toCharArray();
-        for (int i = 0; i < len; i++) {
-
-            char c = in[i];
-            if (c == delimiter) {
-                if (i > 0) {
-                    // ignore empty tokens at the start
-                    result.add(str(in, s, l, trim));
-                }
-                s = i + 1;
-                l = 0;
-            } else {
-                l++;
+        int i = 0;
+        int l = source.length();
+        int n = source.indexOf(delimiter);
+        while (n != -1) {
+            // zero - length items are not seen as tokens at start or end
+            if ((i < n) || (i > 0) && (i < l)) {
+                result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
+            i = n + 1;
+            n = source.indexOf(delimiter, i);
         }
-        if (l > 0) {
-            // append last item if not empty
-            result.add(str(in, s, l, trim));
+        // is there a non - empty String to cut from the tail? 
+        if (n < 0) {
+            n = source.length();
+        }
+        if (i < n) {
+            result.add(trim ? source.substring(i).trim() : source.substring(i));
         }
         return result;
     }
@@ -624,54 +619,24 @@ public final class CmsStringUtil {
             return splitAsList(source, delimiter.charAt(0), trim);
         }
 
-        char[] delims = delimiter.toCharArray();
-        int dp = 0;
-        dl--;
-
         List result = new ArrayList();
-        int len = source.length();
-        int l = 0;
-        int s = 0;
-        // using char arrays to avoid synchronization overhead in StringBuffer
-        char[] in = source.toCharArray();
-        for (int i = 0; i < len; i++) {
-
-            char c = in[i];
-            if (c == delims[dp]) {
-                // this could be part of a delimiter 
-                if (dp < dl) {
-                    // delimiter still "in progess"
-                    dp++;
-                } else {
-                    // found a delimimter
-                    if (i > dl) {
-                        // ignore empty tokens at the start
-                        result.add(str(in, s, l, trim));
-                    }
-                    s = i + 1;
-                    l = 0;
-                    dp = 0;
-                }
-            } else {
-                if (dp > 0) {
-                    // copy "invalid" delimiter part to item
-                    l += dp;
-                    dp = 0;
-                }
-                if (c == delims[0]) {
-                    // this could be the start of a new delim
-                    dp++;
-                } else {
-                    l++;
-                }
+        int i = 0;
+        int l = source.length();
+        int n = source.indexOf(delimiter);
+        while (n != -1) {
+            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
+            if ((i < n) || (i > 0) && (i < l)) {
+                result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
+            i = n + dl;
+            n = source.indexOf(delimiter, i);
         }
-        if (dp > 0) {
-            l += dp;
+        // is there a non - empty String to cut from the tail? 
+        if (n < 0) {
+            n = source.length();
         }
-        if (l > 0) {
-            // append last item if not empty
-            result.add(str(in, s, l, trim));
+        if (i < n) {
+            result.add(trim ? source.substring(i).trim() : source.substring(i));
         }
         return result;
     }
@@ -886,23 +851,4 @@ public final class CmsStringUtil {
 
         return true;
     }
-
-    /**
-     * Creates a String from a portion of a char array.<p>
-     * 
-     * @param c the char array to create the String from
-     * @param s the start position in the input char array
-     * @param l the number of chars to copy from the input char array
-     * @param trim flag to indicate if leading and trailing whitespaces should be omitted
-     * 
-     * @return the String created from the given char array
-     */
-    private static String str(char[] c, int s, int l, boolean trim) {
-
-        if (trim) {
-            return (new String(c, s, l)).trim();
-        }
-        return new String(c, s, l);
-    }
-
 }
