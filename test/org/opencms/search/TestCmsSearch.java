@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/09/20 15:39:07 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/09/22 10:30:43 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.15.2.1 $
+ * @version $Revision: 1.15.2.2 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -91,6 +91,7 @@ public class TestCmsSearch extends OpenCmsTestCase {
         suite.addTest(new TestCmsSearch("testCmsSearchXmlContent"));
         suite.addTest(new TestCmsSearch("testIndexGeneration"));
         suite.addTest(new TestCmsSearch("testQueryEncoding"));
+        suite.addTest(new TestCmsSearch("testSearchIssueWithSpecialFoldernames"));
 
         // This test is intended only for performance/resource monitoring
         // suite.addTest(new TestCmsSearch("testCmsSearchLargeResult"));
@@ -350,7 +351,6 @@ public class TestCmsSearch extends OpenCmsTestCase {
     /**
      * Tests if <code>{@link CmsSearch#setQuery(String)}</code> modifies 
      * the query in an undesireable way (changes url encoded Strings). <p>
-     *
      */
     public void testQueryEncoding() {
 
@@ -361,8 +361,42 @@ public class TestCmsSearch extends OpenCmsTestCase {
         assertEquals(query, test.getQuery());
 
         // with encoding
-        query = CmsEncoder.encode(query, "utf-8");
+        query = CmsEncoder.encode(query, CmsEncoder.ENCODING_UTF_8);
         test.setQuery(query);
         assertEquals(query, test.getQuery());
+    }
+    
+    /**
+     * Tests an issue where no results are found in folders that have names
+     * like <code>/basisdienstleistungen_-_zka/</code>.<p>
+     * 
+     * @throws Exception if the test fails
+     */
+    public void testSearchIssueWithSpecialFoldernames() throws Exception {
+        
+        CmsObject cms = getCmsObject();
+        echo("Testing search issue with special folder name");
+        
+        String folderName = "/basisdienstleistungen_-_zka/";
+        cms.copyResource("/types/", folderName);
+        cms.unlockProject(cms.getRequestContext().currentProject().getId());
+        cms.publishProject();
+        
+        CmsSearch cmsSearchBean = new CmsSearch();
+        cmsSearchBean.init(cms);
+        cmsSearchBean.setIndex(INDEX_TEST);
+        List results;
+
+        cmsSearchBean.setSearchRoot("/");
+        cmsSearchBean.setQuery("+Alkacon +OpenCms");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(8, results.size());
+        assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
+
+        cmsSearchBean.setSearchRoot(folderName);
+        cmsSearchBean.setQuery("+Alkacon +OpenCms");
+        results = cmsSearchBean.getSearchResult();
+        assertEquals(1, results.size());
+        assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
     }
 }
