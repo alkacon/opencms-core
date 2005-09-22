@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/08/02 10:15:48 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/09/22 10:47:02 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
@@ -222,8 +222,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         result[0] = ROOT_PATH_TOKEN;
         for (int i = 1; i < length; i++) {
             // append suffix to all path elements
-            result[i] = elements[i] + ROOT_PATH_SUFFIX;
-
+            result[i] = elements[i - 1] + ROOT_PATH_SUFFIX;
+            // underscore '_' is a word separator for the Lucene analyzer, must replace this
+            result[i] = result[i].replace('_', '0');            
         }
         return result;
     }
