@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2005/09/23 08:01:55 $
+ * Version: $Revision: 1.27.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,6 +47,7 @@ import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -59,7 +60,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.27.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,6 +89,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
     /** The bean to store information required to make the result list browsable. */
     private CmsContentInfoBean m_contentInfoBean;
+
+    /** The locale to use for displaying the current content. */
+    private Locale m_contentLocale;
 
     /** The FlexController for the current request. */
     private CmsFlexController m_controller;
@@ -277,6 +281,20 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // unmarshal the XML content from the resource        
         m_content = CmsXmlContentFactory.unmarshal(m_cms, file);
+
+        // check if locale is available
+        m_contentLocale = m_locale;
+        if (!m_content.hasLocale(m_contentLocale)) {
+            Iterator it = OpenCms.getLocaleManager().getDefaultLocales().iterator();
+            while (it.hasNext()) {
+                Locale locale = (Locale)it.next();
+                if (m_content.hasLocale(locale)) {
+                    // found a matching locale
+                    m_contentLocale = locale;
+                    break;
+                }
+            }
+        }
     }
 
     /**
@@ -553,7 +571,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public Locale getXmlDocumentLocale() {
 
-        return m_locale;
+        return m_contentLocale;
     }
 
     /**
