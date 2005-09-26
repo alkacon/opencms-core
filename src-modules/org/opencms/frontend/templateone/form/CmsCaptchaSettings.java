@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaSettings.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/09/26 14:46:50 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.http.HttpServletRequest;
  * Stores the settings to render captcha images.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @version $Revision: 1.2 $
  */
 public class CmsCaptchaSettings {
 
@@ -107,8 +107,8 @@ public class CmsCaptchaSettings {
      */
     public CmsCaptchaSettings() {
         
-        m_imageWidth = 200;
-        m_imageHeight = 100;
+        m_imageWidth = 150;
+        m_imageHeight = 50;
 
         m_minFontSize = 40;
         m_maxFontSize = 40;
@@ -139,7 +139,7 @@ public class CmsCaptchaSettings {
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageWidth = Integer.parseInt(stringValue);
         } else {
-            m_imageWidth = 200;
+            m_imageWidth = 150;
         }
         
         // image height
@@ -147,7 +147,7 @@ public class CmsCaptchaSettings {
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageHeight = Integer.parseInt(stringValue);
         } else {
-            m_imageHeight = 100;
+            m_imageHeight = 50;
         }
         
         // min. phrase length
@@ -215,7 +215,7 @@ public class CmsCaptchaSettings {
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageWidth = Integer.parseInt(stringValue);
         } else {
-            m_imageWidth = 200;
+            m_imageWidth = 150;
         }
         
         // image height
@@ -223,7 +223,7 @@ public class CmsCaptchaSettings {
         if (CmsStringUtil.isNotEmpty(stringValue)) {
             m_imageHeight = Integer.parseInt(stringValue);
         } else {
-            m_imageHeight = 100;
+            m_imageHeight = 50;
         }
         
         // min. phrase length
