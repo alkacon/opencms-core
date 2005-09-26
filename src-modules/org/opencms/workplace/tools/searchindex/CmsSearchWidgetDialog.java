@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/09/26 16:21:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -406,11 +406,11 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
 
             // custom parameters (non-widget controlled) 
             // these are from generated search page links 
-            String page = getJsp().getRequest().getParameter("searchpage");
+            String page = getJsp().getRequest().getParameter("searchPage");
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(page)) {
                 m_searchParams.setSearchPage(Integer.parseInt(page));
             }
-            String categories = getJsp().getRequest().getParameter("searchcategories");
+            String categories = getJsp().getRequest().getParameter("searchCategories");
             if (!CmsStringUtil.isEmptyOrWhitespaceOnly(categories)) {
                 m_searchParams.setCategories(CmsStringUtil.splitAsList(categories, ','));
             }
