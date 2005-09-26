@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/09/22 10:30:43 $
- * Version: $Revision: 1.56.2.2 $
+ * Date   : $Date: 2005/09/26 16:19:04 $
+ * Version: $Revision: 1.56.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.2 $ 
+ * @version $Revision: 1.56.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -241,7 +241,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             // append suffix to all path elements
             result[i] = elements[i - 1] + ROOT_PATH_SUFFIX;
             // underscore '_' is a word separator for the Lucene analyzer, must replace this
-            result[i] = result[i].replace('_', '0');            
+            result[i] = result[i].replace('_', '0');
         }
         return result;
     }
@@ -691,6 +691,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     end = hitCount;
                 }
 
+                int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; i < hitCount && cnt < end; i++) {
                     try {
                         doc = hits.doc(i);
@@ -708,6 +709,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                 searchResults.add(searchResult);
                             }
                             cnt++;
+                        } else {
+                            visibleHitCount--;
                         }
                     } catch (Exception e) {
                         // should not happen, but if it does we want to go on with the next result nevertheless                        
@@ -718,7 +721,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
 
                 // save the total count of search results at the last index of the search result 
-                searchResults.setHitCount(hitCount);
+                searchResults.setHitCount(visibleHitCount);
             } else {
                 searchResults.setHitCount(0);
             }
