@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/09/26 16:20:02 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -1198,7 +1198,7 @@ public abstract class A_CmsGallery extends CmsDialog {
         StringBuffer targetSelectBox = new StringBuffer(32);
         targetSelectBox.append(buttonBarSpacer(5));
         targetSelectBox.append("<td nowrap><b>");
-        targetSelectBox.append(key("target"));
+        targetSelectBox.append(key("input.linktarget"));
         targetSelectBox.append("</b>&nbsp;</td>");
         targetSelectBox.append("<td>\r\n");
         targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
