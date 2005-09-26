@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/09/21 10:48:15 $
- * Version: $Revision: 1.39.2.3 $
+ * Date   : $Date: 2005/09/26 16:17:32 $
+ * Version: $Revision: 1.39.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.3 $ 
+ * @version $Revision: 1.39.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -734,7 +734,7 @@ public class CmsSearch implements Cloneable {
     /**
      * Sets the current result page.<p>
      * 
-     * Works with jsp bean mechanism for request parameter "searchpage" 
+     * Works with jsp bean mechanism for request parameter "searchPage" 
      * that is generated here for page links.<p>
      * 
      * @param page the current result page
