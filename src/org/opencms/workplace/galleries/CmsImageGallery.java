@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/27 12:15:56 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,15 @@
 
 package org.opencms.workplace.galleries;
 
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,6 +95,9 @@ public class CmsImageGallery extends A_CmsGallery {
      */
     public String applyButton() {
 
+        String width = null;
+        String height = null;
+
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, generate disabled button
             return button(null, null, "apply_in.png", "button.paste", 0);
@@ -101,13 +107,39 @@ public class CmsImageGallery extends A_CmsGallery {
             if (CmsStringUtil.isEmpty(getParamDialogMode())) {
                 // in editor mode, create a valid link from resource path
                 uri = getJsp().link(uri);
+                // try to read the image size infromation from the "image.size" property
+                // the property will contain the information as following "h:x,w:y" with x and y integer vaulues
+                try {
+                    CmsProperty imageSize = getJsp().getCmsObject().readPropertyObject(
+                        getParamResourcePath(),
+                        CmsResourceTypeImage.PROPERTY_IMAGESIZE,
+                        false);
+                    if (!imageSize.isNullProperty()) {
+                        List sizeInfo = CmsStringUtil.splitAsList(imageSize.getValue(), ",");
+                        if (sizeInfo != null && sizeInfo.size() > 0) {
+                            // extract the values
+                            for (int i = 0; i < sizeInfo.size(); i++) {
+                                String value = (String)sizeInfo.get(i);
+                                if (value.startsWith("w:")) {
+                                    width = value.substring(2);
+                                } else if (value.startsWith("h:")) {
+                                    height = value.substring(2);
+                                }
+                            }
+                        }
+                    }
+                } catch (CmsException e) {
+                    // the size information could not be read (maybe the property was deleted)
+                    // contine without any size information
+                }
             }
-            return button(
-                "javascript:pasteImage('" + uri + "',document.form.title.value, document.form.title.value);",
-                null,
-                "apply.png",
-                "button.paste",
-                0);
+            return button("javascript:pasteImage('"
+                + uri
+                + "',document.form.title.value, document.form.title.value,"
+                + width
+                + ","
+                + height
+                + ");", null, "apply.png", "button.paste", 0);
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/09/27 12:15:56 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,23 +40,26 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeImage extends A_CmsResourceType {
 
-    /** The type id of this resource type. */
-    private static final int RESOURCE_TYPE_ID = 3;
-
-    /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "image";
+    /** Property for image size, required for resource type "image". */
+    public static final String PROPERTY_IMAGESIZE = "image.size";
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
+
+    /** The type id of this resource type. */
+    private static final int RESOURCE_TYPE_ID = 3;
+
+    /** The name of this resource type. */
+    private static final String RESOURCE_TYPE_NAME = "image";
 
     /**
      * Default constructor, used to initialize member variables.<p>
