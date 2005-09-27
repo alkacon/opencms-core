@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/09/16 08:48:57 $
- * Version: $Revision: 1.36.2.1 $
+ * Date   : $Date: 2005/09/27 11:18:35 $
+ * Version: $Revision: 1.36.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36.2.1 $ 
+ * @version $Revision: 1.36.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,7 +198,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         // this configuration does not support parameters 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().container(Messages.LOG_ADD_MAPPING_TYPE_2, mapping, this));
+            LOG.debug(Messages.get().key(Messages.LOG_ADD_MAPPING_TYPE_2, mapping, this));
         }
         if (m_mappings == null) {
             m_mappings = new ArrayList();

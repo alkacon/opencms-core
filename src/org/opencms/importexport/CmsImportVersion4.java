@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.84 $
+ * Date   : $Date: 2005/09/27 11:18:35 $
+ * Version: $Revision: 1.84.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84 $ 
+ * @version $Revision: 1.84.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -551,7 +551,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         importAccessControlEntries(res, aceList);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().container(
+                            LOG.info(Messages.get().key(
                                 Messages.LOG_IMPORTING_4,
                                 new Object[] {
                                     String.valueOf(i + 1),
@@ -567,7 +567,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             translatedName));
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().container(
+                            LOG.info(Messages.get().key(
                                 Messages.LOG_SKIPPING_3,
                                 String.valueOf(i + 1),
                                 String.valueOf(importSize),
@@ -584,7 +584,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         translatedName));
 
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().container(
+                        LOG.info(Messages.get().key(
                             Messages.LOG_SKIPPING_3,
                             String.valueOf(i + 1),
                             String.valueOf(importSize),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFolder.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2005/09/27 11:18:35 $
+ * Version: $Revision: 1.22.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.22.2.1 $
+ * @version $Revision: 1.22.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,7 @@ public class CmsFolder extends CmsResource implements Cloneable, Serializable, C
             return OpenCms.getResourceManager().getResourceType(typeId).isFolder();
         } catch (CmsLoaderException e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().container(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, new Integer(typeId)), e);
+                LOG.warn(Messages.get().key(Messages.ERR_UNKNOWN_RESOURCE_TYPE_1, new Integer(typeId)), e);
             }
         }
         return false;

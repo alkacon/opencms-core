@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/09/27 11:18:35 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,7 +95,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
                     true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
             } catch (CmsException e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                    LOG.info(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
                 }
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }

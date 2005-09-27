@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/08/10 14:43:44 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/09/27 11:18:35 $
+ * Version: $Revision: 1.45.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.45.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -499,7 +499,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         try {
             defaultNames = cms.readPropertyObject(resourceName, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
         } catch (CmsException e) {
-            LOG.warn(Messages.get().container(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+            LOG.warn(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
         }
 
         List result = null;
