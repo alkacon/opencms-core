@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/09/17 16:38:43 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,6 +100,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Server". */
     public static final String HEADER_SERVER = "Server";
+    
+    /** HTTP Header "user-agent". */
+    public static final String HEADER_USER_AGENT = "user-agent";
 
     /** HTTP Header value "max-age=" (for "Cache-Control"). */
     public static final String HEADER_VALUE_MAX_AGE = "max-age=";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +84,7 @@ public interface I_CmsWidgetDialog {
      * @return the necessary HTML code for the js and stylesheet includes
      */
     String calendarIncludes();
-
+    
     /**
      * Initializes a javascript calendar element to be shown on a page.<p>
      * 
@@ -162,6 +162,14 @@ public interface I_CmsWidgetDialog {
      * @return a messages object used to render localized keys for the widget dialog
      */
     CmsMessages getMessages();
+
+    /**
+     * Returns the "user-agent" of the current request, or <code>null</code> in case no
+     * request is available.<p>
+     * 
+     * @return the "user-agent" of the current request
+     */
+    String getUserAgent();
 
     /**
      * Tests if we are working with the new administration dialog style.<p>

@@ -1,4 +1,5 @@
 <%@ page import="
+	org.opencms.editors.htmlarea.*,
 	org.opencms.widgets.*,
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
@@ -9,7 +10,7 @@
 %><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
-CmsSimplePageEditor wp = new CmsSimplePageEditor(cms);
+CmsHtmlAreaEditor wp = new CmsHtmlAreaEditor(cms);
 CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
 
@@ -212,36 +213,18 @@ function buttonAction(para) {
 		_form.action.value = "<%= wp.EDITOR_CLEANUP %>";
 		_form.target = "_self";
 		_form.submit();
-        break;	
-	case 14:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 15:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DowloadBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 16:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 17:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;		
-	case 18:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;		
+        break;		
     case 30:
 		openOnlineHelp("/system/modules/org.opencms.editors.htmlarea/locales/<%= wp.getLocale() %>/help/index.html");
 		break;		
     }
+}
+
+// opens the spcified gallery in a popup window
+function openGallery(galleryType) {
+	openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=" + galleryType, "GalleryBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+	focusCount = 1;
+	openWindow.focus();
 }
 
 // inserts the passed html fragment at the current cursor position
@@ -519,12 +502,7 @@ config.registerButton("oc-chars", "<%= wp.key("button.specialchars") %>", __edit
 config.registerButton("oc-anchor", "<%= wp.key("button.anchor") %>", __editor.imgURL("../../buttons/anchor.png"), false, function(e) { buttonAction(11); });
 config.registerButton("oc-link", "<%= wp.key("button.linkto") %>", __editor.imgURL("../../buttons/link.png"), false, function(e) { buttonAction(12); });
 
-config.registerButton("imagegallery", "<%= wp.key("button.imagelist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/imagegallery.gif"), false, function(e) { buttonAction(14); });
-config.registerButton("downloadgallery", "<%= wp.key("button.downloadlist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/downloadgallery.gif"), false, function(e) { buttonAction(15); });
-config.registerButton("linkgallery", "<%= wp.key("button.linklist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/linkgallery.gif"), false, function(e) { buttonAction(16); });
-config.registerButton("htmlgallery", "<%= wp.key("button.htmllist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/htmlgallery.gif"), false, function(e) { buttonAction(17); });
-config.registerButton("tablegallery", "<%= wp.key("button.tablelist") %>", __editor.imgURL("../../editors/htmlarea/images/opencms/tablegallery.gif"), false, function(e) { buttonAction(18); });
-
+<%= wp.buildGalleryButtons(options, buttonStyle, displayOptions) %>
 
 <%
 
@@ -564,7 +542,7 @@ if (options.showElement("option.images", displayOptions)) {
 }
 // determine if the image gallery button should be shown
 
-insertButtons.append(wp.buildGalleryButtons(options, buttonStyle, displayOptions));
+insertButtons.append(wp.buildGalleryButtonRow(options, displayOptions));
 
 // determine if the insert special characters button should be shown
 if (options.showElement("option.specialchars", displayOptions)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/07/29 15:38:42 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.56.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.CmsDisplayWidget;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.56.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -499,6 +500,14 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
         }
 
         return null;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getUserAgent()
+     */
+    public String getUserAgent() {
+
+        return getJsp().getRequest().getHeader(CmsRequestUtil.HEADER_USER_AGENT);
     }
 
     /**
@@ -1074,7 +1083,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
                         if (t instanceof I_CmsThrowable) {
                             message = ((I_CmsThrowable)t).getLocalizedMessage(getLocale());
                         } else {
-                            message = t.getLocalizedMessage();    
+                            message = t.getLocalizedMessage();
                         }
                         result.append(CmsStringUtil.escapeHtml(message));
                         t = t.getCause();

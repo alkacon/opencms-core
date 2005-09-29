@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.CmsXmlUtils;
 
@@ -58,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,6 +94,9 @@ public class CmsWorkplaceEditorConfiguration {
 
     /** Name of the useragents node. */
     protected static final String N_USERAGENTS = "useragents";
+    
+    /** Name of the widgeteditor node. */
+    protected static final String N_WIDGETEDITOR = "widgeteditor";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplaceEditorConfiguration.class);
@@ -103,7 +107,8 @@ public class CmsWorkplaceEditorConfiguration {
     private Map m_resTypes;
     private List m_userAgentsRegEx;
     private boolean m_validConfiguration;
-
+    private String m_widgetEditor;
+    
     /**
      * Constructor with xml data String.<p>
      * 
@@ -209,6 +214,16 @@ public class CmsWorkplaceEditorConfiguration {
 
         return m_userAgentsRegEx;
     }
+    
+    /**
+     * Returns the widget editor class for rich text editing.<p>
+     * 
+     * @return the widget editor class for rich text editing
+     */
+    public String getWidgetEditor() {
+        
+        return m_widgetEditor;
+    }
 
     /**
      * Returns if the current configuration is valid.<p>
@@ -218,6 +233,16 @@ public class CmsWorkplaceEditorConfiguration {
     public boolean isValidConfiguration() {
 
         return m_validConfiguration;
+    }
+
+    /**
+     * Returns if the editor is usable as a widget editor for rich text editing.<p>
+     * 
+     * @return true if the editor is usable as a widget editor for rich text editing, otherwise false
+     */
+    public boolean isWidgetEditor() {
+    
+        return CmsStringUtil.isNotEmpty(m_widgetEditor);
     }
 
     /**
@@ -262,14 +287,23 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void initialize(Document document, String editorUri) {
 
+        // get the root element of the configuration
+        Element rootElement = document.getRootElement();
+        
         // set the label of the editor
-        setEditorLabel(document.getRootElement().elementText(N_LABEL));
-
+        setEditorLabel(rootElement.elementText(N_LABEL));
+        
+        // set the widget editor class if available
+        String widgetClass = rootElement.elementText(N_WIDGETEDITOR);
+        if (CmsStringUtil.isNotEmpty(widgetClass)) {
+            setWidgetEditor(widgetClass);
+        }
+        
         // set the URI of the editor
         setEditorUri(editorUri);
 
         // create the map of valid resource types
-        Iterator i = document.getRootElement().element(N_RESOURCETYPES).elementIterator(N_TYPE);
+        Iterator i = rootElement.element(N_RESOURCETYPES).elementIterator(N_TYPE);
         Map resTypes = new HashMap();
         while (i.hasNext()) {
             Element currentType = (Element)i.next();
@@ -292,7 +326,7 @@ public class CmsWorkplaceEditorConfiguration {
             resTypes.put(name, new String[] {"" + ranking, mapTo});
         }
         // add the additional resource types
-        i = document.getRootElement().element(N_RESOURCETYPES).elementIterator(N_CLASS);
+        i = rootElement.element(N_RESOURCETYPES).elementIterator(N_CLASS);
         while (i.hasNext()) {
             Element currentClass = (Element)i.next();
             String name = currentClass.elementText(N_NAME);
@@ -443,6 +477,16 @@ public class CmsWorkplaceEditorConfiguration {
     private void setValidConfiguration(boolean isValid) {
 
         m_validConfiguration = isValid;
+    }
+
+    /**
+     * Sets the widget editor class for rich text editing.<p>
+     * 
+     * @param widgetEditor the widget editor class for rich text editing
+     */
+    private void setWidgetEditor(String widgetEditor) {
+    
+        m_widgetEditor = widgetEditor;
     }
 
 }

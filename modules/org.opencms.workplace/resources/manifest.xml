@@ -71,7 +71,15 @@
             <resource uri="/system/workplace/resources/commons/workplace.png"/>
             <resource uri="/system/workplace/resources/components/js_calendar/"/>
             <resource uri="/system/workplace/resources/components/js_colorpicker/"/>
-            <resource uri="/system/workplace/resources/components/widgets/"/>
+            <resource uri="/system/workplace/resources/components/widgets/colorpicker.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/combo.png"/>
+			<resource uri="/system/workplace/resources/components/widgets/combobox.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/downloadgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/fileselector.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/htmlgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/imagegallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/linkgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
             <resource uri="/system/workplace/resources/filetypes/binary.gif"/>
             <resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
             <resource uri="/system/workplace/resources/filetypes/folder.gif"/>
@@ -2085,24 +2093,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[JS to open VFS file selector]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/components/widgets/htmlarea.js</source>
-			<destination>system/workplace/resources/components/widgets/htmlarea.js</destination>
-			<type>plain</type>
-			<uuidresource>5f0daaf9-21c7-11d9-8b42-c726a0fc5cd5</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[JS to edit html fields]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

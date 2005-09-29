@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -87,7 +87,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -609,7 +609,7 @@ public class CmsPreferences extends CmsTabDialog {
                     while (availableEditors.size() > 0) {
                         Float key = (Float)availableEditors.lastKey();
                         CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)availableEditors.get(key);
-                        options.add(key(conf.getEditorLabel()));
+                        options.add(key(conf.getEditorLabel(), conf.getEditorLabel()));
                         values.add(conf.getEditorUri());
                         if (conf.getEditorUri().equals(preSelection)) {
                             selectedIndex = counter;

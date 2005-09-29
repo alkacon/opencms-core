@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/09/26 16:20:02 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.22.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,11 +73,11 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.22.2.2 $ 
  * 
  * @since 6.0.0 
  */
-public abstract class A_CmsGallery extends CmsDialog {
+public abstract class A_CmsGallery extends CmsDialog implements Comparable {
 
     /** Value for the action: delete the gallery item. */
     public static final int ACTION_DELETE = 101;
@@ -659,6 +659,22 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         return html.toString();
     }
+    
+    /**
+     * Compares gallery objects by their order, this is used to sort the gallery buttons for the editors.<p>
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+    
+        if (! (o instanceof A_CmsGallery)) {
+            // wrong object
+            return 0;
+        }
+        
+        // compare the order values of the galleries
+        return getOrder().compareTo(((A_CmsGallery)o).getOrder());
+    }
 
     /**
      * Generates a delete button for the gallery button bar.<p>
@@ -906,6 +922,16 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         return key("error.reason.no." + getGalleryTypeName());
     }
+    
+    /**
+     * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
+     * 
+     * @return the order of the implemented gallery
+     */
+    public Integer getOrder() {
+        
+        return new Integer(Integer.MAX_VALUE);
+    } 
 
     /**
      * Returns the current mode of the dialog.<p>
@@ -1115,7 +1141,7 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         m_currentResource = currentResource;
     }
-
+    
     /**
      * Sets the current mode of the dialog.<p>
      * 

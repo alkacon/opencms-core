@@ -31,10 +31,9 @@
 		<resources>
 			<resource uri="/system/workplace/editors/htmlarea/"/>
 			<resource uri="/system/workplace/resources/editors/htmlarea/"/>
+			<resource uri="/system/workplace/resources/components/widgets/htmlarea.js"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/workplace/editors/htmlarea/;/system/workplace/resources/editors/htmlarea/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>
@@ -2370,6 +2369,46 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/components/widgets</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/htmlarea.js</source>
+			<destination>system/workplace/resources/components/widgets/htmlarea.js</destination>
+			<type>plain</type>
+			<uuidresource>5f0daaf9-21c7-11d9-8b42-c726a0fc5cd5</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to edit html fields]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

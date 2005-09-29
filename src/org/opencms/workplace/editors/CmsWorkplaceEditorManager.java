@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.file.CmsFolder;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -177,6 +178,59 @@ public class CmsWorkplaceEditorManager {
             }
         }
         return configurableEditors;
+    }
+    
+    /**
+     * Returns the editor URI for the current resource type.<p>
+     * 
+     * @param context the request context
+     * @param userAgent the user agent String that identifies the browser
+     * @return a valid editor URI for the resource type or null, if no editor matches
+     */
+    public String getWidgetEditor(CmsRequestContext context, String userAgent) {
+
+        // step 1: check if the user specified a preferred editor for the resource type xmlpage
+        CmsUserSettings settings = new CmsUserSettings(context.currentUser());
+        String resourceType = CmsResourceTypeXmlPage.getStaticTypeName();
+        String preferredEditorSetting = settings.getPreferredEditor(resourceType);
+        if (preferredEditorSetting == null) {
+            // no preferred editor setting found for this resource type, look for mapped resource type preferred editor
+            Iterator i = m_editorConfigurations.iterator();
+            while (i.hasNext()) {
+                CmsWorkplaceEditorConfiguration currentConfig = (CmsWorkplaceEditorConfiguration)i.next();
+                String mapping = currentConfig.getMappingForResourceType(resourceType);
+                if (mapping != null) {
+                    preferredEditorSetting = settings.getPreferredEditor(mapping);
+                }
+                if (preferredEditorSetting != null) {
+                    break;
+                }
+            }
+        }
+        if (preferredEditorSetting != null) {
+            CmsWorkplaceEditorConfiguration preferredConf = filterPreferredEditor(preferredEditorSetting);
+            if (preferredConf != null && preferredConf.isWidgetEditor() && preferredConf.matchesBrowser(userAgent)) {
+                // return preferred editor only if it matches the current users browser
+                return preferredConf.getWidgetEditor();
+            }
+        }
+
+        // step 2: filter editors for the given resoure type
+        SortedMap filteredEditors = filterEditorsForResourceType(resourceType);
+
+        // step 3: check if one of the editors matches the current users browser
+        while (filteredEditors.size() > 0) {
+            // check editor configuration with highest ranking 
+            Float key = (Float)filteredEditors.lastKey();
+            CmsWorkplaceEditorConfiguration conf = (CmsWorkplaceEditorConfiguration)filteredEditors.get(key);
+            if (conf.isWidgetEditor() && conf.matchesBrowser(userAgent)) {
+                return conf.getWidgetEditor();
+            }
+            filteredEditors.remove(key);
+        }
+
+        // no valid editor found 
+        return null;
     }
 
     /**

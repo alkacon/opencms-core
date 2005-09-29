@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/09/21 08:57:29 $
- * Version: $Revision: 1.18.2.2 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.18.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,17 +64,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18.2.2 $ 
+ * @version $Revision: 1.18.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLinkGallery extends A_CmsGallery {
-
+    
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "link_fs.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);
+
+    /** The order value of the gallery for sorting the galleries. */
+    private static final Integer ORDER_GALLERY = new Integer(30);
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -212,6 +215,16 @@ public class CmsLinkGallery extends A_CmsGallery {
     public String getHeadFrameSetHeight() {
 
         return "450";
+    }
+    
+    /**
+     * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
+     * 
+     * @return the order of the implemented gallery
+     */
+    public Integer getOrder() {
+        
+        return ORDER_GALLERY;
     }
 
     /**

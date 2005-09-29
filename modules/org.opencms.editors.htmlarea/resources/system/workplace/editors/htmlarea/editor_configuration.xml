@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
 	<label>editor.title.htmlarea</label>
+	<widgeteditor>org.opencms.editors.htmlarea.CmsHtmlAreaWidget</widgeteditor>
 	<resourcetypes>
 		<type>
 			<name>xmlpage</name>
@@ -10,6 +11,6 @@
 	<useragents>
 		<agent>^Mozilla/4\.0 \(compatible; MSIE 6\.\d*; .*\)$</agent>
 		<agent>^Mozilla/4\.0 \(compatible; MSIE 5\.\d*; .*\)$</agent>
-		<agent>^Mozilla/5\.0 \(.* rv:1\..*\) Gecko/200\d* .*$</agent>
+		<agent>^Mozilla/5\.0 \(.* rv:1\..*\) Gecko/200\d*.*$</agent>
 	</useragents>
 </editor>

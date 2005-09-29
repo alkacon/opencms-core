@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,10 +37,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Properties;
 import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,7 +53,7 @@ import java.util.regex.Pattern;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,9 +61,6 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
 
     /** Constant for the editor type, must be the same as the editors subfolder name in the VFS. */
     public static final String EDITOR_TYPE = "msdhtml";
-
-    /** The button number to start the galleries with. */
-    private static final int JS_GALLERY_ACTION_START = 60;
 
     /** regex pattern to find all src attribs in img tags, plus all href attribs in anchor tags. */
     private static final Pattern REGEX_LINKS = Pattern.compile(
@@ -87,26 +81,6 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
     public CmsMSDHtmlEditor(CmsJspActionElement jsp) {
 
         super(jsp);
-    }
-
-    /**
-     * @see org.opencms.workplace.editors.CmsDefaultPageEditor#buildGalleryButtons(CmsEditorDisplayOptions, int, Properties)
-     */
-    public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
-
-        StringBuffer result = new StringBuffer();
-        List l = new ArrayList(OpenCms.getWorkplaceManager().getGalleries().keySet());
-        Collections.sort(l);
-        Iterator galleries = l.iterator();
-        for (int i = JS_GALLERY_ACTION_START; galleries.hasNext(); i++) {
-            String galleryType = ((String)galleries.next()).replaceFirst("gallery", "");
-            if (options.showElement("gallery." + galleryType, displayOptions)) {
-                result.append(button("javascript:doEditHTML(" + i + ");", null, galleryType + "gallery", "button."
-                    + galleryType
-                    + "list", buttonStyle));
-            }
-        }
-        return result.toString();
     }
 
     /**

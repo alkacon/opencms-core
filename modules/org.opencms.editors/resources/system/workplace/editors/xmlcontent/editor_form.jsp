@@ -136,6 +136,9 @@ var actionRemoveElement = "<%= wp.EDITOR_ACTION_ELEMENT_REMOVE %>";
 var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
 var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= wp.EDITOR_SAVE %>";
+
+// the currently edited element language
+var editedElementLanguage = "<%= wp.getParamElementlanguage() %>";
 	
 // Ask user whether he really wants to leave the editor without saving
 function confirmExit() {

@@ -145,7 +145,7 @@
 				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />				
 				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
-				<widget class="org.opencms.widgets.CmsHtmlAreaWidget" alias="HtmlWidget"/>
+				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
 				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
 				<widget class="org.opencms.widgets.CmsLinkGalleryWidget" alias="LinkGalleryWidget"/>
@@ -158,7 +158,7 @@
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlColorValue" defaultwidget="org.opencms.widgets.CmsColorpickerWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlDateTimeValue" defaultwidget="org.opencms.widgets.CmsCalendarWidget" />
-				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlAreaWidget" />
+				<schematype class="org.opencms.xml.types.CmsXmlHtmlValue" defaultwidget="org.opencms.widgets.CmsHtmlWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlLocaleValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlStringValue" defaultwidget="org.opencms.widgets.CmsInputWidget" />
 				<schematype class="org.opencms.xml.types.CmsXmlVfsFileValue" defaultwidget="org.opencms.widgets.CmsVfsFileWidget" />

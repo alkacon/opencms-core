@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/09/17 16:38:44 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -441,7 +441,7 @@ public final class CmsEncoder {
 
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
-     * Muliple blanks are encoded _multiply _with %20.
+     * Muliple blanks are encoded _multiply_ with %20.
      * 
      * @param source The textstring to be encoded.
      * @param encoding the encoding type

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/08/31 14:46:19 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,9 +40,15 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +77,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     private static final String EDITOR_TYPE = "simplehtml";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class);
+    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class); 
 
     /**
      * Public constructor.<p>
@@ -89,16 +95,34 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
 
         StringBuffer result = new StringBuffer();
-        Iterator galleries = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
-        while (galleries.hasNext()) {
-            String galleryType = (String)galleries.next();
-            if (options.showElement("gallery." + galleryType.replaceFirst("gallery", ""), displayOptions)) {
-                if (result.length() == 0) {
-                    result.append(", \"separator\"");
-                }
-                result.append(", \"" + galleryType + "\"");
+        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
+        List galleries = new ArrayList(galleryMap.size());
+        Map typeMap = new HashMap(galleryMap.size());
+        
+        Iterator i = galleryMap.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            galleries.add(currGallery);
+            // put the type name to the type Map
+            typeMap.put(currGallery, key);
+        }
+        
+        // sort the found galleries by their order
+        Collections.sort(galleries);
+        
+        for (int k=0; k<galleries.size(); k++) {
+            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
+            String galleryType = (String)typeMap.get(currGallery);
+            String galleryName = galleryType.replaceFirst("gallery", "");
+            if (options.showElement("gallery." + galleryName, displayOptions)) {
+                // gallery is shown, create button code
+                result.append(button("javascript:openGallery(\'" + galleryType + "\');", null, galleryType, "button."
+                    + galleryName
+                    + "list", buttonStyle));
             }
         }
+
         return result.toString();
     }
 

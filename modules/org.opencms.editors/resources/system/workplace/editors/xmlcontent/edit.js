@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -100,8 +100,8 @@ function buttonAction(para) {
 
 function submit(form) {	
 	try {
-		// submit html areas if present
-		submitHtmlArea(form);
+		// submit html editing areas if present
+		submitHtml(form);
 	} catch (e) {}
 }
 

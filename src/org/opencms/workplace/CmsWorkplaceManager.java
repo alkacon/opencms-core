@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/08/31 07:29:39 $
- * Version: $Revision: 1.72 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.72.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72 $ 
+ * @version $Revision: 1.72.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -528,9 +528,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
-     * Returns a collection of all gallery class names.<p>
+     * Returns a collection of all available gallery class names.<p>
      * 
-     * @return a collection of all gallery class names
+     * The Map has the gallery type name as key and an instance of the gallery class (not completely initialized) as value.<p>
+     * 
+     * @return a collection of all available gallery class names
      */
     public Map getGalleries() {
 
@@ -548,7 +550,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public String getGalleryClassName(String galleryTypeName) {
 
-        return ((CmsResourceTypeFolderExtended)m_galleries.get(galleryTypeName)).getFolderClassName();
+        return ((A_CmsGallery)m_galleries.get(galleryTypeName)).getClass().getName();
     }
 
     /**
@@ -777,10 +779,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                         try {
                             // check, if the folder class is a subclass of A_CmsGallery
                             if (A_CmsGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
-                                // store the gallery class name with the type name as lookup key                        
-                                m_galleries.put(galleryType.getTypeName(), galleryType);
+                                // create gallery class instance
+                                A_CmsGallery galleryInstance = (A_CmsGallery)Class.forName(folderClassName).newInstance();
+                                // store the gallery class instance with the type name as lookup key
+                                m_galleries.put(galleryType.getTypeName(), galleryInstance);
                             }
                         } catch (ClassNotFoundException e) {
+                            LOG.error(e.getLocalizedMessage());
+                        } catch (InstantiationException e) {
+                            LOG.error(e.getLocalizedMessage());
+                        } catch (IllegalAccessException e) {
                             LOG.error(e.getLocalizedMessage());
                         }
                     }

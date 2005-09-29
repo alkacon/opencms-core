@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,11 +119,11 @@ public class CmsXmlContentTypeManager {
         CmsXmlContentTypeManager typeManager = new CmsXmlContentTypeManager();
 
         typeManager.addWidget("org.opencms.widgets.CmsCalendarWidget", null);
-        typeManager.addWidget("org.opencms.widgets.CmsHtmlAreaWidget", null);
+        typeManager.addWidget("org.opencms.widgets.CmsHtmlWidget", null);
         typeManager.addWidget("org.opencms.widgets.CmsInputWidget", null);
 
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlDateTimeValue", "org.opencms.widgets.CmsCalendarWidget");
-        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlHtmlValue", "org.opencms.widgets.CmsHtmlAreaWidget");
+        typeManager.addSchemaType("org.opencms.xml.types.CmsXmlHtmlValue", "org.opencms.widgets.CmsHtmlWidget");
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlLocaleValue", "org.opencms.widgets.CmsInputWidget");
         typeManager.addSchemaType("org.opencms.xml.types.CmsXmlStringValue", "org.opencms.widgets.CmsInputWidget");
 

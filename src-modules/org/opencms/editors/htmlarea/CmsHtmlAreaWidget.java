@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/06/28 17:27:52 $
- * Version: $Revision: 1.12 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/htmlarea/Attic/CmsHtmlAreaWidget.java,v $
+ * Date   : $Date: 2005/09/29 12:48:27 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,11 +29,15 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.widgets;
+package org.opencms.editors.htmlarea;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.widgets.A_CmsWidget;
+import org.opencms.widgets.I_CmsWidget;
+import org.opencms.widgets.I_CmsWidgetDialog;
+import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.Iterator;
@@ -44,8 +48,9 @@ import java.util.Map;
  * Provides a widget that creates a rich input field using the "HtmlArea" component, for use on a widget dialog.<p>
  *
  * @author Alexander Kandzior 
+ * @author Andreas Zahner
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +86,7 @@ public class CmsHtmlAreaWidget extends A_CmsWidget {
      * @return the Locale for which HtmlArea has localization data available
      */
     public static Locale getHtmlAreaLocale(CmsObject cms, Locale wantedLocale) {
-        
+                
         // check the Locale to use for editor localization
         if (!cms.existsResource(HTMLAREA_LOCALES_VFS + wantedLocale.toString() + ".js")) {
             boolean foundLocale = false;
