@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidget.java,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/09/30 16:15:27 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.1 
  */
@@ -67,7 +67,6 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
 
         // empty constructor is required for class registration
         this("");
-        m_editorWidget = null;
     }
     
     /**
@@ -78,7 +77,6 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     public CmsHtmlWidget(CmsHtmlWidgetOption configuration) {
 
         super(configuration);
-        m_editorWidget = null;
     }
 
     /**
@@ -89,7 +87,6 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
     public CmsHtmlWidget(String configuration) {
 
         super(configuration);
-        m_editorWidget = null;
     }
 
     /**
