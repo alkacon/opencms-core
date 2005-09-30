@@ -260,7 +260,7 @@ Each job can have an optional list of parameters.
 #
 # MemoryMonitor configuration
 -->
-<!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval, warning-interval, email-sender?, email-receiver?)>
+<!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval?, warning-interval, email-sender?, email-receiver?)>
 
 <!ELEMENT maxusagepercent (#PCDATA)>
 <!ELEMENT log-interval (#PCDATA)>

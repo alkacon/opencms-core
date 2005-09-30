@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2005/09/30 15:09:30 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.2.1 $ 
+ * @version $Revision: 1.8.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,32 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#button(String, String, String, String, int)
      */
     String button(String href, String target, String image, String label, int type);
+    
+    /**
+     * Returns the html for a button bar.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * 
+     * @return a button bar html start / end segment 
+     */
+    String buttonBar(int segment);
+    
+    /**
+     * Generates a horizontal button bar separator line with maximum width.<p>
+     * 
+     * @return a horizontal button bar separator line
+     */
+    String buttonBarHorizontalLine();
+    
+    /**
+     * Generates a button bar separator.<p>  
+     * 
+     * @param leftPixel the amount of pixel left to the separator
+     * @param rightPixel the amount of pixel right to the separator
+     * 
+     * @return a button bar separator
+     */
+    String buttonBarSeparator(int leftPixel, int rightPixel);
 
     /**
      * Returns the html for an invisible spacer between button bar contents like buttons, labels, etc.<p>
@@ -72,6 +98,16 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#buttonBarSpacer(int)
      */
     String buttonBarSpacer(int width);
+    
+    /**
+     * Generates a button bar starter tab.<p>  
+     * 
+     * @param leftPixel the amount of pixel left to the starter
+     * @param rightPixel the amount of pixel right to the starter
+     * 
+     * @return a button bar starter tab
+     */
+    String buttonBarStartTab(int leftPixel, int rightPixel);
 
     // TODO: Remove all calendar methods from this interface, make them static
     // TODO: Alternative: Put all this in one class (CmsWorkplaceCalendar) and return such an Object

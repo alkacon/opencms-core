@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.htmlarea/resources/system/workplace/resources/components/widgets/Attic/htmlarea.js,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/09/30 15:09:30 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,15 +41,6 @@ var textAreas = new Array();
 function initHtmlAreas() {
 
 	config = new HTMLArea.Config();
-	config.toolbar = [
-		[
-			"copy", "cut", "paste", "separator",
-			"bold", "italic", "underline", "separator",
-			"strikethrough", "subscript", "superscript", "separator",
-			"insertorderedlist", "insertunorderedlist", "outdent", "indent", "separator",
-			"htmlmode"
-		]
-	];
 
 	config.pageStyle = 
 		'body { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; margin: 0 0 0 0; padding: 1 1 1 1; border-width:2px; border-color:#FFF; border-style:inset; } ';
@@ -62,7 +53,9 @@ function initHtmlAreas() {
 	
 	// set autofocus to false to avoid jumping to last htmlarea
 	config.autoFocus = false;
+}
 
+function generateHtmlAreas() {
 	var tas = document.getElementsByTagName("textarea");
 	for (var i=0; i<tas.length; i++) {
 		var idAttr = tas[i].getAttribute("id");

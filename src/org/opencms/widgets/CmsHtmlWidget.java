@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidget.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/09/30 15:09:30 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.1 
  */
-public class CmsHtmlWidget extends A_CmsWidget {
+public class CmsHtmlWidget extends A_CmsHtmlWidget {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsHtmlWidget.class);
@@ -67,6 +67,18 @@ public class CmsHtmlWidget extends A_CmsWidget {
 
         // empty constructor is required for class registration
         this("");
+        m_editorWidget = null;
+    }
+    
+    /**
+     * Creates a new html editing widget with the given configuration.<p>
+     * 
+     * @param configuration the configuration to use
+     */
+    public CmsHtmlWidget(CmsHtmlWidgetOption configuration) {
+
+        super(configuration);
+        m_editorWidget = null;
     }
 
     /**
@@ -77,6 +89,7 @@ public class CmsHtmlWidget extends A_CmsWidget {
     public CmsHtmlWidget(String configuration) {
 
         super(configuration);
+        m_editorWidget = null;
     }
 
     /**
@@ -156,17 +169,19 @@ public class CmsHtmlWidget extends A_CmsWidget {
                 foundWidget = false;
             }
             try {
-                // get widget instance
-                Class widgetClass = Class.forName(widgetClassName);
-                I_CmsWidget editorWidget = (I_CmsWidget)widgetClass.newInstance();
                 if (foundWidget) {
-                    // set the widget configuration
-                    editorWidget.setConfiguration(getConfiguration());
+                    // get widget instance and set the widget configuration
+                    Class widgetClass = Class.forName(widgetClassName);
+                    A_CmsHtmlWidget editorWidget = (A_CmsHtmlWidget)widgetClass.newInstance();
+                    editorWidget.setHtmlWidgetOption(getHtmlWidgetOption());
+                    m_editorWidget = editorWidget;
                 } else {
                     // set the text area to display 15 rows for editing
+                    Class widgetClass = Class.forName(widgetClassName);
+                    I_CmsWidget editorWidget = (I_CmsWidget)widgetClass.newInstance();
                     editorWidget.setConfiguration("15");
-                }
-                m_editorWidget = editorWidget;
+                    m_editorWidget = editorWidget;
+                }         
             } catch (Exception e) {
                 // failed to create widget instance
                 LOG.error(Messages.get().container(Messages.LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1, widgetClassName).key());

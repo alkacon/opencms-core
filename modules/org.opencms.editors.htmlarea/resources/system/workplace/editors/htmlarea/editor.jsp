@@ -68,11 +68,12 @@ default:
 
 <link rel=stylesheet type="text/css" href="<%= wp.getStyleUri("workplace.css") %>">
 
+<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>htmlarea-ocms.js"></script>
 <script type="text/javascript">
 // the content as escaped string
 var __content = "<%= wp.getParamContent() %>";
 
-// Workplacepath
+// OpenCms workplace path
 var workplacePath="<%= cms.link("/system/workplace/") %>";
 
 // dialog windows
@@ -81,7 +82,7 @@ var dialogPropertyWindow = null;
 
 // display settings (disable style inputs for popups in HTMLArea, does not work properly!)
 // var USE_LINKSTYLEINPUTS = <%= options.showElement("linkstyleinputs", displayOptions) %>;
-var USE_LINKSTYLEINPUTS = false;
+USE_LINKSTYLEINPUTS = false;
 
 // OpenCms context prefix, required for page editor because no link replacement is done here
 var linkEditorPrefix = "<%= org.opencms.main.OpenCms.getSystemInfo().getOpenCmsContext() %>";
@@ -93,7 +94,7 @@ function initContent() {
 
 // saves the editors contents
 function saveContent() {
-    document.EDITOR.content.value = encodeURIComponent(__editor.getHTML());
+    document.EDITOR.content.value = encodeURIComponent(getActiveEditor().getHTML());
 }
 
 //action on button click 
@@ -170,42 +171,11 @@ function buttonAction(para) {
     	break;
      case 11:
     	// open the anchor dialog popup
-    	if (hasSelectedText()) {
-    		var winheight = (USE_LINKSTYLEINPUTS?180:130);
-    		var linkInformation = getSelectedLink();
-			var params = "?showCss=" + USE_LINKSTYLEINPUTS;
-			if (linkInformation != null) {
-				params += "&name=" + linkInformation["name"];
-				if (USE_LINKSTYLEINPUTS) {
-					params += "&style=" + linkInformation["style"];
-					params += "&class=" + linkInformation["class"];
-				}
-			}
-			
-    		dialogAnchorWindow = window.open('dialogs/anchor.jsp' + params,'SetAnchor', "width=350, height=" + winheight + ", resizable=yes, top=300, left=250");
-    	} else {
-    		alert("<%= wp.key("editor.message.noselection") %>");
-    	}
+    	openAnchorDialog("<%= wp.key("editor.message.noselection") %>");
     	break;
     	case 12:
-    	if (hasSelectedText()) {
-			var winheight = (USE_LINKSTYLEINPUTS?220:170);
-			var linkInformation = getSelectedLink();
-			var params = "?showCss=" + USE_LINKSTYLEINPUTS;
-			if (linkInformation != null) {
-				params += "&href=" + linkInformation["href"];
-				params += "&target=" + linkInformation["target"];
-				params += "&title= "+linkInformation["title"];
-				if (USE_LINKSTYLEINPUTS) {
-					params += "&style=" + linkInformation["style"];
-					params += "&class=" + linkInformation["class"];
-				}
-			}
-		openWindow = window.open('dialogs/link.jsp' + params,'SetLink', "width=480, height=" + winheight + ", resizable=yes, top=300, left=250");
-		openWindow.focus();
-    	} else {
-    		alert("<%= wp.key("editor.message.noselection") %>");
-    	}
+    	// open the link dialog popup
+    	openLinkDialog("<%= wp.key("editor.message.noselection") %>");
     	break;
     	case 13:
         // clear document
@@ -218,178 +188,6 @@ function buttonAction(para) {
 		openOnlineHelp("/system/modules/org.opencms.editors.htmlarea/locales/<%= wp.getLocale() %>/help/index.html");
 		break;		
     }
-}
-
-// opens the spcified gallery in a popup window
-function openGallery(galleryType) {
-	openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=" + galleryType, "GalleryBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
-	focusCount = 1;
-	openWindow.focus();
-}
-
-// inserts the passed html fragment at the current cursor position
-function insertHtml(htmlContent) {
-	__editor.insertHTML(htmlContent);
-}
-
-// checks if a text part has been selected by the user
-function hasSelectedText() {
-	return __editor.hasSelectedText();
-}
-
-// gets the selected html parts
-function getSelectedHTML() {
-	return __editor.getSelectedHTML();
-}
-
-// creates a named anchor or a link from the OpenCms link dialog, called from popup window
-function createLink(linkInformation) {
-	var thelink = __editor.getParentElement();
-	var href = linkInformation["href"].trim();
-	if (thelink) {
-		if (/^img$/i.test(thelink.tagName)) {
-			thelink = thelink.parentNode;
-		}
-		if (!/^a$/i.test(thelink.tagName)) {
-			thelink = null;
-		}
-	}
-	if (!thelink) {
-		var sel = __editor._getSelection();
-		var range = __editor._createRange(sel);
-	}
-	var a = thelink;
-	if (!a) try {
-		if (!HTMLArea.is_ie) {
-			__editor._doc.execCommand("createlink", false, "#");
-			a = __editor.getParentElement();
-			var sel = __editor._getSelection();
-			var range = __editor._createRange(sel);
-			a = range.startContainer;
-			if (!/^a$/i.test(a.tagName)) {
-				a = a.nextSibling;
-				if (a == null)
-					a = range.startContainer.parentNode;
-			}
-		} else {
-			// HACK: for IE, create a String representing the link
-			var linkAnchor = '<a';
-			if (linkInformation["type"] == "anchor") {
-				linkAnchor += ' name="' + linkInformation["name"] + '"';
-			} else {
-				linkAnchor += ' href="' + linkInformation["href"] + '"';
-				linkAnchor += ' target="' + linkInformation["target"] + '"';
-			}
-			if (linkInformation["title"] != null && linkInformation["title"] != "") {
-				linkAnchor += ' title="' + linkInformation["title"] + '"';
-			} 
-			if (USE_LINKSTYLEINPUTS) { 
-				if (linkInformation["style"] != "") {
-					linkAnchor += ' style="' + linkInformation["style"] + '"';
-					
-				}
-				if (linkInformation["class"] != "") {
-					linkAnchor += ' class="' + linkInformation["class"] + '"';
-				}
-			}
-			linkAnchor += '>';
-			__editor.surroundHTML(linkAnchor, "</a>");
-			return;			
-		}		
-	} catch (e) {}
-	else {
-		__editor.selectNodeContents(a);
-		
-		var deleteNode = false;
-		if (linkInformation["type"] == "anchor" && linkInformation["name"] == "") {
-			// set dummy href attribute value that deletion works correctly
-			a.href = "#";
-			deleteNode = true;
-		}
-		if (linkInformation["type"] != "anchor" && href == "") {
-			deleteNode = true;
-		}
-		if (deleteNode) {
-			// delete the anchor from document
-			__editor._doc.execCommand("unlink", false, null);
-			__editor.updateToolbar();
-			return;
-		}		
-	}
-	if (!(a && /^a$/i.test(a.tagName))) {
-		// no anchor tag, return
-		return;
-	}
-	
-	if (linkInformation["type"] == "anchor") {
-		// create a named anchor
-		a.name = linkInformation["name"];
-		a.removeAttribute("href");
-		a.removeAttribute("target");
-	} else {
-		// create a link
-		a.href = linkInformation["href"];
-		if (linkInformation["target"] != "") {
-			a.target = linkInformation["target"];
-		}
-		a.removeAttribute("name");
-		
-	}
-	
-	if (linkInformation["title"] != null && linkInformation["title"] != "") {
-		a.title = linkInformation["title"];
-	} else {
-		a.removeAttribute("title");
-	}
-	
-	if (USE_LINKSTYLEINPUTS) {
-		if (linkInformation["style"] != "") {
-			// does not work: a.style.setAttribute("CSSTEXT", linkInformation["style"]);
-		} else {
-			a.removeAttribute("style");
-		}
-		if (linkInformation["class"] != "") {
-			a.setAttribute("class", linkInformation["class"]);
-		} else {
-			a.removeAttribute("class");
-		}
-	}
-	__editor.selectNodeContents(a);
-	__editor.updateToolbar();
-}
-
-// retrieves the information about the selected link
-function getSelectedLink() {
-	// Get the editor selection
-	var linkInformation = null;
-	
-	var thelink = __editor.getParentElement();
-	if (thelink) {
-		if (/^img$/i.test(thelink.tagName)) {
-			thelink = thelink.parentNode;
-		}
-		if (!/^a$/i.test(thelink.tagName)) {
-			thelink = null;
-		}
-	}
-	if (thelink != null) {
-		linkInformation = new Object();
-		var linkUri = thelink.href;
-		if (linkUri != null) {
-			linkUri = __editor.stripBaseURL(linkUri);
-		}
-		linkInformation["href"] = encodeURIComponent(linkUri);		
-		linkInformation["name"] = thelink.name;
-		linkInformation["target"] = thelink.target;
-		linkInformation["title"] = thelink.title;
-
-		if (USE_LINKSTYLEINPUTS) {
-			linkInformation["style"] = encodeURIComponent(thelink.style.getAttribute("CSSTEXT", 2));
-			linkInformation["class"] = thelink.className;
-		}	
-	}
-
-	return linkInformation;
 }
 
 function deleteEditorContent(elementName, language) {
@@ -473,14 +271,12 @@ function confirmExit() {
 HTMLArea.loadPlugin("ContextMenu");
 // HTMLArea.loadPlugin("CSS");
 
-var __editor = null;
-
 function initEditor() {
 	// initialize the editor content
 	initContent();
 	
 	// create the edior
-	__editor = new HTMLArea("edit1");
+	var __editor = new HTMLArea("edit1");
 	
 	// register the TableOperations plugin with the editor	
 	<%
@@ -643,6 +439,7 @@ config.toolbar = [
 	config.pageStyle = "@import url(<%= cms.link(wp.getUriStyleSheet()) %>);";
 	
 	__editor.generate();
+	setActiveEditor(__editor);
 	return false;
 }
 

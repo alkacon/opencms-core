@@ -149,6 +149,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/editors/htmlarea/htmlarea-ocms.js</source>
+			<destination>system/workplace/editors/htmlarea/htmlarea-ocms.js</destination>
+			<type>plain</type>
+			<uuidresource>e9051f4d-3181-11da-af66-23493b7530b1</uuidresource>
+			<datelastmodified>Fri, 30 Sep 2005 10:03:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Sep 2005 07:14:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms editor JavaScripts]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -194,6 +212,18 @@
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/editors/htmlarea/htmlarea-ocms.js</destination>
+			<type>plain</type>
+			<uuidresource>e9051f4d-3181-11da-af66-23493b7530b1</uuidresource>
+			<datelastmodified>Fri, 30 Sep 2005 10:03:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 30 Sep 2005 07:14:59 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

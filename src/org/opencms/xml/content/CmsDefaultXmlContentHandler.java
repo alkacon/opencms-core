@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/09/02 08:27:47 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/09/30 15:09:30 $
+ * Version: $Revision: 1.43.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.43.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,6 +268,8 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         if (result == null) {
             // use default widget mappings
             result = OpenCms.getXmlContentTypeManager().getWidgetDefault(value.getTypeName());
+        } else {
+            result = result.newInstance();
         }
         // set the configuration value for this widget
         result.setConfiguration(getConfiguration(value));
