@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/10/01 10:53:07 $
- * Version: $Revision: 1.56.2.1 $
+ * Date   : $Date: 2005/10/01 12:32:21 $
+ * Version: $Revision: 1.56.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.1 $ 
+ * @version $Revision: 1.56.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -294,7 +294,13 @@ public class CmsLinkManager {
         // otherwise invalid
         if (CmsStringUtil.isNotEmpty(path) && (path.charAt(0) != '/')) {
             if (relativePath != null) {
-                String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
+                String absolutePath;
+                int pos = path.indexOf("../../galleries/pics/");
+                if (pos >= 0) {
+                    // HACK: mixed up editor path to system gallery image folder
+                    return CmsWorkplace.VFS_PATH_SYSTEM + path.substring(pos + 6) + suffix;
+                }
+                absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
                 }
