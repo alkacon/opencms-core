@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/09/17 16:38:44 $
- * Version: $Revision: 1.682.2.2 $
+ * Date   : $Date: 2005/10/01 10:54:51 $
+ * Version: $Revision: 1.682.2.3 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -24,6 +24,9 @@ OpenCms 6.1.0 - xxxx, 2005
 ! Added improved handling of user deletions in Account manager tool
 ! Added option to create default directories and export points in Module manager tool
 * Fixed issue with URI splitting causing an NPE if URI was invalid 
+! Integrated WYSIWYG editor API for XML content html widgets
+! Added configurable options to html widget to enable dialogs for link, anchor, galleries etc.
+* Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
