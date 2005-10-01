@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/htmlarea/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/01 20:50:06 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,14 +56,15 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
-    
+
     /** VFS path to the available HtmlArea Locales. */
-    public static final String HTMLAREA_LOCALES_VFS = CmsWorkplace.VFS_PATH_WORKPLACE + "resources/editors/htmlarea/lang/";
+    public static final String HTMLAREA_LOCALES_VFS = CmsWorkplace.VFS_PATH_WORKPLACE
+        + "resources/editors/htmlarea/lang/";
 
     /**
      * Creates a new html area editor widget.<p>
@@ -79,21 +80,21 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
      * 
      * @param configuration the configuration to use
      */
-    public CmsHtmlAreaWidget(String configuration) {
+    public CmsHtmlAreaWidget(CmsHtmlWidgetOption configuration) {
 
         super(configuration);
     }
-    
+
     /**
      * Creates a new html area editor widget with the given configuration.<p>
      * 
      * @param configuration the configuration to use
      */
-    public CmsHtmlAreaWidget(CmsHtmlWidgetOption configuration) {
+    public CmsHtmlAreaWidget(String configuration) {
 
         super(configuration);
     }
-    
+
     /**
      * Returns the Locale for which HtmlArea has localization data available.<p>
      * 
@@ -102,7 +103,7 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
      * @return the Locale for which HtmlArea has localization data available
      */
     public static Locale getHtmlAreaLocale(CmsObject cms, Locale wantedLocale) {
-                
+
         // check the Locale to use for editor localization
         if (!cms.existsResource(HTMLAREA_LOCALES_VFS + wantedLocale.toString() + ".js")) {
             boolean foundLocale = false;
@@ -116,7 +117,7 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
                     break;
                 }
             }
-            if (! foundLocale) {
+            if (!foundLocale) {
                 // did not find any matching Locale, fall back to english
                 wantedLocale = Locale.ENGLISH;
             }
@@ -128,7 +129,7 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
      * @see org.opencms.widgets.I_CmsWidget#getDialogIncludes(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog)
      */
     public String getDialogIncludes(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
-        
+
         StringBuffer result = new StringBuffer(16);
         result.append("<script type=\"text/javascript\">\n<!--\n");
         result.append("\tvar _editor_url = \"");
@@ -164,11 +165,12 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
     public String getDialogInitMethod(CmsObject cms, I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer(8);
-        result.append("function initHtmlArea() {\n");        
-        result.append("\tinitHtmlAreas();\n");
-        result.append(buildOpenCmsButtons(widgetDialog));
-        result.append(buildOpenCmsButtonRow());
+        result.append("function initHtmlArea() {\n");
         result.append("\tgenerateHtmlAreas();\n");
+        result.append("}\n\n");
+        // generate the special OpenCms buttons to use in the HtmlArea toolbar
+        result.append("function configHtmlAreaToolbar(currentConf) {\n");
+        result.append(buildOpenCmsButtons(widgetDialog));
         result.append("}\n");
         return result.toString();
     }
@@ -180,9 +182,9 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
 
         String id = param.getId();
         StringBuffer result = new StringBuffer(128);
-      
+
         result.append("<td class=\"xmlTd\">");
-        
+
         result.append("<textarea class=\"xmlInput maxwidth\" name=\"");
         result.append(id);
         result.append("\" id=\"");
@@ -192,7 +194,18 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
         result.append(";\" wrap=\"virtual\">");
         result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
         result.append("</textarea>");
-        
+
+        // generate the special configuration object for the current editor widget
+        result.append("<script type=\"text/javascript\">\n<!--\n");
+        result.append("\tconfig = getHtmlAreaConfiguration();\n");
+        result.append("\tconfigHtmlAreaToolbar(config);\n");
+        // generate the special toolbar object
+        result.append(buildOpenCmsButtonRow());
+        result.append("\n\thtmlAreaConfigs[\"");
+        result.append(id);
+        result.append("\"] = config;\n");
+        result.append("//-->\n</script>\n");
+
         result.append("</td>");
 
         return result.toString();
@@ -207,29 +220,100 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
     }
 
     /**
-     * @see org.opencms.widgets.I_CmsWidget#setEditorValue(org.opencms.file.CmsObject, java.util.Map, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     * Returns the configuration String for the gallery button row in HtmlArea.<p>
+     * 
+     * @return the html String for the gallery buttons
      */
-    public void setEditorValue(
-        CmsObject cms,
-        Map formParameters,
-        I_CmsWidgetDialog widgetDialog,
-        I_CmsWidgetParameter param) {
+    protected String buildOpenCmsButtonRow() {
 
-        String[] values = (String[])formParameters.get(param.getId());
-        if ((values != null) && (values.length > 0)) {
-            String val = CmsEncoder.decode(values[0], CmsEncoder.ENCODING_UTF_8);
-            param.setStringValue(cms, val);
+        StringBuffer result = new StringBuffer(16);
+
+        result.append("\tconfig.toolbar = [\n");
+        result.append("\t\t[\n");
+        result.append("\t\t\t\"copy\", \"cut\", \"paste\", \"separator\",\n");
+        result.append("\t\t\t");
+        // show format block if configured
+        if (getHtmlWidgetOption().showFormatSelect()) {
+            result.append("\"formatblock\", \"space\", ");
         }
+        result.append("\"bold\", \"italic\", \"underline\", \"separator\",\n");
+        result.append("\t\t\t\"strikethrough\", \"subscript\", \"superscript\", \"separator\",\n");
+        result.append("\t\t\t\"justifyleft\", \"justifycenter\", \"justifyright\", \"justifyfull\", \"separator\",\n");
+        result.append("\t\t\t\"insertorderedlist\", \"insertunorderedlist\", \"outdent\", \"indent\"");
+
+        // build the link buttons
+        boolean showLink = false;
+        StringBuffer custom = new StringBuffer(8);
+        if (getHtmlWidgetOption().showLinkDialog()) {
+            custom.append("\"oc-link\"");
+            showLink = true;
+        }
+        if (getHtmlWidgetOption().showAnchorDialog()) {
+            if (showLink) {
+                custom.append(", ");
+            }
+            custom.append("\"oc-anchor\"");
+            showLink = true;
+        }
+        if (showLink) {
+            result.append(", \"separator\",\n\t\t\t");
+            result.append(custom);
+        }
+
+        // build the gallery button row
+        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
+        List galleries = new ArrayList(galleryMap.size());
+        Map typeMap = new HashMap(galleryMap.size());
+
+        Iterator i = galleryMap.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            galleries.add(currGallery);
+            // put the type name to the type Map
+            typeMap.put(currGallery, key);
+        }
+
+        // sort the found galleries by their order
+        Collections.sort(galleries);
+
+        StringBuffer galleryResult = new StringBuffer(8);
+        boolean showGallery = false;
+        for (int k = 0; k < galleries.size(); k++) {
+            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
+            String galleryType = (String)typeMap.get(currGallery);
+            if (getHtmlWidgetOption().showGalleryDialog(galleryType)) {
+                // gallery is shown, build row configuration String
+                if (galleryResult.length() > 0) {
+                    galleryResult.append(", ");
+                }
+                galleryResult.append("\"");
+                galleryResult.append(galleryType);
+                galleryResult.append("\"");
+                showGallery = true;
+            }
+        }
+
+        if (showGallery) {
+            result.append(", \"separator\",\n\t\t\t");
+            result.append(galleryResult);
+        }
+
+        // show source button
+        if (getHtmlWidgetOption().showSourceEditor()) {
+            result.append(", \"separator\",\n\t\t\t\"htmlmode\"\n");
+        }
+        result.append("\t\t]\n\t];");
+        return result.toString();
     }
-    
+
     /**
      * Returns the JavaScript to configure the OpenCms buttons for HtmlArea.<p>
      * 
-     * @param cms the current users OpenCms context
      * @param widgetDialog the dialog where the widget is used on
      * @return the JavaScript to configure the OpenCms buttons for HtmlArea
      */
-    private String buildOpenCmsButtons(I_CmsWidgetDialog widgetDialog) {
+    protected String buildOpenCmsButtons(I_CmsWidgetDialog widgetDialog) {
 
         StringBuffer result = new StringBuffer();
 
@@ -270,93 +354,6 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
             result.append("\'); });\n");
         }
 
-        return result.toString();
-    }
-    
-    /**
-     * Returns the configuration String for the gallery button row in HtmlArea.<p>
-     * 
-     * @return the html String for the gallery buttons
-     */
-    private String buildOpenCmsButtonRow() {
-
-        StringBuffer result = new StringBuffer(16);
-        
-        result.append("\tconfig.toolbar = [\n");
-        result.append("\t\t[\n");
-        result.append("\t\t\t\"copy\", \"cut\", \"paste\", \"separator\",\n");
-        result.append("\t\t\t");
-        // show format block if configured
-        if (getHtmlWidgetOption().showFormatSelect()) {
-            result.append("\"formatblock\", \"space\", ");
-        }
-        result.append("\"bold\", \"italic\", \"underline\", \"separator\",\n");
-        result.append("\t\t\t\"strikethrough\", \"subscript\", \"superscript\", \"separator\",\n");
-        result.append("\t\t\t\"justifyleft\", \"justifycenter\", \"justifyright\", \"justifyfull\", \"separator\",\n");
-        result.append("\t\t\t\"insertorderedlist\", \"insertunorderedlist\", \"outdent\", \"indent\"");
-        
-        // build the link buttons
-        boolean showLink = false;
-        StringBuffer custom = new StringBuffer(8);
-        if (getHtmlWidgetOption().showLinkDialog()) {
-            custom.append("\"oc-link\"");
-            showLink = true;
-        }
-        if (getHtmlWidgetOption().showAnchorDialog()) {
-            if (showLink) {
-                custom.append(", ");
-            }
-            custom.append("\"oc-anchor\"");
-            showLink = true;
-        }
-        if (showLink) {
-            result.append(", \"separator\",\n\t\t\t");
-            result.append(custom);
-        }
-        
-        // build the gallery button row
-        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
-        List galleries = new ArrayList(galleryMap.size());
-        Map typeMap = new HashMap(galleryMap.size());
-        
-        Iterator i = galleryMap.keySet().iterator();
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
-            galleries.add(currGallery);
-            // put the type name to the type Map
-            typeMap.put(currGallery, key);
-        }
-        
-        // sort the found galleries by their order
-        Collections.sort(galleries);
-        
-        StringBuffer galleryResult = new StringBuffer(8);
-        boolean showGallery = false;
-        for (int k=0; k<galleries.size(); k++) {
-            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
-            String galleryType = (String)typeMap.get(currGallery);
-            if (getHtmlWidgetOption().showGalleryDialog(galleryType)) {
-                // gallery is shown, build row configuration String
-                if (galleryResult.length() > 0) {
-                    galleryResult.append(", ");
-                }
-                galleryResult.append("\"" + galleryType + "\"");
-                showGallery = true;
-            }
-        }
-        
-        if (showGallery) {
-            result.append(", \"separator\",\n\t\t\t");
-            result.append(galleryResult);
-        }
-        
-        // show source button
-        if (getHtmlWidgetOption().showSourceEditor()) {
-            result.append(", \"separator\",\n\t\t\t\"htmlmode\"\n");
-        }
-        result.append("\t\t]\n");
-        result.append("\t];");
         return result.toString();
     }
 }

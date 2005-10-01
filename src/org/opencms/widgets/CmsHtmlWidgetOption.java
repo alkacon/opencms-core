@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/01 20:50:06 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,44 +44,55 @@ import java.util.List;
  * If options are passed from XML content schema definitions as widget configuration options,
  * the following syntax is used for defining the option values:<p>
  * 
- * <code>"height:200px,link,anchor,imagegallery,downloadgallery,formatselect,source"</code><p>
+ * <code>"height:400px,link,anchor,imagegallery,downloadgallery,formatselect,source"</code><p>
+ * 
+ * Available options are:
+ * <ul>
+ * <li><code>height:${editorheight}</code>: the editor height, where the height can be specified in px or %, e.g. <code>400px</code></li>
+ * <li><code>link</code>: the link dialog button</li>
+ * <li><code>anchor</code>: the anchor dialog button</li>
+ * <li><code>formatselect</code>: the format selector for selecting text format like paragraph or headings</li>
+ * <li><code>source</code>: shows the source code toggle button(s)</li>
+ * <li><code>${gallerytype}</code>: Shows a gallery dialog button, e.g. <code>imagegallery</code></li>
+ * </ul>
+ * If an option key is not found in the configuration options, the corresponding button will be hidden in the editor.<p>
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.1
  */
 public class CmsHtmlWidgetOption {
-    
+
     /** The editor widget default height to use. */
-    public static final String EDITOR_DEFAULTHEIGHT = "280px";
+    public static final String EDITOR_DEFAULTHEIGHT = "260px";
 
     /** Option for the "anchor" dialog. */
     private static final String OPTION_ANCHOR = "anchor";
-    
+
     /** The delimiter to use in the configuration String. */
     private static final String OPTION_DELIMITER = ",";
-    
+
     /** Option for the "formatselect" selector. */
     private static final String OPTION_FORMATSELECT = "formatselect";
-    
+
     /** Option for the "height" configuration. */
     private static final String OPTION_HEIGHT = "height:";
-    
+
     /** Option for the "link" dialog. */
     private static final String OPTION_LINK = "link";
-    
+
     /** Option for the "source" code mode. */
     private static final String OPTION_SOURCE = "source";
-    
+
     private List m_displayGalleries;
     private String m_editorHeight;
     private boolean m_showAnchorDialog;
     private boolean m_showFormatSelect;
     private boolean m_showLinkDialog;
     private boolean m_showSourceEditor;
-    
+
     /**
      * Creates a new empty html widget object object.<p>
      */
@@ -104,7 +115,7 @@ public class CmsHtmlWidgetOption {
         m_editorHeight = EDITOR_DEFAULTHEIGHT;
         parseOptions(configuration);
     }
-    
+
     /**
      * Returns a html widget configuration String created from the given html widget option.<p>
      * 
@@ -116,38 +127,48 @@ public class CmsHtmlWidgetOption {
 
         StringBuffer result = new StringBuffer(256);
         boolean added = false;
-        if (! option.getEditorHeight().equals(EDITOR_DEFAULTHEIGHT)) {
+        if (!option.getEditorHeight().equals(EDITOR_DEFAULTHEIGHT)) {
+            // append the height configuration
             result.append(OPTION_HEIGHT);
             result.append(option.getEditorHeight());
             added = true;
         }
         if (option.showAnchorDialog()) {
+            // append the anchor configuration
             if (added) {
                 result.append(OPTION_DELIMITER);
             }
             result.append(OPTION_ANCHOR);
+            added = true;
         }
         if (option.showLinkDialog()) {
+            // append the link configuration
             if (added) {
                 result.append(OPTION_DELIMITER);
             }
             result.append(OPTION_LINK);
+            added = true;
         }
         if (option.showFormatSelect()) {
+            // append the format selector configuration
             if (added) {
                 result.append(OPTION_DELIMITER);
             }
             result.append(OPTION_FORMATSELECT);
+            added = true;
         }
         if (option.showSourceEditor()) {
+            // append the source code configuration
             if (added) {
                 result.append(OPTION_DELIMITER);
             }
             result.append(OPTION_SOURCE);
+            added = true;
         }
-        
+
         boolean isFirst = true;
-        for (int i=0; i<option.getDisplayGalleries().size(); i++) {
+        for (int i = 0; i < option.getDisplayGalleries().size(); i++) {
+            // append the galleries configuration
             String gallery = (String)option.getDisplayGalleries().get(i);
             if (added || !isFirst) {
                 result.append(OPTION_DELIMITER);
@@ -155,7 +176,7 @@ public class CmsHtmlWidgetOption {
             result.append(gallery);
             isFirst = false;
         }
-        
+
         return result.toString();
     }
 
@@ -258,7 +279,7 @@ public class CmsHtmlWidgetOption {
 
         return m_showFormatSelect;
     }
-    
+
     /**
      * Returns true if the specified gallery type dialog button is shown.<p>
      * 
@@ -266,7 +287,7 @@ public class CmsHtmlWidgetOption {
      * @return true if the specified gallery type dialog button is shown, otherwise false
      */
     public boolean showGalleryDialog(String galleryType) {
-        
+
         return getDisplayGalleries().contains(galleryType);
     }
 
@@ -326,7 +347,7 @@ public class CmsHtmlWidgetOption {
                         // add the option to the displayed galleries
                         m_displayGalleries.add(option);
                     }
-    
+
                 }
             }
         }

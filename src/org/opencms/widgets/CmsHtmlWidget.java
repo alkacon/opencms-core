@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidget.java,v $
- * Date   : $Date: 2005/09/30 16:15:27 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/10/01 20:50:06 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.1 
  */
@@ -68,7 +68,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
         // empty constructor is required for class registration
         this("");
     }
-    
+
     /**
      * Creates a new html editing widget with the given configuration.<p>
      * 
@@ -178,7 +178,7 @@ public class CmsHtmlWidget extends A_CmsHtmlWidget {
                     I_CmsWidget editorWidget = (I_CmsWidget)widgetClass.newInstance();
                     editorWidget.setConfiguration("15");
                     m_editorWidget = editorWidget;
-                }         
+                }
             } catch (Exception e) {
                 // failed to create widget instance
                 LOG.error(Messages.get().container(Messages.LOG_CREATE_HTMLWIDGET_INSTANCE_FAILED_1, widgetClassName).key());

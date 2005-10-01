@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.htmlarea/resources/system/workplace/resources/components/widgets/Attic/htmlarea.js,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/01 20:50:06 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,28 +33,32 @@
  * These scripts are required for the html areas in the xml content editor
  */
  
-// HTMLArea configuration
-var config;
+// HTMLArea global objects
 var htmlAreas = new Array();
 var textAreas = new Array();
+var htmlAreaConfigs = new Array();
 
-function initHtmlAreas() {
+// creates a HtmlArea configuration object with standard values set
+function getHtmlAreaConfiguration() {
 
-	config = new HTMLArea.Config();
+	var newConfig = new HTMLArea.Config();
 
-	config.pageStyle = 
+	newConfig.pageStyle = 
 		'body { font-family:verdana, sans-serif; font-size:11px; font-weight:normal; margin: 0 0 0 0; padding: 1 1 1 1; border-width:2px; border-color:#FFF; border-style:inset; } ';
 
 	// disable the status bar
-	config.statusBar = false;
+	newConfig.statusBar = false;
 
 	// kill MS Word formatting on paste
-	config.killWordOnPaste = true;
+	newConfig.killWordOnPaste = true;
 	
 	// set autofocus to false to avoid jumping to last htmlarea
-	config.autoFocus = false;
+	newConfig.autoFocus = false;
+	
+	return newConfig;
 }
 
+// generates the HtmlArea editor instances
 function generateHtmlAreas() {
 	var tas = document.getElementsByTagName("textarea");
 	for (var i=0; i<tas.length; i++) {
@@ -62,16 +66,14 @@ function generateHtmlAreas() {
 		if (idAttr != null && idAttr != "") {
 			// only use textareas with "id" attribute value set
 			textAreas[textAreas.length] = tas[i];
-			var ha = new HTMLArea(tas[i], config);
+			var ha = new HTMLArea(tas[i], htmlAreaConfigs[idAttr]);
 			htmlAreas[htmlAreas.length] = ha;
 			ha.generate();
 		}
 	}
 }
 
-function registerHtmlArea(id) {
-}
-
+// writes the HTML back from the editor instances back to the textareas
 function submitHtml(form) {
 	for (var i=0; i<textAreas.length; i++) {
 		ta = textAreas[i];
