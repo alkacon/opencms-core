@@ -122,6 +122,9 @@ var initialized = false;
 // the OpenCms context path
 var contextPath = "<%= wp.getOpenCmsContext() %>";
 
+// the OpenCms workplace path
+var workplacePath="<%= cms.link("/system/workplace/") %>";    
+
 // needed when strings are filled in delayed
 var stringsPresent = false;
 var stringsInserted = false;
