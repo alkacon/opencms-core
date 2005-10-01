@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2005/10/01 12:56:53 $
+ * Version: $Revision: 1.29.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29.2.1 $ 
+ * @version $Revision: 1.29.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -465,8 +465,8 @@ public class CmsXmlContentTypeManager {
             cms.checkRole(CmsRole.ADMINISTRATOR);
         }
 
-        // create and cache the special system id for the XML content type entity resolver
-        CmsXmlEntityResolver.cacheSystemId(CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS, getSchemaBytes());
+        // initilaize the special entity resolver
+        CmsXmlEntityResolver.initialize(cms, getSchemaBytes());
 
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(
