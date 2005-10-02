@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/09/16 13:16:16 $
- * Version: $Revision: 1.93.2.2 $
+ * Date   : $Date: 2005/10/02 09:01:42 $
+ * Version: $Revision: 1.93.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,9 +93,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen 
  * 
 <<<<<<< CmsSecurityManager.java
- * @version $Revision: 1.93.2.2 $
+ * @version $Revision: 1.93.2.3 $
 =======
- * @version $Revision: 1.93.2.2 $
+ * @version $Revision: 1.93.2.3 $
 >>>>>>> 1.93.2.1
  * 
  * @since 6.0.0
@@ -1557,7 +1557,7 @@ public final class CmsSecurityManager {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void destroy() throws Throwable {
+    public synchronized void destroy() throws Throwable {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
