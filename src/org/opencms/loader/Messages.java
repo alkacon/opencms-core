@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/08/05 14:17:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/10/02 09:07:03 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,6 +47,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_INVALID_IMAGE_SCALE_PARAMS_2 = "ERR_INVALID_IMAGE_SCALE_PARAMS_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_POINTER_FILE_1 = "ERR_INVALID_POINTER_FILE_1";
@@ -68,6 +71,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SERVICE_UNSUPPORTED_1 = "ERR_SERVICE_UNSUPPORTED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1 = "ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNABLE_TO_SCALE_IMAGE_2 = "ERR_UNABLE_TO_SCALE_IMAGE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_RESTYPE_ID_REQ_1 = "ERR_UNKNOWN_RESTYPE_ID_REQ_1";
@@ -112,6 +121,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_ADD_RESTYPE_FROM_FILE_2 = "INIT_ADD_RESTYPE_FROM_FILE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_CLIENT_CACHE_MAX_AGE_1 = "INIT_CLIENT_CACHE_MAX_AGE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_COLLECTOR_REPLACED_1 = "INIT_COLLECTOR_REPLACED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -119,6 +131,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_GET_RESTYPE_2 = "INIT_GET_RESTYPE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_IMAGE_REPOSITORY_PATH_1 = "INIT_IMAGE_REPOSITORY_PATH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_IMAGE_SCALING_ENABLED_1 = "INIT_IMAGE_SCALING_ENABLED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_JSP_REPOSITORY_ABS_PATH_1 = "INIT_JSP_REPOSITORY_ABS_PATH_1";
@@ -142,14 +160,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_RESOURCE_TYPE_INITIALIZED_0 = "INIT_RESOURCE_TYPE_INITIALIZED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_SHUTDOWN_1 = "INIT_SHUTDOWN_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_STARTING_LOADER_CONFIG_0 = "INIT_STARTING_LOADER_CONFIG_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WEBAPP_PATH_1 = "INIT_WEBAPP_PATH_1";
 
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_CLIENT_CACHE_MAX_AGE_1 = "INIT_CLIENT_CACHE_MAX_AGE_1";
-    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ACCESS_DENIED_1 = "LOG_ACCESS_DENIED_1";
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.33.2.1 $
+ * Date   : $Date: 2005/10/02 09:06:26 $
+ * Version: $Revision: 1.33.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33.2.1 $ 
+ * @version $Revision: 1.33.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -756,6 +756,31 @@ public class CmsResourceManager {
 
         m_folderTranslator = folderTranslator;
         m_fileTranslator = fileTranslator;
+    }
+
+    /**
+     * Shuts down this resource manage instance.<p>
+     * 
+     * @throws Exception in case of errors during shutdown
+     */
+    public synchronized void shutDown() throws Exception {
+
+        Iterator it = m_loaderList.iterator();
+        while (it.hasNext()) {
+            // destroy all resource loaders
+            I_CmsResourceLoader loader = (I_CmsResourceLoader)it.next();
+            loader.destroy();
+        }
+
+        m_loaderList = null;
+        m_loaders = null;
+        m_collectorNameMappings = null;
+        m_includeExtensions = null;
+        m_mimeTypes = null;
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        }
     }
 
     /**
