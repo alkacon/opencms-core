@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/htmlarea/Attic/CmsHtmlAreaEditor.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/02 08:56:21 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.editors.htmlarea;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
 import org.opencms.workplace.editors.CmsSimplePageEditor;
 import org.opencms.workplace.galleries.A_CmsGallery;
@@ -56,7 +57,7 @@ import java.util.Properties;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.1 
  */
@@ -85,7 +86,7 @@ public class CmsHtmlAreaEditor extends CmsSimplePageEditor {
         
         while (i.hasNext()) {
             String galleryType = (String)i.next();
-            String galleryName = galleryType.replaceFirst("gallery", "");
+            String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
             if (options.showElement("gallery." + galleryName, displayOptions)) {
                 // gallery is shown, create button code
                 result.append("config.registerButton(\"");
@@ -132,7 +133,7 @@ public class CmsHtmlAreaEditor extends CmsSimplePageEditor {
         for (int k=0; k<galleries.size(); k++) {
             A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
             String galleryType = (String)typeMap.get(currGallery);
-            if (options.showElement("gallery." + galleryType.replaceFirst("gallery", ""), displayOptions)) {
+            if (options.showElement("gallery." + CmsStringUtil.substitute(galleryType, "gallery", ""), displayOptions)) {
                 // gallery is shown, build row configuration String
                 if (result.length() == 0) {
                     result.append(", \"separator\"");

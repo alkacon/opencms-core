@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/htmlarea/Attic/CmsHtmlAreaWidget.java,v $
- * Date   : $Date: 2005/10/01 20:50:06 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/10/02 08:56:21 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.editors.htmlarea;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsHtmlWidget;
 import org.opencms.widgets.CmsHtmlWidgetOption;
 import org.opencms.widgets.I_CmsWidget;
@@ -56,7 +57,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,7 +192,7 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
         result.append(id);
         result.append("\" style=\"height: ");
         result.append(getHtmlWidgetOption().getEditorHeight());
-        result.append(";\" wrap=\"virtual\">");
+        result.append(";\" rows=\"20\" cols=\"60\">");
         result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
         result.append("</textarea>");
 
@@ -341,7 +342,7 @@ public class CmsHtmlAreaWidget extends A_CmsHtmlWidget {
         Iterator i = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
         while (i.hasNext()) {
             String galleryType = (String)i.next();
-            String galleryName = galleryType.replaceFirst("gallery", "");
+            String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
             // create gallery button code
             result.append("\tconfig.registerButton(\"");
             result.append(galleryType);

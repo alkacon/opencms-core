@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/10/02 08:59:08 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,11 +40,22 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public interface I_CmsWidget {
+
+    /**
+     * Returns the configuration string.<p>
+     * 
+     * This can be used to enable / disable certain widget features that should not always be available,
+     * or to pass specific initialization information to the widget.
+     * It depends on the widget implementation on how this information is used.<p>
+     * 
+     * @return the configuration string
+     */
+    String getConfiguration();
 
     /**
      * Generates the html to include at the end of the dialog for this widget.<p>

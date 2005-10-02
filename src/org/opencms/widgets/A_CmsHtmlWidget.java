@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2005/10/01 20:50:06 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/02 08:59:08 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.1 
  */
@@ -80,6 +80,17 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     public A_CmsHtmlWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
+     */
+    public String getConfiguration() {
+
+        if (super.getConfiguration() != null) {
+            return super.getConfiguration();
+        }
+        return CmsHtmlWidgetOption.createConfigurationString(getHtmlWidgetOption());
     }
 
     /**
@@ -125,16 +136,5 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     public void setHtmlWidgetOption(CmsHtmlWidgetOption htmlWidgetOption) {
 
         m_htmlWidgetOption = htmlWidgetOption;
-    }
-
-    /**
-     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
-     */
-    protected String getConfiguration() {
-
-        if (super.getConfiguration() != null) {
-            return super.getConfiguration();
-        }
-        return CmsHtmlWidgetOption.createConfigurationString(getHtmlWidgetOption());
     }
 }

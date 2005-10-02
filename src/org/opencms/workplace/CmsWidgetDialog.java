@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.56.2.1 $
+ * Date   : $Date: 2005/10/02 08:58:35 $
+ * Version: $Revision: 1.56.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.1 $ 
+ * @version $Revision: 1.56.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,6 +115,9 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
 
     /** The list of widgets used on the dialog. */
     protected List m_widgets;
+
+    /** The set of help message ids that have already been used. */
+    private Set m_helpMessageIds;
 
     /** 
      * Parameter stores the index of the element to add or remove.<p>
@@ -433,6 +436,17 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
             m_dialogObject = getDialogObjectMap().get(getClass().getName());
         }
         return m_dialogObject;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getHelpMessageIds()
+     */
+    public Set getHelpMessageIds() {
+
+        if (m_helpMessageIds == null) {
+            m_helpMessageIds = new HashSet();
+        }
+        return m_helpMessageIds;
     }
 
     /**

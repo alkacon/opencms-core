@@ -16,6 +16,7 @@
 		<xsd:sequence>
 			<xsd:element name="Title" type="OpenCmsString" />
 			<xsd:element name="Test" type="OpenCmsString" />
+			<xsd:element name="Toast" type="OpenCmsString" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -26,6 +27,7 @@
 			<layouts>
 				<layout element="Title" widget="org.opencms.widgets.CmsCheckboxWidget" configuration="Configuration for Title" />
 				<layout element="Test" widget="HtmlWidget" configuration="Configuration for Test" />				
+				<layout element="Toast" widget="org.opencms.xml.content.TestCustomInputWidgetImpl" configuration="Configuration for Toast" />				
 			</layouts>
 		</xsd:appinfo>
 	</xsd:annotation>  

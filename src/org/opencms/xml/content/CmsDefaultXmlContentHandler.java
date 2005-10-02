@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.43.2.1 $
+ * Date   : $Date: 2005/10/02 08:57:35 $
+ * Version: $Revision: 1.43.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.1 $ 
+ * @version $Revision: 1.43.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
-    
+
     /** Macro for resolving the preview URI. */
     public static final String MACRO_PREVIEW_TEMPFILE = "previewtempfile";
 
@@ -251,10 +251,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * @see org.opencms.xml.content.I_CmsXmlContentHandler#getPreview(org.opencms.file.CmsObject, org.opencms.xml.content.CmsXmlContent, java.lang.String)
      */
     public String getPreview(CmsObject cms, CmsXmlContent content, String resourcename) {
-        
+
         CmsMacroResolver resolver = CmsMacroResolver.newInstance().setCmsObject(cms);
         resolver.addMacro(MACRO_PREVIEW_TEMPFILE, resourcename);
-        
+
         return resolver.resolveMacros(m_previewLocation);
     }
 
@@ -583,11 +583,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * 
      * @param contentDefinition the XML content definition this XML content handler belongs to
      * @param elementName the element name to map
-     * @param className the name of the widget class to use as GUI for the element
+     * @param widgetClassOrAlias the widget to use as GUI for the element (registered alias or class name)
      * 
      * @throws CmsXmlException in case an unknown element name is used
      */
-    protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String className)
+    protected void addWidget(CmsXmlContentDefinition contentDefinition, String elementName, String widgetClassOrAlias)
     throws CmsXmlException {
 
         if (contentDefinition.getSchemaType(elementName) == null) {
@@ -596,14 +596,32 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 elementName));
         }
 
-        I_CmsWidget widget = OpenCms.getXmlContentTypeManager().getWidget(className);
+        // get the base widget from the XML content type manager
+        I_CmsWidget widget = OpenCms.getXmlContentTypeManager().getWidget(widgetClassOrAlias);
 
         if (widget == null) {
-            throw new CmsXmlException(Messages.get().container(
-                Messages.ERR_XMLCONTENT_INVALID_WIDGET_3,
-                className,
-                elementName,
-                contentDefinition.getSchemaLocation()));
+            // no registered widget class found
+            if (CmsStringUtil.isValidJavaClassName(widgetClassOrAlias)) {
+                // java class name given, try to create new instance of the class and cast to widget
+                try {
+                    Class specialWidgetClass = Class.forName(widgetClassOrAlias);
+                    widget = (I_CmsWidget)specialWidgetClass.newInstance();
+                } catch (Exception e) {
+                    throw new CmsXmlException(Messages.get().container(
+                        Messages.ERR_XMLCONTENT_INVALID_CUSTOM_CLASS_3,
+                        widgetClassOrAlias,
+                        elementName,
+                        contentDefinition.getSchemaLocation()), e);
+                }
+            }
+            if (widget == null) {
+                // no valid widget found
+                throw new CmsXmlException(Messages.get().container(
+                    Messages.ERR_XMLCONTENT_INVALID_WIDGET_3,
+                    widgetClassOrAlias,
+                    elementName,
+                    contentDefinition.getSchemaLocation()));
+            }
         }
         m_elementWidgets.put(elementName, widget);
     }
@@ -706,10 +724,20 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * However, certain values can also use more then one widget, for example you may 
      * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
      * and as a result the Strings possible values would be eithe "false" or "true",
-     * bit nevertheless be a String.<p>
+     * but nevertheless be a String.<p>
+     *
+     * The widget to use can further be controlled using the <code>widget</code> attribute.
+     * You can specifiy either a valid widget alias such as <code>StringWidget</code>, 
+     * or the name of a Java class that implements <code>{@link I_CmsWidget}</code>.<p>
+     * 
+     * Configuration options to the widget can be passed using the <code>configuration</code>
+     * attribute. You can specify any String as configuration. This String is then passed
+     * to the widget during initialization. It's up to the individual widget implementation 
+     * to interpret this configuration String.<p>
      * 
      * @param root the "layouts" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the layout belings to
+     * @param contentDefinition the content definition the layout belongs to
+     * 
      * @throws CmsXmlException if something goes wrong
      */
     protected void initLayouts(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -719,11 +747,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             // iterate all "layout" elements in the "layouts" node
             Element element = (Element)i.next();
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
-            String widgetClass = element.attributeValue(APPINFO_ATTR_WIDGET);
+            String widgetClassOrAlias = element.attributeValue(APPINFO_ATTR_WIDGET);
             String configuration = element.attributeValue(APPINFO_ATTR_CONFIGURATION);
-            if ((elementName != null) && (widgetClass != null)) {
+            if ((elementName != null) && (widgetClassOrAlias != null)) {
                 // add a widget mapping for the element
-                addWidget(contentDefinition, elementName, widgetClass);
+                addWidget(contentDefinition, elementName, widgetClassOrAlias);
                 if (configuration != null) {
                     addConfiguration(contentDefinition, elementName, configuration);
                 }

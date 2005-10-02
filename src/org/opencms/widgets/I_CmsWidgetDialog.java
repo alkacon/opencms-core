@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2005/10/02 08:59:08 $
+ * Version: $Revision: 1.8.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessages;
 
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Describes a widget enabled dialog.<p>
@@ -42,7 +43,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.2.2 $ 
+ * @version $Revision: 1.8.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,7 +63,7 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#button(String, String, String, String, int)
      */
     String button(String href, String target, String image, String label, int type);
-    
+
     /**
      * Returns the html for a button bar.<p>
      * 
@@ -71,14 +72,14 @@ public interface I_CmsWidgetDialog {
      * @return a button bar html start / end segment 
      */
     String buttonBar(int segment);
-    
+
     /**
      * Generates a horizontal button bar separator line with maximum width.<p>
      * 
      * @return a horizontal button bar separator line
      */
     String buttonBarHorizontalLine();
-    
+
     /**
      * Generates a button bar separator.<p>  
      * 
@@ -98,7 +99,7 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#buttonBarSpacer(int)
      */
     String buttonBarSpacer(int width);
-    
+
     /**
      * Generates a button bar starter tab.<p>  
      * 
@@ -120,7 +121,7 @@ public interface I_CmsWidgetDialog {
      * @return the necessary HTML code for the js and stylesheet includes
      */
     String calendarIncludes();
-    
+
     /**
      * Initializes a javascript calendar element to be shown on a page.<p>
      * 
@@ -182,6 +183,16 @@ public interface I_CmsWidgetDialog {
      * @return the given timestamp as String formatted in a localized pattern
      */
     String getCalendarLocalizedTime(long timestamp);
+
+    /**
+     * Returns a set of help messages ids that are already included on the widget dialog.<p>
+     * 
+     * This is used to prevent the occurence of multiple html <code>div</code> id's with the same 
+     * value when generating the help texts. For valid html, each id can be used only once.<p>
+     * 
+     * @return a set of help messages ids that are already included on the widget dialog
+     */
+    Set getHelpMessageIds();
 
     /**
      * Returns the current users locale setting.<p>

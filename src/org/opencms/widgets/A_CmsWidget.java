@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/02 08:59:08 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,13 +35,14 @@ import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
 
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for XML editor widgets.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +123,16 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     }
 
     /**
+     * Returns the configuration string.<p>
+     * 
+     * @return the configuration string
+     */
+    public String getConfiguration() {
+
+        return m_configuration;
+    }
+
+    /**
      * @see org.opencms.widgets.I_CmsWidget#getDialogHtmlEnd(org.opencms.file.CmsObject, I_CmsWidgetDialog, I_CmsWidgetParameter)
      */
     public String getDialogHtmlEnd(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter value) {
@@ -185,21 +196,27 @@ public abstract class A_CmsWidget implements I_CmsWidget {
      */
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
+        String helpId = getHelpKey(param);
+        Set helpIdsShown = widgetDialog.getHelpMessageIds();
+        if (helpIdsShown.contains(helpId)) {
+            // help hey has already been included in output
+            return "";
+        }
+        helpIdsShown.add(helpId);
         StringBuffer result = new StringBuffer(128);
-        // calculate the key
-        String locKey = getHelpKey(param);
-        String locValue = widgetDialog.getMessages().key(locKey, true);
+        // calculate the key        
+        String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
             result.append("<div class=\"help\" id=\"help");
-            result.append(locKey);
+            result.append(helpId);
             result.append("\"");
-            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            result.append(getJsHelpMouseHandler(widgetDialog, helpId));
             result.append(">");
             result.append(locValue);
-            result.append("</div>");
+            result.append("</div>\n");
             return result.toString();
         }
     }
@@ -233,16 +250,6 @@ public abstract class A_CmsWidget implements I_CmsWidget {
         if ((values != null) && (values.length > 0)) {
             param.setStringValue(cms, values[0]);
         }
-    }
-
-    /**
-     * Returns the configuration string.<p>
-     * 
-     * @return the configuration string
-     */
-    protected String getConfiguration() {
-
-        return m_configuration;
     }
 
     /**

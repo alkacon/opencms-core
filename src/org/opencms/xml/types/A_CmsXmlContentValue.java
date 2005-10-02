@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/10/02 08:56:39 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -274,7 +274,8 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         StringBuffer result = new StringBuffer(128);
         result.append(getTypeName());
         result.append('.');
-        result.append(getPath());
+        // the '[', ']' and '/' chars from the xpath are invalid for html id's
+        result.append(getPath().replace('[', '_').replace(']', '_').replace('/', '.'));
         result.append('.');
         result.append(getIndex());
         return result.toString();

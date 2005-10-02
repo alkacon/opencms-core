@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.65.2.1 $
+ * Date   : $Date: 2005/10/02 08:58:15 $
+ * Version: $Revision: 1.65.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,9 +64,11 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -80,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.1 $ 
+ * @version $Revision: 1.65.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,6 +135,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** File object used to read and write contents. */
     private CmsFile m_file;
+
+    /** The set of help message ids that have already been used. */
+    private Set m_helpMessageIds;
 
     /** Indicates if an optional element is included in the form. */
     private boolean m_optionalElementPresent;
@@ -551,6 +556,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             }
         }
         return m_elementLocale;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getHelpMessageIds()
+     */
+    public Set getHelpMessageIds() {
+
+        if (m_helpMessageIds == null) {
+            m_helpMessageIds = new HashSet();
+        }
+        return m_helpMessageIds;
     }
 
     /**

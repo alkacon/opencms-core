@@ -7,5 +7,6 @@
 	<Widgetmappingtest language="en">
 		<Title>This is just a title</Title>
 		<Test>This is just a test</Test>
+		<Toast>This is just a toast</Toast>
 	</Widgetmappingtest>
 </Widgetmappingtests>

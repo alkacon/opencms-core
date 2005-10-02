@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2005/10/02 08:58:15 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.xml.page.CmsXmlPageFactory;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,7 +115,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         for (int k=0; k<galleries.size(); k++) {
             A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
             String galleryType = (String)typeMap.get(currGallery);
-            String galleryName = galleryType.replaceFirst("gallery", "");
+            String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
             if (options.showElement("gallery." + galleryName, displayOptions)) {
                 // gallery is shown, create button code
                 result.append(button("javascript:openGallery(\'" + galleryType + "\');", null, galleryType, "button."
