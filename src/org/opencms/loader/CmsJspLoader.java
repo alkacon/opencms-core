@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.97 $
+ * Date   : $Date: 2005/10/02 09:07:33 $
+ * Version: $Revision: 1.97.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.97 $ 
+ * @version $Revision: 1.97.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -579,26 +579,6 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     }
 
     /**
-     * Returns the uri for a given JSP in the "real" file system, 
-     * i.e. the path in the file
-     * system relative to the web application directory.
-     *
-     * @param repository The directory to store the generated JSP pages in (relative path in web application)
-     * @param name The name of the JSP file 
-     * @param online Flag to check if this is request is online or not
-     * 
-     * @return The full uri to the JSP
-     */
-    private String getJspUri(String repository, String name, boolean online) {
-
-        StringBuffer result = new StringBuffer(64);
-        result.append(repository);
-        result.append(online ? "online" : "offline");
-        result.append(name);
-        return result.toString();
-    }
-
-    /**
      * Parses the JSP and modifies OpenCms critical directive information.<p>
      * 
      * @param byteContent the original JSP content
@@ -996,120 +976,107 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     private synchronized String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
     throws IOException, ServletException, CmsLoaderException {
 
-        CmsObject cms = controller.getCmsObject();
-        // can not use save/restore methods since this is called more then once by recursion
-        String oldSiteRoot = cms.getRequestContext().getSiteRoot();
-        try {
-            // all JSP must be exported with full "root path" site root information
-            cms.getRequestContext().setSiteRoot("");
-
-            String jspVfsName = cms.getSitePath(resource);
-            String extension;
-            boolean isHardInclude;
-            int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
-            if ((loaderId == CmsJspLoader.RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(JSP_EXTENSION))) {
-                // this is a true JSP resource that does not end with ".jsp"
-                extension = JSP_EXTENSION;
-                isHardInclude = false;
-            } else {
-                // not a JSP resource or already ends with ".jsp"
-                extension = "";
-                // if this is a JSP we don't treat it as hard include
-                isHardInclude = (loaderId != CmsJspLoader.RESOURCE_LOADER_ID);
-            }
-
-            String jspTargetName = getJspUri(
-                m_jspWebAppRepository,
-                jspVfsName + extension,
-                controller.getCurrentRequest().isOnline());
-
-            // check if page was already updated
-            if (updates.contains(jspTargetName)) {
-                // no need to write the already included file to the real FS more then once
-                return jspTargetName;
-            }
-            updates.add(jspTargetName);
-
-            String jspPath = getJspUri(
-                m_jspRepository,
-                jspVfsName + extension,
-                controller.getCurrentRequest().isOnline());
-
-            File d = new File(jspPath).getParentFile();
-            if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
-                CmsMessageContainer message = Messages.get().container(Messages.LOG_ACCESS_DENIED_1, jspPath);
-                LOG.error(message.key());
-                // can not continue
-                throw new ServletException(message.key());
-            }
-
-            if (!d.exists()) {
-                // create directory structure
-                d.mkdirs();
-            }
-
-            // check if the JSP muse be updated
-            boolean mustUpdate = false;
-            File f = new File(jspPath);
-            if (!f.exists()) {
-                // file does not exist in real FS
-                mustUpdate = true;
-            } else if (f.lastModified() <= resource.getDateLastModified()) {
-                // file in real FS is older then file in VFS
-                mustUpdate = true;
-            } else if (controller.getCurrentRequest().isDoRecompile()) {
-                // recompile is forced with parameter
-                mustUpdate = true;
-            }
-
-            if (mustUpdate) {
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
-                }
-                byte[] contents;
-                String encoding;
-                try {
-                    contents = CmsFile.upgrade(resource, cms).getContents();
-                    // check the "content-encoding" property for the JSP, use system default if not found on path
-                    encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
-                    if (encoding == null) {
-                        encoding = OpenCms.getSystemInfo().getDefaultEncoding();
-                    } else {
-                        encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
-                    }
-                } catch (CmsException e) {
-                    controller.setThrowable(e, jspVfsName);
-                    throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);
-                }
-
-                try {
-                    // parse the JSP and modify OpenCms critical directives
-                    contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
-                    // write the parsed JSP content to the real FS
-                    FileOutputStream fs = new FileOutputStream(f);
-                    fs.write(contents);
-                    fs.close();
-                    contents = null;
-
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(
-                            Messages.LOG_UPDATED_JSP_2,
-                            jspTargetName,
-                            cms.getSitePath(resource)));
-                    }
-                } catch (FileNotFoundException e) {
-                    throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()), e);
-                }
-            }
-
-            // update "last modified" and "expires" date on controller
-            controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
-
-            return jspTargetName;
-        } finally {
-            // restore the site root of the request context
-            cms.getRequestContext().setSiteRoot(oldSiteRoot);
+        String jspVfsName = resource.getRootPath();
+        String extension;
+        boolean isHardInclude;
+        int loaderId = OpenCms.getResourceManager().getResourceType(resource.getTypeId()).getLoaderId();
+        if ((loaderId == CmsJspLoader.RESOURCE_LOADER_ID) && (!jspVfsName.endsWith(JSP_EXTENSION))) {
+            // this is a true JSP resource that does not end with ".jsp"
+            extension = JSP_EXTENSION;
+            isHardInclude = false;
+        } else {
+            // not a JSP resource or already ends with ".jsp"
+            extension = "";
+            // if this is a JSP we don't treat it as hard include
+            isHardInclude = (loaderId != CmsJspLoader.RESOURCE_LOADER_ID);
         }
+
+        String jspTargetName = CmsFileUtil.getRepositoryName(
+            m_jspWebAppRepository,
+            jspVfsName + extension,
+            controller.getCurrentRequest().isOnline());
+
+        // check if page was already updated
+        if (updates.contains(jspTargetName)) {
+            // no need to write the already included file to the real FS more then once
+            return jspTargetName;
+        }
+        updates.add(jspTargetName);
+
+        String jspPath = CmsFileUtil.getRepositoryName(
+            m_jspRepository,
+            jspVfsName + extension,
+            controller.getCurrentRequest().isOnline());
+
+        File d = new File(jspPath).getParentFile();
+        if ((d == null) || (d.exists() && !(d.isDirectory() && d.canRead()))) {
+            CmsMessageContainer message = Messages.get().container(Messages.LOG_ACCESS_DENIED_1, jspPath);
+            LOG.error(message.key());
+            // can not continue
+            throw new ServletException(message.key());
+        }
+
+        if (!d.exists()) {
+            // create directory structure
+            d.mkdirs();
+        }
+
+        // check if the JSP muse be updated
+        boolean mustUpdate = false;
+        File f = new File(jspPath);
+        if (!f.exists()) {
+            // file does not exist in real FS
+            mustUpdate = true;
+        } else if (f.lastModified() <= resource.getDateLastModified()) {
+            // file in real FS is older then file in VFS
+            mustUpdate = true;
+        } else if (controller.getCurrentRequest().isDoRecompile()) {
+            // recompile is forced with parameter
+            mustUpdate = true;
+        }
+
+        if (mustUpdate) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
+            }
+            byte[] contents;
+            String encoding;
+            try {
+                CmsObject cms = controller.getCmsObject();
+                contents = CmsFile.upgrade(resource, cms).getContents();
+                // check the "content-encoding" property for the JSP, use system default if not found on path
+                encoding = cms.readPropertyObject(resource, CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, true).getValue();
+                if (encoding == null) {
+                    encoding = OpenCms.getSystemInfo().getDefaultEncoding();
+                } else {
+                    encoding = CmsEncoder.lookupEncoding(encoding.trim(), encoding);
+                }
+            } catch (CmsException e) {
+                controller.setThrowable(e, jspVfsName);
+                throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);
+            }
+
+            try {
+                // parse the JSP and modify OpenCms critical directives
+                contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
+                // write the parsed JSP content to the real FS
+                FileOutputStream fs = new FileOutputStream(f);
+                fs.write(contents);
+                fs.close();
+                contents = null;
+
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(Messages.get().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
+                }
+            } catch (FileNotFoundException e) {
+                throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()), e);
+            }
+        }
+
+        // update "last modified" and "expires" date on controller
+        controller.updateDates(f.lastModified(), CmsResource.DATE_EXPIRED_DEFAULT);
+
+        return jspTargetName;
     }
 
     /**

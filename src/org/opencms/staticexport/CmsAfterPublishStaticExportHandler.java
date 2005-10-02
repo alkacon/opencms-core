@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/02 09:05:01 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -353,7 +353,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                             // check loader for current resource if it must be processed before exported
                             I_CmsResourceLoader loader = OpenCms.getResourceManager().getLoader(resource);
                             if (!loader.isStaticExportProcessable()) {
-                                // this resource must not be process, so export it if its not marked as deleted
+                                // this resource must not be processed, so export it (if it's not marked as deleted)
                                 if (pupRes.getState() != CmsResource.STATE_DELETED) {
                                     // mark the resource for export to the real file system                  
                                     resourcesToExport.add(exportData);
@@ -452,7 +452,6 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
 
         while (i.hasNext()) {
             String rfsName = (String)i.next();
-            // String rfsNameWithoutPrefix = rfsName.substring(manager.getRfsPrefixForRfsName(rfsName).length());
             String vfsName = manager.getVfsNameInternal(cms, rfsName);
             if (vfsName == null) {
                 String rfsBaseName = rfsName.substring(0, rfsName.lastIndexOf('_'));
