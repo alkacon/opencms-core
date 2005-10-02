@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2005/10/02 09:03:59 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.24.2.1 $ 
+ * @version $Revision: 1.24.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -459,7 +459,7 @@ public class CmsScheduleManager implements Job {
     /** 
      * Shuts down this instance of the OpenCms scheduler manager.<p>
      */
-    public void shutDown() {
+    public synchronized void shutDown() {
 
         m_adminCms = null;
 
