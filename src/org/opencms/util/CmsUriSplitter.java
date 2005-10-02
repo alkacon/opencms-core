@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUriSplitter.java,v $
- * Date   : $Date: 2005/09/17 16:38:43 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/02 09:00:07 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.net.URI;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class CmsUriSplitter {
 
@@ -73,9 +73,9 @@ public class CmsUriSplitter {
      * Creates a splitted URI using the given parsing mode.<p>
      * 
      * Using 'strict' parsing mode, all requirements for an URI are checked. 
-     * If 'struct' is set to <code>false</code>, then only some simple parsing rules are applied,
+     * If 'strict' is set to <code>false</code>, then only some simple parsing rules are applied,
      * in which case the result may not be 100% valid (but still usable).
-     * If 'struct' parsing generates an error, then simple parsing is used as a fallback.<p>
+     * If 'strict' parsing generates an error, then simple parsing is used as a fallback.<p>
      *    
      * @param uri the URI to split
      * @param strict if <code>true</code>, then 'strict' parsing mode is used, otherwise a relaxed URI parsing is done

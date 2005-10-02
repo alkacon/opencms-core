@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2005/10/02 09:00:07 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.3 $ 
+ * @version $Revision: 1.15.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,7 +100,7 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "Server". */
     public static final String HEADER_SERVER = "Server";
-    
+
     /** HTTP Header "user-agent". */
     public static final String HEADER_USER_AGENT = "user-agent";
 
@@ -269,7 +269,12 @@ public final class CmsRequestUtil {
     public static Map createParameterMap(String query) {
 
         if (CmsStringUtil.isEmpty(query)) {
+            // empty query
             return new HashMap();
+        }
+        if (query.charAt(0) == '?') {
+            // remove leading '?' if required
+            query = query.substring(1);
         }
         HashMap parameters = new HashMap();
         // cut along the different parameters

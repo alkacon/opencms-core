@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/09/22 05:56:26 $
- * Version: $Revision: 1.34.2.4 $
+ * Date   : $Date: 2005/10/02 09:00:07 $
+ * Version: $Revision: 1.34.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.util;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 
+import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.4 $ 
+ * @version $Revision: 1.34.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -397,6 +398,56 @@ public final class CmsStringUtil {
         strBuf.append(seconds);
 
         return strBuf.toString();
+    }
+
+    /**
+     * Returns the color value (<code>{@link Color}</code>) for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as color
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the int value for the given parameter value String
+     */
+    public static Color getColorValue(String value, Color defaultValue, String key) {
+
+        Color result;
+        try {
+            result = Color.decode(value);
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the Integer (int) value for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as int
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the int value for the given parameter value String
+     */
+    public static int getIntValue(String value, int defaultValue, String key) {
+
+        int result;
+        try {
+            result = Integer.valueOf(value).intValue();
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
     }
 
     /**
