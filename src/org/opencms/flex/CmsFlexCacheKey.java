@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/08/31 11:39:29 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/10/02 09:03:01 $
+ * Version: $Revision: 1.23.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.flex;
 
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -40,7 +41,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpSession;
 
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -651,10 +651,11 @@ public class CmsFlexCacheKey {
      */
     private void parseFlexKey(String key) {
 
-        StringTokenizer toker = new StringTokenizer(key, ";");
+        List tokens = CmsStringUtil.splitAsList(key, ';', false);
+        Iterator i = tokens.iterator();
         try {
-            while (toker.hasMoreElements()) {
-                String t = toker.nextToken();
+            while (i.hasNext()) {
+                String t = (String)i.next();
                 String k = null;
                 String v = null;
                 int idx = t.indexOf('=');
@@ -779,11 +780,9 @@ public class CmsFlexCacheKey {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_VALUES_1, value));
         }
-        StringTokenizer toker = new StringTokenizer(value, ",");
+        List tokens = CmsStringUtil.splitAsList(value, ',', true);
         Set result = new HashSet();
-        while (toker.hasMoreTokens()) {
-            result.add(toker.nextToken().trim());
-        }
+        result.addAll(tokens);
         return result;
     }
 }

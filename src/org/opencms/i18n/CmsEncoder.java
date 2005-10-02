@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2005/10/02 09:03:16 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -66,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -352,19 +351,8 @@ public final class CmsEncoder {
      */
     public static String escape(String source, String encoding) {
 
-        StringBuffer ret = new StringBuffer();
-
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript
-        // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source, encoding);
-        StringTokenizer t = new StringTokenizer(enc, "+");
-        while (t.hasMoreTokens()) {
-            ret.append(t.nextToken());
-            if (t.hasMoreTokens()) {
-                ret.append("%20");
-            }
-        }
-        return ret.toString();
+        // the blank is encoded into "+" not "%20" when using standard encode call
+        return CmsStringUtil.substitute(encode(source, encoding), "+", "%20");
     }
 
     /**
@@ -441,7 +429,7 @@ public final class CmsEncoder {
 
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
-     * Muliple blanks are encoded _multiply_ with %20.
+     * Muliple blanks are encoded _multiply _with %20.
      * 
      * @param source The textstring to be encoded.
      * @param encoding the encoding type
