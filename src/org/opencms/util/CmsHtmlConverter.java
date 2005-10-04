@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/08/26 09:59:41 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/04 09:06:51 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
+import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -60,7 +61,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,15 +115,13 @@ public class CmsHtmlConverter {
     List m_mode;
 
     /** regular expression for replace. */
-    String[] m_replacePatterns = {"&#160;",
-                                  "\\r\\n\\r\\n"};
+    String[] m_replacePatterns = {"&#160;", "(\\r\\n){2,}"};
 
     /** patterns for replace. */
     Pattern[] m_replaceStyle;
 
     /** values for replace. */
-    String[] m_replaceValues = {"&nbsp;",
-                                ""};
+    String[] m_replaceValues = {"&nbsp;", ""};
 
     /** the tidy to use. */
     Tidy m_tidy;
@@ -245,8 +244,9 @@ public class CmsHtmlConverter {
                 String parsedContent = adjustHtml(new String(parsedRun, m_encoding));
 
                 parsedRun = parse(parsedContent.getBytes(m_encoding), m_encoding);
+
                 if (parsedRun.length == oldSize) {
-                   break;
+                    break;
                 } else {
                     oldSize = parsedRun.length;
                     count++;
@@ -523,9 +523,9 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Parses a string containing html code with different paring modes.<p>
+     * Parses a byte array containing html code with different parsing modes.<p>
      * 
-     * @param htmlInput a string containing raw html code
+     * @param htmlInput a byte array containing raw html code
      * @param encoding the  encoding
      * @return parsed and cleared html code
      */
