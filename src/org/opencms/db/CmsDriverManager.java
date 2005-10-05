@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/02 09:01:42 $
- * Version: $Revision: 1.557.2.4 $
+ * Date   : $Date: 2005/10/05 10:07:45 $
+ * Version: $Revision: 1.557.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,9 +113,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * 
 <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.4 $
+ * @version $Revision: 1.557.2.5 $
 =======
- * @version $Revision: 1.557.2.4 $
+ * @version $Revision: 1.557.2.5 $
 >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
@@ -4390,9 +4390,18 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
+            // fire an event that a project is to be published
+            Map eventData = new HashMap();
+            eventData.put(I_CmsEventListener.KEY_REPORT, report);
+            eventData.put(I_CmsEventListener.KEY_PUBLISHLIST, publishList);
+            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
+            eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+            CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
+            OpenCms.fireCmsEvent(beforePublishEvent);
+            
             // clear the cache
             clearcache();
-
+            
             m_projectDriver.publishProject(
                 dbc,
                 report,
@@ -4434,8 +4443,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
             eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
             eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
-            CmsEvent exportPointEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
-            OpenCms.fireCmsEvent(exportPointEvent);
+            CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+            OpenCms.fireCmsEvent(afterPublishEvent);
         }
     }
 

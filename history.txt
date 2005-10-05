@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/02 09:05:35 $
- * Version: $Revision: 1.682.2.4 $
+ * Date   : $Date: 2005/10/05 10:07:45 $
+ * Version: $Revision: 1.682.2.5 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,10 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.0 - xxxx, 2005
+OpenCms 6.1.1 - xxxxx, 2005
+! Added "before publish" event
+
+OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
 ! Added improved handling of user deletions in Account manager tool
 ! Added option to create default directories and export points in Module manager tool
