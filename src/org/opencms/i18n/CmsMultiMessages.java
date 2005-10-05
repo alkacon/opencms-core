@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/05 08:30:12 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,10 +49,10 @@ import org.apache.commons.logging.Log;
  * it will be used only from the resource bundle where it was first found in. The resource bundle order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a resource bundle.<p>
  * 
- * @author Alexnader Kandzior 
+ * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
