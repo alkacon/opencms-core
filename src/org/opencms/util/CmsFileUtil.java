@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/10/02 09:00:07 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2005/10/07 08:56:45 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -280,7 +280,6 @@ public final class CmsFileUtil {
      * 
      * @return a unique, valid RFS name for the given parameters
      * 
-     * @see org.opencms.cache.CmsVfsDiskCache
      * @see org.opencms.staticexport.CmsStaticExportManager
      */
     public static String getRfsPath(String filename, String extension, String parameters) {

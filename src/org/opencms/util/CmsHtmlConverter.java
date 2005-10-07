@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/10/04 09:06:51 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2005/10/07 08:56:45 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,6 @@ import java.util.regex.Pattern;
 
 import org.apache.commons.logging.Log;
 
-import org.w3c.dom.Document;
 import org.w3c.tidy.Tidy;
 
 /**
@@ -61,7 +60,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20.2.1 $ 
+ * @version $Revision: 1.20.2.2 $ 
  * 
  * @since 6.0.0 
  */
