@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Tue, 20 Sep 2005 09:09:29 GMT</createdate>
+		<createdate>Fri, 07 Oct 2005 09:07:54 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -17,7 +17,7 @@
 Install this module if you want to use the german version of the OpenCms Workplace.
 
 (c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.35</version>
+		<version>0.36</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -42,7 +42,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 20 Sep 2005 06:16:50 GMT</datecreated>
+			<datecreated>Thu, 29 Sep 2005 09:30:30 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2003,7 +2003,7 @@ Install this module if you want to use the german version of the OpenCms Workpla
 			<destination>system/workplace/locales/de/help/explorer/popupMenu/history.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>c60b3e5d-ec98-11d9-8b62-0b1b93c9ca6c</uuidresource>
-			<datelastmodified>Thu, 14 Jul 2005 14:54:00 GMT</datelastmodified>
+			<datelastmodified>Fri, 07 Oct 2005 09:03:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 04 Jul 2005 14:34:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
