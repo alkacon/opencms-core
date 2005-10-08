@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/10/02 08:55:49 $
- * Version: $Revision: 1.40.2.2 $
+ * Date   : $Date: 2005/10/08 08:30:32 $
+ * Version: $Revision: 1.40.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,13 +70,15 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.40.2.2 $
+ * @version $Revision: 1.40.2.3 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
     private static final String SCHEMA_SYSTEM_ID_2 = "http://www.opencms.org/test2.xsd";
     private static final String SCHEMA_SYSTEM_ID_3 = "http://www.opencms.org/test3.xsd";
+    private static final String SCHEMA_SYSTEM_ID_3B = "http://www.opencms.org/test3b.xsd";
     private static final String SCHEMA_SYSTEM_ID_4 = "http://www.opencms.org/test4.xsd";
+    private static final String SCHEMA_SYSTEM_ID_4B = "http://www.opencms.org/test4b.xsd";
     private static final String SCHEMA_SYSTEM_ID_5 = "http://www.opencms.org/test5.xsd";
     private static final String SCHEMA_SYSTEM_ID_6 = "http://www.opencms.org/test6.xsd";
     private static final String SCHEMA_SYSTEM_ID_7 = "http://www.opencms.org/test7.xsd";
@@ -108,6 +110,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveElements"));
         suite.addTest(new TestCmsXmlContentWithVfs("testContentHandler"));
         suite.addTest(new TestCmsXmlContentWithVfs("testDefaultOnCreation"));
+        suite.addTest(new TestCmsXmlContentWithVfs("testDefaultOnCreationWithNested"));
         suite.addTest(new TestCmsXmlContentWithVfs("testDefaultNested"));
         suite.addTest(new TestCmsXmlContentWithVfs("testNestedSchema"));
         suite.addTest(new TestCmsXmlContentWithVfs("testAddRemoveNestedElements"));
@@ -542,7 +545,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertTrue(xmlcontent.hasValue("VfsLink", Locale.ENGLISH));
         assertSame(definition.getContentHandler().getClass().getName(), TestXmlContentHandler.class.getName());
     }
-
+    
     /**
      * Test default values in the appinfo node using a nested XML content schema.<p>
      * 
@@ -551,7 +554,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
     public void testDefaultNested() throws Exception {
 
         CmsObject cms = getCmsObject();
-        echo("Testing for  default values in nested XML content schemas");
+        echo("Testing for default values in nested XML content schemas");
 
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
 
@@ -619,6 +622,52 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         value = xmlcontent.getStringValue(cms, "Release", Locale.ENGLISH);
         assertEquals("1114525380000", value);
     }
+    
+    /**
+     * Test default values in the appinfo node using a nested XML content schema when creating a new content.<p>
+     * 
+     * The nested content definition must be non-optional, and must have non-optional element.<p>
+     * 
+     * @throws Exception in case something goes wrong
+     */
+    public void testDefaultOnCreationWithNested() throws Exception {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing for default values in nested XML content schemas when creating a new content");
+        
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(cms);
+
+        String content;
+
+        // unmarshal content definitions
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-3b.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_3B, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+        content = CmsFileUtil.readFile(
+            "org/opencms/xml/content/xmlcontent-definition-4b.xsd",
+            CmsEncoder.ENCODING_UTF_8);
+        // store content definition in entitiy resolver
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_4B, content.getBytes(CmsEncoder.ENCODING_UTF_8));
+        
+        // create the content definition
+        CmsXmlContentDefinition cd = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_4B, resolver);
+        
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.createDocument(cms, Locale.ENGLISH, content, cd);
+        
+        String value = xmlcontent.getStringValue(cms, "Title", Locale.ENGLISH);
+        assertEquals("Test", value);
+        
+        value = xmlcontent.getStringValue(cms, "Cascade/Option", Locale.ENGLISH);
+        assertEquals("Default value from outer content definition", value);
+        
+        value = xmlcontent.getStringValue(cms, "Cascade/Option[2]", Locale.ENGLISH);
+        assertEquals("Default value from outer content definition (for option node 2)", value);
+        
+        value = xmlcontent.getStringValue(cms, "Cascade/VfsLink", Locale.ENGLISH);
+        assertEquals("/default/for/all/from/outer.txt", value);
+    }    
 
     /**
      * Tests the Locale settings of XMLContents with only optional elements and no element present.<p>

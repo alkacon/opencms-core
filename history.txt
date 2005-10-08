@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/05 10:07:45 $
- * Version: $Revision: 1.682.2.5 $
+ * Date   : $Date: 2005/10/08 08:30:32 $
+ * Version: $Revision: 1.682.2.6 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,6 +21,7 @@ Legend:
 
 OpenCms 6.1.1 - xxxxx, 2005
 ! Added "before publish" event
+* Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
