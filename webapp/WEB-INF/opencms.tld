@@ -128,7 +128,10 @@
         </attribute>        
         <attribute>
             <name>preload</name>
-        </attribute>  
+        </attribute>
+        <attribute>
+            <name>locale</name>
+        </attribute>
     </tag>    
         
     <tag>
@@ -140,6 +143,9 @@
         </description>              
         <attribute>
             <name>element</name>
+        </attribute>
+        <attribute>
+            <name>locale</name>
         </attribute>
     </tag>  
     
@@ -191,7 +197,10 @@
         </attribute>
         <attribute>
             <name>ifexistsnone</name>
-        </attribute> 
+        </attribute>
+        <attribute>
+            <name>locale</name>
+        </attribute>
     </tag>   
     
     <tag>
