@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/10/02 09:07:33 $
- * Version: $Revision: 1.97.2.1 $
+ * Date   : $Date: 2005/10/09 07:06:13 $
+ * Version: $Revision: 1.97.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.97.2.1 $ 
+ * @version $Revision: 1.97.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -747,13 +747,20 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         int i1 = content.indexOf(DIRECTIVE_START);
         if (i1 < 0) {
             // no directive occurs
-            return content;
+            if (isHardInclude) {
+                return content;
+            }
         }
 
-        StringBuffer buf = new StringBuffer(content.length());
+        StringBuffer buf = new StringBuffer(content.length() + 64);
         int p0 = 0, i2 = 0, slen = DIRECTIVE_START.length();
         boolean found = false;
 
+        if (i1 < 0) {
+            // no directive found at all, append content to buffer
+            buf.append(content);
+        }
+        
         while (i1 >= 0) {
             // parse the file and set/replace page encoding
             i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
