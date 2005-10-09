@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/09/14 14:31:58 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.93 $
+ * @version $Revision: 1.94 $
  * 
  * @since 6.0.0
  */
@@ -1491,7 +1491,7 @@ public final class CmsSecurityManager {
      * 
      * @throws Throwable if something goes wrong
      */
-    public void destroy() throws Throwable {
+    public synchronized void destroy() throws Throwable {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
@@ -2892,8 +2892,7 @@ public final class CmsSecurityManager {
         try {
             result = m_driverManager.readAllPropertyDefinitions(dbc);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_READ_ALL_PROPDEF_0), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_ALL_PROPDEF_0), e);
         } finally {
             dbc.clear();
         }

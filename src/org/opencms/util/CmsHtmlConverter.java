@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/08/26 09:59:41 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,15 +114,13 @@ public class CmsHtmlConverter {
     List m_mode;
 
     /** regular expression for replace. */
-    String[] m_replacePatterns = {"&#160;",
-                                  "\\r\\n\\r\\n"};
+    String[] m_replacePatterns = {"&#160;", "(\\r\\n){2,}"};
 
     /** patterns for replace. */
     Pattern[] m_replaceStyle;
 
     /** values for replace. */
-    String[] m_replaceValues = {"&nbsp;",
-                                ""};
+    String[] m_replaceValues = {"&nbsp;", ""};
 
     /** the tidy to use. */
     Tidy m_tidy;
@@ -245,8 +243,9 @@ public class CmsHtmlConverter {
                 String parsedContent = adjustHtml(new String(parsedRun, m_encoding));
 
                 parsedRun = parse(parsedContent.getBytes(m_encoding), m_encoding);
+
                 if (parsedRun.length == oldSize) {
-                   break;
+                    break;
                 } else {
                     oldSize = parsedRun.length;
                     count++;
@@ -523,9 +522,9 @@ public class CmsHtmlConverter {
     }
 
     /**
-     * Parses a string containing html code with different paring modes.<p>
+     * Parses a byte array containing html code with different parsing modes.<p>
      * 
-     * @param htmlInput a string containing raw html code
+     * @param htmlInput a byte array containing raw html code
      * @param encoding the  encoding
      * @return parsed and cleared html code
      */

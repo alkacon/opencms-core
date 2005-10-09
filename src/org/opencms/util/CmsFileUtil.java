@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/09 09:08:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,6 +139,26 @@ public final class CmsFileUtil {
     }
 
     /**
+     * Returns the extension of the given file name, that is the part behind the last '.' char,
+     * converted to lower case letters.<p>
+     * 
+     * The result does contain the '.' char. For example, if the input is <code>"opencms.html"</code>,
+     * then the result will be <code>".html"</code>.<p>
+     * 
+     * If the given file name does not contain a '.' char, the empty String <code>""</code> is returned.<p>
+     * 
+     * Please note: No check is performed to ensure the given file name is not <code>null</code>.<p>
+     * 
+     * @param filename the file name to get the extension for
+     * @return the extension of the given file name
+     */
+    public static String getFileExtension(String filename) {
+
+        int pos = filename.lastIndexOf('.');
+        return (pos >= 0) ? filename.substring(pos).toLowerCase() : "";
+    }
+
+    /**
      * Returns a list of all filtered files in the RFS.<p>
      * 
      * If the <code>name</code> is not a folder the folder that contains the
@@ -176,6 +196,26 @@ public final class CmsFileUtil {
         }
 
         return ret;
+    }
+
+    /**
+     * Returns the file name for a given VFS name that has to be written to a repository in the "real" file system, 
+     * by appending the VFS root path to the given base repository path, also adding an 
+     * folder for the "online" or "offline" project.<p>
+     *
+     * @param repository the base repository path
+     * @param vfspath the VFS root path to write to use 
+     * @param online flag indicates if the result should be used for the online project (<code>true</code>) or not
+     * 
+     * @return The full uri to the JSP
+     */
+    public static String getRepositoryName(String repository, String vfspath, boolean online) {
+
+        StringBuffer result = new StringBuffer(64);
+        result.append(repository);
+        result.append(online ? "online" : "offline");
+        result.append(vfspath);
+        return result.toString();
     }
 
     /**
@@ -225,6 +265,33 @@ public final class CmsFileUtil {
             }
         }
         return result;
+    }
+
+    /**
+     * Creates unique, valid RFS name for the given filename that contains 
+     * a coded version of the given parameters, with the given file extension appended.<p>
+     *    
+     * This is used to create file names for the static export, 
+     * or in a vfs disk cache.<p>
+     * 
+     * @param filename the base file name
+     * @param extension the extension to use
+     * @param parameters the parameters to code in the result file name
+     * 
+     * @return a unique, valid RFS name for the given parameters
+     * 
+     * @see org.opencms.staticexport.CmsStaticExportManager
+     */
+    public static String getRfsPath(String filename, String extension, String parameters) {
+
+        StringBuffer buf = new StringBuffer(128);
+        buf.append(filename);
+        buf.append('_');
+        int h = parameters.hashCode();
+        // ensure we do have a positive id value
+        buf.append(h > 0 ? h : -h);
+        buf.append(extension);
+        return buf.toString();
     }
 
     /**
@@ -304,6 +371,32 @@ public final class CmsFileUtil {
 
     /**
      * Reads a file from the RFS and returns the file content.<p> 
+     * 
+     * @param file the file to read 
+     * @return the read file content
+     * 
+     * @throws IOException in case of file access errors
+     */
+    public static byte[] readFile(File file) throws IOException {
+
+        // create input and output stream
+        FileInputStream in = new FileInputStream(file);
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+
+        // read the file content
+        int c;
+        while ((c = in.read()) != -1) {
+            out.write(c);
+        }
+
+        in.close();
+        out.close();
+
+        return out.toByteArray();
+    }
+
+    /**
+     * Reads a file with the given name from the RFS and returns the file content.<p> 
      * 
      * @param filename the file to read 
      * @return the read file content

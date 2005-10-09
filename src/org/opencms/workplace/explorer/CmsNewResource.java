@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/08/02 10:29:29 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/10 16:11:11 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsPropertyAdvanced;
@@ -82,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -280,11 +281,10 @@ public class CmsNewResource extends CmsDialog {
         }
         
         setParamAction(DIALOG_NEWFORM);
-        String[] uri = CmsRequestUtil.splitUri(nextUri);
-        Map params = CmsRequestUtil.createParameterMap(uri[2]);
+        CmsUriSplitter splitter = new CmsUriSplitter(nextUri);
+        Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
         params.putAll(paramsAsParameterMap());
-        sendForward(uri[0], params);
-        
+        sendForward(splitter.getPrefix(), params);        
     }
 
     /**

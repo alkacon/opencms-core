@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsTabDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -80,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -269,10 +270,10 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
             try {
                 // forward to new xmlpage dialog
-                String[] uri = CmsRequestUtil.splitUri(newUri);
-                Map params = CmsRequestUtil.createParameterMap(uri[2]);
+                CmsUriSplitter splitter = new CmsUriSplitter(newUri);
+                Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
                 params.put(PARAM_DIALOGMODE, MODE_WIZARD_CREATEINDEX);
-                sendForward(uri[0], params);
+                sendForward(splitter.getPrefix(), params);
                 return;
             } catch (IOException e) {
                 LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));

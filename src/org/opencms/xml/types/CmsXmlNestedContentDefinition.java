@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlNestedContentDefinition.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:53:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,12 +105,10 @@ public class CmsXmlNestedContentDefinition extends A_CmsXmlContentValue implemen
      */
     public Element generateXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
-        // create a default XML element for the nested content definition
-        Element element = m_nestedContentDefinition.createLocale(cms, document, root, Locale.ENGLISH);
-        // clear the attributes (e.g. language)
-        element.attributes().clear();
-        // set the name of the main element node (otherwise it would be the default according to the nested schema) 
-        element.setName(getName());
+        // create the XML base node for the nested content definition
+        Element element = root.addElement(getName());
+        // create a default XML element for the nested content definition        
+        element = m_nestedContentDefinition.createDefaultXml(cms, document, element, Locale.ENGLISH);
         // retrun the generated element
         return element;
     }

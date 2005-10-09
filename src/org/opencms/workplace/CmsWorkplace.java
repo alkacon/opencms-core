@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.146 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.148 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,30 +89,84 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146 $ 
+ * @version $Revision: 1.148 $ 
  * 
  * @since 6.0.0 
  */
 public abstract class CmsWorkplace {
 
+    /** The debug flag. */
+    public static final boolean DEBUG = false;
+
+    /** Parameter for the default locale. */
+    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
+    
+    /** Parameter for the default language. */
+    public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
+
     /** Constant for the JSP explorer filelist file. */
     public static final String FILE_EXPLORER_FILELIST = CmsWorkplace.VFS_PATH_WORKPLACE
         + "views/explorer/explorer_files.jsp";
-
-    /** Constant for the JSP dialogs path. */
-    public static final String PATH_DIALOGS = CmsWorkplace.VFS_PATH_WORKPLACE + "commons/";
-
-    /** Constant for the JSP workplace path. */
-    public static final String PATH_WORKPLACE = CmsWorkplace.VFS_PATH_WORKPLACE;
-
-    /** The debug flag. */
-    public static final boolean DEBUG = false;
 
     /** Helper variable to deliver the html end part. */
     public static final int HTML_END = 1;
 
     /** Helper variable to deliver the html start part. */
     public static final int HTML_START = 0;
+
+    /** The request parameter for the workplace project selection. */
+    public static final String PARAM_WP_EXPLORER_RESOURCE = "wpExplorerResource";
+
+    /** The request parameter for the workplace project selection. */
+    public static final String PARAM_WP_PROJECT = "wpProject";
+
+    /** The request parameter for the workplace site selection. */
+    public static final String PARAM_WP_SITE = "wpSite";
+
+    /** Path to system folder. */
+    public static final String VFS_PATH_SYSTEM = "/system/";
+    
+    /** Path to the workplace. */
+    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
+    
+    /** Constant for the JSP dialogs path. */
+    public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
+
+    /** Constant for the JSP workplace path. */
+    public static final String PATH_WORKPLACE = VFS_PATH_WORKPLACE;
+
+    /** Path to exported system image folder. */
+    public static final String RFS_PATH_RESOURCES = "/resources/";
+
+    /** Prefix for temporary files in the VFS. */
+    public static final String TEMP_FILE_PREFIX = "~";
+
+    /** Directory name of content default_bodies folder. */
+    public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
+    
+    /** Directory name of content templates folder. */
+    public static final String VFS_DIR_TEMPLATES = "templates/";
+
+    /** Path to commons. */
+    public static final String VFS_PATH_COMMONS = VFS_PATH_WORKPLACE + "commons/";
+
+    /** Path to the workplace editors. */
+    public static final String VFS_PATH_EDITORS = VFS_PATH_WORKPLACE + "editors/";
+
+    /** Path to the galleries. */
+    public static final String VFS_PATH_GALLERIES = VFS_PATH_SYSTEM + "galleries/";
+
+    /** Path to locales. */
+    public static final String VFS_PATH_LOCALES = VFS_PATH_WORKPLACE + "locales/";
+
+    /** Path to modules folder. */
+    public static final String VFS_PATH_MODULES = VFS_PATH_SYSTEM + "modules/";
+
+    /** Path to system image folder. */
+    public static final String VFS_PATH_RESOURCES = VFS_PATH_WORKPLACE + "resources/";
+
+    /** Path to workplace views. */
+    public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
 
     /** Constant for the JSP common files (e.g. error page) path. */
     protected static final String DIALOG_PATH_COMMON = PATH_DIALOGS + "includes/";
@@ -135,14 +189,14 @@ public abstract class CmsWorkplace {
     /** Constant for the JSP common report page. */
     protected static final String FILE_REPORT_OUTPUT = DIALOG_PATH_COMMON + "report.jsp";
 
-    /** Key name for the session workplace class. */
-    protected static final String SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
-    
     /** Key name for the request attribute to indicate a multipart request was already parsed. */
     protected static final String REQUEST_ATTRIBUTE_MULTIPART = "__CmsWorkplace.MULTIPART";
 
     /** Key name for the request attribute to reload the folder tree view. */
     protected static final String REQUEST_ATTRIBUTE_RELOADTREE = "__CmsWorkplace.RELOADTREE";
+
+    /** Key name for the session workplace class. */
+    protected static final String SESSION_WORKPLACE_CLASS = "__CmsWorkplace.WORKPLACE_CLASS";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsWorkplace.class);
@@ -169,13 +223,13 @@ public abstract class CmsWorkplace {
 
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
-
+    
     /** Flag for indicating that request forwarded was. */
     private boolean m_forwarded;
 
     /** The current JSP action element. */
     private CmsJspActionElement m_jsp;
-
+    
     /** The macro resolver, this is cached to avoid multiple instance generation. */
     private CmsMacroResolver m_macroResolver;
 
@@ -199,45 +253,6 @@ public abstract class CmsWorkplace {
 
     /** The current OpenCms users workplace settings. */
     private CmsWorkplaceSettings m_settings;
-
-    /** Prefix for temporary files in the VFS. */
-    public static final String TEMP_FILE_PREFIX = "~";
-
-    /** Path to exported system image folder. */
-    public static final String RFS_PATH_RESOURCES = "/resources/";
-
-    /** Directory name of content default_bodies folder. */
-    public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
-
-    /** Directory name of content templates folder. */
-    public static final String VFS_DIR_TEMPLATES = "templates/";
-
-    /** Path to system folder. */
-    public static final String VFS_PATH_SYSTEM = "/system/";
-
-    /** Path to the galleries. */
-    public static final String VFS_PATH_GALLERIES = VFS_PATH_SYSTEM + "galleries/";
-
-    /** Path to modules folder. */
-    public static final String VFS_PATH_MODULES = VFS_PATH_SYSTEM + "modules/";
-
-    /** Path to the workplace. */
-    public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
-
-    /** Path to locales. */
-    public static final String VFS_PATH_LOCALES = VFS_PATH_WORKPLACE + "locales/";
-
-    /** Path to system image folder. */
-    public static final String VFS_PATH_RESOURCES = VFS_PATH_WORKPLACE + "resources/";
-
-    /** Path to workplace views. */
-    public static final String VFS_PATH_VIEWS = VFS_PATH_WORKPLACE + "views/";
-
-    /** Parameter for the default locale. */
-    public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-
-    /** Parameter for the default language. */
-    public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
 
     /**
      * Public constructor.<p>
@@ -1162,7 +1177,7 @@ public abstract class CmsWorkplace {
         result.append("</script>\n");
         return result.toString();
     }
-
+    
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -1173,7 +1188,7 @@ public abstract class CmsWorkplace {
 
         checkLock(resource, org.opencms.lock.CmsLock.COMMON);
     }
-
+    
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -1191,6 +1206,19 @@ public abstract class CmsWorkplace {
                 getCms().lockResource(resource, mode);
             }
         }
+    }    
+    
+    /**
+     * First sets site and project in the workplace settings, then fills all class parameter values from the data 
+     * provided in the current request.<p>
+     * 
+     * @param settings the workplace settings
+     * @param request the current request
+     */
+    public void fillParamValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        
+        initSettings(settings, request);
+        fillParamValues(request);
     }
 
     /**
@@ -1257,7 +1285,7 @@ public abstract class CmsWorkplace {
             }
         }
     }
-    
+
     /**
      * Returns the message String for the broadcast message alert of the workplace.<p>
      * 
@@ -1525,6 +1553,55 @@ public abstract class CmsWorkplace {
     }
 
     /**
+     * Sets site and project in the workplace settings with the request values of parameters 
+     * <code>{@link CmsWorkplace#PARAM_WP_SITE}</code> and <code>{@link CmsWorkplace#PARAM_WP_PROJECT}</code>.<p>
+     * 
+     * @param settings the workplace settings
+     * @param request the current request
+     * 
+     * @return true, if a reload of the main body frame is required
+     */
+    public boolean initSettings(CmsWorkplaceSettings settings, HttpServletRequest request) {
+        // check if the user requested a project change
+        String project = request.getParameter(PARAM_WP_PROJECT);
+        boolean reloadRequired = false;
+        if (project != null) {
+            reloadRequired = true;
+            try {
+                getCms().readProject(Integer.parseInt(project));
+            } catch (Exception e) {
+                // project not found, set online project
+                project = String.valueOf(CmsProject.ONLINE_PROJECT_ID);
+            }
+            try {
+                m_cms.getRequestContext().setCurrentProject(getCms().readProject(Integer.parseInt(project)));
+            } catch (Exception e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e);
+                }
+            }   
+            settings.setProject(Integer.parseInt(project));
+        }
+
+        // check if the user requested a site change
+        String site = request.getParameter(PARAM_WP_SITE);
+        if (site != null) {
+            reloadRequired = true;
+            m_cms.getRequestContext().setSiteRoot(site);
+            settings.setSite(site);
+        }
+
+        // check which resource was requested
+        String explorerResource = request.getParameter(PARAM_WP_EXPLORER_RESOURCE);
+        if (explorerResource != null) {
+            reloadRequired = true;
+            settings.setExplorerResource(explorerResource);
+        }
+        
+        return reloadRequired;
+    }
+
+    /**
      * Returns the forwarded flag.<p>
      *
      * @return the forwarded flag
@@ -1773,7 +1850,7 @@ public abstract class CmsWorkplace {
 
         return CmsRequestUtil.createParameterMap(paramValues());
     }
-
+    
     /**
      * Returns all initialized parameters of the current workplace class 
      * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
@@ -1831,7 +1908,7 @@ public abstract class CmsWorkplace {
         int todo = 0;
         getJsp().getResponse().sendRedirect(OpenCms.getSystemInfo().getOpenCmsContext() + location);
     }
-    
+
     /**
      * Forwards to the specified location in the OpenCms VFS.<p>
      *
@@ -2124,7 +2201,7 @@ public abstract class CmsWorkplace {
             // removed setting explorer resource to "/" to get the stored folder
         }
     }
-
+    
     /**
      * Returns a list of all methods of the current class instance that 
      * start with "getParam" and have no parameters.<p> 

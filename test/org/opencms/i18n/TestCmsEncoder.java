@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/07/18 14:26:11 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,10 @@
 
 package org.opencms.i18n;
 
+import java.io.ByteArrayOutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+
 import junit.framework.TestCase;
 
 /**
@@ -38,7 +42,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.12 $
  * 
  * @since 6.0.0
  */
@@ -90,6 +94,37 @@ public class TestCmsEncoder extends TestCase {
     }
 
     /**
+     * Tests decoding german "umlaute".<p>
+     *
+     */
+    public void testDecodeUmlauts() {
+
+        Charset defaultCs = Charset.forName(new OutputStreamWriter(new ByteArrayOutputStream()).getEncoding());
+        System.out.println("Default Charset: " + defaultCs.name());
+        String param = "%C3%BC"; // utf-8 bytes for 'ü'
+        String decoded = CmsEncoder.decode(param, CmsEncoder.ENCODING_UTF_8);
+        String decoded2 = CmsEncoder.decode(param, CmsEncoder.ENCODING_ISO_8859_1);
+        assertEquals("ü", decoded);
+        assertFalse("ü".equals(decoded2));
+    }
+
+    /**
+     * Tests wether two subsequent calls to 
+     * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code> 
+     * lead to an expected result and ensures that the 2nd call does not  
+     * do any further modifications. <p>
+     *
+     */
+    public void testDoubleEncoding() {
+
+        String original = "Online Project (VFS)";
+        String encode1 = CmsEncoder.escapeWBlanks(original, ENC_UTF_8);
+        String encode2 = CmsEncoder.escapeWBlanks(encode1, ENC_UTF_8);
+        assertFalse(encode1.equals(encode2));
+        assertEquals("Online%2520Project%2520%2528VFS%2529", encode2);
+    }
+
+    /**
      * @see CmsEncoder#encodeHtmlEntities(String, String)
      */
     public void testEncodeForHtml() {
@@ -102,6 +137,22 @@ public class TestCmsEncoder extends TestCase {
             String result = CmsEncoder.encodeHtmlEntities(source, encoding);
             assertEquals(result, dest);
         }
+    }
+
+    /**
+     * Encodes a single '%' and ensures that it is transformed. Encodes 
+     * a sequence that is already an encoded special character (e.g.: "%25") 
+     * and ensures that this sequence is not encoded several times. <p>
+     *
+     */
+    public void testEncodePercent() {
+
+        String original = "% abc";
+        String encoded = CmsEncoder.encode(original);
+        assertFalse("A single '%' charater must be transformed by encoding.", original.equals(encoded));
+        original = "%25 abc";
+        encoded = CmsEncoder.encode(original);
+        assertFalse("A encoded sequence \"%25\" must be transformed by a further encoding.", original.equals(encoded));
     }
 
     /**
@@ -148,15 +199,18 @@ public class TestCmsEncoder extends TestCase {
     }
 
     /**
-     * Tests decoding german "umlaute".<p>
+     * Tests wether two subsequent calls to 
+     * <code>{@link CmsEncoder#escapeWBlanks(String, String)}</code> 
+     * are undone by onde decode call (the 2nd encode call must not modify anything.<p>
      *
      */
-    public void testDecodeUmlauts() {
+    public void testRecursiveDecodingOfDoubleEncoded() {
 
-        String param = "%C3%BC"; // Ü
-        String decoded = CmsEncoder.decode(param);
-        assertEquals("ü", decoded);
+        String original = "Online Project (VFS)";
+        String encode1 = CmsEncoder.escapeWBlanks(original, ENC_UTF_8);
+        String encode2 = CmsEncoder.escapeWBlanks(encode1, ENC_UTF_8);
+        String decoded = CmsEncoder.decode(encode2, ENC_UTF_8);
+        assertEquals(encode1, decoded);
     }
-    
-    
+
 }

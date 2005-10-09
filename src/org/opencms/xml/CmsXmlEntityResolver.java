@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -63,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,9 +82,6 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
     /** A temporary cache to avoid multiple readings of often used files from the VFS. */
     private static Map m_cacheTemporary;
-
-    /** The static default entity resolver for reading / writing xml content. */
-    private static CmsXmlEntityResolver m_resolver;
 
     /** The location of the XML page XML schema. */
     private static final String XMLPAGE_OLD_DTD_LOCATION = "org/opencms/xml/page/xmlpage.dtd";
@@ -114,37 +110,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
     public CmsXmlEntityResolver(CmsObject cms) {
 
         initCaches();
-
-        if ((cms != null) && (m_resolver == null)) {
-            // initialize singleton only if cms Object creation is surley possible
-            m_resolver = new CmsXmlEntityResolver();
-        }
-
         m_cms = cms;
-    }
-
-    /**
-     * Initializes the caches and registers the event handler.<p>
-     */
-    private CmsXmlEntityResolver() {
-
-        // required for unit tests where no OpenCms is available
-        if (OpenCms.getRunLevel() >= OpenCms.RUNLEVEL_3_SHELL_ACCESS) {
-
-            try {
-                m_cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
-            } catch (CmsException e) {
-                // this should never happen
-                LOG.error(Messages.get().key(Messages.LOG_INITIALIZE_DEFAULT_GUEST_USER_FAILED_0));
-            }
-
-            // register this object as event listener
-            OpenCms.addCmsEventListener(this, new int[] {
-                I_CmsEventListener.EVENT_CLEAR_CACHES,
-                I_CmsEventListener.EVENT_PUBLISH_PROJECT,
-                I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
-                I_CmsEventListener.EVENT_RESOURCE_DELETED});
-        }
     }
 
     /**
@@ -159,6 +125,30 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
 
         initCaches();
         m_cachePermanent.put(systemId, content);
+    }
+
+    /**
+     * Initialize the OpenCms XML entity resolver.<p>
+     * 
+     * @param adminCms an initialized OpenCms user context with "Administrator" role permissions
+     * @param typeSchemaBytes the base widget type XML schema definitions
+     * 
+     * @see CmsXmlContentTypeManager#initialize(CmsObject)
+     */
+    protected static void initialize(CmsObject adminCms, byte[] typeSchemaBytes) {
+
+        // create the resolver to register as event listener
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(adminCms);
+
+        // register this object as event listener
+        OpenCms.addCmsEventListener(resolver, new int[] {
+            I_CmsEventListener.EVENT_CLEAR_CACHES,
+            I_CmsEventListener.EVENT_PUBLISH_PROJECT,
+            I_CmsEventListener.EVENT_RESOURCE_MODIFIED,
+            I_CmsEventListener.EVENT_RESOURCE_DELETED});
+
+        // cache the base widget type XML schema definitions
+        cacheSystemId(CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS, typeSchemaBytes);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsTextareaWidget.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.i18n.CmsEncoder;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public class CmsTextareaWidget extends A_CmsWidget {
         result.append(id);
         result.append("\" rows=\"");
         result.append(rows);
-        result.append("\" wrap=\"virtual\" style=\"overflow:auto;\">");
+        result.append("\" cols=\"60\" style=\"overflow:auto;\">");
         result.append(CmsEncoder.escapeXml(param.getStringValue(cms)));
         result.append("</textarea>");
         result.append("</td>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,6 +90,7 @@ package org.opencms.i18n;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -97,7 +98,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.NoSuchElementException;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -108,7 +108,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Rall 
  * @author Alexander Kandzior
  *   
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,7 +141,7 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
     protected static final Float DEFAULT_QUALITY = new Float(1.0f);
 
     /** Separates elements of the <code>Accept-Language</code> HTTP header. */
-    private static final String LOCALE_SEPARATOR = ",";
+    private static final char LOCALE_SEPARATOR = ',';
 
     /** Separates m_locale from m_quality within elements. */
     private static final char QUALITY_SEPARATOR = ';';
@@ -177,10 +177,11 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
             m_locales = new ArrayList();
             m_locales.add(defaultLocale);
         } else {
-            StringTokenizer tok = new StringTokenizer(header, LOCALE_SEPARATOR);
-            while (tok.hasMoreTokens()) {
+            List tokens = CmsStringUtil.splitAsList(header, LOCALE_SEPARATOR, true);
+            Iterator it = tokens.iterator();
+            while (it.hasNext()) {
                 AcceptLanguage acceptLang = new AcceptLanguage();
-                String element = tok.nextToken().trim();
+                String element = (String)it.next();
                 int index;
 
                 // Record and cut off any quality value that comes after a semi-colon.

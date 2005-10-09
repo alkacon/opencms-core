@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/09/30 07:57:28 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */

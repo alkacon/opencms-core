@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $
+ * @version $Revision: 1.15 $
  * 
  * @since 6.0.0
  */
@@ -166,7 +166,7 @@ public class CmsThreadStore extends Thread {
     /**
      * Shut down this thread store.<p>
      */
-    protected void shutDown() {
+    protected synchronized void shutDown() {
 
         m_alive = false;
         interrupt();

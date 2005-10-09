@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.i18n;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -42,7 +43,6 @@ import java.nio.charset.Charset;
 import java.nio.charset.CharsetEncoder;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,19 +351,8 @@ public final class CmsEncoder {
      */
     public static String escape(String source, String encoding) {
 
-        StringBuffer ret = new StringBuffer();
-
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript
-        // encoding, except the blank which is not encoded into a %20.
-        String enc = encode(source, encoding);
-        StringTokenizer t = new StringTokenizer(enc, "+");
-        while (t.hasMoreTokens()) {
-            ret.append(t.nextToken());
-            if (t.hasMoreTokens()) {
-                ret.append("%20");
-            }
-        }
-        return ret.toString();
+        // the blank is encoded into "+" not "%20" when using standard encode call
+        return CmsStringUtil.substitute(encode(source, encoding), "+", "%20");
     }
 
     /**
@@ -448,19 +437,22 @@ public final class CmsEncoder {
      */
     public static String escapeWBlanks(String source, String encoding) {
 
-        if (source == null) {
-            return null;
+        if (CmsStringUtil.isEmpty(source)) {
+            return source;
         }
-        StringBuffer ret = new StringBuffer();
+        StringBuffer ret = new StringBuffer(source.length() * 2);
 
-        // URLEncode the text string. This produces a very similar encoding to JavaSscript
-        // encoding, except the blank which is not encoded into a %20.
+        // URLEncode the text string
+        // this produces a very similar encoding to JavaSscript encoding, 
+        // except the blank which is not encoded into "%20" instead of "+"
+        
         String enc = encode(source, encoding);
         for (int z = 0; z < enc.length(); z++) {
-            if (enc.charAt(z) == '+') {
+            char c = enc.charAt(z);
+            if (c == '+') {
                 ret.append("%20");
             } else {
-                ret.append(enc.charAt(z));
+                ret.append(c);
             }
         }
         return ret.toString();

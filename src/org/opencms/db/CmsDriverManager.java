@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/09/21 10:23:50 $
- * Version: $Revision: 1.558 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.559 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,7 +97,6 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.Stack;
-import java.util.StringTokenizer;
 
 import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
@@ -112,7 +111,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.558 $
+ * @version $Revision: 1.559 $
  * 
  * @since 6.0.0
  */
@@ -4933,8 +4932,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readPath(CmsDbContext dbc, int projectId, String path, CmsResourceFilter filter) throws CmsException {
 
-        // splits the path into folder and filename tokens
-        StringTokenizer tokens = null;
         // # of folders in the path
         int folderCount = 0;
         // true if the path doesn't end with a folder
@@ -4943,8 +4940,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List pathList = null;
         // the current path token
         String currentResourceName = null;
-        // the current path
-        String currentPath = null;
         // the current resource
         CmsResource currentResource = null;
         // this is a comment. i love comments!
@@ -4952,10 +4947,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
         // key to cache the resources
         String cacheKey = null;
 
-        tokens = new StringTokenizer(path, "/");
+        // splits the path into folder and filename tokens
+        List tokens = CmsStringUtil.splitAsList(path, '/');
 
         // the root folder is no token in the path but a resource which has to be added to the path
-        count = tokens.countTokens() + 1;
+        count = tokens.size() + 1;
         pathList = new ArrayList(count);
 
         folderCount = count;
@@ -4966,10 +4962,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // read the root folder, coz it's ID is required to read any sub-resources
         currentResourceName = "/";
-        currentPath = "/";
-        cacheKey = getCacheKey(null, false, projectId, currentPath);
+        StringBuffer currentPath = new StringBuffer(64);
+        currentPath.append('/');
+
+        String cp = currentPath.toString();
+        cacheKey = getCacheKey(null, false, projectId, cp);
         if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
-            currentResource = m_vfsDriver.readFolder(dbc, projectId, currentPath);
+            currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
             m_resourceCache.put(cacheKey, currentResource);
         }
 
@@ -4980,39 +4979,42 @@ public final class CmsDriverManager implements I_CmsEventListener {
             return pathList;
         }
 
-        currentResourceName = tokens.nextToken();
+        Iterator it = tokens.iterator();
+        currentResourceName = (String)it.next();
 
         // read the folder resources in the path /a/b/c/
         for (i = 1; i < folderCount; i++) {
-            currentPath += currentResourceName + "/";
-
+            currentPath.append(currentResourceName);
+            currentPath.append('/');
             // read the folder
-            cacheKey = getCacheKey(null, false, projectId, currentPath);
+            cp = currentPath.toString();
+            cacheKey = getCacheKey(null, false, projectId, cp);
             if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
-                currentResource = m_vfsDriver.readFolder(dbc, projectId, currentPath);
+                currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
             pathList.add(i, currentResource);
 
             if (i < folderCount - 1) {
-                currentResourceName = tokens.nextToken();
+                currentResourceName = (String)it.next();
             }
         }
 
         // read the (optional) last file resource in the path /x.html
         if (lastResourceIsFile) {
-            if (tokens.hasMoreTokens()) {
+            if (it.hasNext()) {
                 // this will only be false if a resource in the 
                 // top level root folder (e.g. "/index.html") was requested
-                currentResourceName = tokens.nextToken();
+                currentResourceName = (String)it.next();
             }
-            currentPath += currentResourceName;
+            currentPath.append(currentResourceName);
 
             // read the file
-            cacheKey = getCacheKey(null, false, projectId, currentPath);
+            cp = currentPath.toString();
+            cacheKey = getCacheKey(null, false, projectId, cp);
             if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
-                currentResource = m_vfsDriver.readResource(dbc, projectId, currentPath, filter.includeDeleted());
+                currentResource = m_vfsDriver.readResource(dbc, projectId, cp, filter.includeDeleted());
                 m_resourceCache.put(cacheKey, currentResource);
             }
 
@@ -5578,7 +5580,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         List extractedResources = null;
 
         String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path + "_" + propertyDefinition + "_" + value);
-
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
 
             // first read the property definition
@@ -5948,9 +5949,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
+            Collections.singletonMap("resource", resource)));
     }
 
     /**
@@ -6872,9 +6872,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
+            Collections.singletonMap("resource", resource)));
     }
 
     /**

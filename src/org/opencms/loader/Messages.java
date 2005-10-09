@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/08/05 14:17:01 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +140,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_RESOURCE_TYPE_INITIALIZED_0 = "INIT_RESOURCE_TYPE_INITIALIZED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_SHUTDOWN_1 = "INIT_SHUTDOWN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_STARTING_LOADER_CONFIG_0 = "INIT_STARTING_LOADER_CONFIG_0";

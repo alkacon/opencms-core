@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/09/06 09:37:40 $
- * Version: $Revision: 1.216 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.217 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216 $ 
+ * @version $Revision: 1.217 $ 
  * 
  * @since 6.0.0 
  */
@@ -835,14 +835,15 @@ public final class OpenCmsCore {
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
             "config/"));
+        // store the configuration read from "opencms.properties" in the configuration manager 
+        m_configurationManager.setConfiguration(configuration);
+
         // now load the XML configuration
         try {
             m_configurationManager.loadXmlConfiguration();
         } catch (Exception e) {
             throw new CmsInitException(Messages.get().container(Messages.ERR_CRITICAL_INIT_XML_0), e);
         }
-        // store the configuration read from "opencms.properties" in the configuration manager 
-        m_configurationManager.setConfiguration(configuration);
 
         // get the system configuration
         CmsSystemConfiguration systemConfiguration = (CmsSystemConfiguration)m_configurationManager.getConfiguration(CmsSystemConfiguration.class);
@@ -1397,6 +1398,13 @@ public final class OpenCmsCore {
                     CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_SCHEDULE_SHUTDOWN_1, e.getMessage()), e);
                 }
                 try {
+                    if (m_resourceManager != null) {
+                        m_resourceManager.shutDown();
+                    }
+                } catch (Throwable e) {
+                    CmsLog.INIT.error(Messages.get().key(Messages.LOG_ERROR_RESOURCE_SHUTDOWN_1, e.getMessage()), e);
+                }
+                try {
                     if (m_securityManager != null) {
                         m_securityManager.destroy();
                     }
@@ -1794,7 +1802,7 @@ public final class OpenCmsCore {
             sessionId = session.getId();
         } else {
             // special case for acessing a session from "outside" requests (e.g. upload applet)
-            sessionId = req.getParameter("JSESSIONID");
+            sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
         }
         CmsSessionInfo sessionInfo = null;
         if (sessionId != null) {

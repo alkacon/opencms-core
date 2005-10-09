@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,7 +216,7 @@ public class CmsResourceManager {
                 mimeTypes.load(getClass().getClassLoader().getResourceAsStream(
                     "org/opencms/loader/mimetypes.properties"));
             } catch (Throwable t2) {
-                LOG.error(Messages.get().container(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
+                LOG.error(Messages.get().key(Messages.LOG_READ_MIMETYPES_FAILED_0), t);
             }
         }
         // initalize the Map with all available mimetypes
@@ -756,6 +756,31 @@ public class CmsResourceManager {
 
         m_folderTranslator = folderTranslator;
         m_fileTranslator = fileTranslator;
+    }
+
+    /**
+     * Shuts down this resource manage instance.<p>
+     * 
+     * @throws Exception in case of errors during shutdown
+     */
+    public synchronized void shutDown() throws Exception {
+
+        Iterator it = m_loaderList.iterator();
+        while (it.hasNext()) {
+            // destroy all resource loaders
+            I_CmsResourceLoader loader = (I_CmsResourceLoader)it.next();
+            loader.destroy();
+        }
+
+        m_loaderList = null;
+        m_loaders = null;
+        m_collectorNameMappings = null;
+        m_includeExtensions = null;
+        m_mimeTypes = null;
+
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+        }
     }
 
     /**

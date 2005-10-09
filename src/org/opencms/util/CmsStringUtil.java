@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.36 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.util;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 
+import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -53,7 +54,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.36 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,6 +68,9 @@ public final class CmsStringUtil {
 
     /** a convienient shorthand to the line separator constant. */
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+
+    /** Context macro. */
+    public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
 
     /** a convienient shorthand for tabulations.  */
     public static final String TABULATOR = "  ";
@@ -83,6 +87,15 @@ public final class CmsStringUtil {
     /** Hour constant. */
     private static final long HOURS = 1000 * 60 * 60;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
+
+    /** OpenCms context replace String, static for performance reasons. */
+    private static String m_contextReplace;
+
+    /** OpenCms context search String, static for performance reasons. */
+    private static String m_contextSearch;
+
     /** Minute constant. */
     private static final long MINUTES = 1000 * 60;
 
@@ -96,18 +109,6 @@ public final class CmsStringUtil {
 
     /** Regex that matches an xml head. */
     private static final Pattern XML_HEAD_REGEX = Pattern.compile("<\\s*\\?.*\\?\\s*>", Pattern.CASE_INSENSITIVE);
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsStringUtil.class);
-
-    /** OpenCms context replace String, static for performance reasons. */
-    private static String m_contextReplace;
-
-    /** OpenCms context search String, static for performance reasons. */
-    private static String m_contextSearch;
-
-    /** Context macro. */
-    public static final String MACRO_OPENCMS_CONTEXT = "${OpenCmsContext}";
 
     /** 
      * Default constructor (empty), private because this class has only 
@@ -400,6 +401,56 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns the color value (<code>{@link Color}</code>) for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as color
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the int value for the given parameter value String
+     */
+    public static Color getColorValue(String value, Color defaultValue, String key) {
+
+        Color result;
+        try {
+            result = Color.decode(value);
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
+     * Returns the Integer (int) value for the given String value.<p> 
+     * 
+     * All parse errors are caught and the given default value is returned in this case.<p>
+     * 
+     * @param value the value to parse as int
+     * @param defaultValue the default value in case of parsing errors
+     * @param key a key to be included in the debug output in case of parse errors
+     * 
+     * @return the int value for the given parameter value String
+     */
+    public static int getIntValue(String value, int defaultValue, String key) {
+
+        int result;
+        try {
+            result = Integer.valueOf(value).intValue();
+        } catch (Exception e) {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+            }
+            result = defaultValue;
+        }
+        return result;
+    }
+
+    /**
      * Returns <code>true</code> if the provided String is either <code>null</code>
      * or the empty String <code>""</code>.<p> 
      * 
@@ -566,22 +617,23 @@ public final class CmsStringUtil {
     public static List splitAsList(String source, char delimiter, boolean trim) {
 
         List result = new ArrayList();
-        int index = 0;
-        int next = source.indexOf(delimiter);
-        while (next != -1) {
-            String item = source.substring(index, next);
-            if (trim) {
-                result.add(item.trim());
-            } else {
-                result.add(item);
+        int i = 0;
+        int l = source.length();
+        int n = source.indexOf(delimiter);
+        while (n != -1) {
+            // zero - length items are not seen as tokens at start or end
+            if ((i < n) || (i > 0) && (i < l)) {
+                result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
-            index = next + 1;
-            next = source.indexOf(delimiter, index);
+            i = n + 1;
+            n = source.indexOf(delimiter, i);
         }
-        if (trim) {
-            result.add(source.substring(index).trim());
-        } else {
-            result.add(source.substring(index));
+        // is there a non - empty String to cut from the tail? 
+        if (n < 0) {
+            n = source.length();
+        }
+        if (i < n) {
+            result.add(trim ? source.substring(i).trim() : source.substring(i));
         }
         return result;
     }
@@ -604,7 +656,7 @@ public final class CmsStringUtil {
      * Splits a String into substrings along the provided String delimiter and returns
      * the result as List of Substrings.<p>
      * 
-     * @param source source the String to split
+     * @param source the String to split
      * @param delimiter the delimiter to split at
      * @param trim flag to indicate if leading and trailing whitespaces should be omitted
      * 
@@ -612,89 +664,94 @@ public final class CmsStringUtil {
      */
     public static List splitAsList(String source, String delimiter, boolean trim) {
 
-        int len = delimiter.length();
-        if (len == 1) {
+        int dl = delimiter.length();
+        if (dl == 1) {
             // optimize for short strings
             return splitAsList(source, delimiter.charAt(0), trim);
         }
 
         List result = new ArrayList();
-        int index = 0;
-        int next = source.indexOf(delimiter);
-        while (next != -1) {
-            String item = source.substring(index, next);
-            if (trim) {
-                result.add(item.trim());
-            } else {
-                result.add(item);
+        int i = 0;
+        int l = source.length();
+        int n = source.indexOf(delimiter);
+        while (n != -1) {
+            // zero - length items are not seen as tokens at start or end:  ",," is one empty token but not three
+            if ((i < n) || (i > 0) && (i < l)) {
+                result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
             }
-
-            index = next + len;
-            next = source.indexOf(delimiter, index);
+            i = n + dl;
+            n = source.indexOf(delimiter, i);
         }
-        if (trim) {
-            result.add(source.substring(index).trim());
-        } else {
-            result.add(source.substring(index));
+        // is there a non - empty String to cut from the tail? 
+        if (n < 0) {
+            n = source.length();
+        }
+        if (i < n) {
+            result.add(trim ? source.substring(i).trim() : source.substring(i));
         }
         return result;
     }
 
     /**
-     * Substitutes searchString in content with replaceItem.<p>
+     * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
      * 
-     * @param content the content which is scanned
+     * This is a high-performance implementation which should be used as a replacement for 
+     * <code>{@link String#replaceAll(java.lang.String, java.lang.String)}</code> in case no
+     * regular expression evaluation is required.<p>
+     * 
+     * @param source the content which is scanned
      * @param searchString the String which is searched in content
-     * @param replaceItem the new String which replaces searchString
+     * @param replaceString the String which replaces <code>searchString</code>
+     * 
      * @return String the substituted String
      */
-    public static String substitute(String content, String searchString, String replaceItem) {
+    public static String substitute(String source, String searchString, String replaceString) {
 
-        // high performance implementation to avoid regular expression overhead
-        int findLength;
-        if (content == null) {
+        int sl;
+        if (source == null) {
             return null;
         }
-        int stringLength = content.length();
-        if (searchString == null || (findLength = searchString.length()) == 0) {
-            return content;
+
+        if (searchString == null || (sl = searchString.length()) == 0) {
+            return source;
         }
-        if (replaceItem == null) {
-            replaceItem = "";
+
+        if (replaceString == null) {
+            replaceString = "";
         }
-        int replaceLength = replaceItem.length();
+        int len = source.length();
+        int rl = replaceString.length();
         int length;
-        if (findLength == replaceLength) {
-            length = stringLength;
+        if (sl == rl) {
+            length = len;
         } else {
-            int count;
-            int start;
-            int end;
-            count = 0;
-            start = 0;
-            while ((end = content.indexOf(searchString, start)) != -1) {
-                count++;
-                start = end + findLength;
+            int c = 0;
+            int s = 0;
+            int e;
+            while ((e = source.indexOf(searchString, s)) != -1) {
+                c++;
+                s = e + sl;
             }
-            if (count == 0) {
-                return content;
+            if (c == 0) {
+                return source;
             }
-            length = stringLength - (count * (findLength - replaceLength));
+            length = len - (c * (sl - rl));
         }
-        int start = 0;
-        int end = content.indexOf(searchString, start);
-        if (end == -1) {
-            return content;
+
+        int s = 0;
+        int e = source.indexOf(searchString, s);
+        if (e == -1) {
+            return source;
         }
         StringBuffer sb = new StringBuffer(length);
-        while (end != -1) {
-            sb.append(content.substring(start, end));
-            sb.append(replaceItem);
-            start = end + findLength;
-            end = content.indexOf(searchString, start);
+        while (e != -1) {
+            sb.append(source.substring(s, e));
+            sb.append(replaceString);
+            s = e + sl;
+            e = source.indexOf(searchString, s);
         }
-        end = stringLength;
-        sb.append(content.substring(start, end));
+        e = len;
+        sb.append(source.substring(s, e));
         return sb.toString();
     }
 
@@ -739,6 +796,36 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Returns the java String literal for the given String. <p>
+     *  
+     * This is the form of the String that had to be written into sourcecode 
+     * using the unicode escape sequence for special characters. <p> 
+     * 
+     * Example: "Ä" would be transformed to "\\u00C4".<p>
+     * 
+     * @param s a string that may contain non-ascii characters 
+     * 
+     * @return the java unicode escaped string Literal of the given input string
+     */
+    public static String toUnicodeLiteral(String s) {
+
+        StringBuffer result = new StringBuffer();
+        char[] carr = s.toCharArray();
+
+        String unicode;
+        for (int i = 0; i < carr.length; i++) {
+            result.append("\\u");
+            // append leading zeros
+            unicode = Integer.toHexString(carr[i]).toUpperCase();
+            for (int j = 4 - unicode.length(); j > 0; j--) {
+                result.append("0");
+            }
+            result.append(unicode);
+        }
+        return result.toString();
+    }
+
+    /**
      * Validates a value against a regular expression.<p>
      * 
      * @param value the value to test
@@ -748,7 +835,7 @@ public final class CmsStringUtil {
      * @return <code>true</code> if the value satisfies the validation
      */
     public static boolean validateRegex(String value, String regex, boolean allowEmpty) {
-        
+
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
             return allowEmpty;
         }
@@ -756,7 +843,7 @@ public final class CmsStringUtil {
         Matcher matcher = pattern.matcher(value);
         return matcher.matches();
     }
-    
+
     /**
      * Checks if the provided name is a valid resource name, that is contains only
      * valid characters.<p>

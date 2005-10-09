@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.110 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.112 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.110 $ 
+ * @version $Revision: 1.112 $ 
  * 
  * @since 6.0.0 
  * 
@@ -604,7 +604,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         }
                         importAccessControlEntries(res, aceList);
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().container(
+                            LOG.info(Messages.get().key(
                                 Messages.LOG_IMPORTING_4,
                                 new Object[] {
                                     String.valueOf(i + 1),
@@ -620,7 +620,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().container(
+                            LOG.info(Messages.get().key(
                                 Messages.LOG_SKIPPING_3,
                                 String.valueOf(i + 1),
                                 String.valueOf(importSize),
@@ -635,7 +635,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         translatedName));
 
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().container(
+                        LOG.info(Messages.get().key(
                             Messages.LOG_SKIPPING_3,
                             String.valueOf(i + 1),
                             String.valueOf(importSize),
@@ -1099,7 +1099,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             mergePageFile(resname);
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().container(
+                LOG.info(Messages.get().key(
                     Messages.LOG_MERGING_3,
                     String.valueOf(counter),
                     String.valueOf(size),

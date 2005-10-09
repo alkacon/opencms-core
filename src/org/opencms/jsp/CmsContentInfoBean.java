@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsContentInfoBean.java,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:52:19 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -46,6 +46,9 @@ public class CmsContentInfoBean {
 
     /** The name under which the collector info is saved in the page context. */
     public static final String PAGE_CONTEXT_ATTRIBUTE_NAME = "CollectorInfo";
+
+    /** The default locale (as String) that is used. */
+    private String m_locale;
 
     /** The number of pages of browse through the result list. */
     private int m_pageCount;
@@ -87,6 +90,16 @@ public class CmsContentInfoBean {
         m_pageNavStartIndex = 1;
         m_pageNavEndIndex = 1;
         m_pageNavLength = 10;
+    }
+
+    /**
+     * Returns the locale used by the content loader.<p>
+     *
+     * @return the locale used by the content loader
+     */
+    public String getLocale() {
+
+        return m_locale;
     }
 
     /**
@@ -217,6 +230,16 @@ public class CmsContentInfoBean {
     public boolean isLastResult() {
 
         return m_resultIndex == m_resultSize;
+    }
+
+    /**
+     * Sets the current locale used by the content loader.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        m_locale = locale;
     }
 
     /**
@@ -401,5 +424,4 @@ public class CmsContentInfoBean {
 
         m_resultSize = size;
     }
-
 }

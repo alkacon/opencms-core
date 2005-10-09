@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -78,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -298,7 +299,11 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
     public CmsLinkProcessor getLinkProcessor(CmsObject cms, CmsLinkTable linkTable) {
 
         // initialize link processor
-        return new CmsLinkProcessor(cms, linkTable, getEncoding(), null);
+        String relativeRoot = null;
+        if (m_file != null) {
+            relativeRoot = CmsResource.getParentFolder(cms.getSitePath(m_file));
+        }        
+        return new CmsLinkProcessor(cms, linkTable, getEncoding(), relativeRoot);
     }
 
     /**

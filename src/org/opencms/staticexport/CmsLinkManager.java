@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,6 +213,7 @@ public class CmsLinkManager {
 
         // malformed uri
         try {
+
             uri = new URI(targetUri);
             path = uri.getPath();
 
@@ -291,9 +292,28 @@ public class CmsLinkManager {
 
         // URI with relative path is relative to the given relativePath if available and in a site, 
         // otherwise invalid
-        if (CmsStringUtil.isNotEmpty(path) && !path.startsWith("/")) {
+        if (CmsStringUtil.isNotEmpty(path) && (path.charAt(0) != '/')) {
             if (relativePath != null) {
-                String absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
+                String absolutePath;
+                int pos = path.indexOf("../../galleries/pics/");
+                if (pos >= 0) {
+                    // HACK: mixed up editor path to system gallery image folder
+                    return CmsWorkplace.VFS_PATH_SYSTEM + path.substring(pos + 6) + suffix;
+                }
+                absolutePath = getAbsoluteUri(path, cms.getRequestContext().addSiteRoot(relativePath));
+                if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
+                    return absolutePath + suffix;
+                }
+                // HACK: some editor components (e.h. HtmlArea) mix up the editor URL with the current request URL 
+                absolutePath = getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
+                    + CmsWorkplace.VFS_PATH_EDITORS);
+                if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
+                    return absolutePath + suffix;
+                }
+                // HACK: same as above, but XmlContent editor has one path element more
+                absolutePath = getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
+                    + CmsWorkplace.VFS_PATH_EDITORS
+                    + "xmlcontent/");
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
                 }
@@ -439,7 +459,7 @@ public class CmsLinkManager {
                 // didn't find the link in the cache
                 if (exportManager.isExportLink(cms, vfsName)) {
                     // export required, get export name for target link
-                    resultLink = exportManager.getRfsName(cms, vfsName, parameters); 
+                    resultLink = exportManager.getRfsName(cms, vfsName, parameters);
                     // now set the parameters to null, we do not need them anymore
                     parameters = null;
                 } else {

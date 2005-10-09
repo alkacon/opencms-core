@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/07/19 15:00:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/09 09:08:25 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,6 +110,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_XMLPAGE_DIALOG_1 = "ERR_REDIRECT_XMLPAGE_DIALOG_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_DELETED_2 = "ERR_RESOURCE_DELETED_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_RESOURCE_DOES_NOT_EXIST_3 = "ERR_RESOURCE_DOES_NOT_EXIST_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1 = "ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1";

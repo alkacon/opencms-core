@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/06/24 09:18:51 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -325,6 +325,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_READING_AUTH_PROP_2 = "LOG_ERROR_READING_AUTH_PROP_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_ERROR_RESOURCE_SHUTDOWN_1 = "LOG_ERROR_RESOURCE_SHUTDOWN_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_ERROR_SCHEDULE_SHUTDOWN_1 = "LOG_ERROR_SCHEDULE_SHUTDOWN_1";

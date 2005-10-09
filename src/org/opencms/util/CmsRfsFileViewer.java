@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRfsFileViewer.java,v $
- * Date   : $Date: 2005/07/17 13:36:00 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,13 +322,16 @@ public class CmsRfsFileViewer implements Cloneable {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.14 $
+     * @version $Revision: 1.16 $
      * 
      * @since 6.0.0
      */
     private class InputStreamCounter extends InputStreamReader {
 
+        /** the delegating object. */
         private InputStreamReader m_delegate;
+
+        /** current position. */
         private long m_position;
 
         /**
@@ -338,7 +341,6 @@ public class CmsRfsFileViewer implements Cloneable {
 
             super(in);
             m_delegate = new InputStreamReader(in);
-
         }
 
         /**
@@ -347,7 +349,6 @@ public class CmsRfsFileViewer implements Cloneable {
         public InputStreamCounter(InputStream in, Charset cs) {
 
             super(in, cs);
-
         }
 
         /**
@@ -357,7 +358,6 @@ public class CmsRfsFileViewer implements Cloneable {
 
             super(in, dec);
             m_delegate = new InputStreamReader(in, dec);
-
         }
 
         /**
@@ -368,7 +368,6 @@ public class CmsRfsFileViewer implements Cloneable {
 
             super(in, charsetName);
             m_delegate = new InputStreamReader(in, charsetName);
-
         }
 
         /**
@@ -442,7 +441,6 @@ public class CmsRfsFileViewer implements Cloneable {
                 m_position += result;
             }
             return result;
-
         }
 
         /**

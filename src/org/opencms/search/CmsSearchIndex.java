@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/09/22 10:47:02 $
- * Version: $Revision: 1.57 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.58 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
-import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.search.documents.CmsHighlightFinder;
@@ -72,7 +71,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.57 $ 
+ * @version $Revision: 1.58 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,11 +212,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // split the path
         String[] elements = CmsStringUtil.splitAsArray(path, '/');
-        int length = elements.length;
-        if (CmsResource.isFolder(path)) {
-            // last element would be empty String "", remove this
-            length--;
-        }
+        int length = elements.length + 1;
         String[] result = new String[length];
         result[0] = ROOT_PATH_TOKEN;
         for (int i = 1; i < length; i++) {
@@ -677,6 +672,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     end = hitCount;
                 }
 
+                int visibleHitCount = hitCount;
                 for (int i = 0, cnt = 0; i < hitCount && cnt < end; i++) {
                     try {
                         doc = hits.doc(i);
@@ -694,6 +690,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                                 searchResults.add(searchResult);
                             }
                             cnt++;
+                        } else {
+                            visibleHitCount--;
                         }
                     } catch (Exception e) {
                         // should not happen, but if it does we want to go on with the next result nevertheless                        
@@ -704,7 +702,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 }
 
                 // save the total count of search results at the last index of the search result 
-                searchResults.setHitCount(hitCount);
+                searchResults.setHitCount(visibleHitCount);
             } else {
                 searchResults.setHitCount(0);
             }

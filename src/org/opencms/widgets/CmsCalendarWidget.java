@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsCalendarWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,7 +166,7 @@ public class CmsCalendarWidget extends A_CmsWidget {
                 } catch (ParseException e) {
                     // TODO: Better exception handling
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().container(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
+                        LOG.warn(Messages.get().key(Messages.ERR_PARSE_DATETIME_1, dateTimeValue), e);
                     }
                 }
             } else {

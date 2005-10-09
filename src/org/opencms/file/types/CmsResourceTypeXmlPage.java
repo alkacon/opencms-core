@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/09 09:08:25 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,7 +173,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
             }
         } catch (CmsXmlException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().container(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)), e);
+                LOG.error(Messages.get().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)), e);
             }
 
             return Collections.EMPTY_LIST;

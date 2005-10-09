@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -274,7 +274,8 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
         StringBuffer result = new StringBuffer(128);
         result.append(getTypeName());
         result.append('.');
-        result.append(getPath());
+        // the '[', ']' and '/' chars from the xpath are invalid for html id's
+        result.append(getPath().replace('[', '_').replace(']', '_').replace('/', '.'));
         result.append('.');
         result.append(getIndex());
         return result.toString();
@@ -442,5 +443,30 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1, schemaUri), e);
         }
         return schemaDefinition;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+    
+        StringBuffer result = new StringBuffer(128);
+        result.append(getClass().getName());
+        result.append(": name=");
+        result.append(getName());
+        result.append(", type=");
+        result.append(getTypeName());
+        result.append(", path=");
+        result.append(getPath());
+        String value;
+        try {
+            value = "'" + getStringValue(null) + "'";            
+        } catch (Exception e) {
+            value = "(CmsObject required to generate)";
+        }        
+        result.append(", value=");
+        result.append(value);
+        
+        return result.toString();
     }
 }

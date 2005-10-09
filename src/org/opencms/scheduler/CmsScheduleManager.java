@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  * 
@@ -416,6 +416,7 @@ public class CmsScheduleManager implements Job {
                 if (oldJob != null) {
                     // make sure an old job is re-scheduled 
                     jobDetail = new JobDetail(oldJob.getId(), Scheduler.DEFAULT_GROUP, CmsScheduleManager.class);
+                    jobDetail.setJobDataMap(jobData);
                     try {
                         m_scheduler.scheduleJob(jobDetail, oldJob.getTrigger());
                         m_jobs.add(oldJob);
@@ -427,7 +428,9 @@ public class CmsScheduleManager implements Job {
                             jobInfo.getClassName());
                     }
                 }
-                LOG.error(message.key());
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(message.key());
+                }
                 throw new CmsSchedulerException(message);
             }
         }
@@ -456,7 +459,7 @@ public class CmsScheduleManager implements Job {
     /** 
      * Shuts down this instance of the OpenCms scheduler manager.<p>
      */
-    public void shutDown() {
+    public synchronized void shutDown() {
 
         m_adminCms = null;
 

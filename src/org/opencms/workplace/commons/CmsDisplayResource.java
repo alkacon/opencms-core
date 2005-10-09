@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDisplayResource.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,7 +86,7 @@ public class CmsDisplayResource extends CmsDialog {
 
     /** The version id parameter. */
     private String m_paramVersionid;
-
+    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -243,14 +243,30 @@ public class CmsDisplayResource extends CmsDialog {
                 }
                 getJsp().getResponse().sendRedirect(url);
             } else {
+                if (getCms().existsResource(getParamResource(), CmsResourceFilter.ALL)) {
+                    if (getCms().existsResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION)) {
+                        // resource is outside time window, show error message
+                        throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                            Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
+                            getParamResource()));
+                    } else {
+                        // resource is deleted, show error message
+                        throw new CmsVfsResourceNotFoundException(Messages.get().container(
+                            Messages.ERR_RESOURCE_DELETED_2,
+                            getParamResource(),
+                            getCms().getRequestContext().currentProject().getName()));
+                    }
+                }
                 // resource is outside time window, show error message
                 throw new CmsVfsResourceNotFoundException(Messages.get().container(
-                    Messages.ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1,
-                    getParamResource()));
+                    Messages.ERR_RESOURCE_DOES_NOT_EXIST_3,
+                    getParamResource(),
+                    getCms().getRequestContext().currentProject().getName(),
+                    getCms().getRequestContext().getSiteRoot()));                
             }
         }
     }
-
+    
     /**
      * Returns the paramVersionid.<p>
      *
@@ -276,6 +292,6 @@ public class CmsDisplayResource extends CmsDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        fillParamValues(request);
+        fillParamValues(settings, request);
     }
 }

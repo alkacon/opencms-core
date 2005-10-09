@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  * 
  * @since 6.0.0
  */
@@ -286,10 +286,6 @@ public final class CmsDbPool {
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
         }
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_JDBC_POOL_2, poolUrl, jdbcUrl));
-        }
-
         return driver;
     }
 

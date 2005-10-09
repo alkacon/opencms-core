@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/09/22 10:47:02 $
- * Version: $Revision: 1.683 $
+ * Date   : $Date: 2005/10/09 09:08:26 $
+ * Version: $Revision: 1.684 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,9 +20,17 @@ Legend:
 - General comment
 
 OpenCms 6.0.2 - xxx, 2005
+* Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
+* Fixed issue with bad encoding for sessionless requests due to early access to #getParameter(String) for upload applet
 ! Search in link gallery now also includes link content data
 * Fixed issue with slow publishing of files because of history query
 * Fixed issue with fulltext search folder restriction not working for special folder names
+! Added options to access content based on a given locale to <cms:contentload/show/info> tags
+! Added option to create default directories and export points in Module manager tool
+* Fixed issue with URI splitting causing an NPE if URI was invalid 
+! Added configurable options to html widget to enable dialogs for link, anchor, galleries etc.
+* Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
+! Custom widgets that have not been registered in opencms-vfs.xml can now be specified in XML content schemas
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes

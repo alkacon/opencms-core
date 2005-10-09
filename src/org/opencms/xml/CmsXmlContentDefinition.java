@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/09/09 11:06:11 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.35 $ 
  * 
  * @since 6.0.0 
  */
@@ -724,6 +724,40 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
+     * Generates the default XML content for this content definition, and append it to the given root element.<p>
+     * 
+     * Please note: The default values for the annotations are read from the content definition of the given
+     * document. For a nested content definitions, this means that all defaults are set in the annotations of the 
+     * "outer" or "main" content defintition.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param document the OpenCms XML document the XML is created for
+     * @param root the node of the document where to append the generated XML to
+     * @param locale the locale to create the default element in the document with
+     * 
+     * @return the default XML content for this content definition, and append it to the given root element
+     */
+    public Element createDefaultXml(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
+
+        Iterator i = m_typeSequence.iterator();
+        while (i.hasNext()) {
+            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
+            for (int j = 0; j < type.getMinOccurs(); j++) {
+                Element typeElement = type.generateXml(cms, document, root, locale);
+                // need to check for default value again because the of appinfo "mappings" node
+                I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
+                String defaultValue = document.getContentDefinition().getContentHandler().getDefault(cms, value, locale);
+                if (defaultValue != null) {
+                    // only if there is a default value available use it to overwrite the initial default
+                    value.setStringValue(cms, defaultValue);
+                }
+            }
+        }
+
+        return root;
+    }
+
+    /**
      * Generates a valid XML document according to the XML schema of this content definition.<p>
      * 
      * @param cms the current users OpenCms context
@@ -737,7 +771,7 @@ public class CmsXmlContentDefinition implements Cloneable {
         Document doc = DocumentHelper.createDocument();
 
         Element root = doc.addElement(getOuterName());
-        
+
         root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
         root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, getSchemaLocation());
 
@@ -746,7 +780,7 @@ public class CmsXmlContentDefinition implements Cloneable {
     }
 
     /**
-     * Generates a valid locale (language) element fot the XML schema of this content definition.<p>
+     * Generates a valid locale (language) element for the XML schema of this content definition.<p>
      * 
      * @param cms the current users OpenCms context
      * @param document the OpenCms XML document the XML is created for
@@ -757,25 +791,12 @@ public class CmsXmlContentDefinition implements Cloneable {
      */
     public Element createLocale(CmsObject cms, I_CmsXmlDocument document, Element root, Locale locale) {
 
+        // add an element with a "locale" attribute to the given root node
         Element element = root.addElement(getInnerName());
         element.addAttribute(XSD_ATTRIBUTE_VALUE_LANGUAGE, locale.toString());
 
-        Iterator i = m_typeSequence.iterator();
-        while (i.hasNext()) {
-            I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)i.next();
-            for (int j = 0; j < type.getMinOccurs(); j++) {
-                Element typeElement = type.generateXml(cms, document, element, locale);
-                // need to check for default value again because the of appinfo "mappings" node
-                I_CmsXmlContentValue value = type.createValue(document, typeElement, locale);
-                String defaultValue = getContentHandler().getDefault(cms, value, locale);
-                if (defaultValue != null) {
-                    // only if there is a default value available use it to overwrite the initial default
-                    value.setStringValue(cms, defaultValue);
-                }
-            }
-        }
-
-        return element;
+        // now generate the default XML for the element
+        return createDefaultXml(cms, document, element, locale);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsDateUtil.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,9 @@ import org.opencms.i18n.CmsLocaleManager;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Locale;
 import java.util.TimeZone;
 
@@ -46,7 +48,7 @@ import java.util.TimeZone;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,9 +58,7 @@ public final class CmsDateUtil {
     protected static final TimeZone GMT_TIMEZONE = TimeZone.getTimeZone("GMT");
 
     /** The default format to use when formatting http headers. */
-    protected static final DateFormat HEADER_DEFAULT = new SimpleDateFormat(
-        "EEE, dd MMM yyyy HH:mm:ss zzz",
-        Locale.US);
+    protected static final DateFormat HEADER_DEFAULT = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss zzz", Locale.US);
 
     /** The default format to use when formatting old cookies. */
     protected static final DateFormat OLD_COOKIE = new SimpleDateFormat("EEE, dd-MMM-yyyy HH:mm:ss z", Locale.US);
@@ -133,6 +133,24 @@ public final class CmsDateUtil {
     }
 
     /**
+     * Returns the number of days passed since a specific date.<p>
+     * 
+     * @param dateLastModified the date to compute the passed days from
+     *  
+     * @return the number of days passed since a specific date
+     */
+    public static int getDaysPassedSince(Date dateLastModified) {
+
+        GregorianCalendar now = new GregorianCalendar();
+        GregorianCalendar lastModified = (GregorianCalendar)now.clone();
+        lastModified.setTimeInMillis(dateLastModified.getTime());
+        return now.get(Calendar.DAY_OF_YEAR)
+            - lastModified.get(Calendar.DAY_OF_YEAR)
+            + (now.get(Calendar.YEAR) - lastModified.get(Calendar.YEAR))
+            * 365;
+    }
+
+    /**
      * Returns a formated date and time String form a timestamp value based on the
      * HTTP-Header date format.<p>
      * 
@@ -178,5 +196,4 @@ public final class CmsDateUtil {
 
         return HEADER_DEFAULT.parse(timestamp).getTime();
     }
-
 }

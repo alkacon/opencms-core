@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.16 $
  * 
  * @since 6.0.0
  */
@@ -86,6 +86,8 @@ public class TestCmsScheduler extends TestCase {
 
         System.out.println("Trying to activate and deactivate an OpenCms job from the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
+        // also make sure CmsUUID is initialized
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
         
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo();
@@ -196,6 +198,8 @@ public class TestCmsScheduler extends TestCase {
 
         System.out.println("Trying to add and remove an OpenCms job from the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
+        // also make sure CmsUUID is initialized
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
         
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo();
@@ -251,6 +255,8 @@ public class TestCmsScheduler extends TestCase {
 
         System.out.println("Trying to schedule an existing job again with the OpenCms scheduler.");
         TestScheduledJob.m_runCount = 0;
+        // also make sure CmsUUID is initialized
+        CmsUUID.init(CmsUUID.getDummyEthernetAddress());
         
         CmsScheduledJobInfo jobInfo = new CmsScheduledJobInfo();
         CmsContextInfo contextInfo = new CmsContextInfo();
@@ -532,7 +538,7 @@ public class TestCmsScheduler extends TestCase {
     }
     
     /**
-     * Initializes a Quartz schduler.<p>
+     * Initializes a Quartz scheduler.<p>
      * 
      * @return the initialized scheduler
      * @throws Exception in case something goes wrong

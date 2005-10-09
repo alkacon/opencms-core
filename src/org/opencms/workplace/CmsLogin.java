@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/06/29 10:18:31 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUriSplitter;
 
 import java.io.IOException;
 import java.util.Date;
@@ -62,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -171,14 +172,6 @@ public class CmsLogin extends CmsJspLoginBean {
         CmsObject cms = getCmsObject();
 
         m_message = null;
-        m_requestedResource = CmsRequestUtil.getNotEmptyDecodedParameter(
-            getRequest(),
-            CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
-        if (m_requestedResource == null) {
-            // no resource was requested, use default workplace URI
-            m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
-        }
-
         if (cms.getRequestContext().currentUser().isGuestUser()) {
 
             // user is not currently logged in
@@ -198,6 +191,18 @@ public class CmsLogin extends CmsJspLoginBean {
             m_actionLogout = CmsRequestUtil.getNotEmptyParameter(getRequest(), PARAM_ACTION_LOGOUT);
         }
 
+        m_requestedResource = CmsRequestUtil.getNotEmptyParameter(
+            getRequest(),
+            CmsWorkplaceManager.PARAM_LOGIN_REQUESTED_RESOURCE);
+        if (m_requestedResource == null) {
+            // no resource was requested, use default workplace URI
+            m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
+        } else {
+            if (m_actionLogin != null) {
+                m_requestedResource = CmsEncoder.decode(m_requestedResource);    
+            }
+        }
+        
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
 
             // login was requested
@@ -268,7 +273,8 @@ public class CmsLogin extends CmsJspLoginBean {
             // clear message
             m_message = null;
             // login is successful, check if the requested resource can be read
-            String resource = CmsRequestUtil.splitUri(m_requestedResource)[0];
+            CmsUriSplitter splitter = new CmsUriSplitter(m_requestedResource, true);            
+            String resource = splitter.getPrefix();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
                 // bad resource name, use workplace as default
                 resource = CmsFrameset.JSP_WORKPLACE_URI;
