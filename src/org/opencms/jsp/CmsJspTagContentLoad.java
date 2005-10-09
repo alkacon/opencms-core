@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/09/23 08:01:55 $
- * Version: $Revision: 1.27.2.1 $
+ * Date   : $Date: 2005/10/09 07:04:29 $
+ * Version: $Revision: 1.27.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27.2.1 $ 
+ * @version $Revision: 1.27.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -344,7 +345,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_cms = m_controller.getCmsObject();
 
         // store the current locale    
-        m_locale = m_cms.getRequestContext().getLocale();
+        if (m_locale == null) {
+            m_locale = m_cms.getRequestContext().getLocale();
+        }
 
         // get the resource name from the selected container
         String resourcename = getResourceName(m_cms, container);
@@ -383,6 +386,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             m_contentInfoBean.setPageIndexAsString(resolver.resolveMacros(m_pageIndex));
             m_contentInfoBean.setPageNavLengthAsString(resolver.resolveMacros(m_pageNavLength));
             m_contentInfoBean.setResultSize(m_collectorResult.size());
+            m_contentInfoBean.setLocale(m_locale.toString());
             m_contentInfoBean.initResultIndex();
 
             if (!m_preload) {
@@ -479,6 +483,16 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public String getEditable() {
 
         return String.valueOf(m_editable);
+    }
+
+    /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return (m_locale != null) ? m_locale.toString() : "";
     }
 
     /**
@@ -579,7 +593,6 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
      */
     public void release() {
 
-        super.release();
         m_resourceName = null;
         m_collector = null;
         m_collectorResult = null;
@@ -591,6 +604,8 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_directEditCreateLink = null;
         m_directEditFollowOptions = null;
         m_property = null;
+        m_locale = null;
+        super.release();
     }
 
     /**
@@ -611,6 +626,20 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public void setEditable(String editable) {
 
         m_editable = Boolean.valueOf(editable).booleanValue();
+    }
+
+    /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        if (CmsStringUtil.isEmpty(locale)) {
+            m_locale = null;
+        } else {
+            m_locale = CmsLocaleManager.getLocale(locale);
+        }
     }
 
     /**

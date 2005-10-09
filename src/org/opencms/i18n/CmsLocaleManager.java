@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.45.2.1 $
+ * Date   : $Date: 2005/10/09 07:04:51 $
+ * Version: $Revision: 1.45.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45.2.1 $ 
+ * @version $Revision: 1.45.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,7 +179,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public static Locale getLocale(String localeName) {
 
-        if (localeName == null) {
+        if (CmsStringUtil.isEmpty(localeName)) {
             return getDefaultLocale();
         }
         Locale locale;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/10/09 07:04:29 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.jsp;
 
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.A_CmsXmlDocument;
@@ -48,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,6 +66,9 @@ public class CmsJspTagContentCheck extends TagSupport {
 
     /** The list of element to check. */
     private String m_elementList;
+
+    /** The locale to check for. */
+    private Locale m_locale;
 
     /**
      * Internal action method to check the elements from the provided XML content item.<p>
@@ -128,9 +132,12 @@ public class CmsJspTagContentCheck extends TagSupport {
 
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
-        Locale locale = contentContainer.getXmlDocumentLocale();
 
-        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, locale)) {
+        if (m_locale == null) {
+            m_locale = contentContainer.getXmlDocumentLocale();
+        }
+
+        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, m_locale)) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
@@ -178,14 +185,25 @@ public class CmsJspTagContentCheck extends TagSupport {
     }
 
     /**
+     * Returns the locale used for checking.<p>
+     *
+     * @return the locale used for checking
+     */
+    public String getLocale() {
+
+        return (m_locale != null) ? m_locale.toString() : "";
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     public void release() {
 
-        super.release();
         m_checkall = false;
         m_checknone = false;
         m_elementList = null;
+        m_locale = null;
+        super.release();
     }
 
     /**
@@ -241,6 +259,20 @@ public class CmsJspTagContentCheck extends TagSupport {
             m_elementList = elementList;
             m_checkall = false;
             m_checknone = false;
+        }
+    }
+
+    /**
+     * Sets the locale used for checking.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        if (CmsStringUtil.isEmpty(locale)) {
+            m_locale = null;
+        } else {
+            m_locale = CmsLocaleManager.getLocale(locale);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/10/09 07:04:29 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.jsp;
 
 import org.opencms.file.CmsObject;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
@@ -57,20 +58,23 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsJspTagContentShow extends TagSupport {
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsJspTagContentShow.class);
+
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6776067180965738432L;
 
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(TagSupport.class);
-
     /** Name of the content node element to show. */
     private String m_element;
+
+    /** Locale of the content node elemen to show. */
+    private Locale m_locale;
 
     /**
      * Internal action method to show an element from a XML content document.<p>
@@ -113,7 +117,7 @@ public class CmsJspTagContentShow extends TagSupport {
      */
     public int doStartTag() throws JspException {
 
-        // initialize a string mapper to resolve EL like strings in tag attributes
+        // get the current users OpenCms context
         CmsObject cms = CmsFlexController.getCmsObject(pageContext.getRequest());
 
         // get a reference to the parent "content container" class
@@ -127,7 +131,10 @@ public class CmsJspTagContentShow extends TagSupport {
 
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
-        Locale locale = contentContainer.getXmlDocumentLocale();
+
+        if (m_locale == null) {
+            m_locale = contentContainer.getXmlDocumentLocale();
+        }
 
         String element = getElement();
 
@@ -151,7 +158,7 @@ public class CmsJspTagContentShow extends TagSupport {
         } else {
 
             // now get the content element value to display
-            content = contentShowTagAction(xmlContent, element, locale, pageContext.getRequest());
+            content = contentShowTagAction(xmlContent, element, m_locale, pageContext.getRequest());
 
             // make sure that no null String is returned
             if (content == null) {
@@ -184,12 +191,23 @@ public class CmsJspTagContentShow extends TagSupport {
     }
 
     /**
+     * Returns the locale.<p>
+     *
+     * @return the locale
+     */
+    public String getLocale() {
+
+        return (m_locale != null) ? m_locale.toString() : "";
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#release()
      */
     public void release() {
 
-        super.release();
         m_element = null;
+        m_locale = null;
+        super.release();
     }
 
     /**
@@ -200,5 +218,19 @@ public class CmsJspTagContentShow extends TagSupport {
     public void setElement(String element) {
 
         m_element = element;
+    }
+
+    /**
+     * Sets the locale.<p>
+     *
+     * @param locale the locale to set
+     */
+    public void setLocale(String locale) {
+
+        if (CmsStringUtil.isEmpty(locale)) {
+            m_locale = null;
+        } else {
+            m_locale = CmsLocaleManager.getLocale(locale);
+        }
     }
 }
