@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2005/09/27 12:15:56 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,25 +32,47 @@
 package org.opencms.file.types;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.db.CmsSecurityManager;
+import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.CmsVfsException;
 import org.opencms.loader.CmsDumpLoader;
+import org.opencms.loader.CmsImageLoader;
+import org.opencms.loader.CmsImageScaler;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsSecurityException;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 /**
  * Resource type descriptor for the type "image".<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeImage extends A_CmsResourceType {
 
-    /** Property for image size, required for resource type "image". */
-    public static final String PROPERTY_IMAGESIZE = "image.size";
+    /** The log object for this class. */
+    public static final Log LOG = CmsLog.getLog(CmsResourceTypeImage.class);
 
     /** Indicates that the static configuration of the resource type has been frozen. */
     private static boolean m_staticFrozen;
+
+    /** The static resource loader id of this resource type. */
+    private static int m_staticLoaderId;
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
@@ -92,11 +114,47 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     }
 
     /**
+     * @see org.opencms.file.types.I_CmsResourceType#createResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, byte[], java.util.List)
+     */
+    public CmsResource createResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
+        byte[] content,
+        List properties) throws CmsException {
+
+        if (CmsImageLoader.isEnabled()) {
+            properties = getImageProperties(content, properties, cms.getRequestContext().addSiteRoot(resourcename));
+        }
+        return super.createResource(cms, securityManager, resourcename, content, properties);
+    }
+
+    /**
      * @see org.opencms.file.types.I_CmsResourceType#getLoaderId()
      */
     public int getLoaderId() {
 
-        return CmsDumpLoader.RESOURCE_LOADER_ID;
+        return m_staticLoaderId;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#importResource(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, java.lang.String, org.opencms.file.CmsResource, byte[], java.util.List)
+     */
+    public CmsResource importResource(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        String resourcename,
+        CmsResource resource,
+        byte[] content,
+        List properties) throws CmsException {
+
+        if (CmsImageLoader.isEnabled()) {
+            if (content != null) {
+                // siblings have null content in import
+                properties = getImageProperties(content, properties, resource.getRootPath());
+            }
+        }
+        return super.importResource(cms, securityManager, resourcename, resource, content, properties);
     }
 
     /**
@@ -128,5 +186,63 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         super.initConfiguration(RESOURCE_TYPE_NAME, id);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
+        m_staticLoaderId = CmsImageLoader.isEnabled() ? CmsImageLoader.RESOURCE_LOADER_ID_IMAGE_LOADER
+        : CmsDumpLoader.RESOURCE_LOADER_ID;
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#writeFile(org.opencms.file.CmsObject, org.opencms.db.CmsSecurityManager, org.opencms.file.CmsFile)
+     */
+    public CmsFile writeFile(CmsObject cms, CmsSecurityManager securityManager, CmsFile resource)
+    throws CmsException, CmsVfsException, CmsSecurityException {
+
+        if (CmsImageLoader.isEnabled()) {
+            // check if the user has write access and if resource is locked
+            // done here so that not image operations are performed in case no write access is granted
+            securityManager.checkPermissions(
+                cms.getRequestContext(),
+                resource,
+                CmsPermissionSet.ACCESS_WRITE,
+                true,
+                CmsResourceFilter.ALL);
+
+            List properties = getImageProperties(resource.getContents(), null, resource.getRootPath());
+            if (properties != null) {
+                writePropertyObjects(cms, securityManager, resource, properties);
+            }
+        }
+        return super.writeFile(cms, securityManager, resource);
+    }
+
+    /**
+     * Calculate the image dimensions from the given image and update the given list of properties 
+     * with a value for <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> that 
+     * contains the calculated image dimensions.<p> 
+     * 
+     * @param content the image to calculate the dimensions for
+     * @param properties the list of properties to update 
+     * @param rootPath the root path if the resource (for error logging)
+     * 
+     * @return the updated property list with a value for 
+     *      <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> that contains the calculated image dimensions
+     */
+    protected List getImageProperties(byte[] content, List properties, String rootPath) {
+
+        CmsImageScaler scaler = new CmsImageScaler(content, rootPath);
+        if (!scaler.isValid()) {
+            // error calculating image dimensions
+            return properties;
+        }
+
+        CmsProperty p = new CmsProperty(CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, null, scaler.toString());
+        // create the new property list if required (don't modify the original List)
+        List result = new ArrayList();
+        if ((properties != null) && (properties.size() > 0)) {
+            result.addAll(properties);
+            result.remove(p);
+        }
+        // add the updated property
+        result.add(p);
+        return result;
     }
 }

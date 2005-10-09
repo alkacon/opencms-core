@@ -7,6 +7,7 @@
 			<resourceloaders>
 				<loader class="com.opencms.legacy.CmsXmlTemplateLoader" />
 				<loader class="org.opencms.loader.CmsDumpLoader" />
+				<loader class="org.opencms.loader.CmsImageLoader" />				
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />

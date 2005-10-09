@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/Messages.java,v $
- * Date   : $Date: 2005/09/27 12:15:56 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,17 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_SCALING_DISABLED_0 = "LOG_IMAGE_SCALING_DISABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_SIZE_UPDATE_COUNT_1 = "LOG_IMAGE_SIZE_UPDATE_COUNT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PUBLISH_FAILED_2 = "LOG_PUBLISH_FAILED_2";
@@ -65,6 +71,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMAGE_SIZE_START_0 = "RPT_IMAGE_SIZE_START_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_IMAGE_SIZE_UNABLE_TO_CALCULATE_0 = "RPT_IMAGE_SIZE_UNABLE_TO_CALCULATE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_IMAGE_SIZE_UPDATE_1 = "RPT_IMAGE_SIZE_UPDATE_1";

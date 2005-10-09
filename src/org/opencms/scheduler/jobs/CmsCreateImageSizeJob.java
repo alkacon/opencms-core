@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2005/09/27 12:15:56 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,31 +31,36 @@
 
 package org.opencms.scheduler.jobs;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
+import org.opencms.loader.CmsImageLoader;
+import org.opencms.loader.CmsImageScaler;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
 /**
- * A schedulable OpenCms job to create image size information.<p>
+ * A schedulable OpenCms job to calculate image size information.<p>
  * 
- * Image size information is stored in the "image.size" property of an image file and contains 
- * "h:x,w:y" with x and y as integer vaulues.
+ * Image size information is stored in the <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code> property 
+ * of an image file must have the format "h:x,w:y" with x and y being positive Integer vaulues.<p>
  * 
  * This job does not have any parameters.<p>
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.2 
  */
@@ -66,71 +71,98 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
      */
     public String launch(CmsObject cms, Map parameters) throws Exception {
 
-        I_CmsReport report = null;
+        if (!CmsImageLoader.isEnabled()) {
+            // scaling functions are not available
+            return Messages.get().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
+        }
 
+        I_CmsReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsCreateImageSizeJob.class);
+        report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_START_0), I_CmsReport.FORMAT_HEADLINE);
+
+        List resources = Collections.EMPTY_LIST;
         try {
-            report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsCreateImageSizeJob.class);
-
-            report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_START_0), I_CmsReport.FORMAT_HEADLINE);
-
             // get all image resources
-            List resources = cms.readResources(
+            resources = cms.readResources(
                 "/",
                 CmsResourceFilter.IGNORE_EXPIRATION.addRequireType(CmsResourceTypeImage.getStaticTypeId()));
+        } catch (CmsException e) {
+            report.println(e);
+        }
 
-            // now iterate through all resources
-            for (int i = 0; i < resources.size(); i++) {
+        int count = 0;
+        // now iterate through all resources
+        for (int i = 0; i < resources.size(); i++) {
+
+            try {
+
                 CmsResource res = (CmsResource)resources.get(i);
-
                 report.print(Messages.get().container(
                     Messages.RPT_IMAGE_SIZE_PROCESS_3,
                     String.valueOf(i + 1),
                     String.valueOf(resources.size()),
                     res.getRootPath()), I_CmsReport.FORMAT_HEADLINE);
+
                 report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
 
                 // check if the resource is locked by another user
                 // we cannot process resources that are locked by someone else
                 CmsLock lock = cms.getLock(res);
                 if (lock.isNullLock() || lock.getUserId().equals(cms.getRequestContext().currentUser().getId())) {
-                    // lock the resource if not locked so far
-                    boolean unlockFlag = false;
-                    if (lock.isNullLock()) {
-                        cms.lockResource(res.getRootPath());
-                        unlockFlag = true;
-                    }
 
                     // get the size info property
-                    CmsProperty prop = cms.readPropertyObject(res, CmsResourceTypeImage.PROPERTY_IMAGESIZE, false);
+                    CmsProperty prop = cms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, false);
                     if (prop == null) {
                         prop = CmsProperty.getNullProperty();
                     }
-                    // get the image szte information
-                    String sizeInfo = getSizeInfo(res);
+                    // read the file content
+                    CmsFile file = CmsFile.upgrade(res, cms);
+                    // get the image size information
+                    CmsImageScaler scaler = new CmsImageScaler(file.getContents(), file.getRootPath());
 
-                    // update the property if it does not exist or it is different than the newly calculated one
-                    if (prop.isNullProperty() || !prop.getValue().equals(sizeInfo)) {
+                    if (scaler.isValid()) {
+                        // update the property if it does not exist or it is different than the newly calculated one
+                        if (prop.isNullProperty() || !prop.getValue().equals(scaler.toString())) {
 
-                        // set the shared value of the property or create a new one if required
-                        if (prop.isNullProperty()) {
-                            prop = new CmsProperty(CmsResourceTypeImage.PROPERTY_IMAGESIZE, null, sizeInfo);
+                            boolean unlockFlag = false;
+                            // lock the resource if not locked so far
+                            if (lock.isNullLock()) {
+                                cms.lockResource(res.getRootPath());
+                                unlockFlag = true;
+                            }
+                            // set the shared value of the property or create a new one if required
+                            if (prop.isNullProperty()) {
+                                prop = new CmsProperty(
+                                    CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                                    null,
+                                    scaler.toString());
+                            } else {
+                                // delete any individual proprety value (just in case)
+                                prop.setStructureValue(CmsProperty.DELETE_VALUE);
+                                // set the calculated value as shared property
+                                prop.setResourceValue(scaler.toString());
+                            }
+                            // write the property
+                            cms.writePropertyObject(res.getRootPath(), prop);
+                            // unlock the resource if it was not locked before
+                            if (unlockFlag) {
+                                cms.unlockResource(res.getRootPath());
+                            }
+                            // increase conter 
+                            count++;
+                            // write report information
+                            report.println(
+                                Messages.get().container(Messages.RPT_IMAGE_SIZE_UPDATE_1, scaler.toString()),
+                                I_CmsReport.FORMAT_DEFAULT);
+
                         } else {
-                            prop.setResourceValue(sizeInfo);
+                            report.println(
+                                Messages.get().container(Messages.RPT_IMAGE_SIZE_SKIP_1, scaler.toString()),
+                                I_CmsReport.FORMAT_DEFAULT);
                         }
-                        // write the property
-                        cms.writePropertyObject(res.getRootPath(), prop);
-                        report.println(
-                            Messages.get().container(Messages.RPT_IMAGE_SIZE_UPDATE_1, sizeInfo),
-                            I_CmsReport.FORMAT_DEFAULT);
                     } else {
                         report.println(
-                            Messages.get().container(Messages.RPT_IMAGE_SIZE_SKIP_1, sizeInfo),
+                            Messages.get().container(Messages.RPT_IMAGE_SIZE_UNABLE_TO_CALCULATE_0),
                             I_CmsReport.FORMAT_DEFAULT);
-                    }
-
-                    // unlock the resource if it was not locked before
-                    if (unlockFlag) {
-                        cms.unlockResource(res.getRootPath());
                     }
 
                 } else {
@@ -139,32 +171,14 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
                         Messages.get().container(Messages.RPT_IMAGE_SIZE_LOCKED_0),
                         I_CmsReport.FORMAT_DEFAULT);
                 }
+
+            } catch (CmsException e) {
+                report.println(e);
             }
-        } catch (CmsException e) {
-            report.println(e);
-        } finally {
-            report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_END_0), I_CmsReport.FORMAT_HEADLINE);
         }
 
-        return null;
+        report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_END_0), I_CmsReport.FORMAT_HEADLINE);
+
+        return Messages.get().key(Messages.LOG_IMAGE_SIZE_UPDATE_COUNT_1, new Integer(count));
     }
-
-    /**
-     * Gets the image size info information to be stored as the "image.size" property.<p>
-     * 
-     * @param res the resource to get the size info from
-     * @return string represnetation of the image size info information
-     */
-    private String getSizeInfo(CmsResource res) {
-
-        StringBuffer sizeInfo = new StringBuffer();
-        sizeInfo.append("h:");
-        // TODO: add the corrent value here
-        sizeInfo.append("100");
-        sizeInfo.append(",w:");
-        // TODO: add the corrent value here
-        sizeInfo.append("100");
-        return sizeInfo.toString();
-    }
-
 }

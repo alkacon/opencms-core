@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/10/02 09:00:07 $
- * Version: $Revision: 1.15.2.4 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.15.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.4 $ 
+ * @version $Revision: 1.15.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,6 +88,9 @@ public final class CmsRequestUtil {
 
     /** HTTP Header "If-Modified-Since". */
     public static final String HEADER_IF_MODIFIED_SINCE = "If-Modified-Since";
+
+    /** The Header that stores the session id (used by OpenCms upload applet). */
+    public static final String HEADER_JSESSIONID = "JSESSIONID";
 
     /** HTTP Header "Last-Modified". */
     public static final String HEADER_LAST_MODIFIED = "Last-Modified";

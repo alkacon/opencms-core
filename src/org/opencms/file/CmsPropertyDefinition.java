@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsPropertyDefinition.java,v $
- * Date   : $Date: 2005/09/16 08:47:37 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsUUID;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.1 $
+ * @version $Revision: 1.13.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,9 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
     /** Property for JSP additional suffix during static export, default is "html". */
     public static final String PROPERTY_EXPORTSUFFIX = "exportsuffix";
 
+    /** Property constant for <code>"image.size"</code>. */
+    public static final String PROPERTY_IMAGE_SIZE = "image.size";
+
     /** Property for internal use (e.g. delete). */
     public static final String PROPERTY_INTERNAL = "internal";
 
@@ -94,7 +97,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the current locale. */
     public static final String PROPERTY_LOCALE_DEFAULT = "locale-default";
-    
+
     /** Property for the login form. */
     public static final String PROPERTY_LOGIN_FORM = "login-form";
 
@@ -112,7 +115,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the resource title. */
     public static final String PROPERTY_NOTIFICATION_INTERVAL = "notification-interval";
-    
+
     /** Property for the relative root link substitution. */
     public static final String PROPERTY_RELATIVEROOT = "relativeroot";
 
@@ -139,7 +142,7 @@ public class CmsPropertyDefinition implements Cloneable, Comparable {
 
     /** Property for the resource title. */
     public static final String PROPERTY_TITLE = "Title";
-    
+
     /** Property for the visible method in the administration view. */
     public static final String PROPERTY_VISIBLE = "visiblemethod";
 

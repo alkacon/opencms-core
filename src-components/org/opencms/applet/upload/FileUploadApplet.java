@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2005/09/11 13:29:50 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -582,6 +582,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             // add jsessionid query string
             String query = ";" + C_JSESSIONID.toLowerCase() + "=" + sessionId;                         
             filePost.setQueryString(query);
+            filePost.addRequestHeader(C_JSESSIONID, sessionId);
             
             HttpClient client = new HttpClient();
             client.setConnectionTimeout(5000);

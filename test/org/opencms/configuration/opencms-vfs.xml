@@ -12,6 +12,10 @@
 					<param name="elementcache.variants">100</param>
 				</loader>
 				<loader class="org.opencms.loader.CmsDumpLoader" />
+				<loader class="org.opencms.loader.CmsImageLoader">
+					<param name="image.folder">/WEB-INF/imagecache/</param>		
+					<param name="image.scaling.enabled">true</param>		
+				</loader>													
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader">
 					<param name="jsp.errorpage.committed">true</param>
@@ -47,7 +51,7 @@
 						<mapping suffix=".png" />
 						<mapping suffix=".tif" />
 						<mapping suffix=".tiff" />
-					</mappings>
+					</mappings>		
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeJsp" name="jsp" id="4">
 					<mappings>
@@ -85,6 +89,7 @@
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
+					<param name="folder.class.params">w:120,h:90,c:dddddd</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>

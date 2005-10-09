@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/10/02 09:06:26 $
- * Version: $Revision: 1.216.2.3 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.216.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216.2.3 $ 
+ * @version $Revision: 1.216.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1806,7 +1806,7 @@ public final class OpenCmsCore {
             sessionId = session.getId();
         } else {
             // special case for acessing a session from "outside" requests (e.g. upload applet)
-            sessionId = req.getParameter("JSESSIONID");
+            sessionId = req.getHeader(CmsRequestUtil.HEADER_JSESSIONID);
         }
         CmsSessionInfo sessionInfo = null;
         if (sessionId != null) {

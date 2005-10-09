@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.72.2.1 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.72.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.1 $ 
+ * @version $Revision: 1.72.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -528,29 +528,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
-     * Returns a collection of all available gallery class names.<p>
+     * Returns a collection of all available galleries.<p>
      * 
      * The Map has the gallery type name as key and an instance of the gallery class (not completely initialized) as value.<p>
      * 
-     * @return a collection of all available gallery class names
+     * @return a collection of all available galleries
      */
     public Map getGalleries() {
 
         return m_galleries;
-    }
-
-    /**
-     * Returns the configured class name for the given gallery type name.<p>
-     * 
-     * If no gallery type of the given name is configured, <code>null</code> is returned.<p>
-     * 
-     * @param galleryTypeName the gallery type name to look up
-     * 
-     * @return the configured class name for the given gallery type name
-     */
-    public String getGalleryClassName(String galleryTypeName) {
-
-        return ((A_CmsGallery)m_galleries.get(galleryTypeName)).getClass().getName();
     }
 
     /**
@@ -781,6 +767,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                             if (A_CmsGallery.class.isAssignableFrom(Class.forName(folderClassName))) {
                                 // create gallery class instance
                                 A_CmsGallery galleryInstance = (A_CmsGallery)Class.forName(folderClassName).newInstance();
+                                // set gallery folder resource type
+                                galleryInstance.setResourceType(galleryType);
                                 // store the gallery class instance with the type name as lookup key
                                 m_galleries.put(galleryType.getTypeName(), galleryInstance);
                             }

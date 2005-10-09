@@ -7,6 +7,9 @@
 			<resourceloaders>
 				<loader class="com.opencms.legacy.CmsXmlTemplateLoader" />
 				<loader class="org.opencms.loader.CmsDumpLoader" />
+				<loader class="org.opencms.loader.CmsImageLoader">
+					<param name="image.scaling.enabled">false</param>		
+				</loader>		
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader" />
 				<loader class="org.opencms.loader.CmsXmlPageLoader" />
@@ -57,6 +60,7 @@
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7"/>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
+					<param name="folder.class.params">w:120,h:90,c:dddddd</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>

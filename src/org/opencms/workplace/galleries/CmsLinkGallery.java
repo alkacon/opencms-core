@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.18.2.3 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.18.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18.2.3 $ 
+ * @version $Revision: 1.18.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -257,6 +257,27 @@ public class CmsLinkGallery extends A_CmsGallery {
     public String wizardButton() {
 
         return button("javascript:wizard();", null, "upload.png", "title.new", 0);
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListCustomEndCols(org.opencms.file.CmsResource, java.lang.String)
+     */
+    protected String buildGalleryItemListCustomEndCols(CmsResource res, String tdClass) {
+
+        StringBuffer result = new StringBuffer(64);
+        result.append("\t<td class=\"");
+        result.append(tdClass);
+        result.append("\">");
+        String linkTarget;
+        try {
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            linkTarget = new String(file.getContents());
+        } catch (CmsException e) {
+            linkTarget = "";
+        }
+        result.append(linkTarget);
+        result.append("</td>\n");
+        return result.toString();
     }
 
     /**

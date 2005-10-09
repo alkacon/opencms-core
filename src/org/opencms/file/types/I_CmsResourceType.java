@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/09/16 08:48:57 $
- * Version: $Revision: 1.25.2.1 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.25.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.2.1 $ 
+ * @version $Revision: 1.25.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -548,7 +548,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         long dateLastModified,
         boolean recursive) throws CmsException;
-    
+
     /**
      * Changes the "expire" date of a resource.<p>
      * 
@@ -569,7 +569,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         long dateExpired,
         boolean recursive) throws CmsException;
-    
+
     /**
      * Changes the "release" date of a resource.<p>
      * 
@@ -590,7 +590,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         long dateReleased,
         boolean recursive) throws CmsException;
-    
+
     /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
@@ -628,7 +628,7 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * Writes a resource, including it's content.<p>
      * 
      * Applies only to resources of type <code>{@link CmsFile}</code>
-     * have a binary content attached.<p>
+     * that have a binary content attached.<p>
      * 
      * @param cms the current cms context
      * @param securityManager the initialized OpenCms security manager

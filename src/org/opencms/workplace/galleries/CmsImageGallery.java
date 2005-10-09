@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.13.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,14 +32,17 @@
 package org.opencms.workplace.galleries;
 
 import org.opencms.file.CmsProperty;
+import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsImageLoader;
+import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
-import java.util.List;
+import java.awt.Color;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -51,17 +54,20 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.2 $ 
+ * @version $Revision: 1.13.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsImageGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "img_fs.jsp";
 
     /** The order value of the gallery for sorting the galleries. */
     private static final Integer ORDER_GALLERY = new Integer(10);
+
+    /** The default image scaling parameters for the gallery preview. */
+    private CmsImageScaler m_defaultScaleParams;
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -100,7 +106,6 @@ public class CmsImageGallery extends A_CmsGallery {
 
         String width = null;
         String height = null;
-
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, generate disabled button
             return button(null, null, "apply_in.png", "button.paste", 0);
@@ -115,21 +120,18 @@ public class CmsImageGallery extends A_CmsGallery {
                 try {
                     CmsProperty imageSize = getJsp().getCmsObject().readPropertyObject(
                         getParamResourcePath(),
-                        CmsResourceTypeImage.PROPERTY_IMAGESIZE,
+                        CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
                         false);
                     if (!imageSize.isNullProperty()) {
-                        List sizeInfo = CmsStringUtil.splitAsList(imageSize.getValue(), ",");
-                        if (sizeInfo != null && sizeInfo.size() > 0) {
-                            // extract the values
-                            for (int i = 0; i < sizeInfo.size(); i++) {
-                                String value = (String)sizeInfo.get(i);
-                                if (value.startsWith("w:")) {
-                                    width = value.substring(2);
-                                } else if (value.startsWith("h:")) {
-                                    height = value.substring(2);
-            }
-        }
-    }
+                        // parse property value using standard procedures
+                        CmsImageScaler scaler = new CmsImageScaler(imageSize.getValue());
+                        // javascript requires "null" String
+                        if (scaler.getWidth() > 0) {
+                            width = String.valueOf(scaler.getWidth());
+                        }
+                        if (scaler.getHeight() > 0) {
+                            height = String.valueOf(scaler.getHeight());
+                        }
                     }
                 } catch (CmsException e) {
                     // the size information could not be read (maybe the property was deleted)
@@ -187,7 +189,7 @@ public class CmsImageGallery extends A_CmsGallery {
     public Integer getOrder() {
         
         return ORDER_GALLERY;
-    }
+    }    
 
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewBodyStyle()
@@ -195,6 +197,22 @@ public class CmsImageGallery extends A_CmsGallery {
     public String getPreviewBodyStyle() {
 
         return "";
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#init()
+     */
+    public void init() {
+
+        m_defaultScaleParams = new CmsImageScaler(getGalleryTypeParams());
+        if (!m_defaultScaleParams.isValid()) {
+            // no valid parameters have been provided, use defaults
+            m_defaultScaleParams.setType(0);
+            m_defaultScaleParams.setPosition(0);
+            m_defaultScaleParams.setWidth(120);
+            m_defaultScaleParams.setHeight(90);
+            m_defaultScaleParams.setColor(new Color(221, 221, 221));
+        }
     }
 
     /**
@@ -211,5 +229,92 @@ public class CmsImageGallery extends A_CmsGallery {
     public String targetSelectBox() {
 
         return "";
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListCustomEndCols(org.opencms.file.CmsResource, java.lang.String)
+     */
+    protected String buildGalleryItemListCustomEndCols(CmsResource res, String tdClass) {
+
+        if (!CmsImageLoader.isEnabled()) {
+
+            // scaling disabled, use default columns
+            return super.buildGalleryItemListCustomEndCols(res, tdClass);
+        }
+
+        StringBuffer result = new StringBuffer(128);
+        CmsImageScaler scaler = new CmsImageScaler(getCms(), res);
+
+        result.append("\t<td class=\"");
+        result.append(tdClass);
+        result.append("\" style=\"text-align: right;\">");
+        if (scaler.isValid()) {
+            // image dimensions are known
+            result.append(scaler.getWidth());
+            result.append("*");
+            result.append(scaler.getHeight());
+            result.append(" ");
+            result.append(key("label.pixels"));
+            result.append(" / ");
+        }
+        result.append(res.getLength() / 1024);
+        result.append(" ");
+        result.append(key("label.kilobytes"));
+        result.append("</td>\n");
+
+        return result.toString();
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListCustomStartCols(org.opencms.file.CmsResource, java.lang.String)
+     */
+    protected String buildGalleryItemListCustomStartCols(CmsResource res, String tdClass) {
+
+        if (!CmsImageLoader.isEnabled()) {
+
+            // scaling disabled, use default columns
+            return super.buildGalleryItemListCustomStartCols(res, tdClass);
+        }
+
+        CmsProperty sizeProp = CmsProperty.getNullProperty();
+        try {
+            sizeProp = getCms().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_IMAGE_SIZE, false);
+        } catch (Exception e) {
+            // ignore
+        }
+        if (sizeProp.isNullProperty()) {
+            // image can probably not be scaled with scaler, use default columns
+            return super.buildGalleryItemListCustomStartCols(res, tdClass);
+        }
+
+        StringBuffer result = new StringBuffer(128);
+
+        if ((m_defaultScaleParams != null) && m_defaultScaleParams.isValid()) {
+            String resPath = getCms().getSitePath(res);
+
+            result.append("\t<td class=\"");
+            result.append(tdClass);
+            result.append("\">");
+            result.append("<a class=\"");
+            result.append(tdClass);
+            result.append("\" href=\"javascript: preview(\'");
+            result.append(resPath);
+            result.append("\');\" title=\"");
+            result.append(key("button.preview"));
+            result.append("\">");
+            result.append("<img src=\"");
+            result.append(getJsp().link(resPath));
+            result.append('?');
+            result.append(CmsImageScaler.PARAM_SCALE);
+            result.append('=');
+            result.append(m_defaultScaleParams.toString());
+            result.append("\" border=\"0\">");
+            result.append("</a></td>\n");
+            result.append("</td>\n");
+        } else {
+            result.append(super.buildGalleryItemListCustomStartCols(res, tdClass));
+        }
+
+        return result.toString();
     }
 }

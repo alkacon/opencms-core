@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/08 08:30:32 $
- * Version: $Revision: 1.682.2.6 $
+ * Date   : $Date: 2005/10/09 07:15:20 $
+ * Version: $Revision: 1.682.2.7 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -22,6 +22,11 @@ Legend:
 OpenCms 6.1.1 - xxxxx, 2005
 ! Added "before publish" event
 * Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
+* Fixed issue with bad encoding for sessionless requests due to early access to #getParameter(String) for upload applet
+! Added options to access content based on a given locale to <cms:contentload/show/info> tags
+! Added new ImageLoader with image processing and scaling capabilities, disabled by default because of setup issues
+! ImageGallery now shows a preview thumbnail of all images (if image is loader enabled)
+! Image "height" and "width" attributes are calculated and stored in "image.size" property (if image is loader enabled)
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
