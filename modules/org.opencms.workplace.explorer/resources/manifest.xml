@@ -65,6 +65,7 @@
 			<resource uri="/system/workplace/commons/publishresource.jsp"/>
 			<resource uri="/system/workplace/commons/replace.jsp"/>
 			<resource uri="/system/workplace/commons/secure.jsp"/>
+			<resource uri="/system/workplace/commons/synchronize.jsp"/>
 			<resource uri="/system/workplace/commons/touch.jsp"/>
 			<resource uri="/system/workplace/commons/undelete.jsp"/>
 			<resource uri="/system/workplace/commons/undochanges.jsp"/>
@@ -935,6 +936,28 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Secure and export resource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>	
+		<file>
+			<source>system/workplace/commons/synchronize.jsp</source>
+			<destination>system/workplace/commons/synchronize.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>080f18b2-a038-11d9-a069-a5e132ae6b32</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Synchronization]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
