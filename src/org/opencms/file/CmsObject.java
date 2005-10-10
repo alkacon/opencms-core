@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.143 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.144 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import org.opencms.workflow.CmsTaskService;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * This pivotal class provides all authorized access to the OpenCms VFS resources.<p>
@@ -81,7 +82,7 @@ import java.util.Map;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.143 $
+ * @version $Revision: 1.144 $
  * 
  * @since 6.0.0 
  */
@@ -150,6 +151,8 @@ public final class CmsObject {
         return m_securityManager.addWebUser(m_context, name, password, group, description, additionalInfos);
     }
 
+
+    
     /**
      * Creates a backup of the current project.<p>
      * 
@@ -702,6 +705,20 @@ public final class CmsObject {
     }
 
     /**
+     * Deletes a group, where all permissions, users and childs of the group
+     * are transfered to a replacement group.<p>
+     * 
+     * @param groupId the id of the group to be deleted
+     * @param replacementId the id of the group to be transfered, can be <code>null</code>
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteGroup(CmsUUID groupId, CmsUUID replacementId) throws CmsException {
+
+        m_securityManager.deleteGroup(m_context, groupId, replacementId);
+    }
+
+    /**
      * Deletes a user group.<p>
      *
      * Only groups that contain no subgroups can be deleted.<p>
@@ -807,6 +824,20 @@ public final class CmsObject {
     public void deleteUser(CmsUUID userId) throws CmsException {
 
         m_securityManager.deleteUser(m_context, userId);
+    }
+
+    /**
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user.<p>
+     *
+     * @param userId the id of the user to be deleted
+     * @param replacementId the id of the user to be transfered, can be <code>null</code>
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteUser(CmsUUID userId, CmsUUID replacementId) throws CmsException {
+
+        m_securityManager.deleteUser(m_context, userId, replacementId);
     }
 
     /**
@@ -1273,6 +1304,37 @@ public final class CmsObject {
     public CmsRequestContext getRequestContext() {
 
         return m_context;
+    }
+    
+    /**
+     * Returns all resources associated to a given principal via an ACE with the given permissions.<p> 
+     * 
+     * If the <code>includeAttr</code> flag is set it returns also all resources associated to 
+     * a given principal through some of following attributes.<p> 
+     * 
+     * <ul>
+     *    <li>User Created</li>
+     *    <li>User Last Modified</li>
+     * </ul><p>
+     * 
+     * @param principalId the id of the principal
+     * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
+     * @param includeAttr a flag to include resources associated by attributes
+     * 
+     * @return a list of <code>{@link CmsResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourcesForPrincipal(
+        CmsUUID principalId,
+        CmsPermissionSet permissions,
+        boolean includeAttr) throws CmsException {
+
+        return m_securityManager.getResourcesForPrincipal(
+            getRequestContext(),
+            principalId,
+            permissions,
+            includeAttr);
     }
 
     /**
@@ -2685,7 +2747,35 @@ public final class CmsObject {
 
         return m_securityManager.readResourcesWithProperty(m_context, addSiteRoot(path), propertyDefinition, value);
     }
+    
+    /**
+     * Returns a set of users that are responsible for a specific resource.<p>
+     * 
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsibleUsers(CmsResource resource) throws CmsException {
+        
+        return m_securityManager.readResponsibleUsers(m_context, resource);
+    }
 
+    /**
+     * Returns a set of principals that are responsible for a specific resource.<p>
+     * 
+     * @param resource the resource to get the responsible principals from
+     * 
+     * @return the set of principals that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsiblePrincipals(CmsResource resource) throws CmsException {
+        
+        return m_securityManager.readResponsiblePrincipals(m_context, resource);
+    }
+    
     /**
      * Returns a list of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
@@ -2979,22 +3069,89 @@ public final class CmsObject {
      *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
      * @param recursive if this operation is to be applied recursivly to all resources in a folder
      * 
+     * @deprecated use <code>{@link #setDateLastModified(String, long, boolean)}</code>, 
+     *                 <code>{@link #setDateReleased(String, long, boolean)}</code> or
+     *                 <code>{@link #setDateExpired(String, long, boolean)}</code> instead
+     * 
      * @throws CmsException if something goes wrong
      */
     public void touch(String resourcename, long dateLastModified, long dateReleased, long dateExpired, boolean recursive)
     throws CmsException {
+        
+        if (dateReleased != CmsResource.TOUCH_DATE_UNCHANGED) {
+            setDateReleased(resourcename, dateReleased, recursive);
+        }
+        if (dateExpired != CmsResource.TOUCH_DATE_UNCHANGED) {
+            setDateExpired(resourcename, dateExpired, recursive);
+        }
+        if (dateLastModified != CmsResource.TOUCH_DATE_UNCHANGED) {
+            setDateLastModified(resourcename, dateLastModified, recursive);
+        }
+    }
+    
+    /**
+     * Changes the "last modified" timestamp of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateLastModified(String resourcename,
+        long dateLastModified, boolean recursive) throws CmsException {
 
         CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
-        getResourceType(resource.getTypeId()).touch(
+        getResourceType(resource.getTypeId()).setDateLastModified(
             this,
             m_securityManager,
             resource,
             dateLastModified,
-            dateReleased,
+            recursive);
+    }
+    
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateExpired the new expire date of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateExpired(String resourcename,
+        long dateExpired, boolean recursive) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).setDateExpired(
+            this,
+            m_securityManager,
+            resource,
             dateExpired,
             recursive);
     }
+    
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
+     * @param resourcename the name of the resource to change (full path)
+     * @param dateReleased the new release date of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void setDateReleased(String resourcename,
+        long dateReleased, boolean recursive) throws CmsException {
 
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
+        getResourceType(resource.getTypeId()).setDateReleased(
+            this,
+            m_securityManager,
+            resource,
+            dateReleased,
+            recursive);
+    }
+       
     /**
      * Undeletes a resource (this is the same operation as "undo changes").<p>
      * 

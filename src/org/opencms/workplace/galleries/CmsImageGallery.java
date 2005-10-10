@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,6 +56,9 @@ public class CmsImageGallery extends A_CmsGallery {
 
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "img_fs.jsp";
+
+    /** The order value of the gallery for sorting the galleries. */
+    private static final Integer ORDER_GALLERY = new Integer(10);
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -143,6 +146,16 @@ public class CmsImageGallery extends A_CmsGallery {
 
         return CmsResourceTypeImage.getStaticTypeId();
     }
+
+    /**
+     * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
+     * 
+     * @return the order of the implemented gallery
+     */
+    public Integer getOrder() {
+        
+        return ORDER_GALLERY;
+    }    
 
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewBodyStyle()

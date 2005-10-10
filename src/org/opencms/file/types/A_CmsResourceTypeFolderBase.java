@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceTypeFolderBase.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -308,21 +308,19 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
         // it is not possible to restore a folder from the backup
         throw new CmsDataNotImplementedException(Messages.get().container(Messages.ERR_RESTORE_FOLDERS_0));
     }
-
+    
     /**
-     * @see org.opencms.file.types.I_CmsResourceType#touch(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
-    public void touch(
+    public void setDateExpired(
         CmsObject cms,
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateLastModified,
-        long dateReleased,
-        long dateExpired,
         boolean recursive) throws CmsException {
 
         // handle the folder itself
-        super.touch(cms, securityManager, resource, dateLastModified, dateReleased, dateExpired, recursive);
+        super.setDateExpired(cms, securityManager, resource, dateLastModified, recursive);
 
         if (recursive) {
             // collect all resources in the folder (but exclude deleted ones)
@@ -338,16 +336,96 @@ public abstract class A_CmsResourceTypeFolderBase extends A_CmsResourceType {
                 CmsResource childResource = (CmsResource)resources.get(i);
                 if (childResource.isFolder()) {
                     // recurse into this method for subfolders
-                    touch(cms, securityManager, childResource, dateLastModified, dateReleased, dateExpired, recursive);
+                    setDateExpired(cms, securityManager, childResource, dateLastModified, recursive);
                 } else {
                     // handle child resources
-                    getResourceType(childResource.getTypeId()).touch(
+                    getResourceType(childResource.getTypeId()).setDateExpired(
                         cms,
                         securityManager,
                         childResource,
                         dateLastModified,
-                        dateReleased,
-                        dateExpired,
+                        recursive);
+                }
+            }
+        }
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateLastModified(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateLastModified,
+        boolean recursive) throws CmsException {
+
+        // handle the folder itself
+        super.setDateLastModified(cms, securityManager, resource, dateLastModified, recursive);
+
+        if (recursive) {
+            // collect all resources in the folder (but exclude deleted ones)
+            List resources = securityManager.readChildResources(
+                cms.getRequestContext(),
+                resource,
+                CmsResourceFilter.IGNORE_EXPIRATION,
+                true,
+                true);
+
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                if (childResource.isFolder()) {
+                    // recurse into this method for subfolders
+                    setDateLastModified(cms, securityManager, childResource, dateLastModified, recursive);
+                } else {
+                    // handle child resources
+                    getResourceType(childResource.getTypeId()).setDateLastModified(
+                        cms,
+                        securityManager,
+                        childResource,
+                        dateLastModified,
+                        recursive);
+                }
+            }
+        }
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateReleased(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateLastModified,
+        boolean recursive) throws CmsException {
+
+        // handle the folder itself
+        super.setDateReleased(cms, securityManager, resource, dateLastModified, recursive);
+
+        if (recursive) {
+            // collect all resources in the folder (but exclude deleted ones)
+            List resources = securityManager.readChildResources(
+                cms.getRequestContext(),
+                resource,
+                CmsResourceFilter.IGNORE_EXPIRATION,
+                true,
+                true);
+
+            // now walk through all sub-resources in the folder
+            for (int i = 0; i < resources.size(); i++) {
+                CmsResource childResource = (CmsResource)resources.get(i);
+                if (childResource.isFolder()) {
+                    // recurse into this method for subfolders
+                    setDateReleased(cms, securityManager, childResource, dateLastModified, recursive);
+                } else {
+                    // handle child resources
+                    getResourceType(childResource.getTypeId()).setDateReleased(
+                        cms,
+                        securityManager,
+                        childResource,
+                        dateLastModified,
                         recursive);
                 }
             }

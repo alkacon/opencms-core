@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishIssues.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $
+ * @version $Revision: 1.21 $
  */
 /**
  * Comment for <code>TestPermissions</code>.<p>
@@ -159,7 +159,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
                 
         // perform some edit on the file
         cms.lockResource(resource1);
-        cms.touch(resource1, System.currentTimeMillis(), CmsResource.DATE_RELEASED_DEFAULT, CmsResource.DATE_EXPIRED_DEFAULT, false);
+        cms.setDateLastModified(resource1, System.currentTimeMillis(), false);
         
         // assert some basic status info
         assertDateLastModifiedAfter(cms, resource1, timestamp);
@@ -358,10 +358,10 @@ public class TestPublishIssues extends OpenCmsTestCase {
         long touchTime = System.currentTimeMillis();
         
         cms.lockResource("/folder1/");
-        cms.touch("/folder1/", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
-        cms.touch("/folder1/index.html", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
-        cms.touch("/folder1/subfolder11/", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
-        cms.touch("/folder1/subfolder11/index.html", touchTime, CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, false);
+        cms.setDateLastModified("/folder1/", touchTime, false);
+        cms.setDateLastModified("/folder1/index.html", touchTime, false);
+        cms.setDateLastModified("/folder1/subfolder11/", touchTime, false);
+        cms.setDateLastModified("/folder1/subfolder11/index.html", touchTime, false);
         
         cms.unlockResource("/folder1/");
         cms.publishResource("/folder1/");
@@ -495,7 +495,7 @@ public class TestPublishIssues extends OpenCmsTestCase {
         echo("Testing publish scenario using 'publish all Siblings'");
         
         cms.lockResource("/folder1/");
-        cms.touch("/folder1/", System.currentTimeMillis(), CmsResource.TOUCH_DATE_UNCHANGED, CmsResource.TOUCH_DATE_UNCHANGED, true);
+        cms.setDateLastModified("/folder1/", System.currentTimeMillis(), true);
         cms.unlockResource("/folder1/");
         
         // publish the project (this did cause an exception because of primary key violation!)

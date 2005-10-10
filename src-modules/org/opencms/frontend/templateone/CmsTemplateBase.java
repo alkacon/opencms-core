@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBase.java,v $
- * Date   : $Date: 2005/09/21 07:52:28 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.1.0
  */

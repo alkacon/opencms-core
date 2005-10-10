@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edithtml.js,v $
- * Date   : $Date: 2005/06/25 15:18:43 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -693,34 +693,15 @@ function doEditHTML(para) {
 			alert (LANG_NOSELECTION);
 		}
 		break;
-	case 60:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=downloadgallery", "DownloadBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 61:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=htmlgallery", "HtmlBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;				
-	case 62:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=imagegallery", "PicBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;	
-	case 63:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=linkgallery", "LinkBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
-	case 64:
-		openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=tablegallery", "TableBrowser", "width=650, height=700, resizable=yes, status=no, top=20, left=100");
-		focusCount = 1;
-		openWindow.focus();
-		break;
 	default:
 		alert("Sorry, the requested function " + para + " is not implemented.");
 	}
+}
+
+function openGallery(galleryType) {
+	openWindow = window.open(workplacePath + "galleries/gallery_fs.jsp?gallerytypename=" + galleryType, "GalleryBrowser", "width=650, height=700, resizable=yes, top=20, left=100");
+	focusCount = 1;
+	openWindow.focus();
 }
 
 // Includes the document source into the HTML editor and sets up the context menue

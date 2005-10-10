@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebuserGroupsList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.workplace.list.CmsListMetadata;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,14 +43,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsWebuserGroupsList extends A_CmsGroupsForUsersList {
-
-    /** list id constant. */
-    public static final String LIST_ID = "lwug";
+public class CmsWebuserGroupsList extends CmsUserGroupsList {
 
     /**
      * Public constructor.<p>
@@ -58,7 +56,7 @@ public class CmsWebuserGroupsList extends A_CmsGroupsForUsersList {
      */
     public CmsWebuserGroupsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID);
+        super(jsp, LIST_ID + "w");
     }
 
     /**
@@ -73,12 +71,13 @@ public class CmsWebuserGroupsList extends A_CmsGroupsForUsersList {
         this(new CmsJspActionElement(context, req, res));
     }
 
-    
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListId()
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
-    public String getListId() {
+    protected void setColumns(CmsListMetadata metadata) {
 
-        return LIST_ID;
+        super.setColumns(metadata);
+        metadata.getColumnDefinition(LIST_COLUMN_ICON).getDirectAction(LIST_ACTION_ICON_DIRECT).setIconPath(
+            A_CmsUsersList.PATH_BUTTONS + "webuser_groups.png");
     }
 }

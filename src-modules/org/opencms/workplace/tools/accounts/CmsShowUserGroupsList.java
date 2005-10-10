@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsShowUserGroupsList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,14 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDirectAction;
+import org.opencms.workplace.list.CmsListItemActionIconComparator;
+import org.opencms.workplace.list.CmsListMetadata;
+
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -42,11 +50,11 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsShowUserGroupsList extends A_CmsShowUserGroupsList {
+public class CmsShowUserGroupsList extends A_CmsUserGroupsList {
 
     /** list id constant. */
     public static final String LIST_ID = "lsug";
@@ -58,8 +66,18 @@ public class CmsShowUserGroupsList extends A_CmsShowUserGroupsList {
      */
     public CmsShowUserGroupsList(CmsJspActionElement jsp) {
 
-        super(jsp, LIST_ID);
-        refreshList();
+        this(jsp, LIST_ID);
+    }
+
+    /**
+     * Public constructor.<p>
+     * 
+     * @param jsp an initialized JSP action element
+     * @param listId the id of the list
+     */
+    public CmsShowUserGroupsList(CmsJspActionElement jsp, String listId) {
+
+        super(jsp, listId, Messages.get().container(Messages.GUI_USERGROUPS_LIST_NAME_0), false);
     }
 
     /**
@@ -75,10 +93,82 @@ public class CmsShowUserGroupsList extends A_CmsShowUserGroupsList {
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#getListId()
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
-    public String getListId() {
+    public void executeListMultiActions() throws CmsRuntimeException {
 
-        return LIST_ID;
+        throwListUnsupportedActionException();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
+     */
+    public void executeListSingleActions() throws CmsRuntimeException {
+
+        throwListUnsupportedActionException();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#defaultActionHtmlStart()
+     */
+    protected String defaultActionHtmlStart() {
+
+        return getList().listJs(getLocale()) + dialogContentStart(getParamTitle());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#getGroups()
+     */
+    protected List getGroups() throws CmsException {
+
+        return getCms().getGroupsOfUser(getParamUsername());
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setDefaultAction(org.opencms.workplace.list.CmsListColumnDefinition)
+     */
+    protected void setDefaultAction(CmsListColumnDefinition nameCol) {
+
+        // no-op        
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setIconAction(org.opencms.workplace.list.CmsListColumnDefinition)
+     */
+    protected void setIconAction(CmsListColumnDefinition iconCol) {
+
+        // adds a direct group icon
+        CmsListDirectAction dirAction = new CmsGroupStateAction(LIST_ACTION_ICON_DIRECT, getCms(), true);
+        dirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_NAME_0));
+        dirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_DIRECT_HELP_0));
+        dirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group.png");
+        dirAction.setEnabled(false);
+        iconCol.addDirectAction(dirAction);
+
+        // adds an indirect group icon
+        CmsListDirectAction indirAction = new CmsGroupStateAction(LIST_ACTION_ICON_INDIRECT, getCms(), false);
+        indirAction.setName(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_NAME_0));
+        indirAction.setHelpText(Messages.get().container(Messages.GUI_GROUPS_LIST_INDIRECT_HELP_0));
+        indirAction.setIconPath(A_CmsUsersList.PATH_BUTTONS + "group_indirect.png");
+        indirAction.setEnabled(false);
+        iconCol.addDirectAction(indirAction);
+
+        iconCol.setListItemComparator(new CmsListItemActionIconComparator());
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // noop
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUserGroupsList#setStateActionCol(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setStateActionCol(CmsListMetadata metadata) {
+
+        // no-op        
     }
 }

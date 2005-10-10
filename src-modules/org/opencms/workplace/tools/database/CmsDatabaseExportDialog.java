@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,7 +117,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
         // set the name of this class to get dialog object in report
         params.put(CmsDatabaseExportReport.PARAM_CLASSNAME, this.getClass().getName());
         // set style to display report in correct layout
-        params.put(PARAM_STYLE, "new");
+        params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
         // set close link to get back to overview after finishing the import
         params.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/database"));
         // redirect to the report output JSP

@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsGroupDisabledStateAction.java,v $
- * Date   : $Date: 2005/09/19 07:51:00 $
- * Version: $Revision: 1.10 $
+ * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupRemoveAction.java,v $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,62 +33,74 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
-import org.opencms.workplace.list.A_CmsListTwoStatesAction;
-import org.opencms.workplace.list.I_CmsListDirectAction;
+import org.opencms.workplace.list.CmsListDefaultAction;
 
 import java.util.List;
 
 /**
- * Show diferent states depending on user direct/indirect group assignment.<p>
+ * Shows direct/indirect assigned groups and enabled/disabled a remove action.<p>
  * 
- * @author Michael Moossen 
- *  
- * @version $Revision: 1.10 $ 
+ * @author Michael Moossen  
+ * 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsGroupDisabledStateAction extends A_CmsListTwoStatesAction {
+public class CmsGroupRemoveAction extends CmsListDefaultAction {
+
+    /** The cms context. */
+    private final CmsObject m_cms;
+
+    /** The direct group flag. */
+    private final boolean m_direct;
 
     /** The user name. */
     private String m_userName;
 
     /**
      * Default Constructor.<p>
-     *
+     * 
      * @param id the unique id
      * @param cms the cms context
-     * @param userName the name of a valid opencms user
+     * @param direct the direct group flag
      */
-    protected CmsGroupDisabledStateAction(String id, CmsObject cms, String userName) {
+    public CmsGroupRemoveAction(String id, CmsObject cms, boolean direct) {
 
-        super(id, cms);
-        setUserName(userName);
+        super(id);
+        m_direct = direct;
+        m_cms = cms;
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#isEnabled()
+     * Returns the direct group flag.<p>
+     *
+     * @return the direct group flag
      */
-    public boolean isEnabled() {
+    public boolean isDirect() {
 
-        return false;
+        return m_direct;
     }
 
     /**
-     * @see org.opencms.workplace.list.A_CmsListToggleAction#selectAction()
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
      */
-    public I_CmsListDirectAction selectAction() {
+    public boolean isVisible() {
 
-        try {
+        if (getItem() != null) {
             String groupName = (String)getItem().get(A_CmsUserGroupsList.LIST_COLUMN_NAME);
-            List dGroups = getCms().getDirectGroupsOfUser(m_userName);
-            CmsGroup group = getCms().readGroup(groupName);
-            if (dGroups.contains(group)) {
-                return getFirstAction();
+            try {
+                List dGroups = m_cms.getDirectGroupsOfUser(m_userName);
+                CmsGroup group = m_cms.readGroup(groupName);
+                if (isDirect()) {
+                    return dGroups.contains(group);
+                } else {
+                    return !dGroups.contains(group);
+                }
+            } catch (Exception e) {
+                return false;
             }
-        } catch (Exception e) {
-            // ignore
         }
-        return getSecondAction();
+        return super.isVisible();
     }
 
     /**

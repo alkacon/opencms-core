@@ -1,6 +1,6 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*"%>
 <%	
 	// initialize the workplace class
-	CmsUsersList wp = new CmsUsersList(pageContext, request, response);
-	wp.actionDeleteUser();	
+	CmsUserDependenciesList wp = new CmsUserDependenciesList(pageContext, request, response);
+	wp.displayDialog();	
 %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,6 +97,9 @@ public class CmsAccessControlEntry {
     /** Flag to indicate that an access control entry overwrites inherited entries. */
     public static final int ACCESS_FLAGS_OVERWRITE = 4;
 
+    /** Flag to indicate that the principal is responsible for the resource. */
+    public static final int ACCESS_FLAGS_RESPONSIBLE = 64;
+    
     /**
      * Constructor to create a new access control entry for a given resource
      * based on an existing access control entry.<p>
@@ -188,6 +191,15 @@ public class CmsAccessControlEntry {
                         m_flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
                     }
                     break;
+                case 'L':
+                case 'l':
+                    if (prefix.charAt(0) == '+') {
+                        m_flags |= CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
+                    }
+                    if (prefix.charAt(0) == '-') {
+                        m_flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
+                    }
+                    break;    
                 default:
                     permissionString.append(prefix);
                     permissionString.append(suffix);
@@ -198,6 +210,20 @@ public class CmsAccessControlEntry {
         m_permissions = new CmsPermissionSetCustom(permissionString.toString());
     }
 
+    /**
+     * Returns the string representation of the "responsible" flag.<p>
+     * 
+     * @return string of the format {{+|-}s}*
+     */
+    public String getResponsibleString() {
+
+        if (isResponsible()) {
+            return "+l";
+        } else  {
+            return "+l";
+        }
+    }
+    
     /**
      * Sets the explicitly denied permissions in the access control entry.<p>
      * 
@@ -329,6 +355,16 @@ public class CmsAccessControlEntry {
     public boolean isInherited() {
 
         return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_INHERITED) > 0);
+    }
+    
+    /**
+     * Returns if the principal is responsible for the current resource.<p>
+     * 
+     * @return  true ,if the principal is responsible for the current resource
+     */
+    public boolean isResponsible() {
+
+        return ((m_flags & CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE) > 0);
     }
 
     /**

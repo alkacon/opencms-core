@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditUserDialog.java,v $
- * Date   : $Date: 2005/07/12 17:21:12 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2006/03/27 14:52:49 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,15 +54,13 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.PageContext;
 
 /**
  * Dialog to edit new or existing user in the administration view.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,18 +98,6 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
     public A_CmsEditUserDialog(CmsJspActionElement jsp) {
 
         super(jsp);
-    }
-
-    /**
-     * Public constructor with JSP variables.<p>
-     * 
-     * @param context the JSP page context
-     * @param req the JSP request
-     * @param res the JSP response
-     */
-    public A_CmsEditUserDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
-
-        this(new CmsJspActionElement(context, req, res));
     }
 
     /**
@@ -218,7 +204,11 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
             result.append(dialogBlockEnd());
             result.append(dialogBlockStart(key(Messages.GUI_USER_EDITOR_LABEL_AUTHENTIFICATION_BLOCK_0)));
             result.append(createWidgetTableStart());
-            result.append(createDialogRowsHtml(9, 11));
+            if (isPwdChangeAllowed(m_user)) {
+                result.append(createDialogRowsHtml(9, 11));
+            } else {
+                result.append(createDialogRowsHtml(9, 9));
+            }
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
         }
@@ -252,22 +242,35 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         setKeyPrefix(KEY_PREFIX);
 
         // widgets to display
-        if (m_user.getId() == null) {
+        if (m_user.getId() == null && isEditable(m_user)) {
             addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsInputWidget()));
         } else {
             addWidget(new CmsWidgetDialogParameter(m_user, "name", PAGES[0], new CmsDisplayWidget()));
         }
-        addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        if (isEditable(m_user)) {
+            addWidget(new CmsWidgetDialogParameter(m_user, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsInputWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "address", "", PAGES[0], new CmsInputWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", "", PAGES[0], new CmsInputWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(m_user, "city", "", PAGES[0], new CmsInputWidget(), 0, 1));
+            addWidget(new CmsWidgetDialogParameter(m_user, "country", "", PAGES[0], new CmsInputWidget(), 0, 1));
+        } else {
+            addWidget(new CmsWidgetDialogParameter(m_user, "description", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "lastname", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "firstname", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "email", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "address", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "zipcode", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "city", PAGES[0], new CmsDisplayWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_user, "country", PAGES[0], new CmsDisplayWidget()));
+        }
         addWidget(new CmsWidgetDialogParameter(m_user, "enabled", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
+        if (isPwdChangeAllowed(m_user)) {
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "newPwd", PAGES[0], new CmsPasswordWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_pwdInfo, "confirmation", PAGES[0], new CmsPasswordWidget()));
+        }
     }
 
     /**
@@ -354,6 +357,29 @@ public abstract class A_CmsEditUserDialog extends CmsWidgetDialog {
         dialogObject.put(PWD_OBJECT, m_pwdInfo);
         setDialogObject(dialogObject);
 
+    }
+
+    /**
+     * Tests if the given user is editable or not.<p>
+     * 
+     * Not editable means that the user can only be activated and deactivated.<p>
+     * 
+     * @param user the user to test 
+     * 
+     * @return the editable flag
+     */
+    protected abstract boolean isEditable(CmsUser user);
+
+    /**
+     * Indicates if the pwd can be edited or not.<p>
+     * 
+     * @param user the edited cms user
+     * 
+     * @return <code>true</code> if the pwd can be edited
+     */
+    protected boolean isPwdChangeAllowed(CmsUser user) {
+
+        return user == user; // to avoid warning 
     }
 
     /**

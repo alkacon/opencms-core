@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/08/03 08:58:53 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,13 +36,16 @@ import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * A group in the OpenCms permission system.<p>
  *
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.17 $
  * 
  * @since 6.0.0 
  * 
@@ -103,6 +106,66 @@ public class CmsGroup implements I_CmsPrincipal {
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_GROUPNAME_VALIDATION_0));
         }
+    }
+
+    /**
+     * Filters out all groups with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * @param groups the list of <code>{@link CmsGroup}</code>
+     * 
+     * @return the filtered groups list
+     */
+    public static List filterCore(List groups) {
+    
+        Iterator it = groups.iterator();
+        while (it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            if (group.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
+                it.remove();
+            }
+        }
+        return groups;
+    }
+
+    /**
+     * Filters out all groups that does not have the given flag set,
+     * but leaving all groups with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * @param groups the list of <code>{@link CmsGroup}</code>
+     * @param flag the flag for filtering
+     * 
+     * @return the filtered groups list
+     */
+    public static List filterCoreFlag(List groups, int flag) {
+    
+        Iterator it = groups.iterator();
+        while (it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            if (group.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (group.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return groups;
+    }
+
+    /**
+     * Filters out all groups that does not have the given flag set.<p>
+     * 
+     * @param groups the list of <code>{@link CmsGroup}</code>
+     * @param flag the flag for filtering
+     * 
+     * @return the filtered groups list
+     */
+    public static List filterFlag(List groups, int flag) {
+    
+        Iterator it = groups.iterator();
+        while (it.hasNext()) {
+            CmsGroup group = (CmsGroup)it.next();
+            if ((group.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return groups;
     }
 
     /**
@@ -290,6 +353,16 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
+     * Sets this groups flags.<p>
+     * 
+     * @param flags the flags to set
+     */
+    public void setFlags(int flags) {
+
+        m_flags = flags;
+    }
+
+    /**
      * Sets the name.<p>
      *
      * @param name the name to set
@@ -360,15 +433,5 @@ public class CmsGroup implements I_CmsPrincipal {
         result.append(" description:");
         result.append(m_description);
         return result.toString();
-    }
-
-    /**
-     * Sets this groups flags.<p>
-     * 
-     * @param flags the flags to set
-     */
-    void setFlags(int flags) {
-
-        m_flags = flags;
     }
 }

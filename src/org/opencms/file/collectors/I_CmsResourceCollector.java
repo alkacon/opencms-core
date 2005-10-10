@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/I_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/27 14:52:50 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.List;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -54,6 +54,25 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return a list of all collector names this collector implementation supports
      */
     List getCollectorNames();
+
+    /**
+     * Returns the link that must be executed when a user clicks on the direct edit
+     * "new" button on a list created by the default collector.<p> 
+     * 
+     * If this method returns <code>null</code>, 
+     * it indicated that the selected collector implementation does not support a "create link",
+     * and so no "new" button will should shown on lists generated with this collector.<p>
+     *  
+     * @param cms the current CmsObject 
+     * 
+     * @return the link to execute after a "new" button was clicked
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * @see #getCreateParam(CmsObject, String, String)
+     * 
+     */
+    String getCreateLink(CmsObject cms) throws CmsException, CmsDataAccessException;
 
     /**
      * Returns the link that must be executed when a user clicks on the direct edit
@@ -75,6 +94,24 @@ public interface I_CmsResourceCollector extends Comparable {
      * 
      */
     String getCreateLink(CmsObject cms, String collectorName, String param) throws CmsException, CmsDataAccessException;
+    
+    /**
+     * Returns the default parameter that must be passed to the 
+     * {@link #getCreateLink(CmsObject, String, String)} method.<p> 
+     * 
+     * If this method returns <code>null</code>, 
+     * it indicates that the selected collector implementation does not support a "create link",
+     * and so no "new" button will should shown on lists generated with this collector.<p>
+     * 
+     * @param cms the current CmsObject 
+     * 
+     * @return the parameter that will be passed to the {@link #getCreateLink(CmsObject, String, String)} method, or null
+     * 
+     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     * 
+     * @see #getCreateLink(CmsObject, String, String)
+     */
+    String getCreateParam(CmsObject cms) throws CmsDataAccessException;
 
     /**
      * Returns the parameter that must be passed to the 
@@ -95,6 +132,20 @@ public interface I_CmsResourceCollector extends Comparable {
      * @see #getCreateLink(CmsObject, String, String)
      */
     String getCreateParam(CmsObject cms, String collectorName, String param) throws CmsDataAccessException;
+    
+    /**
+     * Returns the default collector name to use for collecting resources.<p>
+     * 
+     * @return the default collector name
+     */
+    String getDefaultCollectorName();
+
+    /**
+     * Returns the default collector parameter to use for collecting resources.<p>
+     * 
+     * @return the default collector parameter
+     */ 
+    String getDefaultCollectorParam();
 
     /**
      * Returns the "order weight" of this collector.<p>
@@ -106,7 +157,20 @@ public interface I_CmsResourceCollector extends Comparable {
      * @return the "order weight" of this collector
      */
     int getOrder();
-
+    
+    /** 
+     * Returns a list of {@link org.opencms.file.CmsResource} Objects that are 
+     * gathered in the VFS using the default collector name and parameter.<p>
+     * 
+     * @param cms the current CmsObject 
+     * 
+     * @return a list of CmsXmlContent objects
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
+     */
+    List getResults(CmsObject cms) throws CmsDataAccessException, CmsException;
+    
     /** 
      * Returns a list of {@link org.opencms.file.CmsResource} Objects that are 
      * gathered in the VFS using the named collector.<p>
@@ -121,7 +185,21 @@ public interface I_CmsResourceCollector extends Comparable {
      * @throws CmsDataAccessException if the param attrib of the corresponding collector tag is invalid
      */
     List getResults(CmsObject cms, String collectorName, String param) throws CmsDataAccessException, CmsException;
-
+    
+    /**
+     * Sets the default collector name to use for collecting resources.<p>
+     * 
+     * @param collectorName the default collector name
+     */
+    void setDefaultCollectorName(String collectorName);
+    
+    /**
+     * Sets the default collector parameter to use for collecting resources.<p>
+     * 
+     * @param param the default collector parameter
+     */
+    void setDefaultCollectorParam(String param);
+    
     /**
      * Sets the "order weight" of this collector.<p>
      * 

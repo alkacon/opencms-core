@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsVfsDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.112 $
+ * Date   : $Date: 2006/03/27 14:52:26 $
+ * Version: $Revision: 1.114 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.112 $
+ * @version $Revision: 1.114 $
  * 
  * @since 6.0.0 
  */
@@ -398,6 +398,39 @@ public interface I_CmsVfsDriver {
     List readResources(CmsDbContext dbc, int currentProject, int state, int mode) throws CmsDataAccessException;
 
     /**
+     * Returns all resources associated to a given principal via an ACE.<p> 
+     * 
+     * @param dbc the current database context
+     * @param project the to read the entries from
+     * @param principalId the id of the principal
+
+     * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException;
+
+    /**
+     * Returns all resources associated to a given principal through some of following attributes.<p> 
+     * 
+     * <ul>
+     *    <li>User Created</li>
+     *    <li>User Last Modified</li>
+     * </ul><p>
+     * 
+     * @param dbc the current database context
+     * @param project the to read the entries from
+     * @param principalId the id of the principal
+
+     * @return a list of <code>{@link org.opencms.file.CmsResource}</code> objects
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    List readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException;
+
+    /**
      * Reads all resources that have a value set for the specified property (definition), in the given path.<p>
      * 
      * Both individual and shared properties of a resource are checked.<p>
@@ -451,7 +484,11 @@ public interface I_CmsVfsDriver {
      * @param type the resource type of matching resources or C_READ_IGNORE_TYPES (meaning inverted by C_READMODE_EXCLUDE_TYPE)
      * @param state the state of matching resources or READ_IGNORE_STATE (meaning inverted by C_READMODE_EXCLUDE_STATE)
      * @param startTime the start of the time range for the last modification date of matching resources or READ_IGNORE_TIME 
-     * @param endTime the end of the time range for the last modification date of mathcing resources or READ_IGNORE_TIME
+     * @param endTime the end of the time range for the last modification date of matching resources or READ_IGNORE_TIME
+     * @param releasedAfter the start of the time range for the release date of matching resources
+     * @param releasedBefore the end of the time range for the release date of matching resources
+     * @param expiredAfter the start of the time range for the expire date of matching resources
+     * @param expiredBefore the end of the time range for the expire date of matching resources
      * @param mode additional mode flags:
      *  C_READMODE_INCLUDE_TREE 
      *  C_READMODE_EXCLUDE_TREE
@@ -470,8 +507,12 @@ public interface I_CmsVfsDriver {
         int state,
         long startTime,
         long endTime,
+        long releasedAfter,
+        long releasedBefore,
+        long expiredAfter,
+        long expiredBefore,
         int mode) throws CmsDataAccessException;
-
+    
     /**
      * Reads all siblings that point to the resource record of a specified resource.<p>
      * 
@@ -524,6 +565,24 @@ public interface I_CmsVfsDriver {
      */
     void replaceResource(CmsDbContext dbc, CmsResource newResource, byte[] newResourceContent, int newResourceType)
     throws CmsDataAccessException;
+
+    /**
+     * Transfers the attributes of a resource from to the given users.<p>
+     * 
+     * @param dbc the current database context
+     * @param project the current project
+     * @param resource the resource to modify
+     * @param createdUser the id of the user to be set as the creator of the resource
+     * @param lastModifiedUser the id of the user to be set as the las modificator of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void transferResource(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsResource resource,
+        CmsUUID createdUser,
+        CmsUUID lastModifiedUser) throws CmsDataAccessException;
 
     /**
      * Validates if the specified resource ID in the tables of the specified project {offline|online} exists.<p>
@@ -666,5 +725,4 @@ public interface I_CmsVfsDriver {
      */
     void writeResourceState(CmsDbContext dbc, CmsProject project, CmsResource resource, int changed)
     throws CmsDataAccessException;
-
 }

@@ -235,11 +235,12 @@ Each job can have an optional list of parameters.
 # Provides access to the names of the OpenCms default users and groups. 
 -->
 
-<!ELEMENT defaultusers (user-admin, user-guest, user-export, group-administrators, group-projectmanagers, group-users, group-guests)>
+<!ELEMENT defaultusers (user-admin, user-guest, user-export, user-deletedresource?, group-administrators, group-projectmanagers, group-users, group-guests)>
 
 <!ELEMENT user-admin (#PCDATA)>
 <!ELEMENT user-guest (#PCDATA)>
 <!ELEMENT user-export (#PCDATA)>
+<!ELEMENT user-deletedresource (#PCDATA)>
 <!ELEMENT group-administrators (#PCDATA)>
 <!ELEMENT group-projectmanagers (#PCDATA)>
 <!ELEMENT group-users (#PCDATA)>
@@ -259,7 +260,7 @@ Each job can have an optional list of parameters.
 #
 # MemoryMonitor configuration
 -->
-<!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval, warning-interval, email-sender?, email-receiver?)>
+<!ELEMENT memorymonitor (maxusagepercent, log-interval, email-interval?, warning-interval, email-sender?, email-receiver?)>
 
 <!ELEMENT maxusagepercent (#PCDATA)>
 <!ELEMENT log-interval (#PCDATA)>
@@ -387,6 +388,6 @@ Each job can have an optional list of parameters.
 <!ELEMENT size-accesscontrollists (#PCDATA)>
 
 <!--
-# The the size of the security manager's cache for permission checks.
+# The size of the security manager's cache for permission checks.
 -->
 <!ELEMENT size-permissions (#PCDATA)>

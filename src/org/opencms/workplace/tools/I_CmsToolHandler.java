@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,9 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
+import org.opencms.workplace.CmsWorkplace;
+
+import java.util.Map;
 
 /**
  * Interface for an admin tool handler.<p>
@@ -41,7 +44,7 @@ import org.opencms.file.CmsObject;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,12 +93,14 @@ public interface I_CmsToolHandler {
     String getName();
 
     /**
-     * Returns the needed parameters.<p>
+     * Returns the evaluated map of parameters.<p>
      * 
-     * @return the parameters
+     * @param wp the workplace context 
+     * 
+     * @return the parameters map
      */
-    String getParameters();
-
+    Map getParameters(CmsWorkplace wp);
+    
     /**
      * Returns the tool path to install the tool in.<p>
      *

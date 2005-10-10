@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/06/29 09:24:48 $
- * Version: $Revision: 1.30 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,6 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30 $ 
+ * @version $Revision: 1.31 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +63,9 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Request parameter name for the style type. */
     public static final String PARAM_STYLE = "style";
+
+    /** Request parameter value for the 'new' dialog style. */
+    public static final String STYLE_NEW = "new";
 
     /** Path parameter value. */
     private String m_paramPath;
@@ -122,14 +124,11 @@ public class CmsToolDialog extends CmsWorkplace {
         StringBuffer html = new StringBuffer(512);
         String toolPath = getCurrentToolPath();
         String parentPath = getParentPath();
-        String upLevelLink = CmsToolManager.linkForToolPath(getJsp(), parentPath);
         CmsTool parentTool = getToolManager().resolveAdminTool(parentPath);
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(parentTool.getHandler().getParameters())) {
-            if (!upLevelLink.endsWith("&")) {
-                upLevelLink += "&";
-            }
-            upLevelLink += resolveMacros(parentTool.getHandler().getParameters());
-        }
+        String upLevelLink = CmsToolManager.linkForToolPath(
+            getJsp(),
+            parentPath,
+            parentTool.getHandler().getParameters(this));
         String parentName = getToolManager().resolveAdminTool(parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
@@ -246,7 +245,6 @@ public class CmsToolDialog extends CmsWorkplace {
 
         StringBuffer retValue = new StringBuffer(512);
         if (segment == HTML_START) {
-            retValue.append("<p>&nbsp;</p>\n");
             retValue.append("<!-- icons block area start -->\n");
             retValue.append("<div class=\"dialogblockborder dialogblockborderheadline iconblock\" unselectable=\"on\" >\n");
             retValue.append("\t<div class=\"dialogblock\" unselectable=\"on\">\n");
@@ -260,6 +258,7 @@ public class CmsToolDialog extends CmsWorkplace {
             retValue.append("\t\t</table>\n");
             retValue.append("\t</div>\n");
             retValue.append("</div>\n");
+            retValue.append("<p>&nbsp;</p>\n");
             retValue.append("<!-- icons block area end -->\n");
         }
         return retValue.toString();
@@ -304,8 +303,8 @@ public class CmsToolDialog extends CmsWorkplace {
 
         // adjust params if called as default
         if (!useNewStyle()) {
-            params.put(PARAM_STYLE, new String[] {"new"});
-            setParamStyle("new");
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
+            setParamStyle(CmsToolDialog.STYLE_NEW);
         }
 
         try {
@@ -314,18 +313,8 @@ public class CmsToolDialog extends CmsWorkplace {
             // set close link
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(wp.getParamCloseLink())) {
                 if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                    Map argMap = new HashMap();
-                    String toolParams = getToolManager().resolveAdminTool(getParamPath()).getHandler().getParameters();
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(toolParams)) {
-                        toolParams = wp.resolveMacros(toolParams);
-                        Iterator itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
-                        while (itArgs.hasNext()) {
-                            String arg = (String)itArgs.next();
-                            int pos = arg.indexOf("=");
-                            argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
-                        }
-                    }
-                    wp.setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath(), argMap));
+                    Map args = getToolManager().resolveAdminTool(getParentPath()).getHandler().getParameters(wp);
+                    wp.setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath(), args));
                     params.put(CmsDialog.PARAM_CLOSELINK, new String[] {wp.getParamCloseLink()});
                 }
             }
@@ -477,7 +466,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public boolean useNewStyle() {
 
-        return getParamStyle() != null && getParamStyle().equals("new");
+        return getParamStyle() != null && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2005/07/12 17:21:12 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,16 @@
 
 package org.opencms.workplace.tools.accounts;
 
+import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
+
+import java.util.ArrayList;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -44,11 +51,29 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
+public class CmsGroupOverviewDialog extends CmsWidgetDialog {
+
+    /** localized messages Keys prefix. */
+    public static final String KEY_PREFIX = "group.ov";
+
+    /** Defines which pages are valid for this dialog. */
+    public static final String[] PAGES = {"page1"};
+
+    /** Request parameter name for the user id. */
+    public static final String PARAM_GROUPID = "groupid";
+
+    /** The user object that is edited on this dialog. */
+    protected CmsGroup m_group;
+
+    /** Stores the value of the request parameter for the group id. */
+    private String m_paramGroupid;
+
+    /** Auxiliary Property for better representation of the bean parentId property. */
+    private String m_parentGroup;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -71,6 +96,65 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
     public CmsGroupOverviewDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Commits the edited group to the db.<p>
+     */
+    public void actionCommit() {
+
+        // no saving needed
+        setCommitErrors(new ArrayList());
+    }
+
+    /**
+     * Returns the user id parameter value.<p>
+     * 
+     * @return the user id parameter value
+     */
+    public String getParamGroupid() {
+
+        return m_paramGroupid;
+    }
+
+    /**
+     * Returns the parent Group name.<p>
+     *
+     * @return the parent Group name
+     */
+    public String getParentGroup() {
+
+        return m_parentGroup;
+    }
+
+    /**
+     * Sets the user id parameter value.<p>
+     * 
+     * @param userId the user id parameter value
+     */
+    public void setParamGroupid(String userId) {
+
+        m_paramGroupid = userId;
+    }
+
+    /**
+     * Sets the parent Group name.<p>
+     *
+     * @param parentGroup the parent Group name to set
+     */
+    public void setParentGroup(String parentGroup) {
+
+        if (parentGroup == null || parentGroup.equals("") || parentGroup.equals("null") || parentGroup.equals("none")) {
+            parentGroup = null;
+        }
+        if (parentGroup != null) {
+            try {
+                getCms().readGroup(parentGroup);
+            } catch (CmsException e) {
+                throw new CmsIllegalArgumentException(e.getMessageContainer());
+            }
+        }
+        m_parentGroup = parentGroup;
     }
 
     /**
@@ -100,6 +184,7 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
             result.append(createWidgetTableEnd());
             result.append(dialogBlockEnd());
             if (!isOverview()) {
+                result.append(createWidgetTableEnd());
                 return result.toString();
             }
             result.append(dialogBlockStart(key(Messages.GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0)));
@@ -149,6 +234,38 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#getPageArray()
+     */
+    protected String[] getPageArray() {
+
+        return PAGES;
+    }
+
+    /**
+     * Initializes the group object.<p>
+     */
+    protected void initGroupObject() {
+
+        try {
+            // edit an existing user, get the user object from db
+            m_group = getCms().readGroup(new CmsUUID(getParamGroupid()));
+        } catch (CmsException e) {
+            // should never happen
+        }
+    }
+
+    /**
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        // add specific dialog resource bundle
+        addMessages(Messages.get().getBundleName());
+        // add default resource bundles
+        super.initMessages();
+    }
+
+    /**
      * Overridden to set the online help path for this dialog.<p>
      * 
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceMembers(org.opencms.jsp.CmsJspActionElement)
@@ -160,12 +277,21 @@ public class CmsGroupOverviewDialog extends CmsEditGroupDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWidgetDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        // test the needed parameters
+        getCms().readGroup(new CmsUUID(getParamGroupid())).getName();
+    }
+
+    /**
      * Checks if the group overview has to be displayed.<p>
      * 
      * @return <code>true</code> if the group overview has to be displayed
      */
     private boolean isOverview() {
 
-        return getCurrentToolPath().equals("/accounts/groups/edit");
+        return getCurrentToolPath().endsWith("/groups/edit");
     }
 }

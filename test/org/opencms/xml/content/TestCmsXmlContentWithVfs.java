@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/10/09 09:08:25 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.41 $
+ * @version $Revision: 1.42 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -821,7 +821,7 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(TestCustomInputWidgetImpl.class.getName(), widget.getClass().getName());
         assertEquals("Configuration for Toast", handler.getConfiguration(xmlcontent.getValue("Toast", Locale.ENGLISH)));
         // custom widget configuration has extended the handler String
-        // assertEquals("Configuration for Toast[some addition here]", widget.getConfiguration());        
+        assertEquals("Configuration for Toast[some addition here]", widget.getConfiguration());        
     }
 
     /**

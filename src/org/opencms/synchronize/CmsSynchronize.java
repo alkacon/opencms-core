@@ -1,9 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.61 $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.61 $
+ * Date   : $Date: 2005/10/10 16:11:11 $
+ * Version: $Revision: 1.62 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.61 $ 
+ * @version $Revision: 1.62 $ 
  * 
  * @since 6.0.0 
  */
@@ -596,11 +594,9 @@ public class CmsSynchronize {
                 }
             }
             // we have to read the new resource again, to get the correct timestamp
-            m_cms.touch(
+            m_cms.setDateLastModified(
                 m_cms.getSitePath(newFile),
                 fsFile.lastModified(),
-                CmsResource.TOUCH_DATE_UNCHANGED,
-                CmsResource.TOUCH_DATE_UNCHANGED,
                 false);
             CmsResource newRes = m_cms.readResource(m_cms.getSitePath(newFile));
             // add resource to synchronisation list
@@ -987,11 +983,9 @@ public class CmsSynchronize {
         }
         // everything is done now, so unlock the resource
         // read the resource again, nescessary to get the actual timestamps
-        m_cms.touch(
+        m_cms.setDateLastModified(
             resourcename,
             fsFile.lastModified(),
-            CmsResource.TOUCH_DATE_UNCHANGED,
-            CmsResource.TOUCH_DATE_UNCHANGED,
             false);
         res = m_cms.readResource(resourcename);
 

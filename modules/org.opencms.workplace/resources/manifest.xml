@@ -70,7 +70,15 @@
             <resource uri="/system/workplace/resources/commons/workplace.png"/>
             <resource uri="/system/workplace/resources/components/js_calendar/"/>
             <resource uri="/system/workplace/resources/components/js_colorpicker/"/>
-            <resource uri="/system/workplace/resources/components/widgets/"/>
+            <resource uri="/system/workplace/resources/components/widgets/colorpicker.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/combo.png"/>
+			<resource uri="/system/workplace/resources/components/widgets/combobox.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/downloadgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/fileselector.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/htmlgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/imagegallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/linkgallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
             <resource uri="/system/workplace/resources/filetypes/binary.gif"/>
             <resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
             <resource uri="/system/workplace/resources/filetypes/folder.gif"/>

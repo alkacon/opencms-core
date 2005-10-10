@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.255 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.256 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.255 $
+ * @version $Revision: 1.256 $
  * 
  * @since 6.0.0 
  */
@@ -1506,6 +1506,73 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
     }
 
     /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesForPrincipalACE(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public List readResourcesForPrincipalACE(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        CmsResource currentResource = null;
+        List resources = new ArrayList();
+
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_SELECT_RESOURCES_FOR_PRINCIPAL_ACE");
+
+            stmt.setString(1, principalId.toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                currentResource = createFile(res, project.getId(), false);
+                resources.add(currentResource);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return resources;
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#readResourcesForPrincipalAttr(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.util.CmsUUID)
+     */
+    public List readResourcesForPrincipalAttr(CmsDbContext dbc, CmsProject project, CmsUUID principalId)
+    throws CmsDataAccessException {
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        ResultSet res = null;
+        CmsResource currentResource = null;
+        List resources = new ArrayList();
+
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_SELECT_RESOURCES_FOR_PRINCIPAL_ATTR");
+
+            stmt.setString(1, principalId.toString());
+            stmt.setString(2, principalId.toString());
+            res = stmt.executeQuery();
+
+            while (res.next()) {
+                currentResource = createFile(res, project.getId(), false);
+                resources.add(currentResource);
+            }
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, res);
+        }
+        return resources;
+    }
+
+    /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourcesWithProperty(org.opencms.db.CmsDbContext, int, org.opencms.util.CmsUUID, String)
      */
     public List readResourcesWithProperty(CmsDbContext dbc, int projectId, CmsUUID propertyDef, String path)
@@ -1580,9 +1647,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         return resources;
     }
-
+    
     /**
-     * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(org.opencms.db.CmsDbContext, int, java.lang.String, int, int, long, long, int)
+     * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(org.opencms.db.CmsDbContext, int, java.lang.String, int, int, long, long, long, long, long, long, int)
      */
     public List readResourceTree(
         CmsDbContext dbc,
@@ -1590,8 +1657,12 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         String parentPath,
         int type,
         int state,
-        long startTime,
-        long endTime,
+        long lastModifiedAfter,
+        long lastModifiedBefore,
+        long releasedAfter,
+        long releasedBefore,
+        long expiredAfter,
+        long expiredBefore,
         int mode) throws CmsDataAccessException {
 
         List result = new ArrayList();
@@ -1603,7 +1674,9 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         prepareProjectCondition(projectId, mode, conditions, params);
         prepareResourceCondition(projectId, mode, conditions);
         prepareTypeCondition(projectId, type, mode, conditions, params);
-        prepareTimeRangeCondition(projectId, startTime, endTime, conditions, params);
+        prepareTimeRangeCondition(projectId, lastModifiedAfter, lastModifiedBefore, conditions, params);
+        prepareReleasedTimeRangeCondition(projectId, releasedAfter, releasedBefore, conditions, params);
+        prepareExpiredTimeRangeCondition(projectId, expiredAfter, expiredBefore, conditions, params);
         preparePathCondition(projectId, parentPath, mode, conditions, params);
         prepareStateCondition(projectId, state, mode, conditions, params);
 
@@ -1815,6 +1888,41 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             stmt.setString(3, newResource.getResourceId().toString());
             stmt.executeUpdate();
 
+        } catch (SQLException e) {
+            throw new CmsDbSqlException(Messages.get().container(
+                Messages.ERR_GENERIC_SQL_1,
+                CmsDbSqlException.getErrorQuery(stmt)), e);
+        } finally {
+            m_sqlManager.closeAll(dbc, conn, stmt, null);
+        }
+    }
+
+    /**
+     * @see org.opencms.db.I_CmsVfsDriver#transferResource(org.opencms.db.CmsDbContext, org.opencms.file.CmsProject, org.opencms.file.CmsResource, org.opencms.util.CmsUUID, org.opencms.util.CmsUUID)
+     */
+    public void transferResource(
+        CmsDbContext dbc,
+        CmsProject project,
+        CmsResource resource,
+        CmsUUID createdUser,
+        CmsUUID lastModifiedUser) throws CmsDataAccessException {
+
+        if (createdUser == null) {
+            createdUser = resource.getUserCreated();
+        }
+        if (lastModifiedUser == null) {
+            lastModifiedUser = resource.getUserLastModified();
+        }
+
+        PreparedStatement stmt = null;
+        Connection conn = null;
+        try {
+            conn = m_sqlManager.getConnection(dbc, project.getId());
+            stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_TRANSFER_RESOURCE");
+            stmt.setString(1, createdUser.toString());
+            stmt.setString(2, lastModifiedUser.toString());
+            stmt.setString(3, resource.getResourceId().toString());
+            stmt.executeUpdate();
         } catch (SQLException e) {
             throw new CmsDbSqlException(Messages.get().container(
                 Messages.ERR_GENERIC_SQL_1,
@@ -2198,9 +2306,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         try {
             conn = m_sqlManager.getConnection(dbc, project.getId());
 
-            // Refactor I_CmsRuntimeInfo in signature to Object
-            // rename 'runtimeInfo' to 'param'
-
             if (changed == CmsDriverManager.UPDATE_RESOURCE) {
                 stmt = m_sqlManager.getPreparedStatement(conn, project, "C_RESOURCES_UPDATE_RESOURCE_STATELASTMODIFIED");
                 stmt.setInt(1, resource.getState());
@@ -2498,7 +2603,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         }
 
         if ("/".equalsIgnoreCase(parent)) {
-            // if root folder is parent, no additional condition is needed since all resource match anyway
+            // if root folder is parent, no additional condition is needed since all resources match anyway
             return;
         }
 
@@ -2608,6 +2713,54 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against endTime
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(endTime));
+        }
+    }
+    
+    private void prepareReleasedTimeRangeCondition(
+        int projectId,
+        long startTime,
+        long endTime,
+        StringBuffer conditions,
+        List params) {
+
+        if (startTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match released date against startTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_AFTER"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(startTime));
+        }
+
+        if (endTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match released date against endTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_BEFORE"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(endTime));
+        }
+    }
+    
+    private void prepareExpiredTimeRangeCondition(
+        int projectId,
+        long startTime,
+        long endTime,
+        StringBuffer conditions,
+        List params) {
+
+        if (startTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match expired date against startTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_AFTER"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(startTime));
+        }
+
+        if (endTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match expired date against endTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_BEFORE"));
             conditions.append(END_CONDITION);
             params.add(String.valueOf(endTime));
         }

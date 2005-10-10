@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsVfsFileWidget.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.CmsWorkplace;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,31 @@ public class CmsVfsFileWidget extends A_CmsWidget {
     public CmsVfsFileWidget(String configuration) {
 
         super(configuration);
+    }
+
+    /**
+     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
+     */
+    public String getConfiguration() {
+
+        StringBuffer result = new StringBuffer(8);
+
+        // append site selector flag to configuration
+        if (m_showSiteSelector) {
+            result.append(CONFIGURATION_SHOWSITESELECTOR);
+        } else {
+            result.append(CONFIGURATION_HIDESITESELECTOR);
+        }
+
+        // append start site to configuration
+        if (m_startSite != null) {
+            result.append("|");
+            result.append(CONFIGURATION_STARTSITE);
+            result.append("=");
+            result.append(m_startSite);
+        }
+
+        return result.toString();
     }
 
     /**
@@ -246,30 +271,5 @@ public class CmsVfsFileWidget extends A_CmsWidget {
             }
         }
         super.setConfiguration(configuration);
-    }
-
-    /**
-     * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
-     */
-    protected String getConfiguration() {
-
-        StringBuffer result = new StringBuffer(8);
-
-        // append site selector flag to configuration
-        if (m_showSiteSelector) {
-            result.append(CONFIGURATION_SHOWSITESELECTOR);
-        } else {
-            result.append(CONFIGURATION_HIDESITESELECTOR);
-        }
-
-        // append start site to configuration
-        if (m_startSite != null) {
-            result.append("|");
-            result.append(CONFIGURATION_STARTSITE);
-            result.append("=");
-            result.append(m_startSite);
-        }
-
-        return result.toString();
     }
 }

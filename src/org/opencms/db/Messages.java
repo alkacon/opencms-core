@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/09/14 13:25:44 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.39 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.39 $
  * 
  * @since 6.0.0 
  */
@@ -313,6 +313,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_LOGIN_MESSAGE_FROZEN_0 = "ERR_LOGIN_MESSAGE_FROZEN_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODE_ENUM_PARSE_2 = "ERR_MODE_ENUM_PARSE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_TO_LOST_AND_FOUND_1 = "ERR_MOVE_TO_LOST_AND_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
@@ -445,6 +448,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_READ_RESOURCES_WITH_TYPE_2 = "ERR_READ_RESOURCES_WITH_TYPE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_READ_RESPONSIBLE_USERS_1 = "ERR_READ_RESPONSIBLE_USERS_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_READ_SIBLINGS_1 = "ERR_READ_SIBLINGS_1";
 
     /** Message constant for key in the resource bundle. */
@@ -502,6 +508,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_RESTORE_RESOURCE_2 = "ERR_RESTORE_RESOURCE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_SET_DATE_EXPIRED_2 = "ERR_SET_DATE_EXPIRED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SET_DATE_LAST_MODIFIED_2 = "ERR_SET_DATE_LAST_MODIFIED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SET_DATE_RELEASED_2 = "ERR_SET_DATE_RELEASED_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_SET_PARENT_GROUP_2 = "ERR_SET_PARENT_GROUP_2";
 
     /** Message constant for key in the resource bundle. */
@@ -521,9 +536,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TASKNAME_ILLEGAL_CHARACTERS_1 = "ERR_TASKNAME_ILLEGAL_CHARACTERS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_TOUCH_RESOURCE_4 = "ERR_TOUCH_RESOURCE_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDO_CHANGES_FOR_RESOURCE_1 = "ERR_UNDO_CHANGES_FOR_RESOURCE_1";

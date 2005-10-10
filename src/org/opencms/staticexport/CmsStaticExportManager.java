@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/07/18 12:50:11 $
- * Version: $Revision: 1.116 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.117 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.116 $ 
+ * @version $Revision: 1.117 $ 
  * 
  * @since 6.0.0 
  */
@@ -473,7 +473,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             oldUri = cms.getRequestContext().getUri();
             cms.getRequestContext().setUri(vfsName);
         }
-
+   
         // do the export
         byte[] result = loader.export(cms, file, req, wrapRes);
 
@@ -1029,8 +1029,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 rfsName = exportname + rfsName.substring(resourceName.length());
             }
 
-            int pos = rfsName.lastIndexOf('.');
-            String extension = (pos >= 0 ? rfsName.substring(pos).toLowerCase() : "");
+            String extension = CmsFileUtil.getFileExtension(rfsName);
             // check if the VFS resouce is a JSP page with a ".jsp" ending 
             // in this case the rfs name suffix must be build with special care,
             // usually it must be set to ".html"             
@@ -1050,13 +1049,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             }
             if (parameters != null) {
                 // build the RFS name for the link with parameters
-                StringBuffer buf = new StringBuffer(128);
-                buf.append(rfsName);
-                buf.append('_');
-                buf.append(getExportParamId(parameters));
-                buf.append(extension);
-                rfsName = buf.toString();
-
+                rfsName = CmsFileUtil.getRfsPath(rfsName, extension, parameters);
                 // we have found a rfs name for a vfs resource with parameters, save it to the database
                 try {
                     cms.writeStaticExportPublishedResource(
@@ -2003,21 +1996,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         } finally {
             cms.getRequestContext().restoreSiteRoot();
         }
-    }
-
-    /**
-     * Returns the (positive) id to replace parameters in the static export name.<p>
-     * 
-     * @param parameters the parameters to calculate the export parameter id for
-     * @return a (positive) id to replace parameters in the static export name
-     */
-    private int getExportParamId(String parameters) {
-
-        int h = parameters.hashCode();
-        if (h < 0) {
-            h = -h;
-        }
-        return h;
     }
 
     /**

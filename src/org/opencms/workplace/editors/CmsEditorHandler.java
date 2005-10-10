@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceException;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  * 
@@ -138,7 +139,7 @@ public class CmsEditorHandler extends CmsWorkplace implements I_CmsEditorHandler
         String editorUri = null;
 
         // get the browser identification from the request
-        String userAgent = jsp.getRequest().getHeader("user-agent");
+        String userAgent = jsp.getRequest().getHeader(CmsRequestUtil.HEADER_USER_AGENT);
 
         if (loadDefault) {
             // get default editor because loaddefault parameter was found

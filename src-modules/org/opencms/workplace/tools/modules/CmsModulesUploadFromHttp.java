@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2005/06/30 10:57:18 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/27 14:52:53 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,11 @@
 package org.opencms.workplace.tools.modules;
 
 import org.opencms.configuration.CmsConfigurationException;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
+import org.opencms.main.CmsIllegalStateException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -42,12 +44,14 @@ import org.opencms.module.CmsModuleDependency;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.workplace.administration.A_CmsImportFromHttp;
+import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -56,12 +60,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * Class to upload a module with HTTP upload.<p>
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +78,9 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
 
     /** Modulename parameter. */
     public static final String PARAM_MODULE = "module";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsModulesUploadFromHttp.class);
 
     /**
      * Public constructor with JSP action element.<p>
@@ -132,16 +141,14 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
                     dep.append(dependency.getVersion());
                     dep.append(")");
                 }
-                errors.add(new CmsRuntimeException(Messages.get().container(
+                errors.add(Messages.get().container(
                     Messages.ERR_ACTION_MODULE_DEPENDENCY_2,
                     getParamImportfile(),
-                    new String(dep))));
+                    new String(dep)));
             }
 
         } catch (CmsConfigurationException e) {
-            errors.add(new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_ACTION_MODULE_UPLOAD_1,
-                getParamImportfile()), e));
+            errors.add(Messages.get().container(Messages.ERR_ACTION_MODULE_UPLOAD_1, getParamImportfile()));
         }
 
         if (errors.isEmpty()) {
@@ -155,7 +162,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             // redirect
             Map param = new HashMap();
             param.put(CmsModulesList.PARAM_MODULE, getParamImportfile());
-            param.put(PARAM_STYLE, "new");
+            param.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             param.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/modules"));
             if (OpenCms.getModuleManager().hasModule(module.getName())) {
                 param.put(CmsModulesUploadFromServer.PARAM_MODULENAME, module.getName());
@@ -163,6 +170,20 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             } else {
                 getToolManager().jspForwardPage(this, CmsModulesUploadFromServer.IMPORT_ACTION_REPORT, param);
             }
+        } else {
+            // log it 
+            Iterator it = errors.iterator();
+            CmsMessageContainer msg;
+            while (it.hasNext()) {
+                // only one
+                msg = (CmsMessageContainer)it.next();
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(msg.key(getLocale()));
+                }
+                // then throw to avoid blank page telling nothing due to missing forward
+                throw new CmsIllegalStateException(msg);
+            }
+
         }
 
     }

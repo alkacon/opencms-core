@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/broadcast/CmsSessionsList.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/10 16:11:11 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,9 +74,6 @@ public class CmsSessionsList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_MESSAGE = "am";
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_PENDING = "ap";
 
     /** list action id constant. */
     public static final String LIST_ACTION_PENDING_DISABLED = "apd";
@@ -193,8 +190,6 @@ public class CmsSessionsList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_MESSAGE)
             || getParamListAction().equals(LIST_DEFACTION_MESSAGE)) {
             getToolManager().jspForwardTool(this, "/workplace/broadcast/message", params);
-        } else if (getParamListAction().equals(LIST_ACTION_PENDING)) {
-            // noop
         } else {
             throwListUnsupportedActionException();
         }
@@ -277,22 +272,45 @@ public class CmsSessionsList extends A_CmsListDialog {
         pendingCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         pendingCol.setListItemComparator(new CmsListItemActionIconComparator());
         // add pending action
-        CmsListDirectAction pendingAction = new CmsListDirectAction(LIST_ACTION_PENDING_ENABLED);
+        CmsListDirectAction pendingAction = new CmsListDirectAction(LIST_ACTION_PENDING_ENABLED) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    return !OpenCms.getSessionManager().getBroadcastQueue(getItem().getId()).isEmpty();
+                }
+                return super.isVisible();
+            }
+        };
         pendingAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_PENDING_NAME_0));
         pendingAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_PENDING_HELP_0));
         pendingAction.setIconPath(PATH_BUTTONS + "message_pending.png");
         pendingAction.setEnabled(false);
+        pendingCol.addDirectAction(pendingAction);
+
         // not pending action
-        CmsListDirectAction notPendingAction = new CmsListDirectAction(LIST_ACTION_PENDING_DISABLED);
+        CmsListDirectAction notPendingAction = new CmsListDirectAction(LIST_ACTION_PENDING_DISABLED) {
+
+            /**
+             * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#isVisible()
+             */
+            public boolean isVisible() {
+
+                if (getItem() != null) {
+                    return OpenCms.getSessionManager().getBroadcastQueue(getItem().getId()).isEmpty();
+                }
+                return super.isVisible();
+            }
+        };
         notPendingAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_NOTPENDING_NAME_0));
         notPendingAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_NOTPENDING_HELP_0));
         notPendingAction.setIconPath(PATH_BUTTONS + "message_notpending.png");
         notPendingAction.setEnabled(false);
-        // adds a pending/not pending direct action
-        CmsMessagePendingAction sessionAction = new CmsMessagePendingAction(LIST_ACTION_PENDING);
-        sessionAction.setFirstAction(pendingAction);
-        sessionAction.setSecondAction(notPendingAction);
-        pendingCol.addDirectAction(sessionAction);
+        pendingCol.addDirectAction(notPendingAction);
+
         // add it to the list definition
         metadata.addColumn(pendingCol);
 
@@ -304,7 +322,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListDefaultAction messageEditAction = new CmsListDefaultAction(LIST_DEFACTION_MESSAGE);
         messageEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_NAME_0));
         messageEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_ACTION_MESSAGE_HELP_0));
-        userCol.setDefaultAction(messageEditAction);
+        userCol.addDefaultAction(messageEditAction);
         // add it to the list definition
         metadata.addColumn(userCol);
 
@@ -316,7 +334,7 @@ public class CmsSessionsList extends A_CmsListDialog {
         CmsListDefaultAction emailEditAction = new CmsListDefaultAction(LIST_DEFACTION_EMAIL);
         emailEditAction.setName(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_NAME_0));
         emailEditAction.setHelpText(Messages.get().container(Messages.GUI_SESSIONS_LIST_DEFACTION_EMAIL_HELP_0));
-        emailCol.setDefaultAction(emailEditAction);
+        emailCol.addDefaultAction(emailEditAction);
         metadata.addColumn(emailCol);
 
         // add column for creation date

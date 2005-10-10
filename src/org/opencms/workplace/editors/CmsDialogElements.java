@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/06/24 15:47:40 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.xml.page.CmsXmlPage;
@@ -50,7 +51,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -178,9 +178,10 @@ public class CmsDialogElements extends CmsDialog {
             }
             if (elements != null) {
                 // elements are defined on template file, merge with available elements
-                StringTokenizer T = new StringTokenizer(elements, ",");
-                while (T.hasMoreTokens()) {
-                    String currentElement = T.nextToken();
+                List tokens = CmsStringUtil.splitAsList(elements, ',');
+                Iterator it = tokens.iterator();
+                while (it.hasNext()) {
+                    String currentElement = (String)it.next();
                     String niceName = null;
                     boolean mandatory = false;
                     int sepIndex = currentElement.indexOf("|");
@@ -201,7 +202,6 @@ public class CmsDialogElements extends CmsDialog {
                         result.remove(element);
                     }
                     result.add(element);
-
                 }
             }
         }

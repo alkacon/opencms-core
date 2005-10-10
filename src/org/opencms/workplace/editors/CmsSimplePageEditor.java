@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/09/14 15:29:42 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,17 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.galleries.A_CmsGallery;
 import org.opencms.xml.page.CmsXmlPageFactory;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
@@ -61,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.15 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +78,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     private static final String EDITOR_TYPE = "simplehtml";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class);
+    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class); 
 
     /**
      * Public constructor.<p>
@@ -89,16 +96,34 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     public String buildGalleryButtons(CmsEditorDisplayOptions options, int buttonStyle, Properties displayOptions) {
 
         StringBuffer result = new StringBuffer();
-        Iterator galleries = OpenCms.getWorkplaceManager().getGalleries().keySet().iterator();
-        while (galleries.hasNext()) {
-            String galleryType = (String)galleries.next();
-            if (options.showElement("gallery." + galleryType.replaceFirst("gallery", ""), displayOptions)) {
-                if (result.length() == 0) {
-                    result.append(", \"separator\"");
-                }
-                result.append(", \"" + galleryType + "\"");
+        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
+        List galleries = new ArrayList(galleryMap.size());
+        Map typeMap = new HashMap(galleryMap.size());
+        
+        Iterator i = galleryMap.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            galleries.add(currGallery);
+            // put the type name to the type Map
+            typeMap.put(currGallery, key);
+        }
+        
+        // sort the found galleries by their order
+        Collections.sort(galleries);
+        
+        for (int k=0; k<galleries.size(); k++) {
+            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
+            String galleryType = (String)typeMap.get(currGallery);
+            String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
+            if (options.showElement("gallery." + galleryName, displayOptions)) {
+                // gallery is shown, create button code
+                result.append(button("javascript:openGallery(\'" + galleryType + "\');", null, galleryType, "button."
+                    + galleryName
+                    + "list", buttonStyle));
             }
         }
+
         return result.toString();
     }
 
@@ -135,8 +160,8 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                         m_file = getCms().readFile(this.getParamTempfile(), CmsResourceFilter.ALL);
                         m_page = CmsXmlPageFactory.unmarshal(getCms(), m_file);
                     } catch (CmsException e1) {
-                // error during initialization
-                try {
+                        // error during initialization
+                        try {
                             showErrorPage(this, e1);
                         } catch (JspException exc) {
                             // should usually never happen
@@ -148,15 +173,15 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 } else {
                     // error during initialization
                     try {
-                    showErrorPage(this, e);
-                } catch (JspException exc) {
-                    // should usually never happen
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(exc);
+                        showErrorPage(this, e);
+                    } catch (JspException exc) {
+                        // should usually never happen
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(exc);
+                        }
                     }
                 }
             }
-        }
         }
 
         // set the action for the JSP switch 
@@ -214,7 +239,6 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
                 // error during initialization
                 try {
                     showErrorPage(this, e);
-                    return;
                 } catch (JspException exc) {
                     // should usually never happen
                     if (LOG.isInfoEnabled()) {

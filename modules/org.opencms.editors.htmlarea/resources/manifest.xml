@@ -32,9 +32,7 @@
 			<resource uri="/system/workplace/editors/htmlarea/"/>
 			<resource uri="/system/workplace/resources/editors/htmlarea/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/workplace/editors/htmlarea/;/system/workplace/resources/editors/htmlarea/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>

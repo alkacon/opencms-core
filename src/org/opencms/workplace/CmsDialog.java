@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/09/12 10:06:43 $
- * Version: $Revision: 1.93 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.94 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93 $ 
+ * @version $Revision: 1.94 $ 
  * 
  * @since 6.0.0 
  */
@@ -590,7 +590,8 @@ public class CmsDialog extends CmsToolDialog {
 
         return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
     }
-
+    
+    
     /**
      * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
      * 
@@ -815,6 +816,51 @@ public class CmsDialog extends CmsToolDialog {
     }
 
     /**
+     * Builds the HTML code to fold and unfild a white-box.<p>
+     * 
+     * @param headline the heading to display
+     * @param id the id of the toggle
+     * @param show true if the white box is open at the beginning
+     * 
+     * @return HTML code to fold and unfild a white-box
+     */
+    public String dialogToggleStart(String headline, String id, boolean show) {
+        StringBuffer result = new StringBuffer(512);
+        // set icon and style class to use: hide user permissions
+        String image = "plus.png";
+        String styleClass = "hide";
+        if (show) {
+            // show user permissions
+            image = "minus.png";
+            styleClass = "show";
+        }
+
+        result.append("<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
+        result.append("<tr>\n");
+        result.append("\t<td style=\"vertical-align: bottom; padding-bottom: 2px;\"><a href=\"javascript:toggleDetail('");
+        result.append(id);
+        result.append("');\"><img src=\"");
+        result.append(getSkinUri());
+        result.append("commons/");
+        result.append(image);
+        result.append("\" class=\"noborder\" id=\"ic-");
+        result.append(id);
+        result.append("\"></a></td>\n");
+        result.append("\t<td>");
+        result.append(dialogSubheadline(headline));
+        result.append("</td>\n");
+        result.append("</tr>\n");
+        result.append("</table>\n");
+
+        result.append("<div class=\"");
+        result.append(styleClass);
+        result.append("\" id=\"");
+        result.append(id);
+        result.append("\">\n"); 
+        return result.toString();
+    }
+
+    /**
      * Builds a white box in the dialog content area.<p>
      * 
      * @param segment the HTML segment (START / END)
@@ -945,11 +991,10 @@ public class CmsDialog extends CmsToolDialog {
      */
     public String getParamCloseLink() {
 
-        if (m_paramCloseLink != null && !"null".equals(m_paramCloseLink)) {
-            return m_paramCloseLink;
-        } else {
+        if ((m_paramCloseLink == null) || "null".equals(m_paramCloseLink)) {
             return null;
         }
+        return m_paramCloseLink;
     }
 
     /**
@@ -1245,6 +1290,9 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void setParamCloseLink(String value) {
 
+        // ensure decoded chars are re-encoded again properly
+        
+        
         m_paramCloseLink = value;
     }
 

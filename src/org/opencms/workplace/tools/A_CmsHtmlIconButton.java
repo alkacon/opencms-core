@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/29 09:24:48 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.19 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,9 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
 
     /** Display name. */
     private CmsMessageContainer m_name;
+
+    /** Visibility flag. */
+    private boolean m_visible = true;
 
     /**
      * Default Constructor.<p>
@@ -129,6 +132,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
 
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
+     * 
      * @param jsp the cms context, can be null
      * @param style the style of the button
      * @param id the id
@@ -205,7 +209,8 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 icon.append("_disabled");
                 icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
                 if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath("/resources/");
+                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
+                        "/resources/");
                     File test = new File(resorcesRoot + "/" + icon.toString());
                     if (test.exists()) {
                         html.append(icon);
@@ -244,7 +249,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
                 html.append("</a>");
             }
         }
-        html.append("</span>\n");
+        html.append("</span>");
         if (style == CmsHtmlIconButtonStyleEnum.BIG_ICON_TEXT) {
             html.append("</div>\n");
         }
@@ -329,6 +334,14 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
     }
 
     /**
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
+     */
+    public boolean isVisible() {
+
+        return m_visible;
+    }
+
+    /**
      * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#setEnabled(boolean)
      */
     public void setEnabled(boolean enabled) {
@@ -364,5 +377,13 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
             name = EMPTY_MESSAGE;
         }
         m_name = name;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#setVisible(boolean)
+     */
+    public void setVisible(boolean visible) {
+
+        m_visible = visible;
     }
 }

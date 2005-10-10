@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,6 +128,18 @@ public interface I_CmsMessageBundle {
      * @return the bundle name for this OpenCms package
      */
     String getBundleName();
+
+    /**
+     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
+     * 
+     * Convenience method for messages without argument.<p>
+     * 
+     * @param locale the locale to use
+     * @param key the message key
+     * 
+     * @return the selected localized message from this bundle  for the given locale.<p>
+     */
+    String key(Locale locale, String key);
 
     /**
      * Returns the selected localized message from this bundle for the given locale.<p>

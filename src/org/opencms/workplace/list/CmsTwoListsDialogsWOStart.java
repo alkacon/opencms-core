@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsTwoListsDialog.java,v $
- * Date   : $Date: 2005/09/19 18:23:10 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsTwoListsDialogsWOStart.java,v $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,21 +29,18 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.workplace.tools.accounts;
-
-import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.list.CmsTwoListsDialogBuilder;
+package org.opencms.workplace.list;
 
 /**
- * A <code>CmsTwoListsDialogBuilder</code> with no starting html for previous widget dialog display.<p>
+ * A <code>{@link org.opencms.workplace.list.CmsTwoListsDialog}</code> with no starting html for previous widget dialog display.<p>
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsTwoListsDialog extends CmsTwoListsDialogBuilder {
+public class CmsTwoListsDialogsWOStart extends CmsTwoListsDialog {
 
     /**
      * Default constructor.<p>
@@ -51,16 +48,17 @@ public class CmsTwoListsDialog extends CmsTwoListsDialogBuilder {
      * @param wp1 the workplace instance for the first list
      * @param wp2 the workplace instance for the second list
      */
-    public CmsTwoListsDialog(A_CmsListDialog wp1, A_CmsListDialog wp2) {
+    public CmsTwoListsDialogsWOStart(A_CmsListDialog wp1, A_CmsListDialog wp2) {
 
         super(wp1, wp2);
     }
 
     /**
-     * @see org.opencms.workplace.list.CmsTwoListsDialogBuilder#defaultActionHtmlStart()
+     * @see org.opencms.workplace.list.CmsTwoListsDialog#defaultActionHtmlStart()
      */
     protected String defaultActionHtmlStart() {
 
-        return getActiveWp().getList().listJs(getActiveWp().getLocale());
+        return getActiveWp().getList().listJs(getActiveWp().getLocale())
+            + getActiveWp().dialogContentStart(getActiveWp().getParamTitle());
     }
 }

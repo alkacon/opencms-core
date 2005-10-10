@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolderExtended.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:48 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,15 +37,15 @@ import java.util.Map;
 import java.util.TreeMap;
 
 /**
- * Resource type descriptor for extended folder types like galleries.<p>
+ * Resource type descriptor for extended folder types (like for example the workplace galleries).<p>
  *
  * This type extends a folder but has a configurable type id and type name.
- * Optionally, a workplace class name for the type can be provided.<p>
+ * Optionally, a workplace class name for the type and a parameter String can be provided.<p>
  *
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,8 +54,14 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     /** Configuration key for the optional folder class name. */
     public static final String CONFIGURATION_FOLDER_CLASS = "folder.class";
 
-    /** The configured workplace folder class name for this folder type. */
+    /** Configuration key for the optional folder class parameters. */
+    public static final String CONFIGURATION_FOLDER_CLASS_PARAMS = "folder.class.params";
+
+    /** The configured folder class name for this folder type. */
     private String m_folderClassName;
+
+    /** The configured folder parameters for this folder type. */
+    private String m_folderClassParams;
 
     /**
      * @see org.opencms.file.types.A_CmsResourceType#addConfigurationParameter(java.lang.String, java.lang.String)
@@ -63,8 +69,13 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     public void addConfigurationParameter(String paramName, String paramValue) {
 
         super.addConfigurationParameter(paramName, paramValue);
-        if (CONFIGURATION_FOLDER_CLASS.equalsIgnoreCase(paramName)) {
-            m_folderClassName = paramValue.trim();
+        if (CmsStringUtil.isNotEmpty(paramName) && CmsStringUtil.isNotEmpty(paramValue)) {
+            if (CONFIGURATION_FOLDER_CLASS.equalsIgnoreCase(paramName)) {
+                m_folderClassName = paramValue.trim();
+            }
+            if (CONFIGURATION_FOLDER_CLASS_PARAMS.equalsIgnoreCase(paramName)) {
+                m_folderClassParams = paramValue.trim();
+            }
         }
     }
 
@@ -74,23 +85,36 @@ public class CmsResourceTypeFolderExtended extends A_CmsResourceTypeFolderBase {
     public Map getConfiguration() {
 
         Map result = new TreeMap();
-        if (!CmsStringUtil.isEmpty(getFolderClassName())) {
-            result.put(CONFIGURATION_FOLDER_CLASS, m_folderClassName);
+        if (CmsStringUtil.isNotEmpty(getFolderClassName())) {
+            result.put(CONFIGURATION_FOLDER_CLASS, getFolderClassName());
+        }
+        if (CmsStringUtil.isNotEmpty(getFolderClassParams())) {
+            result.put(CONFIGURATION_FOLDER_CLASS_PARAMS, getFolderClassParams());
         }
         Map additional = super.getConfiguration();
-        if (additional != null) {
+        if ((additional != null) && (additional.size() > 0)) {
             result.putAll(additional);
         }
         return result;
     }
 
     /**
-     * Returns the optional configured workplace folder class name for this folder.<p>
+     * Returns the (optional) configured folder class name for this folder.<p>
      * 
-     * @return the optional configured workplace folder class name for this folder
+     * @return the (optional) configured folder class name for this folder
      */
     public String getFolderClassName() {
 
         return m_folderClassName;
+    }
+
+    /**
+     * Returns the (optional) configured folder class parameters name for this folder.<p>
+     * 
+     * @return the (optional) configured folder class parameters for this folder
+     */
+    public String getFolderClassParams() {
+
+        return m_folderClassParams;
     }
 }

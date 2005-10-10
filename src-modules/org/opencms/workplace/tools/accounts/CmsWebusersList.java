@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebusersList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,8 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsUUID;
+import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDirectAction;
 
 import java.util.List;
 
@@ -47,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,22 +80,6 @@ public class CmsWebusersList extends A_CmsUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#deleteUser(org.opencms.util.CmsUUID)
-     */
-    protected void deleteUser(CmsUUID id) throws CmsException {
-
-        getCms().deleteWebUser(id);
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getEditRootPath()
-     */
-    protected String getEditRootPath() {
-
-        return "/accounts/webusers/edit";
-    }
-
-    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getGroupIcon()
      */
     protected String getGroupIcon() {
@@ -103,19 +88,13 @@ public class CmsWebusersList extends A_CmsUsersList {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUserIcon()
-     */
-    protected String getUserIcon() {
-
-        return PATH_BUTTONS + "webuser.png";
-    }
-
-    /**
      * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#getUsers()
      */
     protected List getUsers() throws CmsException {
 
-        return getCms().getUsers(CmsUser.USER_TYPE_WEBUSER);
+        List users = getCms().getUsers(CmsUser.USER_TYPE_WEBUSER);
+        CmsUser.filterCore(users);
+        return users;
     }
 
     /**
@@ -123,6 +102,30 @@ public class CmsWebusersList extends A_CmsUsersList {
      */
     protected CmsUser readUser(String name) throws CmsException {
 
-        return getCms().readWebUser(name);
+        return getCms().readUser(name, CmsUser.USER_TYPE_WEBUSER);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setDeleteAction(org.opencms.workplace.list.CmsListColumnDefinition)
+     */
+    protected void setDeleteAction(CmsListColumnDefinition deleteCol) {
+
+        CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
+        deleteAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0));
+        deleteAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_HELP_0));
+        deleteAction.setIconPath(ICON_DELETE);
+        deleteCol.addDirectAction(deleteAction);
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.accounts.A_CmsUsersList#setEditAction(org.opencms.workplace.list.CmsListColumnDefinition)
+     */
+    protected void setEditAction(CmsListColumnDefinition editCol) {
+
+        CmsListDirectAction editAction = new CmsListDirectAction(LIST_ACTION_EDIT);
+        editAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_NAME_0));
+        editAction.setHelpText(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_EDIT_HELP_0));
+        editAction.setIconPath(PATH_BUTTONS + "webuser.png");
+        editCol.addDirectAction(editAction);
     }
 }

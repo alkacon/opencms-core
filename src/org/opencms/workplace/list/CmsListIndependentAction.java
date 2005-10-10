@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.18 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,6 +81,9 @@ public class CmsListIndependentAction extends A_CmsListAction {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
+        if (!isVisible()) {
+            return "";
+        } 
         String onClic = "listIndepAction('"
             + getListId()
             + "','"

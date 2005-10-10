@@ -29,7 +29,7 @@
 		</dependencies>
 		<exportpoints/>
 		<resources>
-			<resource uri="/system/workplace/editors/msdhtml"/>
+			<resource uri="/system/workplace/editors/msdhtml/"/>
 		</resources>
 		<parameters/>
 	</module>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,7 +183,7 @@ public class CmsModulesList extends A_CmsListDialog {
             Map params = new HashMap();
             params.put(PARAM_MODULE, moduleList);
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
         }
         listSave();
@@ -208,12 +209,12 @@ public class CmsModulesList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // forward to the delete module screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
         } else if (getParamListAction().equals(LIST_ACTION_EXPORT)) {
             // forward to the delete module screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, "/system/workplace/admin/modules/reports/export.html", params);
         }
         listSave();
@@ -380,7 +381,6 @@ public class CmsModulesList extends A_CmsListDialog {
         delCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         // direct action: delete module
         CmsListDirectAction delModule = new CmsListDirectAction(LIST_ACTION_DELETE);
-        delModule.setColumn(LIST_COLUMN_NICENAME);
         delModule.setName(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_NAME_0));
         delModule.setConfirmationMessage(Messages.get().container(Messages.GUI_MODULES_LIST_ACTION_DELETE_CONF_0));
         delModule.setIconPath(ICON_DELETE);
@@ -402,7 +402,7 @@ public class CmsModulesList extends A_CmsListDialog {
         nameColAction.setEnabled(true);
         nameColAction.setConfirmationMessage(null);
         // set action for the name column
-        nameCol.setDefaultAction(nameColAction);
+        nameCol.addDefaultAction(nameColAction);
         metadata.addColumn(nameCol);
 
         // add column for nicename

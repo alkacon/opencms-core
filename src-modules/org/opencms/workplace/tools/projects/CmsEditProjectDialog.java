@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/07/13 12:47:55 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/10 16:11:11 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
@@ -60,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,8 +220,7 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             m_resources = new ArrayList();
             return;
         }
-        checkRedundancies(value);
-        m_resources = value;
+        m_resources = CmsFileUtil.removeRedundancies(value);
     }
 
     /**
@@ -353,47 +353,6 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             getCms().readProject(new Integer(getParamProjectid()).intValue()).getName();
         }
 
-    }
-
-    /** 
-     *  Check whether some of the resources are redundant because a superfolder has also
-     *  been selected.<p>
-     * 
-     *  The resources list will be modified so that the paths are disjoint.<p>
-     *
-     *  @param resources a list of full pathnames for all the resources
-     */
-    private void checkRedundancies(List resources) {
-
-        if (resources == null) {
-            return;
-        }
-        List redundant = new ArrayList();
-        int n = resources.size();
-        if (n < 2) {
-            return;
-        }
-        for (int i = 0; i < n; i++) {
-            redundant.add(new Boolean(false));
-        }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (((String)resources.get(i)).length() < ((String)resources.get(j)).length()) {
-                    if (((String)resources.get(j)).startsWith((String)resources.get(i))) {
-                        redundant.set(j, new Boolean(true));
-                    }
-                } else {
-                    if (((String)resources.get(i)).startsWith((String)resources.get(j))) {
-                        redundant.set(i, new Boolean(true));
-                    }
-                }
-            }
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            if (((Boolean)redundant.get(i)).booleanValue()) {
-                resources.remove(i);
-            }
-        }
     }
 
     /**

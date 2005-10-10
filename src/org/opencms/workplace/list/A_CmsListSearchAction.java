@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListSearchAction.java,v $
- * Date   : $Date: 2005/07/04 12:29:51 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,6 +112,9 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
+        if (!isVisible()) {
+            return "";
+        }
         String onClic = "listSearchAction('"
             + getListId()
             + "', '"
@@ -181,6 +184,9 @@ public abstract class A_CmsListSearchAction extends CmsListIndependentAction {
              */
             public String buttonHtml(CmsWorkplace wp) {
 
+                if (!isVisible()) {
+                    return "";
+                }
                 String onClic = "listSearchAction('"
                     + getListId()
                     + "', '"

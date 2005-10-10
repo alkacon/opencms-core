@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsDisplayWidget.java,v $
- * Date   : $Date: 2005/07/28 15:20:49 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,12 +36,14 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Set;
+
 /**
  * Provides a display only widget, for use on a widget dialog.<p>
  *
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,22 +102,6 @@ public class CmsDisplayWidget extends A_CmsWidget {
     }
 
     /**
-     * Returns the localized help key for the provided widget parameter.<p>
-     * 
-     * @param param the widget parameter to return the localized help key for
-     * 
-     * @return the localized help key for the provided widget parameter
-     */
-    private String getDisabledHelpKey(I_CmsWidgetParameter param) {
-        
-        StringBuffer result = new StringBuffer(64);
-        result.append(LABEL_PREFIX);
-        result.append(param.getKey());
-        result.append(HELP_POSTFIX);
-        result.append(DISABLED_POSTFIX);
-        return result.toString();
-    }
-    /**
      * @see org.opencms.widgets.A_CmsWidget#getHelpBubble(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
      */
     public String getHelpBubble(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
@@ -146,21 +132,27 @@ public class CmsDisplayWidget extends A_CmsWidget {
      */
     public String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
 
+        String helpId = getDisabledHelpKey(param);
+        Set helpIdsShown = widgetDialog.getHelpMessageIds();
+        if (helpIdsShown.contains(helpId)) {
+            // help hey has already been included in output
+            return "";
+        }
+        helpIdsShown.add(helpId);
         StringBuffer result = new StringBuffer(128);
-        // calculate the key
-        String locKey = getDisabledHelpKey(param);
-        String locValue = widgetDialog.getMessages().key(locKey, true);
+        // calculate the key        
+        String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
             result.append("<div class=\"help\" id=\"help");
-            result.append(locKey);
+            result.append(helpId);
             result.append("\"");
-            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            result.append(getJsHelpMouseHandler(widgetDialog, helpId));
             result.append(">");
             result.append(locValue);
-            result.append("</div>");
+            result.append("</div>\n");
             return result.toString();
         }
     }
@@ -171,5 +163,22 @@ public class CmsDisplayWidget extends A_CmsWidget {
     public I_CmsWidget newInstance() {
 
         return new CmsDisplayWidget(getConfiguration());
+    }
+
+    /**
+     * Returns the localized help key for the provided widget parameter.<p>
+     * 
+     * @param param the widget parameter to return the localized help key for
+     * 
+     * @return the localized help key for the provided widget parameter
+     */
+    private String getDisabledHelpKey(I_CmsWidgetParameter param) {
+
+        StringBuffer result = new StringBuffer(64);
+        result.append(LABEL_PREFIX);
+        result.append(param.getKey());
+        result.append(HELP_POSTFIX);
+        result.append(DISABLED_POSTFIX);
+        return result.toString();
     }
 }

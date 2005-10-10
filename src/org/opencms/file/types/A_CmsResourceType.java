@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/09 09:08:25 $
- * Version: $Revision: 1.37 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.38 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.37 $ 
+ * @version $Revision: 1.38 $ 
  * 
  * @since 6.0.0 
  */
@@ -599,6 +599,45 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         m_addititionalModuleResourceType = additionalType;
     }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateExpired(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateExpired,
+        boolean recursive) throws CmsException {
+
+        securityManager.setDateExpired(cms.getRequestContext(), resource, dateExpired);
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateLastModified(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateLastModified,
+        boolean recursive) throws CmsException {
+
+        securityManager.setDateLastModified(cms.getRequestContext(), resource, dateLastModified);
+    }
+    
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateReleased(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateReleased,
+        boolean recursive) throws CmsException {
+
+        securityManager.setDateReleased(cms.getRequestContext(), resource, dateReleased);
+    }
 
     /**
      * @see java.lang.Object#toString()
@@ -615,21 +654,6 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         output.append(" loaderId=");
         output.append(getLoaderId());
         return output.toString();
-    }
-
-    /**
-     * @see org.opencms.file.types.I_CmsResourceType#touch(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
-     */
-    public void touch(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        long dateLastModified,
-        long dateReleased,
-        long dateExpired,
-        boolean recursive) throws CmsException {
-
-        securityManager.touch(cms.getRequestContext(), resource, dateLastModified, dateReleased, dateExpired);
     }
 
     /**

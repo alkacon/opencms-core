@@ -277,8 +277,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/list/arrow_down.gif</source>
-			<destination>system/workplace/resources/list/arrow_down.gif</destination>
+			<source>system/workplace/resources/list/arrow_down.png</source>
+			<destination>system/workplace/resources/list/arrow_down.png</destination>
 			<type>image</type>
 			<uuidresource>c2d757ed-6e28-11d9-94af-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -290,8 +290,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/list/arrow_up.gif</source>
-			<destination>system/workplace/resources/list/arrow_up.gif</destination>
+			<source>system/workplace/resources/list/arrow_up.png</source>
+			<destination>system/workplace/resources/list/arrow_up.png</destination>
 			<type>image</type>
 			<uuidresource>48db834a-693c-11d9-aaa9-2f77a917d9ae</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>

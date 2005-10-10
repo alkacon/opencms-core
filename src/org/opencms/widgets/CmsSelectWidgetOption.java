@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidgetOption.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -241,6 +241,34 @@ public class CmsSelectWidgetOption {
             }
         }
         return null;
+    }
+
+    /**
+     * Returns a list of default options from the given list of select options.<p> 
+     * 
+     * If an element found in the given list is not of type 
+     * <code>{@link CmsSelectWidgetOption}</code>, this is ignored.<p>
+     * 
+     * @param options the list of select options to get the default from
+     * 
+     * @return a list of <code>{@link CmsSelectWidgetOption}</code> objects 
+     */
+    public static List getDefaultOptions(List options) {
+
+        List defaults = new ArrayList();
+        if ((options == null) || (options.size() == 0)) {
+            return defaults;
+        }
+        for (int i = 0; i < options.size(); i++) {
+            Object o = options.get(i);
+            if (o instanceof CmsSelectWidgetOption) {
+                CmsSelectWidgetOption option = (CmsSelectWidgetOption)o;
+                if (option.isDefault()) {
+                    defaults.add(option);
+                }
+            }
+        }
+        return defaults;
     }
 
     /**

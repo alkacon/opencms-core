@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.i18n.CmsMessages;
 
 import java.text.ParseException;
 import java.util.Locale;
+import java.util.Set;
 
 /**
  * Describes a widget enabled dialog.<p>
@@ -42,7 +43,7 @@ import java.util.Locale;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,6 +65,32 @@ public interface I_CmsWidgetDialog {
     String button(String href, String target, String image, String label, int type);
 
     /**
+     * Returns the html for a button bar.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * 
+     * @return a button bar html start / end segment 
+     */
+    String buttonBar(int segment);
+
+    /**
+     * Generates a horizontal button bar separator line with maximum width.<p>
+     * 
+     * @return a horizontal button bar separator line
+     */
+    String buttonBarHorizontalLine();
+
+    /**
+     * Generates a button bar separator.<p>  
+     * 
+     * @param leftPixel the amount of pixel left to the separator
+     * @param rightPixel the amount of pixel right to the separator
+     * 
+     * @return a button bar separator
+     */
+    String buttonBarSeparator(int leftPixel, int rightPixel);
+
+    /**
      * Returns the html for an invisible spacer between button bar contents like buttons, labels, etc.<p>
      * 
      * @param width the width of the invisible spacer
@@ -72,6 +99,16 @@ public interface I_CmsWidgetDialog {
      * @see org.opencms.workplace.CmsWorkplace#buttonBarSpacer(int)
      */
     String buttonBarSpacer(int width);
+
+    /**
+     * Generates a button bar starter tab.<p>  
+     * 
+     * @param leftPixel the amount of pixel left to the starter
+     * @param rightPixel the amount of pixel right to the starter
+     * 
+     * @return a button bar starter tab
+     */
+    String buttonBarStartTab(int leftPixel, int rightPixel);
 
     // TODO: Remove all calendar methods from this interface, make them static
     // TODO: Alternative: Put all this in one class (CmsWorkplaceCalendar) and return such an Object
@@ -148,6 +185,16 @@ public interface I_CmsWidgetDialog {
     String getCalendarLocalizedTime(long timestamp);
 
     /**
+     * Returns a set of help messages ids that are already included on the widget dialog.<p>
+     * 
+     * This is used to prevent the occurence of multiple html <code>div</code> id's with the same 
+     * value when generating the help texts. For valid html, each id can be used only once.<p>
+     * 
+     * @return a set of help messages ids that are already included on the widget dialog
+     */
+    Set getHelpMessageIds();
+
+    /**
      * Returns the current users locale setting.<p>
      * 
      * @return the current users locale setting
@@ -162,6 +209,14 @@ public interface I_CmsWidgetDialog {
      * @return a messages object used to render localized keys for the widget dialog
      */
     CmsMessages getMessages();
+
+    /**
+     * Returns the "user-agent" of the current request, or <code>null</code> in case no
+     * request is available.<p>
+     * 
+     * @return the "user-agent" of the current request
+     */
+    String getUserAgent();
 
     /**
      * Tests if we are working with the new administration dialog style.<p>

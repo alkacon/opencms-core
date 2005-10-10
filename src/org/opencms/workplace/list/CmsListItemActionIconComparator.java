@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListItemActionIconComparator.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/27 14:52:28 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,19 +32,20 @@
 package org.opencms.workplace.list;
 
 import java.util.Comparator;
+import java.util.Iterator;
 import java.util.Locale;
 
 /**
  * Comparator for column sorting by first direct action icon names.<p>
  * 
  * If the list items column definition has at least one direct action, 
- * the icon of the first action is used for sorting 
+ * the icon of the first visible action is used for sorting 
  * (using the <code>{@link I_CmsListDirectAction#setItem(CmsListItem)}</code> method); 
  * if not, the <code>{@link Comparable}</code> interface is used.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.8 $ 
  * 
  * @since 6.0.0 
  * 
@@ -72,15 +73,26 @@ public class CmsListItemActionIconComparator implements I_CmsListItemComparator 
              */
             public int compare(Object o1, Object o2) {
 
-                CmsListColumnDefinition col = ((CmsListItem)o1).getMetadata().getColumnDefinition(columnId);
-                if (col.getDirectActions().size() > 0) {
-                    I_CmsListDirectAction action = (I_CmsListDirectAction)col.getDirectActions().get(0);
-                    CmsListItem tmp = action.getItem();
-                    action.setItem((CmsListItem)o1);
-                    String i1 = action.getIconPath();
-                    action.setItem((CmsListItem)o2);
-                    String i2 = action.getIconPath();
-                    action.setItem(tmp);
+                CmsListItem li1 = (CmsListItem)o1;                
+                CmsListItem li2 = (CmsListItem)o2;
+                CmsListColumnDefinition col = li1.getMetadata().getColumnDefinition(columnId);
+                if (col.getDirectActions().size() > 0) {                   
+                    String i1 = null;
+                    String i2 = null;
+                    Iterator it = col.getDirectActions().iterator();
+                    while (it.hasNext()) {
+                        I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();                    
+                        CmsListItem tmp = action.getItem();
+                        action.setItem(li1);
+                        if (action.isVisible()) {
+                            i1 = action.getIconPath();
+                        }
+                        action.setItem(li2);
+                        if (action.isVisible()) {
+                           i2 = action.getIconPath();
+                        }
+                        action.setItem(tmp);
+                    }
                     if (i1 != null) {
                         if (i2 == null) {
                             return 1;

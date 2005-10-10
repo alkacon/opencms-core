@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,14 +47,17 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDownloadGallery extends A_CmsGallery {
-
+    
     /** URI of the download gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "download_fs.jsp";
+
+    /** The order value of the gallery for sorting the galleries. */
+    private static final Integer ORDER_GALLERY = new Integer(20);
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -157,5 +160,15 @@ public class CmsDownloadGallery extends A_CmsGallery {
     public String getHeadFrameSetHeight() {
 
         return "450";
+    }
+    
+    /**
+     * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
+     * 
+     * @return the order of the implemented gallery
+     */
+    public Integer getOrder() {
+        
+        return ORDER_GALLERY;
     }
 }

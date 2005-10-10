@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/07/06 11:40:30 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,7 +189,7 @@ public class CmsToolManager {
     /**
      * Returns the OpenCms link for the given tool path which requires parameters.<p>
      * 
-     * Please note: Don't overuse the parameter map because this will likley introduce issues 
+     * Please note: Don't overuse the parameter map because this will likely introduce issues 
      * with encoding. If possible, don't pass parameters at all, or only very simple parameters
      * with no special chars that can easily be parsed.<p>
      * 
@@ -238,14 +238,7 @@ public class CmsToolManager {
             adminTool = resolveAdminTool(parent);
 
             String id = "nav" + adminTool.getId();
-            String link = linkForToolPath(wp.getJsp(), parent, null);
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(adminTool.getHandler().getParameters())) {
-                if (!link.endsWith("&")) {
-                    link += "&";
-                }
-                link += wp.resolveMacros(adminTool.getHandler().getParameters());
-            }
-
+            String link = linkForToolPath(wp.getJsp(), parent, adminTool.getHandler().getParameters(wp));
             String onClic = "openPage('" + link + "');";
             String buttonHtml = A_CmsHtmlIconButton.defaultButtonHtml(
                 wp.getJsp(),
@@ -458,25 +451,17 @@ public class CmsToolManager {
      */
     public void jspForwardTool(CmsWorkplace wp, String toolPath, Map params) throws IOException, ServletException {
 
-        Map newParams = params;
-        if (newParams == null) {
+        Map newParams; 
+        if (params == null) {
             newParams = new HashMap();
+        } else {
+            newParams = new HashMap(params);
         }
         // update path param
         newParams.put(CmsToolDialog.PARAM_PATH, toolPath);
         // put close link if not set
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            Map argMap = new HashMap();
-            String toolParams = resolveAdminTool(getCurrentToolPath(wp)).getHandler().getParameters();
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(toolParams)) {
-                toolParams = wp.resolveMacros(toolParams);
-                Iterator itArgs = CmsStringUtil.splitAsList(toolParams, "&").iterator();
-                while (itArgs.hasNext()) {
-                    String arg = (String)itArgs.next();
-                    int pos = arg.indexOf("=");
-                    argMap.put(arg.substring(0, pos), arg.substring(pos + 1));
-                }
-            }
+            Map argMap = resolveAdminTool(getCurrentToolPath(wp)).getHandler().getParameters(wp);
             newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
         }
         wp.setForwarded(true);

@@ -78,8 +78,10 @@
 	  </classpath>
 	</taskdef>
 	
-    <target name="init" 
-    	description="Checks if all required libraries are available">
+	<!-- 
+	  -	Checks if all required libraries are available
+	  -->
+    <target name="init" >
     	
         <condition property="libsAvailable">
             <and>
@@ -153,8 +155,11 @@
     </target>
     
     
+	<!-- 
+	  -	Stop target if libraries required for compilation are missing
+	  -->
     <target name="checklibs" 
-    	depends="init" unless="libsAvailable" description="Stop target if libraries required for compilation are missing">
+    	depends="init" unless="libsAvailable" >
     	
         <fail>
         
@@ -269,8 +274,10 @@ ${opencms.inputlib.textextraction}
     </target>
 
     
-    <target name="versioninfo" 
-    	unless="classesUpToDate" description="Generate version information files">
+	<!-- 
+	  -	Generate version information files
+	  -->
+    <target name="versioninfo" unless="classesUpToDate" >
 
 		<copy 
 			file="${opencms.input.warfiles}/WEB-INF/setupdata/version.properties" 

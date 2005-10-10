@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Attic/CmsTwoListsDialogBuilder.java,v $
- * Date   : $Date: 2005/09/19 18:23:10 $
- * Version: $Revision: 1.9 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsTwoListsDialog.java,v $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,11 +42,11 @@ import javax.servlet.jsp.JspWriter;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsTwoListsDialogBuilder {
+public class CmsTwoListsDialog {
 
     /** the workplace instance for the active list. */
     private A_CmsListDialog m_activeWp;
@@ -66,7 +66,7 @@ public class CmsTwoListsDialogBuilder {
      * @param wp1 the workplace instance for the first list
      * @param wp2 the workplace instance for the second list
      */
-    public CmsTwoListsDialogBuilder(A_CmsListDialog wp1, A_CmsListDialog wp2) {
+    public CmsTwoListsDialog(A_CmsListDialog wp1, A_CmsListDialog wp2) {
 
         m_activeWp = (wp1.isActive() ? wp1 : wp2);
         m_passiveWp = (!wp1.isActive() ? wp1 : wp2);
@@ -117,11 +117,7 @@ public class CmsTwoListsDialogBuilder {
      */
     protected String defaultActionHtmlEnd() {
 
-        StringBuffer result = new StringBuffer(2048);
-        result.append(m_activeWp.dialogEnd());
-        result.append(m_activeWp.bodyEnd());
-        result.append(m_activeWp.htmlEnd());
-        return result.toString();
+        return m_activeWp.defaultActionHtmlEnd();
     }
 
     /**
@@ -131,12 +127,7 @@ public class CmsTwoListsDialogBuilder {
      */
     protected String defaultActionHtmlStart() {
 
-        StringBuffer result = new StringBuffer(2048);
-        result.append(m_activeWp.htmlStart(null));
-        result.append(m_activeWp.getList().listJs(m_activeWp.getLocale()));
-        result.append(m_activeWp.bodyStart("dialog", null));
-        result.append(m_activeWp.dialogStart());
-        return result.toString();
+        return m_activeWp.defaultActionHtmlStart();
     }
 
     /**

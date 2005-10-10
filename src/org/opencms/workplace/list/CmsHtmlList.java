@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.33 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.33 $ 
  * 
  * @since 6.0.0 
  */
@@ -684,10 +684,8 @@ public class CmsHtmlList {
                     Messages.ERR_LIST_INVALID_PAGE_1,
                     new Integer(currentPage)));
             }
-            m_currentPage = currentPage;
-        } else {
-            m_currentPage = 0;
-        }
+        } 
+        m_currentPage = currentPage;
     }
 
     /**
@@ -741,7 +739,8 @@ public class CmsHtmlList {
      */
     public void setSortedColumn(String sortedColumn, Locale locale) throws CmsIllegalArgumentException {
 
-        if (!getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
+        if (getMetadata().getColumnDefinition(sortedColumn) == null
+            || !getMetadata().getColumnDefinition(sortedColumn).isSorteable()) {
             return;
         }
         // check if the parameter is valid
@@ -787,8 +786,12 @@ public class CmsHtmlList {
         if (listState.getOrder() == CmsListOrderEnum.ORDER_DESCENDING) {
             setSortedColumn(listState.getColumn(), locale);
         }
-        if (listState.getPage() > 0 && listState.getPage() <= getNumberOfPages()) {
-            setCurrentPage(listState.getPage());
+        if (listState.getPage() > 0) {
+            if (listState.getPage() <= getNumberOfPages()) {
+                setCurrentPage(listState.getPage());
+            } else {
+                setCurrentPage(1);
+            }
         }
     }
 
@@ -851,6 +854,7 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
+        // TODO: support for help & confirmation text depending on the item
         if (m_visibleItems != null && !m_visibleItems.isEmpty()) {
             Iterator cols = getMetadata().getListColumns().iterator();
             while (cols.hasNext()) {
@@ -862,11 +866,12 @@ public class CmsHtmlList {
                     html.append(action.helpTextHtml(wp));
                     html.append(action.confirmationTextHtml(wp));
                 }
-                I_CmsListDirectAction defAction = col.getDefaultAction();
-                if (defAction != null) {
-                    defAction.setItem((CmsListItem)m_visibleItems.get(0));
-                    html.append(defAction.helpTextHtml(wp));
-                    html.append(defAction.confirmationTextHtml(wp));
+                Iterator defActions = col.getDefaultActions().iterator();
+                while (defActions.hasNext()) {
+                    I_CmsListDirectAction action = (I_CmsListDirectAction)defActions.next();
+                    action.setItem((CmsListItem)m_visibleItems.get(0));
+                    html.append(action.helpTextHtml(wp));
+                    html.append(action.confirmationTextHtml(wp));
                 }
             }
         }

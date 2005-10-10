@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishedResource.java,v $
- * Date   : $Date: 2005/08/31 16:21:49 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/27 14:52:26 $
+ * Version: $Revision: 1.31 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.io.Serializable;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.31 $
  * 
  * @since 6.0.0
  * 
@@ -85,6 +85,8 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
     /**
      * Creates an object for published VFS resources.<p>
      * 
+     * Do not write objects created with this constructor to db, since the backup tag id is not set.<p>
+     * 
      * @param resource an CmsResource object to create a CmsPublishedResource from
      */
     public CmsPublishedResource(CmsResource resource) {
@@ -92,6 +94,24 @@ public class CmsPublishedResource implements Serializable, Cloneable, Comparable
         m_structureId = resource.getStructureId();
         m_resourceId = resource.getResourceId();
         m_backupTagId = -1;
+        m_rootPath = resource.getRootPath();
+        m_resourceType = resource.getTypeId();
+        m_resourceState = resource.getState();
+        m_siblingCount = resource.getSiblingCount();
+        m_isFolder = resource.isFolder();
+    }
+
+    /**
+     * Creates an object for published VFS resources.<p>
+     * 
+     * @param resource an CmsResource object to create a CmsPublishedResource from
+     * @param backupTagId the backup tag id
+     */
+    public CmsPublishedResource(CmsResource resource, int backupTagId) {
+
+        m_structureId = resource.getStructureId();
+        m_resourceId = resource.getResourceId();
+        m_backupTagId = backupTagId;
         m_rootPath = resource.getRootPath();
         m_resourceType = resource.getTypeId();
         m_resourceState = resource.getState();

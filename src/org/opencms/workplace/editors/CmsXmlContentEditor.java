@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/07/06 12:45:07 $
- * Version: $Revision: 1.65 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.66 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.A_CmsWidget;
 import org.opencms.widgets.I_CmsWidget;
@@ -63,9 +64,11 @@ import org.opencms.xml.types.I_CmsXmlSchemaType;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -79,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65 $ 
+ * @version $Revision: 1.66 $ 
  * 
  * @since 6.0.0 
  */
@@ -132,6 +135,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** File object used to read and write contents. */
     private CmsFile m_file;
+
+    /** The set of help message ids that have already been used. */
+    private Set m_helpMessageIds;
 
     /** Indicates if an optional element is included in the form. */
     private boolean m_optionalElementPresent;
@@ -296,7 +302,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             newFile.setContents(newContent.marshal());
             // write the file with the updated content
             getCms().writeFile(newFile);
-            
+
             // wipe out parameters for the editor to ensure proper operation
             setParamNewLink(null);
             setParamAction(null);
@@ -309,7 +315,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // set the member variables for the content 
             m_file = getCms().readFile(getParamTempfile(), CmsResourceFilter.ALL);
             m_content = newContent;
-            
+
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
@@ -553,6 +559,17 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getHelpMessageIds()
+     */
+    public Set getHelpMessageIds() {
+
+        if (m_helpMessageIds == null) {
+            m_helpMessageIds = new HashSet();
+        }
+        return m_helpMessageIds;
+    }
+
+    /**
      * Returns the index of the element to add or remove.<p>
      *
      * @return the index of the element to add or remove
@@ -580,6 +597,14 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     public String getParamNewLink() {
 
         return m_paramNewLink;
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidgetDialog#getUserAgent()
+     */
+    public String getUserAgent() {
+
+        return getJsp().getRequest().getHeader(CmsRequestUtil.HEADER_USER_AGENT);
     }
 
     /**

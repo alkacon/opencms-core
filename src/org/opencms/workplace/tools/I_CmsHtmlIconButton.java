@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,6 +90,13 @@ public interface I_CmsHtmlIconButton {
     boolean isEnabled();
 
     /**
+     * Returns if visible or not.<p>
+     *
+     * @return if visible or not
+     */
+    boolean isVisible();
+
+    /**
      * Sets if enabled or disabled.<p>
      *
      * @param enabled if enabled or disabled
@@ -116,5 +123,12 @@ public interface I_CmsHtmlIconButton {
      * @param name the name to set
      */
     void setName(CmsMessageContainer name);
+
+    /**
+     * Sets if visible or not.<p>
+     *
+     * @param visible if visible or not
+     */
+    void setVisible(boolean visible);
 
 }

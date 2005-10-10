@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,15 @@
 
 package org.opencms.workplace.galleries;
 
-import org.opencms.file.CmsFile;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.CmsResourceTypePointer;
+import org.opencms.file.types.CmsResourceTypeFolderExtended;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.loader.CmsLoaderException;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -73,11 +73,11 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
-public abstract class A_CmsGallery extends CmsDialog {
+public abstract class A_CmsGallery extends CmsDialog implements Comparable {
 
     /** Value for the action: delete the gallery item. */
     public static final int ACTION_DELETE = 101;
@@ -166,6 +166,9 @@ public abstract class A_CmsGallery extends CmsDialog {
     /** The resource type name of this gallery instance. */
     private String m_galleryTypeName;
 
+    /** The optional parameters for the gallery from the XML configuration. */
+    private String m_galleryTypeParams;
+
     /** The dialog mode the gallery is running in. */
     private String m_paramDialogMode;
 
@@ -186,6 +189,9 @@ public abstract class A_CmsGallery extends CmsDialog {
 
     /** The search word parameter. */
     private String m_paramSearchWord;
+
+    /** The gallery base resource type. */
+    private CmsResourceTypeFolderExtended m_resourceType;
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -246,10 +252,10 @@ public abstract class A_CmsGallery extends CmsDialog {
             }
         }
         // get the gallery class name for the type
-        String className = OpenCms.getWorkplaceManager().getGalleryClassName(galleryTypeName);
-
-        if (className == null) {
-            // requested type is not configured
+        A_CmsGallery template = (A_CmsGallery)OpenCms.getWorkplaceManager().getGalleries().get(galleryTypeName);
+        
+        if (template == null) {
+            // requested gallery type is not configured
             CmsMessageContainer message;
             if (jsp == null) {
                 message = Messages.get().container(Messages.LOG_UNKNOWN_GALLERY_TYPE_REQ_1, galleryTypeName);
@@ -265,14 +271,18 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         try {
             // first get the class of the gallery
-            Class galleryClass = Class.forName(className);
+            Class galleryClass = Class.forName(template.getResourceType().getFolderClassName());
             // create a new instance and cast to a gallery
             A_CmsGallery galleryInstance = (A_CmsGallery)galleryClass.newInstance();
             // set the type name and id
             galleryInstance.m_galleryTypeName = galleryTypeName;
-            galleryInstance.m_galleryTypeId = OpenCms.getResourceManager().getResourceType(galleryTypeName).getTypeId();
+            galleryInstance.m_resourceType = template.getResourceType();
+            galleryInstance.m_galleryTypeParams = template.getResourceType().getFolderClassParams();
+            galleryInstance.m_galleryTypeId = template.getResourceType().getTypeId();
             // initialize the members
             galleryInstance.initWorkplaceMembers(jsp);
+            // perform other intialization
+            galleryInstance.init();
             // return the result
             return galleryInstance;
         } catch (Exception e) {
@@ -281,12 +291,12 @@ public abstract class A_CmsGallery extends CmsDialog {
             if (jsp == null) {
                 message = Messages.get().container(
                     Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_2,
-                    className,
+                    template.getResourceType().getFolderClassName(),
                     galleryTypeName);
             } else {
                 message = Messages.get().container(
                     Messages.LOG_CREATE_GALLERY_INSTANCE_FAILED_JSP_3,
-                    className,
+                    template.getResourceType().getFolderClassName(),
                     galleryTypeName,
                     jsp.info("opencms.request.element.uri"));
             }
@@ -454,77 +464,52 @@ public abstract class A_CmsGallery extends CmsDialog {
                 start = 0;
             }
             for (int i = start; i < end; i++) {
-                try {
-                    CmsResource res = (CmsResource)items.get(i);
-                    int state = res.getState();
-                    String tdClass;
-                    switch (state) {
-                        case CmsResource.STATE_CHANGED:
-                            tdClass = "fc";
-                            break;
-                        case CmsResource.STATE_NEW:
-                            tdClass = "fn";
-                            break;
-                        default:
-                            tdClass = "list";
-                    }
-                    String resPath = getCms().getSitePath(res);
-                    String resName = CmsResource.getName(resPath);
-                    String title = getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE);
-                    // get the resource type name
-                    String resType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
 
-                    result.append("<tr>\n");
-                    // file type
-                    result.append("\t<td>");
-                    result.append("<img src=\"");
-                    result.append(getSkinUri());
-                    result.append("filetypes/");
-                    result.append(resType);
-                    result.append(".gif\">");
-                    result.append("</td>\n");
-                    // file name
-                    result.append("\t<td class=\"");
-                    result.append(tdClass);
-                    result.append("\"><a class=\"");
-                    result.append(tdClass);
-                    result.append("\" href=\"javascript: preview(\'");
-                    result.append(resPath);
-                    result.append("\');\" title=\"");
-                    result.append(key("button.preview"));
-                    result.append("\">");
-                    result.append(resName);
-                    result.append("</a></td>\n");
-                    // file title
-                    result.append("\t<td class=\"");
-                    result.append(tdClass);
-                    result.append("\">");
-                    result.append(CmsEncoder.escapeXml(title));
-                    result.append("</td>\n");
-                    // display the link URL for link gallery
-
-                    if (res.getTypeId() == CmsResourceTypePointer.getStaticTypeId()) {
-                        result.append("\t<td class=\"");
-                        result.append(tdClass);
-                        result.append("\">");
-                        CmsFile file = getCms().readFile(getCms().getSitePath(res));
-                        String linkTarget = new String(file.getContents());
-                        result.append(linkTarget);
-                    } else {
-                        // display the size for all other galleries
-                        result.append("\t<td class=\"");
-                        result.append(tdClass);
-                        result.append("\" style=\"text-align: right;\">");
-                        result.append(res.getLength() / 1024);
-                        result.append(" ");
-                        result.append(key("label.kilobytes"));
-                    }
-                    result.append("</td>\n");
-                    result.append("</tr>\n");
-                } catch (CmsException e) {
-                    // error getting resource type name or reading resource, log error
-                    LOG.error(e);
+                CmsResource res = (CmsResource)items.get(i);
+                int state = res.getState();
+                String tdClass;
+                switch (state) {
+                    case CmsResource.STATE_CHANGED:
+                        tdClass = "fc";
+                        break;
+                    case CmsResource.STATE_NEW:
+                        tdClass = "fn";
+                        break;
+                    default:
+                        tdClass = "list";
                 }
+                String resPath = getCms().getSitePath(res);
+                String resName = CmsResource.getName(resPath);
+                String title = getPropertyValue(res, CmsPropertyDefinition.PROPERTY_TITLE);
+
+                result.append("<tr>\n");
+
+                // append the custom start columns
+                result.append(buildGalleryItemListCustomStartCols(res, tdClass));
+
+                // file name
+                result.append("\t<td class=\"");
+                result.append(tdClass);
+                result.append("\"><a class=\"");
+                result.append(tdClass);
+                result.append("\" href=\"javascript: preview(\'");
+                result.append(resPath);
+                result.append("\');\" title=\"");
+                result.append(key("button.preview"));
+                result.append("\">");
+                result.append(resName);
+                result.append("</a></td>\n");
+                // file title
+                result.append("\t<td class=\"");
+                result.append(tdClass);
+                result.append("\">");
+                result.append(CmsEncoder.escapeXml(title));
+                result.append("</td>\n");
+
+                // append the custom end columns
+                result.append(buildGalleryItemListCustomEndCols(res, tdClass));
+
+                result.append("</tr>\n");
             }
         }
         result.append("</table>");
@@ -658,6 +643,22 @@ public abstract class A_CmsGallery extends CmsDialog {
         }
 
         return html.toString();
+    }
+
+    /**
+     * Compares gallery objects by their order, this is used to sort the gallery buttons for the editors.<p>
+     * 
+     * @see java.lang.Comparable#compareTo(java.lang.Object)
+     */
+    public int compareTo(Object o) {
+
+        if (!(o instanceof A_CmsGallery)) {
+            // wrong object
+            return 0;
+        }
+
+        // compare the order values of the galleries
+        return getOrder().compareTo(((A_CmsGallery)o).getOrder());
     }
 
     /**
@@ -878,6 +879,16 @@ public abstract class A_CmsGallery extends CmsDialog {
     }
 
     /**
+     * Returns the (optional) parameters of this gallery instance.<p>
+     * 
+     * @return the (optional) parameters of this gallery instance
+     */
+    public String getGalleryTypeParams() {
+
+        return m_galleryTypeParams;
+    }
+
+    /**
      * Returns the height of the head frameset.<p>
      * 
      * @return the height of the head frameset
@@ -905,6 +916,16 @@ public abstract class A_CmsGallery extends CmsDialog {
     public String getNoGalleryErrorMsg() {
 
         return key("error.reason.no." + getGalleryTypeName());
+    }
+
+    /**
+     * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
+     * 
+     * @return the order of the implemented gallery
+     */
+    public Integer getOrder() {
+
+        return new Integer(Integer.MAX_VALUE);
     }
 
     /**
@@ -1009,6 +1030,16 @@ public abstract class A_CmsGallery extends CmsDialog {
     }
 
     /**
+     * Returns the extended folder resource type this gallery is based on.<p>
+     * 
+     * @return the extended folder resource type this gallery is based on
+     */
+    public CmsResourceTypeFolderExtended getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
      * Returns the url for the upload applet or JSP dialog.<p>
      * 
      * @return the url for the upload applet or JSP dialog
@@ -1028,6 +1059,14 @@ public abstract class A_CmsGallery extends CmsDialog {
         wizardUrl.append(CmsNewResource.PARAM_CURRENTFOLDER);
         wizardUrl.append("=");
         return wizardUrl.toString();
+    }
+
+    /**
+     * Initialization method that is called after the gallery instance has been created.<p>
+     */
+    public void init() {
+
+        // default gallery does not require initialization
     }
 
     /**
@@ -1189,6 +1228,16 @@ public abstract class A_CmsGallery extends CmsDialog {
     }
 
     /**
+     * Sets the extended folder resource type this gallery is based on.<p>
+     * 
+     * @param type the extended folder resource type this gallery is based on
+     */
+    public void setResourceType(CmsResourceTypeFolderExtended type) {
+
+        m_resourceType = type;
+    }
+
+    /**
      * Generates a HTML String representing a target select box.<p>
      * 
      * @return a HTML String representing a target select box
@@ -1198,7 +1247,7 @@ public abstract class A_CmsGallery extends CmsDialog {
         StringBuffer targetSelectBox = new StringBuffer(32);
         targetSelectBox.append(buttonBarSpacer(5));
         targetSelectBox.append("<td nowrap><b>");
-        targetSelectBox.append(key("target"));
+        targetSelectBox.append(key("input.linktarget"));
         targetSelectBox.append("</b>&nbsp;</td>");
         targetSelectBox.append("<td>\r\n");
         targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
@@ -1222,6 +1271,58 @@ public abstract class A_CmsGallery extends CmsDialog {
 
         return button("javascript:wizard();", null, "upload.png", OpenCms.getWorkplaceManager().getExplorerTypeSetting(
             "upload").getKey(), 0);
+    }
+
+    /**
+     * Generates the HTML for custom columns to shown at the end of the list of gallery columns.<p>
+     *  
+     * @param res the current VFS resource 
+     * @param tdClass the current syle sheet class name for the table cell
+     * 
+     * @return the HTML for custom columns to shown at the end of the list of gallery columns
+     */
+    protected String buildGalleryItemListCustomEndCols(CmsResource res, String tdClass) {
+
+        StringBuffer result = new StringBuffer(64);
+        result.append("\t<td class=\"");
+        result.append(tdClass);
+        result.append("\" style=\"text-align: right;\">");
+        result.append(res.getLength() / 1024);
+        result.append(" ");
+        result.append(key("label.kilobytes"));
+        result.append("</td>\n");
+        return result.toString();
+    }
+
+    /**
+     * Generates the HTML for custom columns to shown at the start of the list of gallery columns.<p>
+     *  
+     * @param res the current VFS resource 
+     * @param tdClass the current syle sheet class name for the table cell
+     * 
+     * @return the HTML for custom columns to shown at the end of the list of gallery columns
+     */
+    protected String buildGalleryItemListCustomStartCols(CmsResource res, String tdClass) {
+
+        String resType;
+        try {
+            // get the resource type name
+            resType = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
+        } catch (CmsLoaderException e) {
+            // unknown restype (highly unlikley)
+            resType = null;
+        }
+        StringBuffer result = new StringBuffer(64);
+        result.append("\t<td>");
+        if ((resType != null) && (tdClass != null)) {
+            result.append("<img src=\"");
+            result.append(getSkinUri());
+            result.append("filetypes/");
+            result.append(resType);
+            result.append(".gif\">");
+        }
+        result.append("</td>\n");
+        return result.toString();
     }
 
     /**

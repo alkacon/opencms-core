@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/09/12 09:59:29 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.35 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,41 +52,36 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.34 $
+ * @version $Revision: 1.35 $
  * 
  * @since 6.0.0
  */
 public class CmsUserSettings {
 
-    /**
-     * Key for additional info address.
-     */
+    /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_COUNTRY = "USER_COUNTRY";
 
-    /** Key for additional info start settings. */
+    /** Key for additional info default group. */
     public static final String ADDITIONAL_INFO_DEFAULTGROUP = "USER_DEFAULTGROUP";
 
     /** Key for additional info explorer settings. */
     public static final String ADDITIONAL_INFO_EXPLORERSETTINGS = "USER_EXPLORERSETTINGS";
 
-    /**
-     * Key for additional info flags.
-     */
+    /** Key for additional info flags. */
     public static final String ADDITIONAL_INFO_PREFERENCES = "USER_PREFERENCES";
 
     /** Key for additional info start settings. */
     public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
 
-    /**
-     * Key for additional info address.
-     */
+    /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_TOWN = "USER_TOWN";
 
-    /**
-     * Key for additional info address.
-     */
+    /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
 
+    /** Key for additional info of resources that were confirmemed by the user. */
+    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
+    
     /** The default button style. */
     private static final int BUTTONSTYLE_DEFAULT = 1;
 

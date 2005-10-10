@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesEdit.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/27 14:52:53 $
+ * Version: $Revision: 1.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.modules;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsTextareaWidget;
@@ -47,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,6 +62,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
     public CmsModulesEdit(CmsJspActionElement jsp) {
 
         super(jsp);
+
     }
 
     /**
@@ -73,6 +75,7 @@ public class CmsModulesEdit extends CmsModulesEditBase {
     public CmsModulesEdit(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+
     }
 
     /**
@@ -100,6 +103,12 @@ public class CmsModulesEdit extends CmsModulesEditBase {
             result.append(createWidgetTableStart());
             result.append(createDialogRowsHtml(6, 7));
             result.append(createWidgetTableEnd());
+            if (CmsStringUtil.isEmpty(m_module.getName())) {
+                result.append(dialogBlockStart(key("label.modulefolder")));
+                result.append(createWidgetTableStart());
+                result.append(createDialogRowsHtml(8, 13));
+                result.append(createWidgetTableEnd());
+            }
             result.append(dialogBlockEnd());
         }
 
@@ -128,7 +137,15 @@ public class CmsModulesEdit extends CmsModulesEditBase {
         addWidget(new CmsWidgetDialogParameter(m_module, "actionClass", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_module, "authorEmail", PAGES[0], new CmsInputWidget()));
-
+        // add the second page only when creating a new module
+        if (CmsStringUtil.isEmpty(m_module.getName())) {
+            addWidget(new CmsWidgetDialogParameter(m_module, "createModuleFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_module, "createTemplateFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_module, "createElementsFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_module, "createResourcesFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_module, "createClassesFolder", PAGES[0], new CmsCheckboxWidget()));
+            addWidget(new CmsWidgetDialogParameter(m_module, "createLibFolder", PAGES[0], new CmsCheckboxWidget()));
+        }
     }
 
 }

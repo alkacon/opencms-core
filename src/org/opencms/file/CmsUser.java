@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/08/09 08:11:59 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.30 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,8 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -68,7 +70,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.30 $
  * 
  * @since 6.0.0
  * 
@@ -615,6 +617,22 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Sets the  complete Hashtable with additional information about the user. <p>
+     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+     *
+     * This method has package-visibility for security-reasons.
+     * It is required to because of the use of two seprate databases for user data and
+     * additional user data.
+     * 
+     * @param additionalInfo user-related additional information
+     *
+     */
+    public void setAdditionalInfo(Map additionalInfo) {
+
+        m_additionalInfo = additionalInfo;
+    }
+
+    /**
      * Sets additional information about the user. <p>
      * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
      *
@@ -730,6 +748,16 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
+     * Sets the flags.<p>
+     *
+     * @param value The new user flags
+     */
+    public void setFlags(int value) {
+
+        m_flags = value;
+    }
+
+    /**
      * Sets the lastlogin.<p>
      *
      * @param value The new user section
@@ -820,38 +848,72 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the  complete Hashtable with additional information about the user. <p>
-     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
-     *
-     * This method has package-visibility for security-reasons.
-     * It is required to because of the use of two seprate databases for user data and
-     * additional user data.
-     * 
-     * @param additionalInfo user-related additional information
-     *
-     */
-    void setAdditionalInfo(Map additionalInfo) {
-
-        m_additionalInfo = additionalInfo;
-    }
-
-    /**
-     * Sets the flags.<p>
-     *
-     * @param value The new user flags
-     */
-    void setFlags(int value) {
-
-        m_flags = value;
-    }
-
-    /**
      * Sets the typ of this user.<p>
      *
      * @param value the type of this user
      */
-    void setType(int value) {
+    /*package*/void setType(int value) {
 
         m_type = value;
+    }
+
+    /**
+     * Filters out all users with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * @param users the list of <code>{@link CmsUser}</code>
+     * 
+     * @return the same filtered list
+     */
+    public static List filterCore(List users) {
+    
+        Iterator it = users.iterator();
+        while (it.hasNext()) {
+            CmsUser user = (CmsUser)it.next();
+            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
+                it.remove();
+            }
+        }
+        return users;
+    }
+
+    /**
+     * Filters out all users that does not have the given flag set.<p>
+     * 
+     * @param users the list of <code>{@link CmsUser}</code>
+     * @param flag the flag for filtering
+     * 
+     * @return the same filtered list
+     */
+    public static List filterFlag(List users, int flag) {
+    
+        Iterator it = users.iterator();
+        while (it.hasNext()) {
+            CmsUser user = (CmsUser)it.next();
+            if ((user.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return users;
+    }
+
+    /**
+     * Filters out all users that does not have the given flag set,
+     * but leaving all users with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * @param users the list of <code>{@link CmsUser}</code>
+     * @param flag the flag for filtering
+     * 
+     * @return the same filtered list
+     */
+    public static List filterCoreFlag(List users, int flag) {
+    
+        Iterator it = users.iterator();
+        while (it.hasNext()) {
+            CmsUser user = (CmsUser)it.next();
+            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (user.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return users;
     }
 }

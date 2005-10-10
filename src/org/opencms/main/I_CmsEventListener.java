@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/I_CmsEventListener.java,v $
- * Date   : $Date: 2005/07/13 09:22:42 $
- * Version: $Revision: 1.27 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ package org.opencms.main;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  * 
@@ -74,6 +74,9 @@ public interface I_CmsEventListener {
 
     /** Key name for passing a publish history id in the data map. */
     String KEY_PUBLISHID = "publishHistoryId";
+    
+    /** Key name for passing a publish list in the data map. */
+    String KEY_PUBLISHLIST = "publishList";
 
     /** Key name for passing a project id in the data map. */
     String KEY_PROJECTID = "projectId";
@@ -98,12 +101,32 @@ public interface I_CmsEventListener {
      * 
      * Event data:
      * <ul>
-     * <li>key "publishHistoryId" (mandatory): the ID of the publish task in the publish history</li>
-     * <li>key "report" (optional): an I_CmsReport instance to print output messages</li>
+     * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * <li><code>{@link #KEY_PUBLISHID}</code>: the ID of the publish task in the publish history</li>
+     * <li><code>{@link #KEY_PROJECTID}</code>: the ID of the project that has been published</li>
+     * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
      * </ul>
+     * 
      * @see org.opencms.file.CmsObject#publishProject()
+     * @see #EVENT_BEFORE_PUBLISH_PROJECT
      */
     int EVENT_PUBLISH_PROJECT = 2;
+    
+    /**
+     * Event "a project is to published" (but has not yet been published).<p>
+     * 
+     * Event data:
+     * <ul>
+     * <li><code>{@link #KEY_REPORT}</code>: a <code>{@link org.opencms.report.I_CmsReport}</code> to print output messages to</li>
+     * <li><code>{@link #KEY_PUBLISHLIST}</code>: a <code>{@link org.opencms.db.CmsPublishList}</code> that contains the resources that are to be published</li>
+     * <li><code>{@link #KEY_PROJECTID}</code>: the ID of the project that is to be published</li>
+     * <li><code>{@link #KEY_DBCONTEXT}</code>: the current users database context</li>
+     * </ul>
+     * 
+     * @see org.opencms.file.CmsObject#publishProject()
+     * @see #EVENT_PUBLISH_PROJECT
+     */
+    int EVENT_BEFORE_PUBLISH_PROJECT = 3;
 
     /** 
      * Event "all caches must be cleared".<p>

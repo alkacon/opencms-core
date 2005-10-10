@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsImportModuledata.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/10 16:11:12 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich (m.emmerich@alkacon.com) 
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * 
- * @version $Revision: 1.16 $ $Date: 2005/09/11 13:27:06 $
+ * @version $Revision: 1.17 $ $Date: 2005/10/10 16:11:12 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -226,7 +226,7 @@ public class CmsImportModuledata extends CmsImport implements Serializable {
             CmsMessageContainer message = Messages.get().container(
                 Messages.ERR_COS_IMPORTEXPORT_ERROR_IMPORTING_RESOURCES_0);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(message, e);
+                LOG.debug(message.key(), e);
             }
 
             throw new CmsImportExportException(message, e);

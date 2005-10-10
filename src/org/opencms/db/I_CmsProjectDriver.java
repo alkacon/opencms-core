@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/I_CmsProjectDriver.java,v $
- * Date   : $Date: 2005/06/27 23:22:10 $
- * Version: $Revision: 1.74 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.75 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.Set;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.74 $
+ * @version $Revision: 1.75 $
  * 
  * @since 6.0.0 
  */
@@ -162,6 +162,22 @@ public interface I_CmsProjectDriver {
      * @throws CmsDataAccessException if something goes wrong
      */
     void deletePublishHistory(CmsDbContext dbc, int projectId, int maxBackupTagId) throws CmsDataAccessException;
+
+    /**
+     * Deletes a publish history entry with backup tag IDs >=0 and < the specified max. backup tag ID.<p>
+     * 
+     * @param dbc the current database context
+     * @param projectId the ID of the current project
+     * @param publishHistoryId the id of the history to delete the entry from
+     * @param publishResource the entry to delete
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     */
+    void deletePublishHistoryEntry(
+        CmsDbContext dbc,
+        int projectId,
+        CmsUUID publishHistoryId,
+        CmsPublishedResource publishResource) throws CmsDataAccessException;
 
     /**
      * Deletes an entry in the published resource table.<p>
@@ -542,7 +558,6 @@ public interface I_CmsProjectDriver {
      * @param dbc the current database context
      * @param currentProject the current project
      * @param publishId the ID of the current publishing process
-     * @param backupTagId the current backup ID
      * @param resource the state of the resource *before* it was published
      * 
      * @throws CmsDataAccessException if something goes wrong
@@ -551,8 +566,7 @@ public interface I_CmsProjectDriver {
         CmsDbContext dbc,
         CmsProject currentProject,
         CmsUUID publishId,
-        int backupTagId,
-        CmsResource resource) throws CmsDataAccessException;
+        CmsPublishedResource resource) throws CmsDataAccessException;
 
     /**
      * Inserts an entry in the published resource table.<p>

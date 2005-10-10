@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/A_CmsResourceCollector.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,12 @@
 
 package org.opencms.file.collectors;
 
+import org.opencms.file.CmsDataAccessException;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.PrintfFormat;
 
@@ -46,7 +48,7 @@ import java.util.List;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.8 $
  * 
  * @since 6.0.0 
  */
@@ -57,6 +59,12 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
 
     /** The collector order of this collector. */
     protected int m_order;
+
+    /** The name of the configured default collector. */
+    private String m_defaultCollectorName;
+
+    /** The default collector parameters. */
+    private String m_defaultCollectorParam;
 
     /** The hash code of this collector. */
     private int m_hashcode;
@@ -101,11 +109,54 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     }
 
     /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject)
+     */
+    public String getCreateLink(CmsObject cms) throws CmsException, CmsDataAccessException {
+
+        checkParams();
+        return getCreateLink(cms, getDefaultCollectorName(), getDefaultCollectorParam());
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject)
+     */
+    public String getCreateParam(CmsObject cms) throws CmsDataAccessException {
+
+        checkParams();
+        return getCreateParam(cms, getDefaultCollectorName(), getDefaultCollectorParam());
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getDefaultCollectorName()
+     */
+    public String getDefaultCollectorName() {
+
+        return m_defaultCollectorName;
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getDefaultCollectorParam()
+     */
+    public String getDefaultCollectorParam() {
+
+        return m_defaultCollectorParam;
+    }
+
+    /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#getOrder()
      */
     public int getOrder() {
 
         return m_order;
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#getResults(org.opencms.file.CmsObject)
+     */
+    public List getResults(CmsObject cms) throws CmsDataAccessException, CmsException {
+
+        checkParams();
+        return getResults(cms, getDefaultCollectorName(), getDefaultCollectorParam());
     }
 
     /**
@@ -117,11 +168,43 @@ public abstract class A_CmsResourceCollector implements I_CmsResourceCollector {
     }
 
     /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorName(java.lang.String)
+     */
+    public void setDefaultCollectorName(String collectorName) {
+
+        m_defaultCollectorName = collectorName;
+    }
+
+    /**
+     * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorParam(java.lang.String)
+     */
+    public void setDefaultCollectorParam(String param) {
+
+        m_defaultCollectorParam = param;
+    }
+
+    /**
      * @see org.opencms.file.collectors.I_CmsResourceCollector#setOrder(int)
      */
     public void setOrder(int order) {
 
         m_order = order;
+    }
+
+    /**
+     * Checks if the required parameters have been set.<p>
+     * 
+     * @see #setDefaultCollectorName(String)
+     * @see #setDefaultCollectorParam(String)
+     */
+    protected void checkParams() {
+
+        if ((m_defaultCollectorName == null) || (m_defaultCollectorParam == null)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_COLLECTOR_DEFAULTS_INVALID_2,
+                m_defaultCollectorName,
+                m_defaultCollectorParam));
+        }
     }
 
     /**

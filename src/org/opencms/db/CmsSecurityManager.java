@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/10/09 09:08:26 $
- * Version: $Revision: 1.94 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.95 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,6 +76,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
 
@@ -90,8 +91,6 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * @author Michael Moossen 
- * 
- * @version $Revision: 1.94 $
  * 
  * @since 6.0.0
  */
@@ -163,7 +162,7 @@ public final class CmsSecurityManager {
 
         return securityManager;
     }
-
+    
     /**
      * Updates the state of the given task as accepted by the current user.<p>
      * 
@@ -1291,6 +1290,43 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Deletes a group, where all permissions, users and childs of the group
+     * are transfered to a replacement group.<p>
+     * 
+     * @param context the current request context
+     * @param groupId the id of the group to be deleted
+     * @param replacementId the id of the group to be transfered, can be <code>null</code>
+     *
+     * @throws CmsException if operation was not succesful
+     * @throws CmsSecurityException if the group is a default group.
+     * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
+     */
+    public void deleteGroup(CmsRequestContext context, CmsUUID groupId, CmsUUID replacementId)
+    throws CmsException, CmsRoleViolationException, CmsSecurityException {
+
+        CmsGroup group = readGroup(context, groupId);
+        if (OpenCms.getDefaultUsers().isDefaultGroup(group.getName())) {
+            throw new CmsSecurityException(Messages.get().container(
+                Messages.ERR_CONSTRAINT_DELETE_GROUP_DEFAULT_1,
+                group.getName()));
+        }
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            // catch own exception as special cause for general "Error deleting group". 
+            checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
+            m_driverManager.deleteGroup(dbc, group, replacementId);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, group.getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Delete a user group.<p>
      *
      * Only groups that contain no subgroups can be deleted.<p> 
@@ -1315,6 +1351,10 @@ public final class CmsSecurityManager {
         try {
             // catch own exception as special cause for general "Error deleting group". 
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
             m_driverManager.deleteGroup(dbc, name);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_GROUP_1, name), e);
@@ -1455,7 +1495,27 @@ public final class CmsSecurityManager {
     public void deleteUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
         CmsUser user = readUser(context, userId);
-        deleteUser(context, user);
+        deleteUser(context, user, null);
+    }
+
+    /**
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user.<p>
+     *
+     * @param context the current request context
+     * @param userId the id of the user to be deleted
+     * @param replacementId the id of the user to be transfered
+     *
+     * @throws CmsException if operation was not successful
+     */
+    public void deleteUser(CmsRequestContext context, CmsUUID userId, CmsUUID replacementId) throws CmsException {
+
+        CmsUser user = readUser(context, userId);
+        CmsUser replacementUser = null;
+        if (replacementId != null && !replacementId.isNullUUID()) {
+            replacementUser = readUser(context, replacementId);
+        }
+        deleteUser(context, user, replacementUser);
     }
 
     /**
@@ -1469,7 +1529,7 @@ public final class CmsSecurityManager {
     public void deleteUser(CmsRequestContext context, String username) throws CmsException {
 
         CmsUser user = readUser(context, username, CmsUser.USER_TYPE_SYSTEMUSER);
-        deleteUser(context, user);
+        deleteUser(context, user, null);
     }
 
     /**
@@ -1483,7 +1543,7 @@ public final class CmsSecurityManager {
     public void deleteWebUser(CmsRequestContext context, CmsUUID userId) throws CmsException {
 
         CmsUser user = readUser(context, userId);
-        deleteUser(context, user);
+        deleteUser(context, user, null);
     }
 
     /**
@@ -2030,6 +2090,45 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
         return result;
+    }
+
+    /**
+     * Returns all resources associated to a given principal via an ACE with the given permissions.<p> 
+     * 
+     * If the <code>includeAttr</code> flag is set it returns also all resources associated to 
+     * a given principal through some of following attributes.<p> 
+     * 
+     * <ul>
+     *    <li>User Created</li>
+     *    <li>User Last Modified</li>
+     * </ul><p>
+     * 
+     * @param context the current request context
+     * @param principalId the id of the principal
+     * @param permissions a set of permissions to match, can be <code>null</code> for all ACEs
+     * @param includeAttr a flag to include resources associated by attributes
+     * 
+     * @return a list of <code>{@link CmsResource}</code> objects
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List getResourcesForPrincipal(
+        CmsRequestContext context,
+        CmsUUID principalId,
+        CmsPermissionSet permissions,
+        boolean includeAttr) throws CmsException {
+
+        List dependencies;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            dependencies = m_driverManager.getResourcesForPrincipal(dbc, dbc.currentProject(), principalId, permissions, includeAttr);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1, principalId), e);
+            dependencies = new ArrayList();
+        } finally {
+            dbc.clear();
+        }
+        return dependencies;
     }
 
     /**
@@ -3852,6 +3951,54 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Returns a set of users that are responsible for a specific resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsibleUsers(CmsRequestContext context, CmsResource resource) throws CmsException {
+
+        Set result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readResponsibleUsers(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+
+    /**
+     * Returns a set of users that are responsible for a specific resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsiblePrincipals(CmsRequestContext context, CmsResource resource) throws CmsException {
+
+        Set result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readResponsiblePrincipals(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_READ_RESPONSIBLE_USERS_1, resource.getRootPath()), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+    
+    /**
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
      * 
@@ -4560,19 +4707,13 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Changes the timestamp information of a resource.<p>
-     * 
-     * This method is used to set the "last modified" date
-     * of a resource, the "release" date of a resource, 
-     * and also the "expire" date of a resource.<p>
+     * Changes the "release" date of a resource.<p>
      * 
      * @param context the current request context
      * @param resource the resource to touch
      * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param dateReleased the new release date of the changed resource,
-     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
-     * @param dateExpired the new expire date of the changed resource, 
-     *              set it to <code>{@link CmsResource#TOUCH_DATE_UNCHANGED}</code> to keep it unchanged.
+     * @param dateReleased the new release date of the changed resource
+     * @param dateExpired the new expire date of the changed resource
      * 
      * @throws CmsException if something goes wrong
      * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
@@ -4580,29 +4721,95 @@ public final class CmsSecurityManager {
      * @see CmsObject#touch(String, long, long, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
      */
-    public void touch(
+    
+    /**
+     * Changes the "last modified" timestamp of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateLastModified(
         CmsRequestContext context,
         CmsResource resource,
-        long dateLastModified,
-        long dateReleased,
-        long dateExpired) throws CmsException, CmsSecurityException {
-
-        int todo = 0;
-        // TODO: Make 3 methods out of this (setDateLastModified, setDateReleased, setDateExpired) 
+        long dateLastModified) throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkOfflineProject(dbc);
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
-            m_driverManager.touch(dbc, resource, dateLastModified, dateReleased, dateExpired);
+            m_driverManager.setDateLastModified(dbc, resource, dateLastModified);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(
-                Messages.ERR_TOUCH_RESOURCE_4,
-                new Object[] {
-                    new Date(dateLastModified),
-                    new Date(dateReleased),
-                    new Date(dateExpired),
-                    context.getSitePath(resource)}), e);
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_LAST_MODIFIED_2,
+                new Object[] {new Date(dateLastModified), context.getSitePath(resource)}), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+    
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateReleased the new release date of the changed resource
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#setDateReleased(String, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateReleased(
+        CmsRequestContext context,
+        CmsResource resource,
+        long dateReleased) throws CmsException, CmsSecurityException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            m_driverManager.setDateReleased(dbc, resource, dateReleased);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_RELEASED_2,
+                new Object[] {new Date(dateReleased), context.getSitePath(resource)}), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+    
+    /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to touch
+     * @param dateExpired the new expire date of the changed resource
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
+     * 
+     * @see CmsObject#setDateExpired(String, long, boolean)
+     * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateExpired(
+        CmsRequestContext context,
+        CmsResource resource,
+        long dateExpired) throws CmsException, CmsSecurityException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
+            m_driverManager.setDateExpired(dbc, resource, dateExpired);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_EXPIRED_2,
+                new Object[] {new Date(dateExpired), context.getSitePath(resource)}), e);
         } finally {
             dbc.clear();
         }
@@ -5385,20 +5592,23 @@ public final class CmsSecurityManager {
         checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_READ, true, filter);
 
         // access was granted - return the resource
-        return resource; 
+        return resource;
     }
 
     /**
-     * Deletes a user.<p>
+     * Deletes a user, where all permissions and resources attributes of the user
+     * were transfered to a replacement user, if given.<p>
      *
      * @param context the current request context
      * @param user the user to be deleted
+     * @param replacement the user to be transfered, can be <code>null</code>
      * 
      * @throws CmsRoleViolationException if the current user does not own the rule {@link CmsRole#ACCOUNT_MANAGER}
      * @throws CmsSecurityException in case the user is a default user 
      * @throws CmsException if something goes wrong
      */
-    private void deleteUser(CmsRequestContext context, CmsUser user) throws CmsException, CmsSecurityException, CmsRoleViolationException {
+    private void deleteUser(CmsRequestContext context, CmsUser user, CmsUser replacement)
+    throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
         if (OpenCms.getDefaultUsers().isDefaultUser(user.getName())) {
             throw new CmsSecurityException(org.opencms.security.Messages.get().container(
@@ -5411,7 +5621,15 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             checkRole(dbc, CmsRole.ACCOUNT_MANAGER);
-            m_driverManager.deleteUser(dbc, context.currentProject(), user.getId());
+            // this is needed because 
+            // I_CmsUserDriver#removeAccessControlEntriesForPrincipal(CmsDbContext, CmsProject, CmsProject, CmsUUID)
+            // expects an offline project, if not data will become inconsistent
+            checkOfflineProject(dbc);
+            if (replacement == null) {
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), null);
+            } else {
+                m_driverManager.deleteUser(dbc, context.currentProject(), user.getName(), replacement.getName());
+            }
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_DELETE_USER_1, user.getName()), e);
         } finally {

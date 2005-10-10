@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestDefaultResourceCollectors.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/27 14:52:46 $
+ * Version: $Revision: 1.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -175,8 +175,12 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
         long day = 1000L * 60L * 60L * 24L;
         long t1 = System.currentTimeMillis()-2*day, t2 = t1+day;
         
-        cms.touch("/folder1/file1", t1, t1, t1+3*day, false);
-        cms.touch("/folder1/file2", t2, t2, t2+3*day, false);
+        cms.setDateLastModified("/folder1/file1", t1, false);
+        cms.setDateReleased("/folder1/file1", t1, false);
+        cms.setDateExpired("/folder1/file1", t1+3*day, false);
+        cms.setDateLastModified("/folder1/file2", t2, false);
+        cms.setDateReleased("/folder1/file2", t2, false);
+        cms.setDateExpired("/folder1/file2", t2+3*day, false);
         
         resources = collector.getResults(cms, "allInFolderDateReleasedDesc", "/folder1/|" + resTypeIdPlain);
         
@@ -186,8 +190,12 @@ public class TestDefaultResourceCollectors extends OpenCmsTestCase {
         res = (CmsResource)resources.get(1);
         assertEquals("/sites/default/folder1/file1", res.getRootPath());
 
-        cms.touch("/folder1/file1", t2, t2, t2+3*day, false);
-        cms.touch("/folder1/file2", t1, t1, t1+3*day, false);
+        cms.setDateLastModified("/folder1/file1", t2, false);
+        cms.setDateReleased("/folder1/file1", t2, false);
+        cms.setDateExpired("/folder1/file1", t2+3*day, false);
+        cms.setDateLastModified("/folder1/file2", t1, false);
+        cms.setDateReleased("/folder1/file2", t1, false);
+        cms.setDateExpired("/folder1/file2", t1+3*day, false);
         
         resources = collector.getResults(cms, "allInFolderDateReleasedDesc", "/folder1/|" + resTypeIdPlain);
         

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/09/21 09:26:35 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,17 +64,20 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLinkGallery extends A_CmsGallery {
-
+    
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "link_fs.jsp";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsLinkGallery.class);
+
+    /** The order value of the gallery for sorting the galleries. */
+    private static final Integer ORDER_GALLERY = new Integer(30);
 
     /**
      * Public empty constructor, required for {@link A_CmsGallery#createInstance(String, CmsJspActionElement)}.<p>
@@ -213,6 +216,16 @@ public class CmsLinkGallery extends A_CmsGallery {
 
         return "450";
     }
+    
+    /**
+     * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
+     * 
+     * @return the order of the implemented gallery
+     */
+    public Integer getOrder() {
+        
+        return ORDER_GALLERY;
+    }
 
     /**
      * Returns the url for the new CmsResourceTypePointer dialog.<p>
@@ -244,6 +257,27 @@ public class CmsLinkGallery extends A_CmsGallery {
     public String wizardButton() {
 
         return button("javascript:wizard();", null, "upload.png", "title.new", 0);
+    }
+
+    /**
+     * @see org.opencms.workplace.galleries.A_CmsGallery#buildGalleryItemListCustomEndCols(org.opencms.file.CmsResource, java.lang.String)
+     */
+    protected String buildGalleryItemListCustomEndCols(CmsResource res, String tdClass) {
+
+        StringBuffer result = new StringBuffer(64);
+        result.append("\t<td class=\"");
+        result.append(tdClass);
+        result.append("\">");
+        String linkTarget;
+        try {
+            CmsFile file = CmsFile.upgrade(res, getCms());
+            linkTarget = new String(file.getContents());
+        } catch (CmsException e) {
+            linkTarget = "";
+        }
+        result.append(linkTarget);
+        result.append("</td>\n");
+        return result.toString();
     }
 
     /**

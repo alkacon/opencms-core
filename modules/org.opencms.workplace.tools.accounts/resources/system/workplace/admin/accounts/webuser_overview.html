@@ -1,7 +1,7 @@
 <%@ page import="org.opencms.workplace.tools.accounts.*" %>
 <%
 	// initialize the widget dialog
-	CmsWebuserOverviewDialog wpWidget = new CmsWebuserOverviewDialog(pageContext, request, response);
+	CmsUserOverviewDialog wpWidget = new CmsUserOverviewDialog(pageContext, request, response);
 	// perform the widget actions   
 	wpWidget.displayDialog(true);
 	if (wpWidget.isForwarded()) {

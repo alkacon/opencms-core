@@ -898,7 +898,7 @@
 			<source>system/workplace/commons/synchronize.jsp</source>
 			<destination>system/workplace/commons/synchronize.jsp</destination>
 			<type>jsp</type>
-			<uuidresource>d0d583a5-e363-11d7-bbc9-9e6537a6d8c4</uuidresource>
+			<uuidresource>080f18b2-a038-11d9-a069-a5e132ae6b32</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -915,7 +915,7 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file>	
+		</file>		
 		<file>
 			<source>system/workplace/commons/touch.jsp</source>
 			<destination>system/workplace/commons/touch.jsp</destination>

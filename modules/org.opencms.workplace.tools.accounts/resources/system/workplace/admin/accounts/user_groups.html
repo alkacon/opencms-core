@@ -10,7 +10,7 @@
 	// initialize list dialogs
 	CmsUserGroupsList wpUserGroups = new CmsUserGroupsList(pageContext, request, response);
 	CmsNotUserGroupsList wpNotUserGroups = new CmsNotUserGroupsList(pageContext, request, response);
-	CmsTwoListsDialog wpTwoLists = new CmsTwoListsDialog(wpUserGroups, wpNotUserGroups);
+	org.opencms.workplace.list.CmsTwoListsDialogsWOStart wpTwoLists = new org.opencms.workplace.list.CmsTwoListsDialogsWOStart(wpUserGroups, wpNotUserGroups);
 	// perform the active list actions
 	wpTwoLists.displayDialog(true);
 

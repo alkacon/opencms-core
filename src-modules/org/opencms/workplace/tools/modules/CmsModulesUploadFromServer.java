@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromServer.java,v $
- * Date   : $Date: 2005/06/30 10:57:18 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/27 14:52:53 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.widgets.CmsSelectWidgetOption;
 import org.opencms.workplace.CmsWidgetDialog;
 import org.opencms.workplace.CmsWidgetDialogParameter;
 import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
@@ -64,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -160,7 +161,7 @@ public class CmsModulesUploadFromServer extends CmsWidgetDialog {
             // redirect
             Map param = new HashMap();
             param.put(CmsModulesList.PARAM_MODULE, m_moduleupload);
-            param.put(PARAM_STYLE, "new");
+            param.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             param.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/modules"));
             if (OpenCms.getModuleManager().hasModule(module.getName())) {
                 param.put(PARAM_MODULENAME, module.getName());

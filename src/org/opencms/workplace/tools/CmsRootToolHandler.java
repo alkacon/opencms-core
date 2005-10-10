@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsRootToolHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/10/10 16:11:08 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,13 +34,11 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 
 /**
- * Default admin tool handler.<p>
- * 
- * Always enabled and visible.<p>
+ * Admin tool handler for the root folder.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  */

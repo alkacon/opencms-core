@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,20 +49,17 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListColumnDefinition {
 
     /** Standard list button location. */
-    public static final String ICON_DOWN = "list/arrow_down.gif";
+    public static final String ICON_DOWN = "list/arrow_down.png";
 
     /** Standard list button location. */
-    public static final String ICON_UP = "list/arrow_up.gif";
-
-    /** List of actions. */
-    private List m_actionList = new ArrayList();
+    public static final String ICON_UP = "list/arrow_up.png";
 
     /** Column alignment. */
     private CmsListColumnAlignEnum m_align = CmsListColumnAlignEnum.ALIGN_LEFT;
@@ -71,7 +68,10 @@ public class CmsListColumnDefinition {
     private I_CmsListItemComparator m_comparator = new CmsListItemDefaultComparator();
 
     /** Default action. */
-    private CmsListDefaultAction m_defaultAction;
+    private List m_defaultActions = new ArrayList();
+
+    /** List of actions. */
+    private List m_directActions = new ArrayList();
 
     /** Data formatter. */
     private I_CmsListFormatter m_formatter;
@@ -111,6 +111,25 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Adds a default Action.<p>
+     *
+     * A column could have more than one default action if the visibilities are complementary.<p>
+     * 
+     * @param defaultAction the default Action to add
+     */
+    public void addDefaultAction(CmsListDefaultAction defaultAction) {
+
+        if (m_listId != null) {
+            // set the list id
+            defaultAction.setListId(m_listId);
+        }
+        // set the column id
+        defaultAction.setColumnForLink(getId());
+
+        m_defaultActions.add(defaultAction);
+    }
+
+    /**
      * Adds a new action to the column.<p>
      * 
      * @param listAction the action to add
@@ -119,8 +138,8 @@ public class CmsListColumnDefinition {
 
         if (m_listId != null) {
             listAction.setListId(m_listId);
-        }
-        m_actionList.add(listAction);
+        }        
+        m_directActions.add(listAction);
     }
 
     /**
@@ -134,13 +153,48 @@ public class CmsListColumnDefinition {
     }
 
     /**
-     * Returns the default Action.<p>
-     *
-     * @return the default Action
+     * Returns a default action by id.<p>
+     * 
+     * @param actionId the id of the action
+     * 
+     * @return the action if found or null
      */
-    public I_CmsListDirectAction getDefaultAction() {
+    public CmsListDefaultAction getDefaultAction(String actionId) {
 
-        return m_defaultAction;
+        Iterator it = m_directActions.iterator();
+        while (it.hasNext()) {
+            CmsListDefaultAction action = (CmsListDefaultAction)it.next();
+            if (action.getId().equals(actionId)) {
+                return action;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns the default Action Ids list.<p>
+     *
+     * @return the default Action Ids list
+     */
+    public List getDefaultActionIds() {
+
+        List ids = new ArrayList();
+        Iterator itDefActions = m_defaultActions.iterator();
+        while (itDefActions.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)itDefActions.next();
+            ids.add(action.getId());
+        }        
+        return Collections.unmodifiableList(ids);
+    }
+
+    /**
+     * Returns the default Actions list.<p>
+     *
+     * @return the default Actions list
+     */
+    public List getDefaultActions() {
+
+        return Collections.unmodifiableList(m_defaultActions);
     }
 
     /**
@@ -152,7 +206,7 @@ public class CmsListColumnDefinition {
      */
     public I_CmsListDirectAction getDirectAction(String actionId) {
 
-        Iterator it = m_actionList.iterator();
+        Iterator it = m_directActions.iterator();
         while (it.hasNext()) {
             I_CmsListDirectAction action = (I_CmsListDirectAction)it.next();
             if (action.getId().equals(actionId)) {
@@ -163,13 +217,29 @@ public class CmsListColumnDefinition {
     }
 
     /**
+     * Returns the direct Action Ids list.<p>
+     *
+     * @return the direct Action Ids list
+     */
+    public List getDirectActionIds() {
+
+        List ids = new ArrayList();
+        Iterator itDirActions = m_directActions.iterator();
+        while (itDirActions.hasNext()) {
+            I_CmsListDirectAction action = (I_CmsListDirectAction)itDirActions.next();
+            ids.add(action.getId());
+        }        
+        return Collections.unmodifiableList(ids);
+    }
+
+    /**
      * Returns all direct actions.<p>
      * 
      * @return a list of <code>{@link I_CmsListDirectAction}</code>s.
      */
     public List getDirectActions() {
 
-        return Collections.unmodifiableList(m_actionList);
+        return Collections.unmodifiableList(m_directActions);
     }
 
     /**
@@ -249,15 +319,19 @@ public class CmsListColumnDefinition {
     public String htmlCell(CmsListItem item, CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
-        Iterator itActions = m_actionList.iterator();
+        Iterator itActions = m_directActions.iterator();
         while (itActions.hasNext()) {
             I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
             action.setItem(item);
             html.append(action.buttonHtml(wp));
         }
-        if (m_defaultAction != null) {
-            m_defaultAction.setItem(item);
-            html.append(m_defaultAction.buttonHtml(wp));
+        if (!m_defaultActions.isEmpty()) {
+            Iterator itDefaultActions = m_defaultActions.iterator();
+            while (itDefaultActions.hasNext()) {
+                I_CmsListDirectAction defAction = (I_CmsListDirectAction)itDefaultActions.next();
+                defAction.setItem(item);
+                html.append(defAction.buttonHtml(wp));
+            }
         } else {
             if (m_formatter == null) {
                 // unformatted output
@@ -314,7 +388,8 @@ public class CmsListColumnDefinition {
         String onClic = "listSort('" + listId + "', '" + getId() + "');";
         String helpText = null;
         if (m_helpText != null) {
-            helpText = new MessageFormat(m_helpText.key(wp.getLocale()), wp.getLocale()).format(new Object[] {getName().key(wp.getLocale())});
+            helpText = new MessageFormat(m_helpText.key(wp.getLocale()), wp.getLocale()).format(new Object[] {getName().key(
+                wp.getLocale())});
         } else {
             if (isSorteable()) {
                 if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
@@ -335,6 +410,11 @@ public class CmsListColumnDefinition {
                     new Object[] {getName().key(wp.getLocale())});
             }
         }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%')<0) {
+            html.append("\t<div style='display:block; width: ");
+            html.append(getWidth());
+            html.append("px;'>\n");
+        }
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
             wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
@@ -347,16 +427,19 @@ public class CmsListColumnDefinition {
         // sort order marker
         if (isSorted) {
             if (nextOrder == CmsListOrderEnum.ORDER_ASCENDING) {
-                html.append("\t<img src='");
+                html.append("\t\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
                 html.append(ICON_UP);
                 html.append("' alt=''>\n");
             } else {
-                html.append("\t<img src='");
+                html.append("\t\t<img src='");
                 html.append(CmsWorkplace.getSkinUri());
                 html.append(ICON_DOWN);
                 html.append("' alt=''>\n");
             }
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%')<0) {
+            html.append("\t</div>\n");
         }
         html.append("</th>\n");
         return html.toString();
@@ -400,21 +483,6 @@ public class CmsListColumnDefinition {
     public void setAlign(CmsListColumnAlignEnum align) {
 
         m_align = align;
-    }
-
-    /**
-     * Sets the default Action.<p>
-     *
-     * @param defaultAction the default Action to set
-     */
-    public void setDefaultAction(CmsListDefaultAction defaultAction) {
-
-        m_defaultAction = defaultAction;
-        if (m_listId != null) {
-            m_defaultAction.setListId(m_listId);
-        }
-        // set the column id
-        m_defaultAction.setColumn(getId());
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsSelectWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -45,7 +46,7 @@ import java.util.List;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -111,7 +112,7 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
     /**
      * @see org.opencms.widgets.A_CmsWidget#getConfiguration()
      */
-    protected String getConfiguration() {
+    public String getConfiguration() {
 
         if (super.getConfiguration() != null) {
             return super.getConfiguration();
@@ -141,6 +142,34 @@ public abstract class A_CmsSelectWidget extends A_CmsWidget {
             }
         }
         return paramValue;
+    }
+
+    /**
+     * Returns the currently selected values of the select widget.<p>
+     * 
+     * If a value is found in the given parameter, this is used. Otherwise 
+     * the default value of the select options are used. If there is neither a parameter value
+     * nor a default value, <code>null</code> is used.<p> 
+     * 
+     * @param cms the current users OpenCms context
+     * @param param the widget parameter of this dialog
+     * 
+     * @return a list of the currently selected values of the select widget
+     */
+    protected List getSelectedValues(CmsObject cms, I_CmsWidgetParameter param) {
+
+        List values = new ArrayList();
+        String paramValue = param.getStringValue(cms);
+        if (CmsStringUtil.isEmpty(paramValue)) {
+            Iterator itOptions = CmsSelectWidgetOption.getDefaultOptions(m_selectOptions).iterator();
+            while (itOptions.hasNext()) {
+                CmsSelectWidgetOption option = (CmsSelectWidgetOption)itOptions.next();
+                values.add(option.getValue());
+            }
+        } else {
+            values.addAll(CmsStringUtil.splitAsList(paramValue, ',', true));
+        }
+        return values;
     }
 
     /**

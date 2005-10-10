@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentWidgetVisitor.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/10/10 16:11:09 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,12 +161,12 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
                     m_widgets.put(value.getPath(), widget);
                     m_values.put(value.getPath(), value);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().container(Messages.LOG_DEBUG_WIDGETCOLLECTOR_ADD_1, value.getPath()));
+                        LOG.debug(Messages.get().key(Messages.LOG_DEBUG_WIDGETCOLLECTOR_ADD_1, value.getPath()));
                     }
                 } catch (CmsXmlException e) {
                     // should usually not happen
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().container(Messages.ERR_WIDGETCOLLECTOR_ADD_1, value), e);
+                        LOG.error(Messages.get().key(Messages.ERR_WIDGETCOLLECTOR_ADD_1, value), e);
                     }
                 }
             }

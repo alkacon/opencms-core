@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/10/10 16:11:03 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,10 +103,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_EDIT_USERS_0 = "ERR_EDIT_USERS_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String ERR_MODE_ENUM_PARSE_2 = "ERR_MODE_ENUM_PARSE_2";
+
+    /** Message contant for key in the resource bundle. */
     public static final String ERR_REMOVE_SELECTED_GROUP_0 = "ERR_REMOVE_SELECTED_GROUP_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_REMOVE_SELECTED_GROUPS_0 = "ERR_REMOVE_SELECTED_GROUPS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_TRANSFER_GROUP_1 = "ERR_TRANSFER_GROUP_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_TRANSFER_USER_1 = "ERR_TRANSFER_USER_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_USERGROUPS_DIRECT_GROUP_1 = "ERR_USERGROUPS_DIRECT_GROUP_1";
@@ -122,6 +131,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ACCOUNTS_ADMIN_TOOL_NAME_0 = "GUI_ACCOUNTS_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_BUTTON_DELETE_0 = "GUI_DEPENDENCIES_BUTTON_DELETE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_DEPENDENCIES_BUTTON_TRANSFER_0 = "GUI_DEPENDENCIES_BUTTON_TRANSFER_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITGROUP_ADMIN_TOOL_GROUP_0 = "GUI_EDITGROUP_ADMIN_TOOL_GROUP_0";
@@ -191,6 +206,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITUSER_DELETE_ADMIN_TOOL_NAME_0 = "GUI_EDITUSER_DELETE_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITUSER_DELETE_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITUSER_DELETE_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_EDITUSER_GROUPS_ADMIN_TOOL_GROUP_0 = "GUI_EDITUSER_GROUPS_ADMIN_TOOL_GROUP_0";
@@ -286,6 +304,51 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0 = "GUI_EDITWEBUSER_ROLES_ADMIN_TOOL_NAVBARNAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_DELETE_0 = "GUI_GROUP_DEPENDENCIES_DELETE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_ACTION_GRP_HELP_0 = "GUI_GROUP_DEPENDENCIES_LIST_ACTION_GRP_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_ACTION_GRP_NAME_0 = "GUI_GROUP_DEPENDENCIES_LIST_ACTION_GRP_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_HELP_0 = "GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_NAME_0 = "GUI_GROUP_DEPENDENCIES_LIST_ACTION_RES_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_ACTION_USR_HELP_0 = "GUI_GROUP_DEPENDENCIES_LIST_ACTION_USR_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_ACTION_USR_NAME_0 = "GUI_GROUP_DEPENDENCIES_LIST_ACTION_USR_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_COLS_ICON_0 = "GUI_GROUP_DEPENDENCIES_LIST_COLS_ICON_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_COLS_ICON_HELP_0 = "GUI_GROUP_DEPENDENCIES_LIST_COLS_ICON_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_COLS_NAME_0 = "GUI_GROUP_DEPENDENCIES_LIST_COLS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_COLS_PERMISSIONS_0 = "GUI_GROUP_DEPENDENCIES_LIST_COLS_PERMISSIONS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_LIST_NAME_0 = "GUI_GROUP_DEPENDENCIES_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_NOTICE_0 = "GUI_GROUP_DEPENDENCIES_NOTICE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_NOTICE_TEXT_0 = "GUI_GROUP_DEPENDENCIES_NOTICE_TEXT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUP_DEPENDENCIES_SELECTED_GROUPS_0 = "GUI_GROUP_DEPENDENCIES_SELECTED_GROUPS_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0 = "GUI_GROUP_EDITOR_LABEL_FLAGS_BLOCK_0";
 
     /** Message contant for key in the resource bundle. */
@@ -299,6 +362,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_ADMIN_TOOL_NAME_0 = "GUI_GROUPS_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DELETE_ADMIN_TOOL_GROUP_0 = "GUI_GROUPS_DELETE_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DELETE_ADMIN_TOOL_HELP_0 = "GUI_GROUPS_DELETE_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_DELETE_ADMIN_TOOL_NAME_0 = "GUI_GROUPS_DELETE_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_DETAIL_CHILDS_NAME_0 = "GUI_GROUPS_DETAIL_CHILDS_NAME_0";
@@ -347,9 +419,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_LIST_ACTION_DEACTIVATE_NAME_0 = "GUI_GROUPS_LIST_ACTION_DEACTIVATE_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_GROUPS_LIST_ACTION_DELETE_CONF_0 = "GUI_GROUPS_LIST_ACTION_DELETE_CONF_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPS_LIST_ACTION_DELETE_HELP_0 = "GUI_GROUPS_LIST_ACTION_DELETE_HELP_0";
@@ -499,6 +568,33 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPS_LIST_NAME_0 = "GUI_GROUPS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0 = "GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0 = "GUI_GROUPS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_COLS_TRANSFER_0 = "GUI_GROUPS_TRANSFER_LIST_COLS_TRANSFER_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_COLS_TRANSFER_HELP_0 = "GUI_GROUPS_TRANSFER_LIST_COLS_TRANSFER_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0 = "GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0";
+    
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0 = "GUI_GROUPS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_LIST_NAME_0 = "GUI_GROUPS_TRANSFER_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_NOTICE_0 = "GUI_GROUPS_TRANSFER_NOTICE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_GROUPS_TRANSFER_NOTICE_TEXT_0 = "GUI_GROUPS_TRANSFER_NOTICE_TEXT_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_GROUPUSERS_LIST_NAME_0 = "GUI_GROUPUSERS_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
@@ -533,6 +629,42 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_NOTUSERGROUPS_LIST_NAME_0 = "GUI_NOTUSERGROUPS_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_DELETE_0 = "GUI_USER_DEPENDENCIES_DELETE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_ACTION_ICON_HELP_0 = "GUI_USER_DEPENDENCIES_LIST_ACTION_ICON_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_ACTION_ICON_NAME_0 = "GUI_USER_DEPENDENCIES_LIST_ACTION_ICON_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_COLS_CREATED_0 = "GUI_USER_DEPENDENCIES_LIST_COLS_CREATED_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_COLS_ICON_0 = "GUI_USER_DEPENDENCIES_LIST_COLS_ICON_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_COLS_LASTMODIFIED_0 = "GUI_USER_DEPENDENCIES_LIST_COLS_LASTMODIFIED_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_COLS_NAME_0 = "GUI_USER_DEPENDENCIES_LIST_COLS_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_COLS_PERMISSIONS_0 = "GUI_USER_DEPENDENCIES_LIST_COLS_PERMISSIONS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_LIST_NAME_0 = "GUI_USER_DEPENDENCIES_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_NOTICE_0 = "GUI_USER_DEPENDENCIES_NOTICE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_NOTICE_TEXT_0 = "GUI_USER_DEPENDENCIES_NOTICE_TEXT_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USER_DEPENDENCIES_SELECTED_USERS_0 = "GUI_USER_DEPENDENCIES_SELECTED_USERS_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0 = "GUI_USER_EDITOR_LABEL_ADDRESS_BLOCK_0";
@@ -622,6 +754,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_USERS_ADMIN_TOOL_NAME_0 = "GUI_USERS_ADMIN_TOOL_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DELETE_ADMIN_TOOL_GROUP_0 = "GUI_USERS_DELETE_ADMIN_TOOL_GROUP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DELETE_ADMIN_TOOL_HELP_0 = "GUI_USERS_DELETE_ADMIN_TOOL_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_DELETE_ADMIN_TOOL_NAME_0 = "GUI_USERS_DELETE_ADMIN_TOOL_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_DETAIL_ADDRESS_NAME_0 = "GUI_USERS_DETAIL_ADDRESS_NAME_0";
 
     /** Message contant for key in the resource bundle. */
@@ -683,9 +824,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0 = "GUI_USERS_LIST_ACTION_DEACTIVATE_NAME_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_USERS_LIST_ACTION_DELETE_CONF_0 = "GUI_USERS_LIST_ACTION_DELETE_CONF_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_ACTION_DELETE_HELP_0 = "GUI_USERS_LIST_ACTION_DELETE_HELP_0";
@@ -851,6 +989,33 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_USERS_LIST_NAME_0 = "GUI_USERS_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0 = "GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0 = "GUI_USERS_TRANSFER_LIST_ACTION_TRANSFER_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_COLS_TRANSFER_0 = "GUI_USERS_TRANSFER_LIST_COLS_TRANSFER_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_COLS_TRANSFER_HELP_0 = "GUI_USERS_TRANSFER_LIST_COLS_TRANSFER_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0 = "GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0 = "GUI_USERS_TRANSFER_LIST_DEFACTION_TRANSFER_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_LIST_NAME_0 = "GUI_USERS_TRANSFER_LIST_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_NOTICE_0 = "GUI_USERS_TRANSFER_NOTICE_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_USERS_TRANSFER_NOTICE_TEXT_0 = "GUI_USERS_TRANSFER_NOTICE_TEXT_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_WEBUSERGROUPS_LIST_NAME_0 = "GUI_WEBUSERGROUPS_LIST_NAME_0";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListState.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.5 $
+ * Date   : $Date: 2006/03/27 14:52:27 $
+ * Version: $Revision: 1.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,15 +45,19 @@ package org.opencms.workplace.list;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListState {
 
+    /** Current sorted column. */
     private final String m_column;
+    /** Current search filter. */
     private final String m_filter;
+    /** Current sort order. */
     private final CmsListOrderEnum m_order;
+    /** Current visible page. */
     private final int m_page;
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/10 16:11:04 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,20 +37,21 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 import java.text.MessageFormat;
+import java.util.Locale;
 
 /**
  * Default implementation of a direct action for a html list column.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDirectAction {
 
-    /** Id of the Column to use. */
-    private String m_columnId;
+    /** Id of the Column to use when setting param in help and conf texts. */
+    private String m_columnForTexts;
 
     /** List item. */
     private CmsListItem m_listItem;
@@ -66,17 +67,34 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
     }
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
+     * Help method to resolve the help text to use.<p>
+     * 
+     * @param locale the used locale
+     * 
+     * @return the help text
      */
-    public String buttonHtml(CmsWorkplace wp) {
+    protected String resolveHelpText(Locale locale) {
 
-        String id = getId() + getItem().getId();
-        String confirmationMessage = getConfirmationMessage().key(wp.getLocale());
-        String helpText = getHelpText().key(wp.getLocale());
-        if (getColumn() != null && getItem().get(getColumn()) != null) {
-            confirmationMessage = new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {getItem().get(
-                getColumn())});
-            helpText = new MessageFormat(helpText, wp.getLocale()).format(new Object[] {getItem().get(getColumn())});
+        String helpText = getHelpText().key(locale);
+        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+            helpText = new MessageFormat(helpText, locale).format(new Object[] {getItem().get(getColumnForTexts())});
+        }
+        return helpText;
+    }
+
+    /**
+     * Help method to resolve the on clic text to use.<p>
+     * 
+     * @param locale the used locale
+     * 
+     * @return the on clic text
+     */
+    protected String resolveOnClic(Locale locale) {
+
+        String confirmationMessage = getConfirmationMessage().key(locale);
+        if (getColumnForTexts() != null && getItem().get(getColumnForTexts()) != null) {
+            confirmationMessage = new MessageFormat(confirmationMessage, locale).format(new Object[] {getItem().get(
+                getColumnForTexts())});
         }
         StringBuffer onClic = new StringBuffer(128);
         onClic.append("listAction('");
@@ -84,9 +102,9 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         onClic.append("', '");
         onClic.append(getId());
         onClic.append("', '");
-        if (getColumn() == null
-            || getItem().get(getColumn()) == null
-            || confirmationMessage.equals(new MessageFormat(confirmationMessage, wp.getLocale()).format(new Object[] {""}))) {
+        if (getColumnForTexts() == null
+            || getItem().get(getColumnForTexts()) == null
+            || confirmationMessage.equals(new MessageFormat(confirmationMessage, locale).format(new Object[] {""}))) {
             onClic.append("conf" + getId());
         } else {
             onClic.append(CmsStringUtil.escapeJavaScript(confirmationMessage));
@@ -94,31 +112,50 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         onClic.append("', '");
         onClic.append(CmsStringUtil.escapeJavaScript(getItem().getId()));
         onClic.append("');");
+        return onClic.toString();
+    }
 
-        if (getColumn() == null
-            || getItem().get(getColumn()) == null
-            || helpText.equals(new MessageFormat(helpText, wp.getLocale()).format(new Object[] {""}))) {
-            return A_CmsHtmlIconButton.defaultButtonHtml(
-                wp.getJsp(),
-                CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY,
-                id,
-                getId(),
-                getName().key(wp.getLocale()),
-                helpText,
-                isEnabled(),
-                getIconPath(),
-                onClic.toString(),
-                true);
+    /**
+     * Help method to resolve the name to use.<p>
+     * 
+     * @param locale the used locale
+     * 
+     * @return the name
+     */
+    protected String resolveName(Locale locale) {
+
+        return getName().key(locale);
+    }
+
+    /**
+     * Help method to resolve the style of the button.<p>
+     * 
+     * @return the style of the button
+     */
+    protected CmsHtmlIconButtonStyleEnum resolveButtonStyle() {
+        
+        return CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY;
+    }
+    
+    /**
+     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
+     */
+    public String buttonHtml(CmsWorkplace wp) {
+
+        if (!isVisible()) {
+            return "";
         }
         return A_CmsHtmlIconButton.defaultButtonHtml(
             wp.getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY,
-            id,
-            getName().key(wp.getLocale()),
-            helpText,
+            resolveButtonStyle(),
+            getId() + getItem().getId(),
+            getId(),
+            resolveName(wp.getLocale()),
+            resolveHelpText(wp.getLocale()),
             isEnabled(),
             getIconPath(),
-            onClic.toString());
+            resolveOnClic(wp.getLocale()),
+            getColumnForTexts() == null);
     }
 
     /**
@@ -129,19 +166,19 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         StringBuffer html = new StringBuffer(512);
         String cm = getConfirmationMessage().key(wp.getLocale());
         String confMessage = new MessageFormat(cm, wp.getLocale()).format(new Object[] {""});
-        if (getColumn() == null
-            || confMessage.equals(new MessageFormat(cm, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+        if (getColumnForTexts() == null
+            || confMessage.equals(new MessageFormat(cm, wp.getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
             html.append(A_CmsListAction.defaultConfirmationHtml(getId(), confMessage));
         }
         return html.toString();
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#getColumn()
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#getColumnForTexts()
      */
-    public String getColumn() {
+    public String getColumnForTexts() {
 
-        return m_columnId;
+        return m_columnForTexts;
     }
 
     /**
@@ -160,19 +197,19 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
         StringBuffer html = new StringBuffer(512);
         String ht = getHelpText().key(wp.getLocale());
         String helptext = new MessageFormat(ht, wp.getLocale()).format(new Object[] {""});
-        if (getColumn() == null
-            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumn())}))) {
+        if (getColumnForTexts() == null
+            || helptext.equals(new MessageFormat(ht, wp.getLocale()).format(new Object[] {getItem().get(getColumnForTexts())}))) {
             html.append(A_CmsHtmlIconButton.defaultHelpHtml(getId(), helptext));
         }
         return html.toString();
     }
 
     /**
-     * @see org.opencms.workplace.list.I_CmsListDirectAction#setColumn(java.lang.String)
+     * @see org.opencms.workplace.list.I_CmsListDirectAction#setColumnForTexts(java.lang.String)
      */
-    public void setColumn(String columnId) {
+    public void setColumnForTexts(String columnId) {
 
-        m_columnId = columnId;
+        m_columnForTexts = columnId;
     }
 
     /**
