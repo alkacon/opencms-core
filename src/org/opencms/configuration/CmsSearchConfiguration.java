@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0
  */
@@ -65,36 +65,65 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
     /** The name of the default XML file for this configuration. */
     private static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
-    
+
+    /** Node name constant. */
     private static final String N_ANALYZER = "analyzer";
+    /** Node name constant. */
     private static final String N_ANALYZERS = "analyzers";
+    /** Node name constant. */
     private static final String N_CACHE = "cache";
+    /** Node name constant. */
     private static final String N_CLASS = "class";
+    /** Node name constant. */
     private static final String N_DIRECTORY = "directory";
+    /** Node name constant. */
     private static final String N_DOCUMENTTYPE = "documenttype";
+    /** Node name constant. */
     private static final String N_DOCUMENTTYPES = "documenttypes";
+    /** Node name constant. */
     private static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";
+    /** Node name constant. */
     private static final String N_EXCERPT = "excerpt";
+    /** Node name constant. */
     private static final String N_HIGHLIGHTER = "highlighter";
+    /** Node name constant. */
     private static final String N_INDEX = "index";
+    /** Node name constant. */
     private static final String N_INDEXER = "indexer";
+    /** Node name constant. */
     private static final String N_INDEXES = "indexes";
+    /** Node name constant. */
     private static final String N_INDEXSOURCE = "indexsource";
+    /** Node name constant. */
     private static final String N_INDEXSOURCES = "indexsources";
+    /** Node name constant. */
     private static final String N_LOCALE = "locale";
+    /** Node name constant. */
     private static final String N_MIMETYPE = "mimetype";
+    /** Node name constant. */
     private static final String N_MIMETYPES = "mimetypes";
+    /** Node name constant. */
     private static final String N_PROJECT = "project";
+    /** Node name constant. */
     private static final String N_REBUILD = "rebuild";
+    /** Node name constant. */
     private static final String N_RESOURCES = "resources";
+    /** Node name constant. */
     private static final String N_RESOURCETYPE = "resourcetype";
+    /** Node name constant. */
     private static final String N_RESOURCETYPES = "resourcetypes";
+    /** Node name constant. */
     private static final String N_SEARCH = "search";
+    /** Node name constant. */
     private static final String N_SOURCE = "source";
+    /** Node name constant. */
     private static final String N_SOURCES = "sources";
+    /** Node name constant. */
     private static final String N_STEMMER = "stemmer";
+    /** Node name constant. */
     private static final String N_TIMEOUT = "timeout";
-    
+
+    /** Node name constant. */
     private static final String XPATH_SEARCH = "*/" + N_SEARCH;
 
     /** The configured search manager. */

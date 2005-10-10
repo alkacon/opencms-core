@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchIndexList.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -70,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -239,7 +240,7 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             Map params = new HashMap();
             params.put(CmsRebuildReport.PARAM_INDEXES, items.toString());
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/rebuildreport", params);
         }
         listSave();
@@ -262,30 +263,30 @@ public class CmsSearchIndexList extends A_CmsListDialog {
             // forward to the rebuild index screen   
             params.put(CmsRebuildReport.PARAM_INDEXES, index);
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/rebuildreport", params);
         } else if (action.equals(LIST_ACTION_SEARCH)) {
             // forward to the edit index screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(CmsRebuildReport.PARAM_INDEXES, index);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, index);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/search", params);
         } else if (action.equals(LIST_ACTION_EDIT)) {
             // forward to the edit index screen   
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, index);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/edit", params);
         } else if (action.equals(LIST_ACTION_SEARCHINDEX_OVERVIEW)) {
             // forward to the index overview screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, index);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex", params);
         } else if (action.equals(LIST_ACTION_INDEXSOURCES)) {
             // forward to the index source assignment screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, index);
             getToolManager().jspForwardTool(this, "/searchindex/singleindex/indexsources", params);
         }

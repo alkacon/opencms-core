@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/09/15 15:05:05 $
- * Version: $Revision: 1.26.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.26.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,11 @@
 package org.opencms.module;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsResource;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -59,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.2.1 $ 
+ * @version $Revision: 1.26.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -293,28 +291,13 @@ public class CmsModule implements Comparable {
     /**
      * Checks if all resources of the module are present.<p>
      * 
-     * @param cms an initialized OpenCms user context which must have read access to all module recouces
-     * @throws CmsRuntimeException in case not all module resources exist or can be read with the given OpenCms user context
+     * @param cms an initialized OpenCms user context which must have read access to all module resources
+     * 
+     * @throws CmsIllegalArgumentException in case not all module resources exist or can be read with the given OpenCms user context
      */
-    public void checkResources(CmsObject cms) throws CmsRuntimeException {
+    public void checkResources(CmsObject cms) throws CmsIllegalArgumentException {
 
-        StringBuffer result = new StringBuffer(128);
-        for (int i = 0; i < m_resources.size(); i++) {
-            String resourcePath = (String)m_resources.get(i);
-            try {
-                CmsResource resource = cms.readResource(resourcePath);
-                // append folder separator, of resource is a file and does not and with a slash
-                if (resource.isFolder() && !resourcePath.endsWith("/")) {
-                    m_resources.set(i, resourcePath + "/");
-                }
-            } catch (CmsException e) {
-                result.append(resourcePath);
-                result.append('\n');
-            }
-        }
-        if (result.length() > 0) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MISSING_RESOURCES_1, result.toString()));
-        }
+        CmsFileUtil.checkResources(cms, getResources());
     }
 
     /**
@@ -1029,12 +1012,12 @@ public class CmsModule implements Comparable {
     /**
      * Checks if this modules configuration is frozen.<p>
      * 
-     * @throws CmsRuntimeException in case the configuration is already frozen
+     * @throws CmsIllegalArgumentException in case the configuration is already frozen
      */
-    protected void checkFrozen() throws CmsRuntimeException {
+    protected void checkFrozen() throws CmsIllegalArgumentException {
 
         if (m_frozen) {
-            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_MODULE_FROZEN_1, getName()));
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MODULE_FROZEN_1, getName()));
         }
     }
 

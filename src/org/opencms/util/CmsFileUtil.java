@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/10/07 08:56:45 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,10 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
 
@@ -48,6 +51,7 @@ import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -57,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,6 +76,81 @@ public final class CmsFileUtil {
     private CmsFileUtil() {
 
         // noop
+    }
+
+    /** 
+     *  Check whether some of the resources are redundant because a superfolder has also
+     *  been selected.<p>
+     * 
+     *  @param resources a list of full pathnames for all the resources
+     *  
+     *  @return a list of consistent full pathnames
+     */
+    public static List removeRedundancies(List resources) {
+
+        if (resources == null) {
+            return new ArrayList();
+        }
+        List ret = new ArrayList(resources);
+        List redundant = new ArrayList();
+        int n = resources.size();
+        if (n < 2) {
+            return ret;
+        }
+        for (int i = 0; i < n; i++) {
+            redundant.add(new Boolean(false));
+        }
+        for (int i = 0; i < n - 1; i++) {
+            for (int j = i + 1; j < n; j++) {
+                if (((String)ret.get(i)).length() < ((String)ret.get(j)).length()) {
+                    if (((String)ret.get(j)).startsWith((String)ret.get(i))) {
+                        redundant.set(j, new Boolean(true));
+                    }
+                } else {
+                    if (((String)ret.get(i)).startsWith((String)ret.get(j))) {
+                        redundant.set(i, new Boolean(true));
+                    }
+                }
+            }
+        }
+        for (int i = n - 1; i >= 0; i--) {
+            if (((Boolean)redundant.get(i)).booleanValue()) {
+                ret.remove(i);
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Checks if all resources are present.<p>
+     * 
+     * @param cms an initialized OpenCms user context which must have read access to all resources
+     * @param resources a list of vfs resource names to check
+     * 
+     * @throws CmsIllegalArgumentException in case not all resources exist or can be read with the given OpenCms user context
+     */
+    public static void checkResources(CmsObject cms, List resources) throws CmsIllegalArgumentException {
+
+        StringBuffer result = new StringBuffer(128);
+        ListIterator it = resources.listIterator();
+        while (it.hasNext()) {
+            String resourcePath = (String)it.next();
+            try {
+                CmsResource resource = cms.readResource(resourcePath);
+                // append folder separator, of resource is a file and does not and with a slash
+                if (resource.isFolder() && !resourcePath.endsWith("/")) {
+                    it.set(resourcePath + "/");
+                }
+            } catch (CmsException e) {
+                result.append(resourcePath);
+                result.append('\n');
+            }
+        }
+        if (result.length() > 0) {
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_MISSING_RESOURCES_1,
+                result.toString()));
+        }
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesList.java,v $
- * Date   : $Date: 2005/09/16 13:11:14 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
 import org.opencms.workplace.list.CmsListOrderEnum;
 import org.opencms.workplace.list.CmsListSearchAction;
+import org.opencms.workplace.tools.CmsToolDialog;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -68,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,7 +183,7 @@ public class CmsModulesList extends A_CmsListDialog {
             Map params = new HashMap();
             params.put(PARAM_MODULE, moduleList);
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
         }
         listSave();
@@ -208,12 +209,12 @@ public class CmsModulesList extends A_CmsListDialog {
         } else if (getParamListAction().equals(LIST_ACTION_DELETE)) {
             // forward to the delete module screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, PATH_REPORTS + "delete.html", params);
         } else if (getParamListAction().equals(LIST_ACTION_EXPORT)) {
             // forward to the delete module screen   
             params.put(PARAM_ACTION, DIALOG_INITIAL);
-            params.put(PARAM_STYLE, "new");
+            params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             getToolManager().jspForwardPage(this, "/system/workplace/admin/modules/reports/export.html", params);
         }
         listSave();

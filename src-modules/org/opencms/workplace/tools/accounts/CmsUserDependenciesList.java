@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserDependenciesList.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -71,7 +72,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,6 +101,9 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
 
     /** list column id constant. */
     public static final String LIST_COLUMN_NAME = "cn";
+
+    /** list column id constant. */
+    public static final String LIST_COLUMN_TYPE = "ct";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_PERMISSIONS = "cp";
@@ -348,6 +352,7 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
                 if (item == null) {
                     item = getList().newItem(resource.getResourceId().toString());
                     item.set(LIST_COLUMN_NAME, resource.getRootPath());
+                    item.set(LIST_COLUMN_TYPE, new Integer(resource.getTypeId()));
                     item.set(LIST_COLUMN_CREATED, getCms().readUser(resource.getUserCreated()).getFullName());
                     item.set(LIST_COLUMN_LASTMODIFIED, getCms().readUser(resource.getUserLastModified()).getFullName());
                     Iterator itAces = getCms().getAccessControlEntries(resource.getRootPath(), false).iterator();
@@ -460,6 +465,12 @@ public class CmsUserDependenciesList extends A_CmsListDialog {
         permissionsCol.setName(Messages.get().container(Messages.GUI_USER_DEPENDENCIES_LIST_COLS_PERMISSIONS_0));
         permissionsCol.setWidth("20%");
         metadata.addColumn(permissionsCol);
+
+        // add column for type
+        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
+        typeCol.setName(new CmsMessageContainer(null, "type"));
+        typeCol.setVisible(false);
+        metadata.addColumn(typeCol);
     }
 
     /**

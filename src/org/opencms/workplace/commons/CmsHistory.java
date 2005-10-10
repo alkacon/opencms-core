@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,9 +112,6 @@ public class CmsHistory extends CmsDialog {
                 includeErrorpage(this, e);                  
             }    
         }              
-        
-        
-
     }  
     
     /**
@@ -190,8 +187,8 @@ public class CmsHistory extends CmsDialog {
                 result.append("<img src=\"");
                 result.append(getSkinUri());
                 result.append("filetypes/");
-                result.append(filetype);
-                result.append(".gif\">");                
+                result.append(OpenCms.getWorkplaceManager().getExplorerTypeSetting(filetype).getIcon());
+                result.append("\">");                
                 result.append("</td>\n");   
                 result.append("\t<td>");                
                 result.append(getMessages().getDateTime(dateLastPublished));

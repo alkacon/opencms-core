@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.30.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.30.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30.2.1 $ 
+ * @version $Revision: 1.30.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -63,6 +63,9 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Request parameter name for the style type. */
     public static final String PARAM_STYLE = "style";
+
+    /** Request parameter value for the 'new' dialog style. */
+    public static final String STYLE_NEW = "new";
 
     /** Path parameter value. */
     private String m_paramPath;
@@ -300,8 +303,8 @@ public class CmsToolDialog extends CmsWorkplace {
 
         // adjust params if called as default
         if (!useNewStyle()) {
-            params.put(PARAM_STYLE, new String[] {"new"});
-            setParamStyle("new");
+            params.put(PARAM_STYLE, new String[] {CmsToolDialog.STYLE_NEW});
+            setParamStyle(CmsToolDialog.STYLE_NEW);
         }
 
         try {
@@ -463,7 +466,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public boolean useNewStyle() {
 
-        return getParamStyle() != null && getParamStyle().equals("new");
+        return getParamStyle() != null && getParamStyle().equals(CmsToolDialog.STYLE_NEW);
     }
 
     /**

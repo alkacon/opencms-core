@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsDependencyIconAction.java,v $
- * Date   : $Date: 2005/09/16 13:11:11 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,32 +32,25 @@
 package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsObject;
-import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.main.OpenCms;
-import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.list.CmsListDirectAction;
-
-import java.io.File;
+import org.opencms.workplace.list.CmsListResourceIconAction;
+import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 
 /**
  * Displays an icon action for dependency lists.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsDependencyIconAction extends CmsListDirectAction {
+public class CmsDependencyIconAction extends CmsListResourceIconAction {
 
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "tools/accounts/buttons/";
-
-    /** the cms object. */
-    private final CmsObject m_cms;
 
     /** the type of the icon. */
     private final CmsDependencyIconActionType m_type;
@@ -71,8 +64,7 @@ public class CmsDependencyIconAction extends CmsListDirectAction {
      */
     public CmsDependencyIconAction(String id, CmsDependencyIconActionType type, CmsObject cms) {
 
-        super(id + type.getId());
-        m_cms = cms;
+        super(id + type.getId(), CmsGroupDependenciesList.LIST_COLUMN_TYPE, cms);
         m_type = type;
     }
 
@@ -82,11 +74,11 @@ public class CmsDependencyIconAction extends CmsListDirectAction {
     public String buttonHtml(CmsWorkplace wp) {
 
         if (m_type == CmsDependencyIconActionType.RESOURCE) {
-            if (!isVisible()) {
-                return "";
-            }
-            return defButtonHtml(
+            return super.buttonHtml(wp);
+        } else {
+            return A_CmsHtmlIconButton.defaultButtonHtml(
                 wp.getJsp(),
+                resolveButtonStyle(),
                 getId() + getItem().getId(),
                 getId(),
                 resolveName(wp.getLocale()),
@@ -95,19 +87,7 @@ public class CmsDependencyIconAction extends CmsListDirectAction {
                 getIconPath(),
                 resolveOnClic(wp.getLocale()),
                 getColumnForTexts() == null);
-        } else {
-            return super.buttonHtml(wp);
         }
-    }
-
-    /**
-     * Returns the cms context.<p>
-     *
-     * @return the cms context
-     */
-    public CmsObject getCms() {
-
-        return m_cms;
     }
 
     /**
@@ -115,20 +95,7 @@ public class CmsDependencyIconAction extends CmsListDirectAction {
      */
     public String getIconPath() {
 
-        if (m_type == CmsDependencyIconActionType.RESOURCE) {
-            try {
-                m_cms.getRequestContext().saveSiteRoot();
-                m_cms.getRequestContext().setSiteRoot("/");
-                int resourceType = m_cms.readResource(
-                    getItem().get(CmsGroupDependenciesList.LIST_COLUMN_NAME).toString()).getTypeId();
-                String typeName = OpenCms.getResourceManager().getResourceType(resourceType).getTypeName();
-                return "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
-            } catch (CmsException e) {
-                return super.getIconPath();
-            } finally {
-                m_cms.getRequestContext().restoreSiteRoot();
-            }
-        } else if (m_type == CmsDependencyIconActionType.USER) {
+        if (m_type == CmsDependencyIconActionType.USER) {
             return PATH_BUTTONS + "user.png";
         } else if (m_type == CmsDependencyIconActionType.GROUP) {
             return PATH_BUTTONS + "group.png";
@@ -156,147 +123,29 @@ public class CmsDependencyIconAction extends CmsListDirectAction {
         if (getItem() != null) {
             CmsUUID id = new CmsUUID(getItem().getId());
             try {
-                if (m_type == CmsDependencyIconActionType.USER) {
-                    m_cms.readUser(id);
+                if (m_type == CmsDependencyIconActionType.RESOURCE) {
+                    try {
+                        getCms().readUser(id);
+                    } catch (CmsException e1) {
+                        try {
+                            getCms().readGroup(id);
+                        } catch (CmsException e2) {
+                            visible = true;
+                        }
+                    }
+                } else if (m_type == CmsDependencyIconActionType.USER) {
+                    getCms().readUser(id);
                     visible = true;
                 } else if (m_type == CmsDependencyIconActionType.GROUP) {
-                    m_cms.readGroup(id);
+                    getCms().readGroup(id);
                     visible = true;
-                } else if (m_type == CmsDependencyIconActionType.RESOURCE) {
-                    m_cms.getRequestContext().saveSiteRoot();
-                    m_cms.getRequestContext().setSiteRoot("/");
-                    m_cms.readResource(getItem().get(CmsGroupDependenciesList.LIST_COLUMN_NAME).toString());
-                    visible = true;
-                } else {
-                    // never happens
-                    visible = false;
-                }
+                } 
             } catch (CmsException e) {
                 // not visible
-                visible = false;
-            } finally {
-                if (m_type == CmsDependencyIconActionType.RESOURCE) {
-                    m_cms.getRequestContext().restoreSiteRoot();
-                }
             }
         } else {
             visible = super.isVisible();
         }
         return visible;
-    }
-
-    /**
-     * Generates a default html code where several buttons can have the same help text.<p>
-     * 
-     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, boolean)}</code>
-     * is that the icons are 16x16.<p>
-     * 
-     * @param jsp the cms context, can be null
-     * @param id the id
-     * @param helpId the id of the helptext div tag
-     * @param name the name, if empty only the icon is displayed
-     * @param helpText the help text, if empty no mouse events are generated
-     * @param enabled if enabled or not, if not set be sure to take an according helptext
-     * @param iconPath the path to the icon, if empty only the name is displayed
-     * @param onClick the js code to execute, if empty no link is generated
-     * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
-     * 
-     * @return html code
-     * 
-     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, boolean)
-     */
-    private String defButtonHtml(
-        CmsJspActionElement jsp,
-        String id,
-        String helpId,
-        String name,
-        String helpText,
-        boolean enabled,
-        String iconPath,
-        String onClick,
-        boolean singleHelp) {
-
-        StringBuffer html = new StringBuffer(1024);
-        html.append("\t<span class=\"link");
-        if (enabled) {
-            html.append("\"");
-        } else {
-            html.append(" linkdisabled\"");
-        }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText)) {
-            if (!singleHelp) {
-                html.append(" onMouseOver=\"sMH('");
-                html.append(id);
-                html.append("');\" onMouseOut=\"hMH('");
-                html.append(id);
-                html.append("');\"");
-            } else {
-                html.append(" onMouseOver=\"sMHS('");
-                html.append(id);
-                html.append("', '");
-                html.append(helpId);
-                html.append("');\" onMouseOut=\"hMH('");
-                html.append(id);
-                html.append("', '");
-                html.append(helpId);
-                html.append("');\"");
-            }
-        }
-        if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClick)) {
-            html.append(" onClick=\"");
-            html.append(onClick);
-            html.append("\"");
-        }
-        html.append(" title='");
-        html.append(name);
-        html.append("'");
-        html.append(" style='display: block; width: 20px; height: 20px;'>");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(iconPath)) {
-            html.append("<img src='");
-            html.append(CmsWorkplace.getSkinUri());
-            if (!enabled) {
-                StringBuffer icon = new StringBuffer(128);
-                icon.append(iconPath.substring(0, iconPath.lastIndexOf('.')));
-                icon.append("_disabled");
-                icon.append(iconPath.substring(iconPath.lastIndexOf('.')));
-                if (jsp != null) {
-                    String resorcesRoot = jsp.getJspContext().getServletConfig().getServletContext().getRealPath(
-                        "/resources/");
-                    File test = new File(resorcesRoot + "/" + icon.toString());
-                    if (test.exists()) {
-                        html.append(icon);
-                    } else {
-                        html.append(iconPath);
-                    }
-                } else {
-                    html.append(iconPath);
-                }
-            } else {
-                html.append(iconPath);
-            }
-            html.append("'");
-            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(name)) {
-                html.append(" alt='");
-                html.append(name);
-                html.append("'");
-                html.append(" title='");
-                html.append(name);
-                html.append("'");
-            }
-            html.append("style='width: 16px; height: 16px;' >");
-        }
-        html.append("</span>\n");
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(helpText) && !singleHelp) {
-            html.append("<div class='help' id='help");
-            html.append(helpId);
-            html.append("' onMouseOver=\"sMH('");
-            html.append(id);
-            html.append("');\" onMouseOut=\"hMH('");
-            html.append(id);
-            html.append("');\">");
-            html.append(helpText);
-            html.append("</div>\n");
-        }
-        return html.toString();
     }
 }

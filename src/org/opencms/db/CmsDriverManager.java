@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/05 10:07:45 $
- * Version: $Revision: 1.557.2.5 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.557.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,11 +112,11 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Michael Moossen
  * 
-<<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.5 $
-=======
- * @version $Revision: 1.557.2.5 $
->>>>>>> 1.557.2.1
+ <<<<<<< CmsDriverManager.java
+ * @version $Revision: 1.557.2.6 $
+ =======
+ * @version $Revision: 1.557.2.6 $
+ >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
  */
@@ -246,7 +246,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
     }
-    
+
     /** Cache key for all properties. */
     public static final String CACHE_ALL_PROPERTIES = "_CAP_";
 
@@ -2656,7 +2656,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (replacementUser == null) {
             withACEs = false;
             replacementUser = readUser(dbc, OpenCms.getDefaultUsers().getUserDeletedResource());
-        } 
+        }
         // offline
         transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
         // online
@@ -4398,10 +4398,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
             CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
             OpenCms.fireCmsEvent(beforePublishEvent);
-            
+
             // clear the cache
             clearcache();
-            
+
             m_projectDriver.publishProject(
                 dbc,
                 report,
@@ -5616,7 +5616,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws CmsException if something goes wrong
      */
-         public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
+    public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
 
         List extractedResources = null;
 
@@ -5639,7 +5639,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return extractedResources;
     }
-    
+
     /**
      * Reads all resources that have a value (containing the given value string) set 
      * for the specified property (definition) in the given path.<p>
@@ -5661,7 +5661,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List extractedResources = null;
 
-        String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path + "_" + propertyDefinition + "_" + value);
+        String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path
+            + "_"
+            + propertyDefinition
+            + "_"
+            + value);
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
 
             // first read the property definition
@@ -5679,37 +5683,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         return extractedResources;
-    }
-    
-    /**
-     * Returns the set of users that are responsible for a specific resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to get the responsible users from
-     * 
-     * @return the set of users that are responsible for a specific resource
-     * 
-     * @throws CmsException if something goes wrong
-     */
-    public Set readResponsibleUsers(CmsDbContext dbc, CmsResource resource) throws CmsException {
-
-        Set result = new HashSet();
-        Iterator principals = readResponsiblePrincipals(dbc, resource).iterator();
-        while (principals.hasNext()) {
-            I_CmsPrincipal principal = (I_CmsPrincipal)principals.next();
-            if (principal instanceof CmsGroup) {
-                try {
-                    result.addAll(getUsersOfGroup(dbc, principal.getName()));
-                } catch (CmsException e) {
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
-                    }
-                }    
-            } else {
-                result.add(principal);
-            }
-        }
-        return result;
     }
 
     /**
@@ -5734,7 +5707,38 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         return result;
     }
-    
+
+    /**
+     * Returns the set of users that are responsible for a specific resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to get the responsible users from
+     * 
+     * @return the set of users that are responsible for a specific resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public Set readResponsibleUsers(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        Set result = new HashSet();
+        Iterator principals = readResponsiblePrincipals(dbc, resource).iterator();
+        while (principals.hasNext()) {
+            I_CmsPrincipal principal = (I_CmsPrincipal)principals.next();
+            if (principal instanceof CmsGroup) {
+                try {
+                    result.addAll(getUsersOfGroup(dbc, principal.getName()));
+                } catch (CmsException e) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
+                    }
+                }
+            } else {
+                result.add(principal);
+            }
+        }
+        return result;
+    }
+
     /**
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
@@ -6080,8 +6084,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
-            Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
     }
 
     /**
@@ -6299,6 +6304,103 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Changes the "expire" date of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to touch
+     * @param dateExpired the new expire date of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see CmsObject#setDateExpired(String, long, boolean)
+     * @see I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateExpired(CmsDbContext dbc, CmsResource resource, long dateExpired) throws CmsDataAccessException {
+
+        resource.setDateExpired(dateExpired);
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+        resource.setUserLastModified(dbc.currentUser().getId());
+
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire the event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
+    }
+
+    /**
+     * Changes the "last modified" timestamp of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to touch
+     * @param dateLastModified the new last modified date of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateLastModified(CmsDbContext dbc, CmsResource resource, long dateLastModified)
+    throws CmsDataAccessException {
+
+        // modify the last modification date
+        resource.setDateLastModified(dateLastModified);
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+        resource.setUserLastModified(dbc.currentUser().getId());
+
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire the event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
+    }
+
+    /**
+     * Changes the "release" date of a resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to touch
+     * @param dateReleased the new release date of the resource
+     * 
+     * @throws CmsDataAccessException if something goes wrong
+     * 
+     * @see CmsObject#setDateReleased(String, long, boolean)
+     * @see I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
+     */
+    public void setDateReleased(CmsDbContext dbc, CmsResource resource, long dateReleased)
+    throws CmsDataAccessException {
+
+        // modify the last modification date
+        resource.setDateReleased(dateReleased);
+        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
+            resource.setState(CmsResource.STATE_CHANGED);
+        }
+        resource.setUserLastModified(dbc.currentUser().getId());
+
+        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
+
+        // clear the cache
+        clearResourceCache();
+
+        // fire the event
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
+    }
+
+    /**
      * Set a new name for a task.<p>
      *
      * @param dbc the current database context
@@ -6453,104 +6555,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
             + '.');
     }
 
-    /**
-     * Changes the "release" date of a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to touch
-     * @param dateReleased the new release date of the resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * 
-     * @see CmsObject#setDateReleased(String, long, boolean)
-     * @see I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
-     */
-    public void setDateReleased(CmsDbContext dbc, CmsResource resource, long dateReleased)
-    throws CmsDataAccessException {
-
-        // modify the last modification date
-        resource.setDateReleased(dateReleased);
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
-            resource.setState(CmsResource.STATE_CHANGED);
-        }
-        resource.setUserLastModified(dbc.currentUser().getId());
-
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
-
-        // clear the cache
-        clearResourceCache();
-
-        // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
-    }
-    
-    /**
-     * Changes the "last modified" timestamp of a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to touch
-     * @param dateLastModified the new last modified date of the resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * 
-     * @see CmsObject#setDateLastModified(String, long, boolean)
-     * @see I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
-     */
-    public void setDateLastModified(CmsDbContext dbc, CmsResource resource, long dateLastModified)
-    throws CmsDataAccessException {
-
-        // modify the last modification date
-        resource.setDateLastModified(dateLastModified);
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
-            resource.setState(CmsResource.STATE_CHANGED);
-        }
-        resource.setUserLastModified(dbc.currentUser().getId());
-
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
-
-        // clear the cache
-        clearResourceCache();
-
-        // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
-    }
-    
-    /**
-     * Changes the "expire" date of a resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the resource to touch
-     * @param dateExpired the new expire date of the resource
-     * 
-     * @throws CmsDataAccessException if something goes wrong
-     * 
-     * @see CmsObject#setDateExpired(String, long, boolean)
-     * @see I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
-     */
-    public void setDateExpired(CmsDbContext dbc, CmsResource resource, long dateExpired)
-    throws CmsDataAccessException {
-
-        resource.setDateExpired(dateExpired);
-        if (resource.getState() == CmsResource.STATE_UNCHANGED) {
-            resource.setState(CmsResource.STATE_CHANGED);
-        }
-        resource.setUserLastModified(dbc.currentUser().getId());
-
-        m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), resource, UPDATE_RESOURCE);
-
-        // clear the cache
-        clearResourceCache();
-
-        // fire the event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
-            "resource",
-            resource)));
-    }
-    
     /**
      * Undos all changes in the resource by restoring the version from the 
      * online project to the current offline project.<p>
@@ -7044,8 +7048,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
         clearAccessControlListCache();
 
         // fire a resource modification event
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, 
-            Collections.singletonMap("resource", resource)));
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
+            "resource",
+            resource)));
     }
 
     /**
@@ -8108,7 +8113,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsDbContext dbc,
         CmsProject project,
         CmsUUID principalId,
-        CmsUUID replacementId, boolean withACEs) throws CmsException {
+        CmsUUID replacementId,
+        boolean withACEs) throws CmsException {
 
         // get all resources for the given user including resources associated by ACEs or attributes
         List resources = getResourcesForPrincipal(dbc, project, principalId, null, true);

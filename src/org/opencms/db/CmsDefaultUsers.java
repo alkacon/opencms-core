@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDefaultUsers.java,v $
- * Date   : $Date: 2005/09/16 13:16:17 $
- * Version: $Revision: 1.30.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.30.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.opencms.util.CmsStringUtil;
  * @author Alexander Kandzior 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.30.2.1 $
+ * @version $Revision: 1.30.2.2 $
  * 
  * @since 6.0.0
  */
@@ -71,21 +71,28 @@ public class CmsDefaultUsers {
     /** Default name for the "Guest" user. */
     protected static final String DEFAULT_USER_GUEST = "Guest";
 
-    // member variables    
+    /** Administrators group name. */
     private String m_groupAdministrators;
 
+    /** Guests group name. */
     private String m_groupGuests;
 
+    /** Project Managers group name. */
     private String m_groupProjectmanagers;
 
+    /** System Users group name. */
     private String m_groupUsers;
 
+    /** Administrator user name. */
     private String m_userAdmin;
 
+    /** Export user name. */
     private String m_userExport;
 
+    /** Guest user name. */
     private String m_userGuest;
 
+    /** Deleted resource user name. */
     private String m_userDeletedResource;
 
     /**

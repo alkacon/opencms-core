@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/09/16 13:11:13 $
- * Version: $Revision: 1.34.2.2 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.34.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.2 $
+ * @version $Revision: 1.34.2.3 $
  * 
  * @since 6.0.0
  */
@@ -377,6 +377,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The list of jobs for the scheduler. */
     private List m_configuredJobs;
 
+    /** The default content encoding. */
     private String m_defaultContentEncoding;
 
     /** The HTTP basic authentication settings. */
@@ -398,6 +399,7 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     // It is an Integer object so that it can be distinguished if this optional element was set or not
     private Integer m_notificationTime; 
 
+    /** Notification project. */
     private String m_notificationProject;
     
     /** The password handler. */

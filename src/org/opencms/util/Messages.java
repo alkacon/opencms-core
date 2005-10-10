@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Messages.java,v $
- * Date   : $Date: 2005/10/02 09:00:07 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +98,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CLASSLOADER_RESOURCE_2 = "ERR_MISSING_CLASSLOADER_RESOURCE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MISSING_RESOURCES_1 = "ERR_MISSING_RESOURCES_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNABLE_TO_PARSE_COLOR_2 = "ERR_UNABLE_TO_PARSE_COLOR_2";

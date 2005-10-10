@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/oracle/CmsUserDriver.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.53 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.53.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.53 $
+ * @version $Revision: 1.53.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -86,7 +86,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
     public static OutputStream getOutputStreamFromBlob(ResultSet res, String name) throws SQLException {
 
         int todo = 0;
-        // TODO: perform blob check only once and store Oracle version in a static privae member 
+        // TODO: perform blob check only once and store Oracle version in a static private member 
         // TODO: best do this during system startup / db init phase once
 
         Blob blob = res.getBlob(name);
@@ -95,18 +95,10 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
             blob.truncate(0);
             return blob.setBinaryStream(0L);
         } catch (SQLException e) {
-            // oracle 9 & 8
+            // oracle 9 & 8 (if using the same jdbc driver as provided by oracle9: ojdbc14.jar)
             ((oracle.sql.BLOB)blob).trim(0);
             return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
         }
-
-        // this is the code for Oracle 10 (doesn't work with Oracle 9)                
-        //((oracle.sql.BLOB)blob).truncate(0);
-        //return blob.setBinaryStream(0L);
-
-        // this is the code for Oracle 9 (& 8 if using the same jdbc driver as provided by oracle9: ojdbc14.jar)
-        //((oracle.sql.BLOB)blob).trim(0);
-        //return ((oracle.sql.BLOB)blob).getBinaryOutputStream();
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/modules/CmsModulesUploadFromHttp.java,v $
- * Date   : $Date: 2005/09/20 07:13:36 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2005/10/10 10:53:19 $
+ * Version: $Revision: 1.9.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.module.CmsModuleDependency;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.workplace.administration.A_CmsImportFromHttp;
+import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.io.File;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.9.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +162,7 @@ public class CmsModulesUploadFromHttp extends A_CmsImportFromHttp {
             // redirect
             Map param = new HashMap();
             param.put(CmsModulesList.PARAM_MODULE, getParamImportfile());
-            param.put(PARAM_STYLE, "new");
+            param.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             param.put(PARAM_CLOSELINK, CmsToolManager.linkForToolPath(getJsp(), "/modules"));
             if (OpenCms.getModuleManager().hasModule(module.getName())) {
                 param.put(CmsModulesUploadFromServer.PARAM_MODULENAME, module.getName());
