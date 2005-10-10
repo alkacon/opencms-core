@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/10/09 07:06:13 $
- * Version: $Revision: 1.97.2.2 $
+ * Date   : $Date: 2005/10/10 16:17:40 $
+ * Version: $Revision: 1.97.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.97.2.2 $ 
+ * @version $Revision: 1.97.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -1104,8 +1104,11 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
         String jspRfsName = null;
         try {
+            // create an OpenCms user context that operates in the root site
+            CmsObject cms = OpenCms.initCmsObject(controller.getCmsObject());
+            cms.getRequestContext().setSiteRoot("");
+            CmsResource includeResource = cms.readResource(jspVfsName);
             // make sure the jsp referenced file is generated
-            CmsResource includeResource = controller.getCmsObject().readResource(jspVfsName);
             jspRfsName = updateJsp(includeResource, controller, includes);
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
