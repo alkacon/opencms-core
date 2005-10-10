@@ -83,6 +83,11 @@ to combine it with your servlet environment.</p>
 OpenCms documentation module available from Alkacon Software GmbH
 on the opencms.org website that describes how to setup OpenCms with
 Apache httpd and Tomcat using mod_proxy.</p>
+<p><em><strong>Please note:</strong></em> On Linux systems, Tomcat's JVM has to be started with the command line argument
+<code>-Djava.awt.headless=true</code>. The reason for this is that OpenCms uses Swing
+classes for parsing RTF documents. Using these classes initializes
+the GUI system. This leads to an exception as the server process doesn't
+have access to the GUI system when not using the described argument.</p>
 <p><em><strong>Please note:</strong></em> Older OpenCms Version
 required an environment setting for the Java file encoding
 <code>-dfile.encoding=....</code> for OpenCms. This is NOT longer
@@ -139,11 +144,11 @@ warning and not allow you to continue if you did not unpack the
 Depending on your configuration, you have to replace
 <code>localhost</code> with your servername. The port 8080 is only
 used if you start Tomcat in standalone mode.</p>
-<p> Follow the instructions of the OpenCms Setup-Wizard, using
-the "Standard" setup. It will set up the OpenCms database and
+<p> Follow the instructions of the OpenCms Setup-Wizard. It will set up the OpenCms database and
 import all available&nbsp;modules into the system. For normal installations
 with MySql and Tomcat running on the same server all default
-settings will fit your needs.</p>
+settings will fit your needs.<br>
+If you are using different database users with MySql, be sure that they exist before creating the database tables and importing the modules.</p>
 <p><em><strong>Important:</strong></em> Make sure you disable all
 popup blockers for the server URL you installed OpenCms on.
 Otherwise you will not be able to log in to the OpenCms
