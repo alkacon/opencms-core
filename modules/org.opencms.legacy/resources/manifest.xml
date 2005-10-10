@@ -19,7 +19,7 @@
 <p>Install this module only if you need one of this deprecated functions for backward compatibility.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -4520,28 +4520,6 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/administration/syncfolder/synchronize.html</source>
-			<destination>system/workplace/administration/syncfolder/synchronize.html</destination>
-			<type>jsp</type>
-			<uuidresource>d0d583a5-e363-11d7-bbc9-9e6537a6d8c4</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Synchronization Dialog]]></value>
-				</property>
-			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
