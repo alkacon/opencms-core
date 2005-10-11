@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.53.2.1 $
+ * Date   : $Date: 2005/10/11 14:45:51 $
+ * Version: $Revision: 1.53.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.lucene.search.Similarity;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.1 $ 
+ * @version $Revision: 1.53.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -952,8 +952,8 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 } else {
                     // resource not yet contained in the list
                     updateResources.add(res);
-                    // check for the siblings
-                    if (res.getSiblingCount() > 1) {
+                    // check for the siblings (not for deleted resources, these are already gone)
+                    if (!res.isDeleted() && (res.getSiblingCount() > 1)) {
                         // this resource has siblings                    
                         try {
                             // read siblings from the online project

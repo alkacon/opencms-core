@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/07/07 11:27:19 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/11 14:45:51 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,15 @@
  
 package org.opencms.file;
 
+import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 import junit.extensions.TestSetup;
 import junit.framework.Test;
@@ -46,7 +49,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.20 $
+ * @version $Revision: 1.20.2.1 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -69,7 +72,8 @@ public class TestProperty extends OpenCmsTestCase {
         
         TestSuite suite = new TestSuite();
         suite.setName(TestProperty.class.getName());
-                
+       
+        suite.addTest(new TestProperty("testSharedPropertyIssue1"));
         suite.addTest(new TestProperty("testPropertyLists"));
         suite.addTest(new TestProperty("testWriteProperty"));
         suite.addTest(new TestProperty("testWriteProperties"));
@@ -564,4 +568,51 @@ public class TestProperty extends OpenCmsTestCase {
         
         assertState(cms, resourcename, CmsResource.STATE_UNCHANGED);                
     }   
+    
+    /**
+     * Tests an issue with shared properties after deletion of the original sibling.<p>
+     * 
+     * Scenario:
+     * A file A has property P set with value V as shared property. Now A is renamed to B. 
+     * Then B is published directly with all siblings (A is now deleted and removed).
+     * Issue: Property P is now empty in B, but should still have the V value.<p> 
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testSharedPropertyIssue1() throws Throwable {
+
+        CmsObject cms = getCmsObject();
+        echo("Testing issue with shared properties after deletion of the original sibling");
+
+        // switch to the "Offline" project
+        CmsProject offline = cms.readProject("Offline");
+        cms.getRequestContext().setCurrentProject(offline);
+
+        // create and publish the resource
+        String source = "/folder1/testprop.txt";
+        String dest = "/folder1/testprop2.txt";
+
+        cms.createResource(source, CmsResourceTypePlain.getStaticTypeId());
+        cms.unlockProject(offline.getId());
+        cms.publishResource(source);
+
+        // now create the shared property on the source
+        cms.lockResource(source);
+        CmsProperty descProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_DESCRIPTION, null, "A shared value");
+        cms.writePropertyObject(source, descProperty);
+        cms.unlockProject(offline.getId());
+        cms.publishResource(source);
+
+        // now move the resource to a new name and publish again, ensure the property is still there
+        cms.lockResource(source);
+        cms.moveResource(source, dest);
+        cms.unlockProject(offline.getId());
+        cms.publishResource(dest, true, new CmsShellReport(Locale.ENGLISH));
+
+        CmsProperty resultProperty = cms.readPropertyObject(dest, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false);
+        assertEquals("A shared value", descProperty.getResourceValue());
+        assertTrue(
+            "Property '" + CmsPropertyDefinition.PROPERTY_DESCRIPTION + "' must be identical",
+            descProperty.isIdentical(resultProperty));
+    }
 }
