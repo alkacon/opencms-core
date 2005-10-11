@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupLoggingThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/10/11 14:13:48 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,8 @@ import java.io.InputStreamReader;
 import java.io.LineNumberReader;
 import java.io.PipedInputStream;
 import java.io.PipedOutputStream;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Logging Thread which collects the output from CmsSetupThread and
@@ -48,7 +49,7 @@ import java.util.Vector;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +57,7 @@ public class CmsSetupLoggingThread extends Thread {
 
     private LineNumberReader m_lineReader;
     private FileWriter m_logWriter;
-    private Vector m_messages;
+    private List m_messages;
     private PipedInputStream m_pipedIn;
     private PipedOutputStream m_pipedOut;
     private boolean m_stopThread;
@@ -72,7 +73,7 @@ public class CmsSetupLoggingThread extends Thread {
         super("OpenCms: Setup logging");
 
         m_pipedOut = pipedOut;
-        m_messages = new Vector();
+        m_messages = new ArrayList();
         m_stopThread = false;
 
         if (log != null) {
@@ -94,7 +95,7 @@ public class CmsSetupLoggingThread extends Thread {
             m_pipedIn.connect(m_pipedOut);
             m_lineReader = new LineNumberReader(new BufferedReader(new InputStreamReader(m_pipedIn)));
         } catch (Exception e) {
-            m_messages.addElement(e.toString());
+            m_messages.add(e.toString());
         }
     }
 
@@ -103,7 +104,7 @@ public class CmsSetupLoggingThread extends Thread {
      * 
      * @return a Vector with the last collected log messages
      */
-    public Vector getMessages() {
+    public List getMessages() {
 
         return m_messages;
     }
@@ -137,7 +138,7 @@ public class CmsSetupLoggingThread extends Thread {
                 if (lineNr > lastLineNr) {
                     // supress multiple output of the same line after "Write end dead" IO exception 
                     String content = (lineNr + 1) + ":\t" + line;
-                    m_messages.addElement(content);
+                    m_messages.add(content);
                     lastLineNr = lineNr;
                     if (m_logWriter != null) {
                         try {

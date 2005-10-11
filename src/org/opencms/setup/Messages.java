@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2005/07/21 13:39:07 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/10/11 14:13:48 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,8 +38,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,7 +65,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_NO_WORKPLACE_IMPORT_NEEDED_0 = "INIT_NO_WORKPLACE_IMPORT_NEEDED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_UPDATE_WORKPLACE_FINISHED_0 = "INIT_UPDATE_WORKPLACE_FINISHED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_UPDATE_WORKPLACE_START_0 = "INIT_UPDATE_WORKPLACE_START_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_WELCOME_SETUP_0 = "INIT_WELCOME_SETUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_WELCOME_UPDATE_0 = "INIT_WELCOME_UPDATE_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.setup.messages";

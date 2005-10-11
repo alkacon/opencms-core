@@ -204,22 +204,22 @@ function topoSort(list, notInstalled) {
 	var finished = false;
 	while(!finished) {
 	    finished = true;
-        for (var i=0; i<list.length; i++) {   
-		    if (list[i]=="_visited_") {
+        for (var j=0; j<list.length; j++) {   
+		    if (list[j]=="_visited_") {
 				continue;
 			}
-			if (moduleDependencies[getPackageNameIndex(list[i])].length==0) {
-			   retList.push(list[i]);
-			   removeDependencies(list[i]);
+			if (moduleDependencies[getPackageNameIndex(list[j])].length==0) {
+			   retList.push(list[j]);
+			   removeDependencies(list[j]);
 			   finished = false;
-			   list[i]="_visited_";
+			   list[j]="_visited_";
 			}
 		}
 	}
 	var cycle = new Array();
-    for (var i=0; i<list.length; i++) {   
-	    if (list[i]!="_visited_") {
-			cycle.push(list[i]);
+    for (var k=0; k<list.length; k++) {   
+	    if (list[k]!="_visited_") {
+			cycle.push(list[k]);
 		}
 	}
 	if (cycle.length>0) {
