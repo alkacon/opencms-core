@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/11 12:33:36 $
- * Version: $Revision: 1.686 $
+ * Date   : $Date: 2005/10/11 14:50:43 $
+ * Version: $Revision: 1.687 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,9 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
 ! Custom widgets that have not been registered in opencms-vfs.xml can now be specified in XML content schemas
 * Fixed issue with resources outside timerange in editors
+* Fixed issue #967: Shared property is empty after renaming or moving resources
+! Added "Update Wizard" to enable updating several OpenCms modules at once
+
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes

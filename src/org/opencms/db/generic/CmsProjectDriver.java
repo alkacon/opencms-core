@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.239 $
+ * Date   : $Date: 2005/10/11 14:50:43 $
+ * Version: $Revision: 1.240 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.239 $
+ * @version $Revision: 1.240 $
  * 
  * @since 6.0.0 
  */
@@ -768,20 +768,19 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
         int maxVersions) throws CmsDataAccessException {
 
         CmsFile newFile = null;
-        CmsResource onlineFileHeader = null;
+        CmsResource onlineResource = null;
         List offlineProperties = null;
         CmsProperty property = null;
         int propertyDeleteOption = -1;
 
         /*
-         * Never use offlineFile.getState() here!
-         * Only use offlineFileHeader.getState() to determine the state of an offline resource!
+         * Never use onlineResource.getState() here!
+         * Only use offlineResource.getState() to determine the state of an offline resource!
          * 
          * In case a resource has siblings, after a sibling was published the structure
          * and resource states are reset to UNCHANGED -> the state of the corresponding
-         * offlineFileHeader is still NEW, DELETED or CHANGED, but the state of offlineFile 
-         * is UNCHANGED because offlineFile is read AFTER siblings already got published. 
-         * Thus, using offlineFile.getState() will inevitably result in unpublished resources!
+         * onlineResource is still NEW, DELETED or CHANGED. 
+         * Thus, using onlineResource.getState() will inevitably result in unpublished resources!
          */
 
         try {
@@ -798,7 +797,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 try {
                     // read the file header online
-                    onlineFileHeader = m_driverManager.getVfsDriver().readResource(
+                    onlineResource = m_driverManager.getVfsDriver().readResource(
                         dbc,
                         onlineProject.getId(),
                         offlineResource.getStructureId(),
@@ -839,7 +838,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 try {
                     // delete the properties online and offline
-                    if (onlineFileHeader.getSiblingCount() > 1) {
+                    if (offlineResource.getSiblingCount() > 1) {
                         // there are other siblings- delete only structure property values and keep the resource property values
                         propertyDeleteOption = CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_VALUES;
                     } else {
@@ -850,7 +849,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     m_driverManager.getVfsDriver().deletePropertyObjects(
                         dbc,
                         onlineProject.getId(),
-                        onlineFileHeader,
+                        onlineResource,
                         propertyDeleteOption);
                     m_driverManager.getVfsDriver().deletePropertyObjects(
                         dbc,
@@ -862,11 +861,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // (probably because a (deleted) file was replaced by a new file with the
                     // same name), the properties with the "old" resource ID have to be
                     // deleted also offline
-                    if (!onlineFileHeader.getResourceId().equals(offlineResource.getResourceId())) {
+                    if (!onlineResource.getResourceId().equals(offlineResource.getResourceId())) {
                         m_driverManager.getVfsDriver().deletePropertyObjects(
                             dbc,
                             dbc.currentProject().getId(),
-                            onlineFileHeader,
+                            onlineResource,
                             CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
                     }
                 } catch (CmsDataAccessException e) {
@@ -890,7 +889,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             true);
                     } catch (CmsVfsResourceNotFoundException e) {
                         // remove the online file only if it is really deleted offline
-                        m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, onlineFileHeader, true);
+                        m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, onlineResource, true);
                     }
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
@@ -906,7 +905,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     m_driverManager.getUserDriver().removeAccessControlEntries(
                         dbc,
                         onlineProject,
-                        onlineFileHeader.getResourceId());
+                        onlineResource.getResourceId());
                     m_driverManager.getUserDriver().removeAccessControlEntries(
                         dbc,
                         dbc.currentProject(),
@@ -942,7 +941,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
 
                 try {
                     // read the file header online                   
-                    onlineFileHeader = m_driverManager.getVfsDriver().readResource(
+                    onlineResource = m_driverManager.getVfsDriver().readResource(
                         dbc,
                         onlineProject.getId(),
                         offlineResource.getStructureId(),
@@ -957,7 +956,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     m_driverManager.getVfsDriver().deletePropertyObjects(
                         dbc,
                         onlineProject.getId(),
-                        onlineFileHeader,
+                        onlineResource,
                         CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
                     // if the offline file has a resource ID different from the online file
@@ -967,11 +966,11 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                     // ID's do match, but the resource ID's are different. structure IDs are reused
                     // to prevent orphan structure records in the online project.
 
-                    if (!onlineFileHeader.getResourceId().equals(offlineResource.getResourceId())) {
+                    if (!onlineResource.getResourceId().equals(offlineResource.getResourceId())) {
                         offlineProperties = m_driverManager.getVfsDriver().readPropertyObjects(
                             dbc,
                             dbc.currentProject(),
-                            onlineFileHeader);
+                            onlineResource);
                         if (offlineProperties.size() > 0) {
                             for (int i = 0; i < offlineProperties.size(); i++) {
                                 property = (CmsProperty)offlineProperties.get(i);
@@ -981,14 +980,14 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                             m_driverManager.getVfsDriver().writePropertyObjects(
                                 dbc,
                                 dbc.currentProject(),
-                                onlineFileHeader,
+                                onlineResource,
                                 offlineProperties);
                         }
                     }
 
                     // remove the file online
                     boolean removeContent = !publishedContentIds.contains(offlineResource.getResourceId());
-                    m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, onlineFileHeader, removeContent);
+                    m_driverManager.getVfsDriver().removeFile(dbc, onlineProject, onlineResource, removeContent);
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(Messages.LOG_DELETING_PROPERTIES_1, offlineResource.toString()), e);
@@ -1036,7 +1035,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         dbc.currentProject(),
                         onlineProject,
                         newFile.getResourceId(),
-                        onlineFileHeader.getResourceId());
+                        onlineResource.getResourceId());
                 } catch (CmsDataAccessException e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(Messages.LOG_PUBLISHING_ACL_1, newFile.getRootPath()), e);
