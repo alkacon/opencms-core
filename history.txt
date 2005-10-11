@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/11 10:38:41 $
- * Version: $Revision: 1.685 $
+ * Date   : $Date: 2005/10/11 12:33:36 $
+ * Version: $Revision: 1.686 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,7 +28,6 @@ OpenCms 6.0.2 - xxx, 2005
 ! Added options to access content based on a given locale to <cms:contentload/show/info> tags
 ! Added option to create default directories and export points in Module manager tool
 * Fixed issue with URI splitting causing an NPE if URI was invalid 
-! Added configurable options to html widget to enable dialogs for link, anchor, galleries etc.
 * Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
 ! Custom widgets that have not been registered in opencms-vfs.xml can now be specified in XML content schemas
 * Fixed issue with resources outside timerange in editors
@@ -39,7 +38,7 @@ OpenCms 6.0.1 - September 14, 2005
 * Fixed issue with "search" causing JavaScript errors in new Administration
 * Fixed issue with editing the "parent group" of a group
 ! Added advanced rule based configuration options to static export
-- Replaced use of "sendCmsRedirect" in Workplace with "sendFroward" to reduce issues in IBM Websphere AS
+- Replaced use of "sendCmsRedirect" in Workplace with "sendForward" to reduce issues in IBM Websphere AS
 ! Property values can now be read and written as a list
 ! XML content mappings can map multiple occurences of a value to a property list value
 ! For XML content values mapped to a property, the property is deleted if no value is available in the XML content 
