@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/10/10 16:11:11 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/11 09:56:40 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -139,40 +139,39 @@ public class CmsNewResourceFolder extends CmsNewResource {
 
         boolean editProps = Boolean.valueOf(getParamNewResourceEditProps()).booleanValue();
         boolean createIndex = Boolean.valueOf(getParamCreateIndex()).booleanValue();
-        if (editProps || createIndex) {
-            if (editProps) {
-                // edit properties of folder, forward to property dialog
-                Map params = new HashMap();
-                params.put(PARAM_RESOURCE, getParamResource());
-                if (createIndex) {
-                    // set dialogmode to wizard - create index page to indicate the creation of the index page
-                    params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
-                } else {
-                    // set dialogmode to wizard
-                    params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
-                }
-                sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
-            } else if (createIndex) {
-                // create an index file in the new folder, redirect to new xmlpage dialog              
-                String newFolder = getParamResource();
-                if (!newFolder.endsWith("/")) {
-                    newFolder += "/";
-                }
-                // set the current explorer resource to the new created folder
-                getSettings().setExplorerResource(newFolder);
-                String newUri = PATH_DIALOGS
-                    + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
-                CmsUriSplitter splitter = new CmsUriSplitter(newUri);
-                Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
+        if (editProps) {
+            // edit properties of folder, forward to property dialog
+            Map params = new HashMap();
+            params.put(PARAM_RESOURCE, getParamResource());
+            if (createIndex) {
+                // set dialogmode to wizard - create index page to indicate the creation of the index page
                 params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
-                sendForward(splitter.getPrefix(), params);
+            } else {
+                // set dialogmode to wizard
+                params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD);
             }
+            sendForward(CmsPropertyAdvanced.URI_PROPERTY_DIALOG_HANDLER, params);
+        } else if (createIndex) {
+            // create an index file in the new folder, redirect to new xmlpage dialog              
+            String newFolder = getParamResource();
+            if (!newFolder.endsWith("/")) {
+                newFolder += "/";
+            }
+            // set the current explorer resource to the new created folder
+            getSettings().setExplorerResource(newFolder);
+            String newUri = PATH_DIALOGS
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypeXmlPage.getStaticTypeName()).getNewResourceUri();
+            CmsUriSplitter splitter = new CmsUriSplitter(newUri);
+            Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
+            params.put(CmsPropertyAdvanced.PARAM_DIALOGMODE, CmsPropertyAdvanced.MODE_WIZARD_CREATEINDEX);
+            sendForward(splitter.getPrefix(), params);
+        } else {
+            // edit properties and create index file not checked, close the dialog and update tree
+            List folderList = new ArrayList(1);
+            folderList.add(CmsResource.getParentFolder(getParamResource()));
+            getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
+            actionCloseDialog();
         }
-        // edit properties and create index file not checked, close the dialog and update tree
-        List folderList = new ArrayList(1);
-        folderList.add(CmsResource.getParentFolder(getParamResource()));
-        getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
-        actionCloseDialog();
     }
 
     /**
