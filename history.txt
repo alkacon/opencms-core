@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/09 09:08:26 $
- * Version: $Revision: 1.684 $
+ * Date   : $Date: 2005/10/11 10:38:41 $
+ * Version: $Revision: 1.685 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 6.0.2 - xxx, 2005
 ! Added configurable options to html widget to enable dialogs for link, anchor, galleries etc.
 * Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
 ! Custom widgets that have not been registered in opencms-vfs.xml can now be specified in XML content schemas
+* Fixed issue with resources outside timerange in editors
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
