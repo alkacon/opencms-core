@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.95 $
+ * Date   : $Date: 2005/10/11 15:38:06 $
+ * Version: $Revision: 1.96 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2311,7 +2311,7 @@ public final class CmsSecurityManager {
      */
     public boolean hasManagerOfProjectRole(CmsDbContext dbc, CmsProject project) {
 
-        if (dbc.currentProject().isOnlineProject()) {
+        if (project.isOnlineProject()) {
             // no user is the project manager of the "Online" project
             return false;
         }
