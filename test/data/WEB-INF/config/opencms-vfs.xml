@@ -122,6 +122,7 @@
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
 				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
+				<widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" />
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
