@@ -10,6 +10,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.awt.Color;
@@ -160,6 +161,29 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns the image type from the given file name based on the file suffix (extension)
+     * and the available image writers.<p>
+     * 
+     * For example, for the file name "opencms.gif" the type is GIF, for 
+     * "opencms.jpg" is is "JPEG" etc.<p> 
+     * 
+     * In case the input filename has no suffix, or there is no known image writer for the format defined
+     * by the suffix, <code>null</code> is returned.<p>
+     * 
+     * Any non-null result can be used if an image type input value is required.<p>
+     * 
+     * @param filename the file name to get the type for
+     *  
+     * @return the image type from the given file name based on the suffix and the available image writers, 
+     *      or null if no image writer is available for the format 
+     */
+    public String getImageType(String filename) {
+
+        Simapi scaler = SimapiFactory.getInstace();
+        return scaler.getImageType(filename);
+    }
+
+    /**
      * Returns the position.<p>
      *
      * @return the position
@@ -231,6 +255,22 @@ public class CmsImageScaler {
         Simapi scaler = SimapiFactory.getInstace();
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
         String type = scaler.getImageType(file.getRootPath());
+        if (type == null) {
+            // no type given, maybe the name got mixed up
+            String mimeType = OpenCms.getResourceManager().getMimeType(file.getName(), null, null);
+            // check if this is another known mime type, if so DONT use it (images should not be named *.pdf)
+            if (mimeType == null) {            
+                // no mime type found, use JPEG for scaling of images         
+                type = "JPEG";
+            }
+        }
+        if (type == null) {
+            // unknown type, unable to scale the image
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, file.getRootPath(), toString()));
+            }
+            return result;
+        }
         try {
             BufferedImage image = scaler.read(file.getContents());
             switch (getType()) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/10/02 09:06:26 $
- * Version: $Revision: 1.33.2.2 $
+ * Date   : $Date: 2005/10/11 12:00:29 $
+ * Version: $Revision: 1.33.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33.2.2 $ 
+ * @version $Revision: 1.33.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -552,6 +552,10 @@ public class CmsResourceManager {
         }
         if (mimetype == null) {
             mimetype = defaultMimeType;
+            if (mimetype == null) {
+                // no default mime type was provided
+                return null;
+            }
         }
         StringBuffer result = new StringBuffer(mimetype);
         if ((encoding != null) && mimetype.startsWith("text") && (mimetype.indexOf("charset") == -1)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.13.2.3 $
+ * Date   : $Date: 2005/10/11 12:00:29 $
+ * Version: $Revision: 1.13.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.3 $ 
+ * @version $Revision: 1.13.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -291,7 +291,7 @@ public class CmsImageGallery extends A_CmsGallery {
 
         if ((m_defaultScaleParams != null) && m_defaultScaleParams.isValid()) {
             String resPath = getCms().getSitePath(res);
-
+            
             result.append("\t<td class=\"");
             result.append(tdClass);
             result.append("\">");
@@ -308,8 +308,11 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append(CmsImageScaler.PARAM_SCALE);
             result.append('=');
             result.append(m_defaultScaleParams.toString());
-            result.append("\" border=\"0\">");
-            result.append("</a></td>\n");
+            result.append("\" border=\"0\" width=\"");
+            result.append(m_defaultScaleParams.getWidth());
+            result.append("\" height=\"");
+            result.append(m_defaultScaleParams.getHeight());
+            result.append("\"></a></td>\n");
             result.append("</td>\n");
         } else {
             result.append(super.buildGalleryItemListCustomStartCols(res, tdClass));
