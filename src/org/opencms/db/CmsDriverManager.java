@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.557.2.6 $
+ * Date   : $Date: 2005/10/11 16:46:59 $
+ * Version: $Revision: 1.557.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,9 +113,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * 
  <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.6 $
+ * @version $Revision: 1.557.2.7 $
  =======
- * @version $Revision: 1.557.2.6 $
+ * @version $Revision: 1.557.2.7 $
  >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
@@ -2656,7 +2656,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (replacementUser == null) {
             withACEs = false;
             replacementUser = readUser(dbc, OpenCms.getDefaultUsers().getUserDeletedResource());
+        } 
+        Iterator itGroups = getGroupsOfUser(dbc, username).iterator();
+        while (itGroups.hasNext()) {
+            CmsGroup group = (CmsGroup)itGroups.next();
+            // add replacement user to user groups
+            if (!userInGroup(dbc, replacementUser.getName(), group.getName())) {
+                addUserToGroup(dbc, replacementUser.getName(), group.getName());
+            }
+            // remove user from groups
+            if (userInGroup(dbc, username, group.getName())) {
+                removeUserFromGroup(dbc, username, group.getName());
+            }
         }
+        
         // offline
         transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
         // online
