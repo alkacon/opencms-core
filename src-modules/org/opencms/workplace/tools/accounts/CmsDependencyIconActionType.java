@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsDependencyIconActionType.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/10/11 15:38:24 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.3 $
  * 
  * @since 6.0.0
  */
@@ -108,8 +108,8 @@ public final class CmsDependencyIconActionType {
                 return target;
             }
         }
-        throw new CmsIllegalArgumentException(Messages.get().container(
-            Messages.ERR_MODE_ENUM_PARSE_2,
+        throw new CmsIllegalArgumentException(org.opencms.db.Messages.get().container(
+            org.opencms.db.Messages.ERR_MODE_ENUM_PARSE_2,
             value,
             CmsDependencyIconActionType.class.getName()));
     }
