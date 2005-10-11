@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.148 $
+ * Date   : $Date: 2005/10/11 15:59:14 $
+ * Version: $Revision: 1.149 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
@@ -89,7 +90,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.148 $ 
+ * @version $Revision: 1.149 $ 
  * 
  * @since 6.0.0 
  */
@@ -483,7 +484,13 @@ public abstract class CmsWorkplace {
         }
         // store the user and it's settings in the Workplace settings
         settings.setUser(user);
-        settings.setUserSettings(new CmsUserSettings(cms, user));
+        CmsUserSettings newUserSettings = new CmsUserSettings(cms, user);
+        
+        // store the old synchronize settings
+        if (update && settings.getUserSettings() != null) {
+            newUserSettings.setSynchronizeSettings(settings.getUserSettings().getSynchronizeSettings());
+        }
+        settings.setUserSettings(newUserSettings);
 
         // return the result settings
         return settings;
