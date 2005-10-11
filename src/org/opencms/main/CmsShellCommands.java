@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2005/10/11 14:34:33 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  */
@@ -313,6 +313,35 @@ class CmsShellCommands implements I_CmsShellCommands {
         long oneWeek = 604800000;
         long maxDate = System.currentTimeMillis() - (weeks * oneWeek);
         m_cms.deleteBackups(maxDate, 100, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Deletes a module.<p>
+     * 
+     * @param moduleName the name of the module
+     * @throws Exception if something goes wrong
+     */
+    public void deleteModule(String moduleName) throws Exception {
+
+        OpenCms.getModuleManager().deleteModule(
+            m_cms,
+            moduleName,
+            false,
+            new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Deletes a project by name.<p>
+     *
+     * @param name the name of the project to delete
+
+     * @throws Exception if something goes wrong
+     * 
+     * @see CmsObject#deleteProject(int)
+     */
+    public void deleteProject(String name) throws Exception {
+
+        m_cms.deleteProject(m_cms.readProject(name).getId());
     }
 
     /**
@@ -569,40 +598,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             null,
             new CmsShellReport(m_cms.getRequestContext().getLocale()));
     }
-    
-    /**
-     * Deletes a module.<p>
-     * 
-     * @param moduleName the name of the module
-     * @throws Exception if something goes wrong
-     */
-    public void deleteModule(String moduleName) throws Exception {
-        
-        OpenCms.getModuleManager().deleteModule(
-            m_cms, 
-            moduleName, 
-            false, 
-            new CmsShellReport(m_cms.getRequestContext().getLocale())); 
-    }
-    
-    /**
-     * Replaces a module with another revision.<p>
-     * 
-     * @param moduleName the name of the module
-     * @param importFile the name of the import file
-     * @throws Exception if something goes wrong
-     */
-    public void replaceModuleFromDefault(String moduleName, String importFile) throws Exception {
-        
-        OpenCms.getModuleManager().deleteModule(
-            m_cms, 
-            moduleName, 
-            true, 
-            new CmsShellReport(m_cms.getRequestContext().getLocale()));
-        
-        importModuleFromDefault(importFile);
-    }
-    
+
     /**
      * Imports a module (zipfile) from the default module directory, 
      * creating a temporary project for this.<p>
@@ -951,6 +947,47 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void rebuildIndex(String index) throws Exception {
 
         OpenCms.getSearchManager().rebuildIndex(index, new CmsShellReport(m_cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Replaces a module with another revision.<p>
+     * 
+     * @param moduleName the name of the module
+     * @param importFile the name of the import file
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void replaceModule(String moduleName, String importFile) throws Exception {
+
+        if (OpenCms.getModuleManager().getModule(moduleName) != null) {
+            OpenCms.getModuleManager().deleteModule(
+                m_cms,
+                moduleName,
+                true,
+                new CmsShellReport(m_cms.getRequestContext().getLocale()));
+        }
+
+        importModule(importFile);
+    }
+
+    /**
+     * Replaces a module with another revision.<p>
+     * 
+     * @param moduleName the name of the module
+     * @param importFile the name of the import file
+     * @throws Exception if something goes wrong
+     */
+    public void replaceModuleFromDefault(String moduleName, String importFile) throws Exception {
+
+        if (OpenCms.getModuleManager().getModule(moduleName) != null) {
+            OpenCms.getModuleManager().deleteModule(
+                m_cms,
+                moduleName,
+                true,
+                new CmsShellReport(m_cms.getRequestContext().getLocale()));
+        }
+
+        importModuleFromDefault(importFile);
     }
 
     /**

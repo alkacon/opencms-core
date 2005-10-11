@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.44 $
+ * Date   : $Date: 2005/10/11 14:34:33 $
+ * Version: $Revision: 1.45 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44 $ 
+ * @version $Revision: 1.45 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,10 +128,25 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     private static Properties m_htmlProps;
 
     /** A map with all available modules. */
-    private Map m_availableModules;
+    protected Map m_availableModules;
 
     /** A CmsObject to execute shell commands. */
-    private CmsObject m_cms;
+    protected CmsObject m_cms;
+
+    /** A list with the package names of the modules to be installed .*/
+    protected List m_installModules;
+
+    /** A map with lists of dependent module package names keyed by module package names. */
+    protected Map m_moduleDependencies;
+
+    /** The new logging offset in the workplace import thread. */
+    protected int m_newLoggingOffset;
+
+    /** The lod logging offset in the workplace import thread. */
+    protected int m_oldLoggingOffset;
+
+    /** The absolute path to the home directory of the OpenCms webapp. */
+    protected String m_webAppRfsPath;
 
     /** The absolute path to the config sub directory of the OpenCms web application. */
     private String m_configRfsPath;
@@ -157,18 +172,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /** Contains the properties of "opencms.properties". */
     private ExtendedProperties m_extProperties;
 
-    /** A list with the package names of the modules to be installed .*/
-    private List m_installModules;
-
-    /** A map with lists of dependent module package names keyed by module package names. */
-    private Map m_moduleDependencies;
-
-    /** The new logging offset in the workplace import thread. */
-    private int m_newLoggingOffset;
-
-    /** The lod logging offset in the workplace import thread. */
-    private int m_oldLoggingOffset;
-
     /** A map with tokens ${...} to be replaced in SQL scripts. */
     private Map m_replacer;
 
@@ -177,9 +180,6 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
     /** List of sorted keys by ranking of all available database server setups (e.g. "mysql", "generic" or "oracle") */
     private List m_sortedDatabaseKeys;
-
-    /** The absolute path to the home directory of the OpenCms webapp. */
-    private String m_webAppRfsPath;
 
     /** The workplace import thread. */
     private CmsSetupWorkplaceImportThread m_workplaceImportThread;
@@ -1008,7 +1008,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      * Over simplistic helper to compare two strings to check radio buttons.
      * 
      * @param value1 the first value 
-     * @param value2 the secound value
+     * @param value2 the second value
      * @return "checked" if both values are equal, the empty String "" otherwise
      */
     public String isChecked(String value1, String value2) {
@@ -1126,7 +1126,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         m_newLoggingOffset = m_workplaceImportThread.getLoggingThread().getMessages().size();
         if (isInitialized()) {
             for (int i = m_oldLoggingOffset; i < m_newLoggingOffset; i++) {
-                String str = m_workplaceImportThread.getLoggingThread().getMessages().elementAt(i).toString();
+                String str = m_workplaceImportThread.getLoggingThread().getMessages().get(i).toString();
                 str = CmsEncoder.escapeWBlanks(str, "UTF-8");
                 out.println("output[" + (i - m_oldLoggingOffset) + "] = \"" + str + "\";");
             }

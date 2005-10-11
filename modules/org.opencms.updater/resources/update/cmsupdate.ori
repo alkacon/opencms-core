@@ -1,0 +1,25 @@
+# Turn echo on
+echo on
+
+# Login the Admin user
+login "@ADMIN_USER@" "@ADMIN_PWD@"
+
+# Switch to the default context
+setSiteRoot "@UPDATE_SITE@"
+
+# create the update project
+createProject "@UPDATE_PROJECT@" "Temporary Project for update wizard" "@ADMIN_GROUP@" "@ADMIN_GROUP@"
+
+# Switch to the update project
+setCurrentProject "@UPDATE_PROJECT@"
+
+# Import the modules that have been selected in the update wizard
+updateModulesFromUpdateBean
+
+# Switch to the online project
+setCurrentProject "Online"
+
+# Delete the update project
+deleteProject "@UPDATE_PROJECT@"
+
+exit

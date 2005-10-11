@@ -16,6 +16,7 @@
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
 
     <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
+    <property name="opencms.input.updater"            	location="${opencms.input}/modules/org.opencms.updater/resources" />
     <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
     <property name="opencms.input.externlibs" 			location="${opencms.output}/lib" />
     <property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
@@ -75,6 +76,12 @@
  	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
 	    <pathelement location="${opencms.input.libs}/ant-contrib-1.0b1.jar"/>
+	  </classpath>
+	</taskdef>
+	
+	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms"> 
+	  <classpath>
+	    <pathelement location="${opencms.input.libs}/ant-opencms-1.0.jar"/>
 	  </classpath>
 	</taskdef>
 	
@@ -347,6 +354,99 @@ ${opencms.inputlib.textextraction}
             includes="org/opencms/**" >      
             <metainf dir="${opencms.input.warfiles}/WEB-INF" includes="opencms.tld"/>
         </jar>        	            
+    </target>
+
+	<!-- 
+		Set/Override this property to one of the following values: 
+		- interactive: interactive GUI based module selection.
+		- selection: module selection based on modules.common.selection property
+		- all: module selection based on modules.common.all property defined in the all-modules.properties file
+	-->
+	<property name="modules.selection.mode"				value="interactive" />
+	
+    <target name="build.updater" 
+    	depends="jar" description="Generates a distributable updater zip file">
+    	
+    	<property file="${basedir}/modules/all-modules.properties" />
+    	<echo message="all: ${basedir}/modules"/>
+    	<if>
+    		<not><isset property="modules.common.all" /></not>
+    	  <then>
+    		<fail>
+    			property modules.common.all undefined.
+    		</fail>
+    	  </then>
+    	  <else>
+    	  	<echo message="all: ${modules.common.all}"/>
+    	  </else>
+    	</if>
+        <sortlist property="modules.all.sort" value="${modules.common.all}" override="true" />
+    	<if>
+			<equals arg1="${modules.selection.mode}" arg2="interactive" />
+			<then>
+				<!-- interactive mode -->
+				<if>
+					<isset property="modules.common.selection"/>
+					<then>
+					  	<selectionprompt 
+					  	  	property="modules.common.interactive"
+					  	    defaultvalue="${modules.common.selection}"
+					  		allvalues="${modules.all.sort}"
+					  		prompt="Please select the modules to process:"
+					  		title="Module Selection"
+					  	/>
+					</then>
+					<else>
+					  	<selectionprompt 
+					  	  	property="modules.common.interactive"
+					  	    defaultvalue=""
+					  		allvalues="${modules.all.sort}"
+					  		prompt="Please select the modules to process:"
+					  		title="Module Selection"
+					  	/>
+					</else>
+				</if>
+			    <if>
+			      <equals arg1="${modules.common.interactive}" arg2="__ABORT__" />
+			      <then>
+			    	<fail>aborted by User</fail>
+			      </then>
+			    </if>
+				<property name="modules.var" value="${modules.common.interactive}" />
+			</then>
+			<elseif>
+				<equals arg1="${modules.selection.mode}" arg2="selection" />
+				<then>
+					<!-- selection mode -->
+					<property name="modules.var" value="${modules.common.selection}" />
+				</then>
+			</elseif>
+			<else>
+				<!-- all mode -->
+				<property name="modules.var" value="${modules.common.all}" />
+			</else>
+    	</if>
+        <sortlist property="modules.var" value="${modules.var}" override="true" />
+	  	<ant antfile="${basedir}/modules/build.xml" target="dist" inheritAll="false" >
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="modules.common.selection" value="${modules.var}" />
+	  	</ant>
+
+    	<delete failonerror="no" file="${opencms.output.distfiles}/opencms-updater.zip" />
+    	<zip
+            zipfile="${opencms.output.distfiles}/opencms-updater.zip"
+            basedir="${opencms.input.updater}"
+            includes="**" >
+        	<zipfileset dir="${opencms.output.jars}" prefix="WEB-INF/lib" includes="opencms.jar" />
+    	</zip>
+
+    	<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
+    	  	</zip>
+    	  </sequential>
+    	</for>
     </target>
 
     <target name="war" 
