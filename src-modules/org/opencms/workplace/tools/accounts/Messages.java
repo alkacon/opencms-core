@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Messages.java,v $
- * Date   : $Date: 2005/09/16 13:11:11 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2005/10/11 15:24:53 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -101,9 +101,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_EDIT_USERS_0 = "ERR_EDIT_USERS_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String ERR_MODE_ENUM_PARSE_2 = "ERR_MODE_ENUM_PARSE_2";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_REMOVE_SELECTED_GROUP_0 = "ERR_REMOVE_SELECTED_GROUP_0";
