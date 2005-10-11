@@ -160,7 +160,7 @@ if (wp.isHelpEnabled()) {%>
 		
 </form>
 
-<form name="ELEMENTS" action="dialogs/elements.html" target="DIALOGELEMENT" method="post">
+<form name="ELEMENTS" action="dialogs/elements.jsp" target="DIALOGELEMENT" method="post">
 <input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
@@ -168,7 +168,7 @@ if (wp.isHelpEnabled()) {%>
 <input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
 </form>
 
-<form name="PROPERTIES" action="../dialogs/property.html" target="DIALOGPROPERTY" method="post">
+<form name="PROPERTIES" action="dialogs/property.jsp" target="DIALOGPROPERTY" method="post">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="usetempfileproject" value="true">
 <input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
