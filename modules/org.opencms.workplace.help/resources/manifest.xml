@@ -15,7 +15,7 @@
 		<class/>
 		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p>
 <p><i>(c) 2004-2005 by Alkacon Software</i></p>]]></description>
-		<version>1.0.7</version>
+		<version>1.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
