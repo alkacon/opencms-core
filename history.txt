@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 08:29:41 $
- * Version: $Revision: 1.689 $
+ * Date   : $Date: 2005/10/12 08:48:04 $
+ * Version: $Revision: 1.690 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue #953: Dialog paths in simple HTML editor adjusted to JSP dialogs
 * Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain compatibility with JSP 1.0 servlet containers
 * Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
-
+* Fixed issue #956: Failed link translation results in zero length file during HTML import
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
