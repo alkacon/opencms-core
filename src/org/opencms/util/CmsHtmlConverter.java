@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/10/07 08:56:45 $
- * Version: $Revision: 1.20.2.2 $
+ * Date   : $Date: 2005/10/12 14:27:21 $
+ * Version: $Revision: 1.20.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20.2.2 $ 
+ * @version $Revision: 1.20.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,13 +114,13 @@ public class CmsHtmlConverter {
     List m_mode;
 
     /** regular expression for replace. */
-    String[] m_replacePatterns = {"&#160;", "(\\r\\n){2,}"};
+    String[] m_replacePatterns = {"&#160;", "(\\r\\n){2,}", "–"};
 
     /** patterns for replace. */
     Pattern[] m_replaceStyle;
 
     /** values for replace. */
-    String[] m_replaceValues = {"&nbsp;", ""};
+    String[] m_replaceValues = {"&nbsp;", "", "&ndash;"};
 
     /** the tidy to use. */
     Tidy m_tidy;
@@ -243,7 +243,7 @@ public class CmsHtmlConverter {
                 String parsedContent = adjustHtml(new String(parsedRun, m_encoding));
 
                 parsedRun = parse(parsedContent.getBytes(m_encoding), m_encoding);
-
+                
                 if (parsedRun.length == oldSize) {
                     break;
                 } else {
@@ -256,6 +256,7 @@ public class CmsHtmlConverter {
                 LOG.info(Messages.get().key(Messages.LOG_PARSING_RUNS_2, this.getClass().getName(), new Integer(count)));
             }
 
+           
             return regExp(new String(parsedRun, m_encoding)).getBytes(m_encoding);
 
         } else {
@@ -556,7 +557,7 @@ public class CmsHtmlConverter {
     private String regExp(String htmlInput) {
 
         String parsedHtml = new String();
-        parsedHtml = htmlInput;
+        parsedHtml = htmlInput.trim();
 
         // process all cleanup regexp
         for (int i = 0; i < m_cleanupPatterns.length; i++) {
