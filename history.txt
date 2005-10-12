@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 09:51:18 $
- * Version: $Revision: 1.692 $
+ * Date   : $Date: 2005/10/12 09:53:04 $
+ * Version: $Revision: 1.693 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue #956: Failed link translation results in zero length file during HTML import
 * Fixed issue #957: Case sensitivity problems in HTML import
 * Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
+* Fixed issue with NULL_PROPERTY not being immutable
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
