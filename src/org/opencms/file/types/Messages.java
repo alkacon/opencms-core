@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/10/12 14:03:43 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -48,7 +48,7 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHTYPE_FOLDER_1 = "ERR_CHTYPE_FOLDER_1";
 
-    /** Constant for message ERR_CONFIGURATION_FROZEN_3. */
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_CONFIG_FROZEN_3 = "ERR_CONFIG_FROZEN_3";
 
     /** Message constant for key in the resource bundle. */
@@ -65,6 +65,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESTORE_FOLDERS_0 = "ERR_RESTORE_FOLDERS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNKNOWN_RESTYPE_CLASS_4 = "ERR_UNKNOWN_RESTYPE_CLASS_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_FILE_IS_FOLDER_1 = "ERR_WRITE_FILE_IS_FOLDER_1";

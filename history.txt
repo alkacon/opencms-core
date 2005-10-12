@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 12:46:31 $
- * Version: $Revision: 1.695 $
+ * Date   : $Date: 2005/10/12 14:02:52 $
+ * Version: $Revision: 1.696 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue with NULL_PROPERTY not being immutable
 * Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
 * Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
+* Fixed issue #615: Uploading modules with new (unknown) resource type classes
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
