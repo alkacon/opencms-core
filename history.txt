@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 15:30:23 $
- * Version: $Revision: 1.682.2.22 $
+ * Date   : $Date: 2005/10/12 17:38:40 $
+ * Version: $Revision: 1.682.2.23 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,28 +28,28 @@ OpenCms 6.1.1 - xxxxx, 2005
 ! ImageGallery now shows a preview thumbnail of all images (if image is loader enabled)
 ! Image "height" and "width" attributes are calculated and stored in "image.size" property (if image is loader enabled)
 * Fixed issue with resources outside timerange in editors
-* Fixed issue #967: Shared property is empty after renaming or moving resources
 ! Added "Update Wizard" to enable updating several OpenCms modules at once
-* Fixed issue #960: Servlet mapping also works for the "/*" setting
+* Fixed issue with NULL_PROPERTY not being immutable
+* Fixed issue #615: Uploading modules with new (unknown) resource type classes
+* Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
+* Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
 * Fixed issue #895: Show correct online address in the secure dialog also in the ROOT site
-* Fixed issue #943: Display advanced property dialog of extended folders only once after a new property is defined
+* Fixed issue #899: Latent problem while importing data fixed
+* Fixed issue #904: The selected modules are checked and topologically sorted
+* Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
+* Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
+* Fixed issue #925: The deleteUser method also removes the user from all their groups
+* Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
 * Fixed issue #932: Keep synchronization settings after the user preferences were changed
+* Fixed issue #940: cmsshell.sh doesn't run on Linux
+* Fixed issue #943: Display advanced property dialog of extended folders only once after a new property is defined
 * Fixed issue #953: Dialog paths in simple HTML editor adjusted to JSP dialogs
 * Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain compatibility with JSP 1.0 servlet containers
-* Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
 * Fixed issue #956: Failed link translation results in zero length file during HTML import
 * Fixed issue #957: Case sensitivity problems in HTML import
-* Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
-* Fixed issue with NULL_PROPERTY not being immutable
-* Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
-* Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
-* Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
-* Fixed issue #615: Uploading modules with new (unknown) resource type classes
-* Fixed issue #904: The selected modules are checked and topologically sorted
-* Fixed issue #925: The deleteUser method also removes the user from all their groups
+* Fixed issue #960: Servlet mapping also works for the "/*" setting
 * Fixed issue #963: The user, group and property names are now escaped
-* Fixed issue #899: Latent problem while importing data fixed
-* Fixed issue #940: cmsshell.sh doesn't run on Linux
+* Fixed issue #967: Shared property is empty after renaming or moving resources
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
