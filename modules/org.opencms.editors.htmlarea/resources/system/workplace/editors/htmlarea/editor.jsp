@@ -640,6 +640,12 @@ config.toolbar = [
 	config.pageStyle = "@import url(<%= cms.link(wp.getUriStyleSheet()) %>);";
 	
 	__editor.generate();
+	<%
+	// if necessary, switch to text mode
+	if ("edit".equals(wp.getParamEditormode())) {
+		%>setTimeout("__editor.execCommand('htmlmode');", 500);<%
+	}
+	%>
 	return false;
 }
 
@@ -664,6 +670,7 @@ config.toolbar = [
 <input type="hidden" name="<%= wp.PARAM_OLDELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
 <input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
 <input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+<input type="hidden" name="<%= wp.PARAM_EDITORMODE %>" value="<%= wp.getParamEditormode() %>">
 <input type="hidden" name="<%= wp.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
 
 <table cellspacing="0" cellpadding="0" border="0" style="width:100%; height:100%;">
