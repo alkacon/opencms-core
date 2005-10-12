@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 14:38:21 $
- * Version: $Revision: 1.682.2.19 $
+ * Date   : $Date: 2005/10/12 15:18:59 $
+ * Version: $Revision: 1.682.2.20 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,6 +30,10 @@ OpenCms 6.1.1 - xxxxx, 2005
 * Fixed issue with resources outside timerange in editors
 * Fixed issue #967: Shared property is empty after renaming or moving resources
 ! Added "Update Wizard" to enable updating several OpenCms modules at once
+* Fixed issue #960: Servlet mapping also works for the "/*" setting
+* Fixed issue #895: Show correct online address in the secure dialog also in the ROOT site
+* Fixed issue #943: Display advanced property dialog of extended folders only once after a new property is defined
+* Fixed issue #932: Keep synchronization settings after the user preferences were changed
 * Fixed issue #953: Dialog paths in simple HTML editor adjusted to JSP dialogs
 * Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain compatibility with JSP 1.0 servlet containers
 * Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
