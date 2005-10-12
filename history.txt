@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 15:39:35 $
- * Version: $Revision: 1.700 $
+ * Date   : $Date: 2005/10/12 17:50:04 $
+ * Version: $Revision: 1.701 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,40 +19,42 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.0.2 - xxx, 2005
-* Fixed issue #960: Servlet mapping also works for the "/*" setting
+OpenCms 6.0.2 - October 13, 2005
+* Fixed issue #615: Uploading modules with new (unknown) resource type classes
+* Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
+* Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
 * Fixed issue #895: Show correct online address in the secure dialog also in the ROOT site
-* Fixed issue #943: Display advanced property dialog of extended folders only once after a new property is defined
+* Fixed issue #899: Latent problem while importing data fixed
+* Fixed issue #904: The selected modules are checked and topologically sorted
+* Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
+* Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
+* Fixed issue #925: The deleteUser method also removes the user from all their groups
+* Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
 * Fixed issue #932: Keep synchronization settings after the user preferences were changed
-* Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
-* Fixed issue with bad encoding for sessionless requests due to early access to #getParameter(String) for upload applet
-! Search in link gallery now also includes link content data
-* Fixed issue with slow publishing of files because of history query
-* Fixed issue with fulltext search folder restriction not working for special folder names
-! Added options to access content based on a given locale to <cms:contentload/show/info> tags
-! Added option to create default directories and export points in Module manager tool
-* Fixed issue with URI splitting causing an NPE if URI was invalid 
-* Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
-! Custom widgets that have not been registered in opencms-vfs.xml can now be specified in XML content schemas
-* Fixed issue with resources outside timerange in editors
-* Fixed issue #967: Shared property is empty after renaming or moving resources
-! Added "Update Wizard" to enable updating several OpenCms modules at once
+* Fixed issue #940: cmsshell.sh doesn't run on Linux
+* Fixed issue #943: Display advanced property dialog of extended folders only once after a new property is defined
 * Fixed issue #953: Dialog paths in simple HTML editor adjusted to JSP dialogs
 * Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain compatibility with JSP 1.0 servlet containers
-* Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
 * Fixed issue #956: Failed link translation results in zero length file during HTML import
 * Fixed issue #957: Case sensitivity problems in HTML import
-* Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
-* Fixed issue with NULL_PROPERTY not being immutable
-* Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
-* Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
-* Fixed issue #615: Uploading modules with new (unknown) resource type classes
-* Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
-* Fixed issue #904: The selected modules are checked and topologically sorted
-* Fixed issue #925: The deleteUser method also removes the user from all their groups
+* Fixed issue #960: Servlet mapping also works for the "/*" setting
 * Fixed issue #963: The user, group and property names are now escaped
-* Fixed issue #899: Latent problem while importing data fixed
-* Fixed issue #940: cmsshell.sh doesn't run on Linux
+* Fixed issue #967: Shared property is empty after renaming or moving resources
+* Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
+* Fixed issue with bad encoding for sessionless requests due to early access to #getParameter(String) for upload applet
+* Fixed issue with NULL_PROPERTY not being immutable
+* Fixed issue with slow publishing of files because of history query
+* Fixed issue with fulltext search folder restriction not working for special folder names
+* Fixed issue with URI splitting causing an NPE if URI was invalid 
+* Fixed issue with resources outside timerange in editors
+* Fixed issue (using workaround) with lost image paths in HtmlArea editor widget after drag & drop
+! Added new XML content "DisplayWidget"
+! Added new XML content "MultiSelectWidget"
+! Added options to access content based on a given locale to <cms:contentload/show/info> tags
+! Added option to create default directories and export points in Module manager tool
+! Added "Update Wizard" to enable updating several OpenCms modules at once
+! Search in link gallery now also includes link content data
+! Custom widgets that have not been registered in opencms-vfs.xml can now be specified in XML content schemas
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
@@ -70,7 +72,7 @@ OpenCms 6.0.1 - September 14, 2005
 * Fixed issue with history of siblings in a multiple site configuration
 * Fixed issue with error (404) pages not returning a 404 status code
 * Fixed issue with locale selection process not always working correctly when using "language_COUNTRY" type locale
-* Fixed issue 912: NullPointerException in "recommend page" of templateone
+* Fixed issue #912: NullPointerException in "recommend page" of templateone
 ! Search indexes are now incrementally updated after publishing of resoures if rebuild mode is "auto"
 ! Added methods to copy and move the content of a locale in XML pages or XML contents
 ! Added "site" parameter to Flex cache language for creating elements for a specific site only

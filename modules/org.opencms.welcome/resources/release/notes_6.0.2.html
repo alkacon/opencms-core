@@ -17,144 +17,204 @@
           <target><![CDATA[mailto:contributions@opencms.org]]></target>
         </link>
       </links>
-      <content><![CDATA[<H1>Release Notes for OpenCms 6.0.2</H1>
-<p>        
-          10/13/2005: This is the OpenCms 6.0.2&nbsp;release. OpenCms 6.0.2 is a&nbsp;stability upgrade, it&nbsp;fixes
-several&nbsp;issues that were found&nbsp;in&nbsp;the&nbsp;final OpenCms 6.0.0&nbsp;release and adds some new features as
-well.</p>
-<H3>Fixed issues in Version 6.0.2</H3>
-<UL>
-  <LI>Fixed issue with XML content defaults defined in 
-  annotations not working for nested cd's when creating new content</LI><LI>Fixed issue with bad encoding for sessionless 
-  requests due to early access to #getParameter(String) for upload applet</LI><LI>Fixed issue with slow publishing of files because of 
-  history query</LI><LI>Fixed issue with fulltext search folder restriction 
-  not working for special folder names</LI><LI>Fixed issue with URI splitting causing an NPE if URI 
-  was invalid</LI><LI>Fixed issue (using workaround) with lost image paths 
-  in HtmlArea editor widget after drag &amp; drop</LI><LI>Fixed issue with resources outside timerange in 
-  editors</LI><LI>Fixed issue with CmsDriverManager#getChilds()</LI><LI>Fixed issue with "search" causing JavaScript errors 
-  in new Administration</LI><LI>Fixed issue with editing the "parent group" of a 
-group</LI><LI>Fixed issue with history of siblings in a multiple 
-  site configuration</LI><LI>Fixed issue with error (404) pages not returning a 
-  404 status code</LI><LI>Fixed issue with locale selection process not always 
-  working correctly when using "language_COUNTRY" type locale</LI><LI>Fixed issue 912: NullPointerException in "recommend 
-  page" of templateone</LI><LI>Fixed issue in XML content so that 
-  "Articles"-"Article" node naming schema is not longer required for creation of 
-  new content items</LI><LI>Fixed issue with client side caching of expired 
-  documents because of missing http headers</LI><LI>Fixed issue with display of historic resource 
-  versions in external programs (*.doc, *.pdf)</LI><LI>Fixed issue in external link checker if link is not a 
-  http link</LI><LI>Included (experimental) fix to disable multiple 
-  setting of "Content-Type" header contributed by Jason Trump</LI><LI>Removed references to static user/group name 
-  variables, using only the methods that return the configurable names
-  </LI><LI>Fixed issue #967: Shared property is empty after renaming or moving 
-  resources
-  </LI><LI>Fixed issue #953: Dialog paths in simple HTML editor adjusted to JSP 
-  dialogs
-  </LI><LI>Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain compatibility 
-  with JSP 1.0 servlet containers
-  </LI><LI>Fixed issue #905: HtmlArea is now opened in source code mode if clicking 
-  the resource context menu entry "Edit sourcecode"
-  </LI><LI>Fixed issue #956: Failed link translation results in zero length file 
-  during HTML import
-  </LI><LI>Fixed issue #957: Case sensitivity problems in HTML import
-  </LI><LI>Fixed issue #884: Cancelling upload of files in non-applet dialog now 
-  resets file content
-  </LI><LI>Fixed issue with NULL_PROPERTY not being immutable
-  </LI><LI>Fixed issue #931: It is now possible to insert closing curly braces in 
-  HtmlArea in IE using german keyboards
-  </LI><LI>Fixed issue #890: Extended folders and XML contents now show the custom 
-  property dialog from the referenced resource type</LI></UL>
-<H3>New features in Version 6.0.2</H3>
-<UL>
-  <LI>Search in link gallery now also includes link content 
-  data</LI><LI>Added options to access content based on a given 
-  locale to &lt;cms:contentload/show/info&gt; tags</LI><LI>Added option to create default directories and export 
-  points in Module manager tool</LI><LI>Custom widgets that have not been registered in 
-  opencms-vfs.xml can now be specified in XML content schemas</LI><LI>Added advanced rule based configuration options to 
-  static export</LI><LI>Property values can now be read and written as a list</LI><LI>XML content mappings can map multiple occurences of a 
-  value to a property list value</LI><LI>For XML content values mapped to a property, the 
-  property is deleted if no value is available in the XML content</LI><LI>Added resource collector to collect all files that 
-  have been "mapped" to another file</LI><LI>Added "preload" option to &lt;cms:contentload&gt; tag 
-  for better control of displayed content</LI><LI>Search indexes are now incrementally updated after 
-  publishing of resoures if rebuild mode is "auto"</LI><LI>Added methods to copy and move the content of a 
-  locale in XML pages or XML contents</LI><LI>Added "site" parameter to Flex cache language for 
-  creating elements for a specific site only</LI><LI>Added support for maxDB/sapDB contributed by Clovis 
-  Wichoski and Fabiano Rech</LI><LI>Added serial version UIDs to all serializable classes</LI><LI>Replaced use of "sendCmsRedirect" in Workplace with 
-  "sendForward" to reduce issues in IBM Websphere AS</LI><LI>Added patch for use of CmsJspStatusBean with mod_jk contributed by 
-  Thorsten Ludewig</LI></UL>
-<H2>What's New in Version 6.0.2?</H2>
-<P>For a complete list of features of OpenCms 6.0.2, have a look at the <A 
-href="${link0}" target=_self>OpenCms 6.0.0 
-release notes</A>.</P>
-<H2>Backward compatibility</H2>
-<p>         
-                 
-       
-        We recommend everyone who
-uses an earlier version of OpenCms to update to the 6.0.2
-release, even if you are using the final 6.0.0 version.</p>
-<P>To upgrade&nbsp;an existing&nbsp;OpenCms 6.0.0 version to the current 6.0.2 
-release, simply use the upgrade wizard that is coming with this distribution. 
-The provided upgrade wizard guides you through the update process to avoid 
-update errors of manual update procedures.</P>
-<P>In case you are using one of the previous development versions (OpenCms 6 
-alpha, beta or release candidates), there have been a lot of issues fixed in the 
-upgrade release. If you still use OpenCms 5.0.x, you should definitely consider 
-an update since the 6.0.2 version is much more advanced and stable.</P>
-<P>OpenCms 6 is largely backward compatible with the 5.x releases. Existing 
-content from 5.x is easily importable, automatically converted to the new XML 
-page format and requires almost no manual modification - at least if you didn't 
-somehow change the structure of the XML control code of the 5.0.x page 
-files.</P>
-<p>For the sake of a clean and structured API, we have decided to
-make improvements on the API level that break existing 5.0 code.
-This means changes of Java code in templates or custom classes is
-necessary in order to upgrade from 5.x to 6. Most obvious is the
-renaming the packages from com.opencms.* to org.opencms.*. Making
-existing code work is most often just a matter of exchanging these
-import statements and some minor adjustments. Please refer to the
-Alkacon Documentation regarding the details of the upgrade process
-from 5.0.x to 6.0.2.<br>
+      <content><![CDATA[<h1>Release Notes for OpenCms 6.0.2</h1>
+<p>October 13, 2005: This is the OpenCms 6.0.2 (stable) release.
+OpenCms 6.0.2 is a stability upgrade which fixes several issues reported with the OpenCms 6.0.0 release. Some new features
+are available as well.</p>
+<h3>Who should use this version?</h3>
+<p>It is recommended for all OpenCms 6.0.0 users to upgrade to this
+improved version. Version 6.0.2 will also be the base for all
+future OpenCms releases.</p>
+<h3>Fixed issues in Version 6.0.2</h3>
+<ul>
+<li>Fixed issue #615: Uploading modules with new (unknown) resource
+type classes</li>
+<li>Fixed issue #884: Cancelling upload of files in non-applet
+dialog now resets file content</li>
+<li>Fixed issue #895: Show correct online address in the secure
+dialog also in the ROOT site</li>
+<li>Fixed issue #890: Extended folders and XML contents now show
+the custom property dialog from the referenced resource type</li>
+<li>Fixed issue #899: Latent problem while importing data
+fixed</li>
+<li>Fixed issue #904: The selected modules are checked and
+topologically sorted</li>
+<li>Fixed issue #905: HtmlArea is now opened in source code mode if
+clicking the resource context menu entry &quot;Edit sourcecode&quot;</li>
+<li>Fixed issue #912: NullPointerException in &quot;recommend page&quot; of
+templateone</li>
+<li>Fixed issue #914: Exceptions after cleanup html in WYSIWYG
+Editor</li>
+<li>Fixed issue #925: The deleteUser method also removes the user
+from all their groups</li>
+<li>Fixed issue #931: It is now possible to insert closing curly
+braces in HtmlArea in IE using german keyboards</li>
+<li>Fixed issue #932: Keep synchronization settings after the user
+preferences were changed</li>
+<li>Fixed issue #940: cmsshell.sh doesn't run on Linux</li>
+<li>Fixed issue #943: Display advanced property dialog of extended
+folders only once after a new property is defined</li>
+<li>Fixed issue #953: Dialog paths in simple HTML editor adjusted
+to JSP dialogs</li>
+<li>Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain
+compatibility with JSP 1.0 servlet containers</li>
+<li>Fixed issue #956: Failed link translation results in zero
+length file during HTML import</li>
+<li>Fixed issue #957: Case sensitivity problems in HTML import</li>
+<li>Fixed issue #960: Servlet mapping also works for the &quot;/*&quot;
+setting</li>
+<li>Fixed issue #963: The user, group and property names are now
+escaped</li>
+<li>Fixed issue #967: Shared property is empty after renaming or
+moving resources</li>
+<li>Fixed issue with NULL_PROPERTY not being immutable</li>
+<li>Fixed issue with XML content defaults defined in annotations
+not working for nested cd's when creating new content</li>
+<li>Fixed issue with bad encoding for sessionless requests due to
+early access to #getParameter(String) for upload applet</li>
+<li>Fixed issue with slow publishing of files because of history
+query</li>
+<li>Fixed issue with fulltext search folder restriction not working
+for special folder names</li>
+<li>Fixed issue with URI splitting causing an NPE if URI was
+invalid</li>
+<li>Fixed issue with resources outside timerange in editors</li>
+<li>Fixed issue with CmsDriverManager#getChilds()</li>
+<li>Fixed issue with &quot;search&quot; causing JavaScript errors in new
+Administration</li>
+<li>Fixed issue with editing the &quot;parent group&quot; of a group</li>
+<li>Fixed issue with history of siblings in a multiple site
+configuration</li>
+<li>Fixed issue with error (404) pages not returning a 404 status
+code</li>
+<li>Fixed issue with locale selection process not always working
+correctly when using &quot;language_COUNTRY&quot; type locale</li>
+<li>Fixed issue with XML content so that &quot;Articles&quot;-&quot;Article&quot; node
+naming schema is not longer required for creation of new content
+items</li>
+<li>Fixed issue with client side caching of expired documents
+because of missing http headers</li>
+<li>Fixed issue with display of historic resource versions in
+external programs (*.doc, *.pdf)</li>
+<li>Fixed issue with external link checker if link target is not a
+http link</li>
+<li>Fixed issue (using workaround) with lost image paths in
+HtmlArea editor widget after drag &amp; drop</li>
+<li>Removed references to static user/group name variables, using
+only the methods that return the configurable names</li>
+<li>Included fix to disable multiple setting of &quot;Content-Type&quot;
+header contributed by Jason Trump</li>
+</ul>
+<h3>New features in Version 6.0.2</h3>
+<ul>
+<li>Search indexes are now incrementally updated after publishing
+of resources if rebuild mode is &quot;auto&quot;</li>
+<li>Search in link gallery window now includes link content
+data</li>
+<li>New XML content &quot;DisplayWidget&quot; to display certain content
+read-only.</li>
+<li>New XML content &quot;MultiSelectWidget&quot; allows generating multiple
+choice select boxes.</li>
+<li>Custom widgets that have not been registered in opencms-vfs.xml
+can now be specified in XML content schemas</li>
+<li>Added options to access XML content based on a given locale to
+&lt;cms:contentload/show/info&gt; tags</li>
+<li>Added &quot;preload&quot; option to &lt;cms:contentload&gt; tag for
+better control of displayed XML content</li>
+<li>XML content mappings can map multiple occurrences of a value to
+a property list value</li>
+<li>For XML content values mapped to a property, the property is
+deleted if no value is available in the XML content</li>
+<li>Added methods to copy and move the content of a locale in XML
+pages or XML contents</li>
+<li>Added resource collector to collect all files that have been
+&quot;mapped&quot; to another file</li>
+<li>Added option to create default directories and export points in
+Module manager tool</li>
+<li>Added advanced rule based configuration options to static
+export</li>
+<li>Property values can now be read and written as a list</li>
+<li>Added &quot;site&quot; parameter to Flex cache language for creating
+elements for a specific site only</li>
+<li>Added serial version UIDs to all serializable classes</li>
+<li>Replaced use of &quot;sendCmsRedirect&quot; in Workplace with
+&quot;sendForward&quot; to reduce issues in IBM Websphere AS</li>
+<li>Added support for maxDB/sapDB contributed by Clovis Wichoski
+and Fabiano Rech</li>
+<li>Added patch for use of CmsJspStatusBean with mod_jk contributed
+by Thorsten Ludewig</li>
+</ul>
+<p>For a complete list of features of OpenCms 6 compared to older
+versions, have a look at the <a target="_self" href="${link0}">OpenCms 6.0.0 release
+notes</a>.</p>
+<h2>Backward compatibility</h2>
+<p>OpenCms 6.0.2 should be highly backward compatible with version
+6.0.0. Certain bug fixes required minor API changes so some
+adjustments may have to be made for code that uses more advanced
+API functions such as custom resource types. All Templates should
+be backward compatible without changes.<br />
 </p>
-<H2>Compatibility with&nbsp;Java versions, Servlet containers and Databases</H2>
+<p>To upgrade an existing OpenCms 6.0.0 version to the current
+6.0.2 release, a new upgrade wizard is available for this
+distribution. This upgrade wizard guides you through the update
+process and makes upgrading OpenCms really easy. Please note: Even
+though the upgrade wizard has been well tested, always make a
+backup of your current installation before upgrading as a
+precaution to avoid loss of customized data.<br />
+</p>
+<p>In case you are using one of the previous development versions
+(OpenCms 6 alpha, beta or release candidates), there have been a
+lot of issues fixed so you should definitely update. If you still
+use OpenCms 5.0.x, you should also update since the 6.0.2 version
+is much more advanced and stable.</p>
+<h2>Compatibility with Java versions, Servlet containers and
+Databases</h2>
 <p>OpenCms 6.0.2 requires Java 1.4.x or Java 1.5.x. It won't work
 with Java 1.3.x. We have tested only with SUNs version of the JDK.
 However, we have removed the dependencies from all sun.* packages
 that were present in OpenCms 5.0.x so it should in theory run with
 all compliant JVMs.</p>
 <p>We have tested this release on the Tomcat servlet engine and to
-some extend on JBoss 4.0. OpenCms 6.0.2 works "out of the box" with
-Tomcat 4.1.x, Tomcat 5.0.x and Tomcat 5.5.x. No replacing of Xerces
-is required like in OpenCms 5.0.x. Others have reported deploying
-6.0.2 development versions successfully on other servlet containers
+some extend on JBoss 4.0. OpenCms 6.0.2 works &quot;out of the box&quot; with
+Tomcat 4.1.x, Tomcat 5.0.x and Tomcat 5.5.x. Others have reported
+deploying 6.0.x versions successfully on other servlet containers
 like BEA Weblogic and SunONE.</p>
-<p>     On the database side, we have
-tested with MySQL 4.0.x, MySQL 4.1.x and Oracle 9.x. PostgresSQL
-support has been contributed as well thanks to Antonio Core. The version 5.0
-MS SQL Server has not been updated to OpenCms 6.0.2 so far, and we
-still need volunteers for this task.</p>
+<p>On the database side, we have tested with MySQL 4.0.x, MySQL
+4.1.x and Oracle 9.x. PostgresSQL support has been contributed thanks to Antonio Core. maxDB support has been contributed
+thanks to Clovis Wichoski and Fabiano Rech. MS SQL server support
+is not included in this release, but has been contributed by Andras
+Balogh and will be available in a future release. We still are
+looking for volunteers to support testing the stability of the
+PostgetSQL, maxDB and MS SQL server releases.<br />
+</p>
 <p>In case you run OpenCms 6.0.2 on components different from our
 default components (SUN JDK 1.4.x. / Tomcat 4.1.x, 5.0.x or 5.5.x /
 MySQL 4.0.x or 4.1.x / Oracle 9.x), please let us know by posting a
 message to the OpenCms mailing list. We intend to collect a list of
-"supported platforms". Also, if you had to patch some lines of code
-to make OpenCms 6.0.2 run on your platforms, please contribute these
-so they can be included in the official release.</p>
-<H2>Regarding version numbers and CVS build tags</H2>
-<P>In case you want to check out OpenCms from the CVS, please keep the following 
-in mind: The CVS tag numbers for all OpenCms 6 final release are "build_6_0_x", 
-so the 6.0.0 release is tagged "build_6_0_0". OpenCms 6 alpha had CVS build tags 
-5.5.x, the&nbsp;6 beta did use 5.7.x, and the 6 RC had5.9.x.</P>
-<P>You can also check out the current development version of OpenCms by 
-selecting the "dev_6_0_x" branches of the CVS. The development version provides 
-new features which will likely be added to future stable OpenCms versions, but 
-is considered to be not as stable as the CVS head. Keep that in mind if you want 
-to use the OpenCms development branch.</P>
-<H2>How you can help</H2>
+&quot;supported platforms&quot;. Also, if you had to patch some lines of code
+to make OpenCms 6.0.2 run on your platforms, please contribute
+these so they can be included in the official release.</p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep
+the following in mind: The CVS tag for the 6.0.2 release is
+&quot;build_6_0_2&quot;. Development of further bug fix releases is done in
+CVS HEAD.<br />
+</p>
+<p>The next major feature update of OpenCms will be version 6.2.0.
+You can check out the current development version by selecting the
+&quot;dev_6_0_1&quot; branch of the CVS. The development version provides new
+features which will be added to future stable OpenCms versions, but
+is considered to be not as stable as the CVS HEAD. The development
+version uses the version numbers 6.1.x and is likewise tagged in
+the CVS.</p>
+<h2>How you can help</h2>
 <p>Contributions to the OpenCms core development are most welcome.
-Please contact <A href="${link1}">contributions@opencms.org</A> in
+Please contact <a href="${link1}">contributions@opencms.org</a> in
 case you are interested in supporting the development of OpenCms 6,
-or give your feedback on the <A href="${link2}" target=_self>opencms-dev</A> mailing list.</p>
-<p>Please use our Bugzilla to report bugs in this release: <a href="${link3}" target="_self">http://www.opencms.org/bugzilla/</a></p>
+or give your feedback on the <a target="_self" href="${link2}">opencms-dev</a> mailing
+list.</p>
+<p>Please use our Bugzilla to report bugs in this release: <a target="extern" href="${link3}">http://www.opencms.org/bugzilla/<br />
+</a></p>
 <p>Thank you for using OpenCms and have fun with OpenCms 6.0.2
 :-)</p>]]></content>
     </element>
