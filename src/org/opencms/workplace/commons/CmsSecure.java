@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/10/12 08:11:43 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -289,8 +289,10 @@ public class CmsSecure extends CmsDialog {
                 serverPrefix = currentSite.getUrl();
             }
         }
-        return serverPrefix.concat(uri);
-
+        if (!uri.startsWith(serverPrefix)) {
+            uri = serverPrefix + uri;
+        }
+        return uri;
     }
     
     /**
