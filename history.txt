@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 15:17:16 $
- * Version: $Revision: 1.698 $
+ * Date   : $Date: 2005/10/12 15:35:11 $
+ * Version: $Revision: 1.699 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
 * Fixed issue #615: Uploading modules with new (unknown) resource type classes
 * Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
+* Fixed issue #940: cmsshell.sh doesn't run on Linux
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
