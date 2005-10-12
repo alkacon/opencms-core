@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/11 16:51:57 $
- * Version: $Revision: 1.561 $
+ * Date   : $Date: 2005/10/12 09:42:15 $
+ * Version: $Revision: 1.562 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,9 +113,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * 
  <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.561 $
+ * @version $Revision: 1.562 $
  =======
- * @version $Revision: 1.561 $
+ * @version $Revision: 1.562 $
  >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
@@ -1429,7 +1429,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         CmsPropertyDefinition propertyDefinition = null;
 
         name = name.trim();
-        validFilename(name);
+        validPropertyName(name);
 
         try {
             try {
@@ -3000,11 +3000,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List getChilds(CmsDbContext dbc, String groupname) throws CmsException {
 
         Set allChilds = new HashSet();
-        // iterate all child groups if the user group
+        // iterate all child groups
         Iterator it = m_userDriver.readChildGroups(dbc, groupname).iterator();
         while (it.hasNext()) {
             CmsGroup group = (CmsGroup)it.next();
-            // add the group it self
+            // add the group itself
             allChilds.add(group);
             // now get all subchilds for each group
             allChilds.addAll(getChilds(dbc, group.getName()));
@@ -6958,11 +6958,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Checks if the provided file name is a valid file name, that is contains only
+     * Checks if the provided file name is a valid file name, that contains only
      * valid characters.<p>
      *
      * @param filename the file name to check
-     * @throws CmsIllegalArgumentException C_BAD_NAME if the check fails
+     * 
+     * @throws CmsIllegalArgumentException if the check fails
      */
     public void validFilename(String filename) throws CmsIllegalArgumentException {
 
@@ -7002,6 +7003,23 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         if (onlydots) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILENAME_1, filename));
+        }
+    }
+
+    /**
+     * Checks if the provided property name is a valid property name, that contains only
+     * valid characters.<p>
+     *
+     * @param propertyName the property name to check
+     * 
+     * @throws CmsIllegalArgumentException if the check fails
+     */
+    public void validPropertyName(String propertyName) throws CmsIllegalArgumentException {
+        
+        try {
+            validFilename(propertyName);
+        } catch (CmsIllegalArgumentException e) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_PROPERTYNAME_1, e.getMessageContainer().getArgs()));
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/10/12 09:42:15 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.40 $
  * 
  * @since 6.0.0 
  */
@@ -71,6 +71,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_GROUPNAME_1 = "ERR_BAD_GROUPNAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_BAD_PROPERTYNAME_1 = "ERR_BAD_PROPERTYNAME_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_RESOURCENAME_1 = "ERR_BAD_RESOURCENAME_1";
