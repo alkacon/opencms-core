@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.80 $
+ * Date   : $Date: 2005/10/12 09:41:52 $
+ * Version: $Revision: 1.81 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
@@ -92,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80 $ 
+ * @version $Revision: 1.81 $ 
  * 
  * @since 6.0.0 
  */
@@ -918,7 +919,7 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(userNameLastModified);
+            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(CmsEncoder.escapeXml(userNameLastModified));
             // <datecreated>
             fileElement.addElement(CmsImportExportManager.N_DATECREATED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateCreated()));
@@ -929,7 +930,7 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(userNameCreated);
+            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(CmsEncoder.escapeXml(userNameCreated));
             // <release>
             if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
                 fileElement.addElement(CmsImportExportManager.N_DATERELEASED).addText(
@@ -972,7 +973,7 @@ public class CmsExport {
                                 CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED);
                         }
 
-                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(key);
+                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(CmsEncoder.escapeXml(key));
                         propertyElement.addElement(CmsImportExportManager.N_VALUE).addCDATA(value);
                     }
                 }
@@ -1006,7 +1007,7 @@ public class CmsExport {
                         + getCms().readUser(acePrincipal).getName();
                 }
 
-                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
+                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(CmsEncoder.escapeXml(acePrincipalName));
                 a.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(flags));
 
                 Element b = a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET);
