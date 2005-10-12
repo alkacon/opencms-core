@@ -107,6 +107,7 @@
 				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget" />
 				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget" />
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
+				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
 				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" />
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />
 				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget" />

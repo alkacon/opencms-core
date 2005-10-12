@@ -113,6 +113,7 @@
 				<widget class="org.opencms.widgets.CmsCheckboxWidget" alias="BooleanWidget"/>
 				<widget class="org.opencms.widgets.CmsColorpickerWidget" alias="ColorpickerWidget"/>
 				<widget class="org.opencms.widgets.CmsCalendarWidget" alias="DateTimeWidget"/>
+				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />
 				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
