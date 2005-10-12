@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/10/12 12:46:31 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/10/12 14:07:57 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
 import org.opencms.workplace.CmsDialogSelector;
 import org.opencms.workplace.CmsTabDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -320,7 +321,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // set the request parameters before returning to the overview
             setParamAction(DIALOG_SHOW_DEFAULT);
             setParamNewproperty(null);
-            sendForward(getJsp().getRequestContext().getUri(), paramsAsParameterMap());
+            sendForward(CmsWorkplace.VFS_PATH_COMMONS + "property_advanced.jsp", paramsAsParameterMap());
         } catch (Throwable e) {
             // error defining property, show error dialog
             includeErrorpage(this, e);
