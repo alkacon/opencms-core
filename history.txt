@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 15:27:51 $
- * Version: $Revision: 1.682.2.21 $
+ * Date   : $Date: 2005/10/12 15:30:23 $
+ * Version: $Revision: 1.682.2.22 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ OpenCms 6.1.1 - xxxxx, 2005
 * Fixed issue #925: The deleteUser method also removes the user from all their groups
 * Fixed issue #963: The user, group and property names are now escaped
 * Fixed issue #899: Latent problem while importing data fixed
+* Fixed issue #940: cmsshell.sh doesn't run on Linux
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
