@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/12 15:38:23 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,6 +76,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_MODULE_ALREADY_CONFIGURED_1 = "ERR_MODULE_ALREADY_CONFIGURED_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODULE_DEPENDENCY_CYCLE_1 = "ERR_MODULE_DEPENDENCY_CYCLE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_FROZEN_1 = "ERR_MODULE_FROZEN_1";
 
     /** Message constant for key in the resource bundle. */
@@ -86,6 +89,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_NOT_CONFIGURED_1 = "ERR_MODULE_NOT_CONFIGURED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_MODULE_SELECTION_INCONSISTENT_2 = "ERR_MODULE_SELECTION_INCONSISTENT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODULE_VERSION_NUMBER_0 = "ERR_MODULE_VERSION_NUMBER_0";

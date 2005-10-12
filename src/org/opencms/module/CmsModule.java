@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/10/12 15:38:23 $
+ * Version: $Revision: 1.29 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.29 $ 
  * 
  * @since 6.0.0 
  * 
@@ -164,7 +164,7 @@ public class CmsModule implements Comparable {
         m_version = new CmsModuleVersion(CmsModuleVersion.DEFAULT_VERSION);
         m_resources = Collections.EMPTY_LIST;
         m_exportPoints = Collections.EMPTY_LIST;
-        // noop
+        m_dependencies = Collections.EMPTY_LIST;
     }
 
     /**
