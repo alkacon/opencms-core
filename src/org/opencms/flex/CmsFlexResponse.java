@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/10/12 15:37:13 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -1003,7 +1003,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      *
      * This method must be called after the complete page has been processed.
      * It will contain the output of the page only (no includes), 
-     * with FLEX_CACHE_DELIMITER chars were the include calls should be placed. 
+     * with FLEX_CACHE_DELIMITER chars where the include calls should be placed. 
      * What we do here is analyze the output and cut it in parts 
      * of byte[] arrays which then are saved in the resulting cache entry.
      * For the includes, we just save the name of the resource in
@@ -1034,7 +1034,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                 while ((pos < max) && (result[pos] != FLEX_CACHE_DELIMITER)) {
                     pos++;
                 }
-                if (result[pos] == FLEX_CACHE_DELIMITER) {
+                if ((pos < max) && (result[pos] == FLEX_CACHE_DELIMITER)) {
                     count++;
                     // A byte value of C_FLEX_CACHE_DELIMITER in our (string) output list indicates that the next include call
                     // must be placed here
