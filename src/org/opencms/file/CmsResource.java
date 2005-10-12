@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsResource.java,v $
- * Date   : $Date: 2005/08/31 16:21:49 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/10/12 15:40:27 $
+ * Version: $Revision: 1.44 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Comparator;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.43 $
+ * @version $Revision: 1.44 $
  * 
  * @since 6.0.0 
  */
@@ -200,7 +200,7 @@ public class CmsResource extends Object implements Cloneable, Serializable, Comp
      */
     public static final int STATE_KEEP = 99;
 
-    /** Indicates if a resource in new in the offline version when compared to the online version. */
+    /** Indicates if a resource is new in the offline version when compared to the online version. */
     public static final int STATE_NEW = 2;
 
     /** Indicates if a resource is unchanged in the offline version when compared to the online version. */
