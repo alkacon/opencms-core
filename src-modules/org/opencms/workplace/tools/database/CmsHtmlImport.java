@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -742,8 +742,15 @@ public class CmsHtmlImport {
             }
         }
         // if the link goes to a directory, lets link to the index page within
-        if (translatedLink.endsWith("/")) {
+        if ((translatedLink != null) && translatedLink.endsWith("/")) {
             translatedLink += "index.html";
+        }
+
+        // final check: if the translated link is still null the original link found
+        // was broken
+        // lets link it to the same page, the link is found on
+        if (translatedLink == null) {
+            translatedLink = "#";
         }
 
         return translatedLink;
