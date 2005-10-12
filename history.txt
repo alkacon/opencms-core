@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/11 14:50:43 $
- * Version: $Revision: 1.687 $
+ * Date   : $Date: 2005/10/12 07:41:43 $
+ * Version: $Revision: 1.688 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,8 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue with resources outside timerange in editors
 * Fixed issue #967: Shared property is empty after renaming or moving resources
 ! Added "Update Wizard" to enable updating several OpenCms modules at once
+* Fixed issue #953: Dialog paths in simple HTML editor adjusted to JSP dialogs
+* Fixed issue #955: Downgraded JSTL libraries to 1.0 to gain compatibility with JSP 1.0 servlet containers
 
 
 OpenCms 6.0.1 - September 14, 2005
