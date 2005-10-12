@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/07/07 11:27:19 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/10/12 10:00:06 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file;
 
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.Serializable;
@@ -84,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31 $
+ * @version $Revision: 1.32 $
  * 
  * @since 6.0.0 
  */
@@ -147,6 +148,9 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     private boolean m_autoCreatePropertyDefinition;
 
+    /** Indicates if the property is frozen (required for <code>{@link #NULL_PROPERTY}</code>). */
+    private boolean m_frozen;
+
     /** The name of this property. */
     private String m_name;
 
@@ -205,6 +209,14 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Static initializer required for freezing the <code>{@link #NULL_PROPERTY}</code>.<p>
+     */
+    static {
+
+        NULL_PROPERTY.m_frozen = true;
+    }
+
+    /**
      * Searches in a list for the first occurence of a Cms property object with the given name.<p> 
      *
      * To check if the "null property" has been returned if a property was 
@@ -250,18 +262,21 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
-     * Sets in each property object of a specified list a boolean value to decide if missing 
-     * property definitions should be created implicitly or not if the property objects of the
-     * list are written to the database.<p>
+     * Calls <code>{@link #setAutoCreatePropertyDefinition(boolean)}</code> for each
+     * property object in the given List with the given <code>value</code> parameter.<p>
+     * 
+     * This method will modify the objects in the input list directly.<p>
      * 
      * @param list a list of property objects
      * @param value boolean value
-     * @return the list which each property object set that missing property definitions should be created implicitly
+     * 
+     * @return the modified list of properties
+     * 
      * @see #setAutoCreatePropertyDefinition(boolean)
      */
     public static final List setAutoCreatePropertyDefinitions(List list, boolean value) {
 
-        CmsProperty property = null;
+        CmsProperty property;
 
         // choose the fastest method to traverse the list
         if (list instanceof RandomAccess) {
@@ -274,6 +289,43 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
             while (i.hasNext()) {
                 property = (CmsProperty)i.next();
                 property.m_autoCreatePropertyDefinition = value;
+            }
+        }
+
+        return list;
+    }
+
+    /**
+     * Calls <code>{@link #setFrozen(boolean)}</code> for each
+     * property object in the given List if it is not already frozen.<p>
+     * 
+     * This method will modify the objects in the input list directly.<p>
+     * 
+     * @param list a list of property objects
+     * 
+     * @return the modified list of properties
+     * 
+     * @see #setFrozen(boolean)
+     */
+    public static final List setFrozen(List list) {
+
+        CmsProperty property;
+
+        // choose the fastest method to traverse the list
+        if (list instanceof RandomAccess) {
+            for (int i = 0, n = list.size(); i < n; i++) {
+                property = (CmsProperty)list.get(i);
+                if (!property.isFrozen()) {
+                    property.setFrozen(true);
+                }
+            }
+        } else {
+            Iterator i = list.iterator();
+            while (i.hasNext()) {
+                property = (CmsProperty)i.next();
+                if (!property.isFrozen()) {
+                    property.setFrozen(true);
+                }
             }
         }
 
@@ -378,27 +430,44 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * Creates a clone of this property.<p>
      *  
      * @return a clone of this property
+     * 
+     * @see #cloneAsProperty()
      */
     public Object clone() {
 
-        CmsProperty property = new CmsProperty();
+        return cloneAsProperty();
+    }
 
-        property.m_name = m_name;
-        property.m_structureValue = m_structureValue;
-        property.m_structureValueList = m_structureValueList;
-        property.m_resourceValue = m_resourceValue;
-        property.m_resourceValueList = m_resourceValueList;
-        property.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
+    /**
+     * Creates a clone of this property that already is of type <code>{@link CmsProperty}</code>.<p>
+     * 
+     * The cloned property will not be frozen.<p>
+     * 
+     * @return a clone of this property that already is of type <code>{@link CmsProperty}</code>
+     */
+    public CmsProperty cloneAsProperty() {
 
-        return property;
+        if (this == NULL_PROPERTY) {
+            // null property must never be cloned
+            return NULL_PROPERTY;
+        }
+        
+        CmsProperty clone = new CmsProperty();
+
+        clone.m_name = m_name;
+        clone.m_structureValue = m_structureValue;
+        clone.m_structureValueList = m_structureValueList;
+        clone.m_resourceValue = m_resourceValue;
+        clone.m_resourceValueList = m_resourceValueList;
+        clone.m_autoCreatePropertyDefinition = m_autoCreatePropertyDefinition;
+        // the value for m_frozen does not need to be set as it is false by default
+
+        return clone;
     }
 
     /**
      * Compares this property to another Object.<p>
      * 
-     * If the Object is a property, this method behaves like {@link String#compareTo(java.lang.String)}.
-     * Otherwise, it throws a ClassCastException (as properties are comparable only to other properties).<p>
-     *  
      * @param obj the other object to be compared
      * @return if the argument is a property object, returns zero if the name of the argument is equal to the name of this property object, 
      *      a value less than zero if the name of this property is lexicographically less than the name of the argument, 
@@ -424,6 +493,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean deleteResourceValue() {
 
+        checkFrozen();
         return (m_resourceValue == DELETE_VALUE) || (m_resourceValue != null && m_resourceValue.length() == 0);
     }
 
@@ -436,6 +506,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public boolean deleteStructureValue() {
 
+        checkFrozen();
         return (m_structureValue == DELETE_VALUE) || (m_structureValue != null && m_structureValue.length() == 0);
     }
 
@@ -633,6 +704,16 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
     }
 
     /**
+     * Returns <code>true</code> if this property is frozen, that is read only.<p>
+     *
+     * @return <code>true</code> if this property is frozen, that is read only
+     */
+    public boolean isFrozen() {
+
+        return m_frozen;
+    }
+
+    /**
      * Tests if a given CmsProperty is identical to this CmsProperty object.<p>
      * 
      * The property object are identical if their name, structure and 
@@ -687,7 +768,24 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setAutoCreatePropertyDefinition(boolean value) {
 
+        checkFrozen();
         m_autoCreatePropertyDefinition = value;
+    }
+
+    /**
+     * Sets the frozen state of the property, if set to <code>true</code> then this property is read only.<p>
+     *
+     * If the property is already frozen, then setting the frozen state to <code>true</code> again is allowed, 
+     * but seeting the value to <code>false</code> causes a <code>{@link CmsRuntimeException}</code>.<p>
+     *
+     * @param frozen the frozen state to set
+     */
+    public void setFrozen(boolean frozen) {
+
+        if (!frozen) {
+            checkFrozen();
+        }
+        m_frozen = frozen;
     }
 
     /**
@@ -699,6 +797,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setKey(String name) {
 
+        checkFrozen();
         setName(name);
     }
 
@@ -709,6 +808,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setName(String name) {
 
+        checkFrozen();
         m_name = name;
     }
 
@@ -719,6 +819,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setResourceValue(String resourceValue) {
 
+        checkFrozen();
         m_resourceValue = resourceValue;
         m_resourceValueList = null;
     }
@@ -733,6 +834,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setResourceValueList(List valueList) {
 
+        checkFrozen();
         if (valueList != null) {
             m_resourceValueList = new ArrayList(valueList);
             m_resourceValueList = Collections.unmodifiableList(m_resourceValueList);
@@ -750,6 +852,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setStructureValue(String structureValue) {
 
+        checkFrozen();
         m_structureValue = structureValue;
         m_structureValueList = null;
     }
@@ -764,6 +867,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setStructureValueList(List valueList) {
 
+        checkFrozen();
         if (valueList != null) {
             m_structureValueList = new ArrayList(valueList);
             m_structureValueList = Collections.unmodifiableList(m_structureValueList);
@@ -787,6 +891,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public void setValue(String value, String type) {
 
+        checkFrozen();
         setAutoCreatePropertyDefinition(true);
         if (TYPE_SHARED.equalsIgnoreCase(type)) {
             // set the provided value as shared (resource) value
@@ -811,9 +916,20 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         strBuf.append(", value: '").append(getValue()).append("'");
         strBuf.append(", structure value: '").append(m_structureValue).append("'");
         strBuf.append(", resource value: '").append(m_resourceValue).append("'");
+        strBuf.append(", frozen: ").append(m_frozen);
         strBuf.append("]");
 
         return strBuf.toString();
+    }
+
+    /**
+     * Checks if this property is frozen, that is read only.<p> 
+     */
+    private void checkFrozen() {
+
+        if (m_frozen) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_PROPERTY_FROZEN_1, toString()));
+        }
     }
 
     /**

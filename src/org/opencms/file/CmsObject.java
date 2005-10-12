@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.144 $
+ * Date   : $Date: 2005/10/12 10:00:06 $
+ * Version: $Revision: 1.145 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.144 $
+ * @version $Revision: 1.145 $
  * 
  * @since 6.0.0 
  */
@@ -2558,6 +2558,8 @@ public final class CmsObject {
      * Reads all property objects from a resource.<p>
      * 
      * Returns an empty list if no properties are found.<p>
+     * 
+     * All properties in the result List will be in frozen (read only) state, so you can't change the values.<p>
      * 
      * If the <code>search</code> parameter is <code>true</code>, the properties of all 
      * parent folders of the resource are also read. The results are merged with the 
