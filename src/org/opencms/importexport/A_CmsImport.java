@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/06/28 14:47:18 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2005/10/12 08:35:39 $
+ * Version: $Revision: 1.81.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.81.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -344,7 +344,8 @@ public abstract class A_CmsImport implements I_CmsImport {
                 // path to file might be relative, too
                 if (entry == null && filename.startsWith("/")) {
                     entry = m_importZip.getEntry(filename.substring(1));
-                } else if (entry == null) {
+                } 
+                if (entry == null) {
                     throw new ZipException(Messages.get().key(
                         Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
                         filename));
