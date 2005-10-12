@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.38.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $
+ * @version $Revision: 1.38.2.1 $
  * 
  * @since 6.0.0
  */
@@ -200,12 +200,13 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     public static void addResourceTypeXmlRules(Digester digester) {
 
         // add rules for resource types
-        digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, A_CLASS, CmsConfigurationException.class);
+        digester.addFactoryCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, CmsDigesterResourceTypeCreationFactory.class);
 
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD, 2);
-        // please note: the resource types use a special version of the init method with 2 parameters 
+        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD, 3);
+        // please note: the resource types use a special version of the init method with 3 parameters 
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 2, A_CLASS);
         
         digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.ADD_RESOURCE_TYPE_METHOD);   
 
@@ -245,7 +246,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
             // only add this resource type to the xml output, if it is no additional type defined
             // in a module
             if (resType.isAdditionalModuleResourceType() == module) {
-                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClass().getName());
+                Element resourceType = startNode.addElement(N_TYPE).addAttribute(A_CLASS, resType.getClassName());
                 // add type id and type name
                 resourceType.addAttribute(A_NAME, resType.getTypeName());
                 resourceType.addAttribute(A_ID, String.valueOf(resType.getTypeId()));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 14:27:21 $
- * Version: $Revision: 1.682.2.18 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.682.2.19 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ OpenCms 6.1.1 - xxxxx, 2005
 * Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
 * Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
 * Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
+* Fixed issue #615: Uploading modules with new (unknown) resource type classes
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function

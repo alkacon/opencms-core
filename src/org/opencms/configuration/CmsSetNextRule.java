@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2005/06/29 14:01:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.0.0
  */
@@ -92,7 +92,7 @@ import org.xml.sax.Attributes;
 public class CmsSetNextRule extends Rule {
 
     /** The log object of this class. */
-    private static Log LOG = CmsLog.getLog(CmsSetNextRule.class);
+    private static final Log LOG = CmsLog.getLog(CmsSetNextRule.class);
     /**
      * The body text collected from this element.
      */

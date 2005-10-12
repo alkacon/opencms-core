@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeImage.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12.2.2 $ 
+ * @version $Revision: 1.12.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,9 +158,9 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
+     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+    public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
@@ -183,7 +183,7 @@ public class CmsResourceTypeImage extends A_CmsResourceType {
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
         m_staticLoaderId = CmsImageLoader.isEnabled() ? CmsImageLoader.RESOURCE_LOADER_ID_IMAGE_LOADER

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.36.2.2 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.36.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36.2.2 $ 
+ * @version $Revision: 1.36.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,20 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The configured name of this resource type. */
     protected String m_typeName;
+    
+    /** The configured class name of this resource type. */
+    protected String m_className;
 
+    /**
+     * Returns the configured class name of this resource type.<p>
+     * 
+     * @see org.opencms.file.types.I_CmsResourceType#getClassName()
+     */
+    public String getClassName() {
+    
+        return m_className;
+    }
+    
     /**
      * Default constructor, used to initialize some member variables.<p>
      */
@@ -434,11 +447,16 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      * a fixed resource type and a fixed id. Configurable name and id is used only
      * for certain types.<p>
      * 
+     * Usually the provided class name should be the class name of this resource type instance,
+     * but this may be different in special cases or configuration errors.<p>
+     * 
      * @param name the resource type name
      * @param id the resource type id
+     * @param className the name of the class that was read from the XML configuration
+     * 
      * @throws CmsConfigurationException if something goes wrong
      */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+    public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_3, this, name, id));
@@ -449,7 +467,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             // configuration already frozen
             throw new CmsConfigurationException(org.opencms.configuration.Messages.get().container(
                 org.opencms.file.types.Messages.ERR_CONFIG_FROZEN_3,
-                this.getClass().getName(),
+                className,
                 getTypeName(),
                 new Integer(getTypeId())));
         }
@@ -464,12 +482,15 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
         if (id != null) {
             m_typeId = Integer.valueOf(id).intValue();
         }
+        if (className != null) {
+            m_className = className;
+        }
 
-        // check type id and type name
-        if ((getTypeId() < 0) || (getTypeName() == null)) {
+        // check type id, type name and classs name
+        if ((getTypeId() < 0) || (getTypeName() == null) || (getClassName() == null)) {
             throw new CmsConfigurationException(Messages.get().container(
                 Messages.ERR_INVALID_RESTYPE_CONFIG_3,
-                this.getClass().getName(),
+                className,
                 m_typeName,
                 new Integer(m_typeId)));
         }

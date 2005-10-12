@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsResourceTypeCompatiblePlain.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.List;
  * some very old OpenCms version).<p>
  *
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -118,9 +118,9 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
+     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+    public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) &&  m_staticFrozen) {
             // configuration already frozen
@@ -143,7 +143,7 @@ public class CmsResourceTypeCompatiblePlain extends A_CmsResourceType {
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(C_RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(C_RESOURCE_TYPE_NAME, id, className);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
     }

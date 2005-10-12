@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,9 +199,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
+     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+    public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
@@ -224,7 +224,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.25.2.2 $
+ * Date   : $Date: 2005/10/12 14:38:21 $
+ * Version: $Revision: 1.25.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.2.2 $ 
+ * @version $Revision: 1.25.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -331,6 +331,18 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     String getCachePropertyDefault();
 
     /**
+     * Returns the class name configured for this resouce type.<p>
+     * 
+     * This may be different from the instance class name in case the configured class could not 
+     * be instanciated. If the configured class is unavailable, an instance of
+     * <code>{@link CmsResourceTypeUnknown}</code> is used. This enables the import of modules that contain their 
+     * own resource types classes (which are not available before the module is fully imnported).<p>
+     * 
+     * @return the class name configured for this resouce type
+     */
+    String getClassName();
+
+    /**
      * Returns the configured copy resources for this resource type in an unmodifiable List.<p>
      *
      * @return the configured copy resources for this resource type in an unmodifiable List
@@ -529,27 +541,6 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
     void setAdditionalModuleResourceType(boolean additionalType);
 
     /**
-     * Changes the "last modified" date of a resource.<p>
-     * 
-     * @param cms the current cms context
-     * @param securityManager the initialized OpenCms security manager
-     * @param resource the resource to touch
-     * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param recursive if this operation is to be applied recursivly to all resources in a folder
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see CmsObject#setDateLastModified(String, long, boolean)
-     * @see CmsSecurityManager#setDateLastModified(org.opencms.file.CmsRequestContext, CmsResource, long)
-     */
-    void setDateLastModified(
-        CmsObject cms,
-        CmsSecurityManager securityManager,
-        CmsResource resource,
-        long dateLastModified,
-        boolean recursive) throws CmsException;
-
-    /**
      * Changes the "expire" date of a resource.<p>
      * 
      * @param cms the current cms context
@@ -568,6 +559,27 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsSecurityManager securityManager,
         CmsResource resource,
         long dateExpired,
+        boolean recursive) throws CmsException;
+
+    /**
+     * Changes the "last modified" date of a resource.<p>
+     * 
+     * @param cms the current cms context
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to touch
+     * @param dateLastModified timestamp the new timestamp of the changed resource
+     * @param recursive if this operation is to be applied recursivly to all resources in a folder
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#setDateLastModified(String, long, boolean)
+     * @see CmsSecurityManager#setDateLastModified(org.opencms.file.CmsRequestContext, CmsResource, long)
+     */
+    void setDateLastModified(
+        CmsObject cms,
+        CmsSecurityManager securityManager,
+        CmsResource resource,
+        long dateLastModified,
         boolean recursive) throws CmsException;
 
     /**

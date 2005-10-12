@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeFolder.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/10/12 14:38:20 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.main.OpenCms;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,9 +88,9 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
     }
 
     /**
-     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String)
+     * @see org.opencms.file.types.A_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, String)
      */
-    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+    public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
         if ((OpenCms.getRunLevel() > OpenCms.RUNLEVEL_2_INITIALIZING) && m_staticFrozen) {
             // configuration already frozen
@@ -113,7 +113,7 @@ public class CmsResourceTypeFolder extends A_CmsResourceTypeFolderBase {
         // freeze the configuration
         m_staticFrozen = true;
 
-        super.initConfiguration(RESOURCE_TYPE_NAME, id);
+        super.initConfiguration(RESOURCE_TYPE_NAME, id, className);
         // set static members with values from the configuration        
         m_staticTypeId = m_typeId;
     }
