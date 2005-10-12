@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/10/12 12:46:31 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -535,7 +535,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 return PATH_WORKPLACE + "editors/dialogs/property.jsp";
             }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+            // get settings for resource type
+            CmsExplorerTypeSettings settings = getSettingsForType(resTypeName);
             if (settings.isPropertiesEnabled()) {
                 // special properties for this type enabled, display customized dialog
                 return URI_PROPERTY_CUSTOM_DIALOG;
@@ -688,6 +689,23 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             default:
                 super.dialogButtonsHtml(result, button, attribute);
         }
+    }
+    
+    /**
+     * Returns the explorer type settings of the resource type, considering eventual references to another type.<p>
+     * 
+     * @param resTypeName the resource type name
+     * @return the explorer type settings of the resource type
+     */
+    protected CmsExplorerTypeSettings getSettingsForType(String resTypeName) {
+        
+        // get settings for resource type
+        CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+        if (CmsStringUtil.isNotEmpty(settings.getReference())) {
+            // refers to another resource type, get settings of referred type
+            settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(settings.getReference());
+        }
+        return settings;
     }
 
     /**
