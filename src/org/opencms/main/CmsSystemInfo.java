@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/09/16 08:50:50 $
- * Version: $Revision: 1.45.2.1 $
+ * Date   : $Date: 2005/10/12 14:16:51 $
+ * Version: $Revision: 1.45.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45.2.1 $ 
+ * @version $Revision: 1.45.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -532,12 +532,12 @@ public class CmsSystemInfo {
         m_webInfRfsPath = CmsFileUtil.normalizePath(webInfRfsPath);
 
         // set the servlet paths
+        if (!servletMapping.startsWith("/")) {
+            servletMapping = "/" + servletMapping;
+        }
         if (servletMapping.endsWith("/*")) {
             // usually a mapping must be in the form "/opencms/*", cut off all slashes
             servletMapping = servletMapping.substring(0, servletMapping.length() - 2);
-        }
-        if (!servletMapping.startsWith("/")) {
-            servletMapping = "/" + servletMapping;
         }
         m_servletPath = servletMapping;
 
