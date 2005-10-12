@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/08/02 10:27:56 $
- * Version: $Revision: 1.28 $
+ * Date   : $Date: 2005/10/12 13:04:39 $
+ * Version: $Revision: 1.28.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28 $ 
+ * @version $Revision: 1.28.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,7 +437,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
                 return MODULE_PATH + "dialogs/property.jsp";
             }
             String resTypeName = OpenCms.getResourceManager().getResourceType(res.getTypeId()).getTypeName();
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resTypeName);
+            // get settings for resource type
+            CmsExplorerTypeSettings settings = getSettingsForType(resTypeName);
             if (settings.isPropertiesEnabled()) {
                 // special properties for this type enabled, display customized dialog
                 return URI_PROPERTY_CUSTOM_DIALOG;

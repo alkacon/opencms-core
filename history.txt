@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 10:21:49 $
- * Version: $Revision: 1.682.2.16 $
+ * Date   : $Date: 2005/10/12 13:04:39 $
+ * Version: $Revision: 1.682.2.17 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ OpenCms 6.1.1 - xxxxx, 2005
 * Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
 * Fixed issue with NULL_PROPERTY not being immutable
 * Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
+* Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
