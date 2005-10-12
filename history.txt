@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 14:33:38 $
- * Version: $Revision: 1.697 $
+ * Date   : $Date: 2005/10/12 15:17:16 $
+ * Version: $Revision: 1.698 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,10 @@ Legend:
 - General comment
 
 OpenCms 6.0.2 - xxx, 2005
+* Fixed issue #960: Servlet mapping also works for the "/*" setting
+* Fixed issue #895: Show correct online address in the secure dialog also in the ROOT site
+* Fixed issue #943: Display advanced property dialog of extended folders only once after a new property is defined
+* Fixed issue #932: Keep synchronization settings after the user preferences were changed
 * Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
 * Fixed issue with bad encoding for sessionless requests due to early access to #getParameter(String) for upload applet
 ! Search in link gallery now also includes link content data
