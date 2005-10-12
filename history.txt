@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 09:03:52 $
- * Version: $Revision: 1.682.2.13 $
+ * Date   : $Date: 2005/10/12 09:56:23 $
+ * Version: $Revision: 1.682.2.14 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ OpenCms 6.1.1 - xxxxx, 2005
 * Fixed issue #905: HtmlArea is now opened in source code mode if clicking the resource context menu entry "Edit sourcecode"
 * Fixed issue #956: Failed link translation results in zero length file during HTML import
 * Fixed issue #957: Case sensitivity problems in HTML import
+* Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function

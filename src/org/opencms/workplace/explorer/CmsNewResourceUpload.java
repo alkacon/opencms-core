@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceUpload.java,v $
- * Date   : $Date: 2005/07/21 16:06:09 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/12 09:56:23 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.explorer;
 import org.opencms.db.CmsDbSqlException;
 import org.opencms.db.CmsImportFolder;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
@@ -71,7 +72,7 @@ import org.apache.commons.fileupload.FileItem;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,10 +164,31 @@ public class CmsNewResourceUpload extends CmsNewResource {
 
         if (getAction() == ACTION_CANCEL) {
             try {
-                CmsResource res = getCms().readResource(getParamResource());
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
                 if (res.getState() == CmsResource.STATE_NEW) {
                     // only delete new resource
                     getCms().deleteResource(getParamResource(), CmsResource.DELETE_PRESERVE_SIBLINGS);
+                }
+                if (res.getState() == CmsResource.STATE_CHANGED) {
+                    // resource is changed, restore content of resource from online project
+                    CmsProject currentProject = getCms().getRequestContext().currentProject();
+                    byte[] onlineContents = null;
+                    try {
+                        // switch to online project and get online file contents
+                        getCms().getRequestContext().setCurrentProject(getCms().readProject(CmsProject.ONLINE_PROJECT_ID));
+                        CmsFile onlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                        onlineContents = onlineFile.getContents();
+                        
+                    } finally {
+                        // switch back to current project
+                        getCms().getRequestContext().setCurrentProject(currentProject);
+                    }
+                    if (onlineContents != null) {
+                        // write online contents back to offline file
+                        CmsFile modFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                        modFile.setContents(onlineContents);
+                        getCms().writeFile(modFile);
+                    }
                 }
             } catch (Exception e) {
                 // file was not present
