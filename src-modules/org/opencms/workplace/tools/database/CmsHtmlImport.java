@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1497,7 +1497,7 @@ public class CmsHtmlImport {
 
         int postfix = 1;
         boolean found = true;
-        String validFilename = filename.toLowerCase();
+        String validFilename = filename;
 
         // if we are not in overwrite mode, we must find a valid, non-existing filename
         // otherwise we will use the current translated name
