@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/Messages.java,v $
- * Date   : $Date: 2005/09/16 09:08:13 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2005/10/12 10:03:58 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.16.2.1 $
+ * @version $Revision: 1.16.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -48,7 +48,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BACKUPRESOURCE_2 = "ERR_BACKUPRESOURCE_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_EMAIL_VALIDATION_1 = "ERR_EMAIL_VALIDATION_1";
 
@@ -60,9 +60,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GROUPNAME_VALIDATION_0 = "ERR_GROUPNAME_VALIDATION_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_PROJECTNAME_VALIDATION_0 = "ERR_PROJECTNAME_VALIDATION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LASTNAME_EMPTY_0 = "ERR_LASTNAME_EMPTY_0";
@@ -81,6 +78,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0 = "ERR_NOT_ALLOWED_IN_ONLINE_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROJECTNAME_VALIDATION_0 = "ERR_PROJECTNAME_VALIDATION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_PROPERTY_FROZEN_1 = "ERR_PROPERTY_FROZEN_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SECURITY_LOGIN_FAILED_1 = "ERR_SECURITY_LOGIN_FAILED_1";

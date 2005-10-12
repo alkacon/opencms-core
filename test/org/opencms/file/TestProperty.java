@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestProperty.java,v $
- * Date   : $Date: 2005/10/11 14:45:51 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2005/10/12 10:03:58 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,14 @@
 package org.opencms.file;
 
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.test.OpenCmsTestResourceFilter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
@@ -49,7 +51,7 @@ import junit.framework.TestSuite;
  * Unit test for the "writeProperty" method of the CmsObject.<p>
  * 
  * @author Michael Emmerich 
- * @version $Revision: 1.20.2.1 $
+ * @version $Revision: 1.20.2.2 $
  */
 public class TestProperty extends OpenCmsTestCase {
             
@@ -68,11 +70,13 @@ public class TestProperty extends OpenCmsTestCase {
      * @return the test suite
      */
     public static Test suite() {
+
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        
+
         TestSuite suite = new TestSuite();
         suite.setName(TestProperty.class.getName());
-       
+
+        suite.addTest(new TestProperty("testFrozenProperty"));
         suite.addTest(new TestProperty("testSharedPropertyIssue1"));
         suite.addTest(new TestProperty("testPropertyLists"));
         suite.addTest(new TestProperty("testWriteProperty"));
@@ -85,18 +89,20 @@ public class TestProperty extends OpenCmsTestCase {
         suite.addTest(new TestProperty("testDefaultPropertyCreation"));
         suite.addTest(new TestProperty("testCaseSensitiveProperties"));
         suite.addTest(new TestProperty("testReadResourcesWithProperty"));
-        
+
         TestSetup wrapper = new TestSetup(suite) {
-            
+
             protected void setUp() {
+
                 setupOpenCms("simpletest", "/sites/default/");
             }
-            
+
             protected void tearDown() {
+
                 removeOpenCms();
             }
         };
-        
+
         return wrapper;
     }  
         
@@ -614,5 +620,82 @@ public class TestProperty extends OpenCmsTestCase {
         assertTrue(
             "Property '" + CmsPropertyDefinition.PROPERTY_DESCRIPTION + "' must be identical",
             descProperty.isIdentical(resultProperty));
+    }
+    
+    /**
+     * Tests changing the values of a frozen property.<p>
+     * 
+     * @throws Throwable if something goes wrong
+     */
+    public void testFrozenProperty() throws Throwable {
+        
+        CmsProperty property = CmsProperty.getNullProperty();
+        if (! property.isFrozen()) {
+            fail("NULL_PROPERTY is not frozen!");
+        }
+        boolean gotException = false;
+        try {
+            property.setAutoCreatePropertyDefinition(true);
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setFrozen(false);
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setName("SomeString");
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setValue("SomeString", CmsProperty.TYPE_INDIVIDUAL);
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setResourceValue("SomeString");
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setStructureValue("SomeString");
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setResourceValueList(Collections.singletonList("SomeString"));
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
+        gotException = false;
+        try {
+            property.setStructureValueList(Collections.singletonList("SomeString"));
+        } catch (CmsRuntimeException e) {
+            assertEquals(org.opencms.file.Messages.ERR_PROPERTY_FROZEN_1, e.getMessageContainer().getKey());
+            gotException = true;
+        }
+        assertTrue("Operation did not throw the required Exception", gotException);
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/12 09:31:57 $
- * Version: $Revision: 1.557.2.8 $
+ * Date   : $Date: 2005/10/12 10:03:58 $
+ * Version: $Revision: 1.557.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -111,6 +111,12 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * @author Michael Moossen
+ * 
+ <<<<<<< CmsDriverManager.java
+ * @version $Revision: 1.557.2.9 $
+ =======
+ * @version $Revision: 1.557.2.9 $
+ >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
  */
@@ -5363,15 +5369,20 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 value = CmsProperty.getNullProperty();
             }
 
+            // freeze the value
+            value.setFrozen(true);
             // store the result in the cache
             m_propertyCache.put(cacheKey, value);
         }
 
-        return value;
+        // ensure the result value is not frozen
+        return value.cloneAsProperty();
     }
 
     /**
      * Reads all property objects mapped to a specified resource from the database.<p>
+     * 
+     * All properties in the result List will be in frozen (read only) state, so you can't change the values.<p>
      * 
      * Returns an empty list if no properties are found at all.<p>
      * 
@@ -5382,6 +5393,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @return a list of CmsProperty objects containing the structure and/or resource value
      * 
      * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#readPropertyObjects(String, boolean)
      */
     public List readPropertyObjects(CmsDbContext dbc, CmsResource resource, boolean search) throws CmsException {
 
@@ -5430,6 +5443,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 properties = m_vfsDriver.readPropertyObjects(dbc, dbc.currentProject(), resource);
             }
 
+            // set all properties in the result lisst as frozen
+            CmsProperty.setFrozen(properties);
             // store the result in the driver manager's cache
             m_propertyCache.put(cacheKey, properties);
         }
