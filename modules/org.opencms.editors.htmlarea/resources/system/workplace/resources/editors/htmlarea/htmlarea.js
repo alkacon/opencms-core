@@ -1670,7 +1670,8 @@ HTMLArea.prototype._editorEvent = function(ev) {
 			if (typeof plugin.onKeyPress == "function") plugin.onKeyPress(ev);
 		}
 	}
-	if (keyEvent && ev.ctrlKey) {
+	// OpenCms: added ev.altKey to clause to avoid that closing curly brace is not possible in IE editor
+	if (keyEvent && ev.ctrlKey && !ev.altKey) {
 		var sel = null;
 		var range = null;
 		var key = String.fromCharCode(HTMLArea.is_ie ? ev.keyCode : ev.charCode).toLowerCase();

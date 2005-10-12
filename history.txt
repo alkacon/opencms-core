@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 10:03:58 $
- * Version: $Revision: 1.682.2.15 $
+ * Date   : $Date: 2005/10/12 10:21:49 $
+ * Version: $Revision: 1.682.2.16 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ OpenCms 6.1.1 - xxxxx, 2005
 * Fixed issue #957: Case sensitivity problems in HTML import
 * Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
 * Fixed issue with NULL_PROPERTY not being immutable
+* Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
 
 OpenCms 6.1.0 - October 4, 2005
 ! Added 'content nofification' function
@@ -54,7 +55,7 @@ OpenCms 6.0.1 - September 14, 2005
 * Fixed issue with "search" causing JavaScript errors in new Administration
 * Fixed issue with editing the "parent group" of a group
 ! Added advanced rule based configuration options to static export
-- Replaced use of "sendCmsRedirect" in Workplace with "sendFroward" to reduce issues in IBM Websphere AS
+- Replaced use of "sendCmsRedirect" in Workplace with "sendForward" to reduce issues in IBM Websphere AS
 ! Property values can now be read and written as a list
 ! XML content mappings can map multiple occurences of a value to a property list value
 ! For XML content values mapped to a property, the property is deleted if no value is available in the XML content 
