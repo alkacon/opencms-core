@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/12 15:43:44 $
+ * Version: $Revision: 1.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.16 $ 
  * 
  * @since 6.0.0 
  */
@@ -377,7 +377,7 @@ public class CmsTouch extends CmsDialog {
         }
 
         // get the new releasedate for the resource(s) from request parameter
-        long releasedate = CmsResource.DATE_RELEASED_DEFAULT;
+        long releasedate = CmsResource.TOUCH_DATE_UNCHANGED;
         try {
             if ((getParamReleasedate() != null) && (!getParamReleasedate().startsWith(RELEASE_EXPIRE_DEFAULT))) {
                 releasedate = getCalendarDate(getParamReleasedate(), true);
@@ -387,7 +387,7 @@ public class CmsTouch extends CmsDialog {
         }
 
         // get the new expire for the resource(s) from request parameter
-        long expiredate = CmsResource.DATE_EXPIRED_DEFAULT;
+        long expiredate = CmsResource.TOUCH_DATE_UNCHANGED;
         try {
             if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(RELEASE_EXPIRE_DEFAULT))) {
                 expiredate = getCalendarDate(getParamExpiredate(), true);
