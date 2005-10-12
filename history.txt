@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 09:53:04 $
- * Version: $Revision: 1.693 $
+ * Date   : $Date: 2005/10/12 10:17:54 $
+ * Version: $Revision: 1.694 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue #957: Case sensitivity problems in HTML import
 * Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
 * Fixed issue with NULL_PROPERTY not being immutable
+* Fixed issue #931: It is now possible to insert closing curly braces in HtmlArea in IE using german keyboards
 
 OpenCms 6.0.1 - September 14, 2005
 - Added serial version UIDs to all serializable classes
