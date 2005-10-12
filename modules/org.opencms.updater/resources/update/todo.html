@@ -77,8 +77,8 @@ Press <a target="OpenCmsUpdate" href="todo.html">here</a> to open this list in a
 
 <h2>Update of the configuration Files</h2>
 <p>
-To enable the new features of OpenCms 6.0.2, several configuration files must be modified.
-Since you might have done changes to your config files already, the following paragraph describes which nodes in the config files must be changed.
+To enable the new features of OpenCms 6.0.2, a configuration file must be modified.
+Since you might have done changes to your config files already, the following paragraph describes which nodes in the config file must be changed.
 The configuration files can be located in the <code>WEB-INF/config/</code> subfolder of your OpenCms installation.
 </p>
 
@@ -89,19 +89,8 @@ Exchange the <code>&lt;resourceinit/&gt;</code> node with
 &lt;resourceinit&gt;
   &lt;resourceinithandler class="org.opencms.file.CmsBackupResourceHandler"/&gt;
 &lt;/resourceinit&gt;
-</pre></p><p>
-Add the <code>&lt;content-notification&gt;</code> node behind the <code>&lt;resultcache&gt;</code> node:
-<pre class="code">
-&lt;content-notification&gt;
-  &lt;notification-time>365&lt;/notification-time&gt;
-  &lt;notification-project&gt;Offline&lt;/notification-project&gt;
-&lt;/content-notification&gt;
 </pre></p>
-<h3>opencms.workplace.xml</h3>
-<p>
-You can find all modifications in the file <a href="opencms-workplace_changes.html" target="_wpchanges">opencms-workplace_changes.html</a>. You can then copy the modifications from there and use them in your own configuration files.
-Exchange the <code>&lt;explorertypes&gt;</code> node with the one found in the <a href="opencms-workplace_changes.html" target="_wpchanges">opencms-workplace_changes.html</a>. Those modifications are not listed here because of their size.
-</p>
+
 <h2>Completing the update</h2>
 <p>
 Restart the servlet container after you made the changes to the configuration files.
