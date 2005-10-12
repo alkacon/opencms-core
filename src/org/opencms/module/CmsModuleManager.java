@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/07/20 08:31:05 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2005/10/12 15:25:37 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.main.CmsIllegalStateException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
@@ -46,8 +48,10 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -61,8 +65,9 @@ import org.apache.commons.logging.Log;
  * Manages the modules of an OpenCms installation.<p>
  * 
  * @author Alexander Kandzior 
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.32 $ 
+ * @version $Revision: 1.32.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,6 +112,201 @@ public class CmsModuleManager {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
         }
         m_moduleExportPoints = Collections.EMPTY_SET;
+    }
+
+    /**
+     * Returns a map of dependencies.<p>
+     * 
+     * The module dependencies are get from the installed modules or
+     * from the module manifest.xml files found in the given FRS path.<p>
+     * 
+     * Two types of dependency lists can be generated:<br>
+     * <ul>
+     *   <li>Forward dependency lists: a list of modules that depends on a module</li>
+     *   <li>Backward dependency lists: a list of modules that a module depends on</li>
+     * </ul>
+     * 
+     * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
+     * @param mode if <code>true</code> a list of forward dependency is build, is not a list of backward dependency
+     * 
+     * @return a Map of module names as keys and a list of dependency names as values
+     * 
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public static Map buildDepsForAllModules(String rfsAbsPath, boolean mode) throws CmsConfigurationException {
+
+        Map ret = new HashMap();
+        List modules;
+        if (rfsAbsPath == null) {
+            modules = OpenCms.getModuleManager().getAllInstalledModules();
+        } else {
+            modules = new ArrayList(getAllModulesFromPath(rfsAbsPath).keySet());
+        }
+        Iterator itMods = modules.iterator();
+        while (itMods.hasNext()) {
+            CmsModule module = (CmsModule)itMods.next();
+
+            // if module a depends on module b, and module c depends also on module b:
+            // build a map with a list containing "a" and "c" keyed by "b" to get a 
+            // list of modules depending on module "b"...
+            Iterator itDeps = module.getDependencies().iterator();
+            while (itDeps.hasNext()) {
+                CmsModuleDependency dependency = (CmsModuleDependency)itDeps.next();
+                // module dependency package name
+                String moduleDependencyName = dependency.getName();
+
+                if (mode) {
+                    // get the list of dependend modules
+                    List moduleDependencies = (List)ret.get(moduleDependencyName);
+                    if (moduleDependencies == null) {
+                        // build a new list if "b" has no dependend modules yet
+                        moduleDependencies = new ArrayList();
+                        ret.put(moduleDependencyName, moduleDependencies);
+                    }
+                    // add "a" as a module depending on "b"
+                    moduleDependencies.add(module.getName());
+                } else {
+                    List moduleDependencies = (List)ret.get(module.getName());
+                    if (moduleDependencies == null) {
+                        moduleDependencies = new ArrayList();
+                        ret.put(module.getName(), moduleDependencies);
+                    }
+                    moduleDependencies.add(dependency.getName());
+                }
+            }
+        }
+        itMods = modules.iterator();
+        while (itMods.hasNext()) {
+            CmsModule module = (CmsModule)itMods.next();
+            if (ret.get(module.getName()) == null) {
+                ret.put(module.getName(), new ArrayList());
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Returns a map of dependencies between the given modules.<p>
+     * 
+     * The module dependencies are get from the installed modules or
+     * from the module manifest.xml files found in the given FRS path.<p>
+     * 
+     * Two types of dependency lists can be generated:<br>
+     * <ul>
+     *   <li>Forward dependency lists: a list of modules that depends on a module</li>
+     *   <li>Backward dependency lists: a list of modules that a module depends on</li>
+     * </ul>
+     * 
+     * @param moduleNames a list of module names
+     * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
+     * @param mode if <code>true</code> a list of forward dependency is build, is not a list of backward dependency
+     * 
+     * @return a Map of module names as keys and a list of dependency names as values
+     * 
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public static Map buildDepsForModulelist(List moduleNames, String rfsAbsPath, boolean mode)
+    throws CmsConfigurationException {
+
+        Map ret = buildDepsForAllModules(rfsAbsPath, mode);
+        Iterator itMods;
+        if (rfsAbsPath == null) {
+            itMods = OpenCms.getModuleManager().getAllInstalledModules().iterator();
+        } else {
+            itMods = getAllModulesFromPath(rfsAbsPath).keySet().iterator();
+        }
+        while (itMods.hasNext()) {
+            CmsModule module = (CmsModule)itMods.next();
+            if (!moduleNames.contains(module.getName())) {
+                Iterator itDeps = ret.values().iterator();
+                while (itDeps.hasNext()) {
+                    List dependencies = (List)itDeps.next();
+                    dependencies.remove(module.getName());
+                }
+                ret.remove(module.getName());
+            }
+        }
+        return ret;
+    }
+
+    /**
+     * Returns a map of modules found in the given RFS absolute path.<p>
+     * 
+     * @param rfsAbsPath the path to look for module distributions
+     * 
+     * @return a map of <code>{@link CmsModule}</code> objects for keys and filename for values
+     * 
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public static Map getAllModulesFromPath(String rfsAbsPath) throws CmsConfigurationException {
+
+        Map modules = new HashMap();
+        if (rfsAbsPath == null) {
+            return modules;
+        }
+        File folder = new File(rfsAbsPath);
+        if (folder.exists()) {
+            // list all child resources in the given folder
+            File[] folderFiles = folder.listFiles();
+            if (folderFiles != null) {
+                for (int i = 0; i < folderFiles.length; i++) {
+                    File moduleFile = folderFiles[i];
+                    if (moduleFile.isFile() && !(moduleFile.getAbsolutePath().toLowerCase().endsWith(".zip"))) {
+                        // skip non-ZIP files
+                        continue;
+                    }
+                    modules.put(CmsModuleImportExportHandler.readModuleFromImport(moduleFile.getAbsolutePath()), moduleFile.getName());
+                }
+            }
+        }
+        return modules;
+    }
+
+    /**
+     * Sorts a given list of module names by dependencies,
+     * so that the resulting list can be imported in that given order,
+     * that means modules without dependencies first.<p>
+     * 
+     * The module dependencies are get from the installed modules or
+     * from the module manifest.xml files found in the given FRS path.<p>
+     * 
+     * @param moduleNames a list of module names
+     * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
+     * 
+     * @return a sorted list of module names
+     * 
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public static List topologicalSort(List moduleNames, String rfsAbsPath) throws CmsConfigurationException {
+
+        List modules = new ArrayList(moduleNames);
+        List retList = new ArrayList();
+        Map moduleDependencies = buildDepsForModulelist(moduleNames, rfsAbsPath, true);
+        boolean finished = false;
+        while (!finished) {
+            finished = true;
+            Iterator itMods = modules.iterator();
+            while (itMods.hasNext()) {
+                String moduleName = (String)itMods.next();
+                if (((List)moduleDependencies.get(moduleName)).isEmpty()) {
+                    retList.add(moduleName);
+                    Iterator itDeps = moduleDependencies.values().iterator();
+                    while (itDeps.hasNext()) {
+                        List dependencies = (List)itDeps.next();
+                        dependencies.remove(moduleName);
+                    }
+                    finished = false;
+                    itMods.remove();
+                }
+            }
+        }
+        if (!modules.isEmpty()) {
+            throw new CmsIllegalStateException(Messages.get().container(
+                Messages.ERR_MODULE_DEPENDENCY_CYCLE_1,
+                modules.toString()));
+        }
+        Collections.reverse(retList);
+        return retList;
     }
 
     /**
@@ -210,6 +410,39 @@ public class CmsModuleManager {
         }
 
         return result;
+    }
+
+    /**
+     * Checks the module selection list for consistency, that means 
+     * that if a module is selected, all its dependencies are also selected.<p>
+     * 
+     * The module dependencies are get from the installed modules or
+     * from the module manifest.xml files found in the given FRS path.<p>
+     * 
+     * @param moduleNames a list of module names
+     * @param rfsAbsPath a RFS absolute path to search for modules, or <code>null</code> to use the installed modules
+     * @param forDeletion there are two modes, one for installation of modules, and one for deletion.
+     * 
+     * @throws CmsIllegalArgumentException if the module list is not consistent
+     * @throws CmsConfigurationException if something goes wrong
+     */
+    public void checkModuleSelectionList(List moduleNames, String rfsAbsPath, boolean forDeletion)
+    throws CmsIllegalArgumentException, CmsConfigurationException {
+
+        Map moduleDependencies = buildDepsForAllModules(rfsAbsPath, forDeletion);
+        Iterator itMods = moduleNames.iterator();
+        while (itMods.hasNext()) {
+            String moduleName = (String)itMods.next();
+            List dependencies = (List)moduleDependencies.get(moduleName);
+            List depModules = new ArrayList(dependencies);
+            depModules.removeAll(moduleNames);
+            if (!depModules.isEmpty()) {
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_MODULE_SELECTION_INCONSISTENT_2,
+                    moduleName,
+                    depModules.toString()));
+            }
+        }
     }
 
     /**
@@ -318,6 +551,16 @@ public class CmsModuleManager {
         if (removeResourceTypes) {
             OpenCms.getResourceManager().initialize(cms);
         }
+    }
+
+    /**
+     * Returns a list of installed modules.<p>
+     * 
+     * @return a list of <code>{@link CmsModule}</code> objects
+     */
+    public List getAllInstalledModules() {
+
+        return new ArrayList(m_modules.values());
     }
 
     /**

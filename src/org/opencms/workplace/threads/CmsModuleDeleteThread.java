@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/10/12 15:25:37 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,7 +27,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */
+ */ 
 
 package org.opencms.workplace.threads;
 
@@ -36,9 +36,11 @@ import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
 
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -50,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,8 +61,10 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleDeleteThread.class);
 
+    /** A list of module name to delete. */
     private List m_moduleNames;
 
+    /** mode indicating if pre-replacement or final deletion. */
     private boolean m_replaceMode;
 
     /**
@@ -108,6 +112,11 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_STARTED_0));
             }
+
+            OpenCms.getModuleManager().checkModuleSelectionList(m_moduleNames, null, true);
+            m_moduleNames = CmsModuleManager.topologicalSort(m_moduleNames, null);
+            Collections.reverse(m_moduleNames);
+            
             Iterator j = m_moduleNames.iterator();
             while (j.hasNext()) {
                 String moduleName = (String)j.next();
@@ -167,6 +176,5 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             report.println(e);
             LOG.error(Messages.get().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
         }
-
     }
 }
