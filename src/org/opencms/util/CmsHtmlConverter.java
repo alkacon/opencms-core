@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/10/12 14:33:38 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,13 +114,13 @@ public class CmsHtmlConverter {
     List m_mode;
 
     /** regular expression for replace. */
-    String[] m_replacePatterns = {"&#160;", "(\\r\\n){2,}"};
+    String[] m_replacePatterns = {"&#160;", "(\\r\\n){2,}", "–"};
 
     /** patterns for replace. */
     Pattern[] m_replaceStyle;
 
     /** values for replace. */
-    String[] m_replaceValues = {"&nbsp;", ""};
+    String[] m_replaceValues = {"&nbsp;", "", "&ndash;"};
 
     /** the tidy to use. */
     Tidy m_tidy;
@@ -556,7 +556,7 @@ public class CmsHtmlConverter {
     private String regExp(String htmlInput) {
 
         String parsedHtml = new String();
-        parsedHtml = htmlInput;
+        parsedHtml = htmlInput.trim();
 
         // process all cleanup regexp
         for (int i = 0; i < m_cleanupPatterns.length; i++) {

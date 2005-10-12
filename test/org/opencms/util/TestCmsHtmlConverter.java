@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/10/12 14:33:38 $
+ * Version: $Revision: 1.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import java.io.File;
 
 /** 
  * @author Michael Emmerich 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.9 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
@@ -47,8 +47,6 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     private static final String STRING_1_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
     private static final String STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
   
-    
-    private static final String CR_LF = "\r\n"; 
     
     /**
      * Default JUnit constructor.<p>
@@ -67,10 +65,9 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
         CmsHtmlConverter converter = new CmsHtmlConverter("US-ASCII", CmsHtmlConverter.PARAM_WORD);        
         String convertedHtml1 = converter.convertToStringSilent(STRING_1);
         String convertedHtml2 = converter.convertToStringSilent(STRING_2);
-        
-        // the converted code will end with a cr ff (\r\n)         
-        assertEquals(STRING_1 + CR_LF, convertedHtml1);
-        assertEquals(STRING_2 + CR_LF, convertedHtml2);  
+                
+        assertEquals(STRING_1 , convertedHtml1);
+        assertEquals(STRING_2 , convertedHtml2);  
     }
 
     /** 
@@ -81,10 +78,9 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
         CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.PARAM_WORD);        
         String convertedHtml1 = converter.convertToStringSilent(STRING_1);
         String convertedHtml2 = converter.convertToStringSilent(STRING_2);
-        
-        // the converted code will end with a cr ff (\r\n)         
-        assertEquals(STRING_1_UTF8_RESULT + CR_LF, convertedHtml1);
-        assertEquals(STRING_2_UTF8_RESULT + CR_LF, convertedHtml2);  
+             
+        assertEquals(STRING_1_UTF8_RESULT , convertedHtml1);
+        assertEquals(STRING_2_UTF8_RESULT , convertedHtml2);  
     }
     
     /**
