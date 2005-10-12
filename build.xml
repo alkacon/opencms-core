@@ -55,8 +55,8 @@
     <property name="opencms.inputlib.pdfbox"			location="${opencms.input.libs}/PDFBox-0.7.0.jar" />
     <property name="opencms.inputlib.textextraction"	location="${opencms.input.libs}/tm-extractors-0.4.jar" />
     <property name="opencms.inputlib.junit"      		location="${opencms.input.libs}/junit-3-8-1.jar" /> 
-    <property name="opencms.inputlib.jstl"	            location="${opencms.input.libs}/jstl-1.1.2.jar" />
-    <property name="opencms.inputlib.standard"          location="${opencms.input.libs}/standard-1.1.2.jar" /> 	
+    <property name="opencms.inputlib.jstl"	            location="${opencms.input.libs}/jstl-1.0.6.jar" />
+    <property name="opencms.inputlib.standard"          location="${opencms.input.libs}/standard-1.0.6.jar" /> 	
     <property name="opencms.inputlib.oracle"      		location="${opencms.input.externlibs}/ojdbc14.jar" /> 
  
 	<property name="drivers.vfs"						value="db" />
