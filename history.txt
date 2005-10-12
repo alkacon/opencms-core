@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 15:35:11 $
- * Version: $Revision: 1.699 $
+ * Date   : $Date: 2005/10/12 15:39:35 $
+ * Version: $Revision: 1.700 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,10 @@ OpenCms 6.0.2 - xxx, 2005
 * Fixed issue #890: Extended folders and XML contents now show the custom property dialog from the referenced resource type
 * Fixed issue #615: Uploading modules with new (unknown) resource type classes
 * Fixed issue #914: Exceptions after cleanup html in WYSIWYG Editor
+* Fixed issue #904: The selected modules are checked and topologically sorted
+* Fixed issue #925: The deleteUser method also removes the user from all their groups
+* Fixed issue #963: The user, group and property names are now escaped
+* Fixed issue #899: Latent problem while importing data fixed
 * Fixed issue #940: cmsshell.sh doesn't run on Linux
 
 OpenCms 6.0.1 - September 14, 2005
