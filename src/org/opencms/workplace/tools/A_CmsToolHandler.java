@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2005/10/13 10:47:49 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,7 +62,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     /** Property for the path arg.<p> */
     public static final String ARG_PATH_NAME = "path";
 
-    /** Property for the args.<p> */
+    /** Property definition for the args.<p> */
     public static final String ARGS_PROPERTY_DEFINITION = "admintoolhandler-args";
 
     /** Argument separator.<p> */
@@ -73,6 +73,12 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Argument name and value separator.<p> */
     public static final String VALUE_SEPARATOR = ":";
+
+    /** Property for the confirmation message arg.<p> */
+    private static final String ARG_CONFIRMATION_NAME = "confirmation";
+
+    /** Confirmation message. */
+    private String m_confirmationMessage;
 
     /** Help text or description if disabled. */
     private String m_disabledHelpText;
@@ -106,6 +112,16 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
 
     /** Small icon path (16x16). */
     private String m_smallIconPath;
+
+    /**
+     * Returns the confirmation Message.<p>
+     *
+     * @return the confirmation Message
+     */
+    public String getConfirmationMessage() {
+
+        return m_confirmationMessage;
+    }
 
     /**
      * @see org.opencms.workplace.tools.I_CmsToolHandler#getDisabledHelpText()
@@ -205,6 +221,16 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
     public String getSmallIconPath() {
 
         return m_smallIconPath;
+    }
+
+    /**
+     * Sets the confirmation Message.<p>
+     *
+     * @param confirmationMessage the confirmation Message to set
+     */
+    public void setConfirmationMessage(String confirmationMessage) {
+
+        m_confirmationMessage = confirmationMessage;
     }
 
     /**
@@ -328,7 +354,7 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * the menu/navbar entries, use a <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> to separate them in the property.
      * (if you do so, the first one is for big icons and the second one for menu/navbar entries). the help text is taken from the 
      * <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_DESCRIPTION}</code> property or a
-     * default text if undefined, if you want to custumize a help text while disabled, use a 
+     * default text if undefined, if you want to customize a help text while disabled, use a 
      * <code>{@link A_CmsToolHandler#VALUE_SEPARATOR}</code> as a separator in the same property.<p> 
      * 
      * The group is taken from the <code>{@link org.opencms.file.CmsPropertyDefinition#PROPERTY_NAVINFO}</code> property,
@@ -340,6 +366,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
      * the first one will be used as a group icon (32x32), and the second as an menu icon (16x16). The paths are relative
      * to the /system/workplace/resources/ folder. If the tool is disabled, the names of the icons are composed as 
      * ${name}_disabled.${ext}<p>
+     * 
+     * The confirmation message is taken from the <code>{@link #ARGS_PROPERTY_DEFINITION}</code> with key 
+     * <code>{@link #ARG_CONFIRMATION_NAME}</code>
      * 
      * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
      */
@@ -448,6 +477,9 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 }
                 if (argsMap.get(ARG_PATH_NAME) != null) {
                     path = (String)argsMap.get(ARG_PATH_NAME);
+                }
+                if (argsMap.get(ARG_CONFIRMATION_NAME) != null) {
+                    setConfirmationMessage((String)argsMap.get(ARG_CONFIRMATION_NAME));
                 }
                 if (argsMap.get(ARG_PARAM_NAME) != null) {
                     setParameterString((String)argsMap.get(ARG_PARAM_NAME));

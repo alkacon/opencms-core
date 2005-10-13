@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListDirectAction.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2005/10/13 10:47:49 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.16.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,6 +154,7 @@ public class CmsListDirectAction extends A_CmsListAction implements I_CmsListDir
             resolveHelpText(wp.getLocale()),
             isEnabled(),
             getIconPath(),
+            null,
             resolveOnClic(wp.getLocale()),
             getColumnForTexts() == null);
     }

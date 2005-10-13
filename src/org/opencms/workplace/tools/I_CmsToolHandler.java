@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/I_CmsToolHandler.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/10/13 10:47:49 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,13 @@ public interface I_CmsToolHandler {
      * @return the short name
      */
     String getShortName();
+
+    /**
+     * Returns an optional confirmation message, displayed in a js confirm dialog.<p>
+     *
+     * @return the confirmation message
+     */
+    String getConfirmationMessage();
 
     /**
      * Returns the path to an optional small(16x16) icon.<p>
