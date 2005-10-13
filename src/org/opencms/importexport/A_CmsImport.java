@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/10/12 08:35:39 $
- * Version: $Revision: 1.81.2.1 $
+ * Date   : $Date: 2005/10/13 16:27:32 $
+ * Version: $Revision: 1.81.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -81,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81.2.1 $ 
+ * @version $Revision: 1.81.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -719,7 +720,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     userGroups.add(userInGroup);
                 }
 
-                if (defaultGroup != null && !"".equalsIgnoreCase(defaultGroup)) {
+                if (CmsStringUtil.isNotEmpty(defaultGroup)) {
                     userInfo.put(CmsUserSettings.ADDITIONAL_INFO_DEFAULTGROUP, defaultGroup);
                 }
 
