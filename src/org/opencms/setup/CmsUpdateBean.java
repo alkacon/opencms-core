@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2005/10/13 08:34:48 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/10/13 09:08:51 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.setup;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
@@ -61,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,34 +147,37 @@ public class CmsUpdateBean extends CmsSetupBean {
      * structure of the map returned by this method!<p>
      * 
      * @return a map with all available modules
-     * 
-     * @throws CmsConfigurationException if something goes wrong 
      */
-    public Map getAvailableModules() throws CmsConfigurationException {
+    public Map getAvailableModules() {
 
         if (m_availableModules == null || m_availableModules.isEmpty()) {
             m_availableModules = new HashMap();
-            // open the folder "/WEB-INF/packages/modules/"
-            String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
-
-            Map modules = CmsModuleManager.getAllModulesFromPath(packagesFolder);
-            Iterator itMods = modules.keySet().iterator();
-            while (itMods.hasNext()) {
-                CmsModule module = (CmsModule)itMods.next();
-                // create a map holding the collected module information
-                Map moduleData = new HashMap();
-                moduleData.put("name", module.getName());
-                moduleData.put("niceName", module.getNiceName());
-                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(module.getGroup())) {
-                    moduleData.put("group", module.getGroup());
+            
+            try {
+                // open the folder "/WEB-INF/packages/modules/"
+                String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
+    
+                Map modules = CmsModuleManager.getAllModulesFromPath(packagesFolder);
+                Iterator itMods = modules.keySet().iterator();
+                while (itMods.hasNext()) {
+                    CmsModule module = (CmsModule)itMods.next();
+                    // create a map holding the collected module information
+                    Map moduleData = new HashMap();
+                    moduleData.put("name", module.getName());
+                    moduleData.put("niceName", module.getNiceName());
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(module.getGroup())) {
+                        moduleData.put("group", module.getGroup());
+                    }
+                    moduleData.put("version", module.getVersion().getVersion());
+                    moduleData.put("description", module.getDescription());
+                    moduleData.put("filename", modules.get(module));
+    
+                    // put the module information into a map keyed by the module packages names
+                    m_availableModules.put(module.getName(), moduleData);
+    
                 }
-                moduleData.put("version", module.getVersion().getVersion());
-                moduleData.put("description", module.getDescription());
-                moduleData.put("filename", modules.get(module));
-
-                // put the module information into a map keyed by the module packages names
-                m_availableModules.put(module.getName(), moduleData);
-
+            } catch (CmsConfigurationException e) {
+                throw new CmsRuntimeException(e.getMessageContainer());
             }
         }
         return m_availableModules;
@@ -183,15 +187,17 @@ public class CmsUpdateBean extends CmsSetupBean {
      * Returns a map with lists of dependent module package names keyed by module package names.<p>
      * 
      * @return a map with lists of dependent module package names keyed by module package names
-     * 
-     * @throws CmsConfigurationException if something goes wrong 
      */
-    public Map getModuleDependencies() throws CmsConfigurationException {
+    public Map getModuleDependencies() {
 
         if (m_moduleDependencies == null || m_moduleDependencies.isEmpty()) {
-            // open the folder "/WEB-INF/packages/modules/"
-            String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
-            m_moduleDependencies = CmsModuleManager.buildDepsForAllModules(packagesFolder, true);
+            try {
+                // open the folder "/WEB-INF/packages/modules/"
+                String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
+                m_moduleDependencies = CmsModuleManager.buildDepsForAllModules(packagesFolder, true);
+            } catch (CmsConfigurationException e) {
+                throw new CmsRuntimeException(e.getMessageContainer());
+            }
         }
         return m_moduleDependencies;
     }

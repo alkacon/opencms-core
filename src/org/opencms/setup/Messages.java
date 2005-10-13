@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2005/10/13 08:34:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/13 09:08:51 $
+ * Version: $Revision: 1.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -72,66 +72,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WELCOME_SETUP_0 = "INIT_WELCOME_SETUP_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WELCOME_UPDATE_0 = "INIT_WELCOME_UPDATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_WELCOME_UPDATE_0 = "INIT_WELCOME_UPDATE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_BEGIN_DELETE_JARS_0 = "RPT_BEGIN_DELETE_JARS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_BEGIN_DELETE_MODULE_1 = "RPT_BEGIN_DELETE_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_BEGIN_IMPORT_MODULE_1 = "RPT_BEGIN_IMPORT_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_BEGIN_UPDATE_JARS_0 = "RPT_BEGIN_UPDATE_JARS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_BEGIN_UPDATE_MODULE_1 = "RPT_BEGIN_UPDATE_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_JAR_FILE_3 = "RPT_DELETE_JAR_FILE_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_JAR_FILE_FAILED_3 = "RPT_DELETE_JAR_FILE_FAILED_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_JAR_SKIPPED_FILE_3 = "RPT_DELETE_JAR_SKIPPED_FILE_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_DELETE_JARS_FAILED_1 = "RPT_DELETE_JARS_FAILED_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_END_DELETE_JARS_0 = "RPT_END_DELETE_JARS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_END_DELETE_MODULE_1 = "RPT_END_DELETE_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_END_IMPORT_MODULE_1 = "RPT_END_IMPORT_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_END_UPDATE_JARS_0 = "RPT_END_UPDATE_JARS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_END_UPDATE_MODULE_1 = "RPT_END_UPDATE_MODULE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_UPDATE_JAR_FILE_3 = "RPT_UPDATE_JAR_FILE_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_UPDATE_JAR_FILE_FAILED_3 = "RPT_UPDATE_JAR_FILE_FAILED_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_UPDATE_JAR_SKIPPED_FILE_3 = "RPT_UPDATE_JAR_SKIPPED_FILE_3";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String RPT_UPDATE_JARS_FAILED_1 = "RPT_UPDATE_JARS_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WELCOME_UPDATE_0 = "INIT_WELCOME_UPDATE_0";
