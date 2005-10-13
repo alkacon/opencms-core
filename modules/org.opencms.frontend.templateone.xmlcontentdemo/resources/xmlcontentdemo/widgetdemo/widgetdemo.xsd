@@ -25,8 +25,10 @@
 			<xsd:element name="DateTime" type="OpenCmsDateTime" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Boolean" type="OpenCmsBoolean" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Selector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="MultiSelector" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Textarea" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 			<xsd:element name="Combobox" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
+			<xsd:element name="DisplayWidget" type="OpenCmsString" minOccurs="0" maxOccurs="2" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
 	</xsd:complexType>
@@ -36,6 +38,7 @@
 			<defaults>
 				<default element="DateTime" value="${currenttime}" />
 				<default element="Locale" value="${request.locale}" />
+				<default element="DisplayWidget" value="Value that is simply displayed and not editable." />
 			</defaults>
 			<layouts>
 				<layout element="Image" widget="ImageGalleryWidget" />
@@ -44,8 +47,10 @@
 				<layout element="HtmlSnippet" widget="HtmlGalleryWidget" />
 				<layout element="TableSnippet" widget="TableGalleryWidget" />
 				<layout element="Selector" widget="SelectorWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
+				<layout element="MultiSelector" widget="MultiSelectWidget" configuration="Option 1|Option 2|Option 3|Option 4" />
 				<layout element="Textarea" widget="TextareaWidget" />
 				<layout element="Combobox" widget="ComboWidget" configuration="value='Value 1' help='A help text for value 1'|value='Value 2' help='Another help text for the second value.'|value='Value 3' default='true' help='The help text vor value three.'|value='Value 4 which has a very long value text that needs to be displayed in the limited size input area' help='The is the help for value 4'" />
+				<layout element="DisplayWidget" widget="DisplayWidget" />
 			</layouts>	
 		</xsd:appinfo>
 	</xsd:annotation>  
