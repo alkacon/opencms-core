@@ -27,15 +27,16 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace" version="1.0.0"/>
 		</dependencies>
-		<exportpoints/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.administration/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/resources/admin/"/>
 			<resource uri="/system/workplace/resources/list/"/>
 			<resource uri="/system/workplace/views/admin/"/>
+			<resource uri="/system/modules/org.opencms.workplace.administration/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/workplace/resources/admin/;/system/workplace/resources/list/;/system/workplace/views/admin/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>
@@ -58,6 +59,52 @@
 				</accessentry>
 			</accesscontrol>
 		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.administration</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.administration/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.administration/lib/org.opencms.workplace.administration.jar</source>
+			<destination>system/modules/org.opencms.workplace.administration/lib/org.opencms.workplace.administration.jar</destination>
+			<type>plain</type>
+			<uuidresource>c58d4f56-3b22-11da-8883-df763b25cc68</uuidresource>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>

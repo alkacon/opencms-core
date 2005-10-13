@@ -26,11 +26,14 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
 		</dependencies>
-		<exportpoints/>
-            <resources>
-                <resource uri="/system/workplace/admin/galleryoverview/"/>
-                <resource uri="/system/workplace/resources/tools/galleryoverview/"/>
-            </resources>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.galleryoverview/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
+        <resources>
+        	<resource uri="/system/workplace/admin/galleryoverview/"/>
+        	<resource uri="/system/workplace/resources/tools/galleryoverview/"/>
+        	<resource uri="/system/modules/org.opencms.workplace.tools.galleryoverview/"/>
+      	</resources>
 		<parameters/>
 	</module>
 	<files>
@@ -45,6 +48,52 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.galleryoverview</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.galleryoverview/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.galleryoverview/lib/org.opencms.workplace.tools.galleryoverview.jar</source>
+			<destination>system/modules/org.opencms.workplace.tools.galleryoverview/lib/org.opencms.workplace.tools.galleryoverview.jar</destination>
+			<type>plain</type>
+			<uuidresource>fc5c1f52-3b27-11da-8883-df763b25cc68</uuidresource>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>	
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>

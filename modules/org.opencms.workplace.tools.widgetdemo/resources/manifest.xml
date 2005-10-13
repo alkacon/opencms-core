@@ -30,9 +30,7 @@
 		<resources>
 			<resource uri="/system/workplace/admin/widgetdemo/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/workplace/admin/widgetdemo/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>
