@@ -34,7 +34,7 @@
           nodeprecatedlist="false" 
           nodeprecated="false" 
           stylesheetfile="javadoc.css" 
-          doctitle="The OpenCms 6.0.0 Templateone Module API" 
+          doctitle="The OpenCms 6.0.2 Templateone Module API" 
           additionalparam=" -header &quot;&lt;script&gt; &#10;&lt;!-- &#10;if(window.location.href.indexOf('overview-frame') == -1){ &#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.alkacon.com &gt; &lt;img border=0 id=brandingPic src={@docRoot}/logo_alkacon_100_t.gif /&gt;&lt;/a&gt;'); &#10;}&#10;else{&#10;  document.write('&lt;a id=brandingLink target=_blank href=http://www.opencms.org &gt; &lt;img border=0 id=brandingPic src={@docRoot}logo_opencms_100.gif /&gt;&lt;/a&gt;');} //--&gt;&#10;&lt;/script&gt;&#10;&quot;"    
         >
             <classpath>
