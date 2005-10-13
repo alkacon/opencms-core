@@ -26,7 +26,8 @@ Before, make sure that all users have logged out.
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
-and 'WEB-INF' to the OpenCms webapp directory.
+and 'WEB-INF' to the OpenCms webapp directory. Be sure that the file 'opencms.tld'
+is overwritten with the one in the 'WEB-INF' folder of the archive.
 
 3. Enable the wizard
 

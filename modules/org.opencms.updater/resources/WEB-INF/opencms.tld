@@ -1,0 +1,279 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<!DOCTYPE taglib
+  PUBLIC "-//Sun Microsystems, Inc.//DTD JSP Tag Library 1.2//EN"
+  "http://java.sun.com/dtd/web-jsptaglibrary_1_2.dtd">
+
+<!-- Created by Alexander Kandzior (a.kandzior@alkacon.com) on 6. April 2002, 17:28 -->
+
+<taglib>
+    <tlib-version>0.9.8</tlib-version>
+    <jsp-version>1.2</jsp-version>
+    <short-name>cms</short-name>
+    <uri>http://www.opencms.org/taglib/cms</uri>
+    <display-name>OpenCms JSP standard taglib</display-name>
+    <description>
+        The standard OpenCms / JSP integration tag library.
+        Developed by Alkacon Software GmbH / Alexander Kandzior (a.kandzior@alkacon.de)
+    </description>
+
+    <tag>
+        <name>property</name>
+        <tag-class>org.opencms.jsp.CmsJspTagProperty</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag enables read access to the current files OpenCms properties.
+        </description>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+        </attribute>
+        <attribute>
+            <name>file</name>
+        </attribute>        
+        <attribute>
+            <name>escapeHtml</name>
+        </attribute>         
+        <attribute>
+            <name>default</name>
+        </attribute> 
+    </tag>        
+
+    <tag>
+        <name>user</name>
+        <tag-class>org.opencms.jsp.CmsJspTagUser</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag enables access to the properties of the currently logged in user.
+        </description>
+        <attribute>
+            <name>property</name>
+            <required>true</required>
+        </attribute>
+    </tag> 
+    
+    <tag>
+        <name>info</name>
+        <tag-class>org.opencms.jsp.CmsJspTagInfo</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag enables access to some system information like OpenCms version etc.
+        </description>
+        <attribute>
+            <name>property</name>
+            <required>true</required>
+        </attribute>
+    </tag>     
+            
+    <tag>
+        <name>link</name>
+        <tag-class>org.opencms.jsp.CmsJspTagLink</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag is used to wrap URLs for the OpenCms static export.
+        </description>
+    </tag>        
+
+    <tag>
+        <name>template</name>
+        <tag-class>org.opencms.jsp.CmsJspTagTemplate</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag allows conditional display of template elements.
+        </description>
+        <attribute>
+            <name>element</name>
+        </attribute>  
+        <attribute>
+            <name>ifexists</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsone</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsall</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsnone</name>
+        </attribute>       
+    </tag>
+    
+    <tag>
+        <name>contentload</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentLoad</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag loads XML content items from the OpenCms VFS.
+        </description> 
+        <attribute>
+            <name>collector</name>
+        </attribute>    
+        <attribute>
+            <name>param</name>
+        </attribute>
+        <attribute>
+            <name>property</name>
+        </attribute>
+        <attribute>
+            <name>editable</name>
+        </attribute>    
+        <attribute>
+            <name>pageIndex</name>
+        </attribute> 
+        <attribute>
+            <name>pageSize</name>
+        </attribute>  
+        <attribute>
+            <name>pageNavLength</name>
+        </attribute>        
+        <attribute>
+            <name>preload</name>
+        </attribute>
+        <attribute>
+            <name>locale</name>
+        </attribute>
+    </tag>    
+        
+    <tag>
+        <name>contentshow</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentShow</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag provides access to individual XML content node element values.
+        </description>              
+        <attribute>
+            <name>element</name>
+        </attribute>
+        <attribute>
+            <name>locale</name>
+        </attribute>
+    </tag>  
+    
+    <tag>
+        <name>contentinfo</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentInfo</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag provides access to individual XML content node element values.
+        </description>              
+        <attribute>
+            <name>var</name>
+        </attribute>
+        <attribute>
+            <name>value</name>
+        </attribute>
+        <attribute>
+            <name>scope</name>
+        </attribute>        
+    </tag>      
+    
+    <tag>
+        <name>contentloop</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentLoop</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag allows looping through XML content node element values.
+        </description>              
+        <attribute>
+            <name>element</name>
+        </attribute>  
+    </tag>   
+    
+    <tag>
+        <name>contentcheck</name>
+        <tag-class>org.opencms.jsp.CmsJspTagContentCheck</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag provides conditional logic for checking the element of a XML content.
+        </description>              
+        <attribute>
+            <name>ifexists</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsone</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsall</name>
+        </attribute>
+        <attribute>
+            <name>ifexistsnone</name>
+        </attribute>
+        <attribute>
+            <name>locale</name>
+        </attribute>
+    </tag>   
+    
+    <tag>
+        <name>label</name>
+        <tag-class>org.opencms.jsp.CmsJspTagLabel</tag-class>
+        <body-content>tagdependent</body-content>
+        <description>
+            This tag is used to read values from the OpenCms workplace language files.
+        </description>
+    </tag>            
+    
+    <tag>
+        <name>include</name>
+        <tag-class>org.opencms.jsp.CmsJspTagInclude</tag-class>
+        <tei-class>org.opencms.jsp.CmsJspTagIncludeTEI</tei-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag is used for including OpenCms Subelements in a page.
+            It is similar to the "include" JSP directive.
+            It loads the input at runtime, not at compile - time.
+        </description>
+        <attribute>
+            <name>page</name>
+        </attribute>        
+        <attribute>
+            <name>file</name>
+        </attribute>        
+        <attribute>
+            <name>property</name>
+        </attribute>        
+        <attribute>
+            <name>attribute</name>
+        </attribute>        
+        <attribute>
+            <name>suffix</name>
+        </attribute>     
+        <attribute>
+            <name>element</name>
+        </attribute>
+        <attribute>
+            <name>editable</name>
+        </attribute>        
+    </tag>        
+
+    <tag>
+        <name>editable</name>
+        <tag-class>org.opencms.jsp.CmsJspTagEditable</tag-class>
+        <body-content>empty</body-content>
+        <description>
+            This tag is used to enable the direct editing within a template.
+        </description>
+        <attribute>
+            <name>file</name>
+        </attribute>
+    </tag>
+    
+    <tag>
+        <name>param</name>
+        <tag-class>org.opencms.jsp.CmsJspTagParam</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            Adds a parameter to a containing 'import' tag's URL.
+        </description>
+        <attribute>
+            <name>name</name>
+            <required>true</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+        <attribute>
+            <name>value</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute>
+    </tag>      
+        
+</taglib>

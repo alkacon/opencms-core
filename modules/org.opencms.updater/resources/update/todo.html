@@ -93,20 +93,21 @@ Exchange the <code>&lt;resourceinit/&gt;</code> node with
 
 <h3>opencms-vfs.xml</h3>
 <p>
-Add the following entries to the <code>&lt;widgets/&gt;</code> node
+Add the following entries to the <code>&lt;widgets&gt;</code> node:
 <pre class="code">
 &lt;widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" /&gt;
 &lt;widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" /&gt;
 </pre>
-and remove the node
-<pre class="code">
-&lt;widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" /&gt;
-</pre>
+</p>
+
+<h2>Replace the OpenCms taglib descriptor</h2>
+<p>
+Replace the file <code>WEB-INF/opencms.tld</code> with the one provided in the update zip file in the folder <code>WEB-INF/</code>.
 </p>
 
 <h2>Completing the update</h2>
 <p>
-Restart the servlet container after you made the changes to the configuration files.
+Restart the servlet container after you made the changes to the configuration files and replaced the <code>opencms.tld</code>.
 Login to OpenCms and switch to the Adminstration view. Select ”Flex Cache Adminstration” and press the ”Purge JSP respository” button there.
 After this, the update process has been completed.
 </p>
