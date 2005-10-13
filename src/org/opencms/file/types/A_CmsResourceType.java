@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/13 11:58:35 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/10/13 12:05:58 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.40 $ 
+ * @version $Revision: 1.41 $ 
  * 
  * @since 6.0.0 
  */
@@ -434,10 +434,29 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public final void initConfiguration() {
 
-        // final since subclassed should NOT implement this, but rather the version with parameters (see below)
+        // final since subclassed should NOT implement this, but rather the version with 3 String parameters (see below)
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
+    }
+
+    /**
+     * Special version of the configuration initialization used with resource types
+     * to set resource type and id, unsing the name of this class instance.<p>
+     *
+     * @param name the resource type name
+     * @param id the resource type id
+     * 
+     * @throws CmsConfigurationException if the configuration is invalid
+     * 
+     * @deprecated unse <code>{@link #initConfiguration(String, String, String)}</code> instead
+     * 
+     * @see I_CmsResourceType#initConfiguration(String, String, String)
+     */
+    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+
+        // use this class instance name for the class name
+        initConfiguration(name, id, this.getClass().getName());
     }
 
     /**
