@@ -26,11 +26,12 @@
 			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
-			<exportpoint uri="/system/workplace/resources/tools/searchindex/lib/" destination="WEB-INF/lib/"/>
+			<exportpoint uri="/system/modules/org.opencms.workplace.tools.searchindex/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/admin/searchindex/"/>
 			<resource uri="/system/workplace/resources/tools/searchindex/"/>
+			<resource uri="/system/modules/org.opencms.workplace.tools.searchindex/"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -46,6 +47,57 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.searchindex</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.workplace.tools.searchindex/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.workplace.tools.searchindex/lib/org.opencms.workplace.tools.searchindex.jar</source>
+			<destination>system/modules/org.opencms.workplace.tools.searchindex/lib/org.opencms.workplace.tools.searchindex.jar</destination>
+			<type>plain</type>
+			<uuidresource>924cf38c-3b2b-11da-8883-df763b25cc68</uuidresource>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
@@ -1306,34 +1358,5 @@
 			</properties>
 			<accesscontrol/>
 		</file>
-		<file>
-			<destination>system/workplace/resources/tools/searchindex/lib</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/searchindex/lib/org.opencms.workplace.tools.searchindex.jar</source>
-			<destination>system/workplace/resources/tools/searchindex/lib/org.opencms.workplace.tools.searchindex.jar</destination>
-			<type>plain</type>
-			<uuidresource>924cf38c-3b2b-11da-8883-df763b25cc68</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[org.opencms.workplace.tools.searchindex]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>		
 	</files>
 </export>
