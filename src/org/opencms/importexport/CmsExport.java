@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/10/12 09:41:52 $
- * Version: $Revision: 1.81 $
+ * Date   : $Date: 2005/10/13 16:26:01 $
+ * Version: $Revision: 1.82 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.81 $ 
+ * @version $Revision: 1.82 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,7 +438,7 @@ public class CmsExport {
         xmlSaxWriter.endDocument();
 
         // create zip entry for the manifest XML document
-        ZipEntry entry = new ZipEntry(CmsImportExportManager.EXPORT_XMLFILENAME);
+        ZipEntry entry = new ZipEntry(CmsImportExportManager.EXPORT_MANIFEST);
         getExportZipStream().putNextEntry(entry);
 
         // complex substring operation is required to ensure handling for very large export manifest files
