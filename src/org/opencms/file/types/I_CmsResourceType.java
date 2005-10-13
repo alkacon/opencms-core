@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/12 14:38:21 $
- * Version: $Revision: 1.25.2.3 $
+ * Date   : $Date: 2005/10/13 12:09:14 $
+ * Version: $Revision: 1.25.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.file.types;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.db.CmsSecurityManager;
 import org.opencms.file.CmsFile;
@@ -67,7 +68,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.2.3 $ 
+ * @version $Revision: 1.25.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -415,6 +416,32 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
         CmsResource resource,
         byte[] content,
         List properties) throws CmsException;
+
+    /**
+     * Special version of the configuration initialization used with resource types
+     * to set resource type, id and class name, required for the XML configuration.<p>
+     * 
+     * <i>Please note:</i> Many resource types defined in the core have in fact
+     * a fixed resource type and a fixed id. Configurable name and id is used only
+     * for certain types.<p>
+     * 
+     * The provided named class must implement this interface (<code>{@link I_CmsResourceType}</code>).
+     * Usually the provided class name should be the class name of the resource type instance,
+     * but this may be different in special cases or configuration errors.
+     * 
+     * For example, if a module is imported that contains it's own resource type class files, 
+     * the included class file are usually not be available until the server is restarted.
+     * If the named class given in the XML configuration (or module manifest.xml) is not available, 
+     * or not implementing <code>{@link I_CmsResourceType}</code>, 
+     * then <code>{@link CmsResourceTypeUnknown}</code> is used for the resource type instance.<p>
+     *
+     * @param name the resource type name
+     * @param id the resource type id
+     * @param className the class name of the resource type (read from the XML configuration)
+     * 
+     * @throws CmsConfigurationException if the configuration is invalid
+     */
+    void initConfiguration(String name, String id, String className) throws CmsConfigurationException;
 
     /**
      * Initializes this resource type.<p>

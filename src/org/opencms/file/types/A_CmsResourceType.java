@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/12 14:38:21 $
- * Version: $Revision: 1.36.2.3 $
+ * Date   : $Date: 2005/10/13 12:09:14 $
+ * Version: $Revision: 1.36.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36.2.3 $ 
+ * @version $Revision: 1.36.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,6 +91,9 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     /** Flag for showing that this is an additional resource type which defined in a module. */
     protected boolean m_addititionalModuleResourceType;
 
+    /** The configured class name of this resource type. */
+    protected String m_className;
+
     /** The list of resources to copy. */
     protected List m_copyResources;
 
@@ -108,20 +111,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
     /** The configured name of this resource type. */
     protected String m_typeName;
-    
-    /** The configured class name of this resource type. */
-    protected String m_className;
 
-    /**
-     * Returns the configured class name of this resource type.<p>
-     * 
-     * @see org.opencms.file.types.I_CmsResourceType#getClassName()
-     */
-    public String getClassName() {
-    
-        return m_className;
-    }
-    
     /**
      * Default constructor, used to initialize some member variables.<p>
      */
@@ -345,6 +335,16 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
     }
 
     /**
+     * Returns the configured class name of this resource type.<p>
+     * 
+     * @see org.opencms.file.types.I_CmsResourceType#getClassName()
+     */
+    public String getClassName() {
+
+        return m_className;
+    }
+
+    /**
      * @see org.opencms.configuration.I_CmsConfigurationParameterHandler#getConfiguration()
      */
     public Map getConfiguration() {
@@ -434,27 +434,33 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
      */
     public final void initConfiguration() {
 
-        // final since subclassed should NOT implement this, but rather the version with parameters (see below)
+        // final since subclassed should NOT implement this, but rather the version with 3 String parameters (see below)
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
 
     /**
-     * Special version of the configuration initialization used to also set resource type and id.<p>
-     * 
-     * <i>Please note:</i> Many resource types defined in the core have in fact
-     * a fixed resource type and a fixed id. Configurable name and id is used only
-     * for certain types.<p>
-     * 
-     * Usually the provided class name should be the class name of this resource type instance,
-     * but this may be different in special cases or configuration errors.<p>
-     * 
+     * Special version of the configuration initialization used with resource types
+     * to set resource type and id, unsing the name of this class instance.<p>
+     *
      * @param name the resource type name
      * @param id the resource type id
-     * @param className the name of the class that was read from the XML configuration
      * 
-     * @throws CmsConfigurationException if something goes wrong
+     * @throws CmsConfigurationException if the configuration is invalid
+     * 
+     * @deprecated use <code>{@link #initConfiguration(String, String, String)}</code> instead
+     * 
+     * @see I_CmsResourceType#initConfiguration(String, String, String)
+     */
+    public void initConfiguration(String name, String id) throws CmsConfigurationException {
+
+        // use this class instance name for the class name
+        initConfiguration(name, id, this.getClass().getName());
+    }
+
+    /**
+     * @see org.opencms.file.types.I_CmsResourceType#initConfiguration(java.lang.String, java.lang.String, java.lang.String)
      */
     public void initConfiguration(String name, String id, String className) throws CmsConfigurationException {
 
@@ -620,7 +626,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         m_addititionalModuleResourceType = additionalType;
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
@@ -633,7 +639,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.setDateExpired(cms.getRequestContext(), resource, dateExpired);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
@@ -646,7 +652,7 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
 
         securityManager.setDateLastModified(cms.getRequestContext(), resource, dateLastModified);
     }
-    
+
     /**
      * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(org.opencms.file.CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
