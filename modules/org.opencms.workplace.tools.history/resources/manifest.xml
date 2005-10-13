@@ -26,7 +26,9 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
 		</dependencies>
-		<exportpoints/>
+		<exportpoints>
+			<exportpoint uri="/system/workplace/resources/tools/history/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/admin/history/"/>
 			<resource uri="/system/workplace/resources/tools/history/"/>
@@ -367,5 +369,34 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/resources/tools/history/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/history/lib/org.opencms.workplace.tools.history.jar</source>
+			<destination>system/workplace/resources/tools/history/lib/org.opencms.workplace.tools.history.jar</destination>
+			<type>plain</type>
+			<uuidresource>2b441159-3b29-11da-8883-df763b25cc68</uuidresource>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[org.opencms.workplace.tools.history]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 	</files>
 </export>

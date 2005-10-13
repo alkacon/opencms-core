@@ -26,7 +26,9 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
 		</dependencies>
-		<exportpoints/>
+		<exportpoints>
+			<exportpoint uri="/system/workplace/resources/tools/cache/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/admin/flexcache/"/>
 			<resource uri="/system/workplace/resources/tools/cache/"/>
@@ -237,5 +239,34 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/resources/tools/cache/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/cache/lib/org.opencms.workplace.tools.cache.jar</source>
+			<destination>system/workplace/resources/tools/cache/lib/org.opencms.workplace.tools.cache.jar</destination>
+			<type>plain</type>
+			<uuidresource>a57aad0d-3b25-11da-8883-df763b25cc68</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[org.opencms.workplace.tools.cache]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>	
 	</files>
 </export>

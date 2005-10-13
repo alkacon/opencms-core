@@ -27,7 +27,9 @@
 		<dependencies>
 			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
 		</dependencies>
-		<exportpoints/>
+		<exportpoints>
+			<exportpoint uri="/system/workplace/resources/tools/database/lib/" destination="WEB-INF/lib/"/>
+		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/admin/database/"/>
 			<resource uri="/system/workplace/resources/tools/database/"/>
@@ -643,5 +645,34 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/resources/tools/database/lib</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/database/lib/org.opencms.workplace.tools.database.jar</source>
+			<destination>system/workplace/resources/tools/database/lib/org.opencms.workplace.tools.database.jar</destination>
+			<type>plain</type>
+			<uuidresource>7323cbbb-3b27-11da-8883-df763b25cc68</uuidresource>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[org.opencms.workplace.tools.database]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 	</files>
 </export>
