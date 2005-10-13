@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>  
-<project default="javadoc">
+<project default="javadoc" name="Javadoc components">
     <property name="opencms.input" value="../../"/>
     <property name="opencms.output" value="${opencms.input}../BuildCms/" />
   
