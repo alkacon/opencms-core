@@ -37,7 +37,7 @@ OpenCms Update Wizard - Manual TO DO Steps
 			<td style="vertical-align: bottom;padding-top: 12px;">
 				<table border="0" cellpadding="0" cellspacing="0" style="vertical-align: bottom; height: 20px;">
 				<tr>
-					<td>Did you made all needed manual changes?</td>
+					<td>Did you make all needed manual changes?</td>
 					<td>&nbsp;&nbsp;</td>
 					<td style="width: 25px;"><input type="radio" name="agree" value="yes" onclick="toggleButton(false);"></td>
 					<td> yes</td>
