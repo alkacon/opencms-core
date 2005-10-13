@@ -443,12 +443,12 @@ ${opencms.inputlib.textextraction}
 		            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="update/jars" includes="*.jar" />
 		    	  	</zip>
 			        <var name="input.lib.regex" value="" /> 
-			    	<for list="${opencms.input}\\modules\\@{module}\\resources\\system\\modules\\@{module}\\lib" param="path" delimiter="\\" trim="yes">
+			    	<for list="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" param="path" delimiter="/\\" trim="yes">
 			    	  <sequential>
-			            <var name="input.lib.regex" value="${input.lib.regex}@{path}\\" /> 
+			            <var name="input.lib.regex" value="${input.lib.regex}@{path}/" /> 
 			      	  </sequential>
 					</for>
-			    	<echo message="${input.lib.regex}"/>
+			    	<!--echo message="${input.lib.regex}"/-->
 					<for param="archive">
 						<path>
 							<fileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" includes="*.jar"/>
@@ -462,12 +462,27 @@ ${opencms.inputlib.textextraction}
 	    		    	        	<var name="modules.jar.list" value="${modules.jar.list}," />
 	    		    	  		</then>
 	    		    	  	</if>
-	                    	<echo message="@{archive}"/>
+	    			        <var name="archive.regex" value="" /> 
+	    			    	<for list="@{archive}" param="path" delimiter="/\\" trim="yes">
+	    			    	  <sequential>
+	    			    	  	<if>
+	    			    	  	    <not>
+	    			    	  		  <equals arg1="${archive.regex}" arg2="" />
+	    			    	  	    </not>
+	    			    	  		<then>
+	    	    			            <var name="archive.regex" value="${archive.regex}/" /> 	    			    	  			
+	    			    	  		</then>
+	    			    	  	</if>
+	    			            <var name="archive.regex" value="${archive.regex}@{path}" /> 
+	    			      	  </sequential>
+	    					</for>
+	                    	<!--echo message="${archive.regex}"/-->
 	                        <propertyregex property="archive.name" override="true"
-	                                  input="@{archive}"
+	                                  input="${archive.regex}"
 	                                  regexp="${input.lib.regex}([^\.]*)"
 	                                  replace="\1"
 	                                  casesensitive="false" />
+	                    	<!--echo message="${archive.name}"/-->
 	    		        	<var name="modules.jar.list" value="${modules.jar.list}${archive.name}" />
 	                    </sequential>
 	                </for>
@@ -477,9 +492,9 @@ ${opencms.inputlib.textextraction}
     	</for>
     	
         <var name="input.lib.regex" value="" /> 
-    	<for list="${opencms.input.libs}" param="path" delimiter="\\" trim="yes">
+    	<for list="${opencms.input.libs}" param="path" delimiter="/\\" trim="yes">
     	  <sequential>
-            <var name="input.lib.regex" value="${input.lib.regex}@{path}\\" /> 
+            <var name="input.lib.regex" value="${input.lib.regex}@{path}/" /> 
       	  </sequential>
 		</for>
     	<echo message="${input.lib.regex}"/>
@@ -497,12 +512,27 @@ ${opencms.inputlib.textextraction}
         	        	<var name="libs.common.all" value="${libs.common.all}," />
         	  		</then>
         	  	</if>
-            	<echo message="@{archive}"/>
+		        <var name="archive.regex" value="" /> 
+		    	<for list="@{archive}" param="path" delimiter="/\\" trim="yes">
+		    	  <sequential>
+		    	  	<if>
+		    	  	    <not>
+		    	  		  <equals arg1="${archive.regex}" arg2="" />
+		    	  	    </not>
+		    	  		<then>
+    			            <var name="archive.regex" value="${archive.regex}/" /> 	    			    	  			
+		    	  		</then>
+		    	  	</if>
+		            <var name="archive.regex" value="${archive.regex}@{path}" /> 
+		      	  </sequential>
+				</for>
+            	<!--echo message="${archive.regex}"/-->
                 <propertyregex property="archive.name" override="true"
-                          input="@{archive}"
+                          input="${archive.regex}"
                           regexp="${input.lib.regex}([^\.]*)"
                           replace="\1"
                           casesensitive="false" />
+            	<!--echo message="${archive.name}"/-->
             	<var name="libs.common.all" value="${libs.common.all},${archive.name}" />
             </sequential>
         </for>
