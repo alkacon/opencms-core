@@ -91,6 +91,19 @@ Exchange the <code>&lt;resourceinit/&gt;</code> node with
 &lt;/resourceinit&gt;
 </pre></p>
 
+<h3>opencms-vfs.xml</h3>
+<p>
+Add the following entries to the <code>&lt;widgets/&gt;</code> node
+<pre class="code">
+&lt;widget class="org.opencms.widgets.CmsMultiSelectWidget" alias="MultiSelectWidget" /&gt;
+&lt;widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" /&gt;
+</pre>
+and remove the node
+<pre class="code">
+&lt;widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget" /&gt;
+</pre>
+</p>
+
 <h2>Completing the update</h2>
 <p>
 Restart the servlet container after you made the changes to the configuration files.
