@@ -28,11 +28,6 @@ OpenCms Update Wizard
 			document.forms[0].adminPwd.focus();
 			return false;
 		}
-		else if (document.forms[0].updateProject.value == "")	{
-			alert("Please insert the OpenCms project for update");
-			document.forms[0].updateProject.focus();
-			return false;
-		}
 		else if (document.forms[0].updateSite.value == "")	{
 			alert("Please insert the OpenCms site for update");
 			document.forms[0].updateSite.focus();
@@ -94,14 +89,9 @@ OpenCms Update Wizard - Settings
 <%= Bean.getHtmlPart("C_BLOCK_START", "Settings") %>
 <table border="0" cellpadding="2" cellspacing="0">
 	<tr>
-		<td>Update Project:</td>
-		<td><input type="text" name="updateProject" size="15" style="width:150px;" value='<%= Bean.getUpdateProject() %>'></td>
-		<td><%= Bean.getHtmlHelpIcon("3", "") %></td>
-	</tr>
-	<tr>
 		<td>Update Site:</td>
 		<td><input type="text" name="updateSite" size="15" style="width:150px;" value='<%= Bean.getUpdateSite() %>'></td>
-		<td><%= Bean.getHtmlHelpIcon("4", "") %></td>
+		<td><%= Bean.getHtmlHelpIcon("3", "") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
@@ -141,11 +131,6 @@ Enter the right password for the given <b>Admin User</b>.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "3") %>
-Enter the project to use during the update of the system modules.<br>&nbsp;<br>
-This project should not exist, and will be created during update, and deleted once finished.
-<%= Bean.getHtmlPart("C_HELP_END") %>
-
-<%= Bean.getHtmlPart("C_HELP_START", "4") %>
 Enter the site to use during the update of the system modules.<br>&nbsp;<br>
 If you are updating documentation modules, please use the same site where the old documentation modules are installed. <br>
 If not you can use the root '/' site.

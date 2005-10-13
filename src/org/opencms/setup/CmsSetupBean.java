@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/10/11 14:13:48 $
- * Version: $Revision: 1.44.2.1 $
+ * Date   : $Date: 2005/10/13 08:23:24 $
+ * Version: $Revision: 1.44.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.setup;
 
+import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
@@ -41,8 +42,7 @@ import org.opencms.main.Messages;
 import org.opencms.main.OpenCms;
 import org.opencms.main.OpenCmsServlet;
 import org.opencms.module.CmsModule;
-import org.opencms.module.CmsModuleDependency;
-import org.opencms.module.CmsModuleImportExportHandler;
+import org.opencms.module.CmsModuleManager;
 import org.opencms.report.CmsShellReport;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.1 $ 
+ * @version $Revision: 1.44.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -254,91 +254,41 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      * structure of the map returned by this method!<p>
      * 
      * @return a map with all available modules
+     * 
+     * @throws CmsConfigurationException if something goes wrong 
      */
-    public Map getAvailableModules() {
+    public Map getAvailableModules() throws CmsConfigurationException {
 
-        try {
+        if (m_availableModules == null || m_availableModules.isEmpty()) {
             m_availableModules = new HashMap();
-            m_moduleDependencies = new HashMap();
-
             // open the folder "/WEB-INF/packages/modules/"
-            File packagesFolder = new File(m_webAppRfsPath
+            String packagesFolder = m_webAppRfsPath
                 + "WEB-INF"
                 + File.separator
-                + "packages"
+                + CmsSystemInfo.FOLDER_PACKAGES
                 + File.separator
-                + "modules");
-
-            if (packagesFolder.exists()) {
-                // list all child resources in the packages folder
-                File[] childResources = packagesFolder.listFiles();
-
-                if (childResources != null) {
-                    for (int i = 0; i < childResources.length; i++) {
-                        File childResource = childResources[i];
-
-                        if (childResource.isFile() && !(childResource.getAbsolutePath().toLowerCase().endsWith(".zip"))) {
-                            // skip non-ZIP files
-                            continue;
-                        }
-
-                        // parse the module's manifest
-                        CmsModule module = CmsModuleImportExportHandler.readModuleFromImport(childResource.getAbsolutePath());
-
-                        // module package name
-                        String moduleName = module.getName();
-                        // module group name
-                        String moduleGroup = module.getGroup();
-                        // module nice name
-                        String moduleNiceName = module.getNiceName();
-                        // module version
-                        String moduleVersion = module.getVersion().getVersion();
-                        // module description
-                        String moduleDescription = module.getDescription();
-
-                        // if module a depends on module b, and module c depends also on module b:
-                        // build a map with a list containing "a" and "c" keyed by "b" to get a 
-                        // list of modules depending on module "b"...                        
-                        List dependencies = module.getDependencies();
-                        for (int j = 0, n = dependencies.size(); j < n; j++) {
-                            CmsModuleDependency dependency = (CmsModuleDependency)dependencies.get(j);
-
-                            // module dependency package name
-                            String moduleDependencyName = dependency.getName();
-                            // get the list of dependend modules
-                            List moduleDependencies = (List)m_moduleDependencies.get(moduleDependencyName);
-
-                            if (moduleDependencies == null) {
-                                // build a new list if "b" has no dependend modules yet
-                                moduleDependencies = new ArrayList();
-                                m_moduleDependencies.put(moduleDependencyName, moduleDependencies);
-                            }
-
-                            // add "a" as a module depending on "b"
-                            moduleDependencies.add(moduleName);
-                        }
-
-                        // create a map holding the collected module information
-                        Map moduleData = new HashMap();
-                        moduleData.put("name", moduleName);
-                        moduleData.put("niceName", moduleNiceName);
-                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(moduleGroup)) {
-                            moduleData.put("group", moduleGroup);
-                        }
-                        moduleData.put("version", moduleVersion);
-                        moduleData.put("description", moduleDescription);
-                        moduleData.put("filename", childResource.getName());
-
-                        // put the module information into a map keyed by the module packages names
-                        m_availableModules.put(moduleName, moduleData);
-                    }
+                + CmsSystemInfo.FOLDER_MODULES;
+            
+            Map modules = CmsModuleManager.getAllModulesFromPath(packagesFolder);
+            Iterator itMods = modules.keySet().iterator();
+            while (itMods.hasNext()) {
+                CmsModule module = (CmsModule)itMods.next();
+                // create a map holding the collected module information
+                Map moduleData = new HashMap();
+                moduleData.put("name", module.getName());
+                moduleData.put("niceName", module.getNiceName());
+                if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(module.getGroup())) {
+                    moduleData.put("group", module.getGroup());
                 }
-            }
-        } catch (Exception e) {
-            System.err.println(e.toString());
-            e.printStackTrace(System.err);
-        }
+                moduleData.put("version", module.getVersion().getVersion());
+                moduleData.put("description", module.getDescription());
+                moduleData.put("filename", modules.get(module));
 
+                // put the module information into a map keyed by the module packages names
+                m_availableModules.put(module.getName(), moduleData);
+                
+            }
+        }
         return m_availableModules;
     }
 
@@ -707,10 +657,22 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      * Returns a map with lists of dependent module package names keyed by module package names.<p>
      * 
      * @return a map with lists of dependent module package names keyed by module package names
+     * 
+     * @throws CmsConfigurationException if something goes wrong 
      */
-    public Map getModuleDependencies() {
+    public Map getModuleDependencies() throws CmsConfigurationException {
 
-        getAvailableModules();
+        if (m_moduleDependencies == null || m_moduleDependencies.isEmpty()) {
+            // open the folder "/WEB-INF/packages/modules/"
+            String packagesFolder = m_webAppRfsPath
+                + "WEB-INF"
+                + File.separator
+                + CmsSystemInfo.FOLDER_PACKAGES
+                + File.separator
+                + CmsSystemInfo.FOLDER_MODULES;
+
+            m_moduleDependencies = CmsModuleManager.buildDepsForAllModules(packagesFolder, true);
+        }
         return m_moduleDependencies;
     }
 
@@ -1481,6 +1443,8 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         } else {
             m_installModules = Collections.EMPTY_LIST;
         }
+        // to slow
+        // CmsModuleManager.topologicalSort(m_installModules, m_webAppRfsPath + "WEB-INF" + File.separator + "packages" + File.separator + "modules");
     }
 
     /**

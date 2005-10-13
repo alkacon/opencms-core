@@ -8,13 +8,20 @@ login "@ADMIN_USER@" "@ADMIN_PWD@"
 setSiteRoot "@UPDATE_SITE@"
 
 # create the update project
+createGroup "@ADMIN_GROUP@" "Temporary group for creating the update project"
 createProject "@UPDATE_PROJECT@" "Temporary Project for update wizard" "@ADMIN_GROUP@" "@ADMIN_GROUP@"
 
 # Switch to the update project
 setCurrentProject "@UPDATE_PROJECT@"
 
+# update jar files
+updateJarsFromUpdateBean
+
 # Import the modules that have been selected in the update wizard
 updateModulesFromUpdateBean
+
+# Delete the update group
+deleteGroup "@ADMIN_GROUP@"
 
 # Switch to the online project
 setCurrentProject "Online"
