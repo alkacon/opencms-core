@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/10/12 13:04:39 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2005/10/13 08:27:33 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -637,11 +637,14 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             // new property, create new property object
             currentProperty = new CmsProperty();
             currentProperty.setName(propName);
+        } else {
+            // clone the property, because the original property is frozen
+            currentProperty = currentProperty.cloneAsProperty();
         }
 
         // check if there is a parameter value for the current property
         boolean emptyParam = true;
-        if (propValue != null && !"".equals(propValue.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propValue)) {
             emptyParam = false;
         }
 
