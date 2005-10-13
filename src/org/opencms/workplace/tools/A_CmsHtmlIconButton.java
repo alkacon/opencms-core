@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsHtmlIconButton.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/27 14:52:51 $
+ * Version: $Revision: 1.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.21 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,6 +113,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @param helpText the help text
      * @param enabled if enabled or not
      * @param iconPath the path to the icon
+     * @param confirmationMessage the optional confirmation message
      * @param onClick the js code to execute
      * 
      * @return html code
@@ -125,9 +126,10 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String helpText,
         boolean enabled,
         String iconPath,
+        String confirmationMessage,
         String onClick) {
 
-        return defaultButtonHtml(jsp, style, id, id, name, helpText, enabled, iconPath, onClick, false);
+        return defaultButtonHtml(jsp, style, id, id, name, helpText, enabled, iconPath, confirmationMessage, onClick, false);
     }
 
     /**
@@ -141,6 +143,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
      * @param helpText the help text, if empty no mouse events are generated
      * @param enabled if enabled or not, if not set be sure to take an according helptext
      * @param iconPath the path to the icon, if empty only the name is displayed
+     * @param confirmationMessage the confirmation message
      * @param onClick the js code to execute, if empty no link is generated
      * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
      * 
@@ -155,6 +158,7 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         String helpText,
         boolean enabled,
         String iconPath,
+        String confirmationMessage,
         String onClick,
         boolean singleHelp) {
 
@@ -191,7 +195,13 @@ public abstract class A_CmsHtmlIconButton implements I_CmsHtmlIconButton {
         }
         if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClick)) {
             html.append(" onClick=\"");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
+                html.append("if (confirm('" + CmsStringUtil.escapeJavaScript(confirmationMessage) + "')) {");
+            }
             html.append(onClick);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
+                html.append(" }");
+            }
             html.append("\"");
         }
         if (style == CmsHtmlIconButtonStyleEnum.SMALL_ICON_ONLY) {

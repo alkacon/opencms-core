@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsTool.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/10/13 11:06:32 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.List;
  * 
  * @author Michael Moossen 
  *  
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,6 +126,7 @@ public class CmsTool {
             m_handler.isEnabled(wp.getCms()) ? m_handler.getHelpText() : m_handler.getDisabledHelpText(),
             m_handler.isEnabled(wp.getCms()),
             m_handler.getIconPath(),
+            m_handler.getConfirmationMessage(),
             onClic);
     }
 

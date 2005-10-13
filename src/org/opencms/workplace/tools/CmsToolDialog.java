@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/10/13 11:06:32 $
+ * Version: $Revision: 1.32 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.32 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,6 +151,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 parentName,
                 true,
                 "admin/images/up.png",
+                null,
                 onClic));
             html.append("\n\t\t\t</td>\n");
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceIconAction.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/10/13 11:06:32 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +87,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
             resolveHelpText(wp.getLocale()),
             isEnabled(),
             getIconPath(),
+            null,
             resolveOnClic(wp.getLocale()),
             getColumnForTexts() == null);
     }
@@ -118,7 +119,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
      * 
-     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, boolean)}</code>
+     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, String, boolean)}</code>
      * is that the icons are 16x16.<p>
      * 
      * @param jsp the cms context, can be null
@@ -129,11 +130,12 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
      * @param enabled if enabled or not, if not set be sure to take an according helptext
      * @param iconPath the path to the icon, if empty only the name is displayed
      * @param onClick the js code to execute, if empty no link is generated
+     * @param confirmationMessage the confirmation message
      * @param singleHelp if set, no helptext is written, you have to use the defaultHelpHtml() method later
      * 
      * @return html code
      * 
-     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, boolean)
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, String, boolean)
      */
     private String defButtonHtml(
         CmsJspActionElement jsp,
@@ -143,6 +145,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
         String helpText,
         boolean enabled,
         String iconPath,
+        String confirmationMessage,
         String onClick,
         boolean singleHelp) {
 
@@ -174,7 +177,13 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
         }
         if (enabled && CmsStringUtil.isNotEmptyOrWhitespaceOnly(onClick)) {
             html.append(" onClick=\"");
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
+                html.append("if (confirm('" + CmsStringUtil.escapeJavaScript(confirmationMessage) + "')) {");
+            }
             html.append(onClick);
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
+                html.append(" }");
+            }
             html.append("\"");
         }
         html.append(" title='");

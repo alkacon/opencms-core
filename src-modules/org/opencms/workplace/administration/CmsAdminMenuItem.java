@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenuItem.java,v $
- * Date   : $Date: 2005/06/29 09:24:47 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.tools.CmsToolMacroResolver;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,6 +192,7 @@ public class CmsAdminMenuItem {
             getHelpText(),
             isEnabled(),
             getIconPath(),
+            null,
             onClic));
 
         html.append("\t\t</td>\n");

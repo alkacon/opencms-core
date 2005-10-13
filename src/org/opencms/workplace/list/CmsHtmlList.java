@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/10/10 16:11:04 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2005/10/13 11:06:32 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.34 $ 
  * 
  * @since 6.0.0 
  */
@@ -944,6 +944,7 @@ public class CmsHtmlList {
             helpText,
             enabled,
             iconPath,
+            null,
             onClic));
         html.append("\n");
         // next button
@@ -964,6 +965,7 @@ public class CmsHtmlList {
             helpText,
             enabled,
             iconPath,
+            null,
             onClic));
         html.append("\n");
         // page selection list

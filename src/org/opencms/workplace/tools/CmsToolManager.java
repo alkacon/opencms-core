@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/10/10 16:11:08 $
- * Version: $Revision: 1.41 $
+ * Date   : $Date: 2005/10/13 11:06:32 $
+ * Version: $Revision: 1.42 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.41 $ 
+ * @version $Revision: 1.42 $ 
  * 
  * @since 6.0.0 
  */
@@ -231,6 +231,7 @@ public class CmsToolManager {
             null,
             false,
             null,
+            null,
             null);
         String parent = toolPath;
         while (!parent.equals(getRootToolPath(wp))) {
@@ -247,6 +248,7 @@ public class CmsToolManager {
                 adminTool.getHandler().getName(),
                 adminTool.getHandler().getHelpText(),
                 true,
+                null,
                 null,
                 onClic);
             html = buttonHtml + NAVBAR_SEPARATOR + html;
