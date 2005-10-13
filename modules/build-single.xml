@@ -291,7 +291,7 @@
 								<fileset dir="${module.input.lib}" includes="*.jar"/>
 							</path>
 		                    <sequential>
-		                        <var name="module.libs.path" value="${module.libs.path}:${module.input.lib}/@{archive}" />
+		                        <var name="module.libs.path" value="${module.libs.path}:@{archive}" />
 		                    </sequential>
 		                </for>
 					</then>
