@@ -845,8 +845,6 @@ ${opencms.inputlib.textextraction}
 			<formatter type="plain" />
 			
 			<test name="org.opencms.xml.content.AllTests" />			
-			
 		</junit>
 	</target>
-
 </project>
