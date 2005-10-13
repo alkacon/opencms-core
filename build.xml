@@ -449,6 +449,194 @@ ${opencms.inputlib.textextraction}
     	</for>
     </target>
 
+	<!-- 
+		Set/Override this property to one of the following values: 
+		- interactive: interactive GUI based module selection.
+		- selection: module selection based on modules.common.selection property
+		- all: module selection based on modules.common.all property defined in the all-modules.properties file
+	-->
+	<property name="modules.selection.mode"				value="interactive" />
+	
+    <target name="build.updater" 
+    	depends="jar" description="Generates a distributable updater zip file">
+    	
+    	<property file="${basedir}/modules/all-modules.properties" />
+    	<echo message="all: ${basedir}/modules"/>
+    	<if>
+    		<not><isset property="modules.common.all" /></not>
+    	  <then>
+    		<fail>
+    			property modules.common.all undefined.
+    		</fail>
+    	  </then>
+    	  <else>
+    	  	<echo message="all: ${modules.common.all}"/>
+    	  </else>
+    	</if>
+        <sortlist property="modules.all.sort" value="${modules.common.all}" override="true" />
+	  	<selectionprompt 
+	  	  	property="modules.common.interactive"
+	  	    defaultvalue=""
+	  		allvalues="${modules.all.sort}"
+	  		prompt="Please select the modules to include in the update wizard:"
+	  		title="Module Selection"
+	  	/>
+	    <if>
+	      <equals arg1="${modules.common.interactive}" arg2="__ABORT__" />
+	      <then>
+	    	<fail>aborted by User</fail>
+	      </then>
+	    </if>
+		<property name="modules.var" value="${modules.common.interactive}" />
+        <sortlist property="modules.var" value="${modules.var}" override="true" />
+	  	<ant antfile="${basedir}/modules/build.xml" target="dist" inheritAll="false" >
+	  		<property name="modules.selection.mode" value="selection" />
+	  		<property name="modules.common.selection" value="${modules.var}" />
+	  	</ant>
+
+    	<delete failonerror="no" file="${opencms.output.distfiles}/opencms-updater.zip" />
+    	<zip
+            zipfile="${opencms.output.distfiles}/opencms-updater.zip"
+            basedir="${opencms.input.updater}"
+            includes="**" >
+        	<zipfileset dir="${opencms.output.jars}" prefix="WEB-INF/lib" includes="opencms.jar" />
+    	</zip>
+
+    	<var name="modules.jar.list" value="" />
+    	<for list="${modules.var}" param="module" trim="yes">
+    	  <sequential>
+    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
+    	  	</zip>
+        	<if>
+	    		<available file="${opencms.output}/build/jars-@{module}" />
+				<then>
+		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+		            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="update/jars" includes="@{module}.jar" />
+		    	  	</zip>
+		    	  	<if>
+		    	  		<not>
+			    	  		<equals arg1="${modules.jar.list}" arg2="" />
+		    	  		</not>
+		    	  		<then>
+		    	        	<var name="modules.jar.list" value="${modules.jar.list}," />
+		    	  		</then>
+		    	  	</if>
+		        	<var name="modules.jar.list" value="${modules.jar.list}@{module}.jar" />
+				</then>
+			</if>
+        	<if>
+	    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
+				<then>
+		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+		            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="update/jars" includes="*.jar" />
+		    	  	</zip>
+			        <var name="input.lib.regex" value="" /> 
+			    	<for list="${opencms.input}\\modules\\@{module}\\resources\\system\\modules\\@{module}\\lib" param="path" delimiter="\\" trim="yes">
+			    	  <sequential>
+			            <var name="input.lib.regex" value="${input.lib.regex}@{path}\\" /> 
+			      	  </sequential>
+					</for>
+			    	<echo message="${input.lib.regex}"/>
+					<for param="archive">
+						<path>
+							<fileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" includes="*.jar"/>
+						</path>
+	                    <sequential>
+	    		    	  	<if>
+	    		    	  		<not>
+		    		    	  		<equals arg1="${modules.jar.list}" arg2="" />
+	    		    	  		</not>
+	    		    	  		<then>
+	    		    	        	<var name="modules.jar.list" value="${modules.jar.list}," />
+	    		    	  		</then>
+	    		    	  	</if>
+	                    	<echo message="@{archive}"/>
+	                        <propertyregex property="archive.name" override="true"
+	                                  input="@{archive}"
+	                                  regexp="${input.lib.regex}([^\.]*)"
+	                                  replace="\1"
+	                                  casesensitive="false" />
+	    		        	<var name="modules.jar.list" value="${modules.jar.list}${archive.name}" />
+	                    </sequential>
+	                </for>
+				</then>
+			</if>
+    	  </sequential>
+    	</for>
+    	
+        <var name="input.lib.regex" value="" /> 
+    	<for list="${opencms.input.libs}" param="path" delimiter="\\" trim="yes">
+    	  <sequential>
+            <var name="input.lib.regex" value="${input.lib.regex}@{path}\\" /> 
+      	  </sequential>
+		</for>
+    	<echo message="${input.lib.regex}"/>
+    	<var name="libs.common.all" value="" />
+    	<for param="archive">
+			<path>
+				<fileset dir="${opencms.input.libs}" includes="*.jar"/>
+			</path>
+            <sequential>
+        	  	<if>
+        	  		<not>
+	        	  		<equals arg1="${libs.common.all}" arg2="" />
+        	  		</not>
+        	  		<then>
+        	        	<var name="libs.common.all" value="${libs.common.all}," />
+        	  		</then>
+        	  	</if>
+            	<echo message="@{archive}"/>
+                <propertyregex property="archive.name" override="true"
+                          input="@{archive}"
+                          regexp="${input.lib.regex}([^\.]*)"
+                          replace="\1"
+                          casesensitive="false" />
+            	<var name="libs.common.all" value="${libs.common.all},${archive.name}" />
+            </sequential>
+        </for>
+        <sortlist property="libs.all.sort" value="${libs.common.all}" override="true" />
+	  	<selectionprompt 
+	  	  	property="libs.common.interactive"
+	  	    defaultvalue=""
+	  		allvalues="${libs.all.sort}"
+	  		prompt="Please select the libs to include in the update wizard:"
+	  		title="Library Selection"
+	  	/>
+	    <if>
+	      <equals arg1="${libs.common.interactive}" arg2="__ABORT__" />
+	      <then>
+	    	<fail>aborted by User</fail>
+	      </then>
+	    </if>
+		<property name="libs.var" value="${libs.common.interactive}" />
+        <sortlist property="libs.var" value="${libs.var}" override="true" />
+
+	  	<if>
+	  		<not>
+    	  		<equals arg1="${modules.jar.list}" arg2="" />
+	  		</not>
+	  		<then>
+	        	<var name="libs.var" value=",${libs.var}" />
+	  		</then>
+	  	</if>
+    	<echo message="${modules.jar.list}" />
+    	<echo message="${libs.var}" />
+    	<copy 
+			file="${opencms.input.updater}/update/jars/removejars.properties" 
+			tofile="${opencms.output}/build/removejars.properties" overwrite="true">			
+    		<filterset>
+      			<filter token="JARS_TO_REMOVE_FOR_MODULES" value="${modules.jar.list}"/>
+      			<filter token="JARS_TO_REMOVE_FOR_LIBS" value="${libs.var}"/>
+    		</filterset>			
+		</copy>
+
+	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+        	<zipfileset dir="${opencms.input.libs}" prefix="update/jars" includes="${libs.var}" />
+        	<zipfileset dir="${opencms.output}/build" prefix="update/jars" includes="removejars.properties" />
+	  	</zip>
+    </target>
+
     <target name="war" 
     	depends="jar" description="Builds the opencms.war">
         
