@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/09/17 16:38:43 $
- * Version: $Revision: 1.93.2.2 $
+ * Date   : $Date: 2005/10/13 08:27:45 $
+ * Version: $Revision: 1.93.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.2 $ 
+ * @version $Revision: 1.93.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1177,7 +1177,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
 
-        CmsLog.getLog(wp).error(t);
+        CmsLog.getLog(wp).error(Messages.get().key(Messages.ERR_WORKPLACE_DIALOG_0), t);
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, wp);
         getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
         getJsp().include(FILE_DIALOG_SCREEN_ERRORPAGE);
