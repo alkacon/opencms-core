@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/10/13 13:20:32 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,6 +150,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_TITLE_TEXT_4 = "GUI_LIST_TITLE_TEXT_4";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OPENRESOURCE_ACTION_DISABLED_HELP_0 = "GUI_OPENRESOURCE_ACTION_DISABLED_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OPENRESOURCE_ACTION_HELP_0 = "GUI_OPENRESOURCE_ACTION_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_OPENRESOURCE_ACTION_NAME_0 = "GUI_OPENRESOURCE_ACTION_NAME_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.list.messages";

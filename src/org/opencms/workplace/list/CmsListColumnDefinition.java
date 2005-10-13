@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2005/10/13 13:20:32 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -161,7 +161,7 @@ public class CmsListColumnDefinition {
      */
     public CmsListDefaultAction getDefaultAction(String actionId) {
 
-        Iterator it = m_directActions.iterator();
+        Iterator it = m_defaultActions.iterator();
         while (it.hasNext()) {
             CmsListDefaultAction action = (CmsListDefaultAction)it.next();
             if (action.getId().equals(actionId)) {
