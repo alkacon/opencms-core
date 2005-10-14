@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/10/14 09:42:30 $
- * Version: $Revision: 1.53.2.4 $
+ * Date   : $Date: 2005/10/14 10:24:00 $
+ * Version: $Revision: 1.53.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.search.documents.I_CmsTermHighlighter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,7 +76,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.4 $ 
+ * @version $Revision: 1.53.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -777,6 +778,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      */
     protected boolean checkIndexLock(CmsSearchIndex index, I_CmsReport report) {
 
+        File indexPath = new File(index.getPath());
+        // check if the target index path already exists
+        if (!indexPath.exists()) {
+            // if the folder does not yet exist it is also not locked
+            return false;
+        }
+        
         // check if the index is locked
         boolean indexLocked = true;
         try {
