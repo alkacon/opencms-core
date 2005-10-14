@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/10/11 14:45:51 $
- * Version: $Revision: 1.53.2.2 $
+ * Date   : $Date: 2005/10/14 09:16:18 $
+ * Version: $Revision: 1.53.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishedResource;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -65,6 +66,7 @@ import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.search.Similarity;
+import org.apache.lucene.store.FSDirectory;
 
 /**
  * Implements the general management and configuration of the search and 
@@ -73,7 +75,7 @@ import org.apache.lucene.search.Similarity;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.2 $ 
+ * @version $Revision: 1.53.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +107,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
     /** A list of search indexes. */
     private List m_indexes;
+
+    /** Seconds to wait for an index lock. */
+    private int m_indexLockMaxWaitSeconds = 10;
 
     /** Configured index sources. */
     private Map m_indexSources;
@@ -342,6 +347,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         return null;
+    }
+
+    /**
+     * Returns the seconds to wait for an index lock during an update operation.<p>
+     * 
+     * @return the seconds to wait for an index lock during an update operation
+     */
+    public int getIndexLockMaxWaitSeconds() {
+
+        return m_indexLockMaxWaitSeconds;
     }
 
     /**
@@ -706,6 +721,16 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     }
 
     /**
+     * Sets the seconds to wait for an index lock during an update operation.<p>
+     * 
+     * @param value the seconds to wait for an index lock during an update operation
+     */
+    public void setIndexLockMaxWaitSeconds(int value) {
+
+        m_indexLockMaxWaitSeconds = value;
+    }
+
+    /**
      * Sets the max. excerpt length.<p>
      *
      * @param maxExcerptLength the max. excerpt length to set
@@ -738,6 +763,42 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
     public void setTimeout(String value) {
 
         m_timeout = value;
+    }
+
+    /**
+     * Checks is a given index is locked, if so waits for a numer of seconds and checks again,
+     * until either the index is unlocked or a limit of seconds set by <code>{@link #setIndexLockMaxWaitSeconds(int)}</code>
+     * is reached.<p>
+     * 
+     * @param index the index to check the lock for
+     * @param report the report to write error messages on
+     * 
+     * @return <code>true</code> if the index is locked
+     */
+    protected boolean checkIndexLock(CmsSearchIndex index, I_CmsReport report) {
+
+        // check if the index is locked
+        boolean indexLocked = true;
+        try {
+            int lockSecs = 0;
+            while (indexLocked && (lockSecs < m_indexLockMaxWaitSeconds)) {
+                indexLocked = IndexReader.isLocked(index.getPath());
+                if (indexLocked) {
+                    // index is still locked, wait one second
+                    report.println(Messages.get().container(
+                        Messages.RPT_SEARCH_INDEXING_LOCK_WAIT_2,
+                        index.getName(),
+                        new Integer(m_indexLockMaxWaitSeconds - lockSecs)), I_CmsReport.FORMAT_ERROR);
+                    // sleep one second
+                    Thread.sleep(1000);
+                    lockSecs++;
+                }
+            }
+        } catch (Exception e) {
+            LOG.error(Messages.get().key(Messages.LOG_IO_INDEX_READER_OPEN_2, index.getPath(), index.getName()), e);
+        }
+
+        return indexLocked;
     }
 
     /**
@@ -1039,6 +1100,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         if ((resourcesToIndex == null) || resourcesToIndex.isEmpty()) {
             // rebuild the complete index
 
+            if (checkIndexLock(index, report)) {
+                // unable to lock the index for updating
+                CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
+                report.println(msg, I_CmsReport.FORMAT_ERROR);
+                try {
+                    // force unlock on the index, we are doing a full rebuild anyway
+                    IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), true));
+                } catch (IOException e) {
+                    // unable to force unlock of Lucene index, we can't continue this way
+                    throw new CmsIndexException(msg);
+                }
+            }
+
             // create a new index writer
             IndexWriter writer = index.getIndexWriter(true);
 
@@ -1143,6 +1217,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 report.println(
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_BEGIN_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);
+            }
+
+            if (checkIndexLock(index, report)) {
+                // unable to lock the index for updating
+                CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
+                report.println(msg, I_CmsReport.FORMAT_ERROR);
+                throw new CmsIndexException(msg);
             }
 
             if (hasResourcesToDelete) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/12 17:38:40 $
- * Version: $Revision: 1.682.2.23 $
+ * Date   : $Date: 2005/10/14 09:17:14 $
+ * Version: $Revision: 1.682.2.24 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 6.1.1 - xxxxx, 2005
 ! Image "height" and "width" attributes are calculated and stored in "image.size" property (if image is loader enabled)
 * Fixed issue with resources outside timerange in editors
 ! Added "Update Wizard" to enable updating several OpenCms modules at once
+* Added experimental fix for search index lock issue that may cause publishing to hang
 * Fixed issue with NULL_PROPERTY not being immutable
 * Fixed issue #615: Uploading modules with new (unknown) resource type classes
 * Fixed issue #884: Cancelling upload of files in non-applet dialog now resets file content
