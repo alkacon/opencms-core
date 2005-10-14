@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/10/14 09:16:18 $
- * Version: $Revision: 1.53.2.3 $
+ * Date   : $Date: 2005/10/14 09:42:30 $
+ * Version: $Revision: 1.53.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.3 $ 
+ * @version $Revision: 1.53.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1113,9 +1113,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
 
-            // create a new index writer
-            IndexWriter writer = index.getIndexWriter(true);
-
             // create a new thread manager for the indexing threads
             // please note: document cache _must_ be null for full rebuild 
             //              since there may be diffeences between online and offline projects,
@@ -1126,7 +1123,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 index.getName(),
                 null);
 
+            IndexWriter writer = null;
             try {
+                // create a new index writer
+                writer = index.getIndexWriter(true);
 
                 // ouput start information on the report
                 report.println(
@@ -1263,37 +1263,27 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             if (hasResourcesToUpdate) {
 
-                // create an index writer that updates the current index
-                IndexWriter writer = index.getIndexWriter(false);
+                // create a new thread manager
+                CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(
+                    report,
+                    Long.parseLong(m_timeout),
+                    index.getName(),
+                    documentCache);
 
-                if (writer != null) {
+                IndexWriter writer = null;
+                try {
 
-                    // create a new thread manager
-                    CmsIndexingThreadManager threadManager = new CmsIndexingThreadManager(
-                        report,
-                        Long.parseLong(m_timeout),
-                        index.getName(),
-                        documentCache);
+                    // create an index writer that updates the current index
+                    writer = index.getIndexWriter(false);
 
-                    try {
-                        Iterator i = updateCollections.iterator();
-                        while (i.hasNext()) {
-                            CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
-                            if (updateCollection.hasResourceToUpdate()) {
-                                updateCollection.getIndexer().updateResources(
-                                    writer,
-                                    threadManager,
-                                    updateCollection.getResourcesToUpdate());
-                            }
-                        }
-                    } finally {
-                        try {
-                            writer.close();
-                        } catch (IOException e) {
-                            LOG.error(Messages.get().key(
-                                Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
-                                index.getPath(),
-                                index.getName()), e);
+                    Iterator i = updateCollections.iterator();
+                    while (i.hasNext()) {
+                        CmsSearchIndexUpdateData updateCollection = (CmsSearchIndexUpdateData)i.next();
+                        if (updateCollection.hasResourceToUpdate()) {
+                            updateCollection.getIndexer().updateResources(
+                                writer,
+                                threadManager,
+                                updateCollection.getResourcesToUpdate());
                         }
                     }
 
@@ -1303,6 +1293,18 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             Thread.sleep(1000);
                         } catch (InterruptedException e) {
                             // just continue with the loop after interruption
+                        }
+                    }
+
+                } finally {
+                    if (writer != null) {
+                        try {
+                            writer.close();
+                        } catch (IOException e) {
+                            LOG.error(Messages.get().key(
+                                Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
+                                index.getPath(),
+                                index.getName()), e);
                         }
                     }
                 }
