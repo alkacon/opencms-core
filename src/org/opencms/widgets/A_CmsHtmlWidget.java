@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2005/10/02 08:59:08 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/10/17 14:34:01 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,16 @@ package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.galleries.A_CmsGallery;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -43,7 +52,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.1 
  */
@@ -136,5 +145,133 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
     public void setHtmlWidgetOption(CmsHtmlWidgetOption htmlWidgetOption) {
 
         m_htmlWidgetOption = htmlWidgetOption;
+    }
+
+    /**
+     * Returns the HTML for the OpenCms specific button row for galleries and links.<p>
+     * 
+     * Use this method to generate a button row with OpenCms specific dialog buttons in the 
+     * {@link org.opencms.widgets.I_CmsWidget#getDialogWidget(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)}
+     * method to obtain the buttons.<p>
+     * 
+     * Overwrite the method if the integrated editor needs a specific button generation 
+     * (e.g. add format select or toggle source code button) or if some buttons should not be available.<p>
+     * 
+     * @param widgetDialog the dialog where the widget is used on
+     * @param paramId the id of the current widget
+     * @return the html String for the OpenCms specific button row
+     */
+    protected String buildOpenCmsButtonRow(I_CmsWidgetDialog widgetDialog, String paramId) {
+
+        StringBuffer result = new StringBuffer(2048);
+        // flag indicating if at least one button is active
+        boolean buttonsActive = false;
+
+        // generate button row start HTML
+        result.append(buildOpenCmsButtonRow(CmsWorkplace.HTML_START, widgetDialog));
+
+        // build the link buttons
+        if (getHtmlWidgetOption().showLinkDialog()) {
+            result.append(widgetDialog.button("javascript:setActiveEditor('"
+                + paramId
+                + "');openLinkDialog('"
+                + widgetDialog.getMessages().key("editor.message.noselection")
+                + "');", null, "link", "button.linkto", widgetDialog.getButtonStyle()));
+            buttonsActive = true;
+        }
+        if (getHtmlWidgetOption().showAnchorDialog()) {
+            result.append(widgetDialog.button("javascript:setActiveEditor('"
+                + paramId
+                + "');openAnchorDialog('"
+                + widgetDialog.getMessages().key("editor.message.noselection")
+                + "');", null, "anchor", "button.anchor", widgetDialog.getButtonStyle()));
+            buttonsActive = true;
+        }
+
+        // build the gallery button row
+        Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
+        List galleries = new ArrayList(galleryMap.size());
+        Map typeMap = new HashMap(galleryMap.size());
+
+        Iterator i = galleryMap.keySet().iterator();
+        while (i.hasNext()) {
+            String key = (String)i.next();
+            A_CmsGallery currGallery = (A_CmsGallery)galleryMap.get(key);
+            galleries.add(currGallery);
+            // put the type name to the type Map
+            typeMap.put(currGallery, key);
+        }
+
+        // sort the found galleries by their order
+        Collections.sort(galleries);
+
+        StringBuffer galleryResult = new StringBuffer(8);
+        boolean showGallery = false;
+        for (int k = 0; k < galleries.size(); k++) {
+            A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
+            String galleryType = (String)typeMap.get(currGallery);
+            if (getHtmlWidgetOption().showGalleryDialog(galleryType)) {
+                // gallery is shown, build button
+                galleryResult.append(widgetDialog.button("javascript:setActiveEditor('"
+                    + paramId
+                    + "');openGallery('"
+                    + galleryType
+                    + "');", null, galleryType, "button."
+                    + CmsStringUtil.substitute(galleryType, "gallery", "")
+                    + "list", widgetDialog.getButtonStyle()));
+                showGallery = true;
+            }
+        }
+
+        if (showGallery) {
+            // at least one gallery is shown, create the gallery buttons
+            if (buttonsActive) {
+                // show separator before gallery buttons
+                result.append(widgetDialog.buttonBarSeparator(5, 5));
+            }
+            result.append(galleryResult);
+            buttonsActive = true;
+        }
+
+        if (!buttonsActive) {
+            // no active buttons to show, return empty String
+            return "";
+        }
+
+        // generate button row end HTML
+        result.append(buildOpenCmsButtonRow(CmsWorkplace.HTML_END, widgetDialog));
+
+        // show the active buttons
+        return result.toString();
+
+    }
+
+    /**
+     * Returns the start or end HTML for the OpenCms specific button row.<p>
+     * 
+     * Use this method to generate the start and end html for the button row.<p>
+     * 
+     * Overwrite the method if the integrated editor needs a specific layout for the button row start or end html.<p>
+     * 
+     * @param segment the HTML segment (START / END)
+     * @param widgetDialog the dialog where the widget is used on
+     * @return the html String for the OpenCms specific button row
+     */
+    protected String buildOpenCmsButtonRow(int segment, I_CmsWidgetDialog widgetDialog) {
+
+        StringBuffer result = new StringBuffer(256);
+
+        if (segment == CmsWorkplace.HTML_START) {
+            // generate line and start row HTML
+            result.append(widgetDialog.buttonBarHorizontalLine());
+            result.append(widgetDialog.buttonBar(CmsWorkplace.HTML_START));
+            result.append(widgetDialog.buttonBarStartTab(0, 0));
+        } else {
+            // close button row and generate end line
+            result.append(widgetDialog.buttonBar(CmsWorkplace.HTML_END));
+            result.append(widgetDialog.buttonBarHorizontalLine());
+        }
+
+        return result.toString();
     }
 }
