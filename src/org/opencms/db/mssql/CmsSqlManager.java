@@ -1,5 +1,5 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/maxdb/Attic/CmsSqlManager.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/mssql/CmsSqlManager.java,v $
  * Date   : $Date: 2005/10/17 11:32:15 $
  * Version: $Revision: 1.1.2.1 $
  *
@@ -23,32 +23,30 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.db.maxdb;
+package org.opencms.db.mssql;
 
 /**
- * MaxDB/SapDB implementation of the SQL manager.<p>
- * 
- * @author Thomas Weckert 
- * @author Clovis Wichoski
- * @author Fabiano Rech  
- * 
+ * MS SQL implementation of the SQL manager.<p>
+ *
+ * @author Andras Balogh
+ *
  * @version $Revision: 1.1.2.1 $
- * 
- * @since 6.0.0 
+ *
+ * @since 6.0.0
  */
 public class CmsSqlManager extends org.opencms.db.generic.CmsSqlManager {
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -8129796616932138798L;
+    private static final long serialVersionUID = 3190893643578397893L;
 
     /** The filename/path of the SQL query properties. */
-    private static final String QUERY_PROPERTIES = "org/opencms/db/maxdb/query.properties";
+    private static final String QUERY_PROPERTIES = "org/opencms/db/mssql/query.properties";
 
     /**
      * @see org.opencms.db.generic.CmsSqlManager#CmsSqlManager()
