@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/14 09:17:14 $
- * Version: $Revision: 1.682.2.24 $
+ * Date   : $Date: 2005/10/17 08:48:04 $
+ * Version: $Revision: 1.682.2.25 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.1 - xxxxx, 2005
+OpenCms 6.1.1 - October 17, 2005
 ! Added "before publish" event
 * Fixed issue with XML content defaults defined in annotations not working for nested cd's when creating new content
 * Fixed issue with bad encoding for sessionless requests due to early access to #getParameter(String) for upload applet
