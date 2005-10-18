@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/10/09 07:04:29 $
- * Version: $Revision: 1.27.2.2 $
+ * Date   : $Date: 2005/10/18 11:53:25 $
+ * Version: $Revision: 1.27.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27.2.2 $ 
+ * @version $Revision: 1.27.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,7 +91,13 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     /** The bean to store information required to make the result list browsable. */
     private CmsContentInfoBean m_contentInfoBean;
 
-    /** The locale to use for displaying the current content. */
+    /**
+     * The locale to use for displaying the current content.<p>
+     * 
+     * Initially, this is equal to the locale set using <code>{@link #setLocale(String)}</code>. 
+     * However, the content locale may change in case a loaded XML content does not have the selected locale available.
+     * In this case the next default locale that is available in the content will be used as content locale.<p> 
+     */
     private Locale m_contentLocale;
 
     /** The FlexController for the current request. */
@@ -198,7 +204,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public int doAfterBody() throws JspException {
 
         if (!m_preload) {
-            // if in only preload mode, nothing needs to be done here    
+            // if in preload mode, nothing needs to be done here    
 
             if (m_directEditPermissions != null) {
                 // last element was direct editable, close it
@@ -216,7 +222,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             // check if there are more files to iterate
             if (m_collectorResult.size() > 0) {
 
-                // there are more files available...
+                // there are more results available...
                 try {
                     doLoadNextFile();
                 } catch (CmsException e) {
@@ -239,6 +245,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
                 // another loop is required
                 return EVAL_BODY_AGAIN;
+            } else {
+                
+                // no more results in the collector, reset locale (just to make sure...)
+                m_locale = null;
             }
         }
 
@@ -344,10 +354,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_controller = CmsFlexController.getController(pageContext.getRequest());
         m_cms = m_controller.getCmsObject();
 
-        // store the current locale    
-        if (m_locale == null) {
-            m_locale = m_cms.getRequestContext().getLocale();
-        }
+
 
         // get the resource name from the selected container
         String resourcename = getResourceName(m_cms, container);
@@ -361,13 +368,22 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
             // parent content container available, use values from this container
             m_collectorName = container.getCollectorName();
             m_collectorParam = container.getCollectorParam();
-            m_collectorResult = container.getCollectorResult();
+            m_collectorResult = container.getCollectorResult(); 
+            if (m_locale == null) {
+                // use locale from ancestor if available
+                m_locale = container.getXmlDocumentLocale();
+            }
         } else {
             // non parent container, initialize new values
             m_collectorName = resolver.resolveMacros(getCollector());
             // resolve the parameter
             m_collectorParam = resolver.resolveMacros(getParam());
             m_collectorResult = null;
+        }
+        
+        if (m_locale == null) {
+            // no locale set, use locale from users request context
+            m_locale = m_cms.getRequestContext().getLocale();
         }
 
         try {
@@ -605,6 +621,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_directEditFollowOptions = null;
         m_property = null;
         m_locale = null;
+        m_contentLocale = null;
         super.release();
     }
 
@@ -637,8 +654,10 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         if (CmsStringUtil.isEmpty(locale)) {
             m_locale = null;
+            m_contentLocale = null;
         } else {
             m_locale = CmsLocaleManager.getLocale(locale);
+            m_contentLocale = m_locale;
         }
     }
 
