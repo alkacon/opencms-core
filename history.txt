@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/19 10:14:06 $
- * Version: $Revision: 1.682.2.29 $
+ * Date   : $Date: 2005/10/19 13:07:25 $
+ * Version: $Revision: 1.682.2.30 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 6.1.2 - October 19, 2005
 ! Added DB support for MS SQL Server 2000 contributed by Andras Balogh
 ! Added first version of "Content check" Administration tool
 * Improved error handling in XML page loader for locale selection process
+* Improved handling of XML entities when writing the export "manifest.xml"
 - Workplace explorer resources to display can now be configured using a Collector
 - Improved handling of "true" and "false" constants
 - Upgraded HtmlParser component to latest released version

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/06/26 12:51:32 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/19 13:07:25 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -524,6 +524,7 @@ public final class CmsXmlUtils {
                 reader.setEntityResolver(resolver);
             }
             reader.setMergeAdjacentText(true);
+            reader.setStripWhitespaceText(true);
             return reader.read(source);
         } catch (DocumentException e) {
             throw new CmsXmlException(Messages.get().container(Messages.ERR_UNMARSHALLING_XML_DOC_0), e);

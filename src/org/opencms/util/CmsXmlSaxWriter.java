@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/19 13:07:25 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,11 @@
 
 package org.opencms.util;
 
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.OpenCms;
+
 import java.io.IOException;
+import java.io.StringWriter;
 import java.io.Writer;
 
 import org.xml.sax.Attributes;
@@ -40,15 +44,18 @@ import org.xml.sax.ext.LexicalHandler;
 import org.xml.sax.helpers.DefaultHandler;
 
 /**
- * Simple SAX event handler that generates a XML file from the events caught.<p>
+ * Simple SAX event handler that generates a XML (or HTML) file from the events caught.<p>
  * 
- * This is to be used for writing large XML files where keeping a DOM structure 
+ * This can be used for writing large XML files where keeping a DOM structure 
  * in memory might cause out-of-memory issues, like e.g. when writing the 
  * OpenCms export files.<p>
+ * 
+ * It can also be used if a <code>{@link org.xml.sax.ContentHandler}</code> is needed that should
+ * generate a XML / HTML file from a series of SAX events.<p>
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,33 +67,79 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     /** The file encoding to use. */
     private String m_encoding;
 
+    /** 
+     * Indicates if characters that are not part of the selected encoding 
+     * are to be replaced with the XML <code>&amp;#123;</code> entity representation
+     * in the generated output (not in CDATA elements). 
+     */
+    private boolean m_escapeUnknownChars;
+
+    /** Indicates if XML entities are to be encoded in the generated output (not in CDATA elements). */
+    private boolean m_escapeXml;
+
     /** The indentation level. */
     private int m_indentLevel;
+
+    /** Indicates if a CDATA node is still open. */
+    private boolean m_isCdata;
 
     /** The last element name written to the output. */
     private String m_lastElementName;
 
-    /** Indicates if a CDATA node is still open. */
+    /** Indicates if a CDATA node needs to be opened. */
     private boolean m_openCdata;
 
     /** Indicates if an element tag is still open. */
-    private boolean m_openTag;
+    private boolean m_openElement;
 
     /** The Writer to write the output to. */
     private Writer m_writer;
 
     /**
-     * A SAX event handler that generates XML Strings from the events caught and writes them
+     * Creates a SAX event handler that generates XML / HTML Strings from the events caught 
+     * using a new <code>{@link StringWriter}</code> and the OpenCms default encoding.<p>
+     */
+    public CmsXmlSaxWriter() {
+
+        this(new StringWriter(), OpenCms.getSystemInfo().getDefaultEncoding());
+    }
+
+    /**
+     * Creates a SAX event handler that generates XML / HTML Strings from the events caught 
+     * using a new <code>{@link StringWriter}</code> and the given encoding.<p>
+     * 
+     * @param encoding the encoding for the XML file
+     */
+    public CmsXmlSaxWriter(String encoding) {
+
+        this(new StringWriter(), encoding);
+    }
+
+    /**
+     * Creates a SAX event handler that generates XML / HTML Strings from the events caught 
+     * using a new <code>{@link StringWriter}</code> and the given encoding.<p>
+     * 
+     * @param writer the Writer to write to output to 
+     */
+    public CmsXmlSaxWriter(Writer writer) {
+
+        this(writer, OpenCms.getSystemInfo().getDefaultEncoding());
+    }
+
+    /**
+     * A SAX event handler that generates XML / HTML Strings from the events caught and writes them
      * to the given Writer.<p>
      * 
      * @param writer the Writer to write to output to 
-     * @param encoding the encoding for the XML output file header
+     * @param encoding the encoding for the XML file
      */
     public CmsXmlSaxWriter(Writer writer, String encoding) {
 
         m_writer = writer;
         m_encoding = encoding;
         m_indentLevel = 0;
+        m_escapeXml = true;
+        m_escapeUnknownChars = false;
     }
 
     /**
@@ -97,15 +150,28 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
         if (len == 0) {
             return;
         }
-        if (m_openTag) {
+        if (m_openElement) {
             write(">");
-            m_openTag = false;
+            m_openElement = false;
         }
         if (m_openCdata) {
             write("<![CDATA[");
             m_openCdata = false;
         }
-        write(new String(buf, offset, len));
+        if (m_escapeXml && !m_isCdata) {
+            // XML should be escaped and we are not in a CDATA node
+            String escaped = new String(buf, offset, len);
+            // escape HTML entities ('<' becomes '&lt;')
+            escaped = CmsEncoder.escapeXml(escaped);
+            if (m_escapeUnknownChars) {
+                // escape all chars that can not be displayed in the selected encoding (using '&#123;' entities)
+                escaped = CmsEncoder.adjustHtmlEncoding(escaped, getEncoding());
+            }
+            write(escaped);
+        } else {
+            // no escaping or in CDATA node
+            write(new String(buf, offset, len));
+        }
     }
 
     /**
@@ -113,7 +179,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      */
     public void comment(char[] ch, int start, int length) {
 
-        // NOOP
+        // ignore
     }
 
     /**
@@ -125,6 +191,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
             write("]]>");
         }
         m_openCdata = false;
+        m_isCdata = false;
     }
 
     /**
@@ -133,9 +200,9 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     public void endDocument() throws SAXException {
 
         try {
-            if (m_openTag) {
+            if (m_openElement) {
                 write("/>");
-                m_openTag = false;
+                m_openElement = false;
             }
             writeNewLine();
             m_writer.flush();
@@ -158,7 +225,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     public void endElement(String namespaceURI, String localName, String qualifiedName) throws SAXException {
 
         String elementName = resolveName(localName, qualifiedName);
-        if (m_openTag) {
+        if (m_openElement) {
             write("/>");
         } else {
             if (!elementName.equals(m_lastElementName)) {
@@ -168,7 +235,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
             write(elementName);
             write(">");
         }
-        m_openTag = false;
+        m_openElement = false;
         m_indentLevel--;
     }
 
@@ -181,6 +248,16 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     }
 
     /**
+     * Returns the encoding this XML Sax writer was initialized with.<p>
+     *  
+     * @return the encoding this XML Sax writer was initialized with
+     */
+    public String getEncoding() {
+
+        return m_encoding;
+    }
+
+    /**
      * Returns the Writer where the XML is written to.<p>
      * 
      * @return the Writer where the XML is written to
@@ -190,12 +267,69 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
         return m_writer;
     }
 
+    /** 
+     * Returns <code>true</code> if charactes that are not part of the selected encoding 
+     * are to be replaced with the HTML <code>&amp;#123;</code> entity representation
+     * in the generated output (not in CDATA elements).<p>
+     * 
+     * @return <code>true</code> if charactes that are not part of the selected encoding 
+     *      are to be replaced with the HTML entity representation
+     */
+    public boolean isEscapeUnknownChars() {
+
+        return m_escapeUnknownChars;
+    }
+
+    /** 
+     * Returns <code>true</code> if XML entities are to be encoded in the generated output (not in CDATA elements).<p>
+     * 
+     * @return <code>true</code> if XML entities are to be encoded in the generated output (not in CDATA elements)
+     */
+    public boolean isEscapeXml() {
+
+        return m_escapeXml;
+    }
+
+    /**
+     * Sets the encoding to use for the generated output.<p>
+     * 
+     * @param value the encoding to use for the generated output
+     */
+    public void setEncoding(String value) {
+
+        m_encoding = value;
+    }
+
+    /**
+     * If set to <code>true</code>, then charactes that are not part of the selected encoding 
+     * are to be replaced with the XML <code>&amp;#123;</code> entity representation
+     * in the generated output (not in CDATA elements).<p>
+     * 
+     * @param value indicates to escape unknown characters with XML entities or not
+     */
+    public void setEscapeUnknownChars(boolean value) {
+
+        m_escapeUnknownChars = value;
+    }
+
+    /**
+     * If set to <code>true</code>, then 
+     * XML entities are to be encoded in the generated output (not in CDATA elements).<p>
+     * 
+     * @param value indicates to to escape characters with XML entities or not
+     */
+    public void setEscapeXml(boolean value) {
+
+        m_escapeXml = value;
+    }
+
     /**
      * @see org.xml.sax.ext.LexicalHandler#startCDATA()
      */
     public void startCDATA() {
 
         m_openCdata = true;
+        m_isCdata = true;
     }
 
     /**
@@ -223,9 +357,9 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
     public void startElement(String namespaceURI, String localName, String qualifiedName, Attributes attributes)
     throws SAXException {
 
-        if (m_openTag) {
+        if (m_openElement) {
             write(">");
-            m_openTag = false;
+            m_openElement = false;
         }
         // increase indent and write linebreak
         m_indentLevel++;
@@ -243,7 +377,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
                 write("\"");
             }
         }
-        m_openTag = true;
+        m_openElement = true;
     }
 
     /**
@@ -251,7 +385,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
      */
     public void startEntity(String name) {
 
-        // NOOP
+        // ignore
     }
 
     /**
@@ -296,7 +430,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
 
         try {
             // write new line
-            m_writer.write('\n');
+            m_writer.write("\r\n");
             // write indentation
             for (int i = 1; i < m_indentLevel; i++) {
                 m_writer.write(INDENT_STR);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/10/13 16:27:32 $
- * Version: $Revision: 1.80.2.2 $
+ * Date   : $Date: 2005/10/19 13:07:25 $
+ * Version: $Revision: 1.80.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsException;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.loader.CmsLoaderException;
 import org.opencms.main.CmsEvent;
@@ -93,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.2 $ 
+ * @version $Revision: 1.80.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -631,6 +630,8 @@ public class CmsExport {
         CmsXmlSaxWriter saxHandler = new CmsXmlSaxWriter(
             new StringWriter(4096),
             OpenCms.getSystemInfo().getDefaultEncoding());
+        saxHandler.setEscapeXml(true);
+        saxHandler.setEscapeUnknownChars(true);
         // initialize the dom4j writer object as member variable
         setSaxWriter(new SAXWriter(saxHandler, saxHandler));
         // the XML document to write the XMl to
@@ -919,7 +920,7 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(CmsEncoder.escapeXml(userNameLastModified));
+            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(userNameLastModified);
             // <datecreated>
             fileElement.addElement(CmsImportExportManager.N_DATECREATED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateCreated()));
@@ -930,7 +931,7 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameCreated = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(CmsEncoder.escapeXml(userNameCreated));
+            fileElement.addElement(CmsImportExportManager.N_USERCREATED).addText(userNameCreated);
             // <release>
             if (resource.getDateReleased() != CmsResource.DATE_RELEASED_DEFAULT) {
                 fileElement.addElement(CmsImportExportManager.N_DATERELEASED).addText(
@@ -973,7 +974,7 @@ public class CmsExport {
                                 CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED);
                         }
 
-                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(CmsEncoder.escapeXml(key));
+                        propertyElement.addElement(CmsImportExportManager.N_NAME).addText(key);
                         propertyElement.addElement(CmsImportExportManager.N_VALUE).addCDATA(value);
                     }
                 }
@@ -1007,7 +1008,7 @@ public class CmsExport {
                         + getCms().readUser(acePrincipal).getName();
                 }
 
-                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(CmsEncoder.escapeXml(acePrincipalName));
+                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
                 a.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(flags));
 
                 Element b = a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET);
