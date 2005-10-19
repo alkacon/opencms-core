@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2005/09/16 08:55:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/19 09:55:34 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,7 +190,7 @@ public class CmsAvailability extends CmsDialog {
             }
         }
         if (CmsStringUtil.isEmpty(propVal)) {
-            propVal = "false";
+            propVal = CmsStringUtil.FALSE;
         }
         StringBuffer result = new StringBuffer(512);
         result.append("<input type=\"checkbox\" style=\"text-align:left\" name=\"");
@@ -693,10 +693,10 @@ public class CmsAvailability extends CmsDialog {
         }
 
         // get the flag if the touch is recursive from request parameter
-        boolean modifyRecursive = "true".equalsIgnoreCase(getParamRecursive());
+        boolean modifyRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
 
         List resources = new ArrayList();
-        if ("true".equals(getParamModifysiblings())) {
+        if (Boolean.valueOf(getParamModifysiblings()).booleanValue()) {
             resources = getCms().readSiblings(filename, CmsResourceFilter.IGNORE_EXPIRATION);
         } else {
             resources.add(getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION));

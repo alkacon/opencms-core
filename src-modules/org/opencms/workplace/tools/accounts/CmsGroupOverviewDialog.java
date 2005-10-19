@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupOverviewDialog.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2005/10/19 10:01:24 $
+ * Version: $Revision: 1.9.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.widgets.CmsDisplayWidget;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -51,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.9.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +145,7 @@ public class CmsGroupOverviewDialog extends CmsWidgetDialog {
      */
     public void setParentGroup(String parentGroup) {
 
-        if (parentGroup == null || parentGroup.equals("") || parentGroup.equals("null") || parentGroup.equals("none")) {
+        if (CmsStringUtil.isEmpty(parentGroup) || parentGroup.equals("null") || parentGroup.equals("none")) {
             parentGroup = null;
         }
         if (parentGroup != null) {

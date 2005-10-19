@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormRecommend.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.HashMap;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,12 +165,12 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
             theMail.addTo(getEmailRecipient());
             String sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
             String replyTo = getEmailSender();
-            if (replyTo == null || "".equals(replyTo.trim())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(replyTo)) {
                 replyTo = sender;
             }
             theMail.setFrom(sender);
             theMail.addReplyTo(replyTo);
-            if (!"".equals(getCopy())) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCopy())) {
                 // send a copy of the mail to the sender
                 theMail.addCc(replyTo);
             }
@@ -237,7 +238,7 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
         setErrors(new HashMap());
 
         // check email recipient
-        if (getEmailRecipient() == null || "".equals(getEmailRecipient())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getEmailRecipient())) {
             // recipient is empty
             getErrors().put("recipient", key("recommend.error.recipient.empty"));
             allOk = false;
@@ -247,19 +248,19 @@ public class CmsTemplateFormRecommend extends CmsTemplateForm {
             allOk = false;
         }
         // check message
-        if (getMessage() == null || "".equals(getMessage().trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getMessage())) {
             getErrors().put("message", key("recommend.error.message.empty"));
             allOk = false;
         }
-        if (!"".equals(getCopy())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCopy())) {
             // send copy to sender is checked, check sender address
-            if (getEmailSender() == null || "".equals(getEmailSender())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getEmailSender())) {
                 // sender is empty
                 getErrors().put("sender", key("recommend.error.sender.empty"));
                 allOk = false;
             }
         }
-        if (getEmailSender() != null && !"".equals(getEmailSender()) && !isValidEmailAddress(getEmailSender())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getEmailSender()) && !isValidEmailAddress(getEmailSender())) {
             // sender is not valid
             getErrors().put("sender", key("recommend.error.sender.wrong"));
             allOk = false;

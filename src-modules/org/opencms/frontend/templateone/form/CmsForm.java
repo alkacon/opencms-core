@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Andreas Zahner 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -599,7 +599,7 @@ public class CmsForm {
      * @param field the current field
      * @param value the value of the input field
      * 
-     * @return "true" if the current item is selected or checked, otherwise false
+     * @return <code>"true"</code> if the current item is selected or checked, otherwise false
      */
     protected String readSelectedFromRequest(HttpServletRequest request, I_CmsField field, String value) {
 
@@ -610,7 +610,7 @@ public class CmsForm {
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
                     if (value.equals(values[i])) {
-                        return "true";
+                        return CmsStringUtil.TRUE;
                     }
                 }
             }
@@ -619,7 +619,7 @@ public class CmsForm {
             String fieldValue = request.getParameter(field.getName());
             if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.equals(value) && !"".equals(value)) {
                 // mark this as selected
-                result = "true";
+                result = CmsStringUtil.TRUE;
             } else {
                 // do not mark it as selected
                 result = "";
@@ -896,12 +896,12 @@ public class CmsForm {
         field.setLabel(messages.key("form.confirmation.label"));
         // check the field status
         boolean isChecked = false;
-        if (!initial && "true".equals(jsp.getRequest().getParameter(PARAM_SENDCONFIRMATION))) {
+        if (!initial && Boolean.valueOf(jsp.getRequest().getParameter(PARAM_SENDCONFIRMATION)).booleanValue()) {
             // checkbox is checked by user
             isChecked = true;
         }
         // create item for field
-        CmsFieldItem item = new CmsFieldItem("true", getConfirmationMailCheckboxLabel(), isChecked);
+        CmsFieldItem item = new CmsFieldItem(CmsStringUtil.TRUE, getConfirmationMailCheckboxLabel(), isChecked);
         List items = new ArrayList(1);
         items.add(item);
         field.setItems(items);
@@ -1168,7 +1168,7 @@ public class CmsForm {
                             if (initial) {
                                 // only fill in values from configuration file if called initially
                                 if (isPreselected) {
-                                    selected = "true";
+                                    selected = CmsStringUtil.TRUE;
                                 }
                             } else {
                                 // get selected flag from request for current item

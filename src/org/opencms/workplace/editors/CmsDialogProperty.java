@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,7 +234,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     protected boolean performEditOperation(HttpServletRequest request) throws CmsException {
 
-        boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
+        boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
         try {
             if (useTempfileProject) {
                 switchToTempProject();
@@ -257,7 +257,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             if (showNavigation()) {
                 // get the navigation enabled parameter
                 paramValue = request.getParameter("enablenav");
-                if ("true".equals(paramValue)) {
+                if (Boolean.valueOf(paramValue).booleanValue()) {
                     // navigation enabled, update params
                     paramValue = request.getParameter("navpos");
                     if (!"-1".equals(paramValue)) {

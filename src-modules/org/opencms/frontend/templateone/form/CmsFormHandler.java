@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -410,7 +410,7 @@ public class CmsFormHandler extends CmsJspActionElement {
             // send optional confirmation mail
             if (getFormConfiguration().isConfirmationMailEnabled()) {
                 if (!getFormConfiguration().isConfirmationMailOptional()
-                    || "true".equals(getRequest().getParameter(CmsForm.PARAM_SENDCONFIRMATION))) {
+                    || Boolean.valueOf(getRequest().getParameter(CmsForm.PARAM_SENDCONFIRMATION)).booleanValue()) {
                     sendConfirmationMail();
                 }
             }

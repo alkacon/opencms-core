@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/10/19 09:55:34 $
+ * Version: $Revision: 1.26.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.26.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +164,7 @@ public class CmsPublishProject extends CmsReport {
                     } else {
                         if (getCms().getRequestContext().currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY) {
                             // set the flag that this is a temporary project
-                            setParamRefreshWorkplace("true");
+                            setParamRefreshWorkplace(CmsStringUtil.TRUE);
                         }
                     }
 
@@ -188,13 +188,13 @@ public class CmsPublishProject extends CmsReport {
                     CmsXmlDocumentLinkValidatorThread thread = new CmsXmlDocumentLinkValidatorThread(
                         getCms(),
                         publishResource,
-                        "true".equals(getParamPublishsiblings()),
+                        Boolean.valueOf(getParamPublishsiblings()).booleanValue(),
                         getSettings());
                     setParamAction(REPORT_BEGIN);
                     setParamThread(thread.getUUID().toString());
 
                     // set the flag that another thread is following
-                    setParamThreadHasNext("true");
+                    setParamThreadHasNext(CmsStringUtil.TRUE);
                     // set the key name for the continue checkbox
                     setParamReportContinueKey(Messages.GUI_PUBLISH_CONTINUE_BROKEN_LINKS_0);
                     getJsp().include(FILE_REPORT_OUTPUT);
@@ -242,7 +242,7 @@ public class CmsPublishProject extends CmsReport {
     /**
      * Returns if a resource will be directly published.<p>
      * 
-     * @return "true" if a resource will be directly published
+     * @return <code>"true"</code> if a resource will be directly published
      */
     public String getParamDirectpublish() {
 
@@ -292,7 +292,7 @@ public class CmsPublishProject extends CmsReport {
     /**
      * Returns if siblings of the resource should be published.<p>
      * 
-     * @return "true" (String) if siblings of the resource should be published
+     * @return <code>"true"</code> (String) if siblings of the resource should be published
      */
     public String getParamPublishsiblings() {
 
@@ -312,7 +312,7 @@ public class CmsPublishProject extends CmsReport {
     /**
      * Sets if a resource will be directly published.<p>
      * 
-     * @param value "true" (String) if a resource will be directly published
+     * @param value <code>"true"</code> (String) if a resource will be directly published
      */
     public void setParamDirectpublish(String value) {
 
@@ -362,7 +362,7 @@ public class CmsPublishProject extends CmsReport {
     /**
      * Sets if siblings of the resource should be published.<p> 
      * 
-     * @param value "true" (String) if siblings of the resource should be published
+     * @param value <code>"true"</code> (String) if siblings of the resource should be published
      */
     public void setParamPublishsiblings(String value) {
 
@@ -391,7 +391,7 @@ public class CmsPublishProject extends CmsReport {
         // set the publishing type: publish project or direct publish
        
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
-            setParamDirectpublish(String.valueOf(true));
+            setParamDirectpublish(CmsStringUtil.TRUE);
         }
         // set the action for the JSP switch 
         if (DIALOG_CONFIRMED.equals(getParamAction())) {
@@ -453,7 +453,7 @@ public class CmsPublishProject extends CmsReport {
 
         String projectId = getParamProjectid();
         int id;
-        if (projectId == null || "".equals(projectId.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(projectId)) {
             // projectid not found in request parameter,
             id = getCms().getRequestContext().currentProject().getId();
             setParamProjectname(getCms().getRequestContext().currentProject().getName());
@@ -526,7 +526,7 @@ public class CmsPublishProject extends CmsReport {
 
         // set the new thread id and flag that no thread is following
         setParamThread(thread.getUUID().toString());
-        setParamThreadHasNext("false");
+        setParamThreadHasNext(CmsStringUtil.FALSE);
 
         // start the publish thread
         thread.start();

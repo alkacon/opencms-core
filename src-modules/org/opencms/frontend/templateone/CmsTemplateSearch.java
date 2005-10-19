@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateSearch.java,v $
- * Date   : $Date: 2005/09/20 15:39:08 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -378,7 +378,7 @@ public class CmsTemplateSearch extends CmsTemplateBean {
         }
         String queryString = search.getQuery();
         try {
-            if (queryString == null || "".equals(queryString.trim())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(queryString)) {
                 // no query String found, return empty list
                 queryString = "";
                 search.setQuery("");

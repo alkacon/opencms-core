@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/10/10 11:32:15 $
- * Version: $Revision: 1.13.2.3 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.13.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13.2.3 $ 
+ * @version $Revision: 1.13.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,7 +223,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             setAction(ACTION_DEFAULT);
             try {
                 // lock resource if autolock is enabled in configuration
-                if ("true".equals(getParamDirectedit())) {
+                if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
                     checkLock(getParamResource(), CmsLock.TEMPORARY);
                 } else {

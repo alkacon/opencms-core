@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -309,7 +309,7 @@ public class CmsWorkplaceEditorConfiguration {
             Element currentType = (Element)i.next();
             float ranking;
             String name = currentType.elementText(N_NAME);
-            if (name == null || "".equals(name.trim())) {
+            if (CmsStringUtil.isEmpty(name)) {
                 logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_NAME_0), null);
                 continue;
             }
@@ -320,7 +320,7 @@ public class CmsWorkplaceEditorConfiguration {
                 continue;
             }
             String mapTo = currentType.elementText(N_MAPTO);
-            if ("".equals(mapTo)) {
+            if (CmsStringUtil.isEmpty(mapTo)) {
                 mapTo = null;
             }
             resTypes.put(name, new String[] {"" + ranking, mapTo});
@@ -367,7 +367,7 @@ public class CmsWorkplaceEditorConfiguration {
         while (i.hasNext()) {
             Element currentAgent = (Element)i.next();
             String agentName = currentAgent.getText();
-            if (agentName != null && !"".equals(agentName.trim())) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(agentName)) {
                 userAgents.add(agentName);
                 try {
                     pattern.add(Pattern.compile(agentName));
@@ -421,7 +421,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setEditorLabel(String label) {
 
-        if (label == null || "".equals(label.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
             setValidConfiguration(false);
             LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_LABEL_0));
         }
@@ -434,7 +434,7 @@ public class CmsWorkplaceEditorConfiguration {
      */
     private void setEditorUri(String uri) {
 
-        if (uri == null || "".equals(uri.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
             setValidConfiguration(false);
             LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_URI_0));
         }

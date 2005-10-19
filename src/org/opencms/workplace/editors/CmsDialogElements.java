@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/10/02 08:58:15 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,7 +252,7 @@ public class CmsDialogElements extends CmsDialog {
                 CmsDialogElement element = (CmsDialogElement)i.next();
                 if (element.isMandantory()
                     || element.getName().equals(getParamElementname())
-                    || "true".equals(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName()))) {
+                    || Boolean.valueOf(getJsp().getRequest().getParameter(PREFIX_PARAM_BODY + element.getName())).booleanValue()) {
                     if (!element.isExisting()) {
                         // create element in order to enable it properly 
                         page.addValue(element.getName(), getElementLocale());

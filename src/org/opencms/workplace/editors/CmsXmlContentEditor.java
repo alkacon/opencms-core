@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/10/02 08:58:15 $
- * Version: $Revision: 1.65.2.2 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.65.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.2 $ 
+ * @version $Revision: 1.65.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -961,7 +961,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             setAction(ACTION_DEFAULT);
             try {
                 // lock resource if autolock is enabled in configuration
-                if ("true".equals(getParamDirectedit())) {
+                if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
                     // set a temporary lock in direct edit mode
                     checkLock(getParamResource(), CmsLock.TEMPORARY);
                 } else {

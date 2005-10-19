@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/10/12 14:07:08 $
- * Version: $Revision: 1.23.2.3 $
+ * Date   : $Date: 2005/10/19 09:55:34 $
+ * Version: $Revision: 1.23.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.3 $ 
+ * @version $Revision: 1.23.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -834,7 +834,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                         && lock.getUserId().equals(getCms().getRequestContext().currentUser().getId())) {
                         // lock is not shared and belongs to the current user
                         if (getCms().getRequestContext().currentProject().getId() == lock.getProjectId()
-                            || "true".equals(getParamUsetempfileproject())) {
+                            || Boolean.valueOf(getParamUsetempfileproject()).booleanValue()) {
                             // resource is locked in the current project or the tempfileproject is used
                             m_isEditable = new Boolean(true);
                             return m_isEditable.booleanValue();
@@ -1085,13 +1085,13 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      */
     private boolean performDefineOperation() throws CmsException {
 
-        boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
+        boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
         try {
             if (useTempfileProject) {
                 switchToTempProject();
             }
             String newProperty = getParamNewproperty();
-            if (newProperty != null && !"".equals(newProperty.trim())) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(newProperty)) {
                 getCms().createPropertyDefinition(newProperty);
                 return true;
             } else {
@@ -1114,7 +1114,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     private boolean performEditOperation(HttpServletRequest request) throws CmsException {
 
         List propertyDef = getCms().readAllPropertyDefinitions();
-        boolean useTempfileProject = "true".equals(getParamUsetempfileproject());
+        boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();
         try {
             if (useTempfileProject) {
                 switchToTempProject();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsTouch.java,v $
- * Date   : $Date: 2005/09/16 08:55:00 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/10/19 09:55:34 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -283,7 +283,7 @@ public class CmsTouch extends CmsDialog {
         }
 
         // get the flag if the touch is recursive from request parameter
-        boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());
+        boolean touchRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
 
         // now touch the resource(s)
         // lock resource if autolock is enabled

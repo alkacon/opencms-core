@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/06/29 10:50:05 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsFrameset;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,7 +104,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource")
             + ": "
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
-        params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(String.valueOf(true));
+        params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
         params.append("&closelink=");
         if (Boolean.valueOf(editor.getParamDirectedit()).booleanValue()) {
             String linkTarget;

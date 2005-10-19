@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsEditGroupDialog.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/19 10:01:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,7 +199,7 @@ public abstract class A_CmsEditGroupDialog extends CmsWidgetDialog {
      */
     public void setParentGroup(String parentGroup) {
 
-        if (parentGroup == null || parentGroup.equals("") || parentGroup.equals("null") || parentGroup.equals("none")) {
+        if (CmsStringUtil.isEmpty(parentGroup) || parentGroup.equals("null") || parentGroup.equals("none")) {
             parentGroup = null;
         }
         if (parentGroup != null) {

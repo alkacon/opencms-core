@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/09/21 08:02:57 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.28.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.1 $ 
+ * @version $Revision: 1.28.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -302,10 +302,10 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         result.append("\">\n");
         result.append("\t<!-- Start Topnavigation -->\n");
         
-        boolean showHomeLink = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.show", "true")).booleanValue();
+        boolean showHomeLink = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.show", CmsStringUtil.TRUE)).booleanValue();
         if (showHomeLink && !showHeadNavImages()) {
             // create the "home" link at first position
-            boolean onlyIndex = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.onlyindex", "false")).booleanValue();
+            boolean onlyIndex = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.onlyindex", CmsStringUtil.FALSE)).booleanValue();
             String url = getStartFolder();
             String target = "_self";
             if ((onlyIndex && isDefaultFile(getStartFolder(), getRequestContext().getUri())) || (! onlyIndex)) {

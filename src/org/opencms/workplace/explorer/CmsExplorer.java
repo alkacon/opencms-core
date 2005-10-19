@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.31.2.2 $
+ * Date   : $Date: 2005/10/19 09:58:11 $
+ * Version: $Revision: 1.31.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.2 $ 
+ * @version $Revision: 1.31.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -660,7 +660,7 @@ public class CmsExplorer extends CmsWorkplace {
         // get project id parameter for project view
         String projectIdString = request.getParameter(PARAMETER_PROJECTID);
         int projectId = getCms().getRequestContext().currentProject().getId();
-        if (projectIdString != null && !"".equals(projectIdString)) {
+        if (CmsStringUtil.isNotEmpty(projectIdString)) {
             projectId = Integer.parseInt(projectIdString);
         }
         settings.setExplorerProjectId(projectId);

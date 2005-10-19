@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/19 09:58:11 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,7 @@ public class CmsExplorerTypeSettings implements Comparable {
      */
     public boolean addProperty(String propertyName) {
 
-        if (propertyName != null && !"".equals(propertyName.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propertyName)) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_ADD_PROP_1, propertyName));
             }

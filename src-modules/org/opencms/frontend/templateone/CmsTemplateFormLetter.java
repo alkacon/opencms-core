@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.mail.CmsHtmlMail;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
 
 import java.util.HashMap;
@@ -50,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -348,12 +349,12 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
             // set the recipient and the reply to address
             String sender = OpenCms.getSystemInfo().getMailSettings().getMailFromDefault();
             String contactMail = getContactEmail();
-            if (contactMail == null || "".equals(contactMail.trim())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(contactMail)) {
                 contactMail = sender;
             }
             theMail.setFrom(sender);
             theMail.addReplyTo(contactMail);
-            if (!"".equals(getCopy())) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCopy())) {
                 // send a copy of the mail to the sender
                 theMail.addCc(contactMail);
             }
@@ -530,13 +531,13 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
         boolean allOk = true;
         setErrors(new HashMap());
         // check concern
-        if (getConcern() == null || "".equals(getConcern())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getConcern())) {
             getErrors().put("concern", key("letter.error.concern.empty"));
             allOk = false;
         } else {
             // concern given, check if "other" is selected
             if ("other".equals(getConcern())) {
-                if (getConcernDetail() == null || "".equals(getConcernDetail())) {
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(getConcernDetail())) {
                     // details not given  
                     getErrors().put("concern", key("letter.error.concerndetails.empty"));
                     allOk = false;
@@ -544,19 +545,19 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
             }
         }
         // check message
-        if (getMessage() == null || "".equals(getMessage().trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getMessage())) {
             getErrors().put("message", key("letter.error.message.empty"));
             allOk = false;
         }
-        if (!"".equals(getCopy())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getCopy())) {
             // send copy to sender is checked, check email address
-            if (getContactEmail() == null || "".equals(getContactEmail())) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(getContactEmail())) {
                 // email address is empty
                 getErrors().put("email", key("letter.error.email.empty"));
                 allOk = false;
             }
         }
-        if (getContactEmail() != null && !"".equals(getContactEmail()) && !isValidEmailAddress(getContactEmail())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getContactEmail()) && !isValidEmailAddress(getContactEmail())) {
             // email address is not valid
             getErrors().put("email", key("letter.error.email.wrong"));
             allOk = false;

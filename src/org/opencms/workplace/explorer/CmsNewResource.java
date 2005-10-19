@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/09/17 16:38:44 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2005/10/19 09:58:11 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -340,7 +340,7 @@ public class CmsNewResource extends CmsDialog {
             result.append(PARAM_NEWRESOURCEURI);
             result.append("\"");
             result.append(" value=\"" + CmsEncoder.encode(currSettings.getNewResourceUri()) + "\"");
-            if (attributes != null && !"".equals(attributes)) {
+            if (CmsStringUtil.isNotEmpty(attributes)) {
                 result.append(" " + attributes);
             }
             result.append("></td>\n");

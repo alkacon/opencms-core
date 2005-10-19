@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/09/16 08:53:11 $
- * Version: $Revision: 1.23.2.1 $
+ * Date   : $Date: 2005/10/19 09:55:34 $
+ * Version: $Revision: 1.23.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -71,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.1 $ 
+ * @version $Revision: 1.23.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -311,20 +312,20 @@ public class CmsChacc extends CmsDialog {
             }
 
             // modify the ace flags to determine inheritance of the current ace
-            if ("true".equals(inherit)) {
+            if (Boolean.valueOf(inherit).booleanValue()) {
                 flags |= CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
             } else {
                 flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_INHERIT;
             }
 
             // modify the ace flags to determine overwriting of inherited ace
-            if ("true".equals(overWriteInherited)) {
+            if (Boolean.valueOf(overWriteInherited).booleanValue()) {
                 flags |= CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
             } else {
                 flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_OVERWRITE;
             }
             
-            if ("true".equals(responsible)) {
+            if (Boolean.valueOf(responsible).booleanValue()) {
                 flags |= CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
             } else {
                 flags &= ~CmsAccessControlEntry.ACCESS_FLAGS_RESPONSIBLE;
@@ -670,7 +671,7 @@ public class CmsChacc extends CmsDialog {
         if (!inArray) {
             m_errorMessages.add(key(Messages.ERR_PERMISSION_SELECT_TYPE_0));
         }
-        if (name == null || "".equals(name.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
             m_errorMessages.add(key(Messages.ERR_MISSING_GROUP_OR_USER_NAME_0));
         }
         if (m_errorMessages.size() > 0) {
@@ -690,7 +691,7 @@ public class CmsChacc extends CmsDialog {
 
         CmsUUID resId = entry.getResource();
         String resName = (String)parents.get(resId);
-        if (resName != null && !"".equals(resName)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(resName)) {
             return resName;
         }
         return resId.toString();
@@ -1159,7 +1160,7 @@ public class CmsChacc extends CmsDialog {
             result.append("&nbsp;(").append(entry.getPermissions().getPermissionString()).append(entry.getResponsibleString()).append(")");
             result.append(dialogRow(HTML_END));
             // show the resource from which the ace is inherited if present
-            if (inheritRes != null && !"".equals(inheritRes)) {
+            if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(inheritRes)) {
                 result.append("<div class=\"dialogpermissioninherit\">");
                 result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {inheritRes}));
                 result.append("</div>\n");

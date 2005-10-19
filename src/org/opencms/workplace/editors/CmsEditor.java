@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/10/11 07:30:05 $
- * Version: $Revision: 1.31.2.2 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.31.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31.2.2 $ 
+ * @version $Revision: 1.31.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -286,9 +286,9 @@ public abstract class CmsEditor extends CmsDialog {
     public String buttonActionCancel() {
 
         String target = null;
-        if ("true".equals(getParamDirectedit())) {
+        if (Boolean.valueOf(getParamDirectedit()).booleanValue()) {
             // editor is in direct edit mode
-            if (!"".equals(getParamBacklink())) {
+            if (CmsStringUtil.isNotEmpty(getParamBacklink())) {
                 // set link to the specified back link target
                 target = getParamBacklink();
             } else {
@@ -539,7 +539,7 @@ public abstract class CmsEditor extends CmsDialog {
     /**
      * Sets the  edit as text parameter.<p>
      * 
-     * @param editAsText "true" if the resource should be handled like a text file
+     * @param editAsText <code>"true"</code> if the resource should be handled like a text file
      */
     public void setParamEditastext(String editAsText) {
 

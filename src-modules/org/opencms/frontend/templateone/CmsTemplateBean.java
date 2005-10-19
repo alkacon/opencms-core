@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/09/21 08:02:57 $
- * Version: $Revision: 1.40.2.1 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.40.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.40.2.1 $ 
+ * @version $Revision: 1.40.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -290,7 +290,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             getProperties().put(PARAM_HELPURI, getConfigurationValue("help.uri", PROPERTY_VALUE_NONE));
             getProperties().put(PARAM_LOGINURI, getConfigurationValue("login.uri", PROPERTY_VALUE_NONE));
             include(FOLDER_ELEMENTS + "foot_links.jsp", null, m_properties);
-            boolean showMenus = Boolean.valueOf(getConfigurationValue("headnav.menus", "true")).booleanValue();
+            boolean showMenus = Boolean.valueOf(getConfigurationValue("headnav.menus", CmsStringUtil.TRUE)).booleanValue();
             if (showHeadNavigation() && showMenus) {
                 // create the head navigation dhtml menus
                 if (getProperties().get(CmsTemplateNavigation.PARAM_HEADNAV_MENUDEPTH) == null) {
@@ -302,7 +302,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
                         getConfigurationValue("headnav.menudepth", "1"));
                     getProperties().put(
                         CmsTemplateNavigation.PARAM_SHOWMENUS,
-                        getConfigurationValue("headnav.menus", "true"));
+                        getConfigurationValue("headnav.menus", CmsStringUtil.TRUE));
                 }
                 include(FOLDER_ELEMENTS + "nav_head_menus.jsp", null, m_properties);
             }
@@ -908,7 +908,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             initPageVersion();
             // check if the head navigation should be shown
             m_showHeadNavigation = !showPrintVersion()
-                && Boolean.valueOf(property(PROPERTY_SHOW_HEADNAV, "search", "true")).booleanValue();
+                && Boolean.valueOf(property(PROPERTY_SHOW_HEADNAV, "search", CmsStringUtil.TRUE)).booleanValue();
         }
     }
 
@@ -986,22 +986,22 @@ public class CmsTemplateBean extends CmsTemplateBase {
         getProperties().put(CmsTemplateNavigation.PARAM_HEADNAV_FOLDER, getNavigationStartFolder());
         getProperties().put(
             CmsTemplateNavigation.PARAM_HEADNAV_IMAGES,
-            getConfigurationValue("headnav.images", "false"));
+            getConfigurationValue("headnav.images", CmsStringUtil.FALSE));
         getProperties().put(CmsTemplateNavigation.PARAM_HEADNAV_MANUAL, 
-            getConfigurationValue("headnav.manual", "false"));
+            getConfigurationValue("headnav.manual", CmsStringUtil.FALSE));
         getProperties().put(
             CmsTemplateNavigation.PARAM_HEADNAV_MARKCURRENT,
-            getConfigurationValue("headnav.markcurrent", "false"));
+            getConfigurationValue("headnav.markcurrent", CmsStringUtil.FALSE));
         getProperties().put(
             CmsTemplateNavigation.PARAM_HEADNAV_MENUDEPTH,
             getConfigurationValue("headnav.menudepth", "1"));
         getProperties().put(
             CmsTemplateNavigation.PARAM_HEADNAV_MENUCLICK,
-            getConfigurationValue("headnav.menuclick", "false"));
-        getProperties().put(CmsTemplateNavigation.PARAM_SHOWMENUS, getConfigurationValue("headnav.menus", "true"));
+            getConfigurationValue("headnav.menuclick", CmsStringUtil.FALSE));
+        getProperties().put(CmsTemplateNavigation.PARAM_SHOWMENUS, getConfigurationValue("headnav.menus", CmsStringUtil.TRUE));
         getProperties().put(
             CmsTemplateNavigation.PARAM_NAVLEFT_SHOWSELECTED,
-            getConfigurationValue("navleft.showselected", "false"));
+            getConfigurationValue("navleft.showselected", CmsStringUtil.FALSE));
         getProperties().put(CmsTemplateNavigation.PARAM_NAVLEFT_SHOWTREE, "" + showLeftNavigation());
         getProperties().put(CmsTemplateNavigation.PARAM_NAVLEFT_ELEMENTURI, getLeftNavigationElementUri());
     }
@@ -1033,7 +1033,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
      */
     public boolean showHeadImage() {
 
-        return Boolean.valueOf(property(PROPERTY_SHOWHEADIMAGE, "search", "true")).booleanValue();
+        return Boolean.valueOf(property(PROPERTY_SHOWHEADIMAGE, "search", CmsStringUtil.TRUE)).booleanValue();
     }
 
     /**
@@ -1043,7 +1043,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
      */
     public boolean showHeadLinks() {
 
-        return Boolean.valueOf(property(PROPERTY_SHOWHEADLINKS, "search", "true")).booleanValue();
+        return Boolean.valueOf(property(PROPERTY_SHOWHEADLINKS, "search", CmsStringUtil.TRUE)).booleanValue();
     }
 
     /**
@@ -1063,7 +1063,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
      */
     public boolean showLeftNavigation() {
 
-        return Boolean.valueOf(property(PROPERTY_SHOW_NAVLEFT, "search", "true")).booleanValue();
+        return Boolean.valueOf(property(PROPERTY_SHOW_NAVLEFT, "search", CmsStringUtil.TRUE)).booleanValue();
     }
 
     /**

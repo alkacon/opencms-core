@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlBooleanValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/10/19 09:59:15 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.types;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.xml.I_CmsXmlDocument;
 
@@ -46,7 +47,7 @@ import org.dom4j.Element;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +122,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
 
     /**
      * Special boolean value generation method since XML schema allows for 
-     * "1" as possible value for <code>true</code>, while Java only allows "true". 
+     * "1" as possible value for <code>true</code>, while Java only allows <code>"true"</code>. 
      * 
      * @param value the String to get the boolean value for
      * 
@@ -162,7 +163,7 @@ public class CmsXmlBooleanValue extends A_CmsXmlValueTextBase {
         if (m_defaultValue != null) {
             return m_defaultValue;
         }
-        return "false";
+        return CmsStringUtil.FALSE;
     }
 
     /**

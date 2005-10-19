@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/10/12 13:04:39 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2005/10/19 10:00:35 $
+ * Version: $Revision: 1.28.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.1 $ 
+ * @version $Revision: 1.28.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,10 +121,10 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     private static final String PARAM_DEFAULT = "";
 
     /** The false parameter value. */
-    private static final String PARAM_FALSE = "false";
+    private static final String PARAM_FALSE = CmsStringUtil.FALSE;
 
     /** The true parameter value. */
-    private static final String PARAM_TRUE = "true";
+    private static final String PARAM_TRUE = CmsStringUtil.TRUE;
 
     /** The path of the "template one" template. */
     private static final String TEMPLATE_ONE = "/system/modules/org.opencms.frontend.templateone/templates/main";

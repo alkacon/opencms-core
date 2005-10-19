@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewSettingsDialog.java,v $
- * Date   : $Date: 2005/07/12 12:33:40 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/10/19 10:01:25 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsWorkplaceConfiguration;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -152,7 +153,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
         setKeyPrefix(KEY_PREFIX);
         super.defineWidgets();
-        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget("true")));
+        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget(CmsStringUtil.TRUE)));
         addWidget(new CmsWidgetDialogParameter(m_logView, "filePath", "page1", new CmsComboWidget(
             createComboConfigurationFileChoice())));
 

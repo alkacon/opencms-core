@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndoChanges.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/10/19 09:55:34 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -289,7 +289,7 @@ public class CmsUndoChanges extends CmsDialog {
         }
 
         // get the flag if the touch is recursive from request parameter
-        boolean touchRecursive = "true".equalsIgnoreCase(getParamRecursive());
+        boolean touchRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
         // lock resource if autolock is enabled
         checkLock(getParamResource());
         // undo changes on the resource

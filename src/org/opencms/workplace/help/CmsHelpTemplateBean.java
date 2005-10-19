@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2005/10/19 09:59:15 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -341,7 +341,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
                             true);
 
                         if (!exportProp.isNullProperty()) {
-                            export = Boolean.valueOf(exportProp.getValue("false")).booleanValue();
+                            export = Boolean.valueOf(exportProp.getValue(CmsStringUtil.FALSE)).booleanValue();
                         }
                         if (!export) {
                             // switch back from online project to avoid export:

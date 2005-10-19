@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2005/10/19 09:59:15 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchResult;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -68,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5.2.1 $
+ * @version $Revision: 1.5.2.2 $
  * 
  * @since 6.0.0
  */
@@ -147,7 +148,7 @@ public class CmsHelpSearchResultView {
             null));
         result.append("\n</h1>\n");
         List searchResult;
-        if (search.getQuery() == null || "".equals(search.getQuery().trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(search.getQuery())) {
             search.setQuery("");
             searchResult = new ArrayList();
         } else {

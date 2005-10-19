@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorFrameset.java,v $
- * Date   : $Date: 2005/09/16 09:09:51 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2005/10/19 09:57:28 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public class CmsEditorFrameset extends CmsEditor {
 
         // delete the temporary file        
         deleteTempFile();
-        if ("true".equals(getParamDirectedit()) || forceUnlock) {
+        if (Boolean.valueOf(getParamDirectedit()).booleanValue() || forceUnlock) {
             // unlock the resource when in direct edit mode or force unlock is true
             try {
                 getCms().unlockResource(getParamResource());

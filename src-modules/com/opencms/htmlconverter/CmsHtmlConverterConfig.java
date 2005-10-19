@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/htmlconverter/Attic/CmsHtmlConverterConfig.java,v $
-* Date   : $Date: 2005/06/27 23:22:30 $
-* Version: $Revision: 1.2 $
+* Date   : $Date: 2005/10/19 09:59:15 $
+* Version: $Revision: 1.2.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@
 */
 
 package com.opencms.htmlconverter;
+
+import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
@@ -1206,9 +1208,9 @@ final class CmsHtmlConverterConfig {
      */
     private boolean checkBoolean(Node node, int number) {
         NamedNodeMap attrs = node.getAttributes();
-        if (attrs.item(number).getNodeValue().equalsIgnoreCase("true")) {
+        if (attrs.item(number).getNodeValue().equalsIgnoreCase(CmsStringUtil.TRUE)) {
             return true;
-        } else if (attrs.item(number).getNodeValue().equalsIgnoreCase("false")) {
+        } else if (attrs.item(number).getNodeValue().equalsIgnoreCase(CmsStringUtil.FALSE)) {
             return false;
         }
         System.err.println("Fatal configuration error: Attribute value \""
