@@ -84,7 +84,7 @@
             <resource uri="/system/workplace/resources/commons/plus.png"/>
             <resource uri="/system/workplace/resources/commons/tree.js"/>
             <resource uri="/system/workplace/resources/commons/user.png"/>
-			<resource uri="/system/workplace/resources/components/upload_applet"/>
+			<resource uri="/system/workplace/resources/components/upload_applet/"/>
 			<resource uri="/system/workplace/resources/explorer/"/>
 			<resource uri="/system/workplace/resources/tree/"/>
 			<resource uri="/system/workplace/views/explorer/"/>
