@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/10/19 09:59:15 $
- * Version: $Revision: 1.43.2.3 $
+ * Date   : $Date: 2005/10/19 10:14:52 $
+ * Version: $Revision: 1.43.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.3 $ 
+ * @version $Revision: 1.43.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -723,7 +723,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * the default widget is the {@link org.opencms.widgets.CmsInputWidget}.
      * However, certain values can also use more then one widget, for example you may 
      * also use a {@link org.opencms.widgets.CmsCheckboxWidget} for a String value,
-     * and as a result the Strings possible values would be eithe "false" or <code>"true"</code>,
+     * and as a result the Strings possible values would be eithe <code>"false"</code> or <code>"true"</code>,
      * but nevertheless be a String.<p>
      *
      * The widget to use can further be controlled using the <code>widget</code> attribute.

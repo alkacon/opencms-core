@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/10/12 10:03:58 $
- * Version: $Revision: 1.31.2.1 $
+ * Date   : $Date: 2005/10/19 10:14:36 $
+ * Version: $Revision: 1.31.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31.2.1 $
+ * @version $Revision: 1.31.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -174,7 +174,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public CmsProperty() {
 
-        // noting to do, all values will be initialized with "null" or "false" by default
+        // noting to do, all values will be initialized with "null" or <code>"false"</code> by default
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/10/19 09:48:05 $
- * Version: $Revision: 1.116.2.2 $
+ * Date   : $Date: 2005/10/19 10:14:36 $
+ * Version: $Revision: 1.116.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.116.2.2 $ 
+ * @version $Revision: 1.116.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -618,7 +618,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the default property value as a string representation.<p>
      * 
-     * @return <code>"true"</code> or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getDefault() {
 
@@ -709,7 +709,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the export enbled value as a string representation.<p>
      * 
-     * @return <code>"true"</code> or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getExportEnabled() {
 
@@ -893,7 +893,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the plain export optimization value as a string representation.<p>
      * 
-     * @return <code>"true"</code> or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getPlainExportOptimization() {
 
@@ -913,7 +913,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the relative links value as a string representation.<p>
      * 
-     * @return <code>"true"</code> or "false"
+     * @return <code>"true"</code> or <code>"false"</code>
      */
     public String getRelativeLinks() {
 
@@ -1545,7 +1545,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the default property value.<p>
      * 
-     * @param value must be <code>"true"</code> or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setDefault(String value) {
 
@@ -1555,7 +1555,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the export enbled value.<p>
      * 
-     * @param value must be <code>"true"</code> or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setExportEnabled(String value) {
 
@@ -1642,7 +1642,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the plain export optimization value.<p>
      * 
-     * @param value must be <code>"true"</code> or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setPlainExportOptimization(String value) {
 
@@ -1652,7 +1652,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the relative links value.<p>
      * 
-     * @param value must be <code>"true"</code> or "false"
+     * @param value must be <code>"true"</code> or <code>"false"</code>
      */
     public void setRelativeLinks(String value) {
 
