@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/08/02 10:30:01 $
- * Version: $Revision: 1.49 $
+ * Date   : $Date: 2005/10/19 09:42:54 $
+ * Version: $Revision: 1.49.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.IOException;
 import java.util.Locale;
@@ -53,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49 $ 
+ * @version $Revision: 1.49.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -216,7 +217,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         }
 
         String pointer = new String(CmsFile.upgrade(resource, cms).getContents());
-        if (pointer == null || "".equals(pointer.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(pointer)) {
             throw new CmsLoaderException(Messages.get().container(
                 Messages.ERR_INVALID_POINTER_FILE_1,
                 resource.getName()));

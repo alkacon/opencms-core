@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/10/19 09:42:54 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -334,13 +334,13 @@ public class CmsJspTagProperty extends TagSupport {
     /**
      * Set the escape html flag.<p>
      * 
-     * @param value should be "true" or "false" (all values other then "true" are
+     * @param value should be <code>"true"</code> or "false" (all values other then <code>"true"</code> are
      * considered to be false)
      */
     public void setEscapeHtml(String value) {
 
         if (value != null) {
-            m_escapeHtml = "true".equalsIgnoreCase(value.trim());
+            m_escapeHtml = Boolean.valueOf(value.trim()).booleanValue();
         }
     }
 

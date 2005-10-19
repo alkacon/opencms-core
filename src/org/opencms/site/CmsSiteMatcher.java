@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2005/10/19 09:46:05 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,12 +31,14 @@
 
 package org.opencms.site;
 
+import org.opencms.util.CmsStringUtil;
+
 /**
  * A matcher object to compare request data against the configured sites.<p>
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -261,7 +263,7 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     protected void setServerName(String serverName) {
 
-        if ((serverName == null) || ("".equals(serverName)) || (WILDCARD.equals(serverName))) {
+        if (CmsStringUtil.isEmpty(serverName) || (WILDCARD.equals(serverName))) {
             m_serverName = WILDCARD;
         } else {
             m_serverName = serverName.trim();
@@ -293,7 +295,7 @@ public final class CmsSiteMatcher implements Cloneable {
     protected void setServerProtocol(String serverProtocol) {
 
         int pos;
-        if ((serverProtocol == null) || ("".equals(serverProtocol)) || (WILDCARD.equals(serverProtocol))) {
+        if (CmsStringUtil.isEmpty(serverProtocol) || (WILDCARD.equals(serverProtocol))) {
             m_serverProtocol = WILDCARD;
         } else if ((pos = serverProtocol.indexOf("/")) > 0) {
             m_serverProtocol = serverProtocol.substring(0, pos).toLowerCase();

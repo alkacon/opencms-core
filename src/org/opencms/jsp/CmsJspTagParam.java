@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/10/19 09:42:54 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,6 +90,7 @@ package org.opencms.jsp;
 
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspTagException;
@@ -102,7 +103,7 @@ import javax.servlet.jsp.tagext.Tag;
  *
  * @author Shawn Bayern
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,7 +150,7 @@ public class CmsJspTagParam extends BodyTagSupport {
                 new Object[] {"param"}));
         }
         // take no action for null or empty names
-        if (m_name == null || m_name.equals("")) {
+        if (CmsStringUtil.isEmpty(m_name)) {
             return EVAL_PAGE;
         }
 

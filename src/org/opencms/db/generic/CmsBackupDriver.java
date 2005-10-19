@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/07/28 10:53:54 $
- * Version: $Revision: 1.140 $
+ * Date   : $Date: 2005/10/19 09:37:40 $
+ * Version: $Revision: 1.140.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
 import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -76,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.140 $
+ * @version $Revision: 1.140.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -1005,7 +1006,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                         mappingType = CmsProperty.STRUCTURE_RECORD_MAPPING;
                         id = resource.getStructureId();
 
-                        if (value == null || "".equals(value)) {
+                        if (CmsStringUtil.isEmpty(value)) {
                             continue;
                         }
                     } else {
@@ -1014,7 +1015,7 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                         mappingType = CmsProperty.RESOURCE_RECORD_MAPPING;
                         id = resource.getResourceId();
 
-                        if (value == null || "".equals(value)) {
+                        if (CmsStringUtil.isEmpty(value)) {
                             break;
                         }
                     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/10/12 15:38:52 $
- * Version: $Revision: 1.40.2.1 $
+ * Date   : $Date: 2005/10/19 09:39:23 $
+ * Version: $Revision: 1.40.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40.2.1 $ 
+ * @version $Revision: 1.40.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -871,7 +871,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /**
      * Set caching status for this reponse.<p>
      * 
-     * Will always be set to "true" if setOnlyBuffering() is set to "true".
+     * Will always be set to <code>"true"</code> if setOnlyBuffering() is set to <code>"true"</code>.
      * Currently this is an optimization for non - JSP elements that 
      * are known not to be cachable.<p>
      *

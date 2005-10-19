@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsMultiPartMail.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/10/19 09:43:41 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.mail;
 
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import javax.mail.MessagingException;
 
@@ -48,7 +49,7 @@ import org.apache.commons.mail.MultiPartEmail;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,7 +75,7 @@ public class CmsMultiPartMail extends MultiPartEmail {
 
         // check if username and password are provided
         String userName = host.getUsername();
-        if (userName != null && !"".equals(userName.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(userName)) {
             // authentication needed, set user name and password
             setAuthentication(userName, host.getPassword());
         }

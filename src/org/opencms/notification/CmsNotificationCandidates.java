@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2005/09/16 08:51:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/19 09:45:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -186,7 +186,7 @@ public class CmsNotificationCandidates {
                 resource,
                 CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
                 true).getValue();
-            if ("true".equals(enableNotification)) {
+            if (Boolean.valueOf(enableNotification).booleanValue()) {
                 try {
                     Iterator responsibles = m_cms.readResponsibleUsers(resource).iterator();
                     while (responsibles.hasNext()) {

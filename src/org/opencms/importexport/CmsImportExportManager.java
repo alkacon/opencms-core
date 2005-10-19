@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/10/13 16:27:32 $
- * Version: $Revision: 1.28.2.1 $
+ * Date   : $Date: 2005/10/19 09:41:10 $
+ * Version: $Revision: 1.28.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.1 $ 
+ * @version $Revision: 1.28.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -642,7 +642,7 @@ public class CmsImportExportManager {
     /**
      * Sets if imported pages should be converted into XML pages.<p>
      * 
-     * @param convertToXmlPage "true", if imported pages should be converted into XML pages.
+     * @param convertToXmlPage <code>"true"</code>, if imported pages should be converted into XML pages.
      */
     public void setConvertToXmlPage(String convertToXmlPage) {
 
@@ -693,7 +693,7 @@ public class CmsImportExportManager {
     /**
      * @see CmsImportExportManager#setOverwriteCollidingResources(boolean)
      * 
-     * @param overwriteCollidingResources "true" if colliding resources should be overwritten during the import
+     * @param overwriteCollidingResources <code>"true"</code> if colliding resources should be overwritten during the import
      */
     public void setOverwriteCollidingResources(String overwriteCollidingResources) {
 

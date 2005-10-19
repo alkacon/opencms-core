@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/08/05 08:50:30 $
- * Version: $Revision: 1.108 $
+ * Date   : $Date: 2005/10/19 09:37:40 $
+ * Version: $Revision: 1.108.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,6 +54,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPasswordEncryptionException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
@@ -84,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.108 $
+ * @version $Revision: 1.108.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -176,7 +177,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         try {
             // get the id of the parent group if necessary
-            if ((parentGroupName != null) && (!"".equals(parentGroupName))) {
+            if (CmsStringUtil.isNotEmpty(parentGroupName)) {
                 parentId = readGroup(dbc, parentGroupName).getId();
             }
 

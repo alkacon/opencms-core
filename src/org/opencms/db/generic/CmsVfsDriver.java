@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.255.2.2 $
+ * Date   : $Date: 2005/10/19 09:37:40 $
+ * Version: $Revision: 1.255.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.255.2.2 $
+ * @version $Revision: 1.255.2.3 $
  * 
  * @since 6.0.0 
  */
@@ -2130,7 +2130,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         deletePropertyValue = true;
                     } else {
                         value = property.getStructureValue();
-                        if (value == null || (value != null && "".equalsIgnoreCase(value.trim()))) {
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
                             // no structure value set or the structure value is an empty string, 
                             // continue with the resource value
                             continue;
@@ -2148,7 +2148,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         deletePropertyValue = true;
                     } else {
                         value = property.getResourceValue();
-                        if (value == null || (value != null && "".equalsIgnoreCase(value.trim()))) {
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
                             // no resource value set or the resource value is an empty string,
                             // break out of the loop
                             break;

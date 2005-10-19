@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/10/19 09:46:05 $
+ * Version: $Revision: 1.50.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.50.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -398,7 +398,7 @@ public final class CmsSiteManager implements Cloneable {
         }
 
         // check the presence of the default site in VFS
-        if ((m_defaultUri == null) || "".equals(m_defaultUri.trim())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_defaultUri)) {
             m_defaultSite = null;
         } else {
             m_defaultSite = new CmsSite(m_defaultUri, CmsSiteMatcher.DEFAULT_MATCHER);

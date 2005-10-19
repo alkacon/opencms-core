@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.110.2.1 $
+ * Date   : $Date: 2005/10/19 09:41:10 $
+ * Version: $Revision: 1.110.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.110.2.1 $ 
+ * @version $Revision: 1.110.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -396,7 +396,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         for (int i = 0; i < webAppNamesOri.size(); i++) {
             // remove possible white space
             String name = ((String)webAppNamesOri.get(i)).trim();
-            if (name != null && !"".equals(name)) {
+            if (CmsStringUtil.isNotEmpty(name)) {
                 webAppNames.add(name);
                 if (LOG.isInfoEnabled()) {
                     LOG.info(Messages.get().key(
@@ -956,7 +956,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 properties.add(newProperty);
 
                 // if set, add the bodyclass as property
-                if (bodyclass != null && !"".equals(bodyclass)) {
+                if (CmsStringUtil.isNotEmpty(bodyclass)) {
                     newProperty = new CmsProperty(CmsPropertyDefinition.PROPERTY_TEMPLATE, mastertemplate, null);
                     newProperty.setAutoCreatePropertyDefinition(true);
                     properties.remove(newProperty);

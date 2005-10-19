@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2005/10/02 09:03:59 $
- * Version: $Revision: 1.24.2.2 $
+ * Date   : $Date: 2005/10/19 09:45:12 $
+ * Version: $Revision: 1.24.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.24.2.2 $ 
+ * @version $Revision: 1.24.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -242,8 +242,8 @@ public class CmsScheduleManager implements Job {
         Properties properties = new Properties();
         properties.put(StdSchedulerFactory.PROP_SCHED_INSTANCE_NAME, "OpenCmsScheduler");
         properties.put(StdSchedulerFactory.PROP_SCHED_THREAD_NAME, "OpenCms: Scheduler");
-        properties.put(StdSchedulerFactory.PROP_SCHED_RMI_EXPORT, String.valueOf(false));
-        properties.put(StdSchedulerFactory.PROP_SCHED_RMI_PROXY, String.valueOf(false));
+        properties.put(StdSchedulerFactory.PROP_SCHED_RMI_EXPORT, CmsStringUtil.FALSE);
+        properties.put(StdSchedulerFactory.PROP_SCHED_RMI_PROXY, CmsStringUtil.FALSE);
         properties.put(StdSchedulerFactory.PROP_THREAD_POOL_CLASS, CmsSchedulerThreadPool.class.getName());
         properties.put(StdSchedulerFactory.PROP_JOB_STORE_CLASS, "org.quartz.simpl.RAMJobStore");
 

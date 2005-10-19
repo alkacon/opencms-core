@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/postgresql/CmsUserDriver.java,v $
- * Date   : $Date: 2005/06/28 08:05:44 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/19 09:38:10 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPasswordEncryptionException;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.IOException;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Antonio Core 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -98,7 +99,7 @@ public class CmsUserDriver extends org.opencms.db.generic.CmsUserDriver {
 
         try {
             // get the id of the parent group if necessary
-            if ((parentGroupName != null) && (!"".equals(parentGroupName))) {
+            if (CmsStringUtil.isNotEmpty(parentGroupName)) {
                 parentId = readGroup(dbc, parentGroupName).getId();
             }
 

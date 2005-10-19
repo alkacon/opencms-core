@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.35 $
+ * Date   : $Date: 2005/10/19 09:42:54 $
+ * Version: $Revision: 1.35.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 
 import java.io.IOException;
@@ -56,7 +57,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35 $ 
+ * @version $Revision: 1.35.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -337,7 +338,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 String body = null;
                 if (getBodyContent() != null) {
                     body = getBodyContent().getString();
-                    if ((body != null) && (!"".equals(body.trim()))) {
+                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(body)) {
                         // target IS set in body
                         target = body + getSuffix();
                     }

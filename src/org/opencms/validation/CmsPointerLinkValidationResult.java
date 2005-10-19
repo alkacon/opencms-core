@@ -1,7 +1,7 @@
 /*
- * File   :
- * Date   : 
- * Version: 
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidationResult.java,v $
+ * Date   : $Date: 2005/10/19 09:48:05 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Map.Entry;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */

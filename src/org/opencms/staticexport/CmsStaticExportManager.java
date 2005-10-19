@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/10/02 09:05:01 $
- * Version: $Revision: 1.116.2.1 $
+ * Date   : $Date: 2005/10/19 09:48:05 $
+ * Version: $Revision: 1.116.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.116.2.1 $ 
+ * @version $Revision: 1.116.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -166,7 +166,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** List of export rules. */
     private List m_exportRules;
 
-    /** List of export suffixes where the "export" property default is always "true". */
+    /** List of export suffixes where the "export" property default is always <code>"true"</code>. */
     private List m_exportSuffixes;
 
     /** Temporary variable for reading the xml config file. */
@@ -618,15 +618,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the default property value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or "false"
      */
     public String getDefault() {
 
-        if (m_exportPropertyDefault) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return String.valueOf(m_exportPropertyDefault);
     }
 
     /**
@@ -713,7 +709,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the export enbled value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or "false"
      */
     public String getExportEnabled() {
 
@@ -897,15 +893,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the plain export optimization value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or "false"
      */
     public String getPlainExportOptimization() {
 
-        if (m_quickPlainExport) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return String.valueOf(m_quickPlainExport);
     }
 
     /**
@@ -921,15 +913,11 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Gets the relative links value as a string representation.<p>
      * 
-     * @return "true" or "false"
+     * @return <code>"true"</code> or "false"
      */
     public String getRelativeLinks() {
 
-        if (m_exportRelativeLinks) {
-            return "true";
-        } else {
-            return "false";
-        }
+        return String.valueOf(m_exportRelativeLinks);
     }
 
     /**
@@ -1557,7 +1545,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the default property value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or "false"
      */
     public void setDefault(String value) {
 
@@ -1567,7 +1555,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the export enbled value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or "false"
      */
     public void setExportEnabled(String value) {
 
@@ -1654,7 +1642,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the plain export optimization value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or "false"
      */
     public void setPlainExportOptimization(String value) {
 
@@ -1664,7 +1652,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /**
      * Sets the relative links value.<p>
      * 
-     * @param value must be "true" or "false"
+     * @param value must be <code>"true"</code> or "false"
      */
     public void setRelativeLinks(String value) {
 

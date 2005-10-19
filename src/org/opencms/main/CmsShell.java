@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/10/19 09:45:12 $
+ * Version: $Revision: 1.45.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.45.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -176,7 +176,7 @@ public class CmsShell {
                         converted[j] = value;
                     } else if (clazz[j].equals(boolean.class)) {
                         // try to convert to boolean
-                        if ("true".equalsIgnoreCase(value) || "false".equalsIgnoreCase(value)) {
+                        if (CmsStringUtil.TRUE.equalsIgnoreCase(value) || CmsStringUtil.FALSE.equalsIgnoreCase(value)) {
                             converted[j] = Boolean.valueOf(value);
                         } else {
                             match = false;

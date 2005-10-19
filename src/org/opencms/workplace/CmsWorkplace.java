@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/10/02 05:39:16 $
- * Version: $Revision: 1.146.2.2 $
+ * Date   : $Date: 2005/10/19 09:50:28 $
+ * Version: $Revision: 1.146.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.2 $ 
+ * @version $Revision: 1.146.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1050,7 +1050,7 @@ public abstract class CmsWorkplace {
 
         StringBuffer result = new StringBuffer(512);
         String calendarPath = getSkinUri() + "components/js_calendar/";
-        if (style == null || "".equals(style)) {
+        if (CmsStringUtil.isEmpty(style)) {
             style = "system";
         }
         result.append("<link rel=\"stylesheet\" type=\"text/css\" href=\"");
@@ -1132,7 +1132,7 @@ public abstract class CmsWorkplace {
         boolean showTime) {
 
         StringBuffer result = new StringBuffer(512);
-        if (align == null || "".equals(align)) {
+        if (CmsStringUtil.isEmpty(align)) {
             align = "Bc";
         }
         result.append("<script type=\"text/javascript\">\n");
@@ -1167,7 +1167,7 @@ public abstract class CmsWorkplace {
         if (showTime && key("calendar.timeformat").toLowerCase().indexOf("p") != -1) {
             result.append(",\n\t\ttimeFormat     :    \"12\"");
         }
-        if (dateStatusFunc != null && !"".equals(dateStatusFunc)) {
+        if (CmsStringUtil.isNotEmpty(dateStatusFunc)) {
             result.append(",\n\t\tdateStatusFunc :    ");
             result.append(dateStatusFunc);
         }

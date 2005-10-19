@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsXmlPageConverter.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/10/19 09:41:10 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public final class CmsXmlPageConverter {
         while (i.hasNext()) {
             Element currentTemplate = (Element)i.next();
             String bodyName = currentTemplate.attributeValue("name");
-            if (bodyName == null || "".equals(bodyName)) {
+            if (CmsStringUtil.isEmpty(bodyName)) {
                 // no template name found, use the parameter body name
                 bodyName = "body";
             }

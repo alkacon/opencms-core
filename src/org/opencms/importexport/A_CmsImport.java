@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/10/13 16:27:32 $
- * Version: $Revision: 1.81.2.2 $
+ * Date   : $Date: 2005/10/19 09:41:10 $
+ * Version: $Revision: 1.81.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81.2.2 $ 
+ * @version $Revision: 1.81.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -479,7 +479,7 @@ public abstract class A_CmsImport implements I_CmsImport {
 
         CmsGroup parentGroup = null;
         try {
-            if ((parentgroupName != null) && (!"".equals(parentgroupName))) {
+            if (CmsStringUtil.isNotEmpty(parentgroupName)) {
                 try {
                     parentGroup = m_cms.readGroup(parentgroupName);
                 } catch (CmsException exc) {
@@ -487,7 +487,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
             }
 
-            if (((parentgroupName != null) && (!"".equals(parentgroupName))) && (parentGroup == null)) {
+            if (CmsStringUtil.isNotEmpty(parentgroupName) && (parentGroup == null)) {
                 // cannot create group, put on stack and try to create later
                 Map groupData = new HashMap();
                 groupData.put(CmsImportExportManager.N_NAME, name);

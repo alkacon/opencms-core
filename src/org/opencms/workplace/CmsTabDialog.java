@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsTabDialog.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/10/19 09:50:28 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -60,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,7 +252,7 @@ public abstract class CmsTabDialog extends CmsDialog {
         if (m_activeTab < 0) {
             String paramTab = getParamTab();
             int tab = 1;
-            if (paramTab != null && !"".equals(paramTab)) {
+            if (CmsStringUtil.isNotEmpty(paramTab)) {
                 try {
                     tab = Integer.parseInt(paramTab);
                 } catch (NumberFormatException e) {

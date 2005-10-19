@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/10/13 08:23:24 $
- * Version: $Revision: 1.44.2.2 $
+ * Date   : $Date: 2005/10/19 09:45:12 $
+ * Version: $Revision: 1.44.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.2 $ 
+ * @version $Revision: 1.44.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -313,7 +313,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             m_databaseKey = getExtProperty("db.name");
         }
 
-        if (m_databaseKey == null || "".equals(m_databaseKey)) {
+        if (CmsStringUtil.isEmpty(m_databaseKey)) {
             m_databaseKey = (String)getSortedDatabases().get(0);
         }
 
@@ -807,7 +807,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public boolean getWizardEnabled() {
 
-        return "true".equals(getExtProperty("wizard.enabled"));
+        return Boolean.valueOf(getExtProperty("wizard.enabled")).booleanValue();
     }
 
     /**
@@ -1014,7 +1014,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public void lockWizard() {
 
-        setExtProperty("wizard.enabled", "false");
+        setExtProperty("wizard.enabled", CmsStringUtil.FALSE);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.72.2.2 $
+ * Date   : $Date: 2005/10/19 09:50:28 $
+ * Version: $Revision: 1.72.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.2 $ 
+ * @version $Revision: 1.72.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -852,7 +852,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /**
      * Sets if the autolock resources feature is enabled.<p>
      * 
-     * @param value "true" if the autolock resources feature is enabled, otherwise false
+     * @param value <code>"true"</code> if the autolock resources feature is enabled, otherwise false
      */
     public void setAutoLock(String value) {
 
@@ -1030,7 +1030,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /**
      * Controls if the user/group icon in the administration view should be shown.<p>
      * 
-     * @param value "true" if the user/group icon in the administration view should be shown, otherwise false
+     * @param value <code>"true"</code> if the user/group icon in the administration view should be shown, otherwise false
      */
     public void setUserManagementEnabled(String value) {
 

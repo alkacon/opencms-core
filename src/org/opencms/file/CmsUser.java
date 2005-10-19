@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2005/10/19 09:39:23 $
+ * Version: $Revision: 1.29.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.2.1 $
+ * @version $Revision: 1.29.2.2 $
  * 
  * @since 6.0.0
  * 
@@ -464,13 +464,13 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
 
         StringBuffer buf = new StringBuffer();
         String first = getFirstname();
-        if ((null != first) && !"".equals(first.trim())) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(first)) {
             buf.append(first);
             buf.append(" ");
         }
         String last = getLastname();
-        if ((null != last) && !"".equals(last.trim())) {
-            buf.append(getLastname());
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(last)) {
+            buf.append(last);
             buf.append(" ");
         }
         buf.append("(");
@@ -840,7 +840,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the "touched" status of this user to "true".<p>
+     * Sets the "touched" status of this user to <code>"true"</code>.<p>
      */
     public void touch() {
 

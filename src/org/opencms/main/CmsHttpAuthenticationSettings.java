@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsHttpAuthenticationSettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/10/19 09:45:12 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsHttpAuthenticationSettings {
     /**
      * Sets if browser-based HTTP basic authentication is enabled or disabled.<p>
      *
-     * @param value a string {"true"|"false"} to specify if browser-based HTTP basic authentication should be enabled
+     * @param value a string {<code>"true"</code>|"false"} to specify if browser-based HTTP basic authentication should be enabled
      */
     public void setUseBrowserBasedHttpAuthentication(String value) {
 

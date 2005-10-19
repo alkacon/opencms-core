@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsAfterPublishStaticExportHandler.java,v $
- * Date   : $Date: 2005/10/02 09:05:01 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/10/19 09:48:05 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsRequestUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsWorkplace;
 
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -482,7 +483,7 @@ public class CmsAfterPublishStaticExportHandler implements I_CmsStaticExportHand
                 // set request type to GET
                 urlcon.setRequestMethod("GET");
                 // add special export header
-                urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, "true");
+                urlcon.setRequestProperty(CmsRequestUtil.HEADER_OPENCMS_EXPORT, CmsStringUtil.TRUE);
                 // add additional headers if available
                 if (manager.getAcceptLanguageHeader() != null) {
                     urlcon.setRequestProperty(CmsRequestUtil.HEADER_ACCEPT_LANGUAGE, manager.getAcceptLanguageHeader());

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/10/18 11:53:25 $
- * Version: $Revision: 1.27.2.3 $
+ * Date   : $Date: 2005/10/19 09:42:54 $
+ * Version: $Revision: 1.27.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27.2.3 $ 
+ * @version $Revision: 1.27.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -552,9 +552,9 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     }
 
     /**
-     * Returns "true" if this content load tag should only preload the values from the collector.<p>
+     * Returns <code>"true"</code> if this content load tag should only preload the values from the collector.<p>
      * 
-     * @return "true" if this content load tag should only preload the values from the collector
+     * @return <code>"true"</code> if this content load tag should only preload the values from the collector
      */
     public String getPreload() {
 

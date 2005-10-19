@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/10/13 08:27:45 $
- * Version: $Revision: 1.93.2.3 $
+ * Date   : $Date: 2005/10/19 09:50:28 $
+ * Version: $Revision: 1.93.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.3 $ 
+ * @version $Revision: 1.93.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -425,7 +425,7 @@ public class CmsDialog extends CmsToolDialog {
                 errorStyles = " dialogerror textbold";
             }
             retValue.append("<!-- 3D block start -->\n");
-            if (headline != null && !"".equals(headline)) {
+            if (CmsStringUtil.isNotEmpty(headline)) {
                 retValue.append("<div class=\"dialogblockborder dialogblockborderheadline\" unselectable=\"on\">\n");
                 retValue.append("<div class=\"dialogblock" + errorStyles + "\" unselectable=\"on\">\n");
                 retValue.append("<span class=\"dialogblockhead" + errorStyles + "\" unselectable=\"on\">");
@@ -1374,7 +1374,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     protected String appendDelimiter(String attribute) {
 
-        if (attribute != null && !"".equals(attribute)) {
+        if (CmsStringUtil.isNotEmpty(attribute)) {
             if (!attribute.startsWith(" ")) {
                 // add a delimiter space between the beginning button HTML and the button tag attribs
                 return " " + attribute;

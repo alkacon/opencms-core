@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/06/29 13:06:54 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/10/19 09:42:54 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 
 import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
@@ -77,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,7 +247,7 @@ public class CmsJspActionElement extends CmsJspBean {
         String defaultLanguage) {
 
         try {
-            if ((defaultLanguage != null) && ((language == null) || ("".equals(language)))) {
+            if ((defaultLanguage != null) && CmsStringUtil.isEmpty(language)) {
                 language = defaultLanguage;
             }
             if (language == null) {
