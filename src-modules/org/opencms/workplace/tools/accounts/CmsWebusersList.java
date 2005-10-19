@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebusersList.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/10/19 13:28:39 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,9 +34,13 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsUUID;
+import org.opencms.workplace.list.CmsHtmlList;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -48,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.2 $ 
+ * @version $Revision: 1.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +81,25 @@ public class CmsWebusersList extends A_CmsUsersList {
     public CmsWebusersList(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
+    }
+
+    /**
+     * Deletes the user and closes the dialog.<p>
+     * 
+     * @throws Exception if something goes wrong
+     */
+    public void actionDeleteUser() throws Exception {
+
+        Iterator itUsers = CmsStringUtil.splitAsList(
+            getJsp().getRequest().getParameter(A_CmsEditUserDialog.PARAM_USERID),
+            CmsHtmlList.ITEM_SEPARATOR,
+            true).iterator();
+        while (itUsers.hasNext()) {
+            CmsUUID id = new CmsUUID(itUsers.next().toString());
+            getCms().deleteWebUser(id);
+        }
+        refreshList();
+        actionCloseDialog();
     }
 
     /**
