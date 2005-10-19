@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.256 $
+ * Date   : $Date: 2005/10/19 10:21:41 $
+ * Version: $Revision: 1.257 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.256 $
+ * @version $Revision: 1.257 $
  * 
  * @since 6.0.0 
  */
@@ -1686,7 +1686,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection(dbc, projectId); 
             StringBuffer queryBuf = new StringBuffer(256);
             queryBuf.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_READ_TREE"));
             queryBuf.append(conditions);
@@ -2130,7 +2130,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         deletePropertyValue = true;
                     } else {
                         value = property.getStructureValue();
-                        if (value == null || (value != null && "".equalsIgnoreCase(value.trim()))) {
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
                             // no structure value set or the structure value is an empty string, 
                             // continue with the resource value
                             continue;
@@ -2148,7 +2148,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                         deletePropertyValue = true;
                     } else {
                         value = property.getResourceValue();
-                        if (value == null || (value != null && "".equalsIgnoreCase(value.trim()))) {
+                        if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
                             // no resource value set or the resource value is an empty string,
                             // break out of the loop
                             break;

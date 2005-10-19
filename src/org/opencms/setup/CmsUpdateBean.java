@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2005/10/13 09:08:51 $
- * Version: $Revision: 1.4 $
+ * Date   : $Date: 2005/10/19 10:21:41 $
+ * Version: $Revision: 1.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.4 $ 
+ * @version $Revision: 1.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,7 +154,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             m_availableModules = new HashMap();
             
             try {
-                // open the folder "/WEB-INF/packages/modules/"
+                // open the folder "/update/modules/"
                 String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
     
                 Map modules = CmsModuleManager.getAllModulesFromPath(packagesFolder);

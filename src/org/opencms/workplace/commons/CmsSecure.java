@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsSecure.java,v $
- * Date   : $Date: 2005/10/12 08:11:43 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2006/03/27 14:52:18 $
+ * Version: $Revision: 1.28 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.28 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,10 +164,10 @@ public class CmsSecure extends CmsDialog {
         String propVal = readProperty(propName);
         StringBuffer result = new StringBuffer("<table border=\"0\"><tr>");
         result.append("<td><input type=\"radio\" value=\"true\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
-            "\" ").append("true".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(
+            "\" ").append(Boolean.valueOf(propVal).booleanValue() ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(
             key(Messages.GUI_LABEL_TRUE_0)).append("</td>");
         result.append("<td><input type=\"radio\" value=\"false\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
-            "\" ").append("false".equals(propVal) ? "checked=\"checked\"" : "").append("/></td><td id=\"tablelabel\">").append(
+            "\" ").append(Boolean.valueOf(propVal).booleanValue() ? "" : "checked=\"checked\"").append("/></td><td id=\"tablelabel\">").append(
             key(Messages.GUI_LABEL_FALSE_0)).append("</td>");
         result.append("<td><input type=\"radio\" value=\"\" onClick=\"checkNoIntern()\" name=\"").append(propName).append(
             "\" ").append(CmsStringUtil.isEmpty(propVal) ? "checked=\"checked\"" : "").append(
@@ -280,7 +280,7 @@ public class CmsSecure extends CmsDialog {
             cms.getRequestContext().setCurrentProject(currentProject);
         }
         
-        if (currentSite == OpenCms.getSiteManager().getDefaultSite()) {
+        if (currentSite.equals(OpenCms.getSiteManager().getDefaultSite())) {
             serverPrefix = OpenCms.getSiteManager().getWorkplaceServer();
         } else {
             if (Boolean.valueOf(secureResource).booleanValue()) {
