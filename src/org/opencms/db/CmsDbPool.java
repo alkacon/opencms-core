@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/09/29 11:06:17 $
- * Version: $Revision: 1.41.2.1 $
+ * Date   : $Date: 2005/10/19 09:26:05 $
+ * Version: $Revision: 1.41.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.db;
 
 import org.opencms.main.CmsLog;
+import org.opencms.util.CmsStringUtil;
 
 import java.sql.Connection;
 import java.util.ArrayList;
@@ -59,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.41.2.1 $
+ * @version $Revision: 1.41.2.2 $
  * 
  * @since 6.0.0
  */
@@ -179,8 +180,8 @@ public final class CmsDbPool {
         String whenExhaustedActionValue = config.getString(
             KEY_DATABASE_POOL + '.' + key + '.' + KEY_WHEN_EXHAUSTED_ACTION).trim();
         byte whenExhaustedAction = 0;
-        boolean testOnBorrow = "true".equalsIgnoreCase(config.getString(
-            KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW).trim());
+        boolean testOnBorrow = Boolean.valueOf(config.getString(
+            KEY_DATABASE_POOL + '.' + key + '.' + KEY_TEST_ON_BORROW).trim()).booleanValue();
 
         if ("block".equalsIgnoreCase(whenExhaustedActionValue)) {
             whenExhaustedAction = GenericObjectPool.WHEN_EXHAUSTED_BLOCK;
@@ -205,9 +206,9 @@ public final class CmsDbPool {
         }
 
         // read the values of the statement pool configuration specified by the given key
-        boolean poolingStmts = "true".equalsIgnoreCase(config.getString(
+        boolean poolingStmts = Boolean.valueOf(config.getString(
             KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_POOLING,
-            "true").trim());
+            CmsStringUtil.TRUE).trim()).booleanValue();
         int maxActiveStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_ACTIVE, 25);
         int maxWaitStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_WAIT, 250);
         int maxIdleStmts = config.getInteger(KEY_DATABASE_STATEMENTS + '.' + key + '.' + KEY_MAX_IDLE, 15);

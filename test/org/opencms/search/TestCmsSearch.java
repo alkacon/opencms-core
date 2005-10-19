@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/09/22 10:30:43 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2005/10/19 09:24:33 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Collections;
 import java.util.Iterator;
@@ -54,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.15.2.2 $
+ * @version $Revision: 1.15.2.3 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -193,8 +194,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setQuery("pdf");
 
         echo("With Permission check, with excerpt");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.PERMISSIONS, "true");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "true");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.PERMISSIONS, CmsStringUtil.TRUE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.TRUE);
 
         cmsSearchBean.setSearchPage(1);
         long duration = -System.currentTimeMillis();
@@ -219,8 +220,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         }
 
         echo("With Permission check, without excerpt");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.PERMISSIONS, "true");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "false");
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.PERMISSIONS, CmsStringUtil.TRUE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.FALSE);
 
         cmsSearchBean.setSearchPage(1);
         duration = -System.currentTimeMillis();
@@ -237,8 +238,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Without Permission check, with excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.PERMISSIONS,
-            "false");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "true");
+            CmsStringUtil.FALSE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.TRUE);
 
         cmsSearchBean.setSearchPage(1);
         duration = -System.currentTimeMillis();
@@ -255,8 +256,8 @@ public class TestCmsSearch extends OpenCmsTestCase {
         echo("Without Permission check, without excerpt");
         OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(
             CmsSearchIndex.PERMISSIONS,
-            "false");
-        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, "false");
+            CmsStringUtil.FALSE);
+        OpenCms.getSearchManager().getIndex(INDEX_OFFLINE).addConfigurationParameter(CmsSearchIndex.EXCERPT, CmsStringUtil.FALSE);
 
         cmsSearchBean.setSearchPage(1);
         duration = -System.currentTimeMillis();

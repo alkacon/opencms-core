@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsDefaultUserSettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/19 09:25:23 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.util.List;
  * @author Michael Emmerich 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16 $
+ * @version $Revision: 1.16.2.1 $
  * 
  * @since 6.0.0
  */
@@ -270,7 +270,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file creation date should be shown in explorer view.<p>
      * 
-     * @return "true" if the file creation date should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file creation date should be shown, otherwise "false"
      */
     public String getShowExplorerFileDateCreated() {
 
@@ -280,7 +280,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file expired by should be shown in explorer view.<p>
      * 
-     * @return "true" if the file date expired by should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file date expired by should be shown, otherwise "false"
      */
     public String getShowExplorerFileDateExpired() {
 
@@ -290,7 +290,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file last modified date should be shown in explorer view.<p>
      * 
-     * @return "true" if the file last modified date should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file last modified date should be shown, otherwise "false"
      */
     public String getShowExplorerFileDateLastModified() {
 
@@ -300,7 +300,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file released by should be shown in explorer view.<p>
      * 
-     * @return "true" if the file date released by should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file date released by should be shown, otherwise "false"
      */
     public String getShowExplorerFileDateReleased() {
 
@@ -310,7 +310,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file locked by should be shown in explorer view.<p>
      * 
-     * @return "true" if the file locked by should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file locked by should be shown, otherwise "false"
      */
     public String getShowExplorerFileLockedBy() {
 
@@ -320,7 +320,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file permissions should be shown in explorer view.<p>
      * 
-     * @return "true" if the file permissions should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file permissions should be shown, otherwise "false"
      */
     public String getShowExplorerFilePermissions() {
 
@@ -330,7 +330,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file size should be shown in explorer view.<p>
      * 
-     * @return "true" if the file size should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file size should be shown, otherwise "false"
      */
     public String getShowExplorerFileSize() {
 
@@ -340,7 +340,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets  if the file state should be shown in explorer view.<p>
      * 
-     * @return "true" if the file state should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file state should be shown, otherwise "false"
      */
     public String getShowExplorerFileState() {
 
@@ -350,7 +350,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file title should be shown in explorer view.<p>
      * 
-     * @return  "true" if the file title should be shown, otherwise "false"
+     * @return  <code>"true"</code> if the file title should be shown, otherwise "false"
      */
     public String getShowExplorerFileTitle() {
 
@@ -360,7 +360,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file type should be shown in explorer view.<p>
      * 
-     * @return  "true" if the file type should be shown, otherwise "false"
+     * @return  <code>"true"</code> if the file type should be shown, otherwise "false"
      */
     public String getShowExplorerFileType() {
 
@@ -370,7 +370,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file creator should be shown in explorer view.<p>
      * 
-     * @return "true" if the file creator should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file creator should be shown, otherwise "false"
      */
     public String getShowExplorerFileUserCreated() {
 
@@ -380,7 +380,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Gets if the file last modified by should be shown in explorer view.<p>
      * 
-     * @return "true" if the file last modified by should be shown, otherwise "false"
+     * @return <code>"true"</code> if the file last modified by should be shown, otherwise "false"
      */
     public String getShowExplorerFileUserLastModified() {
 
@@ -390,7 +390,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Determines if a message should be sent if the task is accepted.<p>
      * 
-     * @return "true" if a message should be sent if the task is accepted, otherwise "false"
+     * @return <code>"true"</code> if a message should be sent if the task is accepted, otherwise "false"
      */
     public String getTaskMessageAcceptedString() {
 
@@ -400,7 +400,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Determines if a message should be sent if the task is completed.<p>
      * 
-     * @return "true" if a message should be sent if the task is completed, otherwise "false"
+     * @return <code>"true"</code> if a message should be sent if the task is completed, otherwise "false"
      */
     public String getTaskMessageCompletedString() {
 
@@ -410,7 +410,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Determines if a message should be sent if the task is forwarded.<p>
      * 
-     * @return "true" if a message should be sent if the task is forwarded, otherwise "false"
+     * @return <code>"true"</code> if a message should be sent if the task is forwarded, otherwise "false"
      */
     public String getTaskMessageForwardedString() {
 
@@ -420,7 +420,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Determines if all role members should be informed about the task.<p>
      * 
-     * @return "true" if all role members should be informed about the task, otherwise "false"
+     * @return <code>"true"</code> if all role members should be informed about the task, otherwise "false"
      */
     public String getTaskMessageMembersString() {
 
@@ -430,7 +430,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Determines if all projects should be shown in tasks view.<p>
      * 
-     * @return "true" if all projects should be shown in tasks view, otherwise "false"
+     * @return <code>"true"</code> if all projects should be shown in tasks view, otherwise "false"
      */
     public String getTaskShowAllProjectsString() {
 
@@ -857,7 +857,7 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
     /**
      * Sets the usage of the upload applet for the user user.<p>
      * 
-     * @param applet "true" or "false" to flag the use of the applet
+     * @param applet <code>"true"</code> or "false" to flag the use of the applet
      */
     public void setUploadApplet(String applet) {
 
@@ -889,15 +889,10 @@ public class CmsDefaultUserSettings extends CmsUserSettings {
      * Checks if  a specific explorer setting depending is set.<p>
      * 
      * @param setting the settings constant value for the explorer settings
-     * @return "true" if the explorer setting is set, otherwise "false"
+     * @return <code>"true"</code> if the explorer setting is set, otherwise "false"
      */
     private String getExplorerSetting(int setting) {
 
-        if ((getExplorerSettings() & setting) > 0) {
-            return Boolean.TRUE.toString();
-        } else {
-            return Boolean.FALSE.toString();
-        }
+        return String.valueOf((getExplorerSettings() & setting) > 0);
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/scheduler/TestCmsScheduler.java,v $
- * Date   : $Date: 2005/09/16 13:11:13 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2005/10/19 09:24:33 $
+ * Version: $Revision: 1.14.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.scheduler;
 
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14.2.1 $
+ * @version $Revision: 1.14.2.2 $
  * 
  * @since 6.0.0
  */
@@ -548,9 +549,9 @@ public class TestCmsScheduler extends TestCase {
         Properties properties = new Properties();
         properties.put("org.quartz.scheduler.instanceName", "OpenCmsScheduler");
         properties.put("org.quartz.scheduler.threadName", "OpenCms: Scheduler");
-        properties.put("org.quartz.scheduler.rmi.export", "false");
-        properties.put("org.quartz.scheduler.rmi.proxy", "false");
-        properties.put("org.quartz.scheduler.xaTransacted", "false");
+        properties.put("org.quartz.scheduler.rmi.export", CmsStringUtil.FALSE);
+        properties.put("org.quartz.scheduler.rmi.proxy", CmsStringUtil.FALSE);
+        properties.put("org.quartz.scheduler.xaTransacted", CmsStringUtil.FALSE);
         properties.put("org.quartz.threadPool.class", "org.opencms.scheduler.CmsSchedulerThreadPool");
         properties.put("org.quartz.jobStore.misfireThreshold", "60000");
         properties.put("org.quartz.jobStore.class", "org.quartz.simpl.RAMJobStore");

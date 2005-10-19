@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/notification/TestContentNotification.java,v $
- * Date   : $Date: 2005/09/16 08:25:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/19 09:24:33 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Calendar;
 import java.util.Collection;
@@ -58,7 +59,7 @@ import junit.framework.TestSuite;
  * Unit test for the OpenCms content notification.<p>
  * 
  * @author Jan Baudisch 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestContentNotification extends OpenCmsTestCase {
   
@@ -162,7 +163,7 @@ public class TestContentNotification extends OpenCmsTestCase {
         
         cms.lockResource(folder);
         cms.writePropertyObject(folder, new CmsProperty(
-            CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION, "true", "true"));
+            CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION, CmsStringUtil.TRUE, CmsStringUtil.TRUE));
         cms.unlockResource(folder);
         cms.publishProject();
         Iterator notifications = new CmsNotificationCandidates(cms).getContentNotifications().iterator();

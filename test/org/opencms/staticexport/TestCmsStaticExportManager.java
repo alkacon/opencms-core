@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsStaticExportManager.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/19 09:24:33 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,9 +50,9 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  * 
  * @since 6.0.0
  */
@@ -118,7 +118,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         assertTrue(exportProp.isNullProperty());
 
         // make sure static export on default is disabled
-        OpenCms.getStaticExportManager().setDefault("false");
+        OpenCms.getStaticExportManager().setDefault(CmsStringUtil.FALSE);
         String rfsPrefix = OpenCms.getStaticExportManager().getRfsPrefix(cms.getRequestContext().getSiteRoot() + folder);
         String expected1, expected2;
 
@@ -179,7 +179,7 @@ public class TestCmsStaticExportManager extends OpenCmsTestCase {
         // fist setup a little test scenario with the imported data
         String folder = "/types/";
         String vfsName = folder + "jsp.jsp";
-        CmsProperty exportProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT, "true", null);
+        CmsProperty exportProp = new CmsProperty(CmsPropertyDefinition.PROPERTY_EXPORT, CmsStringUtil.TRUE, null);
         cms.lockResource(folder);
         cms.writePropertyObject(folder, exportProp);
         cms.unlockResource(folder);

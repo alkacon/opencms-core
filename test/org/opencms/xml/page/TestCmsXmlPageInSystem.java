@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/page/TestCmsXmlPageInSystem.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/19 09:24:33 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 import org.opencms.util.CmsFileUtil;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.tools.content.CmsElementRename;
 import org.opencms.xml.CmsXmlEntityResolver;
 
@@ -57,7 +58,7 @@ import junit.framework.TestSuite;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $
+ * @version $Revision: 1.21.2.1 $
  * 
  * @since 6.0.0
  */
@@ -188,7 +189,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         List properties = new ArrayList();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
-        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));
+        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));
         cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
 
         CmsFile file = cms.readFile(filename);
@@ -239,7 +240,7 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
         List properties = new ArrayList();
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, UTF8, null));
         properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_LOCALE, Locale.ENGLISH.toString(), null));
-        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, String.valueOf(false), null));
+        properties.add(new CmsProperty(CmsXmlPage.PROPERTY_ALLOW_RELATIVE, CmsStringUtil.FALSE, null));
         cms.createResource(filename, CmsResourceTypeXmlPage.getStaticTypeId(), content.getBytes(UTF8), properties);
 
         CmsFile file = cms.readFile(filename);
@@ -328,13 +329,13 @@ public class TestCmsXmlPageInSystem extends OpenCmsTestCase {
     public void testXmlPageRenameElement() throws Exception {
 
         String folder = "/folder1/";
-        String recursive = "true";
+        String recursive = CmsStringUtil.TRUE;
         String template = "ALL";
         String locale = "ALL";
         String oldElement = "body";
         String newElement = "NewElement";
-        String removeEmptyElements = "false";
-        String validateNewElement = "false";
+        String removeEmptyElements = CmsStringUtil.FALSE;
+        String validateNewElement = CmsStringUtil.FALSE;
 
         echo("Testing XML page rename element handling");
         CmsElementRename wp = new CmsElementRename(
