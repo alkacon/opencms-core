@@ -18,7 +18,7 @@
 <p>Install this module if you want to modify file properties or content elements.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.1</version>
+		<version>1.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -300,6 +300,192 @@
 			</properties>
 			<accesscontrol/>
 		</file>
+		<file>
+			<destination>system/workplace/admin/contenttools/check</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 13 Oct 2005 13:53:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 07:31:28 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.content.CmsPropertyContentToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1.0]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[index.html]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/contenttools/icons/big/contentcheck.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/index.html</source>
+			<destination>system/workplace/admin/contenttools/check/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>5ed6f649-3bbb-11da-9820-11c9c0330e35</uuidresource>
+			<datelastmodified>Mon, 17 Oct 2005 07:23:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 07:31:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check dialog]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/report.html</source>
+			<destination>system/workplace/admin/contenttools/check/report.html</destination>
+			<type>jsp</type>
+			<uuidresource>c768a5b6-3ca7-11da-b888-11c9c0330e35</uuidresource>
+			<datelastmodified>Mon, 17 Oct 2005 07:23:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 14 Oct 2005 11:43:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check report]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/result-fs-title.html</source>
+			<destination>system/workplace/admin/contenttools/check/result-fs-title.html</destination>
+			<type>jsp</type>
+			<uuidresource>4253f583-3fb5-11da-9335-11c9c0330e35</uuidresource>
+			<datelastmodified>Tue, 18 Oct 2005 09:09:50 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Oct 2005 08:57:49 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Title Frame for Exlorer View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/result-fs.html</source>
+			<destination>system/workplace/admin/contenttools/check/result-fs.html</destination>
+			<type>jsp</type>
+			<uuidresource>656f8075-3fa9-11da-a01d-11c9c0330e35</uuidresource>
+			<datelastmodified>Tue, 18 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 18 Oct 2005 07:32:54 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Frameset for result view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/result.html</source>
+			<destination>system/workplace/admin/contenttools/check/result.html</destination>
+			<type>jsp</type>
+			<uuidresource>e36b1b1a-3ede-11da-89c6-11c9c0330e35</uuidresource>
+			<datelastmodified>Mon, 17 Oct 2005 14:06:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Oct 2005 07:23:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check result]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/contenttools/check/plugin</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 13 Oct 2005 09:57:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 09:53:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[plugins ]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/contenttools/check/plugin/propertycheck</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 13 Oct 2005 10:01:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 09:58:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template</name>
+					<value><![CDATA[org.opencms.workplace.tools.content.check.CmsContentCheckProperty]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Property check]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>		
 		<file>
 			<destination>system/workplace/admin/contenttools/delete</destination>
 			<type>folder</type>
@@ -586,6 +772,42 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+				<file>
+			<source>system/workplace/resources/tools/contenttools/icons/big/contentcheck.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/contentcheck.png</destination>
+			<type>image</type>
+			<uuidresource>aba7b246-3bbe-11da-96e4-11c9c0330e35</uuidresource>
+			<datelastmodified>Thu, 13 Oct 2005 08:56:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 07:55:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/contenttools/icons/big/contentcheck_disabled.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/contentcheck_disabled.png</destination>
+			<type>image</type>
+			<uuidresource>b4c0f35b-3bbe-11da-96e4-11c9c0330e35</uuidresource>
+			<datelastmodified>Thu, 13 Oct 2005 08:56:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 07:55:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>

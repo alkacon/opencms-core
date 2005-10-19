@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/09/16 08:29:38 $
- * Version: $Revision: 1.31.2.1 $
+ * Date   : $Date: 2005/10/19 08:33:28 $
+ * Version: $Revision: 1.31.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
@@ -74,17 +75,32 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.1 $ 
+ * @version $Revision: 1.31.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExplorer extends CmsWorkplace {
+
+    /** Layoutstyle for resources after expire date. */
+    public static final int LAYOUTSTYLE_AFTEREXPIRE = 2;
+
+    /** Layoutstyle for resources before release date. */
+    public static final int LAYOUTSTYLE_BEFORERELEASE = 1;
+
+    /** Layoutstyle for resources after release date and before expire date. */
+    public static final int LAYOUTSTYLE_INRANGE = 0;
+
+    /** The "mode" parameter. */
+    public static final String PARAMETER_MODE = "mode";
 
     /** The "projectfilter" parameter. */
     public static final String PARAMETER_PROJECTFILTER = "projectfilter";
 
     /** The "projectid" parameter. */
     public static final String PARAMETER_PROJECTID = "projectid";
+
+    /** The "contentcheck" view selection. */
+    public static final String VIEW_CONTENTCHECK = "contentcheck";
 
     /** The "projectview" view selection. */
     public static final String VIEW_PROJECT = "projectview";
@@ -97,9 +113,6 @@ public class CmsExplorer extends CmsWorkplace {
 
     /** The "flaturl" parameter. */
     private static final String PARAMETER_FLATURL = "flaturl";
-
-    /** The "mode" parameter. */
-    private static final String PARAMETER_MODE = "mode";
 
     /** The "page" parameter. */
     private static final String PARAMETER_PAGE = "page";
@@ -115,15 +128,6 @@ public class CmsExplorer extends CmsWorkplace {
 
     /** The "galleryview" view selection. */
     private static final String VIEW_GALLERY = "galleryview";
-
-    /** Layoutstyle for resources after expire date. */
-    public static final int LAYOUTSTYLE_AFTEREXPIRE = 2;
-
-    /** Layoutstyle for resources before release date. */
-    public static final int LAYOUTSTYLE_BEFORERELEASE = 1;
-
-    /** Layoutstyle for resources after release date and before expire date. */
-    public static final int LAYOUTSTYLE_INRANGE = 0;
 
     /**
      * Public constructor.<p>
@@ -146,6 +150,8 @@ public class CmsExplorer extends CmsWorkplace {
         boolean galleryView = VIEW_GALLERY.equals(getSettings().getExplorerMode());
         // if mode is "projectview", all changed files in that project will be shown
         boolean projectView = VIEW_PROJECT.equals(getSettings().getExplorerMode());
+        // if mode is "projectview", all changed files in that project will be shown
+        boolean contentcheckView = VIEW_CONTENTCHECK.equals(getSettings().getExplorerMode());
         // if VFS links should be displayed, this is true
         boolean showVfsLinks = getSettings().getExplorerShowLinks();
 
@@ -277,7 +283,7 @@ public class CmsExplorer extends CmsWorkplace {
         int numberOfPages = 0;
         int maxEntrys = getSettings().getUserSettings().getExplorerFileEntries();
 
-        if (!(galleryView || projectView || showVfsLinks)) {
+        if (!(galleryView || projectView || showVfsLinks || contentcheckView)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to split
@@ -303,9 +309,9 @@ public class CmsExplorer extends CmsWorkplace {
         } else {
             project = getCms().getRequestContext().currentProject();
         }
-        
+
         // read the list of project resource to select which resource is "inside" or "outside" 
-        List projectResources;        
+        List projectResources;
         try {
             projectResources = getCms().readProjectResources(project);
         } catch (CmsException e) {
@@ -337,7 +343,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\",");
 
             // position 2: path
-            if (projectView || showVfsLinks || galleryView) {
+            if (projectView || showVfsLinks || galleryView || contentcheckView) {
                 content.append("\"");
                 content.append(path);
                 content.append("\",");
@@ -638,7 +644,7 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerMode(mode);
         } else {
             // null argument, use explorer view if no other view currently specified
-            if (!(VIEW_PROJECT.equals(settings.getExplorerMode()) || VIEW_GALLERY.equals(settings.getExplorerMode()))) {
+            if (!(VIEW_PROJECT.equals(settings.getExplorerMode()) || VIEW_GALLERY.equals(settings.getExplorerMode()) || VIEW_CONTENTCHECK.equals(settings.getExplorerMode()))) {
                 settings.setExplorerMode(VIEW_EXPLORER);
             }
         }
@@ -754,27 +760,23 @@ public class CmsExplorer extends CmsWorkplace {
 
             // select status to be shown
             String criteria = getSettings().getExplorerProjectFilter();
-            int state;
-            if (criteria.equals("new")) {
-                state = CmsResource.STATE_NEW;
-            } else if (criteria.equals("changed")) {
-                state = CmsResource.STATE_CHANGED;
-            } else if (criteria.equals("deleted")) {
-                state = CmsResource.STATE_DELETED;
-            } else {
-                state = CmsResource.STATE_KEEP;
+            criteria += "|" + getSettings().getExplorerProjectId();
+
+            // check if the list must show the project view or the check content view
+            I_CmsResourceCollector collector = getSettings().getCollector();
+            if (collector != null) {
+                // is this the collector for the check content
+                try {
+                    collector.setDefaultCollectorParam(criteria);
+                    return collector.getResults(getCms());
+                } catch (CmsException e) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e);
+                    }                 
+                }
             }
 
-            // show files in the selected project with the selected status
-            try {
-                return getCms().readProjectView(getSettings().getExplorerProjectId(), state);
-            } catch (CmsException e) {
-                // should usually never happen
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(e);
-                }
-                return Collections.EMPTY_LIST;
-            }
+            return Collections.EMPTY_LIST;
         } else if (VIEW_GALLERY.equals(getSettings().getExplorerMode())) {
 
             // select galleries

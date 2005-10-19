@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceSettings.java,v $
- * Date   : $Date: 2005/09/16 09:01:26 $
- * Version: $Revision: 1.55.2.1 $
+ * Date   : $Date: 2005/10/19 08:33:28 $
+ * Version: $Revision: 1.55.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsPublishList;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsUser;
+import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.tools.CmsToolUserData;
@@ -48,12 +49,13 @@ import java.util.Map;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.55.2.1 $ 
+ * @version $Revision: 1.55.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsWorkplaceSettings {
 
+    private I_CmsResourceCollector m_collector;
     private String m_currentSite;
     private Object m_dialogObject;
     private CmsMessageContainer m_errorMessage;
@@ -96,6 +98,19 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Returns the collector object.<p>
+     *
+     * Use this mechanism for transferring a resource collector between
+     * several page instances of an interactive dialog. <p> 
+     *
+     * @return the dialog object
+     */
+    public I_CmsResourceCollector getCollector() {
+
+        return m_collector;
+    }
+
+    /**
      * Returns the dialog object.<p>
      *
      * Use this mechanism for transferring a complex object between
@@ -108,7 +123,7 @@ public class CmsWorkplaceSettings {
 
         return m_dialogObject;
     }
-    
+
     /**
      * Returns the error message to display in the workplace.<p>
      *
@@ -409,6 +424,19 @@ public class CmsWorkplaceSettings {
     }
 
     /**
+     * Sets the collector object.<p>
+     * 
+     * Use this mechanism for transferring a resource collector between
+     * several page instances of an interactive dialog.<p>
+     *  
+     * @param collector the dialog object to set
+     */
+    public void setCollector(I_CmsResourceCollector collector) {
+
+        m_collector = collector;
+    }
+
+    /**
      * Sets the dialog object.<p>
      * 
      * Use this mechanism for transferring a complex object between
@@ -421,7 +449,7 @@ public class CmsWorkplaceSettings {
 
         m_dialogObject = dialogObject;
     }
-    
+
     /**
      * Sets the error message to display in the workplace.<p>
      *

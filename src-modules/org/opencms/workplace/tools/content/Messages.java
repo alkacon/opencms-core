@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/07/29 15:38:42 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2005/10/19 08:33:28 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -235,6 +235,18 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_WRITE_CONTENT_1 = "RPT_WRITE_CONTENT_1";
+    
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_ADMIN_TOOL_HELP_0 = "GUI_CHECKCONTENT_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_ADMIN_TOOL_GROUP_0 = "GUI_CHECKCONTENT_ADMIN_TOOL_GROUP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_ADMIN_TOOL_NAME_0 = "GUI_CHECKCONTENT_ADMIN_TOOL_NAME_0";
+    
+    
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.content.messages";
