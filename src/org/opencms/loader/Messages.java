@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/10/02 09:07:03 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2005/10/19 09:40:13 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -62,6 +62,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOADER_NOT_TEMPLATE_ENABLED_0 = "ERR_LOADER_NOT_TEMPLATE_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOADER_UNKNOWN_LOCALE_4 = "ERR_LOADER_UNKNOWN_LOCALE_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_CONFIG_AFTER_STARTUP_0 = "ERR_NO_CONFIG_AFTER_STARTUP_0";
