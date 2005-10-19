@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/10/12 14:27:21 $
- * Version: $Revision: 1.20.2.3 $
+ * Date   : $Date: 2005/10/19 09:13:34 $
+ * Version: $Revision: 1.20.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,17 +60,17 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20.2.3 $ 
+ * @version $Revision: 1.20.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlConverter {
 
     /** param value for disabled mode. **/
-    public static final String PARAM_DISABLED = "false";
+    public static final String PARAM_DISABLED = CmsStringUtil.FALSE;
 
     /** param value for enabled mode. **/
-    public static final String PARAM_ENABLED = "true";
+    public static final String PARAM_ENABLED = CmsStringUtil.TRUE;
 
     /** param value for WORD mode. **/
     public static final String PARAM_WORD = "cleanup";
