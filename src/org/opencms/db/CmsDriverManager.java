@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/12 10:03:58 $
- * Version: $Revision: 1.557.2.9 $
+ * Date   : $Date: 2005/10/19 10:04:05 $
+ * Version: $Revision: 1.557.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -113,9 +113,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * 
  <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.9 $
+ * @version $Revision: 1.557.2.10 $
  =======
- * @version $Revision: 1.557.2.9 $
+ * @version $Revision: 1.557.2.10 $
  >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
@@ -6840,7 +6840,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // the report may be null if the export point update was started by an event on a remote server
             if (report == null) {
-                report = new CmsLogReport(dbc.getRequestContext().getLocale(), CmsDriverManager.class);
+                if (dbc.getRequestContext() != null) {
+                    report = new CmsLogReport(dbc.getRequestContext().getLocale(), getClass());
+                } else {
+                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+                }
             }
 
             // the export point hash table contains RFS export paths keyed by their internal VFS paths
@@ -7132,8 +7136,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // the report may be null if the export point write was started by an event
             if (report == null) {
-                // default locale must be used here since there may be no request context available
-                report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), CmsDriverManager.class);
+                if (dbc.getRequestContext() != null) {
+                    report = new CmsLogReport(dbc.getRequestContext().getLocale(), getClass());
+                } else {
+                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+                }
             }
 
             // iterate over all published resources to export them eventually
