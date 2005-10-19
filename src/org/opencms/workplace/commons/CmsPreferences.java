@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/07/13 14:30:36 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2005/10/19 07:25:34 $
+ * Version: $Revision: 1.26 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsPasswordInfo;
 import org.opencms.site.CmsSite;
 import org.opencms.site.CmsSiteManager;
+import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workflow.CmsTaskService;
 import org.opencms.workplace.CmsTabDialog;
@@ -87,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.26 $ 
  * 
  * @since 6.0.0 
  */
@@ -1820,7 +1821,10 @@ public class CmsPreferences extends CmsTabDialog {
         if (settings == null) {
             return;
         }
+        // keep old synchronize settings
+        CmsSynchronizeSettings synchronizeSettings = settings.getUserSettings().getSynchronizeSettings();
         settings = CmsWorkplace.initWorkplaceSettings(cms, settings, true);
+        settings.getUserSettings().setSynchronizeSettings(synchronizeSettings);
     }
 
     /**
