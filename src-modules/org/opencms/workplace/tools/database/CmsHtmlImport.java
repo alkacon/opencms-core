@@ -86,7 +86,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.9.2.2 $ 
+ * @version $Revision: 1.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -752,7 +752,7 @@ public class CmsHtmlImport {
         if (translatedLink == null) {
             translatedLink = "#";
         }
-        
+
         return translatedLink;
     }
 
