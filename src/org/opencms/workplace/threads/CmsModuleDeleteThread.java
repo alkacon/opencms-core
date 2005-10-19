@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/10/12 15:25:37 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2005/10/19 10:06:58 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.2.1 $ 
+ * @version $Revision: 1.8.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,8 +112,9 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_STARTED_0));
             }
-
-            OpenCms.getModuleManager().checkModuleSelectionList(m_moduleNames, null, true);
+            if (!m_replaceMode) {
+                OpenCms.getModuleManager().checkModuleSelectionList(m_moduleNames, null, true);
+            }
             m_moduleNames = CmsModuleManager.topologicalSort(m_moduleNames, null);
             Collections.reverse(m_moduleNames);
             
