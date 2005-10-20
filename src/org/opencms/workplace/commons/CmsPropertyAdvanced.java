@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/10/19 09:55:34 $
- * Version: $Revision: 1.23.2.4 $
+ * Date   : $Date: 2005/10/20 11:04:57 $
+ * Version: $Revision: 1.23.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.4 $ 
+ * @version $Revision: 1.23.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1176,7 +1176,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 String newValue = newProperty.getStructureValue();
 
                 // write the structure value if the existing structure value is not null and we want to delete the structure value
-                writeStructureValue = (oldValue != null && newProperty.deleteStructureValue());
+                writeStructureValue = (oldValue != null && newProperty.isDeleteStructureValue());
                 // or if we want to write a value which is neither the delete value or an empty value
                 writeStructureValue |= !newValue.equals(oldValue)
                     && !"".equalsIgnoreCase(newValue)
@@ -1190,7 +1190,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 newValue = newProperty.getResourceValue();
 
                 // write the resource value if the existing resource value is not null and we want to delete the resource value
-                writeResourceValue = (oldValue != null && newProperty.deleteResourceValue());
+                writeResourceValue = (oldValue != null && newProperty.isDeleteResourceValue());
                 // or if we want to write a value which is neither the delete value or an empty value
                 writeResourceValue |= !newValue.equals(oldValue)
                     && !"".equalsIgnoreCase(newValue)

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/10/19 10:04:46 $
- * Version: $Revision: 1.255.2.4 $
+ * Date   : $Date: 2005/10/20 11:04:57 $
+ * Version: $Revision: 1.255.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.255.2.4 $
+ * @version $Revision: 1.255.2.5 $
  * 
  * @since 6.0.0 
  */
@@ -2125,7 +2125,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
                 if (i == 0) {
                     // write/delete the *structure value* on the first cycle
-                    if (existingProperty.getStructureValue() != null && property.deleteStructureValue()) {
+                    if (existingProperty.getStructureValue() != null && property.isDeleteStructureValue()) {
                         // this property value is marked to be deleted
                         deletePropertyValue = true;
                     } else {
@@ -2143,7 +2143,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                     existsPropertyValue = existingProperty.getStructureValue() != null;
                 } else if (i == 1) {
                     // write/delete the *resource value* on the second cycle
-                    if (existingProperty.getResourceValue() != null && property.deleteResourceValue()) {
+                    if (existingProperty.getResourceValue() != null && property.isDeleteResourceValue()) {
                         // this property value is marked to be deleted
                         deletePropertyValue = true;
                     } else {
