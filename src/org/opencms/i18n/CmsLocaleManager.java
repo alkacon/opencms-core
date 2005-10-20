@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.47 $
+ * Date   : $Date: 2005/10/20 11:24:13 $
+ * Version: $Revision: 1.48 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.47 $ 
+ * @version $Revision: 1.48 $ 
  * 
  * @since 6.0.0 
  */
@@ -201,6 +201,33 @@ public class CmsLocaleManager implements I_CmsEventListener {
             }
         }
         return locale;
+    }
+
+    /**
+     * Returns the locale names from the given List of locales as a comma separated String.<p>
+     * 
+     * For example, if the input List contains <code>{@link Locale#ENGLISH}</code> and 
+     * <code>{@link Locale#GERMANY}</code>, the result will be <code>"en, de_DE"</code>.<p>
+     * 
+     * An empty String is returned if the input is <code>null</code>, or contains no elements.<p>
+     * 
+     * @param localeNames the locale names to generate a String from
+     * 
+     * @return the locale names from the given List of locales as a comma separated String
+     */
+    public static String getLocaleNames(List localeNames) {
+
+        StringBuffer result = new StringBuffer();
+        if (localeNames != null) {
+            Iterator i = localeNames.iterator();
+            while (i.hasNext()) {
+                result.append(i.next().toString());
+                if (i.hasNext()) {
+                    result.append(", ");
+                }
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -421,7 +448,8 @@ public class CmsLocaleManager implements I_CmsEventListener {
      */
     public Locale getBestMatchingLocale(Locale requestedLocale, List defaults, Collection available) {
 
-        if ((available == null) || (defaults == null)) {
+        if ((available == null) || available.isEmpty()) {
+            // no locales are available at all
             return null;
         }
 
@@ -443,6 +471,12 @@ public class CmsLocaleManager implements I_CmsEventListener {
             if (available.contains(check)) {
                 return check;
             }
+        }
+
+        // available locales do not match the requested locale
+        if ((defaults == null) || defaults.isEmpty()) {
+            // if we have no default locales we are out of luck
+            return null;
         }
 
         // no match found for the requested locale, return the first match from the default locales

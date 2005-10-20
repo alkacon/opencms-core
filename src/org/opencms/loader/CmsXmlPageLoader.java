@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2005/06/27 23:22:15 $
- * Version: $Revision: 1.50 $
+ * Date   : $Date: 2005/10/20 11:24:13 $
+ * Version: $Revision: 1.51 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.loader;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -57,7 +58,7 @@ import javax.servlet.http.HttpServletResponse;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.50 $ 
+ * @version $Revision: 1.51 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +90,7 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
         CmsObject cms,
         CmsResource resource,
         String element,
-        Locale locale,
+        Locale selectedLocale,
         HttpServletRequest req,
         HttpServletResponse res) throws CmsException, IOException {
 
@@ -98,13 +99,26 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
 
         // check the page locales
         List locales = page.getLocales(element);
-        Locale loc = OpenCms.getLocaleManager().getBestMatchingLocale(
-            locale,
+        Locale locale = OpenCms.getLocaleManager().getBestMatchingLocale(
+            selectedLocale,
             OpenCms.getLocaleManager().getDefaultLocales(cms, cms.getSitePath(resource)),
             locales);
 
+        if (locale == null) {
+            // no locale can be determined to display, output a meaningfull error message
+            throw new CmsLoaderException(Messages.get().container(
+                Messages.ERR_LOADER_UNKNOWN_LOCALE_4,
+                new Object[] {
+                    resource.getRootPath(),
+                    selectedLocale,
+                    CmsLocaleManager.getLocaleNames(locales),
+                    CmsLocaleManager.getLocaleNames(OpenCms.getLocaleManager().getDefaultLocales(
+                        cms,
+                        cms.getSitePath(resource)))}));
+        }
+
         // get the appropriate content and convert it to bytes
-        String value = page.getStringValue(cms, element, loc);
+        String value = page.getStringValue(cms, element, locale);
         if (value != null) {
             return value.getBytes(page.getEncoding());
         }
@@ -236,6 +250,18 @@ public class CmsXmlPageLoader implements I_CmsResourceLoader {
                 cms.getRequestContext().getLocale(),
                 OpenCms.getLocaleManager().getDefaultLocales(cms, cms.getSitePath(resource)),
                 locales);
+        }
+        if (locale == null) {
+            // no locale can be determined to display, output a meaningfull error message
+            throw new CmsLoaderException(Messages.get().container(
+                Messages.ERR_LOADER_UNKNOWN_LOCALE_4,
+                new Object[] {
+                    resource.getRootPath(),
+                    cms.getRequestContext().getLocale(),
+                    CmsLocaleManager.getLocaleNames(locales),
+                    CmsLocaleManager.getLocaleNames(OpenCms.getLocaleManager().getDefaultLocales(
+                        cms,
+                        cms.getSitePath(resource)))}));
         }
 
         // get the appropriate content

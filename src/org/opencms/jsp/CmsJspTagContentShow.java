@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentShow.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/10/20 11:24:13 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsJspTagContentShow extends TagSupport {
 
     /** Locale of the content node elemen to show. */
     private Locale m_locale;
-
+    
     /**
      * Internal action method to show an element from a XML content document.<p>
      * 
@@ -131,11 +131,6 @@ public class CmsJspTagContentShow extends TagSupport {
 
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
-
-        if (m_locale == null) {
-            m_locale = contentContainer.getXmlDocumentLocale();
-        }
-
         String element = getElement();
 
         if (CmsStringUtil.isEmpty(element)) {
@@ -157,8 +152,14 @@ public class CmsJspTagContentShow extends TagSupport {
             content = null;
         } else {
 
+            // determine the locale to display
+            Locale locale = m_locale;
+            if (locale == null) {
+                // no locale was set, use default from parent tag (usually "contentload")
+                locale = contentContainer.getXmlDocumentLocale();
+            }            
             // now get the content element value to display
-            content = contentShowTagAction(xmlContent, element, m_locale, pageContext.getRequest());
+            content = contentShowTagAction(xmlContent, element, locale, pageContext.getRequest());
 
             // make sure that no null String is returned
             if (content == null) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/Messages.java,v $
- * Date   : $Date: 2005/10/09 09:08:26 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/20 11:24:13 $
+ * Version: $Revision: 1.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,7 +47,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_COLLECTOR_NAME_1 = "ERR_INVALID_COLLECTOR_NAME_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_POINTER_FILE_1 = "ERR_INVALID_POINTER_FILE_1";
 
@@ -59,6 +59,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOADER_NOT_TEMPLATE_ENABLED_0 = "ERR_LOADER_NOT_TEMPLATE_ENABLED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_LOADER_UNKNOWN_LOCALE_4 = "ERR_LOADER_UNKNOWN_LOCALE_4";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_CONFIG_AFTER_STARTUP_0 = "ERR_NO_CONFIG_AFTER_STARTUP_0";
@@ -112,6 +115,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_ADD_RESTYPE_FROM_FILE_2 = "INIT_ADD_RESTYPE_FROM_FILE_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String INIT_CLIENT_CACHE_MAX_AGE_1 = "INIT_CLIENT_CACHE_MAX_AGE_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String INIT_COLLECTOR_REPLACED_1 = "INIT_COLLECTOR_REPLACED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -149,9 +155,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_WEBAPP_PATH_1 = "INIT_WEBAPP_PATH_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String INIT_CLIENT_CACHE_MAX_AGE_1 = "INIT_CLIENT_CACHE_MAX_AGE_1";
     
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ACCESS_DENIED_1 = "LOG_ACCESS_DENIED_1";

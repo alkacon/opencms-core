@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsProperty.java,v $
- * Date   : $Date: 2005/10/12 10:00:06 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/03/27 14:52:41 $
+ * Version: $Revision: 1.34 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import java.util.RandomAccess;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.34 $
  * 
  * @since 6.0.0 
  */
@@ -174,7 +174,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      */
     public CmsProperty() {
 
-        // noting to do, all values will be initialized with "null" or "false" by default
+        // noting to do, all values will be initialized with "null" or <code>"false"</code> by default
     }
 
     /**
@@ -451,7 +451,7 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
             // null property must never be cloned
             return NULL_PROPERTY;
         }
-        
+
         CmsProperty clone = new CmsProperty();
 
         clone.m_name = m_name;
@@ -489,12 +489,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * property object is written to the database.<p>
      * 
      * @return true, if the resource value of this property should be deleted
-     * @see CmsProperty#DELETE_VALUE
+     * 
+     * @deprecated use <code>{@link #isDeleteResourceValue()}</code> instead
      */
     public boolean deleteResourceValue() {
 
-        checkFrozen();
-        return (m_resourceValue == DELETE_VALUE) || (m_resourceValue != null && m_resourceValue.length() == 0);
+        return isDeleteResourceValue();
     }
 
     /**
@@ -502,12 +502,12 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
      * property object is written to the database.<p>
      * 
      * @return true, if the structure value of this property should be deleted
-     * @see CmsProperty#DELETE_VALUE
+     * 
+     * @deprecated use <code>{@link #isDeleteStructureValue()}</code> instead
      */
     public boolean deleteStructureValue() {
 
-        checkFrozen();
-        return (m_structureValue == DELETE_VALUE) || (m_structureValue != null && m_structureValue.length() == 0);
+        return isDeleteStructureValue();
     }
 
     /**
@@ -701,6 +701,30 @@ public class CmsProperty implements Serializable, Cloneable, Comparable {
         strBuf.append(m_resourceValue);
 
         return strBuf.toString().hashCode();
+    }
+
+    /**
+     * Checks if the resource value of this property should be deleted when this
+     * property object is written to the database.<p>
+     * 
+     * @return true, if the resource value of this property should be deleted
+     * @see CmsProperty#DELETE_VALUE
+     */
+    public boolean isDeleteResourceValue() {
+
+        return (m_resourceValue == DELETE_VALUE) || (m_resourceValue != null && m_resourceValue.length() == 0);
+    }
+
+    /**
+     * Checks if the structure value of this property should be deleted when this
+     * property object is written to the database.<p>
+     * 
+     * @return true, if the structure value of this property should be deleted
+     * @see CmsProperty#DELETE_VALUE
+     */
+    public boolean isDeleteStructureValue() {
+
+        return (m_structureValue == DELETE_VALUE) || (m_structureValue != null && m_structureValue.length() == 0);
     }
 
     /**
