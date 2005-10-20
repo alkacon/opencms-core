@@ -4,7 +4,7 @@
 	<info>
 		<creator>Admin</creator>
 		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<createdate>Thu, 20 Oct 2005 07:51:31 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -18,7 +18,7 @@
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -35,43 +35,43 @@
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/galleries/"/>
-			<resource uri="/system/workplace/locales/en/"/>
-            <resource uri="/system/workplace/resources/buttons/apply.png"/>
-            <resource uri="/system/workplace/resources/buttons/apply_in.png"/>
-            <resource uri="/system/workplace/resources/buttons/calendar.png"/>
-            <resource uri="/system/workplace/resources/buttons/deletecontent.png"/>
-            <resource uri="/system/workplace/resources/buttons/deletecontent_in.png"/>
-            <resource uri="/system/workplace/resources/buttons/downloadgallery.png"/>
-            <resource uri="/system/workplace/resources/buttons/edit.png"/>
-            <resource uri="/system/workplace/resources/buttons/edit_in.png"/>
-            <resource uri="/system/workplace/resources/buttons/folder_refresh.png"/>
-            <resource uri="/system/workplace/resources/buttons/help.png"/>
-            <resource uri="/system/workplace/resources/buttons/htmlgallery.png"/>
-            <resource uri="/system/workplace/resources/buttons/imagegallery.png"/>
-            <resource uri="/system/workplace/resources/buttons/linkgallery.png"/>
-            <resource uri="/system/workplace/resources/buttons/logout.png"/>
-            <resource uri="/system/workplace/resources/buttons/new.png"/>
-            <resource uri="/system/workplace/resources/buttons/preferences.png"/>
-            <resource uri="/system/workplace/resources/buttons/preview.png"/>
-            <resource uri="/system/workplace/resources/buttons/publish.png"/>
-            <resource uri="/system/workplace/resources/buttons/publish_in.png"/>
-            <resource uri="/system/workplace/resources/buttons/reload.png"/>
-            <resource uri="/system/workplace/resources/buttons/search.png"/>
-            <resource uri="/system/workplace/resources/buttons/search_in.png"/>
-            <resource uri="/system/workplace/resources/buttons/tablegallery.png"/>
-            <resource uri="/system/workplace/resources/buttons/wizard.png"/>
-            <resource uri="/system/workplace/resources/buttons/wizard_in.png"/>
-            <resource uri="/system/workplace/resources/commons/error.png"/>
-            <resource uri="/system/workplace/resources/commons/help.png"/>
-            <resource uri="/system/workplace/resources/commons/login.png"/>
-            <resource uri="/system/workplace/resources/commons/login_logo.png"/>
-            <resource uri="/system/workplace/resources/commons/ok.png"/>
-            <resource uri="/system/workplace/resources/commons/wait.gif"/>
-            <resource uri="/system/workplace/resources/commons/warning.png"/>
-            <resource uri="/system/workplace/resources/commons/workplace.png"/>
-            <resource uri="/system/workplace/resources/components/js_calendar/"/>
-            <resource uri="/system/workplace/resources/components/js_colorpicker/"/>
-            <resource uri="/system/workplace/resources/components/widgets/colorpicker.js"/>
+			<resource uri="/system/workplace/locales/de/readme.txt"/>
+			<resource uri="/system/workplace/resources/buttons/apply.png"/>
+			<resource uri="/system/workplace/resources/buttons/apply_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/calendar.png"/>
+			<resource uri="/system/workplace/resources/buttons/deletecontent.png"/>
+			<resource uri="/system/workplace/resources/buttons/deletecontent_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/downloadgallery.png"/>
+			<resource uri="/system/workplace/resources/buttons/edit.png"/>
+			<resource uri="/system/workplace/resources/buttons/edit_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/folder_refresh.png"/>
+			<resource uri="/system/workplace/resources/buttons/help.png"/>
+			<resource uri="/system/workplace/resources/buttons/htmlgallery.png"/>
+			<resource uri="/system/workplace/resources/buttons/imagegallery.png"/>
+			<resource uri="/system/workplace/resources/buttons/linkgallery.png"/>
+			<resource uri="/system/workplace/resources/buttons/logout.png"/>
+			<resource uri="/system/workplace/resources/buttons/new.png"/>
+			<resource uri="/system/workplace/resources/buttons/preferences.png"/>
+			<resource uri="/system/workplace/resources/buttons/preview.png"/>
+			<resource uri="/system/workplace/resources/buttons/publish.png"/>
+			<resource uri="/system/workplace/resources/buttons/publish_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/reload.png"/>
+			<resource uri="/system/workplace/resources/buttons/search.png"/>
+			<resource uri="/system/workplace/resources/buttons/search_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/tablegallery.png"/>
+			<resource uri="/system/workplace/resources/buttons/wizard.png"/>
+			<resource uri="/system/workplace/resources/buttons/wizard_in.png"/>
+			<resource uri="/system/workplace/resources/commons/error.png"/>
+			<resource uri="/system/workplace/resources/commons/help.png"/>
+			<resource uri="/system/workplace/resources/commons/login.png"/>
+			<resource uri="/system/workplace/resources/commons/login_logo.png"/>
+			<resource uri="/system/workplace/resources/commons/ok.png"/>
+			<resource uri="/system/workplace/resources/commons/wait.gif"/>
+			<resource uri="/system/workplace/resources/commons/warning.png"/>
+			<resource uri="/system/workplace/resources/commons/workplace.png"/>
+			<resource uri="/system/workplace/resources/components/js_calendar/"/>
+			<resource uri="/system/workplace/resources/components/js_colorpicker/"/>
+			<resource uri="/system/workplace/resources/components/widgets/colorpicker.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/combo.png"/>
 			<resource uri="/system/workplace/resources/components/widgets/combobox.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/downloadgallery.js"/>
@@ -80,29 +80,30 @@
 			<resource uri="/system/workplace/resources/components/widgets/imagegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/linkgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
-            <resource uri="/system/workplace/resources/filetypes/binary.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/folder.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/gallery.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/htmlgallery.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/image.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/imagegallery.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/jsp.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/link.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/linkgallery.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/othertype.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/page.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/plain.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/pointer.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/tablegallery.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/upload.png"/>
-            <resource uri="/system/workplace/resources/filetypes/velocity.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/xmlcontent.gif"/>
-            <resource uri="/system/workplace/resources/filetypes/xmltemplate.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/gallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/htmlgallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/image.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/imagegallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/jsp.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/link.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/linkgallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/othertype.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/page.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/plain.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/pointer.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/tablegallery.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/upload.png"/>
+			<resource uri="/system/workplace/resources/filetypes/velocity.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/xmlcontent.gif"/>
+			<resource uri="/system/workplace/resources/filetypes/xmltemplate.gif"/>
 			<resource uri="/system/workplace/views/top_foot.jsp"/>
 			<resource uri="/system/workplace/views/top_fs.jsp"/>
 			<resource uri="/system/workplace/views/workplace.jsp"/>
 			<resource uri="/system/workplace/views/top_head.jsp"/>
+			<resource uri="/system/workplace/locales/en/readme.txt"/>
 		</resources>
 		<parameters/>
 	</module>
