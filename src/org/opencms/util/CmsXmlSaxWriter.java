@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsXmlSaxWriter.java,v $
- * Date   : $Date: 2005/10/19 13:07:25 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2005/10/20 08:33:20 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.xml.sax.helpers.DefaultHandler;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -162,7 +162,7 @@ public class CmsXmlSaxWriter extends DefaultHandler implements LexicalHandler {
             // XML should be escaped and we are not in a CDATA node
             String escaped = new String(buf, offset, len);
             // escape HTML entities ('<' becomes '&lt;')
-            escaped = CmsEncoder.escapeXml(escaped);
+            escaped = CmsEncoder.escapeXml(escaped, true);
             if (m_escapeUnknownChars) {
                 // escape all chars that can not be displayed in the selected encoding (using '&#123;' entities)
                 escaped = CmsEncoder.adjustHtmlEncoding(escaped, getEncoding());

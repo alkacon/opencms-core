@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/10/02 09:03:16 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2005/10/20 08:33:20 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,17 +65,20 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.3 $ 
+ * @version $Revision: 1.15.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsEncoder {
 
-    /** Default encoding for JavaScript decodeUriComponent methods is <code>UTF-8</code> by w3c standard. */
-    public static final String ENCODING_UTF_8 = "UTF-8";
-
     /** Constant for the standard <code>ISO-8859-1</code> encoding. */
     public static final String ENCODING_ISO_8859_1 = "ISO-8859-1";
+
+    /** Default encoding for JavaScript decodeUriComponent methods is <code>US-ASCII</code> by w3c standard. */
+    public static final String ENCODING_US_ASCII = "US-ASCII";
+
+    /** Default encoding for JavaScript decodeUriComponent methods is <code>UTF-8</code> by w3c standard. */
+    public static final String ENCODING_UTF_8 = "UTF-8";
 
     /** The regex pattern to match HTML entities. */
     private static final Pattern ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
@@ -445,7 +448,7 @@ public final class CmsEncoder {
         // URLEncode the text string
         // this produces a very similar encoding to JavaSscript encoding, 
         // except the blank which is not encoded into "%20" instead of "+"
-        
+
         String enc = encode(source, encoding);
         for (int z = 0; z < enc.length(); z++) {
             char c = enc.charAt(z);
@@ -477,6 +480,30 @@ public final class CmsEncoder {
      */
     public static String escapeXml(String source) {
 
+        return escapeXml(source, false);
+    }
+
+    /**
+     * Escapes a String so it may be printed as text content or attribute
+     * value in a HTML page or an XML file.<p>
+     * 
+     * This method replaces the following characters in a String:
+     * <ul>
+     * <li><b>&lt;</b> with &amp;lt;
+     * <li><b>&gt;</b> with &amp;gt;
+     * <li><b>&amp;</b> with &amp;amp;
+     * <li><b>&quot;</b> with &amp;quot;
+     * </ul>
+     * 
+     * @param source the string to escape
+     * @param doubleEscape if <code>false</code>, all entities that already are escaped are left untouched
+     * 
+     * @return the escaped string
+     * 
+     * @see #escapeHtml(String)
+     */
+    public static String escapeXml(String source, boolean doubleEscape) {
+
         if (source == null) {
             return null;
         }
@@ -493,7 +520,7 @@ public final class CmsEncoder {
                     break;
                 case '&':
                     // Don't escape already escaped international and special characters
-                    if ((terminatorIndex = source.indexOf(";", i)) > 0) {
+                    if (!doubleEscape && ((terminatorIndex = source.indexOf(";", i)) > 0)) {
                         if (source.substring(i + 1, terminatorIndex).matches("#[0-9]+")) {
                             result.append(ch);
                         } else {
