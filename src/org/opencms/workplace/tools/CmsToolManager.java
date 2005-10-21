@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.40.2.2 $
+ * Date   : $Date: 2005/10/21 15:15:33 $
+ * Version: $Revision: 1.40.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.2 $ 
+ * @version $Revision: 1.40.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -428,6 +428,14 @@ public class CmsToolManager {
         if (newParams == null) {
             newParams = new HashMap();
         }
+        // add query parameters to the parameter map if required
+        if (pagePath.indexOf("?") > 0) {
+            String query = pagePath.substring(pagePath.indexOf("?"), pagePath.length());
+            Map reqParameters = CmsRequestUtil.createParameterMap(query);
+            newParams.putAll(reqParameters);
+        }
+        
+        
         // put close link if not set
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
             newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), null));
@@ -531,8 +539,12 @@ public class CmsToolManager {
      */
     private void registerAdminTool(CmsObject cms, I_CmsToolHandler handler) {
 
+        String link = handler.getLink();
+        if (link.indexOf("?")>0) {
+            link = link.substring(0, link.indexOf("?"));
+        }
         // check visibility
-        if (!cms.existsResource(handler.getLink())) {
+        if (!cms.existsResource(link)) {
             return;
         }
 
