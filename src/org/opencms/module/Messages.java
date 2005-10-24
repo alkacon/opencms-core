@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/10/12 15:25:37 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2005/10/24 12:30:30 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -58,7 +58,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_INVALID_VERSION_SUBNUMBER_1 = "ERR_INVALID_VERSION_SUBNUMBER_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_IO_MODULE_IMPORT_0 = "ERR_IO_MODULE_IMPORT_0";
+    public static final String ERR_IO_MODULE_IMPORT_1 = "ERR_IO_MODULE_IMPORT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOD_ALREADY_INSTALLED_1 = "ERR_MOD_ALREADY_INSTALLED_1";
@@ -106,7 +106,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_OLD_MOD_ERR_1 = "ERR_OLD_MOD_ERR_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String ERR_SAX_MODULE_IMPORT_0 = "ERR_SAX_MODULE_IMPORT_0";
+    public static final String ERR_SAX_MODULE_IMPORT_1 = "ERR_SAX_MODULE_IMPORT_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROJECT_NAME_IMPORT_MODULE_1 = "GUI_PROJECT_NAME_IMPORT_MODULE_1";

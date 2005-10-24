@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/06/29 17:10:05 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2005/10/24 12:30:30 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             if (file.isFile()) {
                 importZip = new ZipFile(importResource);
                 ZipEntry entry = importZip.getEntry("manifest.xml");
-                stream = importZip.getInputStream(entry);
+                if (entry != null) {
+                    stream = importZip.getInputStream(entry);
+                } else {
+                    throw new IOException();
+                }
             } else if (file.isDirectory()) {
                 file = new File(file, "manifest.xml");
                 stream = new FileInputStream(file);
@@ -152,11 +156,11 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             digester.parse(stream);
 
         } catch (IOException e) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_0);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_IO_MODULE_IMPORT_1, importResource);
             LOG.error(message.key(), e);
             throw new CmsConfigurationException(message, e);
         } catch (SAXException e) {
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_SAX_MODULE_IMPORT_0);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_SAX_MODULE_IMPORT_1, importResource);
             LOG.error(message.key(), e);
             throw new CmsConfigurationException(message, e);
         } finally {
