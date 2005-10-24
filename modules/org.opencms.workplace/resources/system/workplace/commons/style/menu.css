@@ -36,6 +36,57 @@
     /* style definitions valid only for MENU-style */
 %>
 
+/*
+ * Styles specific for the diff page.
+ */
+div.diff-added {
+  font-family: "Andale Mono" monospace;
+  background-color: #ccffcc; /* light green */
+  border-left: 4px solid darkgreen; /* light green */
+  display: inline;
+}
+div.diff-removed {
+  font-family: "Andale Mono" monospace;
+  background-color: #fdc6c6; /* light red */
+  border-left: 4px solid darkred; /* dark red */
+  display: inline;
+}
+div.diff-unchanged {
+  font-family: "Andale Mono" monospace;
+  border-left: 4px solid lightgrey;
+  display: inline;
+}
+span.diff-added {
+  background-color: #58ff87;
+  display: inline;
+}
+span.diff-removed {
+  background-color: #ff8686;
+  text-decoration: line-through;
+  display: inline;
+}
+
+span.diffpage-nochanges {
+  font-style: italic;
+  display: inline;
+}
+
+div.diffpage-contentdiff-title {
+  border: 1px solid gray;
+  text-align: center;
+  border-bottom: 0px;
+  display: inline;
+}
+div.diffpage-contentdiff {
+  border: 1px solid gray;
+  display: inline;
+}
+
+span.diffpage-removedfield {
+  text-decoration: line-through;
+  display: inline;
+}
+
 <% if(style == MENU || style == NEW_ADMIN) { %>
 body {
 	font-family: Verdana, Arial, Helvetica, sans-serif;
