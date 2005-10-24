@@ -23,7 +23,7 @@
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace.administration" version="1.0.3"/>
+			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.tools.searchindex/lib/" destination="WEB-INF/lib/"/>
