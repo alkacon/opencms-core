@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsFile.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/10/24 15:30:03 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import java.io.Serializable;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.24.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,7 @@ public class CmsFile extends CmsResource implements Cloneable, Serializable, Com
     /**
      * Utility method to upgrade a CmsResource to a CmsFile.<p>
      * 
-     * Sometimes a CmsResource might already ba a (casted) CmsFile that
+     * Sometimes a CmsResource might already be a (casted) CmsFile that
      * also has the contents read. This methods tries to optimize 
      * read access to the VFS by "upgrading" the CmsResource to a CmsFile 
      * first. If this fails, the CmsFile is read from the VFS.<p> 
