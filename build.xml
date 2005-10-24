@@ -65,6 +65,7 @@
 	<property name="drivers.user"						value="db" />
 	<property name="drivers.workflow"					value="db" />
 	<property name="drivers.backup"						value="db" />
+	<property name="db.additional.pools" 				value="" />
 	<property name="drivers.configuration"				value="" />
 	<property name="registry.configuration"				value="" />
 	<property name="opencms.configuration"				value="" />
@@ -324,9 +325,10 @@ ${opencms.inputlib.textextraction}
       			<filter token="DRIVERS_PROJECT" value="${drivers.project}"/>
       			<filter token="DRIVERS_USER" value="${drivers.user}"/>
       			<filter token="DRIVERS_WORKFLOW" value="${drivers.workflow}"/>
-      			<filter token="DRIVERS_BACKUP" value="${drivers.backup}"/>
+      			<filter token="DRIVERS_BACKUP" value="${drivers.backup}"/>    			
       			<filter token="DRIVERS_CONFIGURATION" value="${drivers.configuration}"/>
-    		</filterset>	   		
+    			<filter token="ADDITIONAL_DB_POOLS" value="${db.additional.pools}"/>
+    		</filterset>
 	   	</copy>       	  
     	
 	   	<copy 
