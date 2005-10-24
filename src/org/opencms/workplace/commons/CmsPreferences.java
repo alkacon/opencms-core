@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/10/19 07:25:34 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/10/24 07:21:53 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -1749,6 +1749,10 @@ public class CmsPreferences extends CmsTabDialog {
 
         // create an empty user settings object
         m_userSettings = new CmsUserSettings();
+        // keep old synchronization settings
+        if (settings.getUserSettings() != null) {
+            m_userSettings.setSynchronizeSettings(settings.getUserSettings().getSynchronizeSettings());
+        }
         // fill the parameter values in the get/set methods
         fillParamValues(request);
 
