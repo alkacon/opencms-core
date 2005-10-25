@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/10/25 09:10:06 $
- * Version: $Revision: 1.53.2.6 $
+ * Date   : $Date: 2005/10/25 09:16:51 $
+ * Version: $Revision: 1.53.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.6 $ 
+ * @version $Revision: 1.53.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1112,7 +1112,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 // unable to lock the index for updating
                 try {
                     // try to force unlock on the index (full rebuild is done anyway)
-                    IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), true));
+                    IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
                 } catch (Exception e) {
                     // unable to force unlock of Lucene index, we can't continue this way
                     CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
