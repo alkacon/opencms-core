@@ -18,7 +18,7 @@
 <p>Install this module if you want a WYSIWYG editor for Mozilla based browsers. The version of HtmlArea is 3.0 RC1.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
