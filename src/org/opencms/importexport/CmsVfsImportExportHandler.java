@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,12 +102,20 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
-    public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException, CmsRoleViolationException {
-        
+    public void exportData(CmsObject cms, I_CmsReport report)
+    throws CmsImportExportException, CmsRoleViolationException {
+
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
-        String[] exportPaths = (String[])getExportPaths().toArray(new String[getExportPaths().size()]);
-        new CmsExport(cms, getFileName(), exportPaths, isIncludeSystem(), isIncludeUnchanged(),
-            null, isExportUserdata(), getContentAge(), report);
+        new CmsExport(
+            cms,
+            getFileName(),
+            getExportPaths(),
+            isIncludeSystem(),
+            isIncludeUnchanged(),
+            null,
+            isExportUserdata(),
+            getContentAge(),
+            report);
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 

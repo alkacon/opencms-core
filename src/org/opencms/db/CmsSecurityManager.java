@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/10/11 15:23:43 $
- * Version: $Revision: 1.93.2.4 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.93.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,6 +66,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workflow.CmsTask;
@@ -74,6 +75,7 @@ import org.opencms.workflow.CmsTaskLog;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -93,9 +95,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen 
  * 
 <<<<<<< CmsSecurityManager.java
- * @version $Revision: 1.93.2.4 $
+ * @version $Revision: 1.93.2.5 $
 =======
- * @version $Revision: 1.93.2.4 $
+ * @version $Revision: 1.93.2.5 $
 >>>>>>> 1.93.2.1
  * 
  * @since 6.0.0
@@ -578,70 +580,79 @@ public final class CmsSecurityManager {
      * If the resource parameter is <code>null</code>, then the current project is checked,
      * otherwise the resource is checked for direct publish permissions.<p>
      * 
-     * @param context the current request context
-     * @param directPublishResource the direct publish resource (optional, if null only the current project is checked)
+     * @param dbc the current OpenCms users database context
+     * @param publishList the publish list to check (may contain direct publish resources)
      * 
      * @throws CmsException if the user does not have the required permissions
      * @throws CmsSecurityException if a direct publish is attempted on a resource 
      *         whose parent folder is new or deleted in the offline project.
      * @throws CmsRoleViolationException if the current user has no management access to the current project.
      */
-    public void checkPublishPermissions(CmsRequestContext context, CmsResource directPublishResource)
+    public void checkPublishPermissions(CmsDbContext dbc, CmsPublishList publishList)
     throws CmsException, CmsSecurityException, CmsRoleViolationException {
 
-        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         // is the current project an "offline" project?
         checkOfflineProject(dbc);
 
         // check if the current project is unlocked
-        if (context.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
+        if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
             CmsMessageContainer errMsg = org.opencms.security.Messages.get().container(
                 org.opencms.security.Messages.ERR_RESOURCE_LOCKED_1,
-                context.currentProject().getName());
+                dbc.currentProject().getName());
             throw new CmsLockException(errMsg);
         }
 
         // check if this is a "direct publish" attempt        
-        if (directPublishResource != null) {
-            // the parent folder must not be new or deleted
-            String parentFolder = CmsResource.getParentFolder(directPublishResource.getRootPath());
-            if (parentFolder != null) {
-                CmsResource parent = readResource(context, parentFolder, CmsResourceFilter.ALL);
-                if (parent.getState() == CmsResource.STATE_DELETED) {
-                    // parent folder is deleted - direct publish not allowed
-                    throw new CmsVfsException(Messages.get().container(
-                        Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
-                        dbc.getRequestContext().removeSiteRoot(directPublishResource.getRootPath()),
-                        parentFolder));
+        if (publishList.isDirectPublish()) {
+            boolean hasAllPermissions = true;
+            // iterate all resources in the direct publish list
+            Iterator it = publishList.getDirectPublishResources().iterator();
+            List parentFolders = new ArrayList(); 
+            while (it.hasNext()) {
+                CmsResource res = (CmsResource)it.next();
+                // the parent folder must not be new or deleted
+                String parentFolder = CmsResource.getParentFolder(res.getRootPath());
+                if ((parentFolder != null) && !parentFolders.contains(parentFolder)) {
+                    // check each parent folder only once
+                    CmsResource parent = readResource(dbc, parentFolder, CmsResourceFilter.ALL);
+                    if (parent.getState() == CmsResource.STATE_DELETED) {
+                        // parent folder is deleted - direct publish not allowed
+                        throw new CmsVfsException(Messages.get().container(
+                            Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
+                            dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
+                            parentFolder));
+                    }
+                    if (parent.getState() == CmsResource.STATE_NEW) {
+                        // parent folder is new - direct publish not allowed
+                        throw new CmsVfsException(Messages.get().container(
+                            Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
+                            dbc.removeSiteRoot(res.getRootPath()),
+                            parentFolder));
+                    }
+                    // add checked parent folder to prevent duplicate checks
+                    parentFolders.add(parentFolder);
                 }
-                if (parent.getState() == CmsResource.STATE_NEW) {
-                    // parent folder is new - direct publish not allowed
-                    throw new CmsVfsException(Messages.get().container(
-                        Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
-                        context.removeSiteRoot(directPublishResource.getRootPath()),
-                        parentFolder));
-                }
-
+                // check if the user has the explicit permission to direct publish the selected resource
+                if (PERM_ALLOWED != hasPermissions(
+                    dbc.getRequestContext(),
+                    res,
+                    CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
+                    true,
+                    CmsResourceFilter.ALL)) {
+                    
+                    // the user has no "direct publish" permissions on the resource - check has failed
+                    hasAllPermissions = false;
+                    break;
+                }                
             }
-
-            // check if the user has the explicit permission to direct publish the selected resource
-            if (PERM_ALLOWED == hasPermissions(
-                context,
-                directPublishResource,
-                CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
-                true,
-                CmsResourceFilter.ALL)) {
-                // the user has "direct publish" permissions on the resource
+            if (hasAllPermissions) {
+                // if direct publish was granted for all resources no further check is required
                 return;
             }
         }
 
         // check if the user is a manager of the current project, in this case he has publish permissions
-        try {
-            checkManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject());
-        } finally {
-            dbc.clear();
-        }
+        checkManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject());
     }
 
     /**
@@ -2042,51 +2053,33 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Returns a Cms publish list object containing the Cms resources that actually get published.<p>
-     * 
-     * <ul>
-     * <li>
-     * <b>Case 1 (publish project)</b>: all new/changed/deleted Cms file resources in the current (offline)
-     * project are inspected whether they would get published or not.
-     * </li> 
-     * <li>
-     * <b>Case 2 (direct publish a resource)</b>: a specified Cms file resource and optionally it's siblings 
-     * are inspected whether they get published.
-     * </li>
-     * </ul>
-     * 
-     * All <code>{@link CmsResource}</code> objects inside the publish ist are equipped with their full 
-     * resource name including the site root.<p>
+     * Fills the given publish list with the the VFS resources that actually get published.<p>
      * 
      * Please refer to the source code of this method for the rules on how to decide whether a
      * new/changed/deleted <code>{@link CmsResource}</code> object can be published or not.<p>
      * 
      * @param context the current request context
-     * @param directPublishResource a <code>{@link CmsResource}</code> to be published directly (in case 2), 
-     *                              or <code>null</code> (in case 1).
-     * @param publishSiblings <code>true</code>, if all eventual siblings of the direct published resource 
-     *                              should also get published (in case 2).
+     * @param publishList must be initialized with basic publish information (Project or direct publish operation)
      * 
-     * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
+     * @return the given publish list filled with all new/changed/deleted files from the current (offline) project 
+     *      that will be published actually
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public synchronized CmsPublishList getPublishList(
-        CmsRequestContext context,
-        CmsResource directPublishResource,
-        boolean publishSiblings) throws CmsException {
+    public synchronized CmsPublishList fillPublishList(CmsRequestContext context, CmsPublishList publishList)
+    throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsPublishList result = null;
         try {
-            result = m_driverManager.getPublishList(dbc, directPublishResource, publishSiblings);
+            result = m_driverManager.fillPublishList(dbc, publishList);
         } catch (Exception e) {
-            if (directPublishResource != null) {
+            if (publishList.isDirectPublish()) {
                 dbc.report(null, Messages.get().container(
                     Messages.ERR_GET_PUBLISH_LIST_DIRECT_1,
-                    context.removeSiteRoot(directPublishResource.getRootPath())), e);
+                    CmsFileUtil.formatResourceNames(context, publishList.getDirectPublishResources())), e);
             } else {
                 dbc.report(null, Messages.get().container(
                     Messages.ERR_GET_PUBLISH_LIST_PROJECT_1,
@@ -2409,10 +2402,14 @@ public final class CmsSecurityManager {
      */
     public boolean hasPublishPermissions(CmsRequestContext context, CmsResource directPublishResource) {
 
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            checkPublishPermissions(context, directPublishResource);
-        } catch (CmsException e) {
+            // check the access permissions
+            checkPublishPermissions(dbc, new CmsPublishList(directPublishResource, false));
+        } catch (Exception e) {
             return false;
+        } finally {
+            dbc.clear();
         }
         return true;
     }
@@ -2873,30 +2870,20 @@ public final class CmsSecurityManager {
      * 
      * @throws CmsException if something goes wrong
      * 
-     * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
+     * @see #fillPublishList(CmsRequestContext, CmsPublishList)
      */
     public synchronized CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
     throws CmsException {
 
         CmsRequestContext context = cms.getRequestContext();
-
-        // check if the current user has the required publish permissions
-        if (publishList.isDirectPublish()) {
-            // pass the direct publish resource to the permission test
-            CmsResource directPublishResource = publishList.getDirectPublishResource();
-            checkPublishPermissions(context, directPublishResource);
-        } else {
-            // pass null, will only check the current project
-            checkPublishPermissions(context, null);
-        }
-
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
+            // check if the current user has the required publish permissions
+            checkPublishPermissions(dbc, publishList);
             m_driverManager.publishProject(cms, dbc, publishList, report);
         } finally {
             dbc.clear();
         }
-
         return publishList.getPublishHistoryId();
     }
 
@@ -3739,6 +3726,32 @@ public final class CmsSecurityManager {
         return result;
     }
 
+    /**
+     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
+     * 
+     * @param context the current request context
+     * @param resource the backup resource to read the properties from
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public List readBackupPropertyObjects(CmsRequestContext context, CmsBackupResource resource) throws CmsException {
+
+        List result = null;
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            result = m_driverManager.readBackupPropertyObjects(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_READ_PROPS_FOR_RESOURCE_1,
+                context.getSitePath(resource)), e);
+        } finally {
+            dbc.clear();
+        }
+        return result;
+    }
+    
     /**
      * Reads all property objects from a resource.<p>
      * 
@@ -4945,7 +4958,7 @@ public final class CmsSecurityManager {
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see #getPublishList(CmsRequestContext, CmsResource, boolean)
+     * @see #fillPublishList(CmsRequestContext, CmsPublishList)
      */
     public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
 

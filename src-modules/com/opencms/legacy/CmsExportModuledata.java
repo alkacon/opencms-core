@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsExportModuledata.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,6 +56,7 @@ import java.io.OutputStreamWriter;
 import java.io.Serializable;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -79,7 +80,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior (a.kandzior@alkacon.com)
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.12 $ $Date: 2005/09/11 13:27:06 $
+ * @version $Revision: 1.12.2.1 $ $Date: 2005/10/25 18:38:50 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -244,7 +245,7 @@ public class CmsExportModuledata extends CmsExport implements Serializable {
 
             getCms().getRequestContext().setSiteRoot(CmsResource.VFS_FOLDER_CHANNELS);
             // export all the resources
-            exportAllResources(exportNode, resourcesToExport);
+            exportAllResources(exportNode, Arrays.asList(resourcesToExport));
             getReport().println(
                 Messages.get().container(Messages.RPT_EXPORT_CHANNELS_END_0),
                 I_CmsReport.FORMAT_HEADLINE);

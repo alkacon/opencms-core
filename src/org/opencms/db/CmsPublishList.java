@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,8 +31,10 @@
 
 package org.opencms.db;
 
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.ArrayList;
@@ -41,28 +43,33 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A container for all new/changed/deteled Cms resources of a project or a direct published 
- * resource (and optionally it's siblings) that actually get published.<p>
+ * A container for all new/changed/deteled Cms resources that are published together.<p>
  * 
  * Only classes inside the org.opencms.db package can add or remove elements to or from this list. 
- * This allows the Cms app to pass the list around between classes, but with restricted access to 
+ * This allows the OpenCms API to pass the list around between classes, but with restricted access to 
  * create this list.<p>
  * 
- * {@link org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)}
- * creates Cms publish lists.<p>
+ * To create a publish list, one of the public constructors must be used in order to set the basic operation mode
+ * (project publish or direct publish).
+ * After this, use <code>{@link org.opencms.db.CmsDriverManager#fillPublishList(CmsDbContext, CmsPublishList)}</code>
+ * to fill the actual values of the publish list.<p>
  * 
+ * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.24 $
+ * @version $Revision: 1.24.2.1 $
  * 
  * @since 6.0.0
  * 
- * @see org.opencms.db.CmsDriverManager#getPublishList(CmsDbContext, CmsResource, boolean)
+ * @see org.opencms.db.CmsDriverManager#fillPublishList(CmsDbContext, CmsPublishList)
  */
 public class CmsPublishList {
 
     /** The list of deleted Cms folder resources to be published.<p> */
     private List m_deletedFolderList;
+
+    /** The list of direct publish resources. */
+    private List m_directPublishResources;
 
     /** The list of new/changed/deleted Cms file resources to be published.<p> */
     private List m_fileList;
@@ -70,32 +77,66 @@ public class CmsPublishList {
     /** The list of new/changed Cms folder resources to be published.<p> */
     private List m_folderList;
 
+    /** The id of the project that is to be published. */
+    private int m_projectId;
+
     /** The publish history ID.<p> */
     private CmsUUID m_publishHistoryId;
 
-    /** The resource to publish in case of direct publishing. */
-    private CmsResource m_publishResource;
+    /** Indicates if siblings of the resources in the list should also be published. */
+    private boolean m_publishSiblings;
 
     /**
-     * Constructs an empty publish list for the resources of a project to be published.<p>
+     * Constructs a publish list for a given project.<p>
+     * 
+     * @param project the project to publish, this should always be the id of the current project
      */
-    public CmsPublishList() {
+    public CmsPublishList(CmsProject project) {
 
-        this(null);
+        this(project, null, false);
     }
 
     /**
-     * Constructs an empty publish list with additional information for a direct published resource.<p>
-     * @param directPublishResource a Cms resource to be published directly
+     * Constructs a publish list for a single direct publish resource.<p>
+     * 
+     * @param directPublishResource a VFS resource to be published directly
+     * @param publishSiblings indicates if all siblings of the selected resources should be published
      */
-    public CmsPublishList(CmsResource directPublishResource) {
+    public CmsPublishList(CmsResource directPublishResource, boolean publishSiblings) {
+
+        this(null, Collections.singletonList(directPublishResource), publishSiblings);
+    }
+
+    /**
+     * Constructs a publish list for a list of direct publish resources.<p>
+     * 
+     * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
+     * @param publishSiblings indicates if all siblings of the selected resources should be published
+     */
+    public CmsPublishList(List directPublishResources, boolean publishSiblings) {
+
+        this(null, directPublishResources, publishSiblings);
+    }
+
+    /**
+     * Internal constructor for a publish list.<p>
+     * 
+     * @param project the project to publish
+     * @param directPublishResources the list of direct publish resources
+     * @param publishSiblings indicates if all siblings of the selected resources should be published
+     */
+    private CmsPublishList(CmsProject project, List directPublishResources, boolean publishSiblings) {
 
         m_fileList = new ArrayList();
         m_folderList = new ArrayList();
         m_deletedFolderList = new ArrayList();
-        m_publishResource = directPublishResource;
-
         m_publishHistoryId = new CmsUUID();
+        m_publishSiblings = publishSiblings;
+        m_projectId = (project != null) ? project.getId() : -1;
+        if (directPublishResources != null) {
+            // reduce list of folders to minimum
+            m_directPublishResources = Collections.unmodifiableList(CmsFileUtil.removeRedundantResources(directPublishResources));
+        }
     }
 
     /**
@@ -109,13 +150,16 @@ public class CmsPublishList {
     }
 
     /**
-     * Returns the resource that should be published or null.<p>
+     * Returns the list of resources that should be published for a "direct" publish operation.<p>
      * 
-     * @return the resource that should be published or null
+     * Will return <code>null</code> if this publish list was not initilaized for a "direct publish" but
+     * for a project publish.<p>
+     * 
+     * @return the list of resources that should be published for a "direct" publish operation, or <code>null</code>
      */
-    public CmsResource getDirectPublishResource() {
+    public List getDirectPublishResources() {
 
-        return m_publishResource;
+        return m_directPublishResources;
     }
 
     /**
@@ -139,6 +183,17 @@ public class CmsPublishList {
     }
 
     /**
+     * Returns the id of the project that should be published, or <code>-1</code> if this publish list
+     * is initialized for a "direct publish" operation.<p>
+     * 
+     * @return the id of the project that should be published, or <code>-1</code>
+     */
+    public int getProjectId() {
+
+        return m_projectId;
+    }
+
+    /**
      * Returns the publish history Id for this publish list.<p>
      * 
      * @return the publish history Id
@@ -149,25 +204,23 @@ public class CmsPublishList {
     }
 
     /**
-     * Checks if this is a publish list for a direct published file *OR* folder.<p>
+     * Checks if this is a publish list is used for a "direct publish" operation.<p>
      * 
-     * @return true if this is a publish list for a direct published file *OR* folder
-     * @see #isDirectPublishFile()
+     * @return true if this is a publish list is used for a "direct publish" operation
      */
     public boolean isDirectPublish() {
 
-        return m_publishResource != null;
+        return m_projectId < 0;
     }
 
     /**
-     * Checks if this is a publish list for a direct published file.<p>
-     * 
-     * @return true if this is a publish list for a direct published file
-     * @see #isDirectPublish()
+     * Returns <code>true</code> if all siblings of the project resources are to be published.<p>
+     *  
+     * @return <code>true</code> if all siblings of the project resources are to be publisheds
      */
-    public boolean isDirectPublishFile() {
+    public boolean isPublishSiblings() {
 
-        return m_publishResource.isFile();
+        return m_publishSiblings;
     }
 
     /**
@@ -175,17 +228,18 @@ public class CmsPublishList {
      */
     public String toString() {
 
-        StringBuffer strBuf = new StringBuffer();
-
-        strBuf.append("\n[\n");
-        strBuf.append("direct publish file or folder: ").append(
-            (m_publishResource != null) ? m_publishResource.getRootPath() : "-").append("\n");
-        strBuf.append("publish history ID: ").append(m_publishHistoryId.toString()).append("\n");
-        strBuf.append("resources: ").append(m_fileList.toString()).append("\n");
-        strBuf.append("folders: ").append(m_folderList.toString()).append("\n");
-        strBuf.append("]\n");
-
-        return strBuf.toString();
+        StringBuffer result = new StringBuffer();
+        result.append("\n[\n");
+        if (isDirectPublish()) {
+            result.append("direct publish of resources: ").append(m_directPublishResources.toString()).append("\n");
+        } else {
+            result.append("publish of project: ").append(m_projectId).append("\n");
+        }
+        result.append("publish history ID: ").append(m_publishHistoryId.toString()).append("\n");
+        result.append("resources: ").append(m_fileList.toString()).append("\n");
+        result.append("folders: ").append(m_folderList.toString()).append("\n");
+        result.append("]\n");
+        return result.toString();
     }
 
     /**
@@ -352,5 +406,4 @@ public class CmsPublishList {
         // it is essential that this method is only visible within the db package!
         return m_fileList.remove(resource);
     }
-
 }

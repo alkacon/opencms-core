@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.21.2.3 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.21.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.util;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -50,6 +51,8 @@ import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Locale;
@@ -61,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.3 $ 
+ * @version $Revision: 1.21.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,49 +79,6 @@ public final class CmsFileUtil {
     private CmsFileUtil() {
 
         // noop
-    }
-
-    /** 
-     *  Check whether some of the resources are redundant because a superfolder has also
-     *  been selected.<p>
-     * 
-     *  @param resources a list of full pathnames for all the resources
-     *  
-     *  @return a list of consistent full pathnames
-     */
-    public static List removeRedundancies(List resources) {
-
-        if (resources == null) {
-            return new ArrayList();
-        }
-        List ret = new ArrayList(resources);
-        List redundant = new ArrayList();
-        int n = resources.size();
-        if (n < 2) {
-            return ret;
-        }
-        for (int i = 0; i < n; i++) {
-            redundant.add(new Boolean(false));
-        }
-        for (int i = 0; i < n - 1; i++) {
-            for (int j = i + 1; j < n; j++) {
-                if (((String)ret.get(i)).length() < ((String)ret.get(j)).length()) {
-                    if (((String)ret.get(j)).startsWith((String)ret.get(i))) {
-                        redundant.set(j, new Boolean(true));
-                    }
-                } else {
-                    if (((String)ret.get(i)).startsWith((String)ret.get(j))) {
-                        redundant.set(i, new Boolean(true));
-                    }
-                }
-            }
-        }
-        for (int i = n - 1; i >= 0; i--) {
-            if (((Boolean)redundant.get(i)).booleanValue()) {
-                ret.remove(i);
-            }
-        }
-        return ret;
     }
 
     /**
@@ -137,7 +97,7 @@ public final class CmsFileUtil {
             String resourcePath = (String)it.next();
             try {
                 CmsResource resource = cms.readResource(resourcePath);
-                // append folder separator, of resource is a file and does not and with a slash
+                // append folder separator, if resource is a folder and does not and with a slash
                 if (resource.isFolder() && !resourcePath.endsWith("/")) {
                     it.set(resourcePath + "/");
                 }
@@ -215,6 +175,36 @@ public final class CmsFileUtil {
                 new Object[] {new Double(filesize / 1073741824.0)});
         }
         return result;
+    }
+
+    /**
+     * Returns a comma separated list of resource paths names, with the site root 
+     * from the given OpenCms user context removed.<p> 
+     * 
+     * @param context the current users OpenCms context (optional, may be <code>null</code>)
+     * @param resources a List of <code>{@link CmsResource}</code> instances to get the names from
+     * 
+     * @return a comma separated list of resource paths names
+     */
+    public static String formatResourceNames(CmsRequestContext context, List resources) {
+
+        if (resources == null) {
+            return null;
+        }
+        StringBuffer result = new StringBuffer(128);
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource res = (CmsResource)i.next();
+            String path = res.getRootPath();
+            if (context != null) {
+                path = context.removeSiteRoot(path);
+            }
+            result.append(path);
+            if (i.hasNext()) {
+                result.append(", ");
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -514,6 +504,102 @@ public final class CmsFileUtil {
     public static String readFile(String filename, String encoding) throws IOException {
 
         return new String(readFile(filename), encoding);
+    }
+
+    /** 
+     * Removes all resource names in the given List that are "redundant" because the parent folder name 
+     * is also contained in the List.<p> 
+     * 
+     * The content of the input list is not modified.<p>
+     * 
+     * @param resourcenames a list of VFS pathnames to check for redundencies (Strings)
+     *  
+     * @return a the given list with all redundancies removed
+     * 
+     * @see #removeRedundantResources(List)
+     */
+    public static List removeRedundancies(List resourcenames) {
+
+        if ((resourcenames == null) || (resourcenames.isEmpty())) {
+            return new ArrayList();
+        }
+        if (resourcenames.size() == 1) {
+            // if there is only one resource name in the list, there can be no redundancies
+            return new ArrayList(resourcenames);
+        }
+        // check all resources names and see if a parent folder name is contained
+        List result = new ArrayList(resourcenames.size());
+        List base = new ArrayList(resourcenames);
+        Collections.sort(base);
+        Iterator i = base.iterator();
+        while (i.hasNext()) {
+            // check all resource names in the list
+            String resourcename = (String)i.next();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(resourcename)) {
+                // skip empty strings
+                continue;
+            }
+            boolean valid = true;
+            for (int j = (result.size() - 1); j >= 0; j--) {
+                // check if this resource name is indirectly contained because a parent folder name is contained
+                String check = (String)result.get(j);
+                if (resourcename.startsWith(check)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                // a parent folder name is not already contained in the result
+                result.add(resourcename);
+            }
+        }
+        return result;
+    }
+
+    /** 
+     * Removes all resources in the given List that are "redundant" because the parent folder 
+     * is also contained in the List.<p> 
+     * 
+     * The content of the input list is not modified.<p>
+     * 
+     * @param resources a list of <code>{@link CmsResource}</code> objects to check for redundencies
+     *  
+     * @return a the given list with all redundancies removed
+     * 
+     * @see #removeRedundancies(List)
+     */
+    public static List removeRedundantResources(List resources) {
+
+        if ((resources == null) || (resources.isEmpty())) {
+            return new ArrayList();
+        }
+        if (resources.size() == 1) {
+            // if there is only one resource in the list, there can be no redundancies
+            return new ArrayList(resources);
+        }
+        // check all resources and see if a parent folder name is contained
+        List result = new ArrayList(resources.size());
+        List base = new ArrayList(resources);
+        Collections.sort(base);
+        Iterator i = base.iterator();
+        while (i.hasNext()) {
+            // check all folders in the list
+            CmsResource resource = (CmsResource)i.next();
+            boolean valid = true;
+            for (int j = (result.size() - 1); j >= 0; j--) {
+                // check if this resource is indirectly contained because a parent folder is contained
+                String check = ((CmsResource)result.get(j)).getRootPath();
+                if (resource.getRootPath().startsWith(check)) {
+                    valid = false;
+                    break;
+                }
+            }
+            if (valid) {
+                // the parent folder is not already contained in the result
+                result.add(resource);
+            }
+        }
+        return result;
     }
 
     /**

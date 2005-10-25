@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/19 10:04:05 $
- * Version: $Revision: 1.557.2.10 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.557.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,6 +79,7 @@ import org.opencms.security.CmsPermissionSetCustom;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.validation.CmsXmlDocumentLinkValidator;
@@ -113,9 +114,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * 
  <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.10 $
+ * @version $Revision: 1.557.2.11 $
  =======
- * @version $Revision: 1.557.2.10 $
+ * @version $Revision: 1.557.2.11 $
  >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
@@ -3189,46 +3190,26 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns a Cms publish list object containing the Cms resources that actually get published.<p>
-     * 
-     * <ul>
-     * <li>
-     * <b>Case 1 (publish project)</b>: all new/changed/deleted Cms file resources in the current (offline)
-     * project are inspected whether they would get published or not.
-     * </li> 
-     * <li>
-     * <b>Case 2 (direct publish a resource)</b>: a specified Cms file resource and optionally it's siblings 
-     * are inspected whether they get published.
-     * </li>
-     * </ul>
-     * 
-     * All <code>{@link CmsResource}</code> objects inside the publish ist are equipped with their full 
-     * resource name including the site root.<p>
+     * Fills the given publish list with the the VFS resources that actually get published.<p>
      * 
      * Please refer to the source code of this method for the rules on how to decide whether a
      * new/changed/deleted <code>{@link CmsResource}</code> object can be published or not.<p>
      * 
      * @param dbc the current database context
-     * @param directPublishResource a <code>{@link CmsResource}</code> to be published directly (in case 2), 
-     *                              or <code>null</code> (in case 1).
-     * @param publishSiblings <code>true</code>, if all eventual siblings of the direct published resource 
-     *                              should also get published (in case 2).
+     * @param publishList must be initialized with basic publish information (Project or direct publish operation)
      * 
-     * @return a publish list with all new/changed/deleted files from the current (offline) project that will be published actually
+     * @return the given publish list filled with all new/changed/deleted files from the current (offline) project 
+     *      that will be published actually
      * 
      * @throws CmsException if something goes wrong
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public synchronized CmsPublishList getPublishList(
+    public synchronized CmsPublishList fillPublishList(
         CmsDbContext dbc,
-        CmsResource directPublishResource,
-        boolean publishSiblings) throws CmsException {
+        CmsPublishList publishList) throws CmsException {
 
-        CmsPublishList publishList = new CmsPublishList(directPublishResource);
-
-        if (directPublishResource == null) {
-
+        if (!publishList.isDirectPublish()) {
             // when publishing a project, 
             // all modified resources with the last change done in the current project are candidates if unlocked
 
@@ -3270,68 +3251,76 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
 
-        } else if (directPublishResource.isFolder()) {
+        } else {
+            // this is a direct publish
+            Iterator it = publishList.getDirectPublishResources().iterator();
+            while (it.hasNext()) {
+                // iterate all resources in the direct publish list
+                CmsResource directPublishResource = (CmsResource)it.next();
+                if (directPublishResource.isFolder()) {
 
-            // when publishing a folder directly, 
-            // the folder and all modified resources within the tree below this folder 
-            // and with the last change done in the current project are candidates if unlocked
+                    // when publishing a folder directly, 
+                    // the folder and all modified resources within the tree below this folder 
+                    // and with the last change done in the current project are candidates if unlocked
 
-            if (CmsResource.STATE_UNCHANGED != directPublishResource.getState()
-                && getLock(dbc, directPublishResource).isNullLock()) {
-                publishList.addFolder(directPublishResource);
+                    if (CmsResource.STATE_UNCHANGED != directPublishResource.getState()
+                        && getLock(dbc, directPublishResource).isNullLock()) {
+                        publishList.addFolder(directPublishResource);
+                    }
+
+                    List folderList = m_vfsDriver.readResourceTree(
+                        dbc,
+                        dbc.currentProject().getId(),
+                        directPublishResource.getRootPath(),
+                        CmsDriverManager.READ_IGNORE_TYPE,
+                        CmsResource.STATE_UNCHANGED,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READMODE_INCLUDE_TREE
+                            | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                            | CmsDriverManager.READMODE_EXCLUDE_STATE
+                            | CmsDriverManager.READMODE_ONLY_FOLDERS);
+
+                    publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
+
+                    List fileList = m_vfsDriver.readResourceTree(
+                        dbc,
+                        dbc.currentProject().getId(),
+                        directPublishResource.getRootPath(),
+                        CmsDriverManager.READ_IGNORE_TYPE,
+                        CmsResource.STATE_UNCHANGED,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READ_IGNORE_TIME,
+                        CmsDriverManager.READMODE_INCLUDE_TREE
+                            | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                            | CmsDriverManager.READMODE_EXCLUDE_STATE
+                            | CmsDriverManager.READMODE_ONLY_FILES);
+
+                    publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
+
+                } else if (directPublishResource.isFile()
+                    && CmsResource.STATE_UNCHANGED != directPublishResource.getState()) {
+
+                    // when publishing a file directly this file is the only candidate
+                    // if it is modified and unlocked
+
+                    if (getLock(dbc, directPublishResource).isNullLock()) {
+                        publishList.addFile(directPublishResource);
+                    }
+                }
             }
-
-            List folderList = m_vfsDriver.readResourceTree(
-                dbc,
-                dbc.currentProject().getId(),
-                directPublishResource.getRootPath(),
-                CmsDriverManager.READ_IGNORE_TYPE,
-                CmsResource.STATE_UNCHANGED,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READMODE_INCLUDE_TREE
-                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                    | CmsDriverManager.READMODE_EXCLUDE_STATE
-                    | CmsDriverManager.READMODE_ONLY_FOLDERS);
-
-            publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
-
-            List fileList = m_vfsDriver.readResourceTree(
-                dbc,
-                dbc.currentProject().getId(),
-                directPublishResource.getRootPath(),
-                CmsDriverManager.READ_IGNORE_TYPE,
-                CmsResource.STATE_UNCHANGED,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READMODE_INCLUDE_TREE
-                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                    | CmsDriverManager.READMODE_EXCLUDE_STATE
-                    | CmsDriverManager.READMODE_ONLY_FILES);
-
-            publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
-
-        } else if (directPublishResource.isFile() && CmsResource.STATE_UNCHANGED != directPublishResource.getState()) {
-
-            // when publishing a file directly this file is the only candidate
-            // if it is modified and unlocked
-
-            if (getLock(dbc, directPublishResource).isNullLock()) {
-                publishList.addFile(directPublishResource);
-            }
-
         }
 
         // Step 2: if desired, extend the list of files to publish with related siblings
-        if (publishSiblings) {
+        if (publishList.isPublishSiblings()) {
 
             List publishFiles = publishList.getFileList();
             int size = publishFiles.size();
@@ -4365,7 +4354,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @param report an instance of <code>{@link I_CmsReport}</code> to print messages
      * 
      * @throws CmsException if something goes wrong
-     * @see #getPublishList(CmsDbContext, CmsResource, boolean)
+     * @see #fillPublishList(CmsDbContext, CmsPublishList)
      */
     public synchronized void publishProject(
         CmsObject cms,
@@ -4389,16 +4378,31 @@ public final class CmsDriverManager implements I_CmsEventListener {
             int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
 
             // if we direct publish a file, check if all parent folders are already published
-            if (publishList.isDirectPublish()) {
+            if (directPublish) {
+                // first get the names of all parent folders
+                Iterator it = publishList.getDirectPublishResources().iterator();
+                List parentFolderNames = new ArrayList();
+                while (it.hasNext()) {
+                    CmsResource res = (CmsResource)it.next();
+                    String parentFolderName = CmsResource.getParentFolder(res.getRootPath());
+                    if (parentFolderName != null) {
+                        parentFolderNames.add(parentFolderName);
+                    }
+                }
+                // remove duplicate parent folder names
+                parentFolderNames = CmsFileUtil.removeRedundancies(parentFolderNames);
+                String parentFolderName = null;
                 try {
-                    getVfsDriver().readFolder(
-                        dbc,
-                        CmsProject.ONLINE_PROJECT_ID,
-                        CmsResource.getParentFolder(publishList.getDirectPublishResource().getRootPath()));
+                    // now check all folders if they exist in the online project
+                    Iterator parentIt = parentFolderNames.iterator();
+                    while (parentIt.hasNext()) {
+                        parentFolderName = (String)parentIt.next();
+                        getVfsDriver().readFolder(dbc, CmsProject.ONLINE_PROJECT_ID, parentFolderName);
+                    }
                 } catch (CmsException e) {
                     report.println(Messages.get().container(
                         Messages.RPT_PARENT_FOLDER_NOT_PUBLISHED_1,
-                        publishList.getDirectPublishResource().getRootPath()), I_CmsReport.FORMAT_ERROR);
+                        parentFolderName), I_CmsReport.FORMAT_ERROR);
                     return;
                 }
             }
@@ -5379,6 +5383,22 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return value.cloneAsProperty();
     }
 
+
+    /**
+     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the backup resource to read the properties from
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    public List readBackupPropertyObjects(CmsDbContext dbc, CmsBackupResource resource) throws CmsException {
+        
+        return m_backupDriver.readBackupProperties(dbc, resource);        
+    }
+    
     /**
      * Reads all property objects mapped to a specified resource from the database.<p>
      * 
@@ -6946,7 +6966,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @throws Exception if something goes wrong
      * 
-     * @see #getPublishList(CmsDbContext, CmsResource, boolean)
+     * @see #fillPublishList(CmsDbContext, CmsPublishList)
      */
     public Map validateHtmlLinks(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws Exception {
 

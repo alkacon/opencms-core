@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/10/19 13:07:25 $
- * Version: $Revision: 1.80.2.3 $
+ * Date   : $Date: 2005/10/25 18:38:50 $
+ * Version: $Revision: 1.80.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsStringUtil;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.util.CmsXmlSaxWriter;
 import org.opencms.workplace.CmsWorkplace;
@@ -92,7 +92,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.3 $ 
+ * @version $Revision: 1.80.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,7 +167,7 @@ public class CmsExport {
     public CmsExport(
         CmsObject cms,
         String exportFile,
-        String[] resourcesToExport,
+        List resourcesToExport,
         boolean includeSystem,
         boolean includeUnchanged)
     throws CmsImportExportException, CmsRoleViolationException {
@@ -195,7 +195,7 @@ public class CmsExport {
     public CmsExport(
         CmsObject cms,
         String exportFile,
-        String[] resourcesToExport,
+        List resourcesToExport,
         boolean includeSystem,
         boolean includeUnchanged,
         Element moduleElement,
@@ -268,76 +268,6 @@ public class CmsExport {
             }
 
             throw new CmsImportExportException(message, ioe);
-        }
-    }
-
-    /** 
-     * Checks whether some of the resources are redundant because a superfolder has also
-     * been selected or a file is included in a folder.<p>
-     * 
-     * @param folderNames contains the full pathnames of all folders
-     * @param fileNames contains the full pathnames of all files
-     */
-    public static void checkRedundancies(List folderNames, List fileNames) {
-
-        if (folderNames == null) {
-            return;
-        }
-        if (!folderNames.isEmpty()) {
-            Collections.sort(folderNames);
-            List result = new ArrayList();
-            Iterator i = folderNames.iterator();
-            while (i.hasNext()) {
-                // check all folders in the list
-                String folder = (String)i.next();
-                if (CmsStringUtil.isEmpty(folder)) {
-                    // skip empty strings
-                    continue;
-                }
-                boolean valid = true;
-                for (int j = (result.size() - 1); j >= 0; j--) {
-                    // check if this folder is indirectly contained because a parent folder is contained
-                    String check = (String)result.get(j);
-                    if (folder.startsWith(check)) {
-                        valid = false;
-                        break;
-                    }
-                }
-                if (valid) {
-                    // the folder is not already contained in the result
-                    result.add(folder);
-                }
-            }
-            folderNames.clear();
-            folderNames.addAll(result);
-        }
-        if (!fileNames.isEmpty()) {
-            Collections.sort(fileNames);
-            List result = new ArrayList();
-            Iterator i = fileNames.iterator();
-            while (i.hasNext()) {
-                // check all folders in the list
-                String file = (String)i.next();
-                if (CmsStringUtil.isEmpty(file)) {
-                    // skip empty strings
-                    continue;
-                }
-                boolean valid = true;
-                for (int j = (folderNames.size() - 1); j >= 0; j--) {
-                    // check if this folder is indirectly contained because a parent folder is contained
-                    String check = (String)folderNames.get(j);
-                    if (file.startsWith(check)) {
-                        valid = false;
-                        break;
-                    }
-                }
-                if (valid) {
-                    // the folder is not already contained in the result
-                    result.add(file);
-                }
-            }
-            fileNames.clear();
-            fileNames.addAll(result);
         }
     }
 
@@ -485,7 +415,7 @@ public class CmsExport {
      * @throws SAXException if something goes wrong procesing the manifest.xml
      * @throws IOException if not all resources could be appended to the ZIP archive
      */
-    protected void exportAllResources(Element parent, String[] resourcesToExport)
+    protected void exportAllResources(Element parent, List resourcesToExport)
     throws CmsImportExportException, IOException, SAXException {
 
         // export all the resources
@@ -493,19 +423,21 @@ public class CmsExport {
         m_resourceNode = parent.addElement(resourceNodeName);
         getSaxWriter().writeOpen(m_resourceNode);
 
+        // remove the possible redundancies in the list of resources
+        resourcesToExport = CmsFileUtil.removeRedundancies(resourcesToExport);
+        
         // distinguish folder and file names   
         List folderNames = new ArrayList();
-        List fileNames = new ArrayList();
-        for (int i = 0; i < resourcesToExport.length; i++) {
-            if (CmsResource.isFolder(resourcesToExport[i])) {
-                folderNames.add(resourcesToExport[i]);
+        List fileNames = new ArrayList();        
+        Iterator it = resourcesToExport.iterator();
+        while (it.hasNext()) {
+            String resource = (String)it.next();
+            if (CmsResource.isFolder(resource)) {
+                folderNames.add(resource);
             } else {
-                fileNames.add(resourcesToExport[i]);
+                fileNames.add(resource);
             }
         }
-
-        // remove the possible redundancies in the list of resources
-        checkRedundancies(folderNames, fileNames);
 
         // init sets required for the body file exports 
         m_exportedResources = new HashSet();
