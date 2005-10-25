@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/25 15:14:32 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,6 +214,21 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
      * 
      * @param base the base object to map the parameter to / from
      * @param property the base object property to map the parameter to / from
+     * @param htmlName the form id name to use in the generated HTML
+     * @param dialogPage the dialog page to use the widget on
+     * @param widget the widget used for this parameter
+     * 
+     */
+    public CmsWidgetDialogParameter(Object base, String property, String htmlName, String dialogPage, I_CmsWidget widget) {
+
+        this(base, property, htmlName, null, dialogPage, widget, 1, 1);
+    }
+
+    /**
+     * Create a new Widget parameter based on a given object's property.<p>
+     * 
+     * @param base the base object to map the parameter to / from
+     * @param property the base object property to map the parameter to / from
      * @param defaultValue the default value to use for this parameter
      * @param dialogPage the dialog page to use the widget on
      * @param widget the widget used for this paramete
@@ -229,10 +244,39 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
         int minOccurs,
         int maxOccurs) {
 
+        this(base, property, property, defaultValue, dialogPage, widget, minOccurs, maxOccurs);
+    }
+
+    /**
+     * Create a new Widget parameter based on a given object's property.<p>
+     * 
+     * @param base the base object to map the parameter to / from
+     * @param property the base object property to map the parameter to / from
+     * @param htmlName the form id name to use in the generated HTML
+     * @param defaultValue the default value to use for this parameter
+     * @param dialogPage the dialog page to use the widget on
+     * @param widget the widget used for this paramete
+     * @param minOccurs the required minimum numer of occurences of this parameter
+     * @param maxOccurs the maximum allowed numer of occurences of this parameter
+     */
+    public CmsWidgetDialogParameter(
+        Object base,
+        String property,
+        String htmlName,
+        String defaultValue,
+        String dialogPage,
+        I_CmsWidget widget,
+        int minOccurs,
+        int maxOccurs) {
+
+        if (htmlName == null) {
+            htmlName = property;
+        }
+
         if ((base instanceof List) || (base instanceof SortedMap)) {
 
             // this is a list, use custom list mappings
-            init(null, defaultValue, property, widget, dialogPage, 0, MAX_OCCURENCES, 0);
+            init(null, defaultValue, htmlName, widget, dialogPage, 0, MAX_OCCURENCES, 0);
 
             m_baseObject = null;
             m_baseObjectProperty = null;
@@ -241,7 +285,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
         } else {
 
             // generic object:use reflection to map object properties
-            init(null, defaultValue, property, widget, dialogPage, minOccurs, maxOccurs, 0);
+            init(null, defaultValue, htmlName, widget, dialogPage, minOccurs, maxOccurs, 0);
 
             m_baseObject = base;
             m_baseObjectProperty = property;
@@ -668,11 +712,9 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
         if (m_minOccurs > m_maxOccurs) {
             m_minOccurs = m_maxOccurs;
         }
-        m_index = index;
         m_dialogPage = dialog;
         m_error = null;
 
-        // create the id
-        m_id = createId(m_name, m_index);
+        setindex(index);
     }
 }

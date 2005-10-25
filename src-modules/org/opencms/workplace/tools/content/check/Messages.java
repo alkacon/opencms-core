@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/Messages.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/25 15:14:32 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,20 +37,34 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @author Achim Westermann 
- * @author Jan Baudisch 
+ * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.0.0 
+ * @since 6.1.2 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String CHECK_CONTAINS_FILENAME_2 = "CHECK_CONTAINS_FILENAME_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String CHECK_MATCH_3 = "CHECK_MATCH_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String CHECK_NO_PROPERTYNAME_1 = "CHECK_NO_PROPERTYNAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String CHECK_TOO_SHORT_3 = "CHECK_TOO_SHORT_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_TEST_0 = "ERR_NO_TEST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_VFSPATH_0 = "ERR_NO_VFSPATH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_CONFIGURATION_PROPERTY_HELP_0 = "GUI_CHECKCONTENT_CONFIGURATION_PROPERTY_HELP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKCONTENT_LIST_NAME_0 = "GUI_CHECKCONTENT_LIST_NAME_0";
@@ -63,6 +77,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_PLUGIN_1 = "LOG_CREATE_PLUGIN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_PROCESSING_PROPERTIES_2 = "LOG_ERROR_PROCESSING_PROPERTIES_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CONTENT_CHECK_BEGIN_0 = "RPT_CONTENT_CHECK_BEGIN_0";

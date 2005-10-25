@@ -42,9 +42,9 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.1.0 
+ * @since 6.1.2 
  */
 public class CmsContentCheckThread extends A_CmsReportThread {
 

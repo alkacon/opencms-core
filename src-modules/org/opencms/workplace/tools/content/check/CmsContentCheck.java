@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheck.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/25 15:14:32 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools.content.check;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.main.CmsException;
@@ -40,6 +39,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.workplace.CmsWorkplace;
+import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -56,18 +56,18 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.1.0 
+ * @since 6.1.2 
  */
 public class CmsContentCheck {
 
+    /**  Path to the plugin folder. */
+    public static final String VFS_PATH_PLUGIN_FOLDER = CmsWorkplace.VFS_PATH_WORKPLACE
+        + "admin/contenttools/check/plugin/";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsContentCheck.class);
-
-    /**  Path to the plugin folder. */
-    private static final String VFS_PATH_PLUGIN_FOLDER = CmsWorkplace.VFS_PATH_WORKPLACE
-        + "admin/contenttools/check/plugin/";
 
     /** The CmsObject. */
     private CmsObject m_cms;
@@ -339,18 +339,18 @@ public class CmsContentCheck {
                 Iterator j = resources.iterator();
                 while (j.hasNext()) {
                     CmsResource res = (CmsResource)j.next();
-                    m_report.print(
-                        Messages.get().container(Messages.RPT_EXTRACT_FROM_PATH_1, cms.getSitePath(res)),
-                        I_CmsReport.FORMAT_DEFAULT);
-                    m_report.print(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
-                        I_CmsReport.FORMAT_DEFAULT);
+                    //                    m_report.print(
+                    //                        Messages.get().container(Messages.RPT_EXTRACT_FROM_PATH_1, cms.getSitePath(res)),
+                    //                        I_CmsReport.FORMAT_DEFAULT);
+                    //                    m_report.print(
+                    //                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0),
+                    //                        I_CmsReport.FORMAT_DEFAULT);
                     // create a CmsContentCheckResource for each resource
                     CmsContentCheckResource contentCheckRes = new CmsContentCheckResource(res);
                     collectedResources.put(contentCheckRes.getResourceName(), contentCheckRes);
-                    m_report.println(
-                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
-                        I_CmsReport.FORMAT_OK);
+                    //                    m_report.println(
+                    //                        org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    //                        I_CmsReport.FORMAT_OK);
                 }
 
             } catch (CmsException e) {
@@ -379,9 +379,7 @@ public class CmsContentCheck {
         // first get all installed plugins
         // plugins are subfolders of the "/plugin/" folder with a template
         // property holdding the name of the plugin class
-        List resources = m_cms.readResourcesWithProperty(
-            VFS_PATH_PLUGIN_FOLDER,
-            CmsPropertyDefinition.PROPERTY_TEMPLATE);
+        List resources = m_cms.readResourcesWithProperty(VFS_PATH_PLUGIN_FOLDER, CmsToolManager.HANDLERCLASS_PROPERTY);
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
@@ -389,12 +387,13 @@ public class CmsContentCheck {
             if (res.isFolder()) {
                 String classname = m_cms.readPropertyObject(
                     res.getRootPath(),
-                    CmsPropertyDefinition.PROPERTY_TEMPLATE,
+                    CmsToolManager.HANDLERCLASS_PROPERTY,
                     false).getValue();
                 try {
                     Object objectInstance = Class.forName(classname).newInstance();
                     if (objectInstance instanceof I_CmsContentCheck) {
                         I_CmsContentCheck plugin = (I_CmsContentCheck)objectInstance;
+                        plugin.init(m_cms);
                         // store the plugin instance
                         m_plugins.add(plugin);
                         LOG.info(Messages.get().key(Messages.LOG_CREATE_PLUGIN_1, classname));

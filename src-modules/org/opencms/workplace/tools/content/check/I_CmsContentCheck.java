@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/I_CmsContentCheck.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/25 15:14:32 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,12 +43,15 @@ import java.util.List;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.1.0 
+ * @since 6.1.2 
  */
 
 public interface I_CmsContentCheck {
+
+    /** Parameter name for widgets. */
+    String PARAMETER = "active";
 
     /**
      * Main method of the content check. It holds the implementation of the content check.<p>
@@ -64,13 +67,6 @@ public interface I_CmsContentCheck {
     /**
      * Defines the name of the parameter which is used by the CmsContentCheckDialog to enable
      * or disable the content check.<p>
-     * 
-     * The name of the dialog parameter must be defined within the implementation of this interface, and 
-     * there must be corresponding getter and setter methods for it. This is required to use the 
-     * widget dialogs to enable this content check.<p>
-     * 
-     * Exmaple: if the dialog parameter is called "parametercheck", there must be a "isParametercheck" and a 
-     * "setParametercheck" implemented in the implementation of this interface.
      * 
      * @return the name of the dialog parameter.
      */
@@ -91,13 +87,26 @@ public interface I_CmsContentCheck {
     String getName();
 
     /**
+     * Initializer for the content check.<p>
+     * 
+     * @param cms the current CmsObject
+     * @throws CmsException if an error occurs 
+     */
+    void init(CmsObject cms) throws CmsException;
+
+    /**
      * Signals if this content check is active or not.<p> 
      * 
-     * This is based on the information that is received and set by the getter and setter
-     * method of the parameter defined in @see getParameterName().
      * 
      * @return true if this content check is active, false otherwise.
      */
     boolean isActive();
+
+    /**
+     * Sets the active flag for the content check.<p>
+     * 
+     * @param value the value for the active flag
+     */
+    void setActive(boolean value);
 
 }

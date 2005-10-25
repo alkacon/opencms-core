@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+	<xsd:include schemaLocation="opencms://system/workplace/admin/contenttools/check/plugin/propertycheck/property.xsd"/>
+
+	<xsd:element name="PropertyChecks" type="OpenCmsPropertyChecks"/>
+	
+	<xsd:complexType name="OpenCmsPropertyChecks">
+		<xsd:sequence>
+			<xsd:element name="PropertyCheck" type="OpenCmsPropertyCheck" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsPropertyCheck">
+		<xsd:sequence>
+			<xsd:element name="error" type="OpenCmsProperty" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="warning" type="OpenCmsProperty" minOccurs="0" maxOccurs="unbounded" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.workplace.tools.content.workplace"/>
+		</xsd:appinfo>
+	</xsd:annotation>  
+	
+</xsd:schema>

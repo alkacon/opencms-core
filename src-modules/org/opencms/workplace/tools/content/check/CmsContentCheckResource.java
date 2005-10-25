@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckResource.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/25 15:14:32 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,9 +48,9 @@ import java.util.List;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.1.0 
+ * @since 6.1.2 
  */
 public class CmsContentCheckResource {
 
@@ -92,6 +92,15 @@ public class CmsContentCheckResource {
         m_errors.add(error);
     }
 
+    /** Adds a list of errors to the list of errors for this resource.<p>
+     *  
+     * @param errors the error messages to be added
+     */
+    public void addErrors(List errors) {
+
+        m_errors.addAll(errors);
+    }
+
     /** Adds a new warning to the list of warnings for this resource.<p>
      * 
      * @param warning the warning message to be added
@@ -99,6 +108,15 @@ public class CmsContentCheckResource {
     public void addWarning(String warning) {
 
         m_warnings.add(warning);
+    }
+
+    /** Adds a list of warnings to the list of warnings for this resource.<p>
+     *  
+     * @param warnings the error messages to be added
+     */
+    public void addWarnings(List warnings) {
+
+        m_warnings.addAll(warnings);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckDialog.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/10/25 15:14:32 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,9 +58,9 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
- * @since 6.1.0 
+ * @since 6.1.2 
  */
 public class CmsContentCheckDialog extends CmsWidgetDialog {
 
@@ -201,11 +201,11 @@ public class CmsContentCheckDialog extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter(m_contentCheck, "paths", PAGES[0], new CmsVfsFileWidget()));
         // get a list of all plugins and build a widget for each plugin
         List plugins = m_contentCheck.getPlugins();
-        Iterator i = plugins.iterator();
-        while (i.hasNext()) {
-            I_CmsContentCheck plugin = (I_CmsContentCheck)i.next();
+        for (int i = 0; i < plugins.size(); i++) {
+            I_CmsContentCheck plugin = (I_CmsContentCheck)plugins.get(i);
             addWidget(new CmsWidgetDialogParameter(
                 plugin,
+                I_CmsContentCheck.PARAMETER,
                 plugin.getDialogParameterName(),
                 PAGES[0],
                 new CmsCheckboxWidget()));
