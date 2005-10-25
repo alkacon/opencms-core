@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/10/19 10:14:52 $
- * Version: $Revision: 1.43.2.4 $
+ * Date   : $Date: 2005/10/25 09:09:12 $
+ * Version: $Revision: 1.43.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.4 $ 
+ * @version $Revision: 1.43.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -372,7 +372,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 // a) all siblings are handled
                 // b) only the "right" locale is mapped to a sibling
 
-                for (int i = 0; i < siblings.size(); i++) {
+                for (int i = (siblings.size() - 1); i >= 0; i--) {
                     // get filename
                     String filename = ((CmsResource)siblings.get(i)).getRootPath();
                     Locale locale = OpenCms.getLocaleManager().getDefaultLocale(cms, filename);
@@ -386,8 +386,22 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                     String stringValue = value.getStringValue(cms);
                     if (mapping.startsWith(MAPTO_PROPERTY_LIST) && (value.getIndex() == 0)) {
 
+                        boolean mapToShared;
+                        int prefixLength;
+                        // check which mapping is used (shared or individual)
+                        if (mapping.startsWith(MAPTO_PROPERTY_LIST_SHARED)) {
+                            mapToShared = true;
+                            prefixLength = MAPTO_PROPERTY_LIST_SHARED.length();
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_LIST_INDIVIDUAL)) {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_LIST_INDIVIDUAL.length();
+                        } else {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_LIST.length();
+                        }
+
                         // this is a property list mapping
-                        String property = mapping.substring(MAPTO_PROPERTY_LIST.length());
+                        String property = mapping.substring(prefixLength);
 
                         String path = CmsXmlUtils.removeXpathIndex(value.getPath());
                         List values = content.getValues(path, locale);
@@ -401,15 +415,54 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                             }
                         }
 
+                        CmsProperty p;
+                        if (mapToShared) {
+                            // map to shared value
+                            p = new CmsProperty(property, null, result.toString());
+                        } else {
+                            // map to individual value
+                            p = new CmsProperty(property, result.toString(), null);
+                        }
                         // write the created list string value in the selected property
-                        cms.writePropertyObject(filename, new CmsProperty(property, result.toString(), null));
+                        cms.writePropertyObject(filename, p);
+                        if (mapToShared) {
+                            // special case: shared mappings must be written only to one sibling, end loop
+                            i = 0;
+                        }
 
                     } else if (mapping.startsWith(MAPTO_PROPERTY)) {
 
+                        boolean mapToShared;
+                        int prefixLength;
+                        // check which mapping is used (shared or individual)                        
+                        if (mapping.startsWith(MAPTO_PROPERTY_SHARED)) {
+                            mapToShared = true;
+                            prefixLength = MAPTO_PROPERTY_SHARED.length();
+                        } else if (mapping.startsWith(MAPTO_PROPERTY_INDIVIDUAL)) {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY_INDIVIDUAL.length();
+                        } else {
+                            mapToShared = false;
+                            prefixLength = MAPTO_PROPERTY.length();
+                        }
+
                         // this is a property mapping
-                        String property = mapping.substring(MAPTO_PROPERTY.length());
+                        String property = mapping.substring(prefixLength);
+
+                        CmsProperty p;
+                        if (mapToShared) {
+                            // map to shared value
+                            p = new CmsProperty(property, null, stringValue);
+                        } else {
+                            // map to individual value
+                            p = new CmsProperty(property, stringValue, null);
+                        }
                         // just store the string value in the selected property
-                        cms.writePropertyObject(filename, new CmsProperty(property, stringValue, null));
+                        cms.writePropertyObject(filename, p);
+                        if (mapToShared) {
+                            // special case: shared mappings must be written only to one sibling, end loop
+                            i = 0;
+                        }
 
                     } else if (mapping.startsWith(MAPTO_ATTRIBUTE)) {
 
@@ -432,7 +485,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                                 file.setDateExpired(date);
                                 break;
                             default:
-                        // TODO: handle invalid / other mappings                                
+                        // ignore invalid / other mappings                                
                         }
                     }
                 }

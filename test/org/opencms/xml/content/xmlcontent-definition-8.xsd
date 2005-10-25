@@ -20,6 +20,8 @@
 			<xsd:element name="Locale" type="OpenCmsLocale" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="Color" type="OpenCmsColor" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="VfsFile" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="VfsFile2" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
+			<xsd:element name="VfsFile3" type="OpenCmsVfsFile" minOccurs="0" maxOccurs="unbounded" />
 			<xsd:element name="Boolean" type="OpenCmsBoolean" minOccurs="0" maxOccurs="unbounded" />
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="required"/>
@@ -30,7 +32,12 @@
 			<resourcebundle name="org.opencms.workplace.workplace" />
 			<mappings>
 				<mapping element="String" mapto="property:Title" />
+				<mapping element="String[2]" mapto="property:shared:NavImage" />
+				<mapping element="String[3]" mapto="property:individual:NavInfo" />
+				<mapping element="Locale" mapto="property:shared:locale" />
 				<mapping element="VfsFile" mapto="propertyList:Description" />
+				<mapping element="VfsFile2" mapto="propertyList:shared:Keywords" />
+				<mapping element="VfsFile3" mapto="propertyList:individual:NavText" />
 			</mappings>
 			<validationrules>
 				<rule element="String" regex="!.*[Ee]rr.*" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/I_CmsXmlContentHandler.java,v $
- * Date   : $Date: 2005/07/07 11:27:19 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2005/10/25 09:09:12 $
+ * Version: $Revision: 1.23.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.xml.content;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
 import org.opencms.widgets.I_CmsWidget;
@@ -53,7 +54,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.23.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,9 +71,21 @@ public interface I_CmsXmlContentHandler {
 
     /** Prefix for property mappings. */
     String MAPTO_PROPERTY = "property:";
-    
+
+    /** Prefix for property mappings. */
+    String MAPTO_PROPERTY_INDIVIDUAL = MAPTO_PROPERTY + CmsProperty.TYPE_INDIVIDUAL + ":";
+
     /** Prefix for property list mappings. */
     String MAPTO_PROPERTY_LIST = "propertyList:";
+
+    /** Prefix for property list mappings. */
+    String MAPTO_PROPERTY_LIST_INDIVIDUAL = MAPTO_PROPERTY_LIST + CmsProperty.TYPE_INDIVIDUAL + ":";
+
+    /** Prefix for property list mappings. */
+    String MAPTO_PROPERTY_LIST_SHARED = MAPTO_PROPERTY_LIST + CmsProperty.TYPE_SHARED + ":";
+
+    /** Prefix for property mappings. */
+    String MAPTO_PROPERTY_SHARED = MAPTO_PROPERTY + CmsProperty.TYPE_SHARED + ":";
 
     /**
      * Returns the configuration String value for the widget used to edit the given XML content schema type.<p> 

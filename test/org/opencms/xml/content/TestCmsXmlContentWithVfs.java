@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContentWithVfs.java,v $
- * Date   : $Date: 2005/10/08 08:30:32 $
- * Version: $Revision: 1.40.2.3 $
+ * Date   : $Date: 2005/10/25 09:09:12 $
+ * Version: $Revision: 1.40.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import junit.framework.TestSuite;
  * Tests the link resolver for XML contents.<p>
  *
  * @author Alexander Kandzior 
- * @version $Revision: 1.40.2.3 $
+ * @version $Revision: 1.40.2.4 $
  */
 public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
 
@@ -1031,20 +1031,60 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         CmsFile file = cms.readFile(resourcename);
         xmlcontent = CmsXmlContentFactory.unmarshal(cms, file);
 
-        CmsProperty titleProperty;
-        titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
+        CmsProperty titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
         assertSame(titleProperty, CmsProperty.getNullProperty());
-
+        
+        CmsProperty localeProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_LOCALE, false);
+        assertSame(localeProperty, CmsProperty.getNullProperty());
+        
+        CmsProperty navImageProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVIMAGE, false);
+        assertSame(navImageProperty, CmsProperty.getNullProperty());
+        
+        CmsProperty navInfoProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVINFO, false);
+        assertSame(navInfoProperty, CmsProperty.getNullProperty());
+        
         String titleStr = "This must be the Title";
+        String navImageStr = "This is the String with xpath String[2]";
+        String navInfoStr = "Here we have the String with xpath String[3]";
+        
         I_CmsXmlContentValue value;
         value = xmlcontent.addValue(cms, "String", Locale.ENGLISH, 0);
         value.setStringValue(cms, titleStr);
-
+        
+        // set values for Title[2] and Title[3]
+        CmsXmlContentValueSequence seq = xmlcontent.getValueSequence("String", Locale.ENGLISH);
+        assertEquals(1, seq.getElementCount());    
+        value = seq.addValue(cms, 1);
+        value.setStringValue(cms, navImageStr);
+        value = seq.addValue(cms, 2);
+        value.setStringValue(cms, navInfoStr);
+        
+        String localeStr = "en";
+        value = xmlcontent.addValue(cms, "Locale", Locale.ENGLISH, 0);
+        value.setStringValue(cms, localeStr);
+        
         file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
         cms.writeFile(file);
 
         titleProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_TITLE, false);
-        assertEquals(titleStr, titleProperty.getValue());        
+        assertEquals(titleStr, titleProperty.getValue());       
+        assertEquals(titleStr, titleProperty.getStructureValue());
+        assertNull(titleProperty.getResourceValue());
+        
+        navImageProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVIMAGE, false);
+        assertEquals(navImageStr, navImageProperty.getValue());       
+        assertEquals(navImageStr, navImageProperty.getResourceValue());
+        assertNull(navImageProperty.getStructureValue());
+        
+        navInfoProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVINFO, false);
+        assertEquals(navInfoStr, navInfoProperty.getValue());       
+        assertEquals(navInfoStr, navInfoProperty.getStructureValue());
+        assertNull(navInfoProperty.getResourceValue());
+        
+        localeProperty = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_LOCALE, false);
+        assertEquals(localeStr, localeProperty.getValue());       
+        assertEquals(localeStr, localeProperty.getResourceValue());
+        assertNull(localeProperty.getStructureValue());
     }
 
     /**
@@ -1122,7 +1162,83 @@ public class TestCmsXmlContentWithVfs extends OpenCmsTestCase {
         assertEquals(sr + res2, list.get(1));
         assertEquals(sr + res3, list.get(2));
         assertEquals(sr + res4, list.get(3));        
-        assertEquals(propValue, prop.getValue());      
+        assertEquals(propValue, prop.getValue());     
+        assertEquals(propValue, prop.getStructureValue());  
+        assertNull(prop.getResourceValue());  
+        
+        CmsProperty prop2;
+        prop2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_KEYWORDS, false);
+        assertSame(prop2, CmsProperty.getNullProperty());               
+
+        I_CmsXmlContentValue value2;
+        CmsXmlContentValueSequence seq2 = xmlcontent.getValueSequence("VfsFile2", Locale.ENGLISH);
+        assertEquals(0, seq2.getElementCount());
+
+        value2 = seq2.addValue(cms, 0);
+        value2.setStringValue(cms, res1);
+        value2 = seq2.addValue(cms, 1);
+        value2.setStringValue(cms, res2);
+        value2 = seq2.addValue(cms, 2);
+        value2.setStringValue(cms, res3);
+        value2 = seq2.addValue(cms, 3);
+        value2.setStringValue(cms, res4);
+        
+        assertEquals(4, seq2.getElementCount());
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        // check for written property values as list
+        prop2 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_KEYWORDS, false);
+        List list2 = prop.getValueList();
+        assertNotNull(list2);
+        assertEquals(4, list2.size());
+        assertEquals(sr + res1, list2.get(0));
+        assertEquals(sr + res2, list2.get(1));
+        assertEquals(sr + res3, list2.get(2));
+        assertEquals(sr + res4, list2.get(3));        
+        assertEquals(propValue, prop2.getValue());     
+        assertEquals(propValue, prop2.getResourceValue());  
+        assertNull(prop2.getStructureValue());  
+        
+        CmsProperty prop3;
+        prop3 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVTEXT, false);
+        assertSame(prop3, CmsProperty.getNullProperty());    
+        
+        I_CmsXmlContentValue value3;
+        CmsXmlContentValueSequence seq3 = xmlcontent.getValueSequence("VfsFile3", Locale.ENGLISH);
+        assertEquals(0, seq3.getElementCount());
+
+        value3 = seq3.addValue(cms, 0);
+        value3.setStringValue(cms, res1);
+        value3 = seq3.addValue(cms, 1);
+        value3.setStringValue(cms, res2);
+        value3 = seq3.addValue(cms, 2);
+        value3.setStringValue(cms, res3);
+        value3 = seq3.addValue(cms, 3);
+        value3.setStringValue(cms, res4);
+        
+        assertEquals(4, seq3.getElementCount());
+        // validate the XML structure
+        xmlcontent.validateXmlStructure(resolver);
+        
+        file.setContents(xmlcontent.toString().getBytes(CmsEncoder.ENCODING_ISO_8859_1));
+        cms.writeFile(file);
+
+        // check for written property values as list
+        prop3 = cms.readPropertyObject(resourcename, CmsPropertyDefinition.PROPERTY_NAVTEXT, false);
+        List list3 = prop.getValueList();
+        assertNotNull(list3);
+        assertEquals(4, list3.size());
+        assertEquals(sr + res1, list3.get(0));
+        assertEquals(sr + res2, list3.get(1));
+        assertEquals(sr + res3, list3.get(2));
+        assertEquals(sr + res4, list3.get(3));        
+        assertEquals(propValue, prop3.getValue());     
+        assertEquals(propValue, prop3.getStructureValue());  
+        assertNull(prop3.getResourceValue());  
     }
     
     /**
