@@ -79,7 +79,7 @@ function popupCloseAction(closeObj) {
 <body class="buttons-head" unselectable="on" onload="initContent();" onunload="closeDialog();">
 
 <table cellspacing="0" cellpadding="0" border="0" width="100%" height="100%">
-<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
+<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogRealUri() %>">
 <input type="hidden" name="<%= wp.PARAM_CONTENT %>">
 <input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
