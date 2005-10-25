@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/A_CmsToolHandler.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2005/10/25 09:20:45 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -447,9 +447,13 @@ public abstract class A_CmsToolHandler implements I_CmsToolHandler {
                 // try to use this relative link
                 defFile = path + CmsToolManager.TOOLPATH_SEPARATOR + defFile;
             }
-            cms.readResource(defFile);
-            link = defFile;
-
+            if (defFile.indexOf("?") > 0) {
+                if (cms.existsResource(defFile.substring(0, defFile.indexOf("?")))) {
+                    link = defFile;
+                }
+            } else if (cms.existsResource(defFile)) {
+                link = defFile;
+            }
         } catch (CmsException e) {
             // noop
         }
