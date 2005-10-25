@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/10/21 15:15:33 $
- * Version: $Revision: 1.40.2.3 $
+ * Date   : $Date: 2005/10/25 09:19:39 $
+ * Version: $Revision: 1.40.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.3 $ 
+ * @version $Revision: 1.40.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -424,18 +424,18 @@ public class CmsToolManager {
      */
     public void jspForwardPage(CmsWorkplace wp, String pagePath, Map params) throws IOException, ServletException {
 
-        Map newParams = params;
-        if (newParams == null) {
-            newParams = new HashMap();
-        }
+        Map newParams = new HashMap();
         // add query parameters to the parameter map if required
         if (pagePath.indexOf("?") > 0) {
-            String query = pagePath.substring(pagePath.indexOf("?"), pagePath.length());
+            String query = pagePath.substring(pagePath.indexOf("?"));
+            pagePath = pagePath.substring(0, pagePath.indexOf("?"));
             Map reqParameters = CmsRequestUtil.createParameterMap(query);
             newParams.putAll(reqParameters);
         }
-        
-        
+        if (params != null) {
+            newParams.putAll(params);
+        }
+
         // put close link if not set
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
             newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), null));
@@ -461,7 +461,7 @@ public class CmsToolManager {
      */
     public void jspForwardTool(CmsWorkplace wp, String toolPath, Map params) throws IOException, ServletException {
 
-        Map newParams; 
+        Map newParams;
         if (params == null) {
             newParams = new HashMap();
         } else {
@@ -540,7 +540,7 @@ public class CmsToolManager {
     private void registerAdminTool(CmsObject cms, I_CmsToolHandler handler) {
 
         String link = handler.getLink();
-        if (link.indexOf("?")>0) {
+        if (link.indexOf("?") > 0) {
             link = link.substring(0, link.indexOf("?"));
         }
         // check visibility
