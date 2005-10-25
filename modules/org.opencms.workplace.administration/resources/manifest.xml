@@ -607,6 +607,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/views/admin/admin-editor.html</source>
+			<destination>system/workplace/views/admin/admin-editor.html</destination>
+			<type>jsp</type>
+			<uuidresource>22524fa9-452f-11da-941a-1d873b0b8abd</uuidresource>
+			<datelastmodified>Tue, 25 Oct 2005 08:14:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 25 Oct 2005 08:12:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Editor wrapper]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/views/admin/admin-fs.html</source>
 			<destination>system/workplace/views/admin/admin-fs.html</destination>
 			<type>jsp</type>
