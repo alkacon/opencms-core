@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentTypeManager.java,v $
- * Date   : $Date: 2005/10/01 12:56:53 $
- * Version: $Revision: 1.29.2.2 $
+ * Date   : $Date: 2005/10/25 11:57:34 $
+ * Version: $Revision: 1.29.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29.2.2 $ 
+ * @version $Revision: 1.29.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -503,7 +503,12 @@ public class CmsXmlContentTypeManager {
             // should not ever happen
             LOG.error(Messages.get().key(Messages.LOG_PRETTY_PRINT_SCHEMA_BYTES_ERROR_0), e);
         }
-
+        if (LOG.isInfoEnabled()) {
+            LOG.info(Messages.get().key(
+                Messages.LOG_XML_TYPE_DEFINITION_XSD_2,
+                CmsXmlContentDefinition.XSD_INCLUDE_OPENCMS,
+                schemaStr));
+        }
         try {
             return schemaStr.getBytes(CmsEncoder.ENCODING_UTF_8);
         } catch (UnsupportedEncodingException e) {

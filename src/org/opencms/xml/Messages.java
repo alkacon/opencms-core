@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/Messages.java,v $
- * Date   : $Date: 2005/07/29 10:13:57 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/10/25 11:57:34 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Alexander Kandzior 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,11 +218,14 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_XML_CONTENT_SCHEMA_TYPE_CLASS_NOT_FOUND_1 = "LOG_XML_CONTENT_SCHEMA_TYPE_CLASS_NOT_FOUND_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_XML_TYPE_DEFINITION_XSD_2 = "LOG_XML_TYPE_DEFINITION_XSD_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_XML_WIDGET_INITIALIZING_ERROR_1 = "LOG_XML_WIDGET_INITIALIZING_ERROR_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLPAGE_DTD_NOT_FOUND_1 = "LOG_XMLPAGE_DTD_NOT_FOUND_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_XMLPAGE_XSD_NOT_FOUND_1 = "LOG_XMLPAGE_XSD_NOT_FOUND_1";
 
