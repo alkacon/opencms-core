@@ -460,7 +460,7 @@ config.toolbar = [
 
 <body class="buttons-head" unselectable="on" onload="initEditor();" onunload="closeDialog();">
 
-<form style="width:100%; height:100%; margin:0px; padding:0px; " name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogUri() %>">
+<form style="width:100%; height:100%; margin:0px; padding:0px; " name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogRealUri() %>">
 <input type="hidden" name="<%= wp.PARAM_CONTENT %>">
 <input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
 <input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">

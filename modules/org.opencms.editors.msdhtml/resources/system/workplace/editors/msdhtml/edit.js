@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors.msdhtml/resources/system/workplace/editors/msdhtml/Attic/edit.js,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/10/25 09:10:51 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
