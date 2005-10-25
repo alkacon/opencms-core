@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/10/14 10:24:00 $
- * Version: $Revision: 1.53.2.5 $
+ * Date   : $Date: 2005/10/25 09:10:06 $
+ * Version: $Revision: 1.53.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.5 $ 
+ * @version $Revision: 1.53.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -1110,14 +1110,14 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             if (checkIndexLock(index, report)) {
                 // unable to lock the index for updating
-                CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
-                report.println(msg, I_CmsReport.FORMAT_ERROR);
                 try {
-                    // force unlock on the index, we are doing a full rebuild anyway
+                    // try to force unlock on the index (full rebuild is done anyway)
                     IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), true));
-                } catch (IOException e) {
+                } catch (Exception e) {
                     // unable to force unlock of Lucene index, we can't continue this way
-                    throw new CmsIndexException(msg);
+                    CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
+                    report.println(msg, I_CmsReport.FORMAT_ERROR);
+                    throw new CmsIndexException(msg, e);
                 }
             }
 
@@ -1324,7 +1324,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     Messages.get().container(Messages.RPT_SEARCH_INDEXING_UPDATE_END_1, index.getName()),
                     I_CmsReport.FORMAT_HEADLINE);
             }
-
         }
 
         // clear the cache for search results
