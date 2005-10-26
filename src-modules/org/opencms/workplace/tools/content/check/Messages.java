@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/Messages.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/26 10:14:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,23 +39,23 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
-    public static final String CHECK_CONTAINS_FILENAME_2 = "CHECK_CONTAINS_FILENAME_2";
+    public static final String ERR_CHECK_CONTAINS_FILENAME_2 = "ERR_CHECK_CONTAINS_FILENAME_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String CHECK_MATCH_3 = "CHECK_MATCH_3";
+    public static final String ERR_CHECK_MATCH_3 = "ERR_CHECK_MATCH_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String CHECK_NO_PROPERTYNAME_1 = "CHECK_NO_PROPERTYNAME_1";
+    public static final String ERR_CHECK_NO_PROPERTYNAME_1 = "ERR_CHECK_NO_PROPERTYNAME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String CHECK_TOO_SHORT_3 = "CHECK_TOO_SHORT_3";
+    public static final String ERR_CHECK_TOO_SHORT_3 = "ERR_CHECK_TOO_SHORT_3";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_NO_TEST_0 = "ERR_NO_TEST_0";

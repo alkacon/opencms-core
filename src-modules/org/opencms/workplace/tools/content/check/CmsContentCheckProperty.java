@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/26 10:14:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2
  */
@@ -366,7 +366,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
 
                     // test if the property is empty
                     if (propObject.isEmpty() && CmsStringUtil.isEmpty(prop)) {
-                        results.add(Messages.get().key(Messages.CHECK_NO_PROPERTYNAME_1, propObject.getPropertyname()));
+                        results.add(Messages.get().key(Messages.ERR_CHECK_NO_PROPERTYNAME_1, propObject.getPropertyname()));
                     }
 
                     // test if the property does not start with the filename
@@ -374,7 +374,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                         if (propObject.isFilename()
                             && testResource.getResource().getName().toLowerCase().startsWith(prop.toLowerCase())) {
                             results.add(Messages.get().key(
-                                Messages.CHECK_CONTAINS_FILENAME_2,
+                                Messages.ERR_CHECK_CONTAINS_FILENAME_2,
                                 propObject.getPropertyname(),
                                 prop));
                         }
@@ -383,7 +383,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                         if (propObject.getLength() > -1) {
                             if (prop.length() < propObject.getLength()) {
                                 results.add(Messages.get().key(
-                                    Messages.CHECK_TOO_SHORT_3,
+                                    Messages.ERR_CHECK_TOO_SHORT_3,
                                     propObject.getPropertyname(),
                                     prop,
                                     new Integer(prop.length())));
@@ -406,7 +406,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                                 boolean match = Pattern.matches(regex, matchValue);
                                 if (matchResult != match) {
                                     results.add(Messages.get().key(
-                                        Messages.CHECK_MATCH_3,
+                                        Messages.ERR_CHECK_MATCH_3,
                                         propObject.getPropertyname(),
                                         prop,
                                         propObject.getValue().get(j)));
