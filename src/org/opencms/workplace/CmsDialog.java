@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/10/19 09:50:28 $
- * Version: $Revision: 1.93.2.4 $
+ * Date   : $Date: 2005/10/26 08:54:42 $
+ * Version: $Revision: 1.93.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.4 $ 
+ * @version $Revision: 1.93.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -399,7 +399,7 @@ public class CmsDialog extends CmsToolDialog {
             }
             html.append("><tr><td>\n<table class=\"dialogbox\" cellpadding=\"0\" cellspacing=\"0\">\n");
             html.append("<tr><td>\n");
-            if (useNewStyle() && getToolManager().getToolPathForUrl(getJsp().getRequestContext().getUri()) != null) {
+            if (useNewStyle() && getToolManager().hasToolPathForUrl(getJsp().getRequestContext().getUri())) {
                 html.append(getAdminTool().groupHtml(this));
             }
             return html.toString();

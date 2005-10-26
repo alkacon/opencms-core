@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/26 08:54:42 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -79,10 +79,16 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String INIT_TOOLMANAGER_CREATED_0 = "INIT_TOOLMANAGER_CREATED_0";
 
     /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_1 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_1";
+    public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_2 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_2";
 
     /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_NEWTOOL_FOUND_1 = "INIT_TOOLMANAGER_NEWTOOL_FOUND_1";
+    public static final String INIT_TOOLMANAGER_INSTALL_ERROR_2 = "INIT_TOOLMANAGER_INSTALL_ERROR_2";
+
+    /** Static instance member. */
+    public static final String INIT_TOOLMANAGER_DUPLICATED_ERROR_3 = "INIT_TOOLMANAGER_DUPLICATED_ERROR_3";
+
+    /** Static instance member. */
+    public static final String INIT_TOOLMANAGER_NEWTOOL_FOUND_2 = "INIT_TOOLMANAGER_NEWTOOL_FOUND_2";
 
     /** Static instance member. */
     public static final String INIT_TOOLMANAGER_NOT_CREATED_0 = "INIT_TOOLMANAGER_NOT_CREATED_0";

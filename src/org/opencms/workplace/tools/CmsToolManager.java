@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/10/25 09:19:39 $
- * Version: $Revision: 1.40.2.4 $
+ * Date   : $Date: 2005/10/26 08:54:42 $
+ * Version: $Revision: 1.40.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.4 $ 
+ * @version $Revision: 1.40.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsToolManager {
     private final CmsIdentifiableObjectContainer m_tools = new CmsIdentifiableObjectContainer(true, false);
 
     /** List of all available urls and related tool paths. */
-    private final CmsIdentifiableObjectContainer m_urls = new CmsIdentifiableObjectContainer(true, false);
+    private final CmsIdentifiableObjectContainer m_urls = new CmsIdentifiableObjectContainer(false, false);
 
     /**
      * Default Constructor, called by the <code>{@link org.opencms.workplace.CmsWorkplaceManager#initialize(CmsObject)}</code> method.<p>
@@ -139,11 +139,13 @@ public class CmsToolManager {
                         if (CmsLog.INIT.isDebugEnabled()) {
                             if (!handler.getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                                 CmsLog.INIT.debug(Messages.get().key(
-                                    Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
+                                    Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_2,
+                                    handler.getPath(),
                                     handler.getLink()));
                             } else {
                                 CmsLog.INIT.debug(Messages.get().key(
-                                    Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_1,
+                                    Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_2,
+                                    handler.getPath(),
                                     res.getRootPath()));
                             }
                         }
@@ -333,15 +335,16 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns the tool path for the given url.<p>
+     * Returns <code>true</code> if there is at least one tool registered using the given url.<p>
      * 
      * @param url the url of the tool
      * 
-     * @return the associated tool path
+     * @return <code>true</code> if there is at least one tool registered using the given url
      */
-    public String getToolPathForUrl(String url) {
+    public boolean hasToolPathForUrl(String url) {
 
-        return (String)m_urls.getObject(url);
+        List toolPaths = (List)m_urls.getObject(url);
+        return (toolPaths != null && !toolPaths.isEmpty());
     }
 
     /**
@@ -552,7 +555,10 @@ public class CmsToolManager {
         if (!validatePath(handler.getPath(), false)) {
             // log failure
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_1, handler.getLink()));
+                CmsLog.INIT.warn(Messages.get().key(
+                    Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_2,
+                    handler.getPath(),
+                    handler.getLink()));
             }
             return;
         }
@@ -560,12 +566,29 @@ public class CmsToolManager {
         String id = "tool" + m_tools.elementList().size();
         CmsTool tool = new CmsTool(id, handler);
 
-        // try to register
         try {
+            // try to find problems in custom tools
+            handler.isEnabled(cms);
+            handler.isVisible(cms);
+        } catch (Throwable ex) {
+            CmsLog.INIT.warn(Messages.get().key(
+                Messages.INIT_TOOLMANAGER_INSTALL_ERROR_2,
+                handler.getPath(),
+                handler.getLink()));
+            return;
+        }
+
+        try {
+            // try to register, can fail if path is already used by another tool
             m_tools.addIdentifiableObject(handler.getPath(), tool);
-            m_urls.addIdentifiableObject(handler.getLink(), handler.getPath());
-        } catch (RuntimeException ex) {
-            // noop
+            // just for fast association of links with tools
+            m_urls.addIdentifiableObject(link, handler.getPath());
+        } catch (Throwable ex) {
+            CmsLog.INIT.warn(Messages.get().key(
+                Messages.INIT_TOOLMANAGER_DUPLICATED_ERROR_3,
+                handler.getPath(),
+                handler.getLink(),
+                resolveAdminTool(handler.getPath()).getHandler().getLink()));
         }
     }
 
@@ -620,9 +643,9 @@ public class CmsToolManager {
             path = getParent(wp, path);
         }
 
-        // navegate until to reach a visible path
+        // navegate until to reach an usable path
         CmsTool aTool = resolveAdminTool(path);
-        while (!aTool.getHandler().isEnabled(wp.getCms())) {
+        while (!aTool.getHandler().isEnabled(wp.getCms()) || !aTool.getHandler().isVisible(wp.getCms())) {
             if (aTool.getHandler().getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                 // just grouping
                 break;
@@ -660,7 +683,7 @@ public class CmsToolManager {
             } else {
                 subpath += group;
             }
-            if (!full && itGroups.hasNext()) {
+            if (itGroups.hasNext() || full) {
                 try {
                     // just check if the tool is available
                     resolveAdminTool(subpath).toString();

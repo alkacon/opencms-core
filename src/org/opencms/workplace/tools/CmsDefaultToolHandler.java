@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/26 08:54:42 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +57,10 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
 
         // at least one sub tool should be enabled
         CmsToolManager toolManager = OpenCms.getWorkplaceManager().getToolManager();
+        if (toolManager == null) {
+            // can happen during initialization
+            return true;
+        }
         List subTools = toolManager.getToolsForPath(getPath(), false);
         Iterator itSubTools = subTools.iterator();
         while (itSubTools.hasNext()) {
@@ -76,6 +80,10 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
 
         // at least one sub tool should be visible
         CmsToolManager toolManager = OpenCms.getWorkplaceManager().getToolManager();
+        if (toolManager == null) {
+            // can happen during initialization
+            return true;
+        }
         List subTools = toolManager.getToolsForPath(getPath(), false);
         Iterator itSubTools = subTools.iterator();
         while (itSubTools.hasNext()) {
