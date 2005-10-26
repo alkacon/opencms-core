@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/10/25 18:38:50 $
- * Version: $Revision: 1.80.2.4 $
+ * Date   : $Date: 2005/10/26 08:45:35 $
+ * Version: $Revision: 1.80.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,12 +92,12 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.4 $ 
+ * @version $Revision: 1.80.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExport {
-    
+
     private static final int SUB_LENGTH = 4096;
 
     /** The log object for this class. */
@@ -291,7 +291,8 @@ public class CmsExport {
             for (int i = 0; i < subFiles.size(); i++) {
                 CmsResource file = (CmsResource)subFiles.get(i);
                 int state = file.getState();
-                long age = file.getDateLastModified();
+                long age = file.getDateLastModified() < file.getDateCreated() ? file.getDateCreated()
+                : file.getDateLastModified();
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
@@ -425,10 +426,10 @@ public class CmsExport {
 
         // remove the possible redundancies in the list of resources
         resourcesToExport = CmsFileUtil.removeRedundancies(resourcesToExport);
-        
+
         // distinguish folder and file names   
         List folderNames = new ArrayList();
-        List fileNames = new ArrayList();        
+        List fileNames = new ArrayList();
         Iterator it = resourcesToExport.iterator();
         while (it.hasNext()) {
             String resource = (String)it.next();
@@ -935,9 +936,7 @@ public class CmsExport {
                         + getCms().readGroup(acePrincipal).getName();
                 } else {
                     // the principal is a user
-                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER
-                        + '.'
-                        + getCms().readUser(acePrincipal).getName();
+                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER + '.' + getCms().readUser(acePrincipal).getName();
                 }
 
                 a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);
