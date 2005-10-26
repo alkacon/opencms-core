@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/26 12:18:53 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,7 +202,11 @@ public class CmsAdminMenu extends CmsToolDialog {
         while (itElems.hasNext()) {
             CmsTool tool = (CmsTool)itElems.next();
             // check visibility
-            if (!getCms().existsResource(tool.getHandler().getLink()) || !tool.getHandler().isVisible(getCms())) {
+            String link = tool.getHandler().getLink();
+            if (link.indexOf("?") > 0) {
+                link = link.substring(0, link.indexOf("?"));
+            }
+            if (!getCms().existsResource(link) || !tool.getHandler().isVisible(getCms())) {
                 continue;
             }
 
