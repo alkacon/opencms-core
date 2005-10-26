@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/10/26 08:54:42 $
- * Version: $Revision: 1.40.2.5 $
+ * Date   : $Date: 2005/10/26 09:17:34 $
+ * Version: $Revision: 1.40.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.5 $ 
+ * @version $Revision: 1.40.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -441,7 +441,8 @@ public class CmsToolManager {
 
         // put close link if not set
         if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), null));
+            Map argMap = resolveAdminTool(getCurrentToolPath(wp)).getHandler().getParameters(wp);
+            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
         }
         wp.setForwarded(true);
         // forward to the requested page uri
@@ -472,18 +473,7 @@ public class CmsToolManager {
         }
         // update path param
         newParams.put(CmsToolDialog.PARAM_PATH, toolPath);
-        // put close link if not set
-        if (!newParams.containsKey(CmsDialog.PARAM_CLOSELINK)) {
-            Map argMap = resolveAdminTool(getCurrentToolPath(wp)).getHandler().getParameters(wp);
-            newParams.put(CmsDialog.PARAM_CLOSELINK, linkForToolPath(wp.getJsp(), getCurrentToolPath(wp), argMap));
-        }
-        wp.setForwarded(true);
-        // forward to the requested tool uri
-        CmsRequestUtil.forwardRequest(
-            wp.getJsp().link(VIEW_JSPPAGE_LOCATION),
-            CmsRequestUtil.createParameterMap(newParams),
-            wp.getJsp().getRequest(),
-            wp.getJsp().getResponse());
+        jspForwardPage(wp, VIEW_JSPPAGE_LOCATION, newParams);
     }
 
     /**
@@ -643,9 +633,9 @@ public class CmsToolManager {
             path = getParent(wp, path);
         }
 
-        // navegate until to reach an usable path
+        // navegate until to reach an enabled path
         CmsTool aTool = resolveAdminTool(path);
-        while (!aTool.getHandler().isEnabled(wp.getCms()) || !aTool.getHandler().isVisible(wp.getCms())) {
+        while (!aTool.getHandler().isEnabled(wp.getCms())) {
             if (aTool.getHandler().getLink().equals(VIEW_JSPPAGE_LOCATION)) {
                 // just grouping
                 break;
