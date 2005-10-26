@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/10/12 09:31:57 $
- * Version: $Revision: 1.38.2.3 $
+ * Date   : $Date: 2005/10/26 11:14:14 $
+ * Version: $Revision: 1.38.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.38.2.3 $
+ * @version $Revision: 1.38.2.4 $
  * 
  * @since 6.0.0 
  */
@@ -191,6 +191,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_USER_1 = "ERR_DELETE_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1 = "ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_DIRECT_PUBLISH_PARENT_DELETED_2 = "ERR_DIRECT_PUBLISH_PARENT_DELETED_2";

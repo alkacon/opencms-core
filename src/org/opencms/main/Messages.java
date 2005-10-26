@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/10/02 09:06:26 $
- * Version: $Revision: 1.25.2.1 $
+ * Date   : $Date: 2005/10/26 11:14:14 $
+ * Version: $Revision: 1.25.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.2.1 $ 
+ * @version $Revision: 1.25.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,6 +106,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_INVALID_INIT_USER_2 = "ERR_INVALID_INIT_USER_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String ERR_MULTI_EXCEPTION_1 = "ERR_MULTI_EXCEPTION_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String ERR_NOT_A_FOLDER_1 = "ERR_NOT_A_FOLDER_1";

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/10/25 18:38:50 $
- * Version: $Revision: 1.93.2.5 $
+ * Date   : $Date: 2005/10/26 11:14:14 $
+ * Version: $Revision: 1.93.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import org.opencms.lock.CmsLockException;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsMultiException;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
@@ -95,9 +96,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen 
  * 
 <<<<<<< CmsSecurityManager.java
- * @version $Revision: 1.93.2.5 $
+ * @version $Revision: 1.93.2.6 $
 =======
- * @version $Revision: 1.93.2.5 $
+ * @version $Revision: 1.93.2.6 $
 >>>>>>> 1.93.2.1
  * 
  * @since 6.0.0
@@ -574,22 +575,19 @@ public final class CmsSecurityManager {
     }
 
     /**
-     * Checks if the given resource or the current project can be published by the current user 
-     * using his current OpenCms context.<p>
-     * 
-     * If the resource parameter is <code>null</code>, then the current project is checked,
-     * otherwise the resource is checked for direct publish permissions.<p>
+     * Checks if the current user has the permissions to publish the given publish list 
+     * (which contains the information about the resources / project to publish).<p>
      * 
      * @param dbc the current OpenCms users database context
-     * @param publishList the publish list to check (may contain direct publish resources)
+     * @param publishList the publish list to check (contains the information about the resources / project to publish)
      * 
-     * @throws CmsException if the user does not have the required permissions
-     * @throws CmsSecurityException if a direct publish is attempted on a resource 
-     *         whose parent folder is new or deleted in the offline project.
-     * @throws CmsRoleViolationException if the current user has no management access to the current project.
+     * @throws CmsException if the user does not have the required permissions becasue of project lock state
+     * @throws CmsMultiException if issues occur like a direct publish is attempted on a resource 
+     *         whose parent folder is new or deleted in the offline project, 
+     *         or if the current user has no management access to the current project
      */
     public void checkPublishPermissions(CmsDbContext dbc, CmsPublishList publishList)
-    throws CmsException, CmsSecurityException, CmsRoleViolationException {
+    throws CmsException, CmsMultiException {
 
         // is the current project an "offline" project?
         checkOfflineProject(dbc);
@@ -603,11 +601,16 @@ public final class CmsSecurityManager {
         }
 
         // check if this is a "direct publish" attempt        
-        if (publishList.isDirectPublish()) {
-            boolean hasAllPermissions = true;
+        if (!publishList.isDirectPublish()) {
+            // check if the user is a manager of the current project, in this case he has publish permissions
+            checkManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject());
+        } else {
+            // direct publish, create exception containers
+            CmsMultiException resourceIssues = new CmsMultiException();
+            CmsMultiException permissionIssues = new CmsMultiException();
             // iterate all resources in the direct publish list
             Iterator it = publishList.getDirectPublishResources().iterator();
-            List parentFolders = new ArrayList(); 
+            List parentFolders = new ArrayList();
             while (it.hasNext()) {
                 CmsResource res = (CmsResource)it.next();
                 // the parent folder must not be new or deleted
@@ -617,17 +620,17 @@ public final class CmsSecurityManager {
                     CmsResource parent = readResource(dbc, parentFolder, CmsResourceFilter.ALL);
                     if (parent.getState() == CmsResource.STATE_DELETED) {
                         // parent folder is deleted - direct publish not allowed
-                        throw new CmsVfsException(Messages.get().container(
+                        resourceIssues.addException(new CmsVfsException(Messages.get().container(
                             Messages.ERR_DIRECT_PUBLISH_PARENT_DELETED_2,
                             dbc.getRequestContext().removeSiteRoot(res.getRootPath()),
-                            parentFolder));
+                            parentFolder)));
                     }
                     if (parent.getState() == CmsResource.STATE_NEW) {
                         // parent folder is new - direct publish not allowed
-                        throw new CmsVfsException(Messages.get().container(
+                        resourceIssues.addException(new CmsVfsException(Messages.get().container(
                             Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2,
                             dbc.removeSiteRoot(res.getRootPath()),
-                            parentFolder));
+                            parentFolder)));
                     }
                     // add checked parent folder to prevent duplicate checks
                     parentFolders.add(parentFolder);
@@ -639,20 +642,28 @@ public final class CmsSecurityManager {
                     CmsPermissionSet.ACCESS_DIRECT_PUBLISH,
                     true,
                     CmsResourceFilter.ALL)) {
-                    
-                    // the user has no "direct publish" permissions on the resource - check has failed
-                    hasAllPermissions = false;
-                    break;
-                }                
+
+                    // the user has no "direct publish" permissions on the resource
+                    permissionIssues.addException(new CmsSecurityException(Messages.get().container(
+                        Messages.ERR_DIRECT_PUBLISH_NO_PERMISSIONS_1,
+                        dbc.removeSiteRoot(res.getRootPath()))));
+                }
             }
-            if (hasAllPermissions) {
-                // if direct publish was granted for all resources no further check is required
-                return;
+
+            if (permissionIssues.hasExceptions()) {
+                // there have been permission issues
+                if (hasManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject())) {
+                    // if user is a manager of the project, permission issues are void because he can publish anyway
+                    permissionIssues = new CmsMultiException();
+                }
+            }
+            if (resourceIssues.hasExceptions() || permissionIssues.hasExceptions()) {
+                // there are issues, permission check has failed
+                resourceIssues.addExceptions(permissionIssues.getExceptions());
+                throw resourceIssues;
             }
         }
-
-        // check if the user is a manager of the current project, in this case he has publish permissions
-        checkManagerOfProjectRole(dbc, dbc.getRequestContext().currentProject());
+        // no issues have been found , permissions are granted
     }
 
     /**

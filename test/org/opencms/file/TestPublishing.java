@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/TestPublishing.java,v $
- * Date   : $Date: 2005/09/16 08:28:03 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2005/10/26 11:14:14 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.file;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsMultiException;
 import org.opencms.report.CmsShellReport;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestLogAppender;
@@ -49,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.19.2.1 $
+ * @version $Revision: 1.19.2.2 $
  */
 public class TestPublishing extends OpenCmsTestCase {
   
@@ -529,14 +530,16 @@ public class TestPublishing extends OpenCmsTestCase {
         
         storeResources(cms, newFile);
         
-        boolean error;
+        boolean error = true;
         try {
             // this will generate an error in the log, ensure the test still continues
             OpenCmsTestLogAppender.setBreakOnError(false);
             cms.publishResource(newFile);
-            error = true;
-        } catch (CmsVfsException e) {
-            error = false;
+        } catch (CmsMultiException e) {
+            CmsVfsException ex = (CmsVfsException)e.getExceptions().get(0);
+            if (ex.getMessageContainer().getKey() == org.opencms.db.Messages.ERR_DIRECT_PUBLISH_PARENT_NEW_2) {
+                error = false;
+            }
         }
         // reset log to stop test on error
         OpenCmsTestLogAppender.setBreakOnError(true);
