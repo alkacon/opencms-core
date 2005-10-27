@@ -70,7 +70,7 @@ OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Create database & tables
+OpenCms Setup Wizard - Create database &amp; tables
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">

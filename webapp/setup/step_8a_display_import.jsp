@@ -7,7 +7,6 @@
 	// previous page in the setup process 
 	String prevPage = "index.jsp";
 
-
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Setup Wizard - Import modules
