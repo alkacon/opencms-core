@@ -1,0 +1,50 @@
+div.diff-added {
+	font-family: monospace;
+	background-color: #ccffcc;
+	border-left: 4px solid darkgreen;
+	display: inline;
+}
+div.diff-removed {
+	font-family: monospace;
+	background-color: #fdc6c6;
+	border-left: 4px solid darkred;
+	display: inline;
+}
+div.diff-skipped {
+	font-family: monospace;
+	background-color: #fdfdc6;
+	border-left: 4px solid olive;
+	display: inline;
+}
+div.diff-unchanged {
+	font-family: monospace;
+	border-left: 4px solid lightgrey;
+	display: inline;
+}
+span.diff-added {
+	background-color: #58ff87;
+	display: inline;
+}
+span.diff-removed {
+	background-color: #ff8686;
+	text-decoration: line-through;
+	display: inline;
+}
+span.diffpage-nochanges {
+	font-style: italic;
+	display: inline;
+}
+div.diffpage-contentdiff-title {
+	border: 1px solid gray;
+	text-align: center;
+	border-bottom: 0px;
+	display: inline;
+}
+div.diffpage-contentdiff {
+	border: 1px solid gray;
+	display: inline;
+}
+span.diffpage-removedfield {
+	text-decoration: line-through;
+	display: inline;
+}
