@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2005/10/24 12:44:22 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2005/10/27 11:02:46 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,10 @@
 
 package org.opencms.setup;
 
-import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
-import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
-import org.opencms.module.CmsModule;
-import org.opencms.module.CmsModuleManager;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsFileUtil;
@@ -48,10 +44,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -62,17 +55,17 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsUpdateBean extends CmsSetupBean {
 
     /** name of the jars folder. */
-    public static final String JARS_FOLDER = "jars";
+    public static final String FOLDER_JARS = "jars" + File.separatorChar;
 
     /** name of the update folder. */
-    public static final String UPDATE_FOLDER = "update";
+    public static final String FOLDER_UPDATE = "update" + File.separatorChar;
 
     /** replace pattern constant for the cms script. */
     private static final String C_ADMIN_GROUP = "@ADMIN_GROUP@";
@@ -116,6 +109,8 @@ public class CmsUpdateBean extends CmsSetupBean {
     public CmsUpdateBean() {
 
         super();
+        m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
+        m_logFile = FOLDER_WEBINF + FOLDER_LOGS + "update.log";
     }
 
     /**
@@ -136,82 +131,6 @@ public class CmsUpdateBean extends CmsSetupBean {
     public String getAdminUser() {
 
         return m_adminUser;
-    }
-
-    /**
-     * Returns a map with all available modules.<p>
-     * 
-     * The map contains maps keyed by module package names. Each of these maps contains various
-     * information about the module such as the module name, version, description, and a list of 
-     * it's dependencies. You should refer to the source code of this method to understand the data 
-     * structure of the map returned by this method!<p>
-     * 
-     * @return a map with all available modules
-     */
-    public Map getAvailableModules() {
-
-        if (m_availableModules == null || m_availableModules.isEmpty()) {
-            m_availableModules = new HashMap();
-
-            try {
-                // open the folder "/update/modules/"
-                String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
-
-                Map modules = CmsModuleManager.getAllModulesFromPath(packagesFolder);
-                Iterator itMods = modules.keySet().iterator();
-                while (itMods.hasNext()) {
-                    CmsModule module = (CmsModule)itMods.next();
-                    // create a map holding the collected module information
-                    Map moduleData = new HashMap();
-                    moduleData.put("name", module.getName());
-                    moduleData.put("niceName", module.getNiceName());
-                    if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(module.getGroup())) {
-                        moduleData.put("group", module.getGroup());
-                    }
-                    moduleData.put("version", module.getVersion().getVersion());
-                    moduleData.put("description", module.getDescription());
-                    moduleData.put("filename", modules.get(module));
-
-                    // put the module information into a map keyed by the module packages names
-                    m_availableModules.put(module.getName(), moduleData);
-
-                }
-            } catch (CmsConfigurationException e) {
-                throw new CmsRuntimeException(e.getMessageContainer());
-            }
-        }
-        return m_availableModules;
-    }
-
-    /**
-     * Returns a map with lists of dependent module package names keyed by module package names.<p>
-     * 
-     * @return a map with lists of dependent module package names keyed by module package names
-     */
-    public Map getModuleDependencies() {
-
-        if (m_moduleDependencies == null || m_moduleDependencies.isEmpty()) {
-            try {
-                // open the folder "/WEB-INF/packages/modules/"
-                String packagesFolder = m_webAppRfsPath + UPDATE_FOLDER + File.separator + CmsSystemInfo.FOLDER_MODULES;
-                m_moduleDependencies = CmsModuleManager.buildDepsForAllModules(packagesFolder, true);
-            } catch (CmsConfigurationException e) {
-                throw new CmsRuntimeException(e.getMessageContainer());
-            }
-        }
-        return m_moduleDependencies;
-    }
-
-    /**
-     * Returns the name of the update log file.<p>
-     * 
-     * @return the name of the update log file
-     */
-    public String getUpdateLogName() {
-
-        StringBuffer result = new StringBuffer(m_webAppRfsPath).append("WEB-INF");
-        result.append(File.separator).append("logs").append(File.separator).append("update.log");
-        return result.toString();
     }
 
     /**
@@ -276,7 +195,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         if (isInitialized()) {
             try {
-                String fileName = getWebAppRfsPath() + UPDATE_FOLDER + File.separatorChar + "cmsupdate";
+                String fileName = getWebAppRfsPath() + FOLDER_UPDATE + "cmsupdate";
                 // read the file
                 FileInputStream fis = new FileInputStream(fileName + ".ori");
                 String script = "";
@@ -453,8 +372,8 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     public void updateJarsFromUpdateBean() throws IOException {
 
-        String jarFolder = getWebAppRfsPath() + UPDATE_FOLDER + File.separatorChar + JARS_FOLDER;
-        String libFolder = getWebAppRfsPath() + "WEB-INF/lib/";
+        String jarFolder = getWebAppRfsPath() + FOLDER_UPDATE + FOLDER_JARS;
+        String libFolder = getWebAppRfsPath() + FOLDER_WEBINF + FOLDER_LIB;
         I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
         report.println(Messages.get().container(Messages.RPT_BEGIN_DELETE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
         ExtendedProperties props = loadProperties(jarFolder + "/removejars.properties");
@@ -555,9 +474,8 @@ public class CmsUpdateBean extends CmsSetupBean {
         if (m_cms != null && m_installModules != null) {
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
             for (int i = 0; i < m_installModules.size(); i++) {
-                Map module = (Map)m_availableModules.get(m_installModules.get(i));
-                String filename = (String)module.get("filename");
-                String name = (String)module.get("name");
+                String name = (String)m_installModules.get(i);
+                String filename = (String)m_moduleFilenames.get(name);
                 try {
                     updateModule(name, filename, report);
                 } catch (Exception e) {
@@ -593,7 +511,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * creating a temporary project for this.<p>
      * 
      * @param moduleName the name of the module to replace
-     * @param importFile the name of the import module located in the update module directory
+     * @param importFile the name of the import .zip file located in the update module directory
      * @param report the shell report to write the output
      * 
      * @throws Exception if something goes wrong
@@ -602,8 +520,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      */
     protected void updateModule(String moduleName, String importFile, I_CmsReport report) throws Exception {
 
-        String fileName = OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
-            UPDATE_FOLDER + File.separatorChar + CmsSystemInfo.FOLDER_MODULES + importFile);
+        String fileName = getModuleFolder() + importFile;
 
         report.println(
             Messages.get().container(Messages.RPT_BEGIN_UPDATE_MODULE_1, moduleName),

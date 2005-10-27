@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateThread.java,v $
- * Date   : $Date: 2005/10/13 08:23:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/27 11:02:46 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.PrintStream;
  *
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,7 +82,7 @@ public class CmsUpdateThread extends Thread {
         m_updateBean = updateBean;
         // init stream and logging thread
         m_pipedOut = new PipedOutputStream();
-        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_updateBean.getUpdateLogName());
+        m_loggingThread = new CmsSetupLoggingThread(m_pipedOut, m_updateBean.getLogName());
     }
 
     /**
@@ -177,8 +177,7 @@ public class CmsUpdateThread extends Thread {
 
                     }
                     m_shell.start(new FileInputStream(new File(m_updateBean.getWebAppRfsPath()
-                        + CmsUpdateBean.UPDATE_FOLDER
-                        + File.separatorChar
+                        + CmsUpdateBean.FOLDER_UPDATE
                         + "cmsupdate.txt")));
                     if (CmsLog.INIT.isInfoEnabled()) {
                         CmsLog.INIT.info(org.opencms.setup.Messages.get().key(
