@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/10/26 09:17:34 $
- * Version: $Revision: 1.40.2.6 $
+ * Date   : $Date: 2005/10/27 17:12:30 $
+ * Version: $Revision: 1.40.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.6 $ 
+ * @version $Revision: 1.40.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -561,10 +561,15 @@ public class CmsToolManager {
             handler.isEnabled(cms);
             handler.isVisible(cms);
         } catch (Throwable ex) {
-            CmsLog.INIT.warn(Messages.get().key(
+            String message = Messages.get().key(
                 Messages.INIT_TOOLMANAGER_INSTALL_ERROR_2,
                 handler.getPath(),
-                handler.getLink()));
+                handler.getLink());
+            if (CmsLog.INIT.isWarnEnabled()) {
+                CmsLog.INIT.warn(message);
+            } else if (CmsLog.INIT.isDebugEnabled()) {
+                CmsLog.INIT.debug(message, ex);
+            }
             return;
         }
 
