@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/10/27 11:02:04 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2005/10/27 15:16:35 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -499,6 +499,12 @@ public class CmsModuleXmlHandler {
      */
     public void addParameter(String key, String value) {
 
+        if (CmsStringUtil.isNotEmpty(key)) {
+            key = key.trim();
+        }
+        if (CmsStringUtil.isNotEmpty(value)) {
+            value = value.trim();
+        }
         m_parameters.put(key, value);
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
