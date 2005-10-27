@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/10/27 11:02:04 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,68 +64,68 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModuleXmlHandler {
 
     /** The "name" attribute. */
-    protected static final String A_NAME = "name";
+    public static final String A_NAME = "name";
 
     /** The "version" attribute. */
-    protected static final String A_VERSION = "version";
+    public static final String A_VERSION = "version";
 
     /** The node name for the authoremail node. */
-    protected static final String N_AUTHOREMAIL = "authoremail";
+    public static final String N_AUTHOREMAIL = "authoremail";
 
     /** The node name for the authorname node. */
-    protected static final String N_AUTHORNAME = "authorname";
+    public static final String N_AUTHORNAME = "authorname";
 
     /** The node name for the class node. */
-    protected static final String N_CLASS = "class";
+    public static final String N_CLASS = "class";
 
     /** The node name for the datecreated node. */
-    protected static final String N_DATECREATED = "datecreated";
+    public static final String N_DATECREATED = "datecreated";
 
     /** The node name for the date installed node. */
-    protected static final String N_DATEINSTALLED = "dateinstalled";
+    public static final String N_DATEINSTALLED = "dateinstalled";
 
     /** The node name for the dependencies node. */
-    protected static final String N_DEPENDENCIES = "dependencies";
+    public static final String N_DEPENDENCIES = "dependencies";
 
     /** The node name for the dependency node. */
-    protected static final String N_DEPENDENCY = "dependency";
+    public static final String N_DEPENDENCY = "dependency";
 
     /** The node name for the description node. */
-    protected static final String N_DESCRIPTION = "description";
+    public static final String N_DESCRIPTION = "description";
 
     /** The node name for the group node. */
-    protected static final String N_GROUP = "group";
+    public static final String N_GROUP = "group";
 
     /** The node name for a module. */
-    protected static final String N_MODULE = "module";
+    public static final String N_MODULE = "module";
 
     /** The node name for the name node. */
-    protected static final String N_NAME = "name";
+    public static final String N_NAME = "name";
 
     /** The node name for the nicename node. */
-    protected static final String N_NICENAME = "nicename";
+    public static final String N_NICENAME = "nicename";
 
     /** The "param" node name for generic parameters. */
-    protected static final String N_PARAM = "param";
+    public static final String N_PARAM = "param";
 
     /** The node name for the parameters node. */
-    protected static final String N_PARAMETERS = "parameters";
+    public static final String N_PARAMETERS = "parameters";
 
     /** The node name for the resources node. */
-    protected static final String N_RESOURCES = "resources";
+    public static final String N_RESOURCES = "resources";
 
     /** The node name for the user installed node. */
-    protected static final String N_USERINSTALLED = "userinstalled";
+    public static final String N_USERINSTALLED = "userinstalled";
 
     /** The node name for the version node. */
-    protected static final String N_VERSION = "version";
+    public static final String N_VERSION = "version";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleXmlHandler.class);

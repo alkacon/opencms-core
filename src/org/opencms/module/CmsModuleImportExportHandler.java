@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/10/25 18:38:50 $
- * Version: $Revision: 1.31.2.2 $
+ * Date   : $Date: 2005/10/27 11:02:04 $
+ * Version: $Revision: 1.31.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.importexport.CmsExport;
 import org.opencms.importexport.CmsImport;
 import org.opencms.importexport.CmsImportExportException;
+import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.importexport.I_CmsImportExportHandler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -74,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31.2.2 $ 
+ * @version $Revision: 1.31.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -141,14 +142,16 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
             File file = new File(importResource);
             if (file.isFile()) {
                 importZip = new ZipFile(importResource);
-                ZipEntry entry = importZip.getEntry("manifest.xml");
+                ZipEntry entry = importZip.getEntry(CmsImportExportManager.EXPORT_MANIFEST);
                 if (entry != null) {
                     stream = importZip.getInputStream(entry);
                 } else {
-                    throw new IOException();
+                    CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_MANIFEST_MODULE_IMPORT_1, importResource);
+                    LOG.error(message.key());
+                    throw new CmsConfigurationException(message);
                 }
             } else if (file.isDirectory()) {
-                file = new File(file, "manifest.xml");
+                file = new File(file, CmsImportExportManager.EXPORT_MANIFEST);
                 stream = new FileInputStream(file);
             }
 
