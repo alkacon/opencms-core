@@ -22,29 +22,35 @@ div.diff-unchanged {
 	display: inline;
 }
 span.diff-added {
+	font-family: monospace;
 	background-color: #58ff87;
 	display: inline;
 }
 span.diff-removed {
+	font-family: monospace;
 	background-color: #ff8686;
 	text-decoration: line-through;
 	display: inline;
 }
 span.diffpage-nochanges {
+	font-family: monospace;
 	font-style: italic;
 	display: inline;
 }
 div.diffpage-contentdiff-title {
+	font-family: monospace;
 	border: 1px solid gray;
 	text-align: center;
 	border-bottom: 0px;
 	display: inline;
 }
 div.diffpage-contentdiff {
+	font-family: monospace;
 	border: 1px solid gray;
 	display: inline;
 }
 span.diffpage-removedfield {
+	font-family: monospace;
 	text-decoration: line-through;
 	display: inline;
 }
