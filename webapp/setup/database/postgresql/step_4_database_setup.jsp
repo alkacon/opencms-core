@@ -60,10 +60,11 @@ OpenCms Setup Wizard
 <% if (Bean.isInitialized()) { %>
 OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
+<form method="POST" onSubmit="return checkSubmit()" class="nomargin">
+
 <table border="0" cellpadding="0" cellspacing="0" style="width: 100%; height: 100%;">
 <tr><td style="vertical-align: top;">
 
-<form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 <%= Bean.getHtmlPart("C_BLOCK_START", "Database") %>
 <table border="0" cellpadding="2" cellspacing="0">
 	<tr>

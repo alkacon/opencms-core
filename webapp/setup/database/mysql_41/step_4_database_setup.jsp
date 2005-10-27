@@ -80,7 +80,7 @@ OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database 
 			<!-- --------------------------------------------------------- -->
 			</select>
 		</td>
-		<td><td><%= Bean.getHtmlHelpIcon("6", "../../") %></td></td>
+		<td><%= Bean.getHtmlHelpIcon("6", "../../") %></td>
 	</tr>
 </table>
 <%= Bean.getHtmlPart("C_BLOCK_END") %>
