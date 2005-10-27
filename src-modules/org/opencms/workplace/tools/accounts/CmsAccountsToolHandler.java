@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsAccountsToolHandler.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2005/10/27 17:12:06 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.workplace.tools.accounts;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.security.CmsRole;
 import org.opencms.workplace.tools.A_CmsToolHandler;
 
@@ -42,7 +43,7 @@ import org.opencms.workplace.tools.A_CmsToolHandler;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -81,7 +82,8 @@ public class CmsAccountsToolHandler extends A_CmsToolHandler {
         }
         if (getVisibilityFlag().equals(VISIBILITY_WEBUSERSONLY)) {
             boolean visible = cms.hasRole(CmsRole.ACCOUNT_MANAGER);
-            visible = visible && (getPath().equals("/accounts") || getPath().indexOf("/webusers") > 0 || getPath().indexOf("/groups") > 0);
+            visible = visible
+                && (getPath().equals("/accounts") || getPath().indexOf("/webusers") > 0 || getPath().indexOf("/groups") > 0);
             return visible;
         }
         return true;
@@ -94,8 +96,10 @@ public class CmsAccountsToolHandler extends A_CmsToolHandler {
      */
     private String getVisibilityFlag() {
 
-        return OpenCms.getModuleManager().getModule(this.getClass().getPackage().getName()).getParameter(
-            PARAM_VISIBILITY_FLAG,
-            VISIBILITY_ALL);
+        CmsModule module = OpenCms.getModuleManager().getModule(this.getClass().getPackage().getName());
+        if (module == null) {
+            return VISIBILITY_ALL;
+        }
+        return module.getParameter(PARAM_VISIBILITY_FLAG, VISIBILITY_ALL);
     }
 }
