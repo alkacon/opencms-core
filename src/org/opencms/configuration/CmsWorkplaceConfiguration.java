@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/10/28 13:57:39 $
- * Version: $Revision: 1.39.2.2 $
+ * Date   : $Date: 2005/10/28 14:27:35 $
+ * Version: $Revision: 1.39.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.2 $
+ * @version $Revision: 1.39.2.3 $
  * 
  * @since 6.0.0
  */
@@ -1375,29 +1375,32 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         }
         
         // add the <multicontextmenu> node
-        Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);
         i = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
-        while (i.hasNext()) {
-            CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
-            Element itemElement;
-            if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
-                // create an <entry> node
-                itemElement = contextMenuElement.addElement(N_ENTRY);
-                itemElement.addAttribute(A_KEY, item.getKey());
-                itemElement.addAttribute(A_URI, item.getUri());
-                if (item.getTarget() != null) {
-                    itemElement.addAttribute(A_TARGET, item.getTarget());
+        if (i.hasNext()) {
+            // only generate the node if entries are defined
+            Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);    
+            while (i.hasNext()) {
+                CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
+                Element itemElement;
+                if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
+                    // create an <entry> node
+                    itemElement = contextMenuElement.addElement(N_ENTRY);
+                    itemElement.addAttribute(A_KEY, item.getKey());
+                    itemElement.addAttribute(A_URI, item.getUri());
+                    if (item.getTarget() != null) {
+                        itemElement.addAttribute(A_TARGET, item.getTarget());
+                    }
+                    String rules = item.getRules();
+                    if (CmsStringUtil.isEmptyOrWhitespaceOnly(rules)) {
+                        rules = "";
+                    }
+                    itemElement.addAttribute(A_RULES, rules);
+                } else {
+                    // create a <separator> node
+                    itemElement = contextMenuElement.addElement(N_SEPARATOR);
                 }
-                String rules = item.getRules();
-                if (CmsStringUtil.isEmptyOrWhitespaceOnly(rules)) {
-                    rules = "";
-                }
-                itemElement.addAttribute(A_RULES, rules);
-            } else {
-                // create a <separator> node
-                itemElement = contextMenuElement.addElement(N_SEPARATOR);
+                itemElement.addAttribute(A_ORDER, "" + item.getOrder());
             }
-            itemElement.addAttribute(A_ORDER, "" + item.getOrder());
         }
 
         // add the <default-preferences> user settings main node

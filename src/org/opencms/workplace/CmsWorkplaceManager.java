@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.72.2.4 $
+ * Date   : $Date: 2005/10/28 14:27:35 $
+ * Version: $Revision: 1.72.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.4 $ 
+ * @version $Revision: 1.72.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -230,6 +230,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_messages = new HashMap();
         m_workflowMessage = false;
         m_multiContextMenu = new CmsExplorerContextMenu();
+        m_multiContextMenu.setMultiMenu(true);
 
         // important to set this to null to avoid unneccessary overhead during configuration phase
         m_explorerTypeSettings = null;

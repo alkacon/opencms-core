@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/10/28 12:07:37 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2005/10/28 14:27:35 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -356,6 +356,10 @@ function showContext(doc, i, isSingleContext) {
 	} else {
 		// multi context menu uses special menu type ID
 		typeId = "multi";
+		if (vi.menus[typeId] == null) {
+			// no multi context menu defined, do not show menu
+			return;
+		}
 		// set resource list in hidden form field value
 		var resourceList = "";
 		var isFirst = true;
