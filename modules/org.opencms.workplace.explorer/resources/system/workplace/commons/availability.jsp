@@ -35,20 +35,64 @@ default:
 <script type="text/javascript">
 <!--
 
-var browseWinPresent = false;
+var oldReleaseValue;
+setTimeout("checkReleaseFields()", 500);
 
-function openDialogWin(url, name) {
-	smallwindow = window.open(url, name, 'toolbar=no,location=no,directories=no,status=no,menubar=0,scrollbars=no,resizable=no,top=50,left=700,width=350,height=600');
-	smallwindow.focus();
-	browseWinPresent = true;
-	return smallwindow;
+function checkReleaseFields(fieldId) {
+	
+	var resetRel = document.getElementById("<%= wp.PARAM_RESETRELEASE %>");
+	var leaveRel = document.getElementById("<%= wp.PARAM_LEAVERELEASE %>");
+	var dateRel = document.getElementById("<%= wp.PARAM_RELEASEDATE %>");
+	
+	if (fieldId == "<%= wp.PARAM_RESETRELEASE %>") {
+		if (resetRel.checked) {
+			leaveRel.checked = false;
+			dateRel.value = "<%= CmsTouch.DEFAULT_DATE_STRING %>";
+		}
+	} else if (fieldId == "<%= wp.PARAM_LEAVERELEASE %>") {
+		if (leaveRel.checked) {
+			resetRel.checked = false;
+			dateRel.value = "<%= CmsTouch.DEFAULT_DATE_STRING %>";
+		}
+	} else {
+		var newDateValue = dateRel.value;
+		if ((newDateValue != oldReleaseValue) && newDateValue != "<%= CmsTouch.DEFAULT_DATE_STRING %>") {
+			leaveRel.checked = false;
+			resetRel.checked = false;
+		} 
+	}
+	oldReleaseValue = dateRel.value;
+	setTimeout("checkReleaseFields()", 500);
 }
 
-function closeDialogWin(){
-	if(browseWinPresent == true ) {
-		window.smallwindow.close();
-		browseWinPresent = false;
+var oldExpireValue;
+setTimeout("checkExpireFields()", 500);
+
+function checkExpireFields(fieldId) {
+	
+	var resetExp = document.getElementById("<%= wp.PARAM_RESETEXPIRE %>");
+	var leaveExp = document.getElementById("<%= wp.PARAM_LEAVEEXPIRE %>");
+	var dateExp = document.getElementById("<%= wp.PARAM_EXPIREDATE %>");
+	
+	if (fieldId == "<%= wp.PARAM_RESETEXPIRE %>") {
+		if (resetExp.checked) {
+			leaveExp.checked = false;
+			dateExp.value = "<%= CmsTouch.DEFAULT_DATE_STRING %>";
+		}
+	} else if (fieldId == "<%= wp.PARAM_LEAVEEXPIRE %>") {
+		if (leaveExp.checked) {
+			resetExp.checked = false;
+			dateExp.value = "<%= CmsTouch.DEFAULT_DATE_STRING %>";
+		}
+	} else {
+		var newDateValue = dateExp.value;
+		if ((newDateValue != oldExpireValue) && newDateValue != "<%= CmsTouch.DEFAULT_DATE_STRING %>") {
+			leaveExp.checked = false;
+			resetExp.checked = false;
+		} 
 	}
+	oldExpireValue = dateExp.value;
+	setTimeout("checkExpireFields()", 500);
 }
 
 function toggleDetail(id) {
@@ -96,31 +140,53 @@ function toggleInheritInfo() {
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<%@ include file="includes/resourceinfo.txt" %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %><%
+if (wp.isMultiOperation()) { %>
+	<%@ include file="includes/multiresourcelist.txt" %><%
+} else { %>
+	<%@ include file="includes/resourceinfo.txt" %><%
+} %>
 
 <%= wp.dialogSpacer() %>
-    
+
+<%= wp.buildCheckRecursive() %>
+
 <%= wp.dialogBlockStart(wp.key(Messages.GUI_AVAILABILITY_0)) %>
-
 <table border="0">
-
     <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %>
-	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_RELEASEDATE %>" id="<%= wp.PARAM_RELEASEDATE %>" value="<%= wp.getCurrentReleaseDate() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewreleasedate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_RELEASED_0) %>
+		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_RELEASEDATE %>" id="<%= wp.PARAM_RELEASEDATE %>" value="<%= wp.getCurrentReleaseDate() %>"></td>
+		<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewreleasedate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
     </tr>
     <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %>
-	<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_EXPIREDATE %>" id="<%= wp.PARAM_EXPIREDATE %>" value="<%= wp.getCurrentExpireDate() %>"></td>
-	<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewexpiredate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_RESET_RELEASE_0) %>
+		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_RESETRELEASE %>" id="<%= wp.PARAM_RESETRELEASE %>" value="true" onclick="checkReleaseFields('<%= wp.PARAM_RESETRELEASE %>');"></td>
+    </tr>
+    <tr>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_LEAVE_RELEASE_0) %>
+		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_LEAVERELEASE %>" id="<%= wp.PARAM_LEAVERELEASE %>" value="true" onclick="checkReleaseFields('<%= wp.PARAM_LEAVERELEASE %>');"></td>
+    </tr>
+    
+    <tr>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_LABEL_DATE_EXPIRED_0) %>
+		<td style="width: 300px;"><input class="maxwidth" type="text" name="<%= wp.PARAM_EXPIREDATE %>" id="<%= wp.PARAM_EXPIREDATE %>" value="<%= wp.getCurrentExpireDate() %>"></td>
+		<td>&nbsp;<img src="<%= wp.getSkinUri() %>buttons/calendar.png" id="triggernewexpiredate" alt="<%= wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" title="<%=  wp.key(Messages.GUI_CALENDAR_CHOOSE_DATE_0) %>" border="0"></td>
+    </tr>
+    <tr>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_RESET_EXPIRE_0) %>
+		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_RESETEXPIRE %>" id="<%= wp.PARAM_RESETEXPIRE %>" value="true" onclick="checkExpireFields('<%= wp.PARAM_RESETEXPIRE %>');"></td>
+    </tr>
+    <tr>
+		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_LEAVE_EXPIRE_0) %>
+		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_LEAVEEXPIRE %>" id="<%= wp.PARAM_LEAVEEXPIRE %>" value="true" onclick="checkExpireFields('<%= wp.PARAM_LEAVEEXPIRE %>');"></td>
     </tr>
 </table>
 <%= wp.dialogBlockEnd() %>
+
 <%= wp.dialogSpacer() %>
+
 <%= wp.dialogBlockStart(wp.key(Messages.GUI_NOTIFICATION_SETTINGS_0)) %>
-<table>
+<table border="0">
     <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_NOTIFICATION_INTERVAL_0) %>
 	<td style="width: 300px;">
@@ -136,21 +202,14 @@ function toggleInheritInfo() {
         <td>&nbsp</td>
     </tr>
     <%= wp.buildCheckboxModifySiblings() %>
-    <%= wp.buildCheckRecursive() %>
-    <tr>
-        <td colspan="3">
-          <%= wp.buildResponsibleList() %>
-        </td>
-    </tr>
+    <%= wp.buildResponsibleList() %>
 </table>
 <%= wp.dialogBlockEnd() %>
+
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
-
 </form>
-
 <%= wp.dialogEnd() %>
-
 <%
     /**
      * This initializes the JS calendar.<p>

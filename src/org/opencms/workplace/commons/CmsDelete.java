@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsDelete.java,v $
- * Date   : $Date: 2005/07/14 07:26:39 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,13 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsDialogSelector;
+import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.I_CmsDialogHandler;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,17 +66,20 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
+public class CmsDelete extends CmsMultiDialog implements I_CmsDialogHandler {
 
     /** Value for the action: delete the resource. */
     public static final int ACTION_DELETE = 100;
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "delete";
+    
+    /** Request parameter name for the deletevfslinks parameter. */
+    public static final String PARAM_DELETEVFSLINKS = "deletevfslinks";
 
     /** The delete dialog URI. */
     public static final String URI_DELETE_DIALOG = PATH_DIALOGS + "delete_standard.jsp";
@@ -125,14 +129,18 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
-            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-            boolean isFolder = resource.isFolder();
-            if (performDeleteOperation(isFolder)) {
+            boolean isFolder = false;
+            if (!isMultiOperation()) {
+                CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+                resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+                isFolder = resource.isFolder();
+            }
+            if (performDialogOperation()) {
                 // if no exception is caused and "true" is returned delete operation was successful
-                if (isFolder) {
+                if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
                     List folderList = new ArrayList(1);
-                    folderList.add(CmsResource.getParentFolder(getParamResource()));
+                    folderList.add(CmsResource.getParentFolder((String)getResourceList().get(0)));
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
                 actionCloseDialog();
@@ -153,29 +161,39 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
      */
     public String buildDeleteSiblings() {
 
-        if (hasVfsLinks() && hasCorrectLockstate()) {
-            // show only if resource has siblings and correct lock state
-            StringBuffer result = new StringBuffer(512);
+        StringBuffer result = new StringBuffer(512);
+        if (isMultiOperation() || (hasVfsLinks() && hasCorrectLockstate())) {
+            // show only for multi resource operation or if resource has siblings and correct lock state
             int defaultMode = getSettings().getUserSettings().getDialogDeleteFileMode();
-            result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
-            result.append("<p>");
-            result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"false\"");
+            if (! isMultiOperation()) {
+                result.append(key(Messages.GUI_DELETE_WARNING_SIBLINGS_0));
+                result.append("<p>");
+            }
+            result.append("<input type=\"radio\" name=\"");
+            result.append(PARAM_DELETEVFSLINKS);
+            result.append("\" value=\"false\"");
             if (defaultMode == CmsResource.DELETE_PRESERVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
             result.append(key(Messages.GUI_DELETE_PRESERVE_SIBLINGS_0));
             result.append("<br>");
-            result.append("<input type=\"radio\" name=\"deletevfslinks\" value=\"true\"");
+            result.append("<input type=\"radio\" name=\"");
+            result.append(PARAM_DELETEVFSLINKS);
+            result.append("\" value=\"true\"");
             if (defaultMode == CmsResource.DELETE_REMOVE_SIBLINGS) {
                 result.append(" checked=\"checked\"");
             }
             result.append(">&nbsp;");
             result.append(key(Messages.GUI_DELETE_ALL_SIBLINGS_0));
             result.append("<p>");
-            return result.toString();
         }
-        return "";
+        if (isMultiOperation()) {
+            result.append(key(Messages.GUI_DELETE_MULTI_CONFIRMATION_0));
+        }  else {
+            result.append(key(Messages.GUI_DELETE_CONFIRMATION_0));
+        }
+        return result.toString();
     }
 
     /**
@@ -246,35 +264,6 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Performs the resource deletion.<p>
-     * 
-     * @param isFolder true if the resource to delete is a folder, otherwise false
-     * @return true, if the resource was deleted, otherwise false
-     * @throws CmsException if deletion is not successful
-     */
-    public boolean performDeleteOperation(boolean isFolder) throws CmsException {
-
-        int deleteOption = -1;
-
-        // on folder deletion display "please wait" screen, not for simple file deletion
-        if (isFolder && !DIALOG_WAIT.equals(getParamAction())) {
-            // return false, this will trigger the "please wait" screen
-            return false;
-        }
-
-        // determine the correct delete option
-        deleteOption = Boolean.valueOf(getParamDeleteVfsLinks()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
-        : CmsResource.DELETE_PRESERVE_SIBLINGS;
-
-        // lock resource if autolock is enabled
-        checkLock(getParamResource());
-        // delete the resource
-        getCms().deleteResource(getParamResource(), deleteOption);
-
-        return true;
-    }
-
-    /**
      * Sets the value of the boolean option to delete VFS links.<p>
      * 
      * @param value the value of the boolean option to delete VFS links
@@ -291,13 +280,13 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
+
         // check the required permissions to delete the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
         // set the action for the JSP switch 
@@ -310,8 +299,67 @@ public class CmsDelete extends CmsDialog implements I_CmsDialogHandler {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key(Messages.GUI_DELETE_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
+            setDialogTitle(Messages.GUI_DELETE_RESOURCE_1, Messages.GUI_DELETE_MULTI_2);
         }
+    }
+
+    /**
+     * Performs the resource deletion.<p>
+     * 
+     * @return true, if the resource(s) was/were deleted, otherwise false
+     * @throws CmsException if deletion is not successful
+     */
+    protected boolean performDialogOperation() throws CmsException {
+
+        int deleteOption = -1;
+
+        // check if the current resource is a folder for single operation
+        boolean isFolder = isOperationOnFolder();
+        // on folder deletion or multi operation display "please wait" screen, not for simple file deletion
+        if ((isMultiOperation() || isFolder) && !DIALOG_WAIT.equals(getParamAction())) {
+            // return false, this will trigger the "please wait" screen
+            return false;
+        }
+
+        // determine the correct delete option
+        deleteOption = Boolean.valueOf(getParamDeleteVfsLinks()).booleanValue() ? CmsResource.DELETE_REMOVE_SIBLINGS
+        : CmsResource.DELETE_PRESERVE_SIBLINGS;
+
+        Iterator i = getResourceList().iterator();
+        // iterate the resources to delete
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            try {
+                performSingleDeleteOperation(resName, deleteOption);
+            } catch (CmsException e) {
+                if (isMultiOperation()) {
+                    // collect exceptions to create a detailed output
+                    addMultiOperationException(e);
+                } else {
+                    // for single operation, throw the exception immediately
+                    throw e;
+                }
+            }
+        }
+        // check if exceptions occured
+        checkMultiOperationException(Messages.get(), Messages.ERR_DELETE_MULTI_0);
+
+        return true;
+    }
+
+    /**
+     * Performs the delete operation for a single VFS resource.<p>
+     * 
+     * @param resource the resource VFS path
+     * @param deleteOption the delete option for sibling deletion
+     * @throws CmsException if deleting the resource fails
+     */
+    protected void performSingleDeleteOperation(String resource, int deleteOption) throws CmsException {
+
+        // lock resource if autolock is enabled
+        checkLock(resource);
+        // delete the resource
+        getCms().deleteResource(resource, deleteOption);
     }
 
 }

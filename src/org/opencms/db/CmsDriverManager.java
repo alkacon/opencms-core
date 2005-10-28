@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/25 18:38:50 $
- * Version: $Revision: 1.557.2.11 $
+ * Date   : $Date: 2005/10/28 12:07:37 $
+ * Version: $Revision: 1.557.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -114,9 +114,9 @@ import org.apache.commons.logging.Log;
  * @author Michael Moossen
  * 
  <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.11 $
+ * @version $Revision: 1.557.2.12 $
  =======
- * @version $Revision: 1.557.2.11 $
+ * @version $Revision: 1.557.2.12 $
  >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
@@ -3268,44 +3268,47 @@ public final class CmsDriverManager implements I_CmsEventListener {
                         publishList.addFolder(directPublishResource);
                     }
 
-                    List folderList = m_vfsDriver.readResourceTree(
-                        dbc,
-                        dbc.currentProject().getId(),
-                        directPublishResource.getRootPath(),
-                        CmsDriverManager.READ_IGNORE_TYPE,
-                        CmsResource.STATE_UNCHANGED,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READMODE_INCLUDE_TREE
-                            | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                            | CmsDriverManager.READMODE_EXCLUDE_STATE
-                            | CmsDriverManager.READMODE_ONLY_FOLDERS);
+                    if (publishList.isPublishSubResources()) {
+                        // add all sub resources of the folder
+                        
+                        List folderList = m_vfsDriver.readResourceTree(
+                            dbc,
+                            dbc.currentProject().getId(),
+                            directPublishResource.getRootPath(),
+                            CmsDriverManager.READ_IGNORE_TYPE,
+                            CmsResource.STATE_UNCHANGED,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READMODE_INCLUDE_TREE
+                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                                | CmsDriverManager.READMODE_EXCLUDE_STATE
+                                | CmsDriverManager.READMODE_ONLY_FOLDERS);
 
-                    publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
+                        publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
 
-                    List fileList = m_vfsDriver.readResourceTree(
-                        dbc,
-                        dbc.currentProject().getId(),
-                        directPublishResource.getRootPath(),
-                        CmsDriverManager.READ_IGNORE_TYPE,
-                        CmsResource.STATE_UNCHANGED,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READ_IGNORE_TIME,
-                        CmsDriverManager.READMODE_INCLUDE_TREE
-                            | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                            | CmsDriverManager.READMODE_EXCLUDE_STATE
-                            | CmsDriverManager.READMODE_ONLY_FILES);
+                        List fileList = m_vfsDriver.readResourceTree(
+                            dbc,
+                            dbc.currentProject().getId(),
+                            directPublishResource.getRootPath(),
+                            CmsDriverManager.READ_IGNORE_TYPE,
+                            CmsResource.STATE_UNCHANGED,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READMODE_INCLUDE_TREE
+                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                                | CmsDriverManager.READMODE_EXCLUDE_STATE
+                                | CmsDriverManager.READMODE_ONLY_FILES);
 
-                    publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
-
+                        publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
+                    }
                 } else if (directPublishResource.isFile()
                     && CmsResource.STATE_UNCHANGED != directPublishResource.getState()) {
 

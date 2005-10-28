@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsUndelete.java,v $
- * Date   : $Date: 2005/07/11 15:55:07 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.workplace.commons;
 
-import org.opencms.file.CmsResource;
-import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.security.CmsPermissionSet;
-import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsMultiDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.Iterator;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -55,11 +55,11 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsUndelete extends CmsDialog {
+public class CmsUndelete extends CmsMultiDialog {
 
     /** Value for the action: undelete resource. */
     public static final int ACTION_UNDELETE = 100;
@@ -99,7 +99,7 @@ public class CmsUndelete extends CmsDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
-            if (performUndeleteOperation()) {
+            if (performDialogOperation()) {
                 // if no exception is caused and "true" is returned delete operation was successful
                 actionCloseDialog();
             } else {
@@ -109,6 +109,20 @@ public class CmsUndelete extends CmsDialog {
         } catch (Throwable e) {
             // error during deletion, show error dialog
             includeErrorpage(this, e);
+        }
+    }
+    
+    /**
+     * Returns the HTML for the localized undelete confirmation message depending on single or multi operation.<p>
+     * 
+     * @return the HTML for the localized undelete confirmation message
+     */
+    public String buildConfirmationMessage() {
+        
+        if (isMultiOperation()) {
+            return key(Messages.GUI_UNDELETE_MULTI_CONFIRMATION_0);
+        } else {
+            return key(Messages.GUI_UNDELETE_CONFIRMATION_0);
         }
     }
 
@@ -138,32 +152,47 @@ public class CmsUndelete extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key(Messages.GUI_UNDELETE_RESOURCE_1, new Object[] {CmsResource.getName(getParamResource())}));
+            setDialogTitle(Messages.GUI_UNDELETE_RESOURCE_1, Messages.GUI_UNDELETE_MULTI_2);
         }
     }
 
     /**
      * Performs the resource undeletion.<p>
      * 
-     * @return true, if the resource was undeleted, otherwise false
+     * @return true, if the undelete operation is successful, otherwise false
      * @throws CmsException if undeletion is not successful
      */
-    private boolean performUndeleteOperation() throws CmsException {
+    protected boolean performDialogOperation() throws CmsException {
 
-        // on folder deletion display "please wait" screen, not for simple file touching
-        if (!DIALOG_WAIT.equals(getParamAction())) {
-            CmsResource resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+        // check if the current resource is a folder for single operation
+        boolean isFolder = isOperationOnFolder();
+        // on folder undelete or multi operation display "please wait" screen, not for simple file undeletion
+        if ((isMultiOperation() || isFolder) && !DIALOG_WAIT.equals(getParamAction())) {
             // return false, this will trigger the "please wait" screen
-            if (resource.isFolder()) {
-                return false;
+            return false;
+        }
+        
+        Iterator i = getResourceList().iterator();
+        // iterate the resources to undelete
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            try {
+                // lock resource if autolock is enabled
+                checkLock(resName);
+                // undelete the resource
+                getCms().undeleteResource(resName);
+            } catch (CmsException e) {
+                if (isMultiOperation()) {
+                    // collect exceptions to create a detailed output
+                    addMultiOperationException(e);
+                } else {
+                    // for single operation, throw the exception immediately
+                    throw e;
+                }
             }
         }
-
-        // lock resource if autolock is enabled
-        checkLock(getParamResource());
-        // undelete the resource
-        getCms().undeleteResource(getParamResource());
-
+        // check if exceptions occured
+        checkMultiOperationException(Messages.get(), Messages.ERR_UNDELETE_MULTI_0);
         return true;
     }
 }

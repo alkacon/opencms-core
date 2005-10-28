@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/10/27 10:19:03 $
- * Version: $Revision: 1.23.2.2 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.23.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.2.2 $ 
+ * @version $Revision: 1.23.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -364,10 +364,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     public String buildDelimiterSelect() {
 
         Object[] optionStrings = new Object[] {
-            key("input.bestmatching"),
-            key("input.semicolon"),
-            key("input.comma"),
-            key("input.tab")};
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0),
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_SEMICOLON_0),
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_COMMA_0),
+            key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIM_TAB_0)};
         List options = new ArrayList(Arrays.asList(optionStrings));
         List values = new ArrayList(Arrays.asList(new Object[] {"best", ";", ",", "tab"}));
         String parameters = "name=\"" + PARAM_DELIMITER + "\" class=\"maxwidth\"";
@@ -387,7 +387,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             List options = new ArrayList();
             List values = new ArrayList();
 
-            options.add(key("input.nostyle"));
+            options.add(key(Messages.GUI_NEWRESOURCE_CONVERSION_NOSTYLE_0));
             values.add("");
 
             CmsResource resource;
@@ -419,7 +419,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             StringBuffer result = new StringBuffer(512);
             // build a select box and a table row around
             result.append("<tr><td style=\"white-space: nowrap;\" unselectable=\"on\">");
-            result.append(key("input.xsltfile"));
+            result.append(key(Messages.GUI_NEWRESOURCE_CONVERSION_XSLTFILE_0));
             result.append("</td><td class=\"maxwidth\">");
             String parameters = "class=\"maxwidth\" name=\"" + PARAM_XSLTFILE + "\"";
             result.append(buildSelect(parameters, options, values, 0));

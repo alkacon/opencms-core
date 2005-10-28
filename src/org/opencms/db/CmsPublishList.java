@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsPublishList.java,v $
- * Date   : $Date: 2005/10/25 18:38:50 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2005/10/28 12:07:37 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.List;
  * @author Alexander Kandzior
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.24.2.1 $
+ * @version $Revision: 1.24.2.2 $
  * 
  * @since 6.0.0
  * 
@@ -86,6 +86,9 @@ public class CmsPublishList {
     /** Indicates if siblings of the resources in the list should also be published. */
     private boolean m_publishSiblings;
 
+    /** Indicates if sub-resources in folders should be published (for direct publish only). */
+    private boolean m_publishSubResources;
+
     /**
      * Constructs a publish list for a given project.<p>
      * 
@@ -93,7 +96,7 @@ public class CmsPublishList {
      */
     public CmsPublishList(CmsProject project) {
 
-        this(project, null, false);
+        this(project, null, false, true);
     }
 
     /**
@@ -104,7 +107,7 @@ public class CmsPublishList {
      */
     public CmsPublishList(CmsResource directPublishResource, boolean publishSiblings) {
 
-        this(null, Collections.singletonList(directPublishResource), publishSiblings);
+        this(null, Collections.singletonList(directPublishResource), publishSiblings, true);
     }
 
     /**
@@ -115,7 +118,19 @@ public class CmsPublishList {
      */
     public CmsPublishList(List directPublishResources, boolean publishSiblings) {
 
-        this(null, directPublishResources, publishSiblings);
+        this(null, directPublishResources, publishSiblings, true);
+    }
+
+    /**
+     * Constructs a publish list for a list of direct publish resources.<p>
+     * 
+     * @param directPublishResources a list of <code>{@link CmsResource}</code> instances to be published directly
+     * @param publishSiblings indicates if all siblings of the selected resources should be published
+     * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     */
+    public CmsPublishList(List directPublishResources, boolean publishSiblings, boolean publishSubResources) {
+
+        this(null, directPublishResources, publishSiblings, publishSubResources);
     }
 
     /**
@@ -124,14 +139,20 @@ public class CmsPublishList {
      * @param project the project to publish
      * @param directPublishResources the list of direct publish resources
      * @param publishSiblings indicates if all siblings of the selected resources should be published
+     * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
      */
-    private CmsPublishList(CmsProject project, List directPublishResources, boolean publishSiblings) {
+    private CmsPublishList(
+        CmsProject project,
+        List directPublishResources,
+        boolean publishSiblings,
+        boolean publishSubResources) {
 
         m_fileList = new ArrayList();
         m_folderList = new ArrayList();
         m_deletedFolderList = new ArrayList();
         m_publishHistoryId = new CmsUUID();
         m_publishSiblings = publishSiblings;
+        m_publishSubResources = publishSubResources;
         m_projectId = (project != null) ? project.getId() : -1;
         if (directPublishResources != null) {
             // reduce list of folders to minimum
@@ -221,6 +242,16 @@ public class CmsPublishList {
     public boolean isPublishSiblings() {
 
         return m_publishSiblings;
+    }
+
+    /**
+     * Returns <code>true</code> if sub-resources in folders should be published (for direct publish only).<p>
+     * 
+     * @return <code>true</code> if sub-resources in folders should be published (for direct publish only)
+     */
+    public boolean isPublishSubResources() {
+
+        return m_publishSubResources;
     }
 
     /**

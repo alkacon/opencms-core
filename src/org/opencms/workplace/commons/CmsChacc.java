@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/10/19 09:55:34 $
- * Version: $Revision: 1.23.2.2 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.23.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.2 $ 
+ * @version $Revision: 1.23.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,10 +98,14 @@ public class CmsChacc extends CmsDialog {
     public static final String PARAM_INHERIT = "inherit";
     /** Request parameter name for the internal use only flag. */
     public static final String PARAM_INTERNAL = "internal";
+    /** Request parameter name for the name parameter. */
+    public static final String PARAM_NAME = "name";
     /** Request parameter name for the overwrite inherited permissions parameter. */
     public static final String PARAM_OVERWRITEINHERITED = "overwriteinherited";
     /** Request parameter name for the responsible parameter. */
     public static final String PARAM_RESPONSIBLE = "responsible";
+    /** Request parameter name for the type parameter. */
+    public static final String PARAM_TYPE = "type";
     /** Request parameter name for the view parameter. */
     public static final String PARAM_VIEW = "view";
 
@@ -655,7 +659,7 @@ public class CmsChacc extends CmsDialog {
     }
 
     /**
-     * Check method to validate the user input when creating a new access control entry.<p>
+     * Validates the user input when creating a new access control entry.<p>
      * 
      * @param name the name of the new user/group
      * @param arrayPosition the position in the types array
@@ -973,8 +977,10 @@ public class CmsChacc extends CmsDialog {
             result.append(paramsAsHidden());
             result.append("<table border=\"0\" width=\"100%\">\n");
             result.append("<tr>\n");
-            result.append("\t<td>").append(buildSelect("name=\"type\"", options, optionValues, -1)).append("</td>\n");
-            result.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"name\" value=\"\"></td>\n");
+            result.append("\t<td>").append(buildSelect("name=\"" + PARAM_TYPE + "\"", options, optionValues, -1)).append("</td>\n");
+            result.append("\t<td class=\"maxwidth\"><input type=\"text\" class=\"maxwidth\" name=\"");
+            result.append(PARAM_NAME);
+            result.append("\" value=\"\"></td>\n");
             result.append("\t<td><input class=\"dialogbutton\" style=\"width: 60px;\" type=\"button\" value=\"");
             result.append(key(Messages.GUI_LABEL_SEARCH_0)).append(
                 "\" onClick=\"javascript:openDialogWin('chaccbrowser.jsp','UserGroup');\"></td>\n");

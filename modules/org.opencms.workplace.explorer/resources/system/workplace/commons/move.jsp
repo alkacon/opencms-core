@@ -37,9 +37,14 @@ default:
 <%= wp.bodyStart("dialog", "onunload=\"top.closeTreeWin();\"") %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<%@ include file="includes/resourceinfo.txt" %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %><%
+boolean includeFiles = true;
+if (wp.isMultiOperation()) { 
+	includeFiles = false; %>
+	<%@ include file="includes/multiresourcelist.txt" %><%
+} else { %>
+	<%@ include file="includes/resourceinfo.txt" %><%
+} %>
 
 <%= wp.dialogSpacer() %>
 
@@ -47,11 +52,13 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
+<%= wp.buildMoveOptions() %>
+
 <table border="0" width="100%">
 <tr>
 	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_MOVE_TO_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_TARGET %>" type="text" value="<%= wp.getCurrentResourceName() %>" class="maxwidth"></td>
-	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_LABEL_SEARCH_0) %>" onClick="top.openTreeWin('copy');" class="dialogbutton" style="width: 60px;">
+	<td><input name="selectfolder" type="button" value="<%= wp.key(Messages.GUI_LABEL_SEARCH_0) %>" onClick="top.openTreeWin('copy', <%= includeFiles %>);" class="dialogbutton" style="width: 60px;">
 </tr>
 </table>
 

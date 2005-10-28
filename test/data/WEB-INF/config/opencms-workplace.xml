@@ -479,6 +479,20 @@
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</defaultaccesscontrol>
+			<multicontextmenu>
+				<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="" order="10"/>
+				<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="" order="20"/>
+				<separator order="30"/>
+				<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="" order="40"/>
+				<separator order="50"/>
+				<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="" order="60"/>
+				<entry key="explorer.context.move.multi" uri="commons/move.jsp" rules="" order="70"/>
+				<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="" order="80"/>
+				<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="" order="90"/>
+				<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="" order="100"/>
+				<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="" order="110"/>
+				<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="" order="120"/>
+			</multicontextmenu>
 		</explorertypes>
 		<default-preferences>
 			<workplace-preferences>

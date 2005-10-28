@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2005/10/19 09:55:34 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,8 @@ import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsMultiDialog;
+import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.text.ParseException;
@@ -65,7 +66,7 @@ import javax.servlet.jsp.PageContext;
 import org.apache.commons.logging.Log;
 
 /**
- * Provides methods for the availability/notification dialog.<p> 
+ * Provides methods for the resource availability/notification dialog.<p> 
  * 
  * The following files use this class:
  * <ul>
@@ -74,25 +75,32 @@ import org.apache.commons.logging.Log;
  * <p>
  *
  * @author Jan Baudisch
+ * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsAvailability extends CmsDialog {
+public class CmsAvailability extends CmsMultiDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "availability";
-    
+
     /** Request parameter name for the activation of the notifciation. */
     public static final String PARAM_ENABLE_NOTIFICATION = "enablenotification";
 
     /** Request parameter name for the expiredate. */
     public static final String PARAM_EXPIREDATE = "expiredate";
-    
+
+    /** Request parameter name for the leaveexpire. */
+    public static final String PARAM_LEAVEEXPIRE = "leaveexpire";
+
+    /** Request parameter name for the leaverelease. */
+    public static final String PARAM_LEAVERELEASE = "leaverelease";
+
     /** Request parameter name for the recursive flag. */
     public static final String PARAM_MODIFY_SIBLINGS = "modifysiblings";
-    
+
     /** Request parameter name for the activation of the notifciation. */
     public static final String PARAM_NOTIFICATION_INTERVAL = "notificationinterval";
 
@@ -102,17 +110,26 @@ public class CmsAvailability extends CmsDialog {
     /** Request parameter name for the releasedate. */
     public static final String PARAM_RELEASEDATE = "releasedate";
     
+    /** Request parameter name for the resetexpire. */
+    public static final String PARAM_RESETEXPIRE = "resetexpire";
+    
+    /** Request parameter name for the resetrelease. */
+    public static final String PARAM_RESETRELEASE = "resetrelease";
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsAvailability.class);
-   
     
     private String m_paramEnablenotification;
     private String m_paramExpiredate;
+    private String m_paramLeaveexpire;
+    private String m_paramLeaverelease;
     private String m_paramModifysiblings;
     private String m_paramNotificationinterval;
     private String m_paramRecursive;
     private String m_paramReleasedate;
-    
+    private String m_paramResetexpire;
+    private String m_paramResetrelease;
+
     /**
      * Public constructor.<p>
      * 
@@ -144,15 +161,27 @@ public class CmsAvailability extends CmsDialog {
      * @return localization for "Group", if the flag belongs to a group ACE
      */
     protected static String getLocalizedType(Locale locale, int flags) {
+
         if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
             return Messages.get().key(locale, Messages.GUI_LABEL_USER_0);
         } else {
             return Messages.get().key(locale, Messages.GUI_LABEL_GROUP_0);
         }
     }
-    
+
     /**
-     * Performs the resource touching, will be called by the JSP page.<p>
+     * 
+     * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
+     */
+    public void actionCloseDialog() throws JspException {
+
+        // so that the explorer will be shown, if dialog is opened from e-mail
+        getSettings().getFrameUris().put("body", CmsWorkplace.VFS_PATH_VIEWS + "explorer/explorer_fs.jsp");
+        super.actionCloseDialog();
+    }
+
+    /**
+     * Performs the resource operation, will be called by the JSP page.<p>
      * 
      * @throws JspException if problems including sub-elements occur
      */
@@ -160,10 +189,10 @@ public class CmsAvailability extends CmsDialog {
 
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
-        
+
         try {
-            if (performUpdateOperation()) {
-                // if no exception is caused and "true" is returned the touch operation was successful          
+            if (performDialogOperation()) {
+                // if no exception is caused and "true" is returned the dialog operation was successful          
                 actionCloseDialog();
             } else {
                 // "false" returned, display "please wait" screen
@@ -173,21 +202,28 @@ public class CmsAvailability extends CmsDialog {
             includeErrorpage(this, e);
         }
     }
-    
+
     /**
-     * Creates an the checkbox to enable content notification for a resource.<p>
+     * Creates the checkbox to enable content notification for a resource.<p>
      *  
      * @return HTML code for the enable_notification checkbox.
      */
     public String buildCheckboxEnableNotification() {
 
         String propVal = null;
-        try {
-            propVal = getCms().readPropertyObject(getParamResource(), CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION, false).getValue();
-        } catch (CmsException e) {
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
+        if (!isMultiOperation()) {
+            // get current settings for single resource dialog
+            try {
+                propVal = getCms().readPropertyObject(
+                    getParamResource(),
+                    CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+                    false).getValue();
+            } catch (CmsException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
             }
+
         }
         if (CmsStringUtil.isEmpty(propVal)) {
             propVal = CmsStringUtil.FALSE;
@@ -196,12 +232,12 @@ public class CmsAvailability extends CmsDialog {
         result.append("<input type=\"checkbox\" style=\"text-align:left\" name=\"");
         result.append(PARAM_ENABLE_NOTIFICATION);
         if (Boolean.valueOf(propVal).booleanValue()) {
-            result.append("\" checked=\"checked");  
-        }    
+            result.append("\" checked=\"checked");
+        }
         result.append("\" value=\"true\">");
         return result.toString();
     }
-    
+
     /**
      * Creates an the checkbox to modify all siblings.<p>
      *  
@@ -213,7 +249,7 @@ public class CmsAvailability extends CmsDialog {
 
         StringBuffer result = new StringBuffer(254);
         try {
-            if (getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1) {
+            if (isMultiOperation() || getCms().readSiblings(getParamResource(), CmsResourceFilter.ALL).size() > 1) {
                 result.append("<tr>\n<td style=\"white-space:nowrap;\">");
                 result.append(key(Messages.GUI_AVAILABILITY_MODIFY_SIBLINGS_0));
                 result.append("</td>\n<td class=\"maxwidth\" style=\"padding-left: 5px;\">\n");
@@ -223,12 +259,12 @@ public class CmsAvailability extends CmsDialog {
             }
         } catch (CmsException e) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(e);   
-            }    
+                LOG.info(e);
+            }
         }
         return result.toString();
     }
-    
+
     /**
      * Creates the "recursive" checkbox for touching subresources of folders.<p>
      *  
@@ -236,30 +272,24 @@ public class CmsAvailability extends CmsDialog {
      */
     public String buildCheckRecursive() {
 
-        StringBuffer retValue = new StringBuffer(256);
+        StringBuffer result = new StringBuffer(256);
 
-        CmsResource res = null;
-        try {
-            res = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-        } catch (CmsException e) {
-            // should usually never happen
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e);
-            }
-            return "";
+        // show the checkbox only for operation(s) on folder(s)
+        if (isOperationOnFolder()) {
+            result.append(dialogBlockStart(key(Messages.GUI_AVAILABILITY_NOTIFICATION_SUBRES_0)));
+            result.append("<table border=\"0\">");
+            result.append("<tr>\n\t<td style=\"white-space:nowrap;\">");
+            result.append(key(Messages.GUI_TOUCH_MODIFY_SUBRESOURCES_0));
+            result.append("</td><td class=\"maxwidth\" style=\"padding-left: 5px;\"><input type=\"checkbox\" style=\"text-align:left\" name=\"");
+            result.append(PARAM_RECURSIVE);
+            result.append("\" value=\"true\">&nbsp;</td>\n<td>&nbsp</td></tr>\n");
+            result.append("</table>");
+            result.append(dialogBlockEnd());
+            result.append(dialogSpacer());
         }
-
-        // show the checkbox only for folders
-        if (res.isFolder()) {
-            retValue.append("<tr>\n\t<td style=\"white-space:nowrap;\">");
-            retValue.append(key(Messages.GUI_TOUCH_MODIFY_SUBRESOURCES_0));
-            retValue.append("</td><td class=\"maxwidth\" style=\"padding-left: 5px;\"><input type=\"checkbox\" style=\"text-align:left\" name=\"");
-            retValue.append(PARAM_RECURSIVE);
-            retValue.append("\" value=\"true\">&nbsp;</td>\n<td>&nbsp</td></tr>\n");
-        }
-        return retValue.toString();
+        return result.toString();
     }
-    
+
     /**
      * Creates an input field for the notification interval.<p>
      *  
@@ -268,12 +298,16 @@ public class CmsAvailability extends CmsDialog {
     public String buildInputNotificationInterval() {
 
         String propVal = null;
-        try {
-            propVal = getCms().readPropertyObject(getParamResource(),
-                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL, false).getValue();
-        } catch (CmsException e) {
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
+        if (!isMultiOperation()) {
+            try {
+                propVal = getCms().readPropertyObject(
+                    getParamResource(),
+                    CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                    false).getValue();
+            } catch (CmsException e) {
+                if (LOG.isInfoEnabled()) {
+                    LOG.info(e.getLocalizedMessage());
+                }
             }
         }
         if (CmsStringUtil.isEmpty(propVal)) {
@@ -288,7 +322,7 @@ public class CmsAvailability extends CmsDialog {
         result.append("\">");
         return result.toString();
     }
-    
+
     /**
      * Builds a String with HTML code to display the responsibles of a resource.<p>
      * 
@@ -296,90 +330,99 @@ public class CmsAvailability extends CmsDialog {
      */
     public String buildResponsibleList() {
 
-        List parentResources = new ArrayList();
-        Map responsibles = new HashMap();
-        CmsObject cms = getCms();
-        String resourceSitePath = cms.getRequestContext().removeSiteRoot(getParamResource());
-        try {
-            // get all parent folders of the current file
-            parentResources = cms.readPath(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-        } catch (CmsException e) {
-            // can usually be ignored
-            if (LOG.isInfoEnabled()) {
-                LOG.info(e.getLocalizedMessage());
-            }
-        }
-        Iterator i = parentResources.iterator();
-        while (i.hasNext()) {
-            CmsResource resource = (CmsResource)i.next();
+        if (isMultiOperation()) {
+            // show no responsibles list for multi operation
+            return "";
+        } else {
+            // single resource operation, create list of responsibles
+            StringBuffer result = new StringBuffer(512);
+            result.append("<tr><td colspan=\"3\">");
+            List parentResources = new ArrayList();
+            Map responsibles = new HashMap();
+            CmsObject cms = getCms();
+            String resourceSitePath = cms.getRequestContext().removeSiteRoot(getParamResource());
             try {
-                String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
-                Iterator entries = cms.getAccessControlEntries(sitePath, false).iterator();
-                while (entries.hasNext()) {
-                    CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
-                    if (ace.isResponsible()) {
-                        I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
-                        responsibles.put(principal, resourceSitePath.equals(sitePath) ? null: sitePath);
-                    }
-                }
+                // get all parent folders of the current file
+                parentResources = cms.readPath(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
             } catch (CmsException e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e.getLocalizedMessage());
                 }
-            }    
-        }    
-  
-        if (responsibles.size() == 0) {
-            
-            return key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0);
-        }    
-        StringBuffer result = new StringBuffer(512);
-        result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", false));
-        Collection parentFolders = new ArrayList(responsibles.values());
-        parentFolders.remove(null);
-        if (parentFolders.size() > 0) {
-            result.append("<table border=\"0\">\n<tr>\n\t<td>");
-            result.append(key(Messages.GUI_PERMISSION_SELECT_VIEW_0));
-            result.append("</td>\n<td><input type=\"button\" onclick=\"toggleInheritInfo();\" value=\"");
-            result.append(key(Messages.GUI_LABEL_DETAILS_0));
-            result.append("\" id=\"button\"/></td></tr></table>");
-        }
-        result.append(dialogWhiteBoxStart());
-        i = responsibles.keySet().iterator();
-        for (int j = 0; i.hasNext(); j++) {
-            I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
-            String image = "user.png";
-            String localizedType = getLocalizedType(getLocale(), CmsAccessControlEntry.ACCESS_FLAGS_USER);
-            if (principal instanceof CmsGroup) {
-                image = "group.png";
-                localizedType = getLocalizedType(getLocale(), CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
             }
-            result.append("<div class=\"dialogrow\"><img src=\"");
-            result.append(getSkinUri());
-            result.append("commons/");
-            result.append(image);
-            result.append("\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
-            result.append(localizedType);
-            result.append("\" title=\"");
-            result.append(localizedType);
-            result.append("\">&nbsp;<span class=\"textbold\">");
-            result.append(principal.getName());
-            result.append("</span><div class=\"hide\" id=\"inheritinfo");
-            result.append(j);
-            result.append("\"><div class=\"dialogpermissioninherit\">");
-            String resourceName = ((String)responsibles.get(principal));
-            if (CmsStringUtil.isNotEmpty(resourceName)) {
-                result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
+            Iterator i = parentResources.iterator();
+            while (i.hasNext()) {
+                CmsResource resource = (CmsResource)i.next();
+                try {
+                    String sitePath = cms.getRequestContext().removeSiteRoot(resource.getRootPath());
+                    Iterator entries = cms.getAccessControlEntries(sitePath, false).iterator();
+                    while (entries.hasNext()) {
+                        CmsAccessControlEntry ace = (CmsAccessControlEntry)entries.next();
+                        if (ace.isResponsible()) {
+                            I_CmsPrincipal principal = cms.lookupPrincipal(ace.getPrincipal());
+                            responsibles.put(principal, resourceSitePath.equals(sitePath) ? null : sitePath);
+                        }
+                    }
+                } catch (CmsException e) {
+                    // can usually be ignored
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(e.getLocalizedMessage());
+                    }
+                }
             }
-            result.append("</div></div></div>\n");
+
+            if (responsibles.size() == 0) {
+                // no responsibles found
+                result.append(key(Messages.GUI_AVAILABILITY_NO_RESPONSIBLES_0));
+            } else {
+                // found responsibles, create list
+                result.append(dialogToggleStart(key(Messages.GUI_AVAILABILITY_RESPONSIBLES_0), "responsibles", false));
+                Collection parentFolders = new ArrayList(responsibles.values());
+                parentFolders.remove(null);
+                if (parentFolders.size() > 0) {
+                    result.append("<table border=\"0\">\n<tr>\n\t<td>");
+                    result.append(key(Messages.GUI_PERMISSION_SELECT_VIEW_0));
+                    result.append("</td>\n<td><input type=\"button\" onclick=\"toggleInheritInfo();\" value=\"");
+                    result.append(key(Messages.GUI_LABEL_DETAILS_0));
+                    result.append("\" id=\"button\"/></td></tr></table>");
+                }
+                result.append(dialogWhiteBoxStart());
+                i = responsibles.keySet().iterator();
+                for (int j = 0; i.hasNext(); j++) {
+                    I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
+                    String image = "user.png";
+                    String localizedType = getLocalizedType(getLocale(), CmsAccessControlEntry.ACCESS_FLAGS_USER);
+                    if (principal instanceof CmsGroup) {
+                        image = "group.png";
+                        localizedType = getLocalizedType(getLocale(), CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
+                    }
+                    result.append("<div class=\"dialogrow\"><img src=\"");
+                    result.append(getSkinUri());
+                    result.append("commons/");
+                    result.append(image);
+                    result.append("\" class=\"noborder\" width=\"16\" height=\"16\" alt=\"");
+                    result.append(localizedType);
+                    result.append("\" title=\"");
+                    result.append(localizedType);
+                    result.append("\">&nbsp;<span class=\"textbold\">");
+                    result.append(principal.getName());
+                    result.append("</span><div class=\"hide\" id=\"inheritinfo");
+                    result.append(j);
+                    result.append("\"><div class=\"dialogpermissioninherit\">");
+                    String resourceName = ((String)responsibles.get(principal));
+                    if (CmsStringUtil.isNotEmpty(resourceName)) {
+                        result.append(key(Messages.GUI_PERMISSION_INHERITED_FROM_1, new Object[] {resourceName}));
+                    }
+                    result.append("</div></div></div>\n");
+                }
+                result.append(dialogWhiteBoxEnd());
+                result.append("</div>\n");
+                result.append("</td></tr>");
+            }
+            return result.toString();
         }
-        result.append(dialogWhiteBoxEnd());
-        result.append("</div>\n");
-        return result.toString();
     }
-    
-    
+
     /**
      * Returns the current date and time as String formatted in localized pattern.<p>
      * 
@@ -398,16 +441,20 @@ public class CmsAvailability extends CmsDialog {
      */
     public String getCurrentExpireDate() {
 
-        // get the expirationdate
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
-                return CmsTouch.DEFAULT_DATE_STRING;
-            } else {
-                return getCalendarLocalizedTime(res.getDateExpired());
+        // get the expiration date
+        if (isMultiOperation()) {
+            return CmsTouch.DEFAULT_DATE_STRING;
+        } else {
+            try {
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                if (res.getDateExpired() == CmsResource.DATE_EXPIRED_DEFAULT) {
+                    return CmsTouch.DEFAULT_DATE_STRING;
+                } else {
+                    return getCalendarLocalizedTime(res.getDateExpired());
+                }
+            } catch (CmsException e) {
+                return getCalendarLocalizedTime(System.currentTimeMillis());
             }
-        } catch (CmsException e) {
-            return getCalendarLocalizedTime(System.currentTimeMillis());
         }
     }
 
@@ -418,16 +465,20 @@ public class CmsAvailability extends CmsDialog {
      */
     public String getCurrentReleaseDate() {
 
-        // get the releasedate
-        try {
-            CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
-            if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
-                return CmsTouch.DEFAULT_DATE_STRING;
-            } else {
-                return getCalendarLocalizedTime(res.getDateReleased());
+        // get the release date
+        if (isMultiOperation()) {
+            return CmsTouch.DEFAULT_DATE_STRING;
+        } else {
+            try {
+                CmsResource res = getCms().readResource(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
+                if (res.getDateReleased() == CmsResource.DATE_RELEASED_DEFAULT) {
+                    return CmsTouch.DEFAULT_DATE_STRING;
+                } else {
+                    return getCalendarLocalizedTime(res.getDateReleased());
+                }
+            } catch (CmsException e) {
+                return getCalendarLocalizedTime(System.currentTimeMillis());
             }
-        } catch (CmsException e) {
-            return getCalendarLocalizedTime(System.currentTimeMillis());
         }
     }
 
@@ -442,7 +493,7 @@ public class CmsAvailability extends CmsDialog {
 
         return m_paramEnablenotification;
     }
-    
+
     /**
      * Returns the value of the new expiredate parameter, 
      * or null if this parameter was not provided.<p>
@@ -453,7 +504,27 @@ public class CmsAvailability extends CmsDialog {
 
         return m_paramExpiredate;
     }
-    
+
+    /**
+     * Returns the value of the leaveexpire parameter.<p>
+     * 
+     * @return the value of the leaveexpire parameter
+     */
+    public String getParamLeaveexpire() {
+
+        return m_paramLeaveexpire;
+    }
+
+    /**
+     * Returns the value of the leaverelease parameter.<p>
+     * 
+     * @return the value of the leaverelease parameter
+     */
+    public String getParamLeaverelease() {
+
+        return m_paramLeaverelease;
+    }
+
     /**
      * Returns the value of the modify siblings parameter, 
      * or null if this parameter was not provided.<p>
@@ -472,10 +543,10 @@ public class CmsAvailability extends CmsDialog {
      * @return the value of the notification interval parameter
      */
     public String getParamNotificationinterval() {
-        
+
         return m_paramNotificationinterval;
     }
-    
+
     /**
      * Returns the value of the recursive parameter, 
      * or null if this parameter was not provided.<p>
@@ -489,7 +560,7 @@ public class CmsAvailability extends CmsDialog {
 
         return m_paramRecursive;
     }
-    
+
     /**
      * Returns the value of the new releasedate parameter, 
      * or null if this parameter was not provided.<p>
@@ -502,7 +573,27 @@ public class CmsAvailability extends CmsDialog {
 
         return m_paramReleasedate;
     }
-    
+
+    /**
+     * Returns the value of the resetexpire parameter.<p>
+     * 
+     * @return the value of the resetexpire parameter
+     */
+    public String getParamResetexpire() {
+
+        return m_paramResetexpire;
+    }
+
+    /**
+     * Returns the value of the resetrelease parameter.<p>
+     * 
+     * @return the value of the resetrelease parameter
+     */
+    public String getParamResetrelease() {
+
+        return m_paramResetrelease;
+    }
+
     /**
      * Sets the value of the enable notification parameter.<p>
      * 
@@ -510,9 +601,9 @@ public class CmsAvailability extends CmsDialog {
      */
     public void setParamEnablenotification(String value) {
 
-        m_paramEnablenotification = value; 
+        m_paramEnablenotification = value;
     }
-    
+
     /**
      * Sets the value of the expire date.<p>
      * 
@@ -524,12 +615,32 @@ public class CmsAvailability extends CmsDialog {
     }
 
     /**
+     * Sets the value of the leaveexpire parameter.<p>
+     * 
+     * @param paramLeaveexpire the value of the leaveexpire parameter
+     */
+    public void setParamLeaveexpire(String paramLeaveexpire) {
+
+        m_paramLeaveexpire = paramLeaveexpire;
+    }
+
+    /**
+     * Sets the value of the leaverelease parameter.<p>
+     * 
+     * @param paramLeaverelease the value of the leaverelease parameter
+     */
+    public void setParamLeaverelease(String paramLeaverelease) {
+
+        m_paramLeaverelease = paramLeaverelease;
+    }
+
+    /**
      * Sets the value of the modify siblings parameter.<p>
      * 
      * @param value the value to set
      */
     public void setParamModifysiblings(String value) {
-        
+
         m_paramModifysiblings = value;
     }
 
@@ -542,7 +653,7 @@ public class CmsAvailability extends CmsDialog {
 
         m_paramNotificationinterval = value;
     }
-    
+
     /**
      * Sets the value of the recursive parameter.<p>
      * 
@@ -562,7 +673,27 @@ public class CmsAvailability extends CmsDialog {
 
         m_paramReleasedate = value;
     }
-    
+
+    /**
+     * Sets the value of the resetexpire parameter.<p>
+     * 
+     * @param paramResetexpire the value of the resetexpire parameter
+     */
+    public void setParamResetexpire(String paramResetexpire) {
+
+        m_paramResetexpire = paramResetexpire;
+    }
+
+    /**
+     * Sets the value of the resetrelease parameter.<p>
+     * 
+     * @param paramResetrelease the value of the resetrelease parameter
+     */
+    public void setParamResetrelease(String paramResetrelease) {
+
+        m_paramResetrelease = paramResetrelease;
+    }
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
@@ -570,13 +701,13 @@ public class CmsAvailability extends CmsDialog {
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
-        
-        // check the required permissions to touch the resource       
-        if (! checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
+
+        // check the required permissions to modify the resource       
+        if (!checkResourcePermissions(CmsPermissionSet.ACCESS_WRITE, false)) {
             // no write permissions for the resource, set cancel action to close dialog
             setParamAction(DIALOG_CANCEL);
         }
-        
+
         // set the dialog type
         setParamDialogtype(DIALOG_TYPE);
 
@@ -589,8 +720,142 @@ public class CmsAvailability extends CmsDialog {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            // build title for touch dialog     
-            setParamTitle(key(Messages.GUI_AVAILABILITY_NOTIFICATION_SETTINGS_1, new Object[] {getParamResource()}));
+            // build title for dialog     
+            setDialogTitle(
+                Messages.GUI_AVAILABILITY_NOTIFICATION_SETTINGS_1,
+                Messages.GUI_AVAILABILITY_NOTIFICATION_MULTI_2);
+        }
+    }
+
+    /**
+     * Modifies the release and expire date of a resource, and changes the notification interval. <p>
+     * 
+     * @return true, if the operation was performed, otherwise false
+     * @throws CmsException if modification is not successful
+     */
+    protected boolean performDialogOperation() throws CmsException {
+
+        // check if the current resource is a folder for single operation
+        boolean isFolder = isOperationOnFolder();
+        // on folder deletion or multi operation display "please wait" screen, not for simple file deletion
+        if ((isMultiOperation() || isFolder) && !DIALOG_WAIT.equals(getParamAction())) {
+            // return false, this will trigger the "please wait" screen
+            return false;
+        }
+
+        // get the new release date for the resource(s) from request parameter
+        long releaseDate = CmsResource.DATE_RELEASED_DEFAULT;
+        boolean resetReleaseDate = Boolean.valueOf(getParamResetrelease()).booleanValue();
+        boolean leaveReleaseDate = Boolean.valueOf(getParamLeaverelease()).booleanValue();
+        if (!resetReleaseDate && !leaveReleaseDate) {
+            try {
+                if ((getParamReleasedate() != null)
+                    && (!getParamReleasedate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
+                    releaseDate = getCalendarDate(getParamReleasedate(), true);
+                }
+            } catch (ParseException e) {
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_PARSE_RELEASEDATE_1, getParamReleasedate()),
+                    e);
+            }
+        }
+
+        // get the new expire date for the resource(s) from request parameter
+        long expireDate = CmsResource.DATE_EXPIRED_DEFAULT;
+        boolean resetExpireDate = Boolean.valueOf(getParamResetexpire()).booleanValue();
+        boolean leaveExpireDate = Boolean.valueOf(getParamLeaveexpire()).booleanValue();
+        if (!resetExpireDate && !leaveExpireDate) {
+            try {
+                if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
+                    expireDate = getCalendarDate(getParamExpiredate(), true);
+                }
+            } catch (ParseException e) {
+                throw new CmsException(
+                    Messages.get().container(Messages.ERR_PARSE_EXPIREDATE_1, getParamExpiredate()),
+                    e);
+            }
+        }
+
+        // get the flag if the operation is recursive from request parameter
+        boolean modifyRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
+
+        // get the flag if the operation should be executed on resource siblings, too
+        boolean modifySiblings = Boolean.valueOf(getParamModifysiblings()).booleanValue();
+
+        // now iterate the resource(s)
+        Iterator i = getResourceList().iterator();
+        while (i.hasNext()) {
+            String resName = (String)i.next();
+            try {
+                performSingleResource(
+                    resName,
+                    releaseDate,
+                    expireDate,
+                    leaveReleaseDate,
+                    leaveExpireDate,
+                    modifyRecursive,
+                    modifySiblings);
+            } catch (CmsException e) {
+                // collect exceptions to create a detailed output
+                addMultiOperationException(e);
+            }
+        }
+        checkMultiOperationException(Messages.get(), Messages.ERR_AVAILABILITY_MULTI_0);
+
+        return true;
+    }
+
+    /**
+     * Performs the availability and notification operations on a single resource.<p>
+     * 
+     * @param resName the VFS path of the resource
+     * @param releaseDate the new release date
+     * @param expireDate the new expiration date
+     * @param leaveRelease flag indicating if the release date should be left untouched
+     * @param leaveExpire flag indicating if the expiration date should be left untouched
+     * @param modifyRecursive flag indicating if the operation is recursive for folders
+     * @param modifySiblings flag indicating to include resource siblings
+     * @throws CmsException if the availability and notification operations fail
+     */
+    protected void performSingleResource(
+        String resName,
+        long releaseDate,
+        long expireDate,
+        boolean leaveRelease,
+        boolean leaveExpire,
+        boolean modifyRecursive,
+        boolean modifySiblings) throws CmsException {
+
+        List resources = new ArrayList();
+        if (modifySiblings) {
+            // modify all siblings of a resource
+            resources = getCms().readSiblings(resName, CmsResourceFilter.IGNORE_EXPIRATION);
+        } else {
+            // modify only resource without siblings
+            resources.add(getCms().readResource(resName, CmsResourceFilter.IGNORE_EXPIRATION));
+        }
+        Iterator i = resources.iterator();
+        while (i.hasNext()) {
+            CmsResource resource = (CmsResource)i.next();
+            String resourcePath = getCms().getRequestContext().removeSiteRoot(resource.getRootPath());
+            // lock resource if autolock is enabled
+            checkLock(resourcePath);
+            // modify release and expire date of the resource if desired
+            if (! leaveRelease) {
+                getCms().setDateReleased(resourcePath, releaseDate, modifyRecursive);
+            } 
+            if (! leaveExpire) {
+                getCms().setDateExpired(resourcePath, expireDate, modifyRecursive);
+            }
+            // write notification settings
+            writeProperty(
+                resourcePath,
+                CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL,
+                getParamNotificationinterval());
+            writeProperty(
+                resourcePath,
+                CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION,
+                getParamEnablenotification());
         }
     }
 
@@ -651,79 +916,5 @@ public class CmsAvailability extends CmsDialog {
         if (!oldResourceValue.equals(newResourceValue) || !oldStructureValue.equals(newStructureValue)) {
             getCms().writePropertyObject(resourcePath, newProp);
         }
-
     }
-    
-    /**
-     * Modifies the release and expire date of a resource, and changes the notification interval. <p>
-     * 
-     * @return true, if the modified was touched, otherwise false
-     * @throws CmsException if modification is not successful
-     */
-    private boolean performUpdateOperation() throws CmsException {
-
-        // on folder copy display "please wait" screen, not for simple file copy
-        CmsResource sourceRes = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
-        if (sourceRes.isFolder() && !DIALOG_WAIT.equals(getParamAction())) {
-            // return false, this will trigger the "please wait" screen
-            return false;
-        }
-
-        // get the current resource name
-        String filename = getParamResource();
-
-        // get the new releasedate for the resource(s) from request parameter
-        long releasedate = CmsResource.DATE_RELEASED_DEFAULT;
-        try {
-            if ((getParamReleasedate() != null) && (!getParamReleasedate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
-                releasedate = getCalendarDate(getParamReleasedate(), true);
-            }
-        } catch (ParseException e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_RELEASEDATE_1, getParamReleasedate()), e);
-        }
-
-        // get the new expire for the resource(s) from request parameter
-        long expiredate = CmsResource.DATE_EXPIRED_DEFAULT;
-        try {
-            if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
-                expiredate = getCalendarDate(getParamExpiredate(), true);
-            }
-        } catch (ParseException e) {
-            throw new CmsException(Messages.get().container(Messages.ERR_PARSE_EXPIREDATE_1, getParamExpiredate()), e);
-        }
-
-        // get the flag if the touch is recursive from request parameter
-        boolean modifyRecursive = Boolean.valueOf(getParamRecursive()).booleanValue();
-
-        List resources = new ArrayList();
-        if (Boolean.valueOf(getParamModifysiblings()).booleanValue()) {
-            resources = getCms().readSiblings(filename, CmsResourceFilter.IGNORE_EXPIRATION);
-        } else {
-            resources.add(getCms().readResource(filename, CmsResourceFilter.IGNORE_EXPIRATION));
-        } 
-        Iterator i = resources.iterator();
-        while (i.hasNext()) {
-            CmsResource resource = (CmsResource)i.next();
-            // modify release and expire date of the resource
-            // lock resource if autolock is enabled
-            String resourcePath = getCms().getRequestContext().removeSiteRoot(resource.getRootPath());
-            checkLock(resourcePath);
-            getCms().setDateReleased(resourcePath, releasedate, modifyRecursive);
-            getCms().setDateExpired(resourcePath, expiredate, modifyRecursive);
-            
-            writeProperty(resourcePath, CmsPropertyDefinition.PROPERTY_NOTIFICATION_INTERVAL, getParamNotificationinterval());
-            writeProperty(resourcePath, CmsPropertyDefinition.PROPERTY_ENABLE_NOTIFICATION, getParamEnablenotification());
-        }
-        return true;
-    }
-    
-    /**
-     * 
-     * @see org.opencms.workplace.CmsDialog#actionCloseDialog()
-     */
-    public void actionCloseDialog() throws JspException {
-        // so that the explorer will be shown, if dialog is opened from e-mail
-        getSettings().getFrameUris().put("body", "/system/workplace/views/explorer/explorer_fs.jsp"); 
-        super.actionCloseDialog();   
-    }    
 }

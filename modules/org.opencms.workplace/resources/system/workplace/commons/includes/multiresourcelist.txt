@@ -1,0 +1,5 @@
+<!-- display resource information -->
+<%= wp.dialogBlockStart(null) %>
+<%= wp.key("GUI_MULTI_RESOURCELIST_TITLE_0") %>
+<%= wp.buildResourceList() %>
+<%= wp.dialogBlockEnd() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/10/20 11:04:57 $
- * Version: $Revision: 1.23.2.5 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.23.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.5 $ 
+ * @version $Revision: 1.23.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -360,7 +360,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             if (isEditable()) {
-                performEditOperation(request);
+                performDialogOperation(request);
             }
         } catch (Throwable e) {
             // error editing property, show error dialog
@@ -430,11 +430,15 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             // there are properties defined for this resource, build the form list
             result.append("<table border=\"0\">\n");
             result.append("<tr>\n");
-            result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_0) + "</td>\n");
-            result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_VALUE_0) + "</td>\n");
-            result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-                + key(Messages.GUI_PROPERTY_USED_0)
-                + "</td>\n");
+            result.append("\t<td class=\"textbold\">");
+            result.append(key(Messages.GUI_PROPERTY_0));
+            result.append("</td>\n");
+            result.append("\t<td class=\"textbold\">");
+            result.append(key(Messages.GUI_PROPERTY_VALUE_0));
+            result.append("</td>\n");
+            result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
+            result.append(key(Messages.GUI_PROPERTY_USED_0));
+            result.append("</td>\n");
             result.append("</tr>\n");
             result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
 
@@ -484,7 +488,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (!"".equals(shownValue)) {
                 // create the JS output for a single property if not empty
                 result.append("\tdocument.getElementById(\"");
-                result.append(PREFIX_VALUE + curProp[0] + "\").value = \"");
+                result.append(PREFIX_VALUE);
+                result.append(curProp[0]);
+                result.append("\").value = \"");
                 result.append(CmsStringUtil.escapeJavaScript(shownValue));
                 result.append("\";\n");
             }
@@ -890,38 +896,55 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         result.append("\t<td style=\"white-space: nowrap;\">" + propName);
         result.append("</td>\n");
         result.append("\t<td class=\"maxwidth\">");
+        
+        // build text input field
         result.append("<input type=\"text\" ");
-        result.append(inputAttrs + " name=\"" + PREFIX_VALUE + propName + "\" id=\"" + PREFIX_VALUE + propName + "\"");
-        result.append(" onFocus=\"deleteResEntry('" + propName + "', '" + activeTab + "');\"");
-        result.append(" onBlur=\"checkResEntry('"
-            + propName
-            + "', '"
-            + activeTab
-            + "');\" onKeyup=\"checkValue('"
-            + propName
-            + "', '"
-            + activeTab
-            + "');\""
-            + disabled
-            + ">");
-        result.append("<input type=\"hidden\" name=\""
-            + PREFIX_STRUCTURE
-            + propName
-            + "\" id=\""
-            + PREFIX_STRUCTURE
-            + propName
-            + "\" value=\""
-            + CmsEncoder.escapeXml(valueStructure)
-            + "\">");
-        result.append("<input type=\"hidden\" name=\""
-            + PREFIX_RESOURCE
-            + propName
-            + "\" id=\""
-            + PREFIX_RESOURCE
-            + propName
-            + "\" value=\""
-            + CmsEncoder.escapeXml(valueResource)
-            + "\"></td>\n");
+        result.append(inputAttrs);
+        result.append(" name=\"");
+        result.append(PREFIX_VALUE);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_VALUE);
+        result.append(propName);
+        result.append("\"");
+        result.append(" onFocus=\"deleteResEntry('");
+        result.append(propName);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\"");
+        result.append(" onBlur=\"checkResEntry('");
+        result.append(propName);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\" onKeyup=\"checkValue('");
+        result.append(propName);
+        result.append("', '");
+        result.append(activeTab);
+        result.append("');\"");
+        result.append(disabled);
+        result.append(">");
+        
+        // build hidden input field for structure value
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_STRUCTURE);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_STRUCTURE);
+        result.append(propName);
+        result.append("\" value=\"");
+        result.append(CmsEncoder.escapeXml(valueStructure));
+        result.append("\">");
+        
+        // build hidden input field for resource value
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_RESOURCE);
+        result.append(propName);
+        result.append("\" id=\"");
+        result.append(PREFIX_RESOURCE);
+        result.append(propName);
+        result.append("\" value=\"");
+        result.append(CmsEncoder.escapeXml(valueResource));
+        result.append("\"></td>\n");
         result.append("\t<td class=\"textcenter\">");
         if (!"".equals(propValue)) {
             // show checkbox only for non empty value
@@ -929,21 +952,21 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             if (structurePanelName.equals(activeTab)) {
                 prefix = PREFIX_STRUCTURE;
             }
-            result.append("<input type=\"checkbox\" name=\""
-                + PREFIX_USEPROPERTY
-                + propName
-                + "\" id=\""
-                + PREFIX_USEPROPERTY
-                + propName
-                + "\" value=\"true\""
-                + disabled);
-            result.append(" checked=\"checked\" onClick=\"toggleDelete('"
-                + propName
-                + "', '"
-                + prefix
-                + "', '"
-                + activeTab
-                + "');\">");
+            result.append("<input type=\"checkbox\" name=\"");
+            result.append(PREFIX_USEPROPERTY);
+            result.append(propName);
+            result.append("\" id=\"");
+            result.append(PREFIX_USEPROPERTY);
+            result.append(propName);
+            result.append("\" value=\"true\"");
+            result.append(disabled);
+            result.append(" checked=\"checked\" onClick=\"toggleDelete('");
+            result.append(propName);
+            result.append("', '");
+            result.append(prefix);
+            result.append("', '");
+            result.append(activeTab);
+            result.append("');\">");
         } else {
             result.append("&nbsp;");
         }
@@ -1111,7 +1134,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
      * @return true, if the properties were successfully changed, otherwise false
      * @throws CmsException if editing is not successful
      */
-    private boolean performEditOperation(HttpServletRequest request) throws CmsException {
+    private boolean performDialogOperation(HttpServletRequest request) throws CmsException {
 
         List propertyDef = getCms().readAllPropertyDefinitions();
         boolean useTempfileProject = Boolean.valueOf(getParamUsetempfileproject()).booleanValue();

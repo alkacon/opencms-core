@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/10/19 09:50:28 $
- * Version: $Revision: 1.25.2.1 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.25.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,11 +50,11 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25.2.1 $ 
+ * @version $Revision: 1.25.2.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsReport extends CmsDialog {
+public class CmsReport extends CmsMultiDialog {
 
     /** Request parameter key for the type of the report. */
     public static final String PARAM_REPORT_CONTINUEKEY = "reportcontinuekey";
@@ -444,6 +444,17 @@ public class CmsReport extends CmsDialog {
         } else {
             setAction(ACTION_REPORT_BEGIN);
         }
+    }
+    
+    /**
+     * Returns always true and does nothing else, has to be implemented.<p>
+     * 
+     * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
+     */
+    protected boolean performDialogOperation() {
+        
+        // do nothing, has to be implemented
+        return true;
     }
 
 }

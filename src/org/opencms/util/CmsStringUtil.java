@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/10/19 09:13:34 $
- * Version: $Revision: 1.34.2.6 $
+ * Date   : $Date: 2005/10/28 12:07:37 $
+ * Version: $Revision: 1.34.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 
@@ -54,7 +55,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.6 $ 
+ * @version $Revision: 1.34.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -359,6 +360,43 @@ public final class CmsStringUtil {
                 }
             }
         }
+        return result;
+    }
+    
+    /**
+     * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
+     * 
+     * Example: formatResourceName("/myfolder/subfolder/index.html", 21) returns <code>/.../subfolder/index.html</code>.<p>
+     * @param name the resource name to format
+     * @param maxLength the maximum length of the resource name (without leading <code>/...</code>)
+     * @return the formatted resource name
+     */
+    public static String formatResourceName(String name, int maxLength) {
+        
+        if (name == null) {
+            return null;
+        }
+        if (name.length() <= maxLength) {
+            return name;
+        }
+        
+        String result = CmsResource.getName(name);
+        name = CmsResource.getParentFolder(name);
+        while (name != null) {
+            String part = CmsResource.getName(name);
+            
+            if ((part.length() + result.length()) <= maxLength) {
+                result = part + result;
+            } else {
+                result = "/" + result;
+                if (! part.equals("/")) {
+                    result = "/..." + result;
+                }
+                break;
+            }
+            name = CmsResource.getParentFolder(name);
+        }
+        
         return result;
     }
 

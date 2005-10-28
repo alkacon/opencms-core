@@ -16,6 +16,7 @@ break;
 
 
 case CmsLock.ACTION_CONFIRMED:
+case CmsLock.ACTION_WAIT:
 //////////////////// ACTION: main locking action
 
 	wp.actionToggleLock();
@@ -54,9 +55,12 @@ default:
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<%@ include file="includes/resourceinfo.txt" %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %><%
+if (wp.isMultiOperation()) { %>
+	<%@ include file="includes/multiresourcelist.txt" %><%
+} else { %>
+	<%@ include file="includes/resourceinfo.txt" %><%
+} %>
 
 <%= wp.dialogSpacer() %>
 
@@ -64,7 +68,7 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key(Messages.GUI_LOCK_CONFIRMATION_0) %>
+<%= wp.buildDialogText() %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

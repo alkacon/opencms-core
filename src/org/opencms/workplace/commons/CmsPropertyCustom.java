@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/10/13 08:27:33 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,11 +149,15 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         // create the column heads
         result.append("<table border=\"0\">\n");
         result.append("<tr>\n");
-        result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + key(Messages.GUI_PROPERTY_VALUE_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-            + key(Messages.GUI_PROPERTY_USED_0)
-            + "</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(key(Messages.GUI_PROPERTY_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(key(Messages.GUI_PROPERTY_VALUE_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
+        result.append(key(Messages.GUI_PROPERTY_USED_0));
+        result.append("</td>\n");
         result.append("</tr>\n");
         result.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
 
@@ -196,7 +200,9 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                     propValue = CmsStringUtil.escapeJavaScript(propValue);
                     // create the JS output for a single property
                     result.append("\tdocument.getElementById(\"");
-                    result.append(PREFIX_VALUE + curProperty + "\").value = \"");
+                    result.append(PREFIX_VALUE);
+                    result.append(curProperty);
+                    result.append("\").value = \"");
                     result.append(propValue);
                     result.append("\";\n");
                 }
@@ -211,7 +217,9 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 propValue = CmsStringUtil.escapeJavaScript(propValue);
                 // create the JS output for a single property
                 result.append("\tdocument.getElementById(\"");
-                result.append(PREFIX_VALUE + CmsPropertyDefinition.PROPERTY_NAVTEXT + "\").value = \"");
+                result.append(PREFIX_VALUE);
+                result.append(CmsPropertyDefinition.PROPERTY_NAVTEXT);
+                result.append("\").value = \"");
                 result.append(propValue);
                 result.append("\";\n");
             }
@@ -309,7 +317,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             || getActiveProperties().containsKey(CmsPropertyDefinition.PROPERTY_NAVPOS)) {
             result.append(" checked=\"checked\"");
         }
-        result.append(disabled + ">");
+        result.append(disabled);
+        result.append(">");
         result.append("</td>\n");
         result.append("\t<td class=\"textcenter\">");
         result.append("&nbsp;");
@@ -337,12 +346,12 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
         if (navPos == null) {
             navPos = "";
         }
-        result.append("<input type=\"hidden\" name=\""
-            + PREFIX_HIDDEN
-            + CmsPropertyDefinition.PROPERTY_NAVPOS
-            + "\" value=\""
-            + navPos
-            + "\">");
+        result.append("<input type=\"hidden\" name=\"");
+        result.append(PREFIX_HIDDEN);
+        result.append(CmsPropertyDefinition.PROPERTY_NAVPOS);
+        result.append("\" value=\"");
+        result.append(navPos);
+        result.append("\">");
         result.append("</td>\n");
         result.append("\t<td class=\"textcenter\">");
         result.append("&nbsp;");
@@ -379,47 +388,64 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
                 propValue = propValue.trim();
             }
             propValue = CmsEncoder.escapeXml(propValue);
+            
+            // create text input field
             result.append("<input type=\"text\" class=\"maxwidth\"");
-            result.append(" name=\"" + PREFIX_VALUE + propertyName + "\" id=\"" + PREFIX_VALUE + propertyName + "\"");
+            result.append(" name=\"");
+            result.append(PREFIX_VALUE);
+            result.append(propertyName);
+            result.append("\" id=\"");
+            result.append(PREFIX_VALUE);
+            result.append(propertyName);
+            result.append("\"");
             if (editable) {
-                result.append(" onKeyup=\"checkValue('" + propertyName + "');\"");
+                result.append(" onKeyup=\"checkValue('");
+                result.append(propertyName);
+                result.append("');\"");
             }
-            result.append(disabled + ">");
-            result.append("<input type=\"hidden\" name=\""
-                + PREFIX_HIDDEN
-                + propertyName
-                + "\" id=\""
-                + PREFIX_HIDDEN
-                + propertyName
-                + "\" value=\""
-                + propValue
-                + "\">");
+            result.append(disabled);
+            result.append(">");
+            
+            // create hidden field for value
+            result.append("<input type=\"hidden\" name=\"");
+            result.append(PREFIX_HIDDEN);
+            result.append(propertyName);
+            result.append("\" id=\"");
+            result.append(PREFIX_HIDDEN);
+            result.append(propertyName);
+            result.append("\" value=\"");
+            result.append(propValue);
+            result.append("\">");
             result.append("</td>\n");
             result.append("\t<td class=\"textcenter\">");
-            result.append("<input type=\"checkbox\" name=\""
-                + PREFIX_USEPROPERTY
-                + propertyName
-                + "\" id=\""
-                + PREFIX_USEPROPERTY
-                + propertyName
-                + "\" value=\"true\"");
+            
+            // create activate/deactivate checkbox
+            result.append("<input type=\"checkbox\" name=\"");
+            result.append(PREFIX_USEPROPERTY);
+            result.append(propertyName);
+            result.append("\" id=\"");
+            result.append(PREFIX_USEPROPERTY);
+            result.append(propertyName);
+            result.append("\" value=\"true\"");
             result.append(" checked=\"checked\"");
             if (editable) {
-                result.append(" onClick=\"toggleDelete('" + propertyName + "');\"");
+                result.append(" onClick=\"toggleDelete('");
+                result.append(propertyName);
+                result.append("');\"");
             }
             result.append(disabled + ">");
         } else {
             // property is not used, create an empty text input field
             result.append("<input type=\"text\" class=\"maxwidth\" ");
-            result.append("name=\""
-                + PREFIX_VALUE
-                + propertyName
-                + "\" id=\""
-                + PREFIX_VALUE
-                + propertyName
-                + "\""
-                + disabled
-                + "></td>\n");
+            result.append("name=\"");
+            result.append(PREFIX_VALUE);
+            result.append(propertyName);
+            result.append("\" id=\"");
+            result.append(PREFIX_VALUE);
+            result.append(propertyName);
+            result.append("\"");
+            result.append(disabled);
+            result.append("></td>\n");
             result.append("\t<td class=\"textcenter\">&nbsp;");
         }
         result.append(buildTableRowEnd());
@@ -446,7 +472,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         StringBuffer result = new StringBuffer(96);
         result.append("<tr>\n");
-        result.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">" + propertyName);
+        result.append("\t<td style=\"white-space: nowrap;\" unselectable=\"on\">");
+        result.append(propertyName);
         result.append("</td>\n");
         result.append("\t<td class=\"maxwidth\">");
         return result;

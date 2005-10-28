@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2005/09/21 16:34:34 $
- * Version: $Revision: 1.10.2.3 $
+ * Date   : $Date: 2005/10/28 12:07:37 $
+ * Version: $Revision: 1.10.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * @author Andreas Zahner 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.10.2.3 $
+ * @version $Revision: 1.10.2.4 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -217,6 +217,31 @@ public class TestCmsStringUtil extends TestCase {
 
         result = CmsStringUtil.extractXmlEncoding(xml);
         assertEquals(result, "ISO-8859-1");
+    }
+    
+    /**
+     * Tests for the resource name formatting.<p>
+     */
+    public void testFormatResourceName() {
+
+        String test;
+        test = "/xmlcontentdemo/list.jsp";
+        assertEquals("/.../list.jsp", CmsStringUtil.formatResourceName(test, 10));
+        test = "/xmlcontentdemo/list.jsp";
+        assertEquals("/xmlcontentdemo/list.jsp", CmsStringUtil.formatResourceName(test, 25));
+        test = "/averylongresourcename.jsp";
+        assertEquals("/averylongresourcename.jsp", CmsStringUtil.formatResourceName(test, 25));
+        test = "/folder1/folder2/averylongresourcename.jsp";
+        assertEquals("/.../averylongresourcename.jsp", CmsStringUtil.formatResourceName(test, 25));
+        test = "/myfolder/subfolder/index.html";
+        assertEquals("/.../subfolder/index.html", CmsStringUtil.formatResourceName(test, 21));
+        test = "/myfolder/subfolder/subsubfolder/index.html";
+        assertEquals("/.../subfolder/subsubfolder/index.html", CmsStringUtil.formatResourceName(test, 34));
+        assertEquals("/.../subsubfolder/index.html", CmsStringUtil.formatResourceName(test, 25));
+        assertEquals("/.../index.html", CmsStringUtil.formatResourceName(test, 21));
+        test = "/demopages/search-demo/example-documents/";
+        assertEquals("/.../search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 39)); 
+        assertEquals("/demopages/search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 40));
     }
 
     /**

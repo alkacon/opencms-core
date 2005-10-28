@@ -36,9 +36,12 @@ default:
 <%= wp.bodyStart("dialog") %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<%@ include file="includes/resourceinfo.txt" %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %><%
+if (wp.isMultiOperation()) { %>
+	<%@ include file="includes/multiresourcelist.txt" %><%
+} else { %>
+	<%@ include file="includes/resourceinfo.txt" %><%
+} %>
 
 <%= wp.dialogSpacer() %>
 
@@ -47,8 +50,6 @@ default:
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.buildDeleteSiblings() %>
-
-<%= wp.key(Messages.GUI_DELETE_CONFIRMATION_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

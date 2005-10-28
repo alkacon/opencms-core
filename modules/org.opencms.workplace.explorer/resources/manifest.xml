@@ -457,6 +457,28 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/lock_standard.jsp</source>
+			<destination>system/workplace/commons/lock_standard.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>693e3acf-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Fri, 21 Oct 2005 09:41:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Lock resource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/lockchange.jsp</source>
 			<destination>system/workplace/commons/lockchange.jsp</destination>
 			<type>jsp</type>
@@ -479,11 +501,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/lockchange_standard.jsp</source>
 			<destination>system/workplace/commons/lockchange_standard.jsp</destination>
 			<type>jsp</type>
-			<uuidresource>6934c4eb-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>693e3acf-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Fri, 21 Oct 2005 09:41:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -496,28 +517,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Change lock]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/commons/lock_standard.jsp</source>
-			<destination>system/workplace/commons/lock_standard.jsp</destination>
-			<type>jsp</type>
-			<uuidresource>693e3acf-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dialog - Lock resource]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1051,11 +1050,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/unlock_standard.jsp</source>
 			<destination>system/workplace/commons/unlock_standard.jsp</destination>
 			<type>jsp</type>
-			<uuidresource>69e9964b-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>693e3acf-f052-11d8-ba65-db38cc8f19d7</uuidresource>
+			<datelastmodified>Fri, 21 Oct 2005 09:41:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>

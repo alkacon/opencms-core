@@ -183,9 +183,11 @@
 # Settings for the new resource dialog and the contextmenus in the explorer view.
 # Configure which options are shown in the new resource dialog and if resources are 
 # visible and editable depending on the current users group(s). The defaultaccesscontrol
-# describes the default access control settings for all resourcestypes
+# describes the default access control settings for all resourcestypes.
+# The multicontextmenu describes the multi context menu configuration that is used if more
+# files are selected in the explorer view.
 -->
-<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol)>
+<!ELEMENT explorertypes (explorertype+, defaultaccesscontrol, multicontextmenu)>
 
 <!--
 # The resource type name, the key of the localized name and the used icon are required.
@@ -226,6 +228,13 @@
 # Enter the default permissions for OpenCms groups. 
 -->
 <!ELEMENT defaultaccesscontrol (accesscontrol)>
+
+<!--
+# Enter the default permissions for OpenCms groups. 
+-->
+<!ELEMENT multicontextmenu (
+	entry*,
+	separator*)*>
 
 
 <!--

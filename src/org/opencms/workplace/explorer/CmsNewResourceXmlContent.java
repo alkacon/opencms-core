@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -129,7 +129,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
-            setParamTitle(key("title.new"));
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_XMLCONTENT_0));
         }
     }
 

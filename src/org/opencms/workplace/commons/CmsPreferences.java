@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/10/19 09:55:34 $
- * Version: $Revision: 1.25.2.3 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.25.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.3 $ 
+ * @version $Revision: 1.25.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -810,30 +810,54 @@ public class CmsPreferences extends CmsTabDialog {
 
         result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
-        result.append("\t<td style=\"width: 25%;\">" + key(Messages.GUI_LABEL_USER_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getName() + "</td>\n");
-        result.append("\t<td style=\"width: 25%;\">" + key(Messages.GUI_LABEL_EMAIL_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">" + user.getEmail() + "</td>\n");
+        result.append("\t<td style=\"width: 25%;\">");
+        result.append(key(Messages.GUI_LABEL_USER_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">");
+        result.append(user.getName());
+        result.append("</td>\n");
+        result.append("\t<td style=\"width: 25%;\">");
+        result.append(key(Messages.GUI_LABEL_EMAIL_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\" style=\"width: 25%;\">");
+        result.append(user.getEmail());
+        result.append("</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key(Messages.GUI_LABEL_LASTNAME_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + user.getLastname() + "</td>\n");
-        result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">" + key("input.adress") + "</td>\n");
+        result.append("\t<td>");
+        result.append(key(Messages.GUI_LABEL_LASTNAME_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(user.getLastname());
+        result.append("</td>\n");
+        result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">");
+        result.append(key("input.adress"));
+        result.append("</td>\n");
 
         String address = user.getAddress();
 
-        result.append("\t<td rowspan=\"3\" class=\"textbold\" style=\"vertical-align: top;\">" + address + "</td>\n");
+        result.append("\t<td rowspan=\"3\" class=\"textbold\" style=\"vertical-align: top;\">");
+        result.append(address);
+        result.append("</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key(Messages.GUI_LABEL_FIRSTNAME_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + user.getFirstname() + "</td>\n");
+        result.append("\t<td>");
+        result.append(key(Messages.GUI_LABEL_FIRSTNAME_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(user.getFirstname());
+        result.append("</td>\n");
         result.append("</tr>\n");
 
         result.append("<tr>\n");
-        result.append("\t<td>" + key(Messages.GUI_LABEL_DESCRIPTION_0) + "</td>\n");
-        result.append("\t<td class=\"textbold\">" + user.getDescription() + "</td>\n");
+        result.append("\t<td>");
+        result.append(key(Messages.GUI_LABEL_DESCRIPTION_0));
+        result.append("</td>\n");
+        result.append("\t<td class=\"textbold\">");
+        result.append(user.getDescription());
+        result.append("</td>\n");
         result.append("</tr>\n");
         result.append("</table>\n");
 

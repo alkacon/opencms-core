@@ -36,28 +36,19 @@ default:
 %><%= wp.htmlStart("help.explorer.contextmenu.undo_changes") %>
 <%= wp.bodyStart("dialog") %>
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
-
-<%@ include file="includes/resourceinfo.txt" %>
-
-<%= wp.dialogSpacer() %>
-
-<%= wp.key(Messages.GUI_UNDO_LASTMODIFIED_INFO_3, new Object[] {wp.getFileName(), wp.getLastModifiedDate(), wp.getLastModifiedUser()}) %>
-
-<%= wp.dialogSpacer() %>
-
-<%= wp.key(Messages.GUI_UNDO_CONFIRMATION_0) %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %><%
+if (wp.isMultiOperation()) { %>
+	<%@ include file="includes/multiresourcelist.txt" %><%
+} else { %>
+	<%@ include file="includes/resourceinfo.txt" %><%
+} %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<table border=0>
-<tr><td>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
-</td></tr>
 
-<%= wp.buildCheckRecursive() %>
+<%= wp.buildDialogOptions() %>
 
-</table>
 <%= wp.dialogContentEnd() %>
 
 <%= wp.dialogButtonsOkCancel() %>

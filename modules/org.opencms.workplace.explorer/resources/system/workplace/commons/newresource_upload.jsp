@@ -12,7 +12,7 @@ case CmsNewResourceUpload.ACTION_APPLET:
 	
 	wp.setParamAction(wp.DIALOG_SUBMITFORM2);
 
-%><%= wp.htmlStart("help.explorer.new.file") %>
+%><%= wp.htmlStart() %>
 <%= wp.bodyStart("dialog") %>
 <table width="100%" height="100%" border="0" cellspacing="0" cellpadding="0">
 <tr><td>&nbsp;<br>&nbsp;</td></tr>
@@ -70,8 +70,8 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
 <!--
-	var labelFinish = "<%= wp.key("button.endwizard") %>";
-	var labelNext = "<%= wp.key("button.nextscreen") %>";
+	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
+	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -111,19 +111,19 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCENAME %>" id="newresfield" type="text" value="<%= wp.getParamNewResourceName() %>" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key("input.newfile.editproperties") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
 </table>
 
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.dialogBlockStart(wp.key("input.suggestfiletype")) %>
+<%= wp.dialogBlockStart(wp.key(Messages.GUI_NEWRESOURCE_UPLOAD_TYPE_0)) %>
 
 <%= wp.dialogWhiteBoxStart() %>
 <table border="0">
@@ -157,8 +157,8 @@ default:
 %><%= wp.htmlStart("help.explorer.new.file") %>
 <script type="text/javascript">
 <!--
-	var labelFinish = "<%= wp.key("button.endwizard") %>";
-	var labelNext = "<%= wp.key("button.nextscreen") %>";
+	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
+	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -185,7 +185,7 @@ default:
 	}
 	
 	function startTimeOut() {
-		// this is required for Mozilla since the onChange event dosent work there for <input type="file">
+		// this is required for Mozilla since the onChange event doesn't work there for <input type="file">
 		window.setTimeout("checkValue();startTimeOut();", 500);
 	}
 	
@@ -202,12 +202,12 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" size="60" class="maxwidth" onchange="checkValue();"></td>
 </tr> 
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_UNZIPFILE %>" id="unzipfile" type="checkbox" value="true" onclick="toggleButtonLabel();">&nbsp;<%= wp.key("button.unzip") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_UNZIPFILE %>" id="unzipfile" type="checkbox" value="true" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_BUTTON_NEWRESOURCE_UPLOAD_UNZIP_0) %></td>    
 </tr> 
 </table>
 

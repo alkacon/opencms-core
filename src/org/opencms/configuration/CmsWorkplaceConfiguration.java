@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/08/31 07:29:39 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.39.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
+import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -57,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39 $
+ * @version $Revision: 1.39.2.1 $
  * 
  * @since 6.0.0
  */
@@ -191,6 +192,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the message-forwarded node. */
     public static final String N_MESSAGEFORWARDED = "message-forwarded";
+    
+    /** The name of the context menu node. */
+    public static final String N_MULTICONTEXTMENU = "multicontextmenu";
 
     /** The name of the new resource node. */
     public static final String N_NEWRESOURCE = "newresource";
@@ -648,6 +652,94 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_ACCESSCONTROL
             + "/"
             + N_ACCESSENTRY, 1, A_PERMISSIONS);
+        
+        
+        
+        // ###################################
+        digester.addObjectCreate("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU, CmsExplorerContextMenu.class);
+        digester.addSetNext("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU, "setMultiContextMenu");
+
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            "addMenuEntry",
+            5);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            0,
+            A_KEY);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            1,
+            A_URI);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            2,
+            A_RULES);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            3,
+            A_TARGET);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            4,
+            A_ORDER);
+
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
+            "addMenuSeparator",
+            1);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE
+            + "/"
+            + N_EXPLORERTYPES
+            + "/"
+            + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
+            0,
+            A_ORDER);
+        
+        // ###################################
+        
+        
+        
+        
 
         // add default properties on structure setting
         digester.addCallMethod(
@@ -1288,6 +1380,32 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 accessEntryElement.addAttribute(A_PRINCIPAL, key);
                 accessEntryElement.addAttribute(A_PERMISSIONS, value);
             }
+        }
+        
+        // add the <multicontextmenu> node
+        Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);
+        i = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
+        while (i.hasNext()) {
+            CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
+            Element itemElement;
+            if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
+                // create an <entry> node
+                itemElement = contextMenuElement.addElement(N_ENTRY);
+                itemElement.addAttribute(A_KEY, item.getKey());
+                itemElement.addAttribute(A_URI, item.getUri());
+                if (item.getTarget() != null) {
+                    itemElement.addAttribute(A_TARGET, item.getTarget());
+                }
+                String rules = item.getRules();
+                if (CmsStringUtil.isEmptyOrWhitespaceOnly(rules)) {
+                    rules = "";
+                }
+                itemElement.addAttribute(A_RULES, rules);
+            } else {
+                // create a <separator> node
+                itemElement = contextMenuElement.addElement(N_SEPARATOR);
+            }
+            itemElement.addAttribute(A_ORDER, "" + item.getOrder());
         }
 
         // add the <default-preferences> user settings main node

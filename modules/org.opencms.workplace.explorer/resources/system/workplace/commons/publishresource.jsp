@@ -66,19 +66,18 @@ default:
 <%= wp.bodyStart("dialog", null) %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.getParamTitle()) %>
+<%= wp.dialogContentStart(wp.getParamTitle()) %><%
+if (wp.isMultiOperation()) { %>
+	<%@ include file="includes/multiresourcelist.txt" %><%
+} else { %>
+	<%= wp.key(Messages.GUI_PUBLISH_CONFIRMATION_3, new Object[] {wp.getParamResource(), wp.getParamModifieddate(), wp.getParamModifieduser()}) %><%
+} %>
 
 <form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<table border="0" cellpadding="2" cellspacing="0">
-<tr>
-	<td><%= wp.key(Messages.GUI_PUBLISH_CONFIRMATION_3, new Object[] {wp.getParamResource(), wp.getParamModifieddate(), wp.getParamModifieduser()}) %></td>
-</tr>
-
 <%= wp.buildCheckSiblings() %>
-</table>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/10/19 09:50:28 $
- * Version: $Revision: 1.72.2.3 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.72.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,6 +63,7 @@ import org.opencms.workplace.editors.CmsEditorHandler;
 import org.opencms.workplace.editors.CmsWorkplaceEditorManager;
 import org.opencms.workplace.editors.I_CmsEditorActionHandler;
 import org.opencms.workplace.editors.I_CmsEditorHandler;
+import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import org.opencms.workplace.galleries.A_CmsGallery;
@@ -92,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.3 $ 
+ * @version $Revision: 1.72.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -182,6 +183,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     /** The workplace localized messages (mapped to the locales). */
     private Map m_messages;
 
+    /** The configured multi context menu. */
+    private CmsExplorerContextMenu m_multiContextMenu;
+
     /** Indicates if the user managemet icon should be displayed in the workplace. */
     private boolean m_showUserGroupIcon;
 
@@ -225,6 +229,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_galleries = new HashMap();
         m_messages = new HashMap();
         m_workflowMessage = false;
+        m_multiContextMenu = new CmsExplorerContextMenu();
 
         // important to set this to null to avoid unneccessary overhead during configuration phase
         m_explorerTypeSettings = null;
@@ -647,6 +652,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Returns the configured multi context menu to use in the Explorer view.<p>
+     * 
+     * @return the configured multi context menu to use in the Explorer view
+     */
+    public CmsExplorerContextMenu getMultiContextMenu() {
+
+        return m_multiContextMenu;
+    }
+
+    /**
      * Returns the id of the temporary file project required by the editors.<p>
      * 
      * @return the id of the temporary file project required by the editors
@@ -1025,6 +1040,17 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         m_fileViewSettings = fileViewSettings;
         // disallow modifications of this "new original"
         m_fileViewSettings.setFrozen(true);
+    }
+
+    /**
+     * Sets the configured multi context menu to use in the Explorer view.<p>
+     * 
+     * @param multiContextMenu the configured multi context menu to use in the Explorer view
+     */
+    public void setMultiContextMenu(CmsExplorerContextMenu multiContextMenu) {
+
+        multiContextMenu.setMultiMenu(true);
+        m_multiContextMenu = multiContextMenu;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceFolder.java,v $
- * Date   : $Date: 2005/10/11 09:39:29 $
- * Version: $Revision: 1.18.2.2 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.18.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18.2.2 $ 
+ * @version $Revision: 1.18.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -211,7 +211,7 @@ public class CmsNewResourceFolder extends CmsNewResource {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
-            setParamTitle(key("title.newfolder"));
+            setParamTitle(key(Messages.GUI_NEWRESOURCE_FOLDER_0));
         }
     }
 

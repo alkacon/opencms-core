@@ -36,11 +36,11 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 	
 	wp.setParamAction(wp.DIALOG_SUBMITFORM2);
 
-%><%= wp.htmlStart("help.explorer.new.file") %>
+%><%= wp.htmlStart() %>
 <script type="text/javascript">
 <!--
-	var labelFinish = "<%= wp.key("button.endwizard") %>";
-	var labelNext = "<%= wp.key("button.nextscreen") %>";
+	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
+	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -83,12 +83,12 @@ case CmsNewResourceUpload.ACTION_NEWFORM2:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.name") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_RESOURCE_NAME_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCENAME %>" id="newresfield" type="text" value="<%= wp.getParamNewResourceName() %>" class="maxwidth" onkeyup="checkValue();"></td>
 </tr> 
 <tr>
 	<td>&nbsp;</td>
-	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key("input.newfile.editproperties") %></td>    
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
 </table>
 
@@ -114,13 +114,13 @@ default:
 //////////////////// ACTION: show the form to specify the upload file and the unzip option
 	
 	wp.setParamAction(wp.DIALOG_SUBMITFORM);
-        wp.setParamTitle(wp.key("title.newtable"));
+        wp.setParamTitle(wp.key(Messages.GUI_NEWRESOURCE_TABLE_0));
 
-%><%= wp.htmlStart("help.explorer.new.file") %>
+%><%= wp.htmlStart() %>
 <script type="text/javascript">
 <!--
-	var labelFinish = "<%= wp.key("button.endwizard") %>";
-	var labelNext = "<%= wp.key("button.nextscreen") %>";
+	var labelFinish = "<%= wp.key(Messages.GUI_BUTTON_ENDWIZARD_0) %>";
+	var labelNext = "<%= wp.key(Messages.GUI_BUTTON_CONTINUE_0) %>";
 
 	function checkValue() {
 		var resName = document.getElementById("newresfield").value;
@@ -163,12 +163,12 @@ default:
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.dialogBlockStart(wp.key("label.selectfile")) %>
+<%= wp.dialogBlockStart(wp.key(Messages.GUI_NEWRESOURCE_SELECT_FILE_0)) %>
 
 <table border="0" class="maxwidth">
 
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.file") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_NEWRESOURCE_FILE_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_UPLOADFILE %>" id="newresfield" type="file" value="" size="60" class="maxwidth" onchange="checkValue();"></td>
 </tr> 
 
@@ -178,12 +178,12 @@ default:
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.dialogBlockStart(wp.key("label.pastecsvcontent")) %>
+<%= wp.dialogBlockStart(wp.key(Messages.GUI_NEWRESOURCE_PASTE_CSV_0)) %>
 
 <table border="0" class="maxwidth">
 
 <tr>
-<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.data") %></td>
+<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_NEWRESOURCE_PASTE_DATA_0) %></td>
 
 <td class="maxwidth">
 <textarea id="csvcontent" class="maxwidth" name="<%= wp.PARAM_CSVCONTENT %>" cols="48" rows="7" onselect="checkValue();" onchange="checkValue();"><% 
@@ -200,14 +200,14 @@ default:
 
 <%= wp.dialogSpacer() %>
 
-<%= wp.dialogBlockStart(wp.key("label.conversionsettings")) %>
+<%= wp.dialogBlockStart(wp.key(Messages.GUI_NEWRESOURCE_CONVERSION_SETTINGS_0)) %>
 
 <table border="0" class="maxwidth">
 
 <%= wp.buildXsltSelect() %>
 
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.delimiter") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_NEWRESOURCE_CONVERSION_DELIMITER_0) %></td>
 	<td class="maxwidth">
           <%= wp.buildDelimiterSelect() %>
         </td>

@@ -642,7 +642,25 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file>		
+		</file>
+		<file>
+			<source>system/workplace/commons/includes/multiresourcelist.txt</source>
+			<destination>system/workplace/commons/includes/multiresourcelist.txt</destination>
+			<type>plain</type>
+			<uuidresource>7dc2353a-4166-11da-ab03-4714cf95dde1</uuidresource>
+			<datelastmodified>Thu, 20 Oct 2005 13:13:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Oct 2005 12:39:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Resource list include]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 		<file>
 			<source>system/workplace/commons/includes/report.jsp</source>
 			<destination>system/workplace/commons/includes/report.jsp</destination>
@@ -2594,6 +2612,28 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Top Frameset - Head Frame]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/top_js.jsp</source>
+			<destination>system/workplace/views/top_js.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>0e1e6273-4142-11da-b7df-4714cf95dde1</uuidresource>
+			<datelastmodified>Thu, 20 Oct 2005 08:41:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 20 Oct 2005 08:18:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Top Frameset - JavaScript]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

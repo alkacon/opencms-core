@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/10/25 18:38:49 $
- * Version: $Revision: 1.143.2.4 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.143.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.143.2.4 $
+ * @version $Revision: 1.143.2.5 $
  * 
  * @since 6.0.0 
  */
@@ -339,6 +339,19 @@ public final class CmsObject {
     public void changeUserType(String username, int userType) throws CmsException {
 
         m_securityManager.changeUserType(m_context, username, userType);
+    }
+
+    /**
+     * Checks if the given base publish list can be published by the current user.<p>
+     * 
+     * @param publishList the base publish list to check
+     * 
+     * @throws CmsException in case the publish permissions are not granted
+     */
+    public void checkPublishPermissions(CmsPublishList publishList) throws CmsException {
+
+        // now perform the permission test
+        m_securityManager.checkPublishPermissions(m_context, publishList);
     }
 
     /**
@@ -1307,9 +1320,29 @@ public final class CmsObject {
     public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings)
     throws CmsException {
 
+        return getPublishList(directPublishResources, directPublishSiblings, true);
+    }
+    
+    /**
+     * Returns a publish list with all new/changed/deleted resources of the current (offline)
+     * project that actually get published for a direct publish of a List of resources.<p>
+     * 
+     * @param directPublishResources the resources which will be directly published
+     * @param directPublishSiblings <code>true</code>, if all eventual siblings of the direct 
+     *                      published resources should also get published.
+     * @param publishSubResources indicates if sub-resources in folders should be published (for direct publish only)
+     * 
+     * @return a publish list
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings, boolean publishSubResources)
+    throws CmsException {
+
         return m_securityManager.fillPublishList(m_context, new CmsPublishList(
             directPublishResources,
-            directPublishSiblings));
+            directPublishSiblings,
+            publishSubResources));
     }
 
     /**
@@ -1575,13 +1608,14 @@ public final class CmsObject {
             // resource name is optional
             try {
                 resource = readResource(resourcename, CmsResourceFilter.ALL);
+                checkPublishPermissions(new CmsPublishList(Collections.singletonList(resource), false));
             } catch (CmsException e) {
                 // if any exception (e.g. security) occurs the result is false
                 return false;
             }
         }
-        // now perform the permission test
-        return m_securityManager.hasPublishPermissions(m_context, resource);
+        // no exception means permissions are granted
+        return true;
     }
 
     /**

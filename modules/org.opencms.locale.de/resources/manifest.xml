@@ -644,6 +644,30 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/explorer</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 28 Oct 2005 07:52:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Oct 2005 07:52:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/explorer/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/explorer/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>d83accd5-4787-11da-894f-4714cf95dde1</uuidresource>
+			<datelastmodified>Fri, 28 Oct 2005 08:14:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 28 Oct 2005 07:52:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workplace/help</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>

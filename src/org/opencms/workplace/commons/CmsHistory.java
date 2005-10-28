@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Attic/CmsHistory.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,9 +56,9 @@ import javax.servlet.jsp.PageContext;
  * </ul>
  * <p>
  *
- * @author  Armen Markarian 
+ * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,11 +67,11 @@ public class CmsHistory extends CmsDialog {
     /** Value for the action: restore the version. */
     public static final int ACTION_RESTORE_VERSION = 100;
     
-    /** The dialog type. */
-    public static final String DIALOG_TYPE = "history";
-    
     /** Request parameter value for the action: restore the version. */
     public static final String DIALOG_RESTORE = "restore";
+    
+    /** The dialog type. */
+    public static final String DIALOG_TYPE = "history";
     
     /** The value of the version ID parameter. */
     private String m_paramVersionid;
@@ -115,11 +115,11 @@ public class CmsHistory extends CmsDialog {
     }  
     
     /**
-     * Builds a list of Versions of the specified resource.<p>
+     * Builds a list of versions of the specified resource.<p>
      *  
      * @throws CmsException if operation was not successful
      * 
-     * @return the HTML String for the Version list
+     * @return the HTML String for the version list
      */
     public String buildVersionList() throws CmsException {
         
@@ -205,8 +205,18 @@ public class CmsHistory extends CmsDialog {
                 result.append("<td align=\"right\">");                
                 result.append("<table class=\"buttonbackground\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\">\n");
                 result.append("\t<tr>\n");
-                result.append(button("javascript:viewVersion('"+file.getRootPath()+"','"+versionId+"')", null, "preview.png", "messagebox.title.viewresource", 0));
-                result.append(button("javascript:restore('"+versionId+"')", null, "publish.png", "messagebox.title.restoreresource", 0));                
+                result.append(button(
+                    "javascript:viewVersion('" + file.getRootPath() + "','" + versionId + "')",
+                    null,
+                    "preview.png",
+                    "messagebox.title.viewresource",
+                    0));
+                result.append(button(
+                    "javascript:restore('" + versionId + "')",
+                    null,
+                    "publish.png",
+                    "messagebox.title.restoreresource",
+                    0));                
                 result.append("</tr>\n");
                 result.append("</table>\n");
                 result.append("</td>\n");
@@ -219,9 +229,9 @@ public class CmsHistory extends CmsDialog {
     }   
     
     /**
-     * Returns the paramVersionid.<p>
+     * Returns the versionid parameter.<p>
      *
-     * @return the paramVersionid
+     * @return the versionid parameter
      */
     public String getParamVersionid() {
 
@@ -229,9 +239,9 @@ public class CmsHistory extends CmsDialog {
     }
     
     /**
-     * Sets the paramVersionid.<p>
+     * Sets the versionid parameter.<p>
      *
-     * @param paramVersionid the paramVersionid to set
+     * @param paramVersionid the versionid parameter
      */
     public void setParamVersionid(String paramVersionid) {
 

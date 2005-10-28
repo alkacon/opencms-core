@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/06/26 13:20:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/10/28 12:07:37 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,14 +56,21 @@ var link_uploadresource = "/system/workplace/commons/newresource_upload.jsp";
 var link_showresource = "/system/workplace/commons/displayresource.jsp";
 
 var last_id = -1;
-var last_id_style = "";
 
 var active_mouse_id = -1;
+
+var selectedResources = new Array();
+
+var selectedStyles = new Array();
+
+var contextOpen = false;
 
 var displayResource = "/";
 
 var g_histLoc = 0;
 var g_history = null;
+
+var m_rootFolder = "/";
 
 
 function show_help(){
@@ -75,7 +82,8 @@ function windowStore(body, head, tree, files) {
 	this.body = body;
 	this.head = head;
 	this.tree = tree;
-	this.files = files;
+	this.files = files.document;
+	this.fileswin = files;
 }
 
 
@@ -175,7 +183,6 @@ function getDisplayResource(param) {
 	return displayResource;
 }
 
-var m_rootFolder = "/";
 
 function getRootFolder() {
 	if (m_rootFolder == null) {
@@ -184,6 +191,7 @@ function getRootFolder() {
 		return m_rootFolder;
 	}
 }
+
 
 function setRootFolder(value) {
 	m_rootFolder = value;
@@ -223,7 +231,7 @@ function histGoBack() {
 
 
 function dU(doc, pages, actpage) {
-	last_id = -1;
+
 	vi.locklength = 0;
 	vi.doc = doc;
 	updateWindowStore();
@@ -245,9 +253,9 @@ function updateWindowStore() {
 	if ((mode == "projectview") || (mode == "galleryview")) {
                 var theDoc = null;
                 if (window.body.admin_content.tool_content) {
-                   theDoc = window.body.admin_content.tool_content.document;
+                   theDoc = window.body.admin_content.tool_content;
                 } else {
-                   theDoc = window.body.admin_content.document;
+                   theDoc = window.body.admin_content;
                 }
                 if (window.body.admin_head) {
  			win = new windowStore(window.body.document, window.body.admin_head.document, theTree, theDoc);
@@ -256,7 +264,7 @@ function updateWindowStore() {
                 }
 	} else {
 		try {
-			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files.document);
+			win = new windowStore(window.body.document, window.body.explorer_head.document, theTree, window.body.explorer_body.explorer_files);
 		} catch (e) {}
 	}
 }
@@ -303,23 +311,412 @@ function setId(id) {
 }
 
 
-// handle the right mouse click
+// handle the context menu to show
 function handleContext(e) {
-	if ((last_id >= 0) || (active_mouse_id >= 0)) {
-		if (active_mouse_id < 0) closeMenu();
-		if (!e) var e = window.body.explorer_body.explorer_files.event;
-		showContext(window.body.explorer_body.explorer_files.document, active_mouse_id);
-		e.cancelBubble = true;
-		if (e.stopPropagation) e.stopPropagation();
-		return false;
+
+	if (selectedResources.length > 1) {
+		// multi context menu
+		showContext(win.files, "multi", false);
+	} else {
+		// single context menu
+		if (active_mouse_id >= 0) {
+			showContext(win.files, active_mouse_id, true);
+		}
 	}
+	// stop event bubbling
+	e.cancelBubble = true;
+	if (e.stopPropagation) {
+		e.stopPropagation();
+	}
+	return false;
 }
 
 
-// handle the left mouse click
+// builds the HTML for a context menu (single or multi context menu)
+function showContext(doc, i, isSingleContext) {
+
+	var spanstart    = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\">";
+	var spanstartina = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\">";
+	var spanend      = "</span>";
+
+	var menu = "";
+	// the type id of the current context menu
+	var typeId;
+	// the resource name needed for single context menu
+	var resourceName;
+
+	var access = true;
+	if (isSingleContext) {
+		resourceName = getResourceAbsolutePath(i);
+		typeId = vi.liste[i].type;
+		if ((typeof vi.resource[typeId] == 'undefined') || (vi.resource[typeId].editable == false)) {
+			// the user has no access to this resource type
+			access = false;
+		}
+	} else {
+		// multi context menu uses special menu type ID
+		typeId = "multi";
+		// set resource list in hidden form field value
+		var resourceList = "";
+		var isFirst = true;
+		for (i=0; i<selectedResources.length; i++) {	
+			if (!isFirst) {
+				resourceList += "|";
+			}
+			resourceList += getResourceAbsolutePath(selectedResources[i]);
+			isFirst = false;
+
+		}
+		doc.forms["formmulti"].elements["resourcelist"].value = resourceList; 
+	}
+
+	if (access) {
+		menu += "<div class=\"cm2\">";
+		menu += "<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">";
+
+		var lastWasSeparator = false;
+		var firstEntryWritten = false;
+		for (a = 0; a < vi.menus[typeId].items.length; a++) {
+
+			// 0:unchanged, 1:changed, 2:new, 3:deleted
+			var result = -1;
+
+			if (vi.menus[typeId].items[a].name == "-") {
+				result = 1;
+			} else if (vr.actProject == vr.onlineProject) {
+				// online project
+				if (isSingleContext) {
+					if (vi.menus[typeId].items[a].rules.charAt(0) == 'i') {
+						result = 2;
+					} else {
+						if (vi.menus[typeId].items[a].rules.charAt(0) == 'a') {
+							if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
+							&& (vi.liste[i].linkType == 0)) {
+								// special case: resource without siblings
+								result = 2;
+							} else {
+								result = (typeId == 0)?3:4;
+							}
+						}
+					}
+				} else {
+					// multi context menu
+					result = 2;
+				}
+			} else {
+				// offline project
+				if (isSingleContext) {
+					if (! vi.liste[i].isInsideCurrentProject) {
+						// resource is from online project
+						if (vi.menus[typeId].items[a].rules.charAt(1) == 'i') {
+							result = (vi.menus[typeId].items[a].name == "-")?1:2;
+						} else {
+							if (vi.menus[typeId].items[a].rules.charAt(1) == 'a') {
+								if (vi.menus[typeId].items[a].name == "-") {
+									result = 1;
+								} else {
+									if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
+									&& (vi.liste[i].linkType == 0)) {
+										// special case: resource without siblings
+										result = 2;
+									} else {
+										result = (typeId == 0)?3:4;
+									}
+								}
+							}
+						}
+					} else {
+						// resource is in this project => we have to differ 4 cases
+						if (vi.liste[i].lockedBy == '') {
+							// resource is not locked...
+							if (autolock) {
+								// autolock is enabled
+								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 6);
+							} else {
+								// autolock is disabled
+								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 2);
+							}
+						} else {
+							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
+							if (vi.liste[i].lockedInProjectId == vr.actProject) {
+								// locked in this project from ...
+								if (vi.liste[i].lockedBy == vr.userName) {
+									// ... the current user ...
+									if (isSharedLock) {
+										// ... as shared lock
+										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
+									} else {
+										// ... as exclusive lock
+										display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 10);
+									}
+
+								} else {
+									// ... someone else
+									display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
+								}
+							} else {
+								// locked in an other project ...
+								display = vi.menus[typeId].items[a].rules.charAt(vi.liste[i].state + 14);
+							}
+						}
+						if (display == 'i') {
+							result = 2;
+						} else {
+							if (display == 'a') {
+								if ((vi.menus[typeId].items[a].link.indexOf("showlinks=true") > 0)
+								&& (vi.liste[i].linkType == 0)) {
+									// special case: resource without siblings
+									result = 2;
+								} else {
+									result = (typeId == 0)?3:4;
+								}
+							}
+						}
+					}
+				} else {
+					// multi context menu
+					result = 3;
+				}
+			}
+			switch (result) {
+				case 1:
+					// separator line
+					if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[typeId].items.length - 1))) {
+						menu += "<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>";
+						lastWasSeparator = true;
+					}
+					break;
+				case 2:
+					// inactive entry
+					menu += "<tr><td>" + spanstartina + vi.menus[typeId].items[a].name + spanend + "</td></tr>";
+					lastWasSeparator = false;
+					firstEntryWritten = true;
+					break;
+				case 3:
+				case 4:
+					// active entry
+					var link;
+					if (isSingleContext) {
+						link = "href=\"" + vi.menus[typeId].items[a].link;
+						if (link.indexOf("?") > 0) {
+							link += "&";
+						} else {
+							link += "?";
+						}
+
+						link += "resource=" + resourceName + "\"";
+						if (result == 4) {
+							// href has a target set
+							link += " target=" + vi.menus[typeId].items[a].target;
+						}
+
+						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
+					} else {
+						// multi context menu
+						link = "href=\"javascript:top.submitMultiAction('" + vi.menus[typeId].items[a].link + "');\"";
+						menu += "<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[typeId].items[a].name + spanend + "</a></td></tr>";
+					}
+					lastWasSeparator = false;
+					firstEntryWritten = true;
+					break;
+				default:
+					// alert("Undefined result for menu " + a);
+					break;
+			}
+		} // end for ...
+		menu += "</table></div>";
+		
+		var el = doc.getElementById("contextmenu");
+		el.innerHTML = menu;
+		var x = 12;
+		el.style.left = x + "px";
+		el.style.visibility = "visible";
+		// calculate menu y position after setting visibility to avoid display errors
+		var y = getMenuPosY(doc, active_mouse_id);
+		el.style.top =  y + "px";
+	} // end if (access)
+	last_id = active_mouse_id;
+	contextOpen = true;
+}
+
+
+// closes a context menu
+function closeContext() {
+
+	var cm = win.files.getElementById("contextmenu");
+	cm.style.visibility = "hidden";
+	contextOpen = false;
+}
+
+
+// submits a selected multi action
+function submitMultiAction(dialog) {
+
+	var doc = win.files;
+	doc.forms["formmulti"].action = dialog;
+	doc.forms["formmulti"].submit();
+}
+
+
+// handle the mouse clicks
 function handleOnClick(e) {
-	if (active_mouse_id != last_id) closeMenu();
-	return true;
+
+	e = checkEvent(e);
+	if (contextOpen) {
+		// close eventually open context menu
+		closeContext();	
+		if (active_mouse_id == last_id) {
+			// clicked on same icon again, leave handler
+			return false;
+		}
+	}
+	// unselect resources;
+	toggleSelectionStyle(false);
+	selectedStyles = new Array();
+
+	if (active_mouse_id < 0) {
+		// no icon clicked, reset selected resources and leave handler
+		last_id = -1;
+		selectedResources = new Array();
+		return true;
+	}
+
+	if (e.shiftKey) {
+		// shift pressed, mark resources
+		if (last_id >= 0) {
+			// mark resources from last clicked to current one
+			var incrementor = 1;
+			if (last_id < active_mouse_id) {
+				incrementor = -1;
+			}
+			var count = active_mouse_id;
+			selectedResources = new Array();
+			selectedResources[selectedResources.length] = count;
+			while (count != last_id) {
+				count += incrementor;
+				selectedResources[selectedResources.length] = count;
+
+			}
+		} else {
+			// first click, mark single resource	
+			selectedResources = new Array();
+			selectedResources[selectedResources.length] = active_mouse_id;
+		}
+		last_id = active_mouse_id;
+	} else if (e.ctrlKey) {
+		// control key pressed, add or remove resource from marked resources
+		var found = false;
+		for (i=0; i<selectedResources.length; i++) {
+			if (selectedResources[i] == active_mouse_id) {
+				// resource was previously selected, remove it from selection
+				selectedResources[i] = -1;
+				found = true;
+				i = selectedResources.length;
+			}
+		}
+		if (found) {
+			// remove resource from selection array, rebuild array
+			var tempResources = new Array();
+			for (i=0; i<selectedResources.length; i++) {
+				if (selectedResources[i] > -1) {
+					tempResources[tempResources.length] = selectedResources[i];
+				}
+			}
+			selectedResources = tempResources;
+		} else {
+			// not found, add resource to selection
+			selectedResources[selectedResources.length] = active_mouse_id;
+		}
+		last_id = active_mouse_id;
+	} else {
+		// common click, mark currently clicked resource if not clicked before
+		if (active_mouse_id != last_id) {
+			var clickedMarked = false;
+			for (i=0; i<selectedResources.length; i++) {
+				if (selectedResources[i] == active_mouse_id) {
+					clickedMarked = true;
+				}
+			}
+			if (!clickedMarked || selectedResources.length <= 1) {
+				// left mouse button clicked or only one resource selected, select the current resource
+				selectedResources = new Array();
+				selectedResources[selectedResources.length] = active_mouse_id;
+			}
+		}
+		toggleSelectionStyle(true);
+		return handleContext(e);
+	}
+	toggleSelectionStyle(true);
+
+	return false;
+}
+
+
+// check if the event object is available and gets it if necessary
+function checkEvent(e) {
+	// check event
+	if (!e) {
+		try {
+		e = win.fileswin.event;
+		} catch (e) {
+			updateWindowStore();
+			e = win.fileswin.event;
+		} 
+	}
+	return e;
+}
+
+
+// toggles the style of the selected resources
+function toggleSelectionStyle(isSelected) {
+
+	var doc = win.files;
+	var styleName = "selected";
+	if (! isSelected) {
+		styleName = "unselected";
+	}
+
+	for (i=0; i<selectedResources.length; i++) {
+		if (selectedResources[i] != -1) {
+			var ah = null;
+			var last_id_style = "";
+			if (mode == "projectview") {
+				ah = doc.getElementById("td3_" + selectedResources[i]);
+			} else {
+				ah = doc.getElementById("a" + selectedResources[i]);
+				if (ah == null) {
+					ah = doc.getElementById("td3_" + selectedResources[i]);
+				}
+			}
+			if (ah != null) {
+				last_id_style = ah.className;
+				if (isSelected) {
+					selectedStyles[selectedResources[i]] = last_id_style;
+				}
+
+				if (isSelected) {
+					ah.className = styleName;
+				} else {
+					ah.className = selectedStyles[selectedResources[i]];
+				}
+
+				var rowStyle = styleName;
+				if (last_id_style == "fd") {
+					rowStyle += " fd";
+				}
+			}
+
+			for (k=0; k<4; k++) {
+				// change style of columns 0 to 3
+				try {
+					var elem = doc.getElementById("td" + k + "_" + selectedResources[i]);
+					if (k != 3 || elem.className != "fd") {
+						elem.className = rowStyle;
+					}
+				} catch (e) {}
+			}
+		}
+	}
 }
 
 
@@ -334,7 +731,7 @@ function printList(wo) {
 	+ top.frames.head.encoding
 	+ "\">\n"
 	+ "<script language=\"JavaScript\">\n"
-	+ "document.oncontextmenu = top.handleContext;"
+	+ "document.oncontextmenu = top.handleOnClick;"
 	+ "document.onclick = top.handleOnClick;"
 	+ "</script>"
 	+ "<style type='text/css'>\n"
@@ -396,7 +793,7 @@ function printList(wo) {
 		var pos = returnplace.indexOf("/commons/");
 		if (pos >= 0) {
 			returnplace = returnplace.substring(0, pos + 1) + returnplace.substring(pos + 9);
-			
+
 			var pos2 = returnplace.indexOf("?");
 			if (pos2 < 0) {
 				pos2 = returnplace.length + 1;
@@ -406,7 +803,7 @@ function printList(wo) {
 			returnplace = loc + returnplace.substring(pos2);
 		}
 
-	}  
+	}
 	returnplace = returnplace.replace(/\?/g, "%3F");
 	returnplace = returnplace.replace(/\&/g, "%26");
 	returnplace = returnplace.replace(/\=/g, "%3D");
@@ -434,8 +831,8 @@ function printList(wo) {
 	if (vi.check_dateExpired)		wo.writeln("<td nowrap unselectable=\"on\" class=\"t125\">&nbsp;" + vr.descr[10] + "&nbsp;</td>");
 	if (vi.check_state)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t75\">&nbsp;"  + vr.descr[11] + "&nbsp;</td>");
 	if (vi.check_lockedBy)			wo.writeln("<td nowrap unselectable=\"on\" class=\"t100\">&nbsp;"  + vr.descr[12] + "&nbsp;</td>");
-	
-	
+
+
 	wo.writeln("</tr>");
 
 	for (var i = 0; i < vi.liste.length; i++) {
@@ -453,14 +850,14 @@ function printList(wo) {
 			// type exists but the user has no access to this resource type
 			noaccess = true;
 			vi_icon = vi.resource[plainresid].icon;
-			vi_text = vi.resource[vi.liste[i].type].text;			
+			vi_text = vi.resource[vi.liste[i].type].text;
 		} else {
 			vi_icon = vi.resource[vi.liste[i].type].icon;
 			vi_text = vi.resource[vi.liste[i].type].text;
 		}
 
 
-		ssclass = "class = \"";
+		ssclass = "class=\"";
 
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
 			ssclass += "fp";
@@ -474,12 +871,12 @@ function printList(wo) {
 			if (vi.liste[i].state == 3)
 			ssclass += "fd";
 		}
-		
+
 
 		ssclass += "\"";
-		 
+
 		if ((vi.liste[i].layoutstyle) == 1) ssclass += " style=\"font-style:italic;\"";
-		if ((vi.liste[i].layoutstyle) == 2) ssclass += " style=\"font-style:italic;\"";	
+		if ((vi.liste[i].layoutstyle) == 2) ssclass += " style=\"font-style:italic;\"";
 
 		var vi_bg = "";
 		if (vi.liste[i].linkType != 0) {
@@ -494,8 +891,9 @@ function printList(wo) {
 
 		wo.writeln("<tr>");
 		wo.write("<td unselectable=\"on\" id=\"td0_" + i + "\"" + vi_bg + ">");
+
 		if (showKon && !noaccess) {
-			wo.write("<a style=\"cursor:pointer;\" onclick=\"top.showContext(document, " + i + ");\"");
+			wo.write("<a style=\"cursor:pointer;\"");
 			wo.write(" onmouseover=\"top.setId(" + i + ")\" onmouseout=\"top.setId(-1)\">");
 		}
 		wo.write("<img id=\"ic" + i + "\" src='" + vi_icon + "' border=0 width=16 height=16>");
@@ -506,7 +904,7 @@ function printList(wo) {
 
 		if (vi.liste[i].isInsideCurrentProject) {
 			wo.write("<td unselectable=\"on\" id=\"td1_" + i + "\">");
-			// the ressource is in the current project, so display the lock and project state
+			// the resource is in the current project, so display the lock and project state
 
 			var lockIcon;
 
@@ -567,7 +965,7 @@ function printList(wo) {
 			} else {
 				if ((mode == "galleryview") || showlinks) {
 					wo.writeln(vi.liste[i].path);
-				} else if (mode == "projectview" ) {	
+				} else if (mode == "projectview" ) {
 					wo.write("<a href=\"javascript:top.openwinfull('");
 					wo.write(vi.liste[i].path);
 					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
@@ -604,168 +1002,31 @@ function printList(wo) {
 
 	wo.writeln("</tr></table>");
 
-	for (i = 0; i < vi.liste.length; i++) {
+	// create multi context menu form
+	wo.writeln("<form name=\"formmulti\" action=\"\" method=\"post\">");
+	wo.writeln("<input type=\"hidden\" name=\"resourcelist\" value=\"\">");
+	wo.writeln("</form>");
 
-		var access = true;
-		if ((typeof vi.resource[vi.liste[i].type] == 'undefined') || (vi.resource[vi.liste[i].type].editable == false)) {
-			// the user has no access to this resource type
-			access = false;
-		}
+	// create div for context menus
+	wo.writeln("<div id=\"contextmenu\" class=\"cm\"></div>");
 
-		if (access) {
-			wo.writeln("<div id=\"men" + i + "\" class=\"cm\"><div class=\"cm2\">");
-			wo.writeln("<table cellpadding=\"0\" cellspacing=\"0\" border=\"0\" class=\"cm\">");
-
-			var resourceName = vr.actDirectory + vi.liste[i].name;
-			if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
-				if (vi.liste[i].type == 0) {
-					resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
-				} else {
-					resourceName = vi.liste[i].path;
-				}
-			}
-			var lastWasSeparator = false;
-			var firstEntryWritten = false;
-			for (a = 0; a < vi.menus[vi.liste[i].type].items.length; a++) {
-				
-				// 0:unchanged, 1:changed, 2:new, 3:deleted
-				var result = -1;
-				
-				if (vi.menus[vi.liste[i].type].items[a].name == "-") {
-					result = 1;
-				} else if (vr.actProject == vr.onlineProject) {
-					// online project
-					if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'i') {
-						result = 2;
-					} else {							
-						if (vi.menus[vi.liste[i].type].items[a].rules.charAt(0) == 'a') {
-							if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-							&& (vi.liste[i].linkType == 0)) {
-								// special case: resource without siblings
-								result = 2;
-							} else {
-								result = (vi.liste[i].type == 0)?3:4;
-							}						
-						}
-					}
-				} else {
-					// offline project
-					if (! vi.liste[i].isInsideCurrentProject) {
-						// resource is from online project
-						if (vi.menus[vi.liste[i].type].items[a].rules.charAt(1) == 'i') {
-							result = (vi.menus[vi.liste[i].type].items[a].name == "-")?1:2;
-						} else {
-							if (vi.menus[vi.liste[i].type].items[a].rules.charAt(1) == 'a') {
-								if (vi.menus[vi.liste[i].type].items[a].name == "-") {
-									result = 1;
-								} else {
-									if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-									&& (vi.liste[i].linkType == 0)) {
-										// special case: resource without siblings
-										result = 2;
-									} else {
-										result = (vi.liste[i].type == 0)?3:4;
-									}
-								}
-							}
-						}
-					} else {
-						// resource is in this project => we have to differ 4 cases
-						if (vi.liste[i].lockedBy == '') {
-							// resource is not locked...
-							if (autolock) {
-								// autolock is enabled
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 6);
-							} else {
-								// autolock is disabled
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 2);
-							}
-						} else {
-							var isSharedLock = (vi.liste[i].lockType == 1 || vi.liste[i].lockType == 2)?true:false;
-							if (vi.liste[i].lockedInProjectId == vr.actProject) {
-								// locked in this project from ...
-								if (vi.liste[i].lockedBy == vr.userName) {
-									// ... the current user ...
-									if (isSharedLock) {
-										// ... as shared lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-									} else {
-										// ... as exclusive lock
-										display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 10);
-									}
-
-								} else {
-									// ... someone else
-									display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-								}
-							} else {
-								// locked in an other project ...
-								display = vi.menus[vi.liste[i].type].items[a].rules.charAt(vi.liste[i].state + 14);
-							}
-						}
-						if (display == 'i') {
-							result = 2;
-						} else {
-							if (display == 'a') {
-								if ((vi.menus[vi.liste[i].type].items[a].link.indexOf("showlinks=true") > 0)
-								&& (vi.liste[i].linkType == 0)) {
-									// special case: resource without siblings
-									result = 2;
-								} else {
-									result = (vi.liste[i].type == 0)?3:4;
-								}
-							}
-						}
-					}
-				}
-				switch (result) {
-					case 1:
-						// separator line
-						if ((firstEntryWritten) && (!lastWasSeparator) && (a != (vi.menus[vi.liste[i].type].items.length - 1))) {
-							wo.writeln("<tr><td class=\"cmsep\"><span class=\"cmsep\"></div></td></tr>");
-							lastWasSeparator = true;
-						}
-						break;
-					case 2:
-						// inactive entry
-						wo.writeln("<tr><td>" + spanstartina + vi.menus[vi.liste[i].type].items[a].name + spanend + "</td></tr>");
-						lastWasSeparator = false;
-						firstEntryWritten = true;
-						break;
-					case 3:
-					case 4:
-						// active entry
-						link = "href=\"" + vi.menus[vi.liste[i].type].items[a].link;
-						if (link.indexOf("/action/") == -1) {
-							if (link.indexOf("?") > 0) {
-								link += "&";
-							} else {
-								link += "?";
-							}
-						} else {
-							link += "&lasturl=" + returnplace + "&";
-						}
-						link += "resource=" + resourceName + "\"";
-						if (result == 4) {
-							// href has a target set
-							link += " target=" + vi.menus[vi.liste[i].type].items[a].target;
-						}
-
-						wo.writeln("<tr><td><a class=\"cme\" " + link + ">" + spanstart + vi.menus[vi.liste[i].type].items[a].name + spanend + "</a></td></tr>");
-						lastWasSeparator = false;
-						firstEntryWritten = true;
-						break;
-					default:
-						// alert("Undefined result for menu " + a);
-						break;
-				}
-			} // end for ...
-			wo.writeln("</table></div></div>");
-		} // end if (access)
-	} // end for ...
-
-	wo.writeln("<br></body></html>");
+	wo.write("<br></body></html>");
 	wo.close();
+}
+
+
+// Returns the absolute path of the resource with the index i
+function getResourceAbsolutePath(i) {
+
+	var resourceName = vr.actDirectory + vi.liste[i].name;
+	if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
+		if (vi.liste[i].type == 0) {
+			resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
+		} else {
+			resourceName = vi.liste[i].path;
+		}
+	}	
+	return resourceName;
 }
 
 
@@ -893,14 +1154,14 @@ function displayHead(doc, pages, actpage){
 	+ "input.location { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; width: 99% }\n"
 	+ "select.location { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; font-weight: normal; width: 50px }\n"
 	+ "</style>\n"
-	
+
 	+ "<script type=\"text/javascript\">\n"
 	+ "<!--\n"
 	+ "function doSet() {\n"
 	+ "\tdocument.urlform.resource.value=\"" + getDisplayResource("true") + "\";\n"
 	+ "}\n"
 	+ "//-->\n"
-	+ "</script>\n"	
+	+ "</script>\n"
 
 	+ "</head>\n"
 	+ "<body class=\"buttons-head\" onload=\"window.setTimeout('doSet()',50);\">\n"
@@ -923,19 +1184,19 @@ function displayHead(doc, pages, actpage){
 	+ "</body>\n</html>";
 
 	doc.open();
-	doc.writeln(html);
+	doc.write(html);
 	doc.close();
 }
 
 
 // formats a button in one of 3 styles (type 0..2)
 function button(href, target, image, label, type) {
-	
+
 	if (image != null && image.indexOf('.') == -1) {
         // append default suffix for images
         image += ".png";
     }
-	
+
 	var result = "<td>";
 	switch (type) {
 		case 1:
@@ -1068,6 +1329,8 @@ function setDirectory(id, dir){
 		dir = dir.substring(0, lastSlashPos + 1);
 	}
 	vr.actDirectory = dir;
+	last_id = -1;
+	selectedResources = new Array();
 }
 
 
@@ -1111,107 +1374,6 @@ function openthisfolderflat(thisdir){
 }
 
 
-// displays a context menu
-function showContext(doc, id) {
-
-	if (id == last_id) {
-		// just close menu if clicked twice
-		closeMenu();
-		return;
-	} else {
-		// close currently open menu (if any) before opening new one
-		closeMenu();
-	}
-
-	// get menu position
-	x = 12;
-	y = findPosY(doc.getElementById("ic" + id)) + 16;
-	var scrollTop = 0;
-	var clientHeight = 0;
-
-	if (doc.documentElement && (doc.documentElement.scrollTop || doc.documentElement.clientHeight)) {
-		scrollTop = doc.documentElement.scrollTop;
-		clientHeight = doc.documentElement.clientHeight;
-	} else if (doc.body) {
-		scrollTop = doc.body.scrollTop;
-		clientHeight = doc.body.clientHeight;
-	}
-
-	var el = doc.getElementById("men" + id);
-	var elementHeight = el.scrollHeight;
-	var oy = y;
-	var scrollSize = 20;
-
-	if ((y + elementHeight + scrollSize) > (clientHeight + scrollTop)) {
-		y = y - 16 - elementHeight;
-	}
-	if (y < scrollTop) {
-		y = (clientHeight + scrollTop) - (elementHeight + scrollSize);
-	}
-	if (y < scrollTop) {
-		y = scrollTop;
-	}
-
-	var ah = null;
-	if (mode == "projectview") {
-		ah = doc.getElementById("td3_" + id);
-	} else {
-		ah = doc.getElementById("a" + id);
-		if (ah == null) {
-			ah = doc.getElementById("td3_" + id);
-		}
-	}
-	if (ah != null) {
-		last_id_style = "" + ah.className;
-		ah.className = "selected";
-	}
-
-	var selectedClassName = "selected";
-	if (last_id_style == "fd") {
-		selectedClassName += " fd";
-	}
-
-	for (i=0; i<4; i++) {
-		doc.getElementById("td" + i + "_" + id).className = selectedClassName;
-		if (last_id >= 0) {
-			doc.getElementById("td" + i + "_" + last_id).className = "unselected";
-		}
-	}
-
-	el.style.left = x + "px";
-	el.style.top =  y + "px";
-	el.style.visibility = "visible";
-
-	last_id = id;
-	active_mouse_id = id;
-}
-
-
-// closes the currently open context menu
-function closeMenu() {
-	if(last_id >= 0) {
-		doc = win.files;
-		doc.getElementById("men" + last_id).style.visibility = "hidden";
-		for (i=0; i<4; i++) {
-			doc.getElementById("td" + i + "_" + last_id).className = "unselected";
-		}
-		var ah = null;
-		if (mode == "projectview") {
-			ah = doc.getElementById("td3_" + last_id);
-		} else {
-			ah = doc.getElementById("a" + last_id);
-			if (ah == null) {
-				ah = doc.getElementById("td3_" + last_id);
-			}
-		}
-		if (ah != null) {
-			ah.className = last_id_style;
-		}
-		last_id = -1;
-	}
-}
-
-
 // returns the X position of an object in the body
 function findPosX(obj) {
 	var curleft = 0;
@@ -1239,6 +1401,38 @@ function findPosY(obj) {
 		curtop += obj.y;
 	}
 	return curtop;
+}
+
+
+function getMenuPosY(doc, id) {
+
+	var y = findPosY(doc.getElementById("ic" + id)) + 16;
+	var scrollTop = 0;
+	var clientHeight = 0;
+
+	if (doc.documentElement && (doc.documentElement.scrollTop || doc.documentElement.clientHeight)) {
+		scrollTop = doc.documentElement.scrollTop;
+		clientHeight = doc.documentElement.clientHeight;
+	} else if (doc.body) {
+		scrollTop = doc.body.scrollTop;
+		clientHeight = doc.body.clientHeight;
+	}
+
+	var el = doc.getElementById("contextmenu");
+	var elementHeight = el.scrollHeight;
+	var oy = y;
+	var scrollSize = 20;
+
+	if ((y + elementHeight + scrollSize) > (clientHeight + scrollTop)) {
+		y = y - 16 - elementHeight;
+	}
+	if (y < scrollTop) {
+		y = (clientHeight + scrollTop) - (elementHeight + scrollSize);
+	}
+	if (y < scrollTop) {
+		y = scrollTop;
+	}
+	return y;
 }
 
 
@@ -1307,21 +1501,21 @@ function setFormValue(filename) {
 	var curForm;
 	// the document of the target form
 	var curDoc;
-	// update the window store	
+	// update the window store
 	updateWindowStore();
-	
+
 	if (treeDoc != null) {
 		curDoc = treeDoc;
 	} else {
 		curDoc = win.files;
 	}
-	
+
 	if (treeForm != null) {
 		curForm = curDoc.forms[treeForm];
 	} else {
 		curForm = curDoc.forms[0];
 	}
-		
+
 	if (curForm.elements[treeField]) {
 		curForm.elements[treeField].value = filename;
 	} else if (curForm.folder) {
@@ -1329,7 +1523,7 @@ function setFormValue(filename) {
 	} else if (curForm.target) {
 		curForm.target.value = filename;
 	}
-	
+
 	// this calls the fillValues() function in the explorer window, if present
 	if (window.body.explorer_body && window.body.explorer_body.explorer_files) {
 		var filesDoc = window.body.explorer_body.explorer_files;
@@ -1337,7 +1531,7 @@ function setFormValue(filename) {
 			filesDoc.fillValues(filename);
 		}
 	}
-	
+
 	// this fills the parameter from the hidden field to the select box
 	if (window.body.admin_content) {
 		if (treeField == "tempChannel") {
@@ -1346,7 +1540,7 @@ function setFormValue(filename) {
 			try {
 				window.body.admin_content.copySelection();
 			} catch (e) {
-				
+
 			}
 		}
 	}

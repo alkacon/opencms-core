@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/09/16 09:01:26 $
- * Version: $Revision: 1.84.2.1 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.84.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,9 @@
 
 package org.opencms.workplace;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResourceFilter;
-import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -45,7 +43,6 @@ import org.opencms.site.CmsSiteManager;
 import org.opencms.synchronize.CmsSynchronizeSettings;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -71,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.84.2.1 $ 
+ * @version $Revision: 1.84.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,34 +109,6 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
-     * Builds the Javascript for the Workplace context menus.<p>
-     * 
-     * @return the Javascript for the Workplace context menus
-     */
-    public String buildContextMenues() {
-
-        StringBuffer result = new StringBuffer();
-        // get all available resource types
-        List allResTypes = OpenCms.getResourceManager().getResourceTypes();
-        for (int i = 0; i < allResTypes.size(); i++) {
-            // loop through all types
-            I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
-            int resTypeId = type.getTypeId();
-            // get explorer type settings for current resource type
-            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
-            if (settings != null) {
-                // append the context menu of the current resource type 
-                result.append(settings.getContextMenu().getJSEntries(
-                    getCms(),
-                    settings,
-                    resTypeId,
-                    getSettings().getUserSettings().getLocale()));
-            }
-        }
-        return result.toString();
-    }
-
-    /**
      * Returns the javascript code for the broadcast message alert in the foot of the workplace.<p>
      * 
      * @return javascript code showing an alert box when the foot load
@@ -162,18 +131,6 @@ public class CmsFrameset extends CmsWorkplace {
             result.append("\n//-->\n</script>");
         }
         return result.toString();
-    }
-
-    /**
-     * Returns the file settings for the Workplace explorer view.<p>
-     * 
-     * @return the file settings for the Workplace explorer view
-     */
-    public int getExplorerSettings() {
-
-        CmsUserSettings settings = new CmsUserSettings(getCms());
-        int value = settings.getExplorerSettings();
-        return value;
     }
 
     /**

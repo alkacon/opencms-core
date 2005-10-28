@@ -47,7 +47,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 2.0.0 
  */
@@ -180,6 +180,20 @@ public class CmsMultiException extends CmsException {
             }
         }
         return result.toString();
+    }
+    
+    /**
+     * Returns the individual message (if set) or an empty String.<p>
+     * 
+     * @param locale the locale for the message to generate
+     * @return the individual message (if set) or an empty String
+     */
+    public String getMessage(Locale locale) {
+
+        if (hasIndividualMessage()) {
+            return m_message.key(locale);
+        }
+        return "";
     }
 
     /**

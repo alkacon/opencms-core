@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/util/CmsErrorBean.java,v $
- * Date   : $Date: 2005/06/28 19:28:31 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/10/28 12:07:36 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.jsp.util;
 import org.opencms.file.CmsObject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsMultiException;
 import org.opencms.main.I_CmsThrowable;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsMacroResolver;
@@ -47,7 +48,7 @@ import java.util.Properties;
  *
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +123,7 @@ public class CmsErrorBean {
         StringBuffer result = new StringBuffer(512);
 
         String reason = Messages.get().key(m_locale, Messages.GUI_REASON_0, new Object[] {});
-
+        
         if (CmsStringUtil.isNotEmpty(m_errorMessage)) {
             result.append(m_errorMessage);
             result.append("\n").append(reason).append(": ");
@@ -150,10 +151,27 @@ public class CmsErrorBean {
     public String getMessage(Throwable t) {
 
         if (t instanceof I_CmsThrowable && ((I_CmsThrowable)t).getMessageContainer() != null) {
+            StringBuffer result = new StringBuffer(256);
+            if (m_throwable instanceof CmsMultiException) {
+                CmsMultiException exc = (CmsMultiException)m_throwable;
+                String message = exc.getMessage(m_locale);
+                if (CmsStringUtil.isNotEmpty(message)) {
+                    result.append(message);
+                    result.append('\n');
+                }
+                
+            }
+            
             I_CmsThrowable cmsThrowable = (I_CmsThrowable)t;
-            return cmsThrowable.getLocalizedMessage(m_locale);
+            result.append(cmsThrowable.getLocalizedMessage(m_locale));
+            return result.toString();
         } else {
-            return t.getMessage();
+            String message = t.getMessage();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(message)) {
+                // no error message found (e.g. for NPE), provide default message text
+                message = Messages.get().key(m_locale, Messages.GUI_ERROR_UNKNOWN_0);
+            }
+            return message;
         }
     }
 
