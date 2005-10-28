@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlValidationErrorHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/27 14:52:20 $
+ * Version: $Revision: 1.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.xml.sax.SAXParseException;
  * 
  * Exceptions caused by warnings are suppressed (but written to the log if level is set to WARN).<p>
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,7 +69,7 @@ public class CmsXmlValidationErrorHandler extends XMLErrorHandler {
         String message = e.getMessage();
         if (CmsStringUtil.isNotEmpty(message)) {
 
-            if (message.startsWith("sch-props-correct.2:")) {
+            if (message.startsWith("sch-props-correct.2")) {
                 // HACK: multiple schema includes cause errors in validation with Xerces 2
                 // the schema nevertheless is usable 
                 // redirect this error to be a warning
