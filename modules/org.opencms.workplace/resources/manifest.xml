@@ -750,6 +750,24 @@
 			</accesscontrol>
 		</file>
 		<file>
+			<source>system/workplace/commons/style/diff.css</source>
+			<destination>system/workplace/commons/style/diff.css</destination>
+			<type>jsp</type>
+			<uuidresource>f89bd6f1-7ca3-64d9-a63e-8541f206774d</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[true]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/style/menu.css</source>
 			<destination>system/workplace/commons/style/menu.css</destination>
 			<type>jsp</type>
