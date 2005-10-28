@@ -103,6 +103,7 @@
 			<resource uri="/system/workplace/views/top_fs.jsp"/>
 			<resource uri="/system/workplace/views/workplace.jsp"/>
 			<resource uri="/system/workplace/views/top_head.jsp"/>
+			<resource uri="/system/workplace/views/top_js.jsp"/>
 			<resource uri="/system/workplace/locales/en/readme.txt"/>
 		</resources>
 		<parameters/>
