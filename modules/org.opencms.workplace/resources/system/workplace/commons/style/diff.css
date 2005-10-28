@@ -1,56 +1,42 @@
-div.diff-added {
+div.df-add {
 	font-family: monospace;
+	font-size: 12px;
 	background-color: #ccffcc;
 	border-left: 4px solid darkgreen;
 	display: inline;
 }
-div.diff-removed {
+div.df-rem {
 	font-family: monospace;
+	font-size: 12px;
 	background-color: #fdc6c6;
 	border-left: 4px solid darkred;
 	display: inline;
 }
-div.diff-skipped {
+div.df-skp {
 	font-family: monospace;
+	font-size: 12px;
 	background-color: #fdfdc6;
 	border-left: 4px solid olive;
 	display: inline;
 }
-div.diff-unchanged {
+div.df-unc {
 	font-family: monospace;
+	font-size: 12px;
 	border-left: 4px solid lightgrey;
 	display: inline;
 }
-span.diff-added {
+span.df-add {
 	font-family: monospace;
+	font-size: 12px;
 	background-color: #58ff87;
-	display: inline;
 }
-span.diff-removed {
+span.df-rem {
 	font-family: monospace;
+	font-size: 12px;
 	background-color: #ff8686;
 	text-decoration: line-through;
-	display: inline;
 }
-span.diffpage-nochanges {
+span.df-unc {
 	font-family: monospace;
-	font-style: italic;
-	display: inline;
-}
-div.diffpage-contentdiff-title {
-	font-family: monospace;
-	border: 1px solid gray;
-	text-align: center;
-	border-bottom: 0px;
-	display: inline;
-}
-div.diffpage-contentdiff {
-	font-family: monospace;
-	border: 1px solid gray;
-	display: inline;
-}
-span.diffpage-removedfield {
-	font-family: monospace;
-	text-decoration: line-through;
-	display: inline;
+	font-size: 12px;
 }
