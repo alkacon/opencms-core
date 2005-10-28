@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.39.2.1 $
+ * Date   : $Date: 2005/10/28 13:57:39 $
+ * Version: $Revision: 1.39.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.1 $
+ * @version $Revision: 1.39.2.2 $
  * 
  * @since 6.0.0
  */
@@ -653,9 +653,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_ACCESSENTRY, 1, A_PERMISSIONS);
         
-        
-        
-        // ###################################
+        // add multi context menu
         digester.addObjectCreate("*/"
             + N_WORKPLACE
             + "/"
@@ -733,13 +731,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + "/"
             + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
             0,
-            A_ORDER);
-        
-        // ###################################
-        
-        
-        
-        
+            A_ORDER);        
 
         // add default properties on structure setting
         digester.addCallMethod(
