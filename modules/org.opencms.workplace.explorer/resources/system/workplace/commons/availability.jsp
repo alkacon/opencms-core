@@ -141,12 +141,13 @@ function toggleInheritInfo() {
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
 <%= wp.dialogContentStart(wp.getParamTitle()) %><%
+String checked = "";
 if (wp.isMultiOperation()) { %>
 	<%@ include file="includes/multiresourcelist.txt" %><%
+	checked = " checked=\"checked\"";	
 } else { %>
 	<%@ include file="includes/resourceinfo.txt" %><%
 } %>
-
 <%= wp.dialogSpacer() %>
 
 <%= wp.buildCheckRecursive() %>
@@ -164,7 +165,7 @@ if (wp.isMultiOperation()) { %>
     </tr>
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_LEAVE_RELEASE_0) %>
-		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_LEAVERELEASE %>" id="<%= wp.PARAM_LEAVERELEASE %>" value="true" onclick="checkReleaseFields('<%= wp.PARAM_LEAVERELEASE %>');"></td>
+		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_LEAVERELEASE %>" id="<%= wp.PARAM_LEAVERELEASE %>" value="true" onclick="checkReleaseFields('<%= wp.PARAM_LEAVERELEASE %>');"<%= checked %>></td>
     </tr>
     
     <tr>
@@ -178,7 +179,7 @@ if (wp.isMultiOperation()) { %>
     </tr>
     <tr>
 		<td style="white-space: nowrap;" unselectable="on"><%= wp.key(Messages.GUI_AVAILABILITY_LEAVE_EXPIRE_0) %>
-		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_LEAVEEXPIRE %>" id="<%= wp.PARAM_LEAVEEXPIRE %>" value="true" onclick="checkExpireFields('<%= wp.PARAM_LEAVEEXPIRE %>');"></td>
+		<td colspan="2"><input type="checkbox" name="<%= wp.PARAM_LEAVEEXPIRE %>" id="<%= wp.PARAM_LEAVEEXPIRE %>" value="true" onclick="checkExpireFields('<%= wp.PARAM_LEAVEEXPIRE %>');"<%= checked %>></td>
     </tr>
 </table>
 <%= wp.dialogBlockEnd() %>
