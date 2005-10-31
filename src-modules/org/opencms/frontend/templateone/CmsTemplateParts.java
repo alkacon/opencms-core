@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/08/09 07:39:00 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2005/10/31 15:17:11 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,26 +105,34 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      */
     public static CmsTemplateParts getInstance(CmsJspActionElement jsp) {
 
-        CmsTemplateParts parts = (CmsTemplateParts)OpenCms.getRuntimeProperty(RUNTIME_PROPERTY_NAME);
-        if (parts == null) {
-            // instance not found in runtime properties, create new instance
-            parts = new CmsTemplateParts();
-            OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, parts);
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_NOT_FOUND_0));
+        try {
+            CmsTemplateParts parts = (CmsTemplateParts)OpenCms.getRuntimeProperty(RUNTIME_PROPERTY_NAME);
+            if (parts == null) {
+                // instance not found in runtime properties, create new instance
+                parts = new CmsTemplateParts();
+                OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, parts);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_NOT_FOUND_0));
+                }
+            } else if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_FOUND_0));
             }
-        } else if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_FOUND_0));
+            // set the project String depending on the current project (offline or online)
+            if (jsp.getRequestContext().currentProject().isOnlineProject()) {
+                parts.setProject(PROJECT_ONLINE);
+            } else {
+                parts.setProject(PROJECT_OFFLINE);
+            }
+            // set the jsp action element
+            parts.setJsp(jsp);
+            return parts;
+        } catch (Throwable t) {
+            // error initializing instance, return new Object to avoid exceptions
+            if (LOG.isErrorEnabled()) {
+                LOG.error(Messages.get().key(Messages.LOG_INITIALIZE_PARTS_ERR_1, t));
+            }
+            return new CmsTemplateParts();
         }
-        // set the project String depending on the current project (offline or online)
-        if (jsp.getRequestContext().currentProject().isOnlineProject()) {
-            parts.setProject(PROJECT_ONLINE);
-        } else {
-            parts.setProject(PROJECT_OFFLINE);
-        }
-        // set the jsp action element
-        parts.setJsp(jsp);
-        return parts;
     }
 
     /**
@@ -172,24 +180,24 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      */
     public String includePart(String target, String element, String layout) {
 
-        // generate a unique key for the included part
-        String partKey = generateKey(target, element, layout);
-        
-        // try to get the part String from the stored Map
+        if (OpenCms.getRunLevel() < OpenCms.RUNLEVEL_4_SERVLET_ACCESS) {
+            // OpenCms is not in "default" operating mode, return empty String
+            return "";
+        }
         String part = null;
+        String partKey = "";
+        
         try {
+            // generate a unique key for the included part
+            partKey = generateKey(target, element, layout);
+            // try to get the part
             part = (String)m_parts.get(partKey);
             if (part == null) {
                 // part not found, get the content of the JSP element and put it to the Map store
                 part = getJsp().getContent(target, element, getJsp().getRequestContext().getLocale());
                 if (part != null && !part.startsWith(CmsMessages.UNKNOWN_KEY_EXTENSION)) {
-                    // only add part to map if a valid content was found
-                    if (!partKey.equals(KEY_ILLEGAL)) {
-                        // only store part if valid part key was found
-                        m_parts.put(partKey, part);
-                        // save modified class to runtime properties
-                        OpenCms.setRuntimeProperty(RUNTIME_PROPERTY_NAME, this);
-                    }
+                    // add part to map if a valid content was found
+                    setPart(partKey, part);
                 } else {
                     // prevent displaying rubbish
                     part = "";
@@ -201,10 +209,11 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                 LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_FOUND_1, partKey));
             }
         } catch (Throwable t) {
+            // catch all errors to avoid displaying rubbish
+            part = "";
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
             }
-            part = "";
         }
         return part;
     }

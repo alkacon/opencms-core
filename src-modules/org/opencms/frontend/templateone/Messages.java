@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:43 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/10/31 15:17:11 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,6 +68,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_INCLUDE_PART_NOT_FOUND_1 = "LOG_INCLUDE_PART_NOT_FOUND_1";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_INITIALIZE_PARTS_ERR_1 = "LOG_INITIALIZE_PARTS_ERR_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MICROSITE_FOLDER_NOT_FOUND_0 = "LOG_MICROSITE_FOLDER_NOT_FOUND_0";
