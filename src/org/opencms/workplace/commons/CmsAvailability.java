@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/10/31 09:20:15 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +122,6 @@ public class CmsAvailability extends CmsMultiDialog {
     private String m_paramEnablenotification;
     private String m_paramExpiredate;
     private String m_paramLeaveexpire;
-    private String m_paramLeaverelease;
     private String m_paramModifysiblings;
     private String m_paramNotificationinterval;
     private String m_paramRecursive;
@@ -516,16 +515,6 @@ public class CmsAvailability extends CmsMultiDialog {
     }
 
     /**
-     * Returns the value of the leaverelease parameter.<p>
-     * 
-     * @return the value of the leaverelease parameter
-     */
-    public String getParamLeaverelease() {
-
-        return m_paramLeaverelease;
-    }
-
-    /**
      * Returns the value of the modify siblings parameter, 
      * or null if this parameter was not provided.<p>
      * 
@@ -622,16 +611,6 @@ public class CmsAvailability extends CmsMultiDialog {
     public void setParamLeaveexpire(String paramLeaveexpire) {
 
         m_paramLeaveexpire = paramLeaveexpire;
-    }
-
-    /**
-     * Sets the value of the leaverelease parameter.<p>
-     * 
-     * @param paramLeaverelease the value of the leaverelease parameter
-     */
-    public void setParamLeaverelease(String paramLeaverelease) {
-
-        m_paramLeaverelease = paramLeaverelease;
     }
 
     /**
@@ -746,12 +725,14 @@ public class CmsAvailability extends CmsMultiDialog {
         // get the new release date for the resource(s) from request parameter
         long releaseDate = CmsResource.DATE_RELEASED_DEFAULT;
         boolean resetReleaseDate = Boolean.valueOf(getParamResetrelease()).booleanValue();
-        boolean leaveReleaseDate = Boolean.valueOf(getParamLeaverelease()).booleanValue();
-        if (!resetReleaseDate && !leaveReleaseDate) {
+        boolean leaveReleaseDate = false;
+        if (!resetReleaseDate) {
             try {
-                if ((getParamReleasedate() != null)
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamReleasedate()))
                     && (!getParamReleasedate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
                     releaseDate = getCalendarDate(getParamReleasedate(), true);
+                } else {
+                    leaveReleaseDate = true;
                 }
             } catch (ParseException e) {
                 throw new CmsException(
@@ -763,11 +744,14 @@ public class CmsAvailability extends CmsMultiDialog {
         // get the new expire date for the resource(s) from request parameter
         long expireDate = CmsResource.DATE_EXPIRED_DEFAULT;
         boolean resetExpireDate = Boolean.valueOf(getParamResetexpire()).booleanValue();
-        boolean leaveExpireDate = Boolean.valueOf(getParamLeaveexpire()).booleanValue();
-        if (!resetExpireDate && !leaveExpireDate) {
+        boolean leaveExpireDate = false;
+        if (!resetExpireDate) {
             try {
-                if ((getParamExpiredate() != null) && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
+                if ((CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamExpiredate())) 
+                    && (!getParamExpiredate().startsWith(CmsTouch.DEFAULT_DATE_STRING))) {
                     expireDate = getCalendarDate(getParamExpiredate(), true);
+                } else {
+                    leaveExpireDate = true;
                 }
             } catch (ParseException e) {
                 throw new CmsException(
