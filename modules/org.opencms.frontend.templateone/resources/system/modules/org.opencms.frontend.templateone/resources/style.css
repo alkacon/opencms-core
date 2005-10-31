@@ -71,6 +71,9 @@ String infoBoxWidth = cms.getOptionalConfigValue("infobox.width", "145");
 String infoBoxModulesHeadline = cms.getOptionalConfigValue("infobox.modules.headline.size", "10");
 String infoBoxModulesFont = cms.getOptionalConfigValue("infobox.modules.font.size", "8");
 
+// optional additional CSS file
+String cssUri = cms.getConfigValue("css.optional.uri", null);
+
 %>/* old styles */
 .headerwhite { font-size: 8pt; color: #ffffff; }
 .headerinfo  { font-size: 8pt; text-indent: 7px; text-align: left; }	
@@ -415,3 +418,14 @@ textarea.onlineform { height: 80px; }
 /* default styles */
 .nowrap { white-space: nowrap; }
 .bold { font-weight: bold; }
+<% if (cssUri != null && cms.getCmsObject().existsResource(cssUri)) { %>
+/* optional additional styles */
+<% 
+	String additionalStyles = null;
+	try {
+		additionalStyles = cms.getContent(cssUri);
+	} catch (Exception e) {}
+	if (additionalStyles != null) {
+		out.print(additionalStyles);
+	}
+} %>
