@@ -327,7 +327,7 @@ td.navleft {
 	vertical-align: top;
 	background-color: <%= navLeftBg %>;
 	background-image: url(<%= navLeftImgBgUri %>);
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
     border-right: 1px solid <%= mainBorder %>;
 }
 
