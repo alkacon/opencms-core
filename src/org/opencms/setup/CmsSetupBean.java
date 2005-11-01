@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/10/27 11:02:46 $
- * Version: $Revision: 1.44.2.5 $
+ * Date   : $Date: 2005/11/01 23:35:15 $
+ * Version: $Revision: 1.44.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,32 +92,32 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.5 $ 
+ * @version $Revision: 1.44.2.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommands {
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_BACKUP = "backup" + File.separator;
+    public static final String FOLDER_BACKUP = "backup" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_CONFIG = "config" + File.separator;
+    public static final String FOLDER_CONFIG = "config" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_DATABASE = "database" + File.separator;
+    public static final String FOLDER_DATABASE = "database" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_LIB = "lib" + File.separator;
+    public static final String FOLDER_LIB = "lib" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_LOGS = "logs" + File.separator;
+    public static final String FOLDER_LOGS = "logs" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_SETUP = "setup" + File.separator;
+    public static final String FOLDER_SETUP = "setup" + File.separatorChar;
 
     /** Folder constant name.<p> */
-    public static final String FOLDER_WEBINF = "WEB-INF" + File.separator;
+    public static final String FOLDER_WEBINF = "WEB-INF" + File.separatorChar;
 
     /** DB provider constant. */
     public static final String GENERIC_PROVIDER = "generic";
@@ -343,13 +343,14 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /**
      * Returns the URI of a database config page (in step 3) for a specified database key.<p>
      * 
-     * 
      * @param key the database key (e.g. "mysql", "generic" or "oracle")
      * @return the URI of a database config page
      */
     public String getDatabaseConfigPage(String key) {
 
-        return FOLDER_DATABASE + key + File.separator + "step_4_database_setup.jsp";
+        // don't use File.separatorChar here, result must be a valid URL with "/" path delimiters
+        String configUri = FOLDER_DATABASE + key + File.separatorChar + "step_4_database_setup.jsp";
+        return configUri.replace(File.separatorChar, '/');
     }
 
     /**
@@ -412,7 +413,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                         if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
                             for (int j = 0; j < REQUIRED_DB_SETUP_FILES.length; j++) {
                                 setupFile = new File(childResource.getPath()
-                                    + File.separator
+                                    + File.separatorChar
                                     + REQUIRED_DB_SETUP_FILES[j]);
 
                                 if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
@@ -1717,7 +1718,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                         if (childResource.exists() && childResource.isDirectory() && childResource.canRead()) {
                             for (int j = 0; j < REQUIRED_DB_SETUP_FILES.length; j++) {
                                 setupFile = new File(childResource.getPath()
-                                    + File.separator
+                                    + File.separatorChar
                                     + REQUIRED_DB_SETUP_FILES[j]);
 
                                 if (!setupFile.exists() || !setupFile.isFile() || !setupFile.canRead()) {
@@ -1741,11 +1742,11 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                     databaseKey = (String)m_databaseKeys.get(i);
                     configPath = m_webAppRfsPath
                         + "setup"
-                        + File.separator
+                        + File.separatorChar
                         + "database"
-                        + File.separator
+                        + File.separatorChar
                         + databaseKey
-                        + File.separator
+                        + File.separatorChar
                         + "database.properties";
 
                     try {
