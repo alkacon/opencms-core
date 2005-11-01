@@ -242,7 +242,10 @@
         </attribute>
         <attribute>
             <name>editable</name>
-        </attribute>        
+        </attribute>
+        <attribute>
+            <name>cacheable</name>
+        </attribute>                    
     </tag>        
 
     <tag>
