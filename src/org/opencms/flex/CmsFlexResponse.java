@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/10/19 09:39:23 $
- * Version: $Revision: 1.40.2.2 $
+ * Date   : $Date: 2005/11/01 23:33:56 $
+ * Version: $Revision: 1.40.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,14 +55,14 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import org.apache.commons.logging.Log;
 
 /**
- * Wrapper class for a HttpServletResponse.<p>
+ * Wrapper class for a HttpServletResponse, required in order to process JSPs from the OpenCms VFS.<p>
  *
  * This class wrapps the standard HttpServletResponse so that it's output can be delivered to
  * the CmsFlexCache.<p>
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40.2.2 $ 
+ * @version $Revision: 1.40.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
          */
         public CmsServletOutputStream() {
 
-            this.m_servletStream = null;
+            m_servletStream = null;
             clear();
         }
 
@@ -101,7 +101,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
          */
         public CmsServletOutputStream(ServletOutputStream servletStream) {
 
-            this.m_servletStream = servletStream;
+            m_servletStream = servletStream;
             clear();
         }
 
@@ -250,7 +250,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     /** Indicates if this response is suspended (probably because of a redirect). */
     private boolean m_suspended;
 
-    /** State bit indicating whether content type has been set, type may only be set once according to spec. */    
+    /** State bit indicating whether content type has been set, type may only be set once according to spec. */
     private boolean m_typeSet;
 
     /** Indicates that the OutputStream m_out should write ONLY in the buffer. */
@@ -317,7 +317,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             Iterator i = headers.keySet().iterator();
             while (i.hasNext()) {
                 String key = (String)i.next();
-                ArrayList l = (ArrayList)headers.get(key);
+                List l = (List)headers.get(key);
                 for (int j = 0; j < l.size(); j++) {
                     if ((j == 0) && (((String)l.get(0)).startsWith(SET_HEADER))) {
                         String s = (String)l.get(0);
@@ -630,8 +630,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         // only if this is the "Top-Level" element, do set the content type    
         // otherwise an included JSP could reset the type with some unwanted defaults  
         if (!m_typeSet && m_isTopElement) {
-            int todo = 0;
-            // TODO: check if the typeSet fix does not introduce unwanted side-effects on main target platfroms
+            // type must be set only once, otherwise some Servlet containers (not Tomcat) generate errors
             m_typeSet = true;
             super.setContentType(type);
             return;
@@ -971,16 +970,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
         if (m_out == null) {
             if (!m_writeOnlyToBuffer) {
-                // We can use the parents output stream
+                // we can use the parents output stream
                 if (m_cachingRequired || (m_controller.getResponseStackSize() > 1)) {
-                    // We are allowed to cache our results (probably to contruct a new cache entry)
+                    // we are allowed to cache our results (probably to contruct a new cache entry)
                     m_out = new CmsFlexResponse.CmsServletOutputStream(m_res.getOutputStream());
                 } else {
-                    // We are not allowed to cache so we just use the parents output stream
+                    // we are not allowed to cache so we just use the parents output stream
                     m_out = (CmsFlexResponse.CmsServletOutputStream)m_res.getOutputStream();
                 }
             } else {
-                // Construct a "buffer only" output stream
+                // construct a "buffer only" output stream
                 m_out = new CmsFlexResponse.CmsServletOutputStream();
             }
         }
@@ -995,17 +994,16 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
      * directly during delivering (like JSP) because they write to 
      * their own buffer.<p>
      *
-     * So in this case, we don't actually write output of
-     * include calls to the stream.
-     * Where there are include calls we write a FLEX_CACHE_DELIMITER char on the stream to indicate
-     * that at this point the output of the include must be placed later.
+     * In this case, we don't actually write output of include calls to the stream.
+     * Where there are include calls we write a <code>{@link #FLEX_CACHE_DELIMITER}</code> char on the stream 
+     * to indicate that at this point the output of the include must be placed later.
      * The include targets (resource names) are then saved in the m_includeList.<p>
      *
      * This method must be called after the complete page has been processed.
      * It will contain the output of the page only (no includes), 
-     * with FLEX_CACHE_DELIMITER chars were the include calls should be placed. 
+     * with <code>{@link #FLEX_CACHE_DELIMITER}</code> chars were the include calls should be placed. 
      * What we do here is analyze the output and cut it in parts 
-     * of byte[] arrays which then are saved in the resulting cache entry.
+     * of <code>byte[]</code> arrays which then are saved in the resulting cache entry.
      * For the includes, we just save the name of the resource in
      * the cache entry.<p>
      *  
@@ -1015,46 +1013,45 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
 
         byte[] result = getWriterBytes();
         if (!hasIncludeList()) {
-            // No include list, so no includes and we just use the bytes as they are in one block
+            // no include list, so no includes and we just use the bytes as they are in one block
             m_cachedEntry.add(result);
             result = null;
         } else {
-            // Process the include list
+            // process the include list
             int max = result.length;
             int pos = 0;
             int last = 0;
             int size = 0;
             int count = 0;
 
-            // Work through result and split this with include list calls            
+            // work through result and split this with include list calls            
             int i = 0;
             int j = 0;
             while (i < m_includeList.size() && (pos < max)) {
-                // Look for the first C_FLEX_CACHE_DELIMITER char
+                // look for the first FLEX_CACHE_DELIMITER char
                 while ((pos < max) && (result[pos] != FLEX_CACHE_DELIMITER)) {
                     pos++;
                 }
                 if ((pos < max) && (result[pos] == FLEX_CACHE_DELIMITER)) {
                     count++;
-                    // A byte value of C_FLEX_CACHE_DELIMITER in our (string) output list indicates that the next include call
-                    // must be placed here
+                    // a byte value of C_FLEX_CACHE_DELIMITER in our (String) output list indicates 
+                    // that the next include call must be placed here
                     size = pos - last;
                     if (size > 0) {
-                        // If not (it might be 0) there would be 2 include calls back 2 back
+                        // if not (it might be 0) there would be 2 include calls back 2 back
                         byte[] piece = new byte[size];
                         System.arraycopy(result, last, piece, 0, size);
-                        // Add the byte array to the cache entry
+                        // add the byte array to the cache entry
                         m_cachedEntry.add(piece);
                         piece = null;
                     }
                     last = ++pos;
-                    // Add an include call to the cache entry
+                    // add an include call to the cache entry
                     m_cachedEntry.add((String)m_includeList.get(i++), (Map)m_includeListParameters.get(j++));
                 }
             }
-            // Is there something behind the last include call?
             if (pos < max) {
-                // Yes!
+                // there is content behind the last include call
                 size = max - pos;
                 byte[] piece = new byte[size];
                 System.arraycopy(result, pos, piece, 0, size);
@@ -1063,11 +1060,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
             result = null;
             if (i >= m_includeList.size()) {
-                // Delete the include list if all include calls are handled
+                // clear the include list if all include calls are handled
                 m_includeList = null;
                 m_includeListParameters = null;
             } else {
-                // If something is left, remove the processed entries
+                // if something is left, remove the processed entries
                 m_includeList = m_includeList.subList(count, m_includeList.size());
                 m_includeListParameters = m_includeListParameters.subList(count, m_includeListParameters.size());
             }

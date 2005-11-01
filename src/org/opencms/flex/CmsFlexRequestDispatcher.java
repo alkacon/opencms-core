@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequestDispatcher.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.43 $
+ * Date   : $Date: 2005/11/01 23:33:55 $
+ * Version: $Revision: 1.43.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,8 +52,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
 
 /** 
- * Implementation of the javax.servlet.RequestDispatcher interface to allow JSPs to be loaded
- * from OpenCms.<p>
+ * Implementation of the <code>{@link javax.servlet.RequestDispatcher}</code> interface to allow JSPs to be loaded
+ * from the OpenCms VFS.<p>
  * 
  * This dispatcher will load data from 3 different data sources:
  * <ol>
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43 $ 
+ * @version $Revision: 1.43.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,11 +246,12 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
     }
 
     /**
-     * Includes the requested resouce, using the Flex cache to cache the results.<p>
+     * Includes the requested resouce, ignoring the Flex cache.<p>
+     * 
      * @param req the servlet request
      * @param res the servlet response
-     * @param controller TODO:
-     * @param cms TODO:
+     * @param controller the Flex controller
+     * @param cms the current users OpenCms context
      * @param resource the requested resource (may be <code>null</code>)
      * 
      * @throws ServletException in case something goes wrong
@@ -444,7 +445,7 @@ public class CmsFlexRequestDispatcher implements RequestDispatcher {
             }
 
             if (f_res.hasIncludeList()) {
-                // Special case: This indicates that the output was not yet displayed
+                // special case: this indicates that the output was not yet displayed
                 java.util.Map headers = w_res.getHeaders();
                 byte[] result = w_res.getWriterBytes();
                 if (LOG.isDebugEnabled()) {

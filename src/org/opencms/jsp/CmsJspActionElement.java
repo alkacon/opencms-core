@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/10/19 09:42:54 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2005/11/01 23:34:19 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.2.1 $ 
+ * @version $Revision: 1.24.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -295,7 +295,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target) throws JspException {
 
-        this.include(target, null, null);
+        include(target, null, null);
     }
 
     /**
@@ -310,7 +310,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element) throws JspException {
 
-        this.include(target, element, null);
+        include(target, element, null);
     }
 
     /**
@@ -326,7 +326,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element, boolean editable) throws JspException {
 
-        this.include(target, element, editable, null);
+        include(target, element, editable, null);
     }
 
     /**
@@ -406,7 +406,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public void include(String target, String element, Map parameterMap) throws JspException {
 
-        this.include(target, element, false, parameterMap);
+        include(target, element, false, parameterMap);
     }
 
     /**
@@ -512,7 +512,7 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_INFO_PROP_READ_1, property);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 
     /**
@@ -538,7 +538,7 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_WORKPL_LABEL_READ_1, label);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 
     /**
@@ -564,7 +564,7 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_GEN_LINK_1, link);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 
     /**
@@ -574,7 +574,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public Map properties() {
 
-        return this.properties(null);
+        return properties(null);
     }
 
     /**
@@ -646,7 +646,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String property(String name) {
 
-        return this.property(name, null, null, false);
+        return property(name, null, null, false);
     }
 
     /**
@@ -663,7 +663,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String property(String name, String file) {
 
-        return this.property(name, file, null, false);
+        return property(name, file, null, false);
     }
 
     /**
@@ -682,7 +682,7 @@ public class CmsJspActionElement extends CmsJspBean {
      */
     public String property(String name, String file, String defaultValue) {
 
-        return this.property(name, file, defaultValue, false);
+        return property(name, file, defaultValue, false);
     }
 
     /**
@@ -724,7 +724,7 @@ public class CmsJspActionElement extends CmsJspBean {
                 Messages.GUI_ERR_FILE_PROP_MISSING_2,
                 name,
                 file);
-            return this.getMessage(msgContainer);
+            return getMessage(msgContainer);
         } else {
             return defaultValue;
         }
@@ -819,6 +819,6 @@ public class CmsJspActionElement extends CmsJspBean {
             handleException(t);
         }
         CmsMessageContainer msgContainer = Messages.get().container(Messages.GUI_ERR_USER_PROP_READ_1, property);
-        return this.getMessage(msgContainer);
+        return getMessage(msgContainer);
     }
 }
