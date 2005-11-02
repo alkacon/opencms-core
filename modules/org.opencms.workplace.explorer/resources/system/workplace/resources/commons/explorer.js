@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/10/28 14:27:35 $
- * Version: $Revision: 1.10.2.2 $
+ * Date   : $Date: 2005/11/02 12:55:16 $
+ * Version: $Revision: 1.10.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -681,44 +681,42 @@ function toggleSelectionStyle(isSelected) {
 	}
 
 	for (i=0; i<selectedResources.length; i++) {
-		if (selectedResources[i] != -1) {
-			var ah = null;
-			var last_id_style = "";
-			if (mode == "projectview") {
-				ah = doc.getElementById("td3_" + selectedResources[i]);
+		var last_id_style = "";
+		var ah = doc.getElementById("a" + selectedResources[i]);
+		var td = doc.getElementById("td3_" + selectedResources[i]);
+		if (ah == null) {
+			ah = td;
+		}
+		var rowStyle;
+		if (ah != null) {
+			last_id_style = ah.className;
+			if (isSelected) {
+				selectedStyles[selectedResources[i]] = last_id_style;
+			}
+
+			if (isSelected) {
+				ah.className = styleName;
 			} else {
-				ah = doc.getElementById("a" + selectedResources[i]);
-				if (ah == null) {
-					ah = doc.getElementById("td3_" + selectedResources[i]);
-				}
-			}
-			if (ah != null) {
-				last_id_style = ah.className;
-				if (isSelected) {
-					selectedStyles[selectedResources[i]] = last_id_style;
-				}
-
-				if (isSelected) {
-					ah.className = styleName;
-				} else {
-					ah.className = selectedStyles[selectedResources[i]];
-				}
-
-				var rowStyle = styleName;
-				if (last_id_style == "fd") {
-					rowStyle += " fd";
-				}
+				ah.className = selectedStyles[selectedResources[i]];
 			}
 
-			for (k=0; k<4; k++) {
-				// change style of columns 0 to 3
-				try {
-					var elem = doc.getElementById("td" + k + "_" + selectedResources[i]);
-					if (k != 3 || elem.className != "fd") {
-						elem.className = rowStyle;
-					}
-				} catch (e) {}
+			rowStyle = styleName;
+			if (last_id_style == "fd") {
+				rowStyle += " fd";
+				td.className = rowStyle;
+			} else {
+				td.className = ah.className;
 			}
+		}			
+
+		for (k=0; k<3; k++) {
+			// change style of columns 0 to 2
+			try {
+				var elem = doc.getElementById("td" + k + "_" + selectedResources[i]);
+				if (elem.className != "fd") {
+					elem.className = rowStyle;
+				}
+			} catch (e) {}
 		}
 	}
 }
