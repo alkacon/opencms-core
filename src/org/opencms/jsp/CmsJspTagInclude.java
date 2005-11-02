@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/11/01 23:43:33 $
- * Version: $Revision: 1.35.2.2 $
+ * Date   : $Date: 2005/11/02 13:42:01 $
+ * Version: $Revision: 1.35.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35.2.2 $ 
+ * @version $Revision: 1.35.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,14 +76,14 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     /** The value of the "attribute" attribute. */
     private String m_attribute;
 
+    /** The value of the "cacheable" attribute. */
+    private boolean m_cacheable;
+
     /** The value of the "editable" attribute. */
     private boolean m_editable;
 
     /** The value of the "element" attribute. */
     private String m_element;
-
-    /** The (negated) value of the "cacheable" attribute. */
-    private boolean m_notCacheable;
 
     /** Hashmap to save parameters to the include in. */
     private HashMap m_parameterMap;
@@ -96,6 +96,15 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
 
     /** The value of the "page" attribute. */
     private String m_target;
+
+    /**
+     * Empty constructor, required for attribute value initialization.<p>
+     */
+    public CmsJspTagInclude() {
+
+        super();
+        m_cacheable = true;
+    }
 
     /**
      * Adds parameters to a parameter Map that can be used for a http request.<p>
@@ -222,12 +231,29 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
                 null);
         }
 
-        if (cacheable) {
-            // use include with cache
-            includeActionWithCache(controller, context, target, element, paramMap, req, res);
-        } else {
-            // no cache required
-            includeActionNoCache(controller, context, target, element, locale, req, res);
+        // save old parameters from request
+        Map oldParameterMap = req.getParameterMap();
+        try {
+            // each include will have it's unique map of parameters
+            Map parameterMap = (paramMap == null) ? new HashMap() : new HashMap(paramMap);
+            if (cacheable && (element != null)) {
+                // add template element selector for JSP templates (only required if cacheable)
+                addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
+            }
+            // add parameters to set the correct element
+            controller.getCurrentRequest().addParameterMap(parameterMap);
+            if (cacheable) {
+                // use include with cache
+                includeActionWithCache(controller, context, target, parameterMap, req, res);
+            } else {
+                // no cache required
+                includeActionNoCache(controller, context, target, element, locale, req, res);
+            }
+        } finally {
+            // restore old parameter map (if required)
+            if (oldParameterMap != null) {
+                controller.getCurrentRequest().setParameterMap(oldParameterMap);
+            }
         }
 
         // include direct edit "end" element (if required)
@@ -266,7 +292,6 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         ServletResponse res) throws JspException {
 
         try {
-
             // include is not cachable 
             CmsFile file = controller.getCmsObject().readFile(target);
             CmsObject cms = controller.getCmsObject();
@@ -325,9 +350,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      * @param controller the current JSP controller
      * @param context the current JSP page context
      * @param target the target for the include, might be <code>null</code>
-     * @param element the element to select form the target
-     * @param locale the locale to select from the target
-     * @param paramMap a map of parameters for the include
+     * @param parameterMap a map of parameters for the include
      * @param req the current request
      * @param res the current response
      *
@@ -337,26 +360,11 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         CmsFlexController controller,
         PageContext context,
         String target,
-        String element,
-        Map paramMap,
+        Map parameterMap,
         ServletRequest req,
         ServletResponse res) throws JspException {
 
-        // save old parameters from request
-        Map oldParameterMap = req.getParameterMap();
-        // each include will have it's unique map of parameters
-        Map parameterMap = new HashMap();
-        if (paramMap != null) {
-            // add all parameters from the parent elements
-            parameterMap.putAll(paramMap);
-        }
-        if (element != null) {
-            // add template element selector for JSP templates
-            addParameter(parameterMap, I_CmsResourceLoader.PARAMETER_ELEMENT, element, true);
-        }
         try {
-            // add parameters to set the correct element
-            controller.getCurrentRequest().addParameterMap(parameterMap);
             // write out a FLEX_CACHE_DELIMITER char on the page, this is used as a parsing delimeter later
             context.getOut().print(CmsFlexResponse.FLEX_CACHE_DELIMITER);
             // add the target to the include list (the list will be initialized if it is currently empty)
@@ -372,16 +380,12 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             // store original Exception in controller in order to display it later
             Throwable t = controller.setThrowable(e, target);
             throw new JspException(t);
-        } finally {
-            // restore old parameter map (if required)
-            if (oldParameterMap != null) {
-                controller.getCurrentRequest().setParameterMap(oldParameterMap);
-            }
         }
     }
 
     /**
-     * This methods adds parameters to the current request.
+     * This methods adds parameters to the current request.<p>
+     * 
      * Parameters added here will be treated like parameters from the 
      * HttpRequest on included pages.<p>
      * 
@@ -466,16 +470,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
             }
 
             // now perform the include action
-            includeTagAction(
-                pageContext,
-                target,
-                m_element,
-                null,
-                m_editable,
-                !m_notCacheable,
-                m_parameterMap,
-                req,
-                res);
+            includeTagAction(pageContext, target, m_element, null, m_editable, m_cacheable, m_parameterMap, req, res);
 
             // must call release here manually to make sure m_parameterMap is cleared
             release();
@@ -513,7 +508,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      */
     public String getCacheable() {
 
-        return String.valueOf(!m_notCacheable);
+        return String.valueOf(m_cacheable);
     }
 
     /**
@@ -589,7 +584,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
         m_element = null;
         m_parameterMap = null;
         m_editable = false;
-        m_notCacheable = false;
+        m_cacheable = true;
     }
 
     /**
@@ -613,21 +608,23 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
      */
     public void setCacheable(String cacheable) {
 
-        // implementation note: since a boolean member is "false" by default, but we want the default to be "true",
-        // the value of the member is negated when used later
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(cacheable)) {
-            m_notCacheable = !Boolean.valueOf(cacheable).booleanValue();
+            m_cacheable = Boolean.valueOf(cacheable).booleanValue();
         }
     }
 
     /**
      * Sets the editable flag.<p>
      * 
+     * Editable is <code>false</code> by default.<p>
+     * 
      * @param editable the flag to set
      */
     public void setEditable(String editable) {
 
-        m_editable = Boolean.valueOf(editable).booleanValue();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(editable)) {
+            m_editable = Boolean.valueOf(editable).booleanValue();
+        }
     }
 
     /**
