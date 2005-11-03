@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2005/11/03 10:33:52 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.List;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsSelectWidget extends A_CmsSelectWidget {
         String id = param.getId();
         StringBuffer result = new StringBuffer(16);
 
-        result.append("<td class=\"xmlTd\"><select class=\"xmlInput");
+        result.append("<td class=\"xmlTd\" style=\"height: 25px;\"><select class=\"xmlInput");
         if (param.hasError()) {
             result.append(" xmlInputError");
         }
