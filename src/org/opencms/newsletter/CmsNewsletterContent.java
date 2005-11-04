@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletterContent.java,v $
- * Date   : $Date: 2005/11/04 09:15:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/04 09:32:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -97,6 +97,15 @@ public class CmsNewsletterContent implements I_CmsNewsletterContent {
             return false;
         }
         return true;
+    }
+    
+    /**
+     * 
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+        
+        return m_channel.hashCode() + m_content.hashCode() + m_order + m_type.hashCode();
     }
 
     /**

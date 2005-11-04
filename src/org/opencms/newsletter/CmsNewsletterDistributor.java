@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletterDistributor.java,v $
- * Date   : $Date: 2005/11/04 09:15:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/04 09:32:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.mail.Email;
  * @author Jan Baudisch
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.2
  * 
@@ -62,7 +62,8 @@ public class CmsNewsletterDistributor {
     private static final Log LOG = CmsLog.getLog(CmsNewsletterDistributor.class);
 
     /**
-     * Sends a {@link I_CmsNewsletter} to a list of {@link I_CmsNewsletterRecipient} objects;
+     * Sends a {@link I_CmsNewsletter} to a list of {@link I_CmsNewsletterRecipient} objects.<p>
+     * 
      * @param recipients a list of CmsNewsletterRecipient objects
      * @param newsletter the newsletter to be distributed
      * @param cms the CmsObject

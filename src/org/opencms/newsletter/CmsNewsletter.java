@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletter.java,v $
- * Date   : $Date: 2005/11/04 09:15:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/04 09:32:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.mail.CmsHtmlMail;
 import org.opencms.mail.CmsSimpleMail;
+import org.opencms.mail.CmsVfsDataSource;
 import org.opencms.main.CmsException;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -52,6 +53,8 @@ import org.apache.commons.mail.Email;
 
 /** 
  * Basic implementation of the interface {@link I_CmsNewsletter}.<p>
+ * 
+ * @author Jan Baudisch
  */
 public class CmsNewsletter implements I_CmsNewsletter {
 

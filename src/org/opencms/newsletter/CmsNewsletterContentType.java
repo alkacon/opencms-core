@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletterContentType.java,v $
- * Date   : $Date: 2005/11/04 09:15:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/04 09:32:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,11 +36,11 @@ package org.opencms.newsletter;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
-public class CmsNewsletterContentType {
+public final class CmsNewsletterContentType {
 
     /** Content type definition for HTML. */
     public static final CmsNewsletterContentType TYPE_HTML = new CmsNewsletterContentType("html");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/I_CmsNewsletter.java,v $
- * Date   : $Date: 2005/11/04 09:15:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/04 09:32:16 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ public interface I_CmsNewsletter {
     String MACRO_USER_LASTNAME = "lastname";
 
     /** 
-     * Adds a OpenCms resource as an attachment to the newsletter
+     * Adds a OpenCms resource as an attachment to the newsletter.<p>
      * 
      * @param cms the CmsObject
      * @param resource the resource to attach
@@ -70,14 +70,15 @@ public interface I_CmsNewsletter {
     void addAttachment(CmsObject cms, CmsResource resource) throws CmsException;
 
     /**
-     * Adds content to the newsletter
+     * Adds content to the newsletter.<p>
      * 
      * @param content the content to add
      */
     void addContent(I_CmsNewsletterContent content);
 
     /**
-     * Returns the newsletter as an e-mail to be sent
+     * Returns the newsletter as an e-mail to be sent.<p>
+     * 
      * @param cms the CmsObject
      * @param recipient the recipient to which the newsletter will be sent
      * @return the newsletter as an e-mail
