@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="de">
+    <element name="text1">
+      <links/>
+      <content/>
+    </element>
+  </page>
+  <page language="en">
+    <element name="text1">
+      <links/>
+      <content><![CDATA[<H1>Linklist&nbsp;demo</H1>
+<P>This page shows a list of links to other sites in the 
+center area and the same list on the right side. For each link an image can be             
+                    selected 
+which will be scaled to 48 x 48 pixels. To activate this feature, the OpenCms configuration file 
+<FONT face="Monospace">opencms-vfs.xml</FONT> has to be modified by changing&nbsp;the parameter value of the image loader node to <FONT face="Monospace">true</FONT>:</P><pre><FONT face="Monospace">&lt;LOADER class="org.opencms.loader.CmsImageLoader"&gt;
+	&lt;PARAM name="image.scaling.enabled"&gt;<b>true</b>&lt;/PARAM&gt;
+&lt;/LOADER&gt;</FONT></pre>
+<P>            
+            To get a categorized view, simply create a subfolder structure in the folder 
+<FONT face=Monospace>/modules/linklist/</FONT> . Each 
+folder is displayed as a single category, using the "Title" property of the 
+folder as category name.</P>
+<H1>Interesting links concerning&nbsp;OpenCms</H1>
+<P>The following link list contains example links to OpenCms related websites.</P></FONT>]]></content>
+    </element>
+  </page>
+</pages>

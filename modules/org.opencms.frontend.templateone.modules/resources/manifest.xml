@@ -18,7 +18,7 @@
 <p>Install this module if you want to work with news, articles, job offerings, and so on.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.0</version>
+		<version>1.0.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -36,16 +36,16 @@
 			<resource uri="/system/shared/templateone/center/events"/>
 			<resource uri="/system/shared/templateone/center/faq"/>
 			<resource uri="/system/shared/templateone/center/jobs"/>
+			<resource uri="/system/shared/templateone/center/linklist"/>
 			<resource uri="/system/shared/templateone/center/news"/>
 			<resource uri="/system/shared/templateone/right/events"/>
 			<resource uri="/system/shared/templateone/right/events_news"/>
+			<resource uri="/system/shared/templateone/right/linklist"/>
 			<resource uri="/system/shared/templateone/right/news"/>
 			<resource uri="/system/workplace/resources/filetypes/article.gif"/>
 			<resource uri="modulesdemo/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.modules/;/system/shared/templateone/center/events;/system/shared/templateone/center/faq;/system/shared/templateone/center/jobs;/system/shared/templateone/center/news;/system/shared/templateone/right/events;/system/shared/templateone/right/events_news;/system/shared/templateone/right/news;/system/workplace/resources/filetypes/article.gif;modulesdemo/</param>
-		</parameters>
+		<parameters/>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="news" id="30">
 				<properties>
@@ -99,6 +99,19 @@
 				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/job.xsd</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="linklist" id="50">
+				<properties>
+					<property>
+						<name>content-conversion</name>
+						<value type="shared"><![CDATA[cleanup;xhtml]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/linklist.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
@@ -127,6 +140,14 @@
 			</explorertype>
 			<explorertype name="job" key="fileicon.job" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=job" order="53"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="linklist" key="fileicon.linklist" icon="article.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -473,6 +494,47 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/linklist</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 04 Nov 2005 13:53:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Nov 2005 13:53:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/linklist/link_0001.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/linklist/link_0001.html</destination>
+			<type>linklist</type>
+			<uuidresource>68be8861-4d3a-11da-b018-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 13:55:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Nov 2005 13:53:42 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1131109200000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[This is the title of link 0001]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/modules/news</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -786,6 +848,54 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_center.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_center.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>2ad885e9-4c62-11da-bc03-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 09:43:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 12:05:47 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(count,elementcount,folder,categoryfolder,collector,pageIndex)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content link list center area]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_right.jsp</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_links_right.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>1cc5ea15-4d17-11da-9c9b-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 09:45:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 04 Nov 2005 09:41:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(count,elementcount,folder,collector)]]></value>
+				</property>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content link list right side]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_center.jsp</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/elements/list_news_center.jsp</destination>
 			<type>jsp</type>
@@ -948,6 +1058,28 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[jobs XML content detail view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html</destination>
+			<type>jsp</type>
+			<uuidresource>a105e4d2-4c55-11da-a87b-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 10:22:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 10:36:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;params=(uri)]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[news XML content detail view]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1274,6 +1406,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/linklist.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/linklist.xsd</destination>
+			<type>plain</type>
+			<uuidresource>bb2cc9a0-4c50-11da-bc0d-a1e522a0389c</uuidresource>
+			<datelastmodified>Thu, 03 Nov 2005 14:35:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 10:00:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for links in linklists]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/news.xsd</destination>
 			<type>plain</type>
@@ -1491,6 +1641,44 @@
 				<property>
 					<name>style_side_uri</name>
 					<value><![CDATA[/modulesdemo/side-elements/side-jobs.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/linklistdemo.html</source>
+			<destination>modulesdemo/linklistdemo.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>a66c94d7-4c71-11da-9ebe-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 10:31:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 13:56:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>layout.center</name>
+					<value><![CDATA[/system/shared/templateone/center/linklist]]></value>
+				</property>
+				<property>
+					<name>layout.right</name>
+					<value><![CDATA[/system/shared/templateone/right/linklist]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Link list demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link list demo]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -2128,6 +2316,82 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>modulesdemo/modules/linklist</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 04 Nov 2005 09:27:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 13:56:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Link list]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/modules/linklist/link_0001.html</source>
+			<destination>modulesdemo/modules/linklist/link_0001.html</destination>
+			<type>linklist</type>
+			<uuidresource>d7884c41-4c71-11da-9ebe-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 13:52:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 13:57:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1131102000000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms website]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>modulesdemo/modules/linklist/link_0002.html</source>
+			<destination>modulesdemo/modules/linklist/link_0002.html</destination>
+			<type>linklist</type>
+			<uuidresource>6565a4aa-4c77-11da-8552-a1e522a0389c</uuidresource>
+			<datelastmodified>Fri, 04 Nov 2005 13:52:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 14:37:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html]]></value>
+				</property>
+				<property type="shared">
+					<name>content-conversion</name>
+					<value><![CDATA[cleanup;xhtml]]></value>
+				</property>
+				<property>
+					<name>collector.date</name>
+					<value><![CDATA[1131105600000]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon Software GmbH]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>modulesdemo/modules/news</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -2411,6 +2675,32 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/shared/templateone/center/linklist</source>
+			<destination>system/shared/templateone/center/linklist</destination>
+			<type>plain</type>
+			<uuidresource>fe98dd54-4c70-11da-bc03-a1e522a0389c</uuidresource>
+			<datelastmodified>Thu, 03 Nov 2005 13:52:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 13:51:55 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.center.linklist]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[List links in center]]></value>
+				</property>
+				<property>
+					<name>layout.1.type</name>
+					<value><![CDATA[linklist]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/shared/templateone/center/news</source>
 			<destination>system/shared/templateone/center/news</destination>
 			<type>plain</type>
@@ -2507,6 +2797,32 @@
 				<property>
 					<name>layout.1.type</name>
 					<value><![CDATA[news]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/shared/templateone/right/linklist</source>
+			<destination>system/shared/templateone/right/linklist</destination>
+			<type>plain</type>
+			<uuidresource>23de2f7c-4c71-11da-bc03-a1e522a0389c</uuidresource>
+			<datelastmodified>Thu, 03 Nov 2005 13:53:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 03 Nov 2005 13:52:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[templateonedialog.layout.right.linklist]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[List links on right side]]></value>
+				</property>
+				<property>
+					<name>layout.1.type</name>
+					<value><![CDATA[linklist]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

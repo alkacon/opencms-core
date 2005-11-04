@@ -1,0 +1,81 @@
+<%@ page session="false" import="org.opencms.frontend.templateone.modules.*, org.opencms.loader.*, org.opencms.util.*, java.util.*" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%--
+--%><%@ taglib prefix="c" uri="http://java.sun.com/jstl/core" %><%--
+--%><%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt" %><%
+
+CmsTemplateModules cms = new CmsTemplateModules(pageContext, request, response);
+
+cms.include("../elements/seturi.jsp");
+if (cms.isUriChanged()) {
+	pageContext.setAttribute("detailfile", cms.getOriginalUri());
+} else {
+	pageContext.setAttribute("detailfile", cms.getRequestContext().getUri());
+}
+
+// get currently active locale to initialize message bundle
+String locale = cms.getRequestContext().getLocale().toString();
+pageContext.setAttribute("locale", locale);
+
+String targetAttr = "";
+String description = "";
+String link = "";
+boolean newWin = false;
+
+%><fmt:setLocale value="${locale}" /><%--
+--%><fmt:bundle basename="org/opencms/frontend/templateone/modules/workplace"><%--
+
+--%>
+<cms:include property="template" element="head" />
+<div class="element">
+
+<cms:contentload collector="singleFile" param="${pageContext.detailfile}" editable="true">
+
+<h1><cms:contentshow element="Title" /></h1>
+
+<%-- create a date object from date value --%>
+<c:set var="dateString">
+	<cms:contentshow element="Date" />
+</c:set><%
+
+try {
+	long dateLong = (new Long((String)pageContext.getAttribute("dateString"))).longValue();
+	Date date = new Date(dateLong);
+	pageContext.setAttribute("date", date);
+} catch (Exception e) {}
+
+%>
+
+<p>
+<small><fmt:formatDate value="${date}" dateStyle="long" />; <cms:contentshow element="Author" /></small></p>
+
+<%-- show link description text --%>
+<p><cms:contentcheck ifexists="Image">
+<cms:contentloop element="Image">
+<img src="<cms:link><cms:contentshow element="Image" />?<%= CmsImageScaler.PARAM_SCALE %>=w:48,h:48,t:2</cms:link>" border="0" alt="<cms:contentshow element="Title" />" title="<cms:contentshow element="Title" />" align="right" hspace="5">
+</cms:contentloop>
+</cms:contentcheck>
+<cms:contentcheck ifexists="Description">
+<cms:contentshow element="Description" />
+</cms:contentcheck>
+</p>
+
+<p><c:set var="href"><cms:contentshow element="Url" /></c:set><%
+String href = (String)pageContext.getAttribute("href");
+if (!href.startsWith("http") && !href.startsWith("ftp:") && !href.startsWith("mailto:")) {
+	href = cms.link(href);
+}
+
+%><a href="<%= href %>" target="<cms:contentshow element="Target" />"><%= href %></a>
+</p>
+
+
+
+<% if (cms.isUriChanged()) { %>
+<p>&nbsp;<br><form action="<cms:link><c:out value="${param.uri}" /></cms:link>" style="margin: 0; padding: 0"><input class="formbutton" type="submit" value="<fmt:message key="modules.button.back" />"></form></td>
+</p>
+<% } %>
+</cms:contentload>
+</div>
+
+<cms:include property="template" element="foot" /><%--
+--%></fmt:bundle>
