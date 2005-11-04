@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.31.2.3 $
+ * Date   : $Date: 2005/11/04 09:23:48 $
+ * Version: $Revision: 1.31.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31.2.3 $ 
+ * @version $Revision: 1.31.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -338,7 +338,7 @@ public abstract class CmsEditor extends CmsDialog {
                 url.lastIndexOf("/") + 1));
         } else {
             // create the inactive button
-            return button(null, null, image, name + "_in", type, url.substring(0, url.lastIndexOf("/") + 1));
+            return button(null, null, image, name, type, url.substring(0, url.lastIndexOf("/") + 1));
         }
     }
 
