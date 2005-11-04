@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsVfsDataSource.java,v $
- * Date   : $Date: 2005/11/04 09:18:35 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/04 09:19:19 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,7 +29,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.newsletter;
+package org.opencms.mail;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -50,7 +50,7 @@ import javax.activation.DataSource;
  * @author Alexander Kandzior
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.2.0 
  */
