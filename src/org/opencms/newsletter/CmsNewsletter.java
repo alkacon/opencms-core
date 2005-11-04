@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/newsletter/CmsNewsletter.java,v $
- * Date   : $Date: 2005/11/04 09:32:16 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/04 09:38:19 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -99,6 +99,9 @@ public class CmsNewsletter implements I_CmsNewsletter {
      * @param cms the CmsObject
      * 
      * @return the e-mail for the newsletter
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws MessagingException if there is an error attaching resources
      */
     public Email getEmail(CmsObject cms, I_CmsNewsletterRecipient recipient) throws MessagingException, CmsException {
 
