@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsVfsDataSource.java,v $
- * Date   : $Date: 2005/10/21 09:13:56 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/04 09:18:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,12 +29,13 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.mail;
+package org.opencms.newsletter;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
+import org.opencms.main.OpenCms;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -47,8 +48,9 @@ import javax.activation.DataSource;
  * DataSource wrapper for VFS resources, allows easy sending of VFS resources as email attachments.<p>
  * 
  * @author Alexander Kandzior
+ * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -65,15 +67,16 @@ public class CmsVfsDataSource implements DataSource {
      * 
      * @param cms the current users OpenCms context
      * @param resource the resource to use
-     * @param contentType the content type to use
      * 
      * @throws CmsException in case of errors accessing the resource in the VFS
      */
-    public CmsVfsDataSource(CmsObject cms, CmsResource resource, String contentType)
+    public CmsVfsDataSource(CmsObject cms, CmsResource resource)
     throws CmsException {
 
         m_file = CmsFile.upgrade(resource, cms);
-        m_contentType = contentType;
+        // identify the mime-type for the data source
+        m_contentType = OpenCms.getResourceManager().getMimeType(
+            m_file.getName(), cms.getRequestContext().getEncoding());
     }
 
     /**
