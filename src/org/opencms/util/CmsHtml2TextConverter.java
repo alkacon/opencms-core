@@ -58,6 +58,7 @@ public class CmsHtml2TextConverter extends NodeVisitor {
     /** The current indentation. */
     private int m_indent;
 
+    /** The current line length. */
     private int m_lineLength;
 
     /** The marker String (for headlines, bullets etc.). */
@@ -146,31 +147,27 @@ public class CmsHtml2TextConverter extends NodeVisitor {
         m_appendBr = true;
         appendLinebreaks(tag, true);
 
+        if (tag.getTagName().equals("IMG")) {
+            appendText("#Image#");
+        }
+
         String href = tag.getAttribute("href");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(href)) {
             appendAttribute(tag, " [" + href.trim() + "]");
-        }        
+        }
         String src = tag.getAttribute("src");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(src)) {
             appendAttribute(tag, " [" + src.trim() + "]");
-        }        
+        }
         String title = tag.getAttribute("Title");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
-            appendAttribute(tag, " { " + title.trim() + " }");
+            appendAttribute(tag, " {" + title.trim() + "}");
         }
         String alt = tag.getAttribute("Alt");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(alt)) {
-            appendAttribute(tag, " { " + alt.trim() + " }");
+            appendAttribute(tag, " {" + alt.trim() + "}");
         }
     }
-    
-    private void appendAttribute(Tag tag, String text) {
-
-        String current = (String)m_attributeMap.get(tag);
-        if (current != null) {
-            text = current + text;
-        }        
-        m_attributeMap.put(tag, text);    }
 
     /**
      * Collapse HTML whitespace in the given String.<p>
@@ -210,6 +207,19 @@ public class CmsHtml2TextConverter extends NodeVisitor {
         return result.toString();
     }
 
+    private void appendAttribute(Tag tag, String text) {
+
+        if (tag.getTagName().equals("IMG")) {
+            appendText(text);
+        } else {
+            String current = (String)m_attributeMap.get(tag);
+            if (current != null) {
+                text = current + text;
+            }
+            m_attributeMap.put(tag, text);
+        }
+    }
+
     private void appendIndentation() {
 
         if (m_lineLength <= m_indent) {
@@ -229,7 +239,7 @@ public class CmsHtml2TextConverter extends NodeVisitor {
 
         appendLinebreak(count, false);
     }
-    
+
     private void appendLinebreak(int count, boolean force) {
 
         if (m_appendBr) {
@@ -316,34 +326,35 @@ public class CmsHtml2TextConverter extends NodeVisitor {
                 }
                 break;
             case 14: // TD
-                setMarker("|", open);
+                setMarker("--", open);
                 appendLinebreak(2);
-                break;                
+                break;
             case 15: // TR
-                if (! open) {
+                if (!open) {
                     appendLinebreak(1);
                     appendText("-----");
                     appendLinebreak(1);
                 }
-                break;           
+                break;
             case 16: // TH
             case 17: // THEAD
             case 18: // TBODY
             case 19: // TFOOT
                 appendLinebreak(1);
-                break;                     
+                break;
             default: // unknown tag (ignore)                
         }
     }
 
     private void appendText(String text) {
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) { 
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
             text = Translate.decode(text);
             text = collapse(text);
-        }        
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {            
-            
+            text = text.trim();
+        }
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
+
             if (m_storedBrCount > 0) {
                 m_appendBr = true;
                 appendLinebreak(m_storedBrCount);
@@ -355,13 +366,18 @@ public class CmsHtml2TextConverter extends NodeVisitor {
             Iterator i = wordList.iterator();
             while (i.hasNext()) {
                 String word = (String)i.next();
+                boolean hasNbsp = ((word.charAt(0) == 160) || (word.charAt(word.length() - 1) == 160));
                 if ((word.length() + 1 + m_lineLength) > m_maxLineLength) {
                     m_appendBr = true;
                     appendLinebreak(1);
                     appendIndentation();
                     m_brCount = 0;
                 } else {
-                    if (m_lineLength > m_indent) {
+                    if (!hasNbsp
+                        && (m_lineLength > m_indent)
+                        && (m_result.charAt(m_result.length() - 1) != 160)
+                        && (m_result.charAt(m_result.length() - 1) != 32)) {
+
                         m_result.append(' ');
                         m_lineLength++;
                     }
