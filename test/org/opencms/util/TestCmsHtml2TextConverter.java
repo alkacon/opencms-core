@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtml2TextConverter.java,v $
- * Date   : $Date: 2005/11/07 15:35:58 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/07 20:41:00 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
@@ -70,13 +70,13 @@ public class TestCmsHtml2TextConverter extends TestCase {
         String expected1 = CmsFileUtil.readFile("org/opencms/util/testHtml_01_result.html", CmsEncoder.ENCODING_ISO_8859_1);
         assertEquals(expected1, result1);
         
-        String content2 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
-        String result2 = CmsHtml2TextConverter.html2text(content2, CmsEncoder.ENCODING_ISO_8859_1);        
-        System.out.println(result2 + "\n\n");
-        
-        String content3 = CmsFileUtil.readFile("org/opencms/util/testHtml_03.html", CmsEncoder.ENCODING_ISO_8859_1);
-        String result3 = CmsHtml2TextConverter.html2text(content3, CmsEncoder.ENCODING_ISO_8859_1);        
-        System.out.println(result3 + "\n\n");
+//        String content2 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
+//        String result2 = CmsHtml2TextConverter.html2text(content2, CmsEncoder.ENCODING_ISO_8859_1);        
+//        System.out.println(result2 + "\n\n");
+//        
+//        String content3 = CmsFileUtil.readFile("org/opencms/util/testHtml_03.html", CmsEncoder.ENCODING_ISO_8859_1);
+//        String result3 = CmsHtml2TextConverter.html2text(content3, CmsEncoder.ENCODING_ISO_8859_1);        
+//        System.out.println(result3 + "\n\n");
         
 //        String content3 = CmsFileUtil.readFile("org/opencms/util/testHtml_02.html", CmsEncoder.ENCODING_ISO_8859_1);
 //        String result3 = CmsHtmlTextAuszeichner.machDieAuszeichnung(content3, CmsEncoder.ENCODING_ISO_8859_1);        
