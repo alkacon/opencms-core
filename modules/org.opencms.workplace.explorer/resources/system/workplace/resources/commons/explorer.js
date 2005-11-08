@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/02 12:55:16 $
- * Version: $Revision: 1.10.2.3 $
+ * Date   : $Date: 2005/11/08 16:00:21 $
+ * Version: $Revision: 1.10.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1064,7 +1064,12 @@ function submitResource() {
 
 function openurl() {
 	updateTreeFolder(getDisplayResource());
-	win.files.open();
+	try {
+		win.files.open();
+	} catch (e) {
+		updateWindowStore();
+		win.files.open();
+	}
 	win.files.writeln("<html>");
 	win.files.writeln("<head><meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=" + top.frames.head.encoding + "\"></head>");
 	win.files.writeln("<body>\n<center><br><br><br><br><font face=Helvetica size=2>"+vr.langloading+"</center></body>\n</html>");
@@ -1073,7 +1078,7 @@ function openurl() {
 	if(win.head.forms.urlform && win.head.forms.urlform.pageSelect){
 		selectedpage = "&page=" + win.head.forms.urlform.pageSelect.value;
 	}
-	win.files.location = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage;
+	win.files.location.href = vr.servpath + "/system/workplace/views/explorer/explorer_files.jsp?resource=" + getDisplayResource() + selectedpage;
 }
 
 
