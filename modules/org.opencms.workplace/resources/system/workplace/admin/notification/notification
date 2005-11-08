@@ -16,7 +16,7 @@
     <Subject><![CDATA[OpenCms Content Notification]]></Subject>
     <Header name="Header0">
       <links/>
-      <content><![CDATA[Hallo ${firstname} ${lastname},<br /><br />Sie sind für einige OpenCms Resourcen verantwortlich. Einige dieser Resourcen sind schon längere Zeit nicht mehr aktualisiert worden, werden demnächst aktiv oder ungültig. ]]></content>
+      <content><![CDATA[Hallo ${firstname} ${lastname},<br /><br />Sie sind f&uuml;r einige OpenCms Resourcen verantwortlich. Einige dieser Resourcen sind schon l&auml;ngere Zeit nicht mehr aktualisiert worden, werden demn&auml;chst aktiv oder ung&uuml;ltig. ]]></content>
     </Header>
     <Footer name="Footer0">
       <links/>
