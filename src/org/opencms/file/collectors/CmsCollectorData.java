@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/11/08 15:03:12 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
-import org.opencms.scheduler.CmsScheduleManager;
 
 import org.apache.commons.logging.Log;
 
@@ -47,14 +46,14 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.0.0 
  */
 public class CmsCollectorData {
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsScheduleManager.class);
+    private static final Log LOG = CmsLog.getLog(CmsCollectorData.class);
 
     /** The display count. */
     private int m_count;
