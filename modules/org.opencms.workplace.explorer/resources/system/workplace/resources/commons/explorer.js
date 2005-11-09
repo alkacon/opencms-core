@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/08 16:00:21 $
- * Version: $Revision: 1.10.2.4 $
+ * Date   : $Date: 2005/11/09 08:52:46 $
+ * Version: $Revision: 1.10.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -201,22 +201,13 @@ function setRootFolder(value) {
 function initHist() {
 	g_histLoc = 0;
 	g_history = new Array();
-	addHist(getDisplayResource(true));
 }
 
 
 function addHist(entry) {
-	if (g_history[g_histLoc] != entry) {
+	if (g_history[g_histLoc] != entry && entry.indexOf("siblings:") == -1) {
 		g_histLoc++;
-		if (g_histLoc == 1 && entry.indexOf("siblings:") == 0) {
-			entry = entry.substring(9);
-			entry = entry.substring(0, entry.lastIndexOf("/") + 1);
-			g_history[g_histLoc] = entry;
-			g_histLoc++;
-			g_history[g_histLoc] = entry;
-		} else {
-			g_history[g_histLoc] = entry;
-		}
+		g_history[g_histLoc] = entry;
 	}
 }
 
@@ -225,6 +216,8 @@ function histGoBack() {
 	if (g_histLoc > 1) {
 		g_histLoc--;
 		setDisplayResource(g_history[g_histLoc]);
+	} else {
+		setDisplayResource(removeSiblingPrefix(getDisplayResource()));
 	}
 	openurl();
 }
@@ -1101,7 +1094,7 @@ function addProjectDir(nodid) {
 function dirUp(){
 	var temp;
 	var marke=0;
-	var directory = getDisplayResource();
+	var directory = removeSiblingPrefix(getDisplayResource());
 	var zaehler=0;
 	var newDir = directory.substring(0, directory.length - 1);
 	var res = newDir.substring(0, newDir.lastIndexOf("/") + 1);
@@ -1111,6 +1104,19 @@ function dirUp(){
 	}
 	setDisplayResource(res);
 	openurl();
+}
+
+
+function removeSiblingPrefix(directory) {
+	
+	if (directory.indexOf("siblings:") == 0) {
+		directory = directory.substring(9);
+		var lastSlashPos = directory.lastIndexOf("/");
+		if (lastSlashPos != (directory.length - 1)) {
+			directory = directory.substring(0, lastSlashPos + 1);
+		}
+	}
+	return directory;
 }
 
 
@@ -1328,13 +1334,7 @@ function setDirectory(id, dir){
 		addHist(dir);
 	}
 	vr.actDirId=id;
-	if (dir.indexOf("siblings:") == 0) {
-		dir = dir.substring(9);
-	}
-	var lastSlashPos = dir.lastIndexOf("/");
-	if (lastSlashPos != (dir.length - 1)) {
-		dir = dir.substring(0, lastSlashPos + 1);
-	}
+	dir = removeSiblingPrefix(dir);
 	vr.actDirectory = dir;
 	last_id = -1;
 	selectedResources = new Array();
