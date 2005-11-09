@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagContentContainer.java,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/11/09 14:41:19 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import java.util.Locale;
 /**
  * Provides access to a XML content document that was loaded by a parent tag.<p> 
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,4 +93,11 @@ public interface I_CmsJspTagContentContainer {
      * @return the currently selected locale for the current content
      */
     Locale getXmlDocumentLocale();
+
+    /**
+     * Returns <code>true</code> if the ancestor contains a preloaded collector result.<p> 
+     * 
+     * @return <code>true</code> if the ancestor contains a preloaded collector result
+     */
+    boolean isPreloader();
 }

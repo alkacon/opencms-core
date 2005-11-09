@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/11/09 14:41:19 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -187,6 +187,14 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     public Locale getXmlDocumentLocale() {
 
         return m_locale;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#isPreloader()
+     */
+    public boolean isPreloader() {
+
+        return m_parentTag.isPreloader();
     }
 
     /**

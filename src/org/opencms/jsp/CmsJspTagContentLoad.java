@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/10/19 09:42:54 $
- * Version: $Revision: 1.27.2.4 $
+ * Date   : $Date: 2005/11/09 14:41:19 $
+ * Version: $Revision: 1.27.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27.2.4 $ 
+ * @version $Revision: 1.27.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -246,7 +246,7 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
                 // another loop is required
                 return EVAL_BODY_AGAIN;
             } else {
-                
+
                 // no more results in the collector, reset locale (just to make sure...)
                 m_locale = null;
             }
@@ -324,22 +324,25 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // get a reference to the parent "content container" class (if available)
         Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
-        I_CmsJspTagContentContainer container;
+        I_CmsJspTagContentContainer container = this;
         if (ancestor != null) {
-            // parent content container available, use values from this container
-            container = (I_CmsJspTagContentContainer)ancestor;
-        } else {
-            // non parent container, initialize new values
-            container = this;
-
-            // check if the tag contains a collector attribute
+            // parent content container available, use preloaded values from this container
+            container = (I_CmsJspTagContentContainer)ancestor;            
+            // check if container really is a preloader
+            if (! container.isPreloader()) {
+                // don't use ancestor if not a preloader
+                ancestor = null;
+            }
+        }
+        if (ancestor == null) {
+            // no preloading ancestor has been found
             if (CmsStringUtil.isEmpty(m_collector)) {
+                // check if the tag contains a collector attribute
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_TAG_CONTENTLOAD_MISSING_COLLECTOR_0));
             }
-
-            // check if the tag contains a param attribute
             if (CmsStringUtil.isEmpty(m_param)) {
+                // check if the tag contains a param attribute
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_TAG_CONTENTLOAD_MISSING_PARAM_0));
             }
@@ -354,8 +357,6 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
         m_controller = CmsFlexController.getController(pageContext.getRequest());
         m_cms = m_controller.getCmsObject();
 
-
-
         // get the resource name from the selected container
         String resourcename = getResourceName(m_cms, container);
 
@@ -365,22 +366,22 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
 
         // resolve the collector name
         if (ancestor != null) {
-            // parent content container available, use values from this container
+            // preload parent content container available, use values from this container
             m_collectorName = container.getCollectorName();
             m_collectorParam = container.getCollectorParam();
-            m_collectorResult = container.getCollectorResult(); 
+            m_collectorResult = container.getCollectorResult();
             if (m_locale == null) {
                 // use locale from ancestor if available
                 m_locale = container.getXmlDocumentLocale();
             }
         } else {
-            // non parent container, initialize new values
+            // no preload parent container, initialize new values
             m_collectorName = resolver.resolveMacros(getCollector());
             // resolve the parameter
             m_collectorParam = resolver.resolveMacros(getParam());
             m_collectorResult = null;
         }
-        
+
         if (m_locale == null) {
             // no locale set, use locale from users request context
             m_locale = m_cms.getRequestContext().getLocale();
@@ -602,6 +603,14 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsJspTagC
     public Locale getXmlDocumentLocale() {
 
         return m_contentLocale;
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsJspTagContentContainer#isPreloader()
+     */
+    public boolean isPreloader() {
+
+        return m_preload;
     }
 
     /**
