@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/10/28 15:18:26 $
- * Version: $Revision: 1.703 $
+ * Date   : $Date: 2005/11/09 10:37:04 $
+ * Version: $Revision: 1.704 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 6.0.3 - xxxxxxxxx, 2005
 * Fixed issue with frozen state in CmsProperty when calling #deleteResourceValue()
 * Improved error handling in XML page loader for locale selection process
 * Added fix for error handler in localized Xerces versions
+* Fixed issue #982: If tomcat path has spaces, the log file is not set
 
 OpenCms 6.0.2 - October 13, 2005
 * Fixed issue #615: Uploading modules with new (unknown) resource type classes

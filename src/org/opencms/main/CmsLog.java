@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2005/11/09 10:37:04 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,12 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsFileUtil;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -59,7 +62,7 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,8 +95,12 @@ public final class CmsLog {
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
                 String path = new File(url.getPath()).getAbsolutePath();
+                // trick to get the OS default encoding, taken from the official Java i18n FAQ
+                String systemEncoding = (new OutputStreamWriter(new ByteArrayOutputStream())).getEncoding();
+                // decode url in order to remove spaces from path
+                path = CmsFileUtil.normalizePath(CmsEncoder.decode(path, systemEncoding), '/');
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
-                String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(url.getPath()));
+                String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(path));
                 // check for the OpenCms configuration file
                 String configFilePath = webInfPath + "config/opencms.xml";
                 File configFile = new File(configFilePath);
