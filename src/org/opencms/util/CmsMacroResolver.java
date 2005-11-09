@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2005/11/09 14:59:59 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17 $ 
+ * @version $Revision: 1.17.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,7 +170,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public static String formatMacro(String input) {
 
-        StringBuffer result = new StringBuffer(32);
+        StringBuffer result = new StringBuffer(input.length() + 4);
         result.append(I_CmsMacroResolver.MACRO_DELIMITER);
         result.append(I_CmsMacroResolver.MACRO_START);
         result.append(input);

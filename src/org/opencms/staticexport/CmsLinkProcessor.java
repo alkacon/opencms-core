@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/11/09 14:41:44 $
- * Version: $Revision: 1.43.2.2 $
+ * Date   : $Date: 2005/11/09 14:59:59 $
+ * Version: $Revision: 1.43.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,7 @@ import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
-import org.opencms.util.CmsHtmlparserBase;
+import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
 
@@ -54,11 +54,11 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.2 $ 
+ * @version $Revision: 1.43.2.3 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsLinkProcessor extends CmsHtmlparserBase {
+public class CmsLinkProcessor extends CmsHtmlParser {
 
     /** HTML end. */
     public static final String HTML_END = "</body></html>";

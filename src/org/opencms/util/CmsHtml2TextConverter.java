@@ -1,50 +1,20 @@
 
 package org.opencms.util;
 
-import java.util.Arrays;
+
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.htmlparser.Parser;
 import org.htmlparser.Tag;
 import org.htmlparser.Text;
-import org.htmlparser.lexer.Lexer;
-import org.htmlparser.lexer.Page;
 import org.htmlparser.util.Translate;
-import org.htmlparser.visitors.NodeVisitor;
 
 /**
  * Extracts the HTML page content.<p>
  */
-public class CmsHtml2TextConverter extends NodeVisitor {
-
-    /** The array of supported tag names. */
-    private static final String[] TAG_ARRAY = new String[] {
-        "H1",
-        "H2",
-        "H3",
-        "H4",
-        "H5",
-        "H6",
-        "P",
-        "DIV",
-        "SPAN",
-        "BR",
-        "OL",
-        "UL",
-        "LI",
-        "TABLE",
-        "TD",
-        "TR",
-        "TH",
-        "THEAD",
-        "TBODY",
-        "TFOOT"};
-
-    /** The list of supported tag names. */
-    private static final List TAG_LIST = Arrays.asList(TAG_ARRAY);
+public class CmsHtml2TextConverter extends CmsHtmlParser {
 
     /** Indicated to append or store the next line breaks. */
     private boolean m_appendBr;
@@ -66,9 +36,6 @@ public class CmsHtml2TextConverter extends NodeVisitor {
 
     /** The maximum line length. */
     private int m_maxLineLength;
-
-    /** The buffer to write the out to. */
-    private StringBuffer m_result;
 
     /** The last stored, but not appended line break count. */
     private int m_storedBrCount;
@@ -95,27 +62,9 @@ public class CmsHtml2TextConverter extends NodeVisitor {
      */
     public static String html2text(String html, String encoding) throws Exception {
 
-        // initialize a parser with the given charset
-        Parser parser = new Parser();
-        Lexer lexer = new Lexer();
-        Page page = new Page(html, encoding);
-        lexer.setPage(page);
-        parser.setLexer(lexer);
         // create the converter instance
-        CmsHtml2TextConverter converter = new CmsHtml2TextConverter();
-        parser.visitAllNodesWith(converter);
-        // return the result
-        return converter.getResult();
-    }
-
-    /**
-     * Returns the text extraction result.<p>
-     * 
-     * @return the text extraction result
-     */
-    public String getResult() {
-
-        return m_result.toString();
+        CmsHtml2TextConverter visitor = new CmsHtml2TextConverter();
+        return process(html, encoding, visitor);
     }
 
     /**
@@ -148,7 +97,7 @@ public class CmsHtml2TextConverter extends NodeVisitor {
         appendLinebreaks(tag, true);
 
         if (tag.getTagName().equals("IMG")) {
-            appendText("#Image#");
+            appendText("##IMG##");
         }
 
         String href = tag.getAttribute("href");
@@ -159,52 +108,14 @@ public class CmsHtml2TextConverter extends NodeVisitor {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(src)) {
             appendAttribute(tag, " [" + src.trim() + "]");
         }
-        String title = tag.getAttribute("Title");
+        String title = tag.getAttribute("title");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(title)) {
             appendAttribute(tag, " {" + title.trim() + "}");
         }
-        String alt = tag.getAttribute("Alt");
+        String alt = tag.getAttribute("alt");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(alt)) {
             appendAttribute(tag, " {" + alt.trim() + "}");
         }
-    }
-
-    /**
-     * Collapse HTML whitespace in the given String.<p>
-     * 
-     * @param string the string to collapse
-     * 
-     * @return the input String with all HTML whitespace collapsed
-     */
-    protected String collapse(String string) {
-
-        int len = string.length();
-        StringBuffer result = new StringBuffer(len);
-        int state = 0;
-        for (int i = 0; i < len; i++) {
-            char c = string.charAt(i);
-            switch (c) {
-                // see HTML specification section 9.1 White space
-                // http://www.w3.org/TR/html4/struct/text.html#h-9.1
-                case '\u0020':
-                case '\u0009':
-                case '\u000C':
-                case '\u200B':
-                case '\r':
-                case '\n':
-                    if (0 != state) {
-                        state = 1;
-                    }
-                    break;
-                default:
-                    if (1 == state) {
-                        result.append(' ');
-                    }
-                    state = 2;
-                    result.append(c);
-            }
-        }
-        return result.toString();
     }
 
     private void appendAttribute(Tag tag, String text) {
@@ -351,7 +262,6 @@ public class CmsHtml2TextConverter extends NodeVisitor {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
             text = Translate.decode(text);
             text = collapse(text);
-            text = text.trim();
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
 
