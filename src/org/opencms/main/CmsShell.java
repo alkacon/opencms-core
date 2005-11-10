@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShell.java,v $
- * Date   : $Date: 2005/06/28 13:30:16 $
- * Version: $Revision: 1.45 $
+ * Date   : $Date: 2005/11/10 16:51:16 $
+ * Version: $Revision: 1.46 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45 $ 
+ * @version $Revision: 1.46 $ 
  * 
  * @since 6.0.0 
  * 
@@ -402,10 +402,10 @@ public class CmsShell {
     public static final String SHELL_PARAM_DEFAULT_WEB_APP = "-defaultWebApp=";
 
     /** Prefix for "script" parameter. */
-    public static final String SHELL_PARAM_SCRIPT = "-servletMapping=";
+    public static final String SHELL_PARAM_SCRIPT = "-script=";
 
     /** Prefix for "servletMapping" parameter. */
-    public static final String SHELL_PARAM_SERVLET_MAPPING = "-script=";
+    public static final String SHELL_PARAM_SERVLET_MAPPING = "-servletMapping=";
 
     /** The OpenCms context object. */
     protected CmsObject m_cms;

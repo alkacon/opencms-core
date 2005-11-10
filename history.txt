@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/10 07:31:21 $
- * Version: $Revision: 1.705 $
+ * Date   : $Date: 2005/11/10 16:51:16 $
+ * Version: $Revision: 1.706 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ OpenCms 6.0.3 - xxxxxxxxx, 2005
 * Added fix for error handler in localized Xerces versions
 * Fixed issue #982: If tomcat path has spaces, the log file is not set
 * Fixed potential security issues in login dialog with username not being escaped
+* Fixed issue #985: CmsShell parameter constants mismatch
 
 OpenCms 6.0.2 - October 13, 2005
 * Fixed issue #615: Uploading modules with new (unknown) resource type classes
