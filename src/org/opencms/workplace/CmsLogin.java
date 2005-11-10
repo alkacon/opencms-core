@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/09/17 16:38:44 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2005/11/10 07:29:08 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,10 +199,10 @@ public class CmsLogin extends CmsJspLoginBean {
             m_requestedResource = CmsFrameset.JSP_WORKPLACE_URI;
         } else {
             if (m_actionLogin != null) {
-                m_requestedResource = CmsEncoder.decode(m_requestedResource);    
+                m_requestedResource = CmsEncoder.decode(m_requestedResource);
             }
         }
-        
+
         if (Boolean.valueOf(m_actionLogin).booleanValue()) {
 
             // login was requested
@@ -273,7 +273,7 @@ public class CmsLogin extends CmsJspLoginBean {
             // clear message
             m_message = null;
             // login is successful, check if the requested resource can be read
-            CmsUriSplitter splitter = new CmsUriSplitter(m_requestedResource, true);            
+            CmsUriSplitter splitter = new CmsUriSplitter(m_requestedResource, true);
             String resource = splitter.getPrefix();
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(resource)) {
                 // bad resource name, use workplace as default
@@ -447,7 +447,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\t\tif (OpenCmsWin.focus) {\n");
         html.append("\t\t\tOpenCmsWin.focus();\n");
         html.append("\t\t}\n");
-        html.append("\t} catch (e) {}\n");        
+        html.append("\t} catch (e) {}\n");
         html.append("\n");
         html.append("\treturn OpenCmsWin;\n");
         html.append("}\n");
@@ -557,7 +557,7 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("<input style=\"width: 100%\" type=\"text\"");
             appendId(html, PARAM_USERNAME);
             html.append("value=\"");
-            html.append(CmsStringUtil.isEmpty(m_username) ? "" : m_username);
+            html.append(CmsStringUtil.isEmpty(m_username) ? "" : CmsEncoder.escapeXml(m_username));
             html.append("\">");
         } else if (m_action == ACTION_LOGIN) {
             // append name of user that has been logged in

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/09 14:59:58 $
- * Version: $Revision: 1.682.2.39 $
+ * Date   : $Date: 2005/11/10 07:29:08 $
+ * Version: $Revision: 1.682.2.40 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ OpenCms 6.1.3 - xxxxxxxx, 2005
 - Improved link parsing and replacing in HTML when saving XML pages or XML content
 * Fixed issue in HTML editor with empty "alt" attributes in <img> tags not being filled with "Title" property
 ! Added Html2Text converter for rendering HTML as plain text in a readable format (to be used in content comparison)
+* Fixed potential security issues in login dialog with username not being escaped
 
 OpenCms 6.1.2 - October 19, 2005
 ! Added DB support for MS SQL Server 2000 contributed by Andras Balogh
