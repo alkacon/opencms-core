@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/09 08:52:46 $
- * Version: $Revision: 1.10.2.5 $
+ * Date   : $Date: 2005/11/10 15:26:04 $
+ * Version: $Revision: 1.10.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -600,8 +600,8 @@ function handleOnClick(e) {
 			selectedResources[selectedResources.length] = active_mouse_id;
 		}
 		last_id = active_mouse_id;
-	} else if (e.ctrlKey) {
-		// control key pressed, add or remove resource from marked resources
+	} else if (e.ctrlKey || e.altKey) {
+		// control or alt key pressed, add or remove resource from marked resources
 		var found = false;
 		for (i=0; i<selectedResources.length; i++) {
 			if (selectedResources[i] == active_mouse_id) {
