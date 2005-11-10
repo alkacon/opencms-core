@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2005/11/10 07:31:21 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -557,7 +557,7 @@ public class CmsLogin extends CmsJspLoginBean {
             html.append("<input style=\"width: 100%\" type=\"text\"");
             appendId(html, PARAM_USERNAME);
             html.append("value=\"");
-            html.append(CmsStringUtil.isEmpty(m_username) ? "" : m_username);
+            html.append(CmsStringUtil.isEmpty(m_username) ? "" : CmsEncoder.escapeXml(m_username));
             html.append("\">");
         } else if (m_action == ACTION_LOGIN) {
             // append name of user that has been logged in
