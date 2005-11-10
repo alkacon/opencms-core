@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/10 07:29:08 $
- * Version: $Revision: 1.682.2.40 $
+ * Date   : $Date: 2005/11/10 08:53:57 $
+ * Version: $Revision: 1.682.2.41 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.3 - xxxxxxxx, 2005
+OpenCms 6.1.3 - November 10, 2005
 * Fixed issue with frozen state in CmsProperty when calling #deleteResourceValue()
 ! Added CmsVfsDataSource to org.opencms.mail package for easy attaching of VFS files to emails
 ! It's now possible to select 'individual' or 'shared' property mappings for XML content
