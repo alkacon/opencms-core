@@ -84,7 +84,7 @@ public class CmsImageScaler {
         init();
         try {
             // read the scaled image
-            BufferedImage image = SimapiFactory.getInstace().read(content);
+            BufferedImage image = SimapiFactory.getInstance().read(content);
             m_height = image.getHeight();
             m_width = image.getWidth();
         } catch (Exception e) {
@@ -179,7 +179,7 @@ public class CmsImageScaler {
      */
     public String getImageType(String filename) {
 
-        Simapi scaler = SimapiFactory.getInstace();
+        Simapi scaler = SimapiFactory.getInstance();
         return scaler.getImageType(filename);
     }
 
@@ -252,7 +252,7 @@ public class CmsImageScaler {
 
         byte[] result = file.getContents();
 
-        Simapi scaler = SimapiFactory.getInstace();
+        Simapi scaler = SimapiFactory.getInstance();
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
         String type = scaler.getImageType(file.getRootPath());
         if (type == null) {
