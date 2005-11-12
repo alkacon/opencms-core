@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/12 08:51:33 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,7 @@
 
 package org.opencms.loader;
 
-import org.opencms.cache.CmsVfsDiskCache;
+import org.opencms.cache.CmsVfsNameBasedDiskCache;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -89,7 +89,7 @@ public class CmsImageLoader extends CmsDumpLoader {
     private static String m_imageRepositoryFolder;
 
     /** The disk cache to use for saving scaled image versions. */
-    private CmsVfsDiskCache m_vfsDiskCache;
+    private static CmsVfsNameBasedDiskCache m_vfsDiskCache;
 
     /**
      * Creates a new image loader.<p>
@@ -97,6 +97,16 @@ public class CmsImageLoader extends CmsDumpLoader {
     public CmsImageLoader() {
 
         super();
+    }
+
+    /**
+     * Returns the path of the image cache repository folder in the RFS.<p>
+     * 
+     * @return the path of the image cache repository folder in the RFS
+     */
+    public static String getImageRepositoryPath() {
+
+        return m_vfsDiskCache.getRepositoryPath();
     }
 
     /**
@@ -142,6 +152,7 @@ public class CmsImageLoader extends CmsDumpLoader {
 
         m_enabled = false;
         m_imageRepositoryFolder = null;
+        m_vfsDiskCache = null;
     }
 
     /**
@@ -176,9 +187,11 @@ public class CmsImageLoader extends CmsDumpLoader {
             m_imageRepositoryFolder = IMAGE_REPOSITORY_DEFAULT;
         }
         // initialize the image cache
-        m_vfsDiskCache = new CmsVfsDiskCache(
-            OpenCms.getSystemInfo().getWebApplicationRfsPath(),
-            m_imageRepositoryFolder);
+        if (m_vfsDiskCache == null) {
+            m_vfsDiskCache = new CmsVfsNameBasedDiskCache(
+                OpenCms.getSystemInfo().getWebApplicationRfsPath(),
+                m_imageRepositoryFolder);
+        }
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(
@@ -228,10 +241,10 @@ public class CmsImageLoader extends CmsDumpLoader {
 
         String cacheParam = scaler.isValid() ? scaler.toString() : null;
         String cacheName = m_vfsDiskCache.getCacheName(
+            resource,
             cms.getRequestContext().currentProject().isOnlineProject(),
-            resource.getRootPath(),
             cacheParam);
-        byte[] content = m_vfsDiskCache.getCacheContent(cacheName, resource.getDateLastModified());
+        byte[] content = m_vfsDiskCache.getCacheContent(cacheName);
 
         CmsFile file;
         if (content != null) {
@@ -248,7 +261,7 @@ public class CmsImageLoader extends CmsDumpLoader {
                 file.setContents(content);
             }
             // save the file content in the cache
-            m_vfsDiskCache.saveCacheFile(cacheName, file.getContents(), file.getDateLastModified());
+            m_vfsDiskCache.saveCacheFile(cacheName, file.getContents());
         }
         return file;
     }

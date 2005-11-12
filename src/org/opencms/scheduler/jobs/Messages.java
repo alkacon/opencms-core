@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/Messages.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2005/11/12 08:51:33 $
+ * Version: $Revision: 1.6.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,20 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6.2.2 $ 
+ * @version $Revision: 1.6.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_CACHE_BAD_MAXAGE_2 = "LOG_IMAGE_CACHE_BAD_MAXAGE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_CACHE_CLEANUP_COUNT_1 = "LOG_IMAGE_CACHE_CLEANUP_COUNT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1 = "LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_IMAGE_SCALING_DISABLED_0 = "LOG_IMAGE_SCALING_DISABLED_0";

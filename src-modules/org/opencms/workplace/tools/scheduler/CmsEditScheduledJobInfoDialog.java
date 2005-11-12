@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/09/27 12:15:56 $
- * Version: $Revision: 1.25.2.2 $
+ * Date   : $Date: 2005/11/12 08:51:34 $
+ * Version: $Revision: 1.25.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.notification.CmsContentNotificationJob;
 import org.opencms.scheduler.CmsScheduledJobInfo;
 import org.opencms.scheduler.jobs.CmsCreateImageSizeJob;
+import org.opencms.scheduler.jobs.CmsImageCacheCleanupJob;
 import org.opencms.scheduler.jobs.CmsPublishJob;
 import org.opencms.scheduler.jobs.CmsStaticExportJob;
 import org.opencms.search.CmsSearchManager;
@@ -68,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.2 $ 
+ * @version $Revision: 1.25.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -304,6 +305,11 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             false,
             null,
             key(Messages.GUI_EDITOR_CRONCLASS_IMAGESIZE_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsImageCacheCleanupJob.class.getName(),
+            false,
+            null,
+            key(Messages.GUI_EDITOR_CRONCLASS_IMAGE_CACHECLEAN_0)));
         return result;
     }
 
