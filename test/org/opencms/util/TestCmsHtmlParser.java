@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlParser.java,v $
- * Date   : $Date: 2005/11/09 14:59:59 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/14 15:04:06 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
@@ -63,33 +63,33 @@ public class TestCmsHtmlParser extends TestCase {
      */
     public void testHtmlExtractor() throws Exception {
 
-        CmsHtmlParser visitor1 = new CmsHtmlParser(true);
+        I_CmsHtmlNodeVisitor visitor1 = new CmsHtmlParser(true);
         String content1 = CmsFileUtil.readFile(
             "org/opencms/util/testHtml_01.html",
             CmsEncoder.ENCODING_ISO_8859_1);
-        String result1 = CmsHtmlParser.process(content1, CmsEncoder.ENCODING_ISO_8859_1, visitor1);
+        String result1 = visitor1.process(content1, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(result1 + "\n\n");
         // assertEquals(content1, result1);
 
-        CmsHtmlParser visitor2 = new CmsHtmlParser(true);
+        I_CmsHtmlNodeVisitor visitor2 = new CmsHtmlParser(true);
         String content2 = CmsFileUtil.readFile(
             "org/opencms/util/testHtml_02.html",
             CmsEncoder.ENCODING_ISO_8859_1);
-        String result2 = CmsHtmlParser.process(content2, CmsEncoder.ENCODING_ISO_8859_1, visitor2);
+        String result2 = visitor2.process(content2, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(result2 + "\n\n");
         assertEquals(content2, result2);
 
-        CmsHtmlParser visitor3 = new CmsHtmlParser(true);
+        I_CmsHtmlNodeVisitor visitor3 = new CmsHtmlParser(true);
         String content3 = CmsFileUtil.readFile(
             "org/opencms/util/testHtml_03.html",
             CmsEncoder.ENCODING_ISO_8859_1);
-        String result3 = CmsHtmlParser.process(content3, CmsEncoder.ENCODING_ISO_8859_1, visitor3);
+        String result3 = visitor3.process(content3, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(result3 + "\n\n");
         assertEquals(content3, result3);
         
         // check with non-echo visitor, no output should be produced
-        CmsHtmlParser visitor4 = new CmsHtmlParser();
-        result3 = CmsHtmlParser.process(content3, CmsEncoder.ENCODING_ISO_8859_1, visitor4);
+        I_CmsHtmlNodeVisitor visitor4 = new CmsHtmlParser();
+        result3 = visitor4.process(content3, CmsEncoder.ENCODING_ISO_8859_1);
         System.out.println(result3 + "\n\n");
         assertEquals("", result3);
     }

@@ -64,7 +64,7 @@ public class CmsHtml2TextConverter extends CmsHtmlParser {
 
         // create the converter instance
         CmsHtml2TextConverter visitor = new CmsHtml2TextConverter();
-        return process(html, encoding, visitor);
+        return visitor.process(html, encoding);
     }
 
     /**

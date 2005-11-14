@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2005/11/09 14:59:59 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/14 15:04:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,11 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
-public class CmsHtmlParser extends NodeVisitor {
+public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
     /** The array of supported tag names. */
     // important: don't change the order of these tags in the source, subclasses may expect the tags
@@ -123,7 +123,7 @@ public class CmsHtmlParser extends NodeVisitor {
      * 
      * @throws ParserException if something goes wrong
      */
-    public static String process(String html, String encoding, CmsHtmlParser visitor) throws ParserException {
+    protected static String process(String html, String encoding, CmsHtmlParser visitor) throws ParserException {
 
         // initialize a parser with the given charset
         Parser parser = new Parser();
@@ -137,10 +137,17 @@ public class CmsHtmlParser extends NodeVisitor {
         return visitor.getResult();
     }
 
+    
     /**
-     * Returns the text extraction result.<p>
-     * 
-     * @return the text extraction result
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#process(java.lang.String, java.lang.String)
+     */    
+    public String process(String html, String encoding) throws ParserException {
+        
+        return process(html, encoding, this);      
+    }
+    
+    /**
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#getResult()
      */
     public String getResult() {
 
@@ -164,7 +171,7 @@ public class CmsHtmlParser extends NodeVisitor {
     }
 
     /**
-     * @see org.htmlparser.visitors.NodeVisitor#visitEndTag(org.htmlparser.Tag)
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitEndTag(org.htmlparser.Tag)
      */
     public void visitEndTag(Tag tag) {
 
@@ -174,7 +181,7 @@ public class CmsHtmlParser extends NodeVisitor {
     }
 
     /**
-     * @see org.htmlparser.visitors.NodeVisitor#visitRemarkNode(org.htmlparser.Remark)
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitRemarkNode(org.htmlparser.Remark)
      */
     public void visitRemarkNode(Remark remark) {
 
@@ -184,7 +191,7 @@ public class CmsHtmlParser extends NodeVisitor {
     }
 
     /**
-     * @see org.htmlparser.visitors.NodeVisitor#visitStringNode(org.htmlparser.Text)
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitStringNode(org.htmlparser.Text)
      */
     public void visitStringNode(Text text) {
 
@@ -194,7 +201,7 @@ public class CmsHtmlParser extends NodeVisitor {
     }
 
     /**
-     * @see org.htmlparser.visitors.NodeVisitor#visitTag(org.htmlparser.Tag)
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#visitTag(org.htmlparser.Tag)
      */
     public void visitTag(Tag tag) {
 

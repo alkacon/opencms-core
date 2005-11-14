@@ -72,7 +72,23 @@
         <description>
             This tag is used to wrap URLs for the OpenCms static export.
         </description>
-    </tag>        
+    </tag>   
+    
+    <tag>
+        <name>decorate</name>
+        <tag-class>org.opencms.jsp.CmsJspTagDecorate</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag is used to decorate HTML.
+        </description>
+        <attribute>
+            <name>file</name>
+            <required>true</required>
+        </attribute>  
+        <attribute>
+            <name>locale</name>
+        </attribute> 
+    </tag>       
 
     <tag>
         <name>template</name>

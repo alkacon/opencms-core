@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/11/09 14:59:59 $
- * Version: $Revision: 1.43.2.3 $
+ * Date   : $Date: 2005/11/14 15:04:06 $
+ * Version: $Revision: 1.43.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.3 $ 
+ * @version $Revision: 1.43.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -203,7 +203,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     public String processLinks(String content) throws ParserException {
 
         m_mode = PROCESS_LINKS;
-        return process(content, m_encoding, this);
+        return process(content, m_encoding);
     }
 
     /**
@@ -219,7 +219,7 @@ public class CmsLinkProcessor extends CmsHtmlParser {
     public String replaceLinks(String content) throws ParserException {
 
         m_mode = REPLACE_LINKS;
-        return process(content, m_encoding, this);
+        return process(content, m_encoding);
     }
 
     /**
