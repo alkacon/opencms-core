@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/14 15:26:15 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,17 +44,19 @@ import org.htmlparser.util.ParserException;
 import org.htmlparser.visitors.NodeVisitor;
 
 /**
- * Base utility class for OpenCms <code>{@link org.htmlparser.visitors.NodeVisitor}</code> implementations,
- * which provides some often used utility functions.<p>
+ * Base utility class for OpenCms <code>{@link org.htmlparser.visitors.NodeVisitor}</code>
+ * implementations, which provides some often used utility functions.
+ * <p>
  * 
- * This base implementation is only a "pass through" class, that is the content is parsed, but 
- * the generated result is exactly identical to the input.<p>
+ * This base implementation is only a "pass through" class, that is the content is parsed, but the
+ * generated result is exactly identical to the input.
+ * <p>
  * 
- * @author  Alexander Kandzior 
+ * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $
  * 
- * @since 6.2.0 
+ * @since 6.2.0
  */
 public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
@@ -94,7 +96,8 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     protected StringBuffer m_result;
 
     /**
-     * Creates a new instance of the html converter with echo mode set to <code>false</code>.<p>
+     * Creates a new instance of the html converter with echo mode set to <code>false</code>.
+     * <p>
      */
     public CmsHtmlParser() {
 
@@ -102,7 +105,8 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     }
 
     /**
-     * Creates a new instance of the html converter.<p>
+     * Creates a new instance of the html converter.
+     * <p>
      * 
      * @param echo indicates if "echo" mode is on, that is all content is written to the result
      */
@@ -113,7 +117,8 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     }
 
     /**
-     * Extracts the text from the given html content, assuming the given html encoding.<p>
+     * Extracts the text from the given html content, assuming the given html encoding.
+     * <p>
      * 
      * @param html the content to extract the plain text from
      * @param encoding the encoding to use
@@ -137,15 +142,6 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
         return visitor.getResult();
     }
 
-    
-    /**
-     * @see org.opencms.util.I_CmsHtmlNodeVisitor#process(java.lang.String, java.lang.String)
-     */    
-    public String process(String html, String encoding) throws ParserException {
-        
-        return process(html, encoding, this);      
-    }
-    
     /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#getResult()
      */
@@ -155,7 +151,8 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     }
 
     /**
-     * Returns the HTML for the given tag itself (not the tag content).<p>
+     * Returns the HTML for the given tag itself (not the tag content).
+     * <p>
      * 
      * @param tag the tag to create the HTML for
      * 
@@ -168,6 +165,14 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
         result.append(tag.getText());
         result.append('>');
         return result.toString();
+    }
+
+    /**
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#process(java.lang.String, java.lang.String)
+     */
+    public String process(String html, String encoding) throws ParserException {
+
+        return process(html, encoding, this);
     }
 
     /**
@@ -211,7 +216,8 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     }
 
     /**
-     * Collapse HTML whitespace in the given String.<p>
+     * Collapse HTML whitespace in the given String.
+     * <p>
      * 
      * @param string the string to collapse
      * 
