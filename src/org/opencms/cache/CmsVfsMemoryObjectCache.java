@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/14 15:12:44 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,15 +46,33 @@ import java.util.Map;
 
 import org.apache.commons.logging.Log;
 
+/**
+ * Implements a memory cache, that stores objects related to VFS files, 
+ * providing a cache for the "online" and another for the "offline" project.<p>
+ * 
+ * @author Alexander Kandzior 
+ * @author Michael Emmerich
+ * 
+ * @version $Revision: 1.1.2.2 $
+ * 
+ * @since 6.1.3
+ */
 public class CmsVfsMemoryObjectCache implements I_CmsEventListener {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsMemoryObjectCache.class);
 
+    /** The admin CmsObject for access. */
     private CmsObject m_adminCms;
 
+    /** The cache map. */
     private Map m_cache;
 
+    /**
+     * Constructor, creates a new CmsVfsMemoryObjectCache.<p>
+     * 
+     * @param adminCms admin CmsObject for access
+     */
     public CmsVfsMemoryObjectCache(CmsObject adminCms) {
 
         try {
@@ -97,18 +115,35 @@ public class CmsVfsMemoryObjectCache implements I_CmsEventListener {
         }
     }
 
+    /**
+     * Get anobject from the cache.<p>
+     * 
+     * @param cms the CmsObject
+     * @param rootPath the rootPath of the VFS resource to get the object for 
+     * @return object form cache or null
+     */
     public Object getCachedObject(CmsObject cms, String rootPath) {
 
         String key = getCacheKeyForCurrentProject(cms, rootPath);
         return m_cache.get(key);
     }
 
+    /**
+     * Puts an object into the cache.<p>
+     * 
+     * @param cms the CmsObject
+     * @param rootPath the rootPath of the VFS resource to store the object for 
+     * @param value the object to store
+     */
     public void putCachedObject(CmsObject cms, String rootPath, Object value) {
 
         String key = getCacheKeyForCurrentProject(cms, rootPath);
-        m_cache.put(rootPath, value);
+        m_cache.put(key, value);
     }
 
+    /**
+     * Registers all required event listeners.<p>
+     */
     protected void registerEventListener() {
 
         // register this object as event listener
