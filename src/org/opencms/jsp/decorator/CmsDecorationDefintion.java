@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/15 14:15:50 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,13 +31,13 @@
 
 package org.opencms.jsp.decorator;
 
+import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
-import org.opencms.main.OpenCms;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -406,12 +406,14 @@ public class CmsDecorationDefintion {
         while (i.hasNext()) {
             CmsResource res = (CmsResource)i.next();
             try {
-                CmsDecorationMap decMap = (CmsDecorationMap) OpenCms.getResourceManager().getVfsMemoryObjectCache().getCachedObject(cms, res.getRootPath());
+                CmsDecorationMap decMap = (CmsDecorationMap)CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().getCachedObject(
+                    cms,
+                    res.getRootPath());
                 if (decMap == null) {
                     decMap = new CmsDecorationMap(cms, res, this);
-                    OpenCms.getResourceManager().getVfsMemoryObjectCache().putCachedObject(cms, res.getRootPath(), decMap);
+                    CmsVfsMemoryObjectCache.getVfsMemoryObjectCache().putCachedObject(cms, res.getRootPath(), decMap);
                 }
-               
+
                 decorationMaps.add(decMap);
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {

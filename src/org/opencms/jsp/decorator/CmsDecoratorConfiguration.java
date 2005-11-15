@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecoratorConfiguration.java,v $
- * Date   : $Date: 2005/11/15 09:42:27 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/15 14:15:50 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,12 +50,13 @@ import java.util.Locale;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
 
 public class CmsDecoratorConfiguration {
+
 
     /** The xpath for the decoration configuration. */
     private static final String XPATH_DECORATION = "decoration";
@@ -98,7 +99,7 @@ public class CmsDecoratorConfiguration {
 
     /** The locale for to build the configuration for. */
     private Locale m_locale;
-    
+
     /** The list of already used  decorations. */
     private List m_usedDecorations;
 
@@ -154,6 +155,8 @@ public class CmsDecoratorConfiguration {
         init();
     }
 
+
+
     /**
      * Adds decorations defined in a <code>{@link CmsDecorationDefintion}</code> object to the map of all decorations.<p>
      * @param decorationDefinition the <code>{@link CmsDecorationDefintion}</code> the decorations to be added
@@ -179,24 +182,27 @@ public class CmsDecoratorConfiguration {
      * @return true if this key was already used
      */
     public boolean hasUsed(String key) {
+
         return m_usedDecorations.contains(key);
     }
-    
+
     /**
      * Mark a decoration key as already used.<p>
      * @param key the key to mark
      */
     public void markAsUsed(String key) {
+
         m_usedDecorations.add(key);
     }
-    
+
     /**
      * Resets the used decoration keys.<p>
      */
     public void resetMarkedDecorations() {
+
         m_usedDecorations = new ArrayList();
     }
-    
+
     /**
      * Sets the decoration bundle, overwriting an exiting one.<p> 
      * 

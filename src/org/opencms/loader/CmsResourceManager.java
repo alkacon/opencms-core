@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsResourceManager.java,v $
- * Date   : $Date: 2005/11/14 15:04:06 $
- * Version: $Revision: 1.33.2.4 $
+ * Date   : $Date: 2005/11/15 14:15:50 $
+ * Version: $Revision: 1.33.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.loader;
 
-import org.opencms.cache.CmsVfsMemoryObjectCache;
 import org.opencms.configuration.CmsConfigurationException;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.file.CmsObject;
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33.2.4 $ 
+ * @version $Revision: 1.33.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -192,19 +191,6 @@ public class CmsResourceManager {
     /** A list that contains all resource types added from the XML configuration. */
     private List m_resourceTypesFromXml;
 
-    /** A cache that maps VFS resource names to Objects. */
-    private CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
-    
-    /**
-     * Returns the VFS memory Object cache.<p>
-     * 
-     * @return the VFS memory Object cache
-     */
-    public CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
-
-        return m_vfsMemoryObjectCache;
-    }
-    
     /**
      * Creates a new instance for the resource manager, 
      * will be called by the vfs configuration manager.<p>
@@ -697,11 +683,6 @@ public class CmsResourceManager {
 
         // initalize the resource types
         initResourceTypes();
-        
-        // initialize the VFS momory object cache
-        if (m_vfsMemoryObjectCache == null) {
-            m_vfsMemoryObjectCache = new CmsVfsMemoryObjectCache(cms);
-        }
 
         // call initialize method on all resource types
         Iterator i = m_configuration.getResourceTypeList().iterator();

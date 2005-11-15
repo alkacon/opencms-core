@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2005/11/14 15:12:44 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/15 14:15:50 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.cache;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsEvent;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
@@ -53,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.3
  */
@@ -62,26 +61,40 @@ public class CmsVfsMemoryObjectCache implements I_CmsEventListener {
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsMemoryObjectCache.class);
 
-    /** The admin CmsObject for access. */
-    private CmsObject m_adminCms;
+    /** A cache that maps VFS resource names to Objects. */
+    private static CmsVfsMemoryObjectCache m_vfsMemoryObjectCache;
 
     /** The cache map. */
     private Map m_cache;
 
     /**
      * Constructor, creates a new CmsVfsMemoryObjectCache.<p>
-     * 
-     * @param adminCms admin CmsObject for access
      */
-    public CmsVfsMemoryObjectCache(CmsObject adminCms) {
+    public CmsVfsMemoryObjectCache() {
 
-        try {
-            m_adminCms = OpenCms.initCmsObject(adminCms);
-        } catch (CmsException e) {
-            // log something
-        }
         m_cache = new HashMap();
         registerEventListener();
+    }
+
+    /**
+     * Returns the VFS memory Object cache.<p>
+     * 
+     * @return the VFS memory Object cache
+     */
+    public static CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
+
+        initCache();
+        return m_vfsMemoryObjectCache;
+    }
+
+    /**
+     * Initializes the internal caches for permanent and temporary system IDs.<p>
+     */
+    private static void initCache() {
+
+        if (m_vfsMemoryObjectCache == null) {
+            m_vfsMemoryObjectCache = new CmsVfsMemoryObjectCache();
+        }
     }
 
     /**

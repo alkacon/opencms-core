@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/cache/TestCache.java,v $
- * Date   : $Date: 2005/11/15 09:42:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/15 14:15:50 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.cache;
 
 import org.opencms.file.CmsResource;
-import org.opencms.main.OpenCms;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -45,7 +44,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.3
  */
@@ -99,7 +98,7 @@ public class TestCache extends OpenCmsTestCase {
     public void testVfsMemoryObjectCache() throws Exception {
         
         // get the cache
-        CmsVfsMemoryObjectCache cache = OpenCms.getResourceManager().getVfsMemoryObjectCache();
+        CmsVfsMemoryObjectCache cache = CmsVfsMemoryObjectCache.getVfsMemoryObjectCache();
 
         
         String res1RootPath ="/sites/default/index.html";
