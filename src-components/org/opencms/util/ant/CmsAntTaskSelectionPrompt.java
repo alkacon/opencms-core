@@ -10,7 +10,7 @@ import javax.swing.UIManager;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5 $ 
+ * @version $Revision: 1.5.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -32,6 +32,9 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     /** Title message. */
     private String m_title = "Selection Dialog";
 
+    /** The amount of rows to use for display of selection elements. */
+    private int m_columns = 2;
+    
     /**
      * Default constructor.<p>
      */
@@ -195,6 +198,28 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     public void setTitle(String title) {
 
         m_title = title;
+    }
+
+    
+    /**
+     * Returns the columns.<p>
+     *
+     * @return the columns.
+     */
+    public int getColumns() {
+    
+        return m_columns;
+    }
+
+    
+    /**
+     * Sets the columns.<p>
+     *
+     * @param cols the columns to set
+     */
+    public void setColumns(String cols) {
+
+        m_columns = Integer.parseInt(cols);
     }
 
 }

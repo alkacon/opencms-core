@@ -60,7 +60,8 @@
 					  	    defaultvalue="${modules.common.selection}"
 					  		allvalues="${modules.all.sort}"
 					  		prompt="Please select the modules to process:"
-					  		title="Module Selection"
+					  		title="Module Selection" 
+					  		columns="2"
 					  	/>
 					</then>
 					<else>
@@ -70,6 +71,7 @@
 					  		allvalues="${modules.all.sort}"
 					  		prompt="Please select the modules to process:"
 					  		title="Module Selection"
+					  		columns="2"
 					  	/>
 					</else>
 				</if>
