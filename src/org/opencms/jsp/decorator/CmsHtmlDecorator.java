@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/15 09:42:27 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -202,13 +202,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      */
     public void resetDecorationDefinitions() {
 
-        Iterator i = m_config.getDecorations().keySet().iterator();
-        while (i.hasNext()) {
-            String key = (String)i.next();
-            CmsDecorationObject decObj = (CmsDecorationObject)m_config.getDecorations().get(key);
-            decObj.resetFirstOccuranceFlag();
-        }
-
+        m_config.resetMarkedDecorations();
     }
 
     /**
@@ -265,7 +259,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     }
                 } else {
                     // decorate the current word
-                    m_result.append(decObj.getContentDecoration());
+                    m_result.append(decObj.getContentDecoration(m_config));
                 }
             }
         } else {

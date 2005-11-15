@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecoratorConfiguration.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/15 09:42:27 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.main.CmsException;
 import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -48,7 +50,7 @@ import java.util.Locale;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -96,6 +98,9 @@ public class CmsDecoratorConfiguration {
 
     /** The locale for to build the configuration for. */
     private Locale m_locale;
+    
+    /** The list of already used  decorations. */
+    private List m_usedDecorations;
 
     /**
      * Constructor, creates a new, empty CmsDecoratorConfiguration.<p>
@@ -109,6 +114,7 @@ public class CmsDecoratorConfiguration {
         m_configFile = null;
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
+        m_usedDecorations = new ArrayList();
     }
 
     /**
@@ -125,6 +131,7 @@ public class CmsDecoratorConfiguration {
         m_configFile = configFile;
         m_cms = cms;
         m_locale = m_cms.getRequestContext().getLocale();
+        m_usedDecorations = new ArrayList();
         init();
     }
 
@@ -143,6 +150,7 @@ public class CmsDecoratorConfiguration {
         m_configFile = configFile;
         m_cms = cms;
         m_locale = locale;
+        m_usedDecorations = new ArrayList();
         init();
     }
 
@@ -165,6 +173,30 @@ public class CmsDecoratorConfiguration {
         return m_decorations;
     }
 
+    /**
+     * Tests if a decoration key was used before in this configuration.<p>
+     * @param key the key to look for
+     * @return true if this key was already used
+     */
+    public boolean hasUsed(String key) {
+        return m_usedDecorations.contains(key);
+    }
+    
+    /**
+     * Mark a decoration key as already used.<p>
+     * @param key the key to mark
+     */
+    public void markAsUsed(String key) {
+        m_usedDecorations.add(key);
+    }
+    
+    /**
+     * Resets the used decoration keys.<p>
+     */
+    public void resetMarkedDecorations() {
+        m_usedDecorations = new ArrayList();
+    }
+    
     /**
      * Sets the decoration bundle, overwriting an exiting one.<p> 
      * 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationObject.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/15 09:42:27 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -64,9 +64,6 @@ public class CmsDecorationObject {
     /** The key for this decoration. */
     private String m_decorationKey;
 
-    /** Flag if this decoration object was used once. */
-    private boolean m_firstOccurance;
-
     /** The locale of this decoration. */
     private Locale m_locale;
 
@@ -76,7 +73,6 @@ public class CmsDecorationObject {
     public CmsDecorationObject() {
 
         m_decorationDefinition = new CmsDecorationDefintion();
-        m_firstOccurance = true;
     }
 
     /**
@@ -92,22 +88,22 @@ public class CmsDecorationObject {
         m_decorationKey = decorationKey;
         m_decoration = decoration;
         m_decorationDefinition = decDef;
-        m_firstOccurance = true;
         m_locale = locale;
     }
 
     /**
      * Gets the decorated content for this decoration object.<p>
      * 
+     * @param config the configuration used
      * @return decorated content
      */
-    public String getContentDecoration() {
+    public String getContentDecoration(CmsDecoratorConfiguration config) {
 
         StringBuffer content = new StringBuffer();
         // TODO: we have to handle with word phrases, too
 
         // add the pretext
-        if (isFirstOccurance() && m_decorationDefinition.isMarkFirst()) {
+        if (!config.hasUsed(m_decorationKey) && m_decorationDefinition.isMarkFirst()) {
             content.append(m_decorationDefinition.getPreTextFirst());
         } else {
             content.append(m_decorationDefinition.getPreText());
@@ -116,9 +112,9 @@ public class CmsDecorationObject {
         content.append(m_decorationKey);
 
         // add the posttext
-        if (isFirstOccurance() && m_decorationDefinition.isMarkFirst()) {
+        if (!config.hasUsed(m_decorationKey) && m_decorationDefinition.isMarkFirst()) {
             content.append(m_decorationDefinition.getPostTextFirst());
-            m_firstOccurance = false;
+            config.markAsUsed(m_decorationKey);
         } else {
             content.append(m_decorationDefinition.getPostText());
         }
@@ -158,47 +154,6 @@ public class CmsDecorationObject {
     }
 
     /**
-     * Resets the first occurance flag.<p> 
-     * 
-     * This should be done if the same instance of a CmsDecorationObject is reused for processing
-     * a second time.     *
-     */
-    public void resetFirstOccuranceFlag() {
-
-        m_firstOccurance = true;
-    }
-
-    /**
-     * Sets the decoration.<p>
-     *
-     * @param decoration the decoration to set
-     */
-    public void setDecoration(String decoration) {
-
-        m_decoration = decoration;
-    }
-
-    /**
-     * Sets the decorationDefinition.<p>
-     *
-     * @param decorationDefinition the decorationDefinition to set
-     */
-    public void setDecorationDefinition(CmsDecorationDefintion decorationDefinition) {
-
-        m_decorationDefinition = decorationDefinition;
-    }
-
-    /**
-     * Sets the decorationKey.<p>
-     *
-     * @param decorationKey the decorationKey to set
-     */
-    public void setDecorationKey(String decorationKey) {
-
-        m_decorationKey = decorationKey;
-    }
-
-    /**
      * @see java.lang.Object#toString()
      */
     public String toString() {
@@ -215,15 +170,6 @@ public class CmsDecorationObject {
         buf.append(m_decorationDefinition);
         buf.append("']");
         return buf.toString();
-    }
-
-    /**
-     * Tests if this is the first occurance of the decoration key.<p>
-     * @return true if the decoration key was not used before
-     */
-    private boolean isFirstOccurance() {
-
-        return m_firstOccurance;
     }
 
     /**

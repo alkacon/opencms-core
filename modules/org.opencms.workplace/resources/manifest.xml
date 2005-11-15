@@ -18,7 +18,7 @@
 <p>It includes common used dialogs and style sheets, that are needed by any workplace module.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -32,6 +32,7 @@
 			<resource uri="/system/shared/page.dtd"/>
 			<resource uri="/system/shared/showversion"/>
 			<resource uri="/system/workplace/admin/notification/"/>
+			<resource uri="/system/workplace/admin/decoration/"/>
 			<resource uri="/system/workplace/commons/includes/"/>
 			<resource uri="/system/workplace/commons/style/"/>
 			<resource uri="/system/workplace/galleries/"/>
@@ -542,6 +543,88 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Schema Definition for Content Notifications]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+				<file>
+			<destination>system/workplace/admin/decoration</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 08 Nov 2005 15:37:31 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 Nov 2005 14:03:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[HTML Decoration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/decoration/configuration.xml</source>
+			<destination>system/workplace/admin/decoration/configuration.xml</destination>
+			<type>xmlcontent</type>
+			<uuidresource>53ad62b3-506d-11da-9c96-11c9c0330e35</uuidresource>
+			<datelastmodified>Tue, 15 Nov 2005 08:21:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 Nov 2005 15:35:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms Decoration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/decoration/decoration.xsd</source>
+			<destination>system/workplace/admin/decoration/decoration.xsd</destination>
+			<type>plain</type>
+			<uuidresource>3ae54f06-506b-11da-9c96-11c9c0330e35</uuidresource>
+			<datelastmodified>Tue, 08 Nov 2005 15:49:39 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 Nov 2005 15:20:44 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schemadefinition for decoration]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/decoration/decorationconfiguration.xsd</source>
+			<destination>system/workplace/admin/decoration/decorationconfiguration.xsd</destination>
+			<type>plain</type>
+			<uuidresource>44ef7fcb-506b-11da-9c96-11c9c0330e35</uuidresource>
+			<datelastmodified>Fri, 11 Nov 2005 08:07:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 08 Nov 2005 15:21:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Schemadefinition for property check]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
