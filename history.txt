@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/10 16:51:16 $
- * Version: $Revision: 1.706 $
+ * Date   : $Date: 2005/11/15 17:03:46 $
+ * Version: $Revision: 1.707 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.0.3 - xxxxxxxxx, 2005
+OpenCms 6.0.3 - November 15, 2005
 * Fixed issue with frozen state in CmsProperty when calling #deleteResourceValue()
 * Improved error handling in XML page loader for locale selection process
 * Added fix for error handler in localized Xerces versions
