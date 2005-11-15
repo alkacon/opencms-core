@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2005/11/12 08:51:33 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/15 16:39:23 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -208,6 +208,10 @@ public class CmsImageLoader extends CmsDumpLoader {
     throws IOException, CmsException {
 
         if (m_enabled) {
+            if (canSendLastModifiedHeader(resource, req, res)) {
+                // no image processing required at all
+                return;
+            }
             // get the scale information from the request
             CmsImageScaler scaler = new CmsImageScaler(req.getParameter(CmsImageScaler.PARAM_SCALE));
             // load the file from the cache

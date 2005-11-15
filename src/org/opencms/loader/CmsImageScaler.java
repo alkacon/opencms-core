@@ -1,8 +1,8 @@
 
 package org.opencms.loader;
 
+import com.alkacon.simapi.RenderSettings;
 import com.alkacon.simapi.Simapi;
-import com.alkacon.simapi.SimapiFactory;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -25,6 +25,9 @@ import org.apache.commons.logging.Log;
  */
 public class CmsImageScaler {
 
+    /** The name of the transparent color (for the backgound image). */
+    public static final String COLOR_TRANSPARENT = "transparent";
+
     /** The (optional) parameter used for sending the scale information of an image in the http request. */
     public static final String PARAM_SCALE = "__scale";
 
@@ -34,8 +37,14 @@ public class CmsImageScaler {
     /** The scaler parameter to indicate the requested image height. */
     public static final String SCALE_PARAM_HEIGHT = "h";
 
-    /** The scaler parameter to indicate the requested image positio (if required). */
+    /** The scaler parameter to indicate the requested image position (if required). */
     public static final String SCALE_PARAM_POS = "p";
+
+    /** The scaler parameter to indicate to requested image save quality in percent (if applicable, for example used with JPEG images). */
+    public static final String SCALE_PARAM_QUALITY = "q";
+
+    /** The scaler parameter to indicate to requested <code>{@link java.awt.RenderingHints}</code> settings. */
+    public static final String SCALE_PARAM_RENDERMODE = "r";
 
     /** The scaler parameter to indicate the requested scale type. */
     public static final String SCALE_PARAM_TYPE = "t";
@@ -54,6 +63,12 @@ public class CmsImageScaler {
 
     /** The target position (optional). */
     private int m_position;
+
+    /** The target image save quality (if applicable, for example used with JPEG images) (optional). */
+    private int m_quality;
+
+    /** The image processing renderings hints constant mode indicator (optional). */
+    private int m_renderMode;
 
     /** The final (parsed and corrected) scale parameters. */
     private String m_scaleParameters;
@@ -84,7 +99,7 @@ public class CmsImageScaler {
         init();
         try {
             // read the scaled image
-            BufferedImage image = SimapiFactory.getInstance().read(content);
+            BufferedImage image = Simapi.read(content);
             m_height = image.getHeight();
             m_width = image.getWidth();
         } catch (Exception e) {
@@ -179,8 +194,7 @@ public class CmsImageScaler {
      */
     public String getImageType(String filename) {
 
-        Simapi scaler = SimapiFactory.getInstance();
-        return scaler.getImageType(filename);
+        return Simapi.getImageType(filename);
     }
 
     /**
@@ -194,16 +208,75 @@ public class CmsImageScaler {
     }
 
     /**
+     * Returns the image saving quality in percent (0 - 100).<p>
+     * 
+     * This is used oly if applicable, for example when saving JPEG images.<p>
+     *
+     * @return the image saving quality in percent
+     */
+    public int getQuality() {
+
+        return m_quality;
+    }
+
+    /**
+     * Returns the image rendering mode constant.<p>
+     *
+     * Possible values are:<dl>
+     * <dt>{@link Simapi#RENDER_QUALITY} (default)</dt>
+     * <dd>Use best possible image processing - this may be slow sometimes.</dd>
+     * 
+     * <dt>{@link Simapi#RENDER_SPEED}</dt>
+     * <dd>Fastest image processing but worse results - use this for thumbnails or where speed is more important then quality.</dd>
+     * 
+     * <dt>{@link Simapi#RENDER_MEDIUM}</dt>
+     * <dd>Use default rendering hints from JVM - not recommended since it's almost as slow as the {@link Simapi#RENDER_QUALITY} mode.</dd></dl>
+     *
+     * @return the image rendering mode constant
+     */
+    public int getRenderMode() {
+
+        return m_renderMode;
+    }
+
+    /**
      * Returns the type.<p>
+     * 
+     * Possible values are:<dl>
+     * 
+     * <dt>0 (default): Scale to exact target size with background padding</dt><dd><ul>
+     * <li>enlarge image to fit in target size (if required)
+     * <li>reduce image to fit in target size (if required)
+     * <li>keep image aspect ratio / propotions intact
+     * <li>fill up with bgcolor to reach exact target size
+     * <li>fit full image inside target size (only applies if reduced)</ul></dd>
      *
-     * Possible values are:<ul>
-     * <li>0: scale to exact size best fit [default] (req. position, color)</li>
-     * <li>1: scale to exact size crop (req. position)</li>
-     * <li>2: scale to best fit, size not fixed, keep aspect ratio</li>
-     * <li>3: scale to exact fit, don't keep aspect ratio</li>
-     * <li>4: crop only (req. position)</li>
-     * </ul>
+     * <dt>1: Thumbnail generation mode (like 0 but no image enlargement)</dt><dd><ul>
+     * <li>dont't enlarge image
+     * <li>reduce image to fit in target size (if required)
+     * <li>keep image aspect ratio / propotions intact
+     * <li>fill up with bgcolor to reach exact target size
+     * <li>fit full image inside target size (only applies if reduced)</ul></dd>
      *
+     * <dt>2: Scale to exact target size, crop what does not fit</dt><dd><ul>
+     * <li>enlarge image to fit in target size (if required)
+     * <li>reduce image to fit in target size (if required)
+     * <li>keep image aspect ratio / propotions intact
+     * <li>fit full image inside target size (crop what does not fit)</ul></dd>
+     *
+     * <dt>3: Scale and keep image propotions, target size variable</dt><dd><ul>
+     * <li>enlarge image to fit in target size (if required)
+     * <li>reduce image to fit in target size (if required)
+     * <li>keep image aspect ratio / propotions intact
+     * <li>scaled image will not be padded or cropped, so target size is likley not the exact requested size</ul></dd>
+     *
+     * <dt>4: Don't keep image propotions, use exact target size</dt><dd><ul>
+     * <li>enlarge image to fit in target size (if required)
+     * <li>reduce image to fit in target size (if required)
+     * <li>don't keep image aspect ratio / propotions intact
+     * <li>the image will be scaled exactly to the given target size and likley will be loose proportions</ul></dd>
+     * </dl>
+     * 
      * @return the type
      */
     public int getType() {
@@ -252,19 +325,30 @@ public class CmsImageScaler {
 
         byte[] result = file.getContents();
 
-        Simapi scaler = SimapiFactory.getInstance();
+        Simapi scaler;
+        if ((m_renderMode == 0) && (m_quality == 0)) {
+            // use default render mode and quality
+            scaler = new Simapi();
+        } else {
+            // use special render mode and/or quality
+            RenderSettings renderSettings = new RenderSettings(m_renderMode);
+            if (m_quality != 0) {
+                renderSettings.setCompressionQuality(m_quality / 100f);
+            }
+            scaler = new Simapi(renderSettings);
+        }
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
-        String type = scaler.getImageType(file.getRootPath());
-        if (type == null) {
+        String imageType = Simapi.getImageType(file.getRootPath());
+        if (imageType == null) {
             // no type given, maybe the name got mixed up
             String mimeType = OpenCms.getResourceManager().getMimeType(file.getName(), null, null);
             // check if this is another known mime type, if so DONT use it (images should not be named *.pdf)
-            if (mimeType == null) {            
-                // no mime type found, use JPEG for scaling of images         
-                type = "JPEG";
+            if (mimeType == null) {
+                // no mime type found, use JPEG format to write images to the cache         
+                imageType = Simapi.TYPE_JPEG;
             }
         }
-        if (type == null) {
+        if (imageType == null) {
             // unknown type, unable to scale the image
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, file.getRootPath(), toString()));
@@ -272,26 +356,31 @@ public class CmsImageScaler {
             return result;
         }
         try {
-            BufferedImage image = scaler.read(file.getContents());
+            BufferedImage image = Simapi.read(file.getContents());
             switch (getType()) {
                 // select the "right" method of scaling according to the "t" parameter
                 case 1:
-                    image = scaler.resize(image, getWidth(), getHeight(), getPosition());
+                    // thumbnail generation mode (like 0 but no image enlargement)
+                    image = scaler.resize(image, getWidth(), getHeight(), getColor(), getPosition(), false);
                     break;
                 case 2:
-                    image = scaler.resize(image, getWidth(), getHeight(), true);
+                    // scale to exact target size, crop what does not fit
+                    image = scaler.resize(image, getWidth(), getHeight(), getPosition());
                     break;
                 case 3:
-                    image = scaler.resize(image, getWidth(), getHeight(), false);
+                    // scale and keep image propotions, target size variable
+                    image = scaler.resize(image, getWidth(), getHeight(), true);
                     break;
                 case 4:
-                    image = scaler.crop(image, getWidth(), getHeight(), getPosition());
+                    // don't keep image propotions, use exact target size
+                    image = scaler.resize(image, getWidth(), getHeight(), false);
                     break;
                 default:
-                    image = scaler.resize(image, getWidth(), getHeight(), getColor(), getPosition());
+                    // scale to exact target size with background padding
+                    image = scaler.resize(image, getWidth(), getHeight(), getColor(), getPosition(), true);
             }
             // get the byte result for the scaled image
-            result = scaler.getBytes(image, type);
+            result = scaler.getBytes(image, imageType);
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, file.getRootPath(), toString()), e);
@@ -331,11 +420,42 @@ public class CmsImageScaler {
     }
 
     /**
+     * Sets the image saving quality in percent.<p>
+     *
+     * @param quality the image saving quality (in percent) to set
+     */
+    public void setQuality(int quality) {
+
+        if (quality < 0) {
+            m_quality = 0;
+        } else if (quality > 100) {
+            m_quality = 100;
+        } else {
+            m_quality = quality;
+        }
+    }
+
+    /**
+     * Sets the image rendering mode constant.<p>
+     *
+     * @param renderMode the image rendering mode to set
+     * 
+     * @see #getRenderMode() for a list of allowed values for the rendering mode
+     */
+    public void setRenderMode(int renderMode) {
+
+        if ((renderMode < Simapi.RENDER_QUALITY) || (renderMode > Simapi.RENDER_SPEED)) {
+            renderMode = Simapi.RENDER_QUALITY;
+        }
+        m_renderMode = renderMode;
+    }
+
+    /**
      * Sets the scale type.<p>
      *
      * @param type the scale type to set
      * 
-     * @see #getType()
+     * @see #getType() for a detailed description of the possible values for the type
      */
     public void setType(int type) {
 
@@ -385,18 +505,34 @@ public class CmsImageScaler {
             result.append(',');
             result.append(CmsImageScaler.SCALE_PARAM_COLOR);
             result.append(':');
-            if (m_color.getRed() < 16) {
-                result.append('0');
+            if (m_color == Simapi.COLOR_TRANSPARENT) {
+                result.append(COLOR_TRANSPARENT);
+            } else {
+                if (m_color.getRed() < 16) {
+                    result.append('0');
+                }
+                result.append(Integer.toString(m_color.getRed(), 16));
+                if (m_color.getGreen() < 16) {
+                    result.append('0');
+                }
+                result.append(Integer.toString(m_color.getGreen(), 16));
+                if (m_color.getBlue() < 16) {
+                    result.append('0');
+                }
+                result.append(Integer.toString(m_color.getBlue(), 16));
             }
-            result.append(Integer.toString(m_color.getRed(), 16));
-            if (m_color.getGreen() < 16) {
-                result.append('0');
-            }
-            result.append(Integer.toString(m_color.getGreen(), 16));
-            if (m_color.getBlue() < 16) {
-                result.append('0');
-            }
-            result.append(Integer.toString(m_color.getBlue(), 16));
+        }
+        if (m_quality > 0) {
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_QUALITY);
+            result.append(':');
+            result.append(m_quality);
+        }
+        if (m_renderMode > 0) {
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_RENDERMODE);
+            result.append(':');
+            result.append(m_renderMode);
         }
         m_scaleParameters = result.toString();
         return m_scaleParameters;
@@ -507,10 +643,20 @@ public class CmsImageScaler {
                     m_type = getParamType(v);
                 } else if (CmsImageScaler.SCALE_PARAM_COLOR.equals(k)) {
                     // image background color
-                    m_color = CmsStringUtil.getColorValue("#" + v, Color.WHITE, k);
+                    if (COLOR_TRANSPARENT.indexOf(v) == 0) {
+                        m_color = Simapi.COLOR_TRANSPARENT;
+                    } else {
+                        m_color = CmsStringUtil.getColorValue(v, Color.WHITE, k);
+                    }
                 } else if (CmsImageScaler.SCALE_PARAM_POS.equals(k)) {
                     // image position (depends on scale type)
                     m_position = getParamPosition(v);
+                } else if (CmsImageScaler.SCALE_PARAM_QUALITY.equals(k)) {
+                    // image position (depends on scale type)
+                    setQuality(CmsStringUtil.getIntValue(v, 0, k));
+                } else if (CmsImageScaler.SCALE_PARAM_RENDERMODE.equals(k)) {
+                    // image position (depends on scale type)
+                    setRenderMode(CmsStringUtil.getIntValue(v, 0, k));
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/12 08:51:33 $
- * Version: $Revision: 1.682.2.43 $
+ * Date   : $Date: 2005/11/15 16:39:23 $
+ * Version: $Revision: 1.682.2.44 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,11 +19,15 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.4 - xxxxx, 2005
+OpenCms 6.1.4 -  November 16, 2005
 * Fixed issue #985: CmsShell parameter constants mismatch
 * Transparent GIF images are now scaled correctly
 - Improved image loader caching, now using hashcode of resource last modification, creation and length in file name
+! Added "quality" (q) and "rendermode" (r) options to image scaler for more control over scaling quality
 ! Added scheduler job for cleaning up the expired images in the image loader cache
+! Added <cms:decorate> tag for parsing and decorating HTML content
+! Improved history dialog, added full comparison of content, attribute and properties
+! Added visual "diff" like comparison of content to history dialog
 
 OpenCms 6.1.3 - November 10, 2005
 * Fixed issue with frozen state in CmsProperty when calling #deleteResourceValue()
