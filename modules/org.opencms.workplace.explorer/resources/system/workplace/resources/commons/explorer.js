@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/10 15:26:04 $
- * Version: $Revision: 1.10.2.6 $
+ * Date   : $Date: 2005/11/16 12:00:07 $
+ * Version: $Revision: 1.10.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -651,14 +651,16 @@ function handleOnClick(e) {
 
 // check if the event object is available and gets it if necessary
 function checkEvent(e) {
+
+	// fix for IE if window access is refused in some cases
+	try {
+		win.files.getElementById("contextmenu");
+	} catch (e) {
+		updateWindowStore();
+	} 
 	// check event
 	if (!e) {
-		try {
 		e = win.fileswin.event;
-		} catch (e) {
-			updateWindowStore();
-			e = win.fileswin.event;
-		} 
 	}
 	return e;
 }
