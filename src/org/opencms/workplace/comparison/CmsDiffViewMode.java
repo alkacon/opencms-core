@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsDiffViewMode.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/16 12:35:21 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,19 +41,19 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Wrapper class for
- * the different types of diff modes.<p>
+ * Wrapper class for the different types of diff modes.
+ * <p>
  * 
  * The possibles values are:<br>
  * <ul>
- *   <li>{@link #ALL}</li>
- *   <li>{@link #DIFF_ONLY}</li>
+ * <li>{@link #ALL}</li>
+ * <li>{@link #DIFF_ONLY}</li>
  * </ul>
  * <p>
  * 
- * @author Michael Moossen  
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -63,18 +63,18 @@ public final class CmsDiffViewMode implements Serializable {
     public static final CmsDiffViewMode ALL = new CmsDiffViewMode("all", Messages.get().container(
         Messages.GUI_DIFF_MODE_DIFFONLY_NAME_0));
 
-    /** Constant for viewing only the different lines.  */
+    /** Constant for viewing only the different lines. */
     public static final CmsDiffViewMode DIFF_ONLY = new CmsDiffViewMode("diff_only", Messages.get().container(
         Messages.GUI_DIFF_MODE_ALL_NAME_0));
+
+    /** Array constant for all available align types. */
+    private static final CmsDiffViewMode[] VALUE_ARRAY = {ALL, DIFF_ONLY};
 
     /** List of mode constants. */
     public static final List VALUES = Collections.unmodifiableList(Arrays.asList(VALUE_ARRAY));
 
     /** uid for serialization. */
     private static final long serialVersionUID = -9107946096096683776L;
-
-    /** Array constant for all available align types. */
-    private static final CmsDiffViewMode[] VALUE_ARRAY = {ALL, DIFF_ONLY};
 
     /** Internal representation. */
     private final String m_mode;
@@ -83,7 +83,8 @@ public final class CmsDiffViewMode implements Serializable {
     private final CmsMessageContainer m_name;
 
     /**
-     * Private constructor.<p>
+     * Private constructor.
+     * <p>
      * 
      * @param mode the view mode
      * @param name the name to show
@@ -95,13 +96,15 @@ public final class CmsDiffViewMode implements Serializable {
     }
 
     /**
-     * Parses an string into an element of this enumeration.<p>
-     *
+     * Parses an string into an element of this enumeration.
+     * <p>
+     * 
      * @param value the mode to parse
      * 
      * @return the enumeration element
      * 
-     * @throws CmsIllegalArgumentException if the given value could not be matched against an element of this type.
+     * @throws CmsIllegalArgumentException if the given value could not be matched against an
+     *             element of this type.
      */
     public static CmsDiffViewMode valueOf(String value) throws CmsIllegalArgumentException {
 
@@ -122,7 +125,8 @@ public final class CmsDiffViewMode implements Serializable {
     }
 
     /**
-     * Returns the mode string.<p>
+     * Returns the mode string.
+     * <p>
      * 
      * @return the mode string
      */
@@ -132,7 +136,8 @@ public final class CmsDiffViewMode implements Serializable {
     }
 
     /**
-     * Returns the name to show.<p>
+     * Returns the name to show.
+     * <p>
      * 
      * @return the name to show
      */
