@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/Messages.java,v $
- * Date   : $Date: 2005/06/22 10:38:24 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/11/16 15:42:46 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED_0 = "ERR_SECURITY_PROJECTMANAGER_PRIVILEGES_REQUIRED_0";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "com.opencms.workplace";
+    private static final String BUNDLE_NAME = "com.opencms.workplace.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();

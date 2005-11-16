@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/Messages.java,v $
- * Date   : $Date: 2005/06/23 14:01:14 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/11/16 15:42:46 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -104,7 +104,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_NONEXISTENT_PUBLISH_CLASS_FOR_MODULE_1 = "RPT_NONEXISTENT_PUBLISH_CLASS_FOR_MODULE_1";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "com.opencms.legacy";
+    private static final String BUNDLE_NAME = "com.opencms.legacy.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
