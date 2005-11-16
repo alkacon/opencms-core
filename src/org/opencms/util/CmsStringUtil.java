@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/11/15 16:39:24 $
- * Version: $Revision: 1.34.2.8 $
+ * Date   : $Date: 2005/11/16 12:12:11 $
+ * Version: $Revision: 1.34.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.8 $ 
+ * @version $Revision: 1.34.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -164,7 +164,7 @@ public final class CmsStringUtil {
         source = CmsStringUtil.substitute(source, "\n", "<br/>\n");
         return source;
     }
-
+    
     /**
      * Escapes a String so it may be used in JavaScript String definitions.<p>
      * 
@@ -362,7 +362,7 @@ public final class CmsStringUtil {
         }
         return result;
     }
-    
+
     /**
      * Formats a resource name that it is displayed with the maximum length and path information is adjusted.<p>
      * 
@@ -399,7 +399,7 @@ public final class CmsStringUtil {
         
         return result;
     }
-
+    
     /**
      * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
      * 
@@ -871,6 +871,34 @@ public final class CmsStringUtil {
             result.append(unicode);
         }
         return result.toString();
+    }
+
+    /**
+     * Returns a substring of string source, which is at most length characters long.<p>
+     * 
+     * @param source the string to trim
+     * @param length the maximum length of the string to be returned
+     * 
+     * @return a substring of string source, which is at most length characters long
+     */
+    public static String trimToSize(String source, int length) {
+        
+        int end = 0;
+        int newend;
+        while (true) {
+            newend = source.indexOf(" ", end);
+            if (newend > length && end > 0) {
+                return source.substring(0, length - 3) + "...";
+            } else if (newend == -1) {
+                if (length < source.length()) {
+                    return source.substring(0, length - 3) + "...";
+                } else {
+                    return source;
+                }
+            } else {
+                end = newend + 1;
+            }
+        }
     }
 
     /**
