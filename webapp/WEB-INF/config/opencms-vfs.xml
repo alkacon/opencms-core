@@ -60,7 +60,7 @@
 				<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="xmlcontent" id="7"/>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="imagegallery" id="8">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsImageGallery</param>
-					<param name="folder.class.params">w:120,h:90,c:dddddd,r:2</param>
+					<param name="folder.class.params">w:120,h:90,c:dddddd,t:1,r:2</param>
 				</type>
 				<type class="org.opencms.file.types.CmsResourceTypeFolderExtended" name="downloadgallery" id="9">
 					<param name="folder.class">org.opencms.workplace.galleries.CmsDownloadGallery</param>
