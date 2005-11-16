@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.20.2.2 $
+ * Date   : $Date: 2005/11/16 12:21:12 $
+ * Version: $Revision: 1.20.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20.2.2 $ 
+ * @version $Revision: 1.20.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -239,6 +239,23 @@ public class CmsListMetadata {
     }
 
     /**
+     * Returns <code>true</code> if at least 'check' multiaction has been set.<p>
+     * 
+     * @return <code>true</code> if at least 'check' multiaction has been set
+     */
+    public boolean hasCheckMultiActions() {
+
+        Iterator it = m_multiActions.iterator();
+        while (it.hasNext()) {
+            CmsListMultiAction action = (CmsListMultiAction)it.next();
+            if (!(action instanceof CmsListRadioMultiAction)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Returns the search action.<p>
      *
      * @return the search action
@@ -255,7 +272,7 @@ public class CmsListMetadata {
      */
     public int getWidth() {
 
-        return m_columns.elementList().size() + (m_multiActions.isEmpty() ? 0 : 1);
+        return m_columns.elementList().size() + (hasCheckMultiActions() ? 1 : 0);
     }
 
     /**
@@ -345,6 +362,7 @@ public class CmsListMetadata {
         html.append("</tr>\n");
         return html.toString();
     }
+
     /**
      * Returns the html code for the header of the list.<p>
      * 
@@ -362,11 +380,11 @@ public class CmsListMetadata {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
             html.append(col.htmlHeader(list, wp));
         }
-        if (!m_multiActions.isEmpty()) {
+        if (hasCheckMultiActions()) {
             html.append("\t<th width='0' class='select'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listSelectAll' value='true' onClick=\"listSelect('");
             html.append(list.getId());
-            html.append("')\"\n>");
+            html.append("')\">\n");
             html.append("\t</th>\n");
         }
         html.append("</tr>\n");
@@ -414,8 +432,8 @@ public class CmsListMetadata {
             html.append(col.htmlCell(item, wp));
             html.append("</td>\n");
         }
-        if (!m_multiActions.isEmpty()) {
-            html.append("\t<td class='select' align='center' >\n");
+        if (hasCheckMultiActions()) {
+            html.append("\t<td class='select' align='center'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listMultiAction' value='");
             html.append(item.getId());
             html.append("'>\n");

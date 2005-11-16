@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceIconAction.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/16 12:21:12 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +119,7 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
     /**
      * Generates a default html code where several buttons can have the same help text.<p>
      * 
-     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, String, boolean)}</code>
+     * the only diff to <code>{@link org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)}</code>
      * is that the icons are 16x16.<p>
      * 
      * @param jsp the cms context, can be null
@@ -135,9 +135,9 @@ public class CmsListResourceIconAction extends CmsListDirectAction {
      * 
      * @return html code
      * 
-     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, String, boolean, String, String, String, boolean)
+     * @see org.opencms.workplace.tools.A_CmsHtmlIconButton#defaultButtonHtml(CmsJspActionElement, CmsHtmlIconButtonStyleEnum, String, String, String, boolean, String, String, String)
      */
-    private String defButtonHtml(
+    protected String defButtonHtml(
         CmsJspActionElement jsp,
         String id,
         String helpId,

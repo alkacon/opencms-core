@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/10/13 13:20:32 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2005/11/16 12:21:12 $
+ * Version: $Revision: 1.14.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.14.2.1 $ 
+ * @version $Revision: 1.14.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +69,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_NO_SELECTION_0 = "GUI_LIST_ACTION_NO_SELECTION_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_NO_SELECTION_MATCH_1 = "GUI_LIST_ACTION_NO_SELECTION_MATCH_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_PRINT_CONF_0 = "GUI_LIST_ACTION_PRINT_CONF_0";

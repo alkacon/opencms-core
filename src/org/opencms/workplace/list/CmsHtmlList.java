@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.32.2.2 $
+ * Date   : $Date: 2005/11/16 12:21:12 $
+ * Version: $Revision: 1.32.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.2 $ 
+ * @version $Revision: 1.32.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -449,9 +449,16 @@ public class CmsHtmlList {
         return wp.resolveMacros(html.toString());
     }
 
+    /** Var name for error message if no item has been selected. */
+    public static final String NO_SELECTION_HELP_VAR = "noSelHelp";
+
+    /** Var name for error message if number of selected items does not match. */
+    public static final String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
+
     /**
      * Generate the need js code for the list.<p>
-     * @param locale TODO:
+     * 
+     * @param locale the locale
      * 
      * @return js code
      */
@@ -461,14 +468,34 @@ public class CmsHtmlList {
         js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
-        js.append("<script type='text/javascript'>\n");
-        js.append("\tvar noSelHelp = '");
-        js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
-            locale,
-            Messages.GUI_LIST_ACTION_NO_SELECTION_0,
-            null)));
-        js.append("';\n");
-        js.append("</script>\n");
+        if (!m_metadata.getMultiActions().isEmpty()) {
+            js.append("<script type='text/javascript'>\n");
+            js.append("\tvar ");
+            js.append(NO_SELECTION_HELP_VAR);
+            js.append(" = '");
+            js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
+                locale,
+                Messages.GUI_LIST_ACTION_NO_SELECTION_0,
+                null)));
+            js.append("';\n");
+            Iterator it = m_metadata.getMultiActions().iterator();
+            while (it.hasNext()) {
+                CmsListMultiAction action = (CmsListMultiAction)it.next();
+                if (action instanceof CmsListRadioMultiAction) {
+                    CmsListRadioMultiAction rAction = (CmsListRadioMultiAction)action;
+                    js.append("\tvar ");
+                    js.append(NO_SELECTION_MATCH_HELP_VAR);
+                    js.append(rAction.getId());
+                    js.append(" = '");
+                    js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
+                        locale,
+                        Messages.GUI_LIST_ACTION_NO_SELECTION_MATCH_1,
+                        new Object[] {new Integer(rAction.getSelections())})));
+                    js.append("';\n");
+                }
+            }
+            js.append("</script>\n");
+        }
         return js.toString();
     }
 
@@ -684,7 +711,7 @@ public class CmsHtmlList {
                     Messages.ERR_LIST_INVALID_PAGE_1,
                     new Integer(currentPage)));
             }
-        } 
+        }
         m_currentPage = currentPage;
     }
 
@@ -854,7 +881,6 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
-        // TODO: support for help & confirmation text depending on the item
         if (m_visibleItems != null && !m_visibleItems.isEmpty()) {
             Iterator cols = getMetadata().getListColumns().iterator();
             while (cols.hasNext()) {
