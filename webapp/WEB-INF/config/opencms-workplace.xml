@@ -161,7 +161,7 @@
 						<separator order="330"/>
 						<entry key="explorer.context.editcontrolfile" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -207,7 +207,7 @@
 						<separator order="330"/>
 						<entry key="explorer.context.editcontrolfile" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -249,7 +249,7 @@
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -290,7 +290,7 @@
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -334,7 +334,7 @@
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -374,7 +374,7 @@
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -411,7 +411,7 @@
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="320"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -449,7 +449,7 @@
 						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
 						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="310"/>
 						<separator order="340"/>
-						<entry key="explorer.context.history" uri="commons/history.jsp" rules="d d iiii aaai dddd" order="350"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
 						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
 					</contextmenu>
 				</editoptions>
@@ -564,5 +564,21 @@
 				</workflow-defaultsettings>			
 			</workflow-preferences>				
 		</default-preferences>		
+		<tool-manager>
+			<roots>
+				<root>
+					<key>admin</key>
+					<uri>/system/workplace/admin/</uri>
+					<name>${key.GUI_ADMIN_VIEW_ROOT_NAME_0}</name>
+					<helptext>${key.GUI_ADMIN_VIEW_ROOT_HELP_0}</helptext>
+				</root>
+				<root>
+					<key>explorer</key>
+					<uri>/system/workplace/explorer/</uri>
+					<name>${key.GUI_EXPLORER_VIEW_ROOT_NAME_0}</name>
+					<helptext>${key.GUI_EXPLORER_VIEW_ROOT_HELP_0}</helptext>
+				</root>
+			</roots>
+		</tool-manager>
 	</workplace>
 </opencms>

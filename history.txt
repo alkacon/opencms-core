@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/15 16:39:23 $
- * Version: $Revision: 1.682.2.44 $
+ * Date   : $Date: 2005/11/16 12:16:12 $
+ * Version: $Revision: 1.682.2.45 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.1.4 -  November 16, 2005
+! Added dialog to compare and make a 'diff' of xml pages and xml content including content, properties and file attributes
 * Fixed issue #985: CmsShell parameter constants mismatch
 * Transparent GIF images are now scaled correctly
 - Improved image loader caching, now using hashcode of resource last modification, creation and length in file name

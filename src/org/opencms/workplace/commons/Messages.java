@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/10/31 09:20:15 $
- * Version: $Revision: 1.13.2.3 $
+ * Date   : $Date: 2005/11/16 12:12:40 $
+ * Version: $Revision: 1.13.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.3 $ 
+ * @version $Revision: 1.13.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -47,79 +47,79 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_MULTI_0 = "ERR_AVAILABILITY_MULTI_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BUILDING_RESTYPE_LIST_1 = "ERR_BUILDING_RESTYPE_LIST_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHACC_DELETE_ENTRY_0 = "ERR_CHACC_DELETE_ENTRY_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHACC_MODIFY_ENTRY_0 = "ERR_CHACC_MODIFY_ENTRY_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGE_LINK_TARGET_0 = "ERR_CHANGE_LINK_TARGET_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHPWD_NO_MATCH_0 = "ERR_CHPWD_NO_MATCH_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_MULTI_0 = "ERR_COPY_MULTI_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_MULTI_TARGET_NOFOLDER_1 = "ERR_COPY_MULTI_TARGET_NOFOLDER_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COPY_ONTO_ITSELF_1 = "ERR_COPY_ONTO_ITSELF_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DELETE_MULTI_0 = "ERR_DELETE_MULTI_0";
- 
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_FILE_SIZE_TOO_LARGE_1 = "ERR_FILE_SIZE_TOO_LARGE_1";
-    
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_LINK_TARGET_1 = "ERR_GET_LINK_TARGET_1";
-    
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_GET_RESTYPE_1 = "ERR_GET_RESTYPE_1";
-
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_NEW_PASS_0 = "ERR_INVALID_NEW_PASS_0";
-    
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_OLD_PASS_0 = "ERR_INVALID_OLD_PASS_0";
-
+  
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INVALID_PROP_0 = "ERR_INVALID_PROP_0";
-
+   
     /** Message constant for key in the resource bundle. */
     public static final String ERR_LOCK_MULTI_0 = "ERR_LOCK_MULTI_0";
-
+   
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_FIELDS_0 = "ERR_MISSING_FIELDS_0";
-
+   
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_GROUP_OR_USER_NAME_0 = "ERR_MISSING_GROUP_OR_USER_NAME_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MODIFY_INTERNAL_FLAG_0 = "ERR_MODIFY_INTERNAL_FLAG_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_FAILED_TARGET_EXISTS_2 = "ERR_MOVE_FAILED_TARGET_EXISTS_2";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_MULTI_0 = "ERR_MOVE_MULTI_0";
- 
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_MULTI_TARGET_NOFOLDER_1 = "ERR_MOVE_MULTI_TARGET_NOFOLDER_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MOVE_ONTO_ITSELF_1 = "ERR_MOVE_ONTO_ITSELF_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARSE_EXPIREDATE_1 = "ERR_PARSE_EXPIREDATE_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PARSE_RELEASEDATE_1 = "ERR_PARSE_RELEASEDATE_1";
     
@@ -131,22 +131,22 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_PUBLISH_MULTI_UNLOCK_0 = "ERR_PUBLISH_MULTI_UNLOCK_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_REDIRECT_XMLPAGE_DIALOG_1 = "ERR_REDIRECT_XMLPAGE_DIALOG_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_DELETED_2 = "ERR_RESOURCE_DELETED_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_DOES_NOT_EXIST_3 = "ERR_RESOURCE_DOES_NOT_EXIST_3";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1 = "ERR_RESOURCE_OUTSIDE_TIMEWINDOW_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TOUCH_MULTI_0 = "ERR_TOUCH_MULTI_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNDELETE_MULTI_0 ="ERR_UNDELETE_MULTI_0";
     
@@ -158,7 +158,7 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_FILE_NOT_FOUND_0 = "ERR_UPLOAD_FILE_NOT_FOUND_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AVAILABILITY_0 = "GUI_AVAILABILITY_0";
     
@@ -179,25 +179,25 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AVAILABILITY_NOTIFICATION_SUBRES_0 = "GUI_AVAILABILITY_NOTIFICATION_SUBRES_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AVAILABILITY_RESET_EXPIRE_0 = "GUI_AVAILABILITY_RESET_EXPIRE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AVAILABILITY_RESET_RELEASE_0 = "GUI_AVAILABILITY_RESET_RELEASE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_AVAILABILITY_RESPONSIBLES_0 = "GUI_AVAILABILITY_RESPONSIBLES_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CALENDAR_CHOOSE_DATE_0 = "GUI_CALENDAR_CHOOSE_DATE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHLINK_1 = "GUI_CHLINK_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHNAV_1 = "GUI_CHNAV_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHNAV_INSERT_AFTER_0 = "GUI_CHNAV_INSERT_AFTER_0";
 
@@ -206,10 +206,10 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHNAV_POS_CURRENT_1 = "GUI_CHNAV_POS_CURRENT_1";
-
+ 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHNAV_POS_FIRST_0 = "GUI_CHNAV_POS_FIRST_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHNAV_POS_LAST_0 = "GUI_CHNAV_POS_LAST_0";
     
@@ -218,6 +218,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHTYPE_PLEASE_SELECT_0 = "GUI_CHTYPE_PLEASE_SELECT_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_NAVBAR_0 = "GUI_COMPARE_NAVBAR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_TOOL_NAME_0 = "GUI_COMPARE_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMED_EXPIRATION_1 = "GUI_CONFIRMED_EXPIRATION_1";
@@ -230,25 +236,25 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMED_RELEASE_1 = "GUI_CONFIRMED_RELEASE_1";
- 
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_ALL_0 = "GUI_COPY_ALL_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_ALL_NO_SIBLINGS_0 = "GUI_COPY_ALL_NO_SIBLINGS_0";
-
+ 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_AS_NEW_0 = "GUI_COPY_AS_NEW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_CONFIRM_OVERWRITE_2 = "GUI_COPY_CONFIRM_OVERWRITE_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_CREATE_SIBLINGS_0 = "GUI_COPY_CREATE_SIBLINGS_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_KEEP_PERMISSIONS_0 = "GUI_COPY_KEEP_PERMISSIONS_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_MULTI_2 = "GUI_COPY_MULTI_2";
     
@@ -260,25 +266,25 @@ public final class Messages extends A_CmsMessageBundle {
     
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_RESOURCE_1 = "GUI_COPY_RESOURCE_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPY_TO_0 = "GUI_COPY_TO_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYTOPROJECT_NOPART_1 = "GUI_COPYTOPROJECT_NOPART_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYTOPROJECT_PART_1 = "GUI_COPYTOPROJECT_PART_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2 = "GUI_COPYTOPROJECT_PROJECT_CONFIRMATION_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYTOPROJECT_RESOURCES_0 = "GUI_COPYTOPROJECT_RESOURCES_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COPYTOPROJECT_TITLE_0 = "GUI_COPYTOPROJECT_TITLE_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CREATE_SIBLING_0 = "GUI_CREATE_SIBLING_0";
 
@@ -290,7 +296,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_MULTI_2 = "GUI_DELETE_MULTI_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_MULTI_CONFIRMATION_0 = "GUI_DELETE_MULTI_CONFIRMATION_0";
     
@@ -304,22 +310,67 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_DELETE_WARNING_SIBLINGS_0 = "GUI_DELETE_WARNING_SIBLINGS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIFF_NAVBAR_0 = "GUI_DIFF_NAVBAR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DIFF_TOOL_NAME_0 = "GUI_DIFF_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_POINTER_LINK_URL_0 = "GUI_EDIT_POINTER_LINK_URL_0";
  
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_0 = "GUI_HISTORY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_COMPARE_0 = "GUI_HISTORY_COLS_COMPARE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_DATE_LAST_MODIFIED_0 = "GUI_HISTORY_COLS_DATE_LAST_MODIFIED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_DATE_PUBLISHED_0 = "GUI_HISTORY_COLS_DATE_PUBLISHED_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_FILE_TYPE_0 = "GUI_HISTORY_COLS_FILE_TYPE_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_RESTORE_0 = "GUI_HISTORY_COLS_RESTORE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_SIZE_0 = "GUI_HISTORY_COLS_SIZE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_USER_0 = "GUI_HISTORY_COLS_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_VERSION_0 = "GUI_HISTORY_COLS_VERSION_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_VERSION1_0 = "GUI_HISTORY_COLS_VERSION1_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_VERSION2_0 = "GUI_HISTORY_COLS_VERSION2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_VIEW_0 = "GUI_HISTORY_COLS_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COMPARE_0 = "GUI_HISTORY_COMPARE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_CONFIRMATION_0 = "GUI_HISTORY_CONFIRMATION_0";
- 
+    
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_EDITED_BY_0 = "GUI_HISTORY_EDITED_BY_0";
+    public static final String GUI_HISTORY_FIRST_VERSION_0 = "GUI_HISTORY_FIRST_VERSION_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_PREVIEW_0 = "GUI_HISTORY_PREVIEW_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_LAST_EDITED_AT_0 = "GUI_HISTORY_LAST_EDITED_AT_0";
+    public static final String GUI_HISTORY_RESTORE_VERSION_0 = "GUI_HISTORY_RESTORE_VERSION_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_LAST_PUBLISHED_AT_0 = "GUI_HISTORY_LAST_PUBLISHED_AT_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_OF_1 = "GUI_HISTORY_OF_1";
+    public static final String GUI_HISTORY_SECOND_VERSION_0 = "GUI_HISTORY_SECOND_VERSION_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_ADD_0 = "GUI_LABEL_ADD_0";
