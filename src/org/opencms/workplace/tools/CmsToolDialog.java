@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.30.2.3 $
+ * Date   : $Date: 2005/11/16 12:13:41 $
+ * Version: $Revision: 1.30.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,13 +49,16 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30.2.3 $ 
+ * @version $Revision: 1.30.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsToolDialog extends CmsWorkplace {
 
-    /** Request parameter name for the tool path. */
+    /** Request parameter name for the base tool path in the navegation, should be a parent tool of path. */
+    public static final String PARAM_BASE = "base";
+
+    /** Request parameter name for the tool path, should be an accesible tool under the given root. */
     public static final String PARAM_PATH = "path";
 
     /** Request parameter name for the root tool path. */
@@ -66,6 +69,9 @@ public class CmsToolDialog extends CmsWorkplace {
 
     /** Request parameter value for the 'new' dialog style. */
     public static final String STYLE_NEW = "new";
+
+    /** Base parameter value. */
+    private String m_paramBase;
 
     /** Path parameter value. */
     private String m_paramPath;
@@ -124,12 +130,13 @@ public class CmsToolDialog extends CmsWorkplace {
         StringBuffer html = new StringBuffer(512);
         String toolPath = getCurrentToolPath();
         String parentPath = getParentPath();
-        CmsTool parentTool = getToolManager().resolveAdminTool(parentPath);
+        String rootKey = getToolManager().getCurrentRoot(this).getKey();
+        CmsTool parentTool = getToolManager().resolveAdminTool(rootKey, parentPath);
         String upLevelLink = CmsToolManager.linkForToolPath(
             getJsp(),
             parentPath,
             parentTool.getHandler().getParameters(this));
-        String parentName = getToolManager().resolveAdminTool(parentPath).getHandler().getName();
+        String parentName = getToolManager().resolveAdminTool(rootKey, parentPath).getHandler().getName();
 
         html.append(getToolManager().generateNavBar(toolPath, this));
         // build title
@@ -168,8 +175,7 @@ public class CmsToolDialog extends CmsWorkplace {
      */
     public CmsTool getAdminTool() {
 
-        CmsTool ret = getToolManager().getCurrentTool(this);
-        return ret;
+        return getToolManager().getCurrentTool(this);
     }
 
     /**
@@ -180,6 +186,16 @@ public class CmsToolDialog extends CmsWorkplace {
     public String getCurrentToolPath() {
 
         return getToolManager().getCurrentToolPath(this);
+    }
+
+    /**
+     * Returns the value for the base parameter.<p>
+     *
+     * @return the value for the base parameter
+     */
+    public String getParamBase() {
+
+        return m_paramBase;
     }
 
     /**
@@ -300,7 +316,7 @@ public class CmsToolDialog extends CmsWorkplace {
 
         Map params = new HashMap(getParameterMap());
         // initialize
-        getToolManager().initParams(this, getParamPath(), getParamRoot());
+        getToolManager().initParams(this);
 
         // adjust params if called as default
         if (!useNewStyle()) {
@@ -313,8 +329,9 @@ public class CmsToolDialog extends CmsWorkplace {
             CmsDialog wp = (CmsDialog)this;
             // set close link
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(wp.getParamCloseLink())) {
-                if (!getToolManager().getRootToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
-                    Map args = getToolManager().resolveAdminTool(getParentPath()).getHandler().getParameters(wp);
+                if (!getToolManager().getBaseToolPath(this).equals(getToolManager().getCurrentToolPath(this))) {
+                    Map args = getToolManager().resolveAdminTool(getParamRoot(), getParentPath()).getHandler().getParameters(
+                        wp);
                     wp.setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath(), args));
                     params.put(CmsDialog.PARAM_CLOSELINK, new String[] {wp.getParamCloseLink()});
                 }
@@ -426,6 +443,16 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("\t}\n");
         html.append("</script>\n");
         return html.toString();
+    }
+
+    /**
+     * Sets the value of the base parameter.<p>
+     *
+     * @param paramBase the value of the base parameter to set
+     */
+    public void setParamBase(String paramBase) {
+
+        m_paramBase = paramBase;
     }
 
     /**

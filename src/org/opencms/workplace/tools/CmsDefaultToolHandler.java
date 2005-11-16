@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsDefaultToolHandler.java,v $
- * Date   : $Date: 2005/10/26 08:54:42 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2005/11/16 12:13:41 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,6 @@
 package org.opencms.workplace.tools;
 
 import org.opencms.file.CmsObject;
-import org.opencms.main.OpenCms;
-
-import java.util.Iterator;
-import java.util.List;
 
 /**
  * Default admin tool handler.<p>
@@ -44,7 +40,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.16.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -55,22 +51,7 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
      */
     public boolean isEnabled(CmsObject cms) {
 
-        // at least one sub tool should be enabled
-        CmsToolManager toolManager = OpenCms.getWorkplaceManager().getToolManager();
-        if (toolManager == null) {
-            // can happen during initialization
-            return true;
-        }
-        List subTools = toolManager.getToolsForPath(getPath(), false);
-        Iterator itSubTools = subTools.iterator();
-        while (itSubTools.hasNext()) {
-            String subToolPath = (String)itSubTools.next();
-            CmsTool subTool = toolManager.resolveAdminTool(subToolPath);
-            if (subTool.getHandler().isEnabled(cms)) {
-                return true;
-            }
-        }
-        return !getLink().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION);
+        return true;
     }
 
     /**
@@ -78,21 +59,6 @@ public class CmsDefaultToolHandler extends A_CmsToolHandler {
      */
     public boolean isVisible(CmsObject cms) {
 
-        // at least one sub tool should be visible
-        CmsToolManager toolManager = OpenCms.getWorkplaceManager().getToolManager();
-        if (toolManager == null) {
-            // can happen during initialization
-            return true;
-        }
-        List subTools = toolManager.getToolsForPath(getPath(), false);
-        Iterator itSubTools = subTools.iterator();
-        while (itSubTools.hasNext()) {
-            String subToolPath = (String)itSubTools.next();
-            CmsTool subTool = toolManager.resolveAdminTool(subToolPath);
-            if (subTool.getHandler().isVisible(cms)) {
-                return true;
-            }
-        }
-        return !getLink().equals(CmsToolManager.VIEW_JSPPAGE_LOCATION);
+        return true;
     }
 }

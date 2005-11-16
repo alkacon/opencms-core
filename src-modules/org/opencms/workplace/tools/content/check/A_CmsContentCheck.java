@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/A_CmsContentCheck.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/16 12:14:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.tools.CmsToolManager;
+import org.opencms.workplace.tools.CmsToolRootHandler;
 import org.opencms.workplace.tools.I_CmsToolHandler;
 
 import java.util.HashMap;
@@ -47,7 +48,7 @@ import java.util.Map;
  * 
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.2 
  */
@@ -184,11 +185,10 @@ public abstract class A_CmsContentCheck implements I_CmsContentCheck, I_CmsToolH
     public abstract void setActive(boolean value);
 
     /**
-     * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
+     * @see org.opencms.workplace.tools.I_CmsToolHandler#setup(org.opencms.file.CmsObject, org.opencms.workplace.tools.CmsToolRootHandler, java.lang.String)
      */
-    public boolean setup(CmsObject cms, String resourcePath) {
+    public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
 
         return true;
     }
-
 }

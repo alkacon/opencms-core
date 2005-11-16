@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/10/28 14:27:35 $
- * Version: $Revision: 1.39.2.3 $
+ * Date   : $Date: 2005/11/16 12:11:33 $
+ * Version: $Revision: 1.39.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,8 @@ import org.opencms.workplace.explorer.CmsExplorerContextMenu;
 import org.opencms.workplace.explorer.CmsExplorerContextMenuItem;
 import org.opencms.workplace.explorer.CmsExplorerTypeAccess;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
+import org.opencms.workplace.tools.CmsToolManager;
+import org.opencms.workplace.tools.CmsToolRootHandler;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -58,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.3 $
+ * @version $Revision: 1.39.2.4 $
  * 
  * @since 6.0.0
  */
@@ -175,11 +177,17 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the folder copy node. */
     public static final String N_FOLDERCOPY = "foldercopy";
 
+    /** The node name of the helptext node. */
+    public static final String N_HELPTEXT = "helptext";
+
     /** The node name of the inform role members node. */
     public static final String N_INFORMROLEMEMBERS = "informrolemembers";
 
     /** The subname of the rfsfilesettings/isLogfile node. */
     public static final String N_ISLOGFILE = "isLogfile";
+
+    /** The node name of the key node. */
+    public static final String N_KEY = "key";
 
     /** The node name of the locale node. */
     public static final String N_LOCALE = "locale";
@@ -192,9 +200,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the message-forwarded node. */
     public static final String N_MESSAGEFORWARDED = "message-forwarded";
-    
+
     /** The name of the context menu node. */
     public static final String N_MULTICONTEXTMENU = "multicontextmenu";
+
+    /** The node name of the name node. */
+    public static final String N_NAME = "name";
 
     /** The name of the new resource node. */
     public static final String N_NEWRESOURCE = "newresource";
@@ -214,6 +225,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the rfsfileviewsettings node. */
     public static final String N_RFSFILEVIEWESETTINGS = "rfsfileviewsettings";
 
+    /** The node name of the root node. */
+    public static final String N_ROOT = "root";
+
+    /** The node name of the roots node. */
+    public static final String N_ROOTS = "roots";
+
     /** The name of the separator node. */
     public static final String N_SEPARATOR = "separator";
 
@@ -232,8 +249,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the startupfilter node. */
     public static final String N_STARTUPFILTER = "startupfilter";
 
+    /** The node name of the tool-manager node. */
+    public static final String N_TOOLMANAGER = "tool-manager";
+
     /** The node name of the uploadapplet node. */
     public static final String N_UPLOADAPPLET = "uploadapplet";
+
+    /** The node name of the uri node. */
+    public static final String N_URI = "uri";
 
     /** The subname of the rfsfilesettings/windowSize node. */
     public static final String N_WINDOWSIZE = "windowSize";
@@ -652,86 +675,52 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_ACCESSCONTROL
             + "/"
             + N_ACCESSENTRY, 1, A_PERMISSIONS);
-        
+
         // add multi context menu
-        digester.addObjectCreate("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU, CmsExplorerContextMenu.class);
-        digester.addSetNext("*/"
-            + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU, "setMultiContextMenu");
+        digester.addObjectCreate(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU,
+            CmsExplorerContextMenu.class);
+        digester.addSetNext(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU,
+            "setMultiContextMenu");
+
+        digester.addCallMethod(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            "addMenuEntry",
+            5);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            0,
+            A_KEY);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            1,
+            A_URI);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            2,
+            A_RULES);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            3,
+            A_TARGET);
+        digester.addCallParam(
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            4,
+            A_ORDER);
 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
             + N_EXPLORERTYPES
             + "/"
-            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            "addMenuEntry",
-            5);
+            + N_MULTICONTEXTMENU
+            + "/"
+            + N_SEPARATOR, "addMenuSeparator", 1);
         digester.addCallParam(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
+            "*/" + N_WORKPLACE + "/" + N_EXPLORERTYPES + "/" + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
             0,
-            A_KEY);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            1,
-            A_URI);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            2,
-            A_RULES);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            3,
-            A_TARGET);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_ENTRY,
-            4,
             A_ORDER);
-
-        digester.addCallMethod(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
-            "addMenuSeparator",
-            1);
-        digester.addCallParam(
-            "*/" + N_WORKPLACE
-            + "/"
-            + N_EXPLORERTYPES
-            + "/"
-            + N_MULTICONTEXTMENU + "/" + N_SEPARATOR,
-            0,
-            A_ORDER);        
 
         // add default properties on structure setting
         digester.addCallMethod(
@@ -1255,6 +1244,19 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKFLOWDEFAULTSETTINGS
             + "/"
             + N_INFORMROLEMEMBERS, "setTaskMessageMembers", 0);
+
+        // add tool-manager
+        String rulePath = "*/" + N_TOOLMANAGER;
+        digester.addObjectCreate(rulePath, CmsToolManager.class);
+        digester.addSetNext(rulePath, "setToolManager");
+        // add tool-manager roots
+        rulePath += "/" + N_ROOTS + "/" + N_ROOT;
+        digester.addObjectCreate(rulePath, CmsToolRootHandler.class);
+        digester.addSetNext(rulePath, "addToolRoot");
+        digester.addBeanPropertySetter(rulePath + "/" + N_KEY);
+        digester.addBeanPropertySetter(rulePath + "/" + N_URI);
+        digester.addBeanPropertySetter(rulePath + "/" + N_NAME);
+        digester.addBeanPropertySetter(rulePath + "/" + N_HELPTEXT, "helpText");
     }
 
     /**
@@ -1373,12 +1375,12 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 accessEntryElement.addAttribute(A_PERMISSIONS, value);
             }
         }
-        
+
         // add the <multicontextmenu> node
         i = m_workplaceManager.getMultiContextMenu().getAllEntries().iterator();
         if (i.hasNext()) {
             // only generate the node if entries are defined
-            Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);    
+            Element contextMenuElement = explorerTypesElement.addElement(N_MULTICONTEXTMENU);
             while (i.hasNext()) {
                 CmsExplorerContextMenuItem item = (CmsExplorerContextMenuItem)i.next();
                 Element itemElement;
@@ -1565,6 +1567,18 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <informrolemembers> node
         workflowDefaultsettings.addElement(N_INFORMROLEMEMBERS).setText(
             m_workplaceManager.getDefaultUserSettings().getTaskMessageMembersString());
+
+        Element toolManagerElement = workplaceElement.addElement(N_TOOLMANAGER);
+        Element rootsElement = toolManagerElement.addElement(N_ROOTS);
+        Iterator it = m_workplaceManager.getToolManager().getToolRoots().iterator();
+        while (it.hasNext()) {
+            CmsToolRootHandler root = (CmsToolRootHandler)it.next();
+            Element rootElement = rootsElement.addElement(N_ROOT);
+            rootElement.addElement(N_KEY).addText(root.getKey());
+            rootElement.addElement(N_URI).addText(root.getUri());
+            rootElement.addElement(N_NAME).addText(root.getName());
+            rootElement.addElement(N_HELPTEXT).addText(root.getHelpText());
+        }
 
         // return the configured node
         return workplaceElement;

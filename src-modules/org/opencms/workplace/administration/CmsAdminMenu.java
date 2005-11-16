@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/10/26 12:18:53 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2005/11/16 12:13:52 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,7 +198,7 @@ public class CmsAdminMenu extends CmsToolDialog {
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 
-        Iterator itElems = getToolManager().getToolHandlers().iterator();
+        Iterator itElems = getToolManager().getToolsForPath(this, getToolManager().getBaseToolPath(this), false).iterator();
         while (itElems.hasNext()) {
             CmsTool tool = (CmsTool)itElems.next();
             // check visibility
@@ -210,14 +210,9 @@ public class CmsAdminMenu extends CmsToolDialog {
                 continue;
             }
 
-            String root = getToolManager().getRootToolPath(this);
-            // leave out everything above the root
-            if (!tool.getHandler().getPath().startsWith(root)) {
-                continue;
-            }
-            // cut out the root
-            String path = tool.getHandler().getPath().substring(getToolManager().getRootToolPath(this).length());
-            // special case of the root tool
+            // cut out the base
+            String path = tool.getHandler().getPath().substring(getToolManager().getBaseToolPath(this).length());
+            // special case of the base tool
             if (CmsStringUtil.isEmpty(path)) {
                 continue;
             }

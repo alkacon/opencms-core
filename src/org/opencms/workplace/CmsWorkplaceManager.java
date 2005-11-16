@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/10/28 14:27:35 $
- * Version: $Revision: 1.72.2.5 $
+ * Date   : $Date: 2005/11/16 12:12:26 $
+ * Version: $Revision: 1.72.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.5 $ 
+ * @version $Revision: 1.72.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -799,8 +799,11 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
                 }
             }
 
-            // create a new tool manager
-            m_toolManager = new CmsToolManager(cms);
+            // configures the tool manager
+            if (m_toolManager == null) {
+                m_toolManager = new CmsToolManager();
+            }
+            m_toolManager.configure(cms);
 
             // throw away all cached message objects
             m_messages.clear();
@@ -808,6 +811,8 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             throw new CmsException(Messages.get().container(Messages.ERR_INITIALIZE_WORKPLACE_0));
         }
     }
+    
+    
 
     /**
      * Returns the default property editing mode on resources.<p>
@@ -1240,5 +1245,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         // sort the views by their order number
         Collections.sort(m_views);
         return m_views;
+    }
+   
+    /**
+     * Sets the tool Manager object.<p>
+     *
+     * @param toolManager the tool Manager object to set
+     */
+    public void setToolManager(CmsToolManager toolManager) {
+    
+        m_toolManager = toolManager;
     }
 }

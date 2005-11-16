@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/10/26 08:54:42 $
- * Version: $Revision: 1.93.2.5 $
+ * Date   : $Date: 2005/11/16 12:12:26 $
+ * Version: $Revision: 1.93.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.5 $ 
+ * @version $Revision: 1.93.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -390,7 +390,7 @@ public class CmsDialog extends CmsToolDialog {
         if (segment == HTML_START) {
             StringBuffer html = new StringBuffer(512);
             if (useNewStyle()) {
-                html.append(super.dialogTitle());
+                html.append(dialogTitle());
             }
             html.append("<table class=\"dialog\" cellpadding=\"0\" cellspacing=\"0\"");
             if (attributes != null) {

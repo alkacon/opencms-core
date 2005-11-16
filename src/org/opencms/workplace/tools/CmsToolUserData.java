@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolUserData.java,v $
- * Date   : $Date: 2005/06/23 11:11:54 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2005/11/16 12:13:41 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,70 +31,103 @@
 
 package org.opencms.workplace.tools;
 
+import java.util.HashMap;
+import java.util.Map;
+
 /**
  * Store for some administration view parameters,
  * for each user, used by the <code>{@link CmsToolManager}</code>.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsToolUserData {
 
-    /** Current used tool path. */
-    private String m_currentToolPath;
+    /** base tool for the user, root-based. */
+    private Map m_baseTools;
 
-    /** Root tool for the user. */
-    private String m_rootTool;
+    /** Current used tool paths, root-based. */
+    private Map m_currentToolPaths;
+
+    /** root key for the user. */
+    private String m_rootKey;
 
     /**
      * Default Constructor.<p>
      */
     public CmsToolUserData() {
 
-        // no op
+        m_baseTools = new HashMap();
+        m_currentToolPaths = new HashMap();
+    }
+
+    /**
+     * Returns the base tool.<p>
+     *
+     * @param rootKey the tool root
+     * 
+     * @return the base tool
+     */
+    public String getBaseTool(String rootKey) {
+
+        return (String)m_baseTools.get(rootKey);
     }
 
     /**
      * Returns the current tool path.<p>
      *
+     * @param rootKey the tool root
+     * 
      * @return the current tool path
      */
-    public String getCurrentToolPath() {
+    public String getCurrentToolPath(String rootKey) {
 
-        return m_currentToolPath;
+        return (String)m_currentToolPaths.get(rootKey);
     }
 
     /**
-     * Returns the root tool.<p>
+     * Returns the root key.<p>
      *
-     * @return the root tool
+     * @return the root key
      */
-    public String getRootTool() {
+    public String getRootKey() {
 
-        return m_rootTool;
+        return m_rootKey;
+    }
+
+    /**
+     * Sets the base tool.<p>
+     *
+     * @param rootKey the tool root
+     * @param baseTool the base tool to set
+     */
+    public void setBaseTool(String rootKey, String baseTool) {
+
+        m_baseTools.put(rootKey, baseTool);
     }
 
     /**
      * Sets the current tool path.<p>
      *
+     * @param rootKey the tool root
      * @param currentToolPath the current tool path to set
      */
-    public void setCurrentToolPath(String currentToolPath) {
+    public void setCurrentToolPath(String rootKey, String currentToolPath) {
 
-        m_currentToolPath = currentToolPath;
+        m_currentToolPaths.put(rootKey, currentToolPath);
     }
 
     /**
-     * Sets the root tool.<p>
+     * Sets the root key.<p>
      *
-     * @param rootTool the root tool to set
+     * @param key the root key to set
      */
-    public void setRootTool(String rootTool) {
+    public void setRootKey(String key) {
 
-        m_rootTool = rootTool;
+        m_rootKey = key;
     }
 
 }

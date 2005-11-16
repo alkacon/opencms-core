@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Messages.java,v $
- * Date   : $Date: 2005/10/26 08:54:42 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2005/11/16 12:13:41 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,69 +39,78 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_VIEW_ROOT_HELP_0 = "GUI_EXPLORER_VIEW_ROOT_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_VIEW_ROOT_NAME_0 = "GUI_EXPLORER_VIEW_ROOT_NAME_0";
+    
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_LOADING_0 = "GUI_ADMIN_VIEW_LOADING_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_ROOT_HELP_0 = "GUI_ADMIN_VIEW_ROOT_HELP_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_ROOT_NAME_0 = "GUI_ADMIN_VIEW_ROOT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_ADMIN_VIEW_UPLEVEL_0 = "GUI_ADMIN_VIEW_UPLEVEL_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_EMPTY_MESSAGE_0 = "GUI_EMPTY_MESSAGE_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_GROUP_0 = "GUI_TOOLS_DEFAULT_GROUP_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_HELP_0 = "GUI_TOOLS_DEFAULT_HELP_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_TOOLS_DEFAULT_NAME_0 = "GUI_TOOLS_DEFAULT_NAME_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_TOOLS_DISABLED_HELP_0 = "GUI_TOOLS_DISABLED_HELP_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_TOOLS_DISABLED_ONLINE_HELP_0 = "GUI_TOOLS_DISABLED_ONLINE_HELP_0";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_CREATED_0 = "INIT_TOOLMANAGER_CREATED_0";
 
-    /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_2 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_2";
-
-    /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_INSTALL_ERROR_2 = "INIT_TOOLMANAGER_INSTALL_ERROR_2";
-
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_DUPLICATED_ERROR_3 = "INIT_TOOLMANAGER_DUPLICATED_ERROR_3";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_TOOLMANAGER_INCONSISTENT_PATH_2 = "INIT_TOOLMANAGER_INCONSISTENT_PATH_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_TOOLMANAGER_INSTALL_ERROR_2 = "INIT_TOOLMANAGER_INSTALL_ERROR_2";
+
+    /** Message contant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_NEWTOOL_FOUND_2 = "INIT_TOOLMANAGER_NEWTOOL_FOUND_2";
 
-    /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_NOT_CREATED_0 = "INIT_TOOLMANAGER_NOT_CREATED_0";
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_TOOLMANAGER_ROOT_SKIPPED_2 = "INIT_TOOLMANAGER_ROOT_SKIPPED_2";
 
-    /** Static instance member. */
-    public static final String INIT_TOOLMANAGER_SETUP_ERROR_0 = "INIT_TOOLMANAGER_SETUP_ERROR_0";
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_TOOLMANAGER_SETUP_1 = "INIT_TOOLMANAGER_SETUP_1";
 
-    /** Static instance member. */
+    /** Message contant for key in the resource bundle. */
+    public static final String INIT_TOOLMANAGER_SETUP_ERROR_1 = "INIT_TOOLMANAGER_SETUP_ERROR_1";
+
+    /** Message contant for key in the resource bundle. */
     public static final String INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1 = "INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_MISSING_ADMIN_TOOL_1 = "LOG_MISSING_ADMIN_TOOL_1";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String LOG_MISSING_TOOL_HANDLER_2 = "LOG_MISSING_TOOL_HANDLER_2";
 

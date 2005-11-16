@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/Attic/CmsRootToolHandler.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.5.2.1 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolRootHandler.java,v $
+ * Date   : $Date: 2005/11/16 12:13:41 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,15 +34,40 @@ package org.opencms.workplace.tools;
 import org.opencms.file.CmsObject;
 
 /**
- * Admin tool handler for the root folder.<p>
+ * Admin tool handler for tool roots.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsRootToolHandler extends A_CmsToolHandler {
+public class CmsToolRootHandler extends A_CmsToolHandler {
+
+    /** The key to access this tool root. */
+    private String m_key;
+    /** The uri where to look for the tools for this root. */
+    private String m_uri;
+
+    /**
+     * Returns the key.<p>
+     *
+     * @return the key
+     */
+    public String getKey() {
+
+        return m_key;
+    }
+
+    /**
+     * Returns the uri.<p>
+     *
+     * @return the uri
+     */
+    public String getUri() {
+
+        return m_uri;
+    }
 
     /**
      * @see org.opencms.workplace.tools.A_CmsToolHandler#isEnabled(org.opencms.file.CmsObject)
@@ -61,19 +86,37 @@ public class CmsRootToolHandler extends A_CmsToolHandler {
     }
 
     /**
-     * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, java.lang.String)
+     * Sets the key.<p>
+     *
+     * @param key the key to set
      */
-    public boolean setup(CmsObject cms, String resourcePath) {
+    public void setKey(String key) {
 
-        setName("${key." + Messages.GUI_ADMIN_VIEW_ROOT_NAME_0 + "}");
-        setHelpText("${key." + Messages.GUI_ADMIN_VIEW_ROOT_HELP_0 + "}");
+        m_key = key;
+    }
+
+    /**
+     * @see org.opencms.workplace.tools.A_CmsToolHandler#setup(org.opencms.file.CmsObject, org.opencms.workplace.tools.CmsToolRootHandler, java.lang.String)
+     */
+    public boolean setup(CmsObject cms, CmsToolRootHandler root, String resourcePath) {
+
         setDisabledHelpText(getHelpText());
         setIconPath("admin/images/deficon.png");
         setSmallIconPath(getIconPath());
         setPath("/");
         setGroup("");
         setPosition(1);
-        setLink(resourcePath);
+        setLink(cms, resourcePath);
         return true;
+    }
+
+    /**
+     * Sets the uri.<p>
+     *
+     * @param uri the uri to set
+     */
+    public void setUri(String uri) {
+
+        m_uri = uri;
     }
 }

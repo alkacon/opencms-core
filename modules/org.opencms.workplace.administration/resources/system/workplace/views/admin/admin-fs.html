@@ -8,7 +8,9 @@
     CmsJspActionElement jsp = new CmsJspActionElement(pageContext, request, response);
     CmsAdminFrameset wp = new CmsAdminFrameset(jsp);
     // reset root
-    wp.getToolManager().initParams(wp, null, "/");
+    wp.setParamRoot("admin");
+    wp.setParamBase("/");
+    wp.getToolManager().initParams(wp);
     // rewrite params
     String params = wp.allParamsAsRequest();
     if (params==null) {

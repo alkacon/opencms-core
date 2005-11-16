@@ -25,7 +25,37 @@
 	workflow?,
 	rfsfileviewsettings?,
 	explorertypes+,
-	default-preferences )>
+	default-preferences,
+	tool-manager? )>
+
+<!--
+# The tool manager configuration.
+-->
+<!ELEMENT tool-manager (roots) >
+<!--
+# A list of tool's roots.
+-->
+<!ELEMENT roots (root*) >
+<!--
+# A root.
+-->
+<!ELEMENT root (key, uri, name, helptext) >
+<!--
+# The key for accessing a root.
+-->
+<!ELEMENT key (#PCDATA) >
+<!--
+# The uri to look for tools for this root.
+-->
+<!ELEMENT uri (#PCDATA) >
+<!--
+# a macro for the display name of the given root.
+-->
+<!ELEMENT name (#PCDATA) >
+<!--
+# a macro for the helptext of the given root.
+-->
+<!ELEMENT helptext (#PCDATA) >
 
 <!--
 # The default locale of the OpenCms workplace that is selected if a user
