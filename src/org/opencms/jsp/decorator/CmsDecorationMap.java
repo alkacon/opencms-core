@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/16 11:26:36 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -194,12 +194,16 @@ public class CmsDecorationMap implements Comparable {
             try {
                 String entry = (String)i.next();
                 // extract key and value
-                int speratator = entry.indexOf(";");
-                if (speratator > -1) {
-                    String key = entry.substring(0, speratator).trim();
-                    String value = entry.substring(speratator + 1).trim();
-                    CmsDecorationObject decObj = new CmsDecorationObject(key, value, m_decoratorDefinition, m_locale);
-                    decMap.put(key, decObj);
+                if (CmsStringUtil.isNotEmpty(entry)) {
+                    int speratator = entry.indexOf(";");
+                    if (speratator > -1) {
+                        String key = entry.substring(0, speratator).trim();
+                        String value = entry.substring(speratator + 1).trim();
+                        if (CmsStringUtil.isNotEmpty(key) && CmsStringUtil.isNotEmpty(value)) {
+                            CmsDecorationObject decObj = new CmsDecorationObject(key, value, m_decoratorDefinition, m_locale);
+                            decMap.put(key, decObj);
+                        }
+                    }
                 }
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
