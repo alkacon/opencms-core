@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsBackupResourceHandler.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/11/17 13:55:35 $
+ * Version: $Revision: 1.2.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsResourceInitException;
 import org.opencms.main.I_CmsResourceInit;
 import org.opencms.main.OpenCms;
 
@@ -44,7 +45,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.2 $
+ * @version $Revision: 1.2.2.1 $
  * 
  * @since 6.0.1 
  */
@@ -72,9 +73,11 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
     }
 
     /**
+     * @throws CmsResourceInitException 
      * @see org.opencms.main.I_CmsResourceInit#initResource(org.opencms.file.CmsResource, org.opencms.file.CmsObject, javax.servlet.http.HttpServletRequest, javax.servlet.http.HttpServletResponse)
      */
-    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res) {
+    public CmsResource initResource(CmsResource resource, CmsObject cms, HttpServletRequest req, HttpServletResponse res)
+    throws CmsResourceInitException {
 
         String versionId = req.getParameter(PARAM_VERSIONID);
 
@@ -102,10 +105,17 @@ public class CmsBackupResourceHandler implements I_CmsResourceInit {
                             OpenCms.getLog(this).error(
                                 Messages.get().container(Messages.ERR_BACKUPRESOURCE_2, uri, versionId));
                         }
+                        throw new CmsResourceInitException(Messages.get().container(
+                            Messages.ERR_SHOWVERSION_2,
+                            uri,
+                            versionId), e);
                     } finally {
                         // restore the siteroot and modify the uri to the one of the correct resource
                         cms.getRequestContext().restoreSiteRoot();
-                        cms.getRequestContext().setUri(cms.getSitePath(resource));
+                        if (resource != null) {
+                            // resource may be null in case of a
+                            cms.getRequestContext().setUri(cms.getSitePath(resource));
+                        }
                     }
                 }
             }
