@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2005/11/16 12:12:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/17 11:49:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsFile;
-import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.2 
  */
@@ -290,7 +289,7 @@ public class CmsHistoryList extends A_CmsListDialog {
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     protected List getListItems() throws CmsException {
-
+        
         List result = new ArrayList();
         String userName = "";
         List backupFileHeaders = getCms().readAllBackupFileHeaders(getParamResource());           
@@ -399,7 +398,12 @@ public class CmsHistoryList extends A_CmsListDialog {
         restoreCol.setSorteable(false);
 
         // add icon action
-        CmsListDirectAction restoreAction = new CmsListDirectAction(LIST_ACTION_RESTORE);
+        CmsListDirectAction restoreAction = new CmsListDirectAction(LIST_ACTION_RESTORE) {
+            // do not show icon for offline version
+            public boolean isVisible() {
+                return !"-1".equals(getItem().getId().toString());
+            }
+        };
         restoreAction.setName(Messages.get().container(Messages.GUI_HISTORY_RESTORE_VERSION_0));
         restoreAction.setIconPath("tools/history/buttons/restore.png");
         restoreAction.setConfirmationMessage(Messages.get().container(Messages.GUI_HISTORY_CONFIRMATION_0));
@@ -422,12 +426,21 @@ public class CmsHistoryList extends A_CmsListDialog {
                 boolean enabled, String iconPath, String confirmationMessage, String onClick, boolean singleHelp) {
                 StringBuffer jsCode = new StringBuffer(512);
                 jsCode.append("window.open('");
-                jsCode.append(getJsp().link(CmsBackupResourceHandler.BACKUP_HANDLER));
-                jsCode.append(getJsp().getRequestContext().addSiteRoot(getParamResource()));
-                jsCode.append('?');
-                jsCode.append(CmsBackupResourceHandler.PARAM_VERSIONID);
-                jsCode.append('=');
-                jsCode.append(getItem().getId().toString());
+                StringBuffer link = new StringBuffer(1024);
+                String versionId = getItem().getId().toString();
+                if ("-1".equals(versionId)) {
+                    // offline version
+                    link.append(jsp.getRequest().getParameter(PARAM_RESOURCE));
+                } else {
+                    // backup version
+                    link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
+                    link.append(jsp.getRequestContext().addSiteRoot(jsp.getRequest().getParameter(PARAM_RESOURCE)));
+                    link.append('?');
+                    link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
+                    link.append('=');
+                    link.append(versionId);
+                }
+                jsCode.append(jsp.link(link.toString()));
                 jsCode.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
                 return super.defButtonHtml(jsp, id, helpId, name, helpText, enabled,
                     iconPath, confirmationMessage, jsCode.toString(), singleHelp);
@@ -481,42 +494,32 @@ public class CmsHistoryList extends A_CmsListDialog {
         sizeCol.setWidth("13%");
         sizeCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         metadata.addColumn(sizeCol);
-        
-        try {
-            if (getCms().readResource(getParamResource()).getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
-                // create column for radio button 1
-                CmsListColumnDefinition radioSel1Col = new CmsListColumnDefinition(LIST_COLUMN_SEL1);
-                radioSel1Col.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_VERSION1_0));
-                radioSel1Col.setWidth("20");
-                radioSel1Col.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-                radioSel1Col.setSorteable(false);
-                // add item selection action
-                CmsListItemSelectionAction sel1Action = new CmsListItemSelectionAction(
-                    LIST_RACTION_SEL1,
-                    LIST_MACTION_COMPARE);
-                sel1Action.setName(Messages.get().container(Messages.GUI_HISTORY_FIRST_VERSION_0));
-                sel1Action.setEnabled(true);
-                radioSel1Col.addDirectAction(sel1Action);
-                metadata.addColumn(radioSel1Col);
 
-                // create column for radio button 2
-                CmsListColumnDefinition radioSel2Col = new CmsListColumnDefinition(LIST_COLUMN_SEL2);
-                radioSel2Col.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_VERSION2_0));
-                radioSel2Col.setWidth("20");
-                radioSel2Col.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-                radioSel2Col.setSorteable(false);
-                // add item selection action
-                CmsListItemSelectionAction sel2Action = new CmsListItemSelectionAction(
-                    LIST_RACTION_SEL2,
-                    LIST_MACTION_COMPARE);
-                sel2Action.setName(Messages.get().container(Messages.GUI_HISTORY_SECOND_VERSION_0));
-                sel2Action.setEnabled(true);
-                radioSel2Col.addDirectAction(sel2Action);
-                metadata.addColumn(radioSel2Col);
-            }
-        } catch (Exception e) {
-            LOG.error(e.getMessage(), e);
-        }
+        // create column for radio button 1
+        CmsListColumnDefinition radioSel1Col = new CmsListColumnDefinition(LIST_COLUMN_SEL1);
+        radioSel1Col.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_VERSION1_0));
+        radioSel1Col.setWidth("20");
+        radioSel1Col.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        radioSel1Col.setSorteable(false);
+        // add item selection action
+        CmsListItemSelectionAction sel1Action = new CmsListItemSelectionAction(LIST_RACTION_SEL1, LIST_MACTION_COMPARE);
+        sel1Action.setName(Messages.get().container(Messages.GUI_HISTORY_FIRST_VERSION_0));
+        sel1Action.setEnabled(true);
+        radioSel1Col.addDirectAction(sel1Action);
+        metadata.addColumn(radioSel1Col);
+
+        // create column for radio button 2
+        CmsListColumnDefinition radioSel2Col = new CmsListColumnDefinition(LIST_COLUMN_SEL2);
+        radioSel2Col.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_VERSION2_0));
+        radioSel2Col.setWidth("20");
+        radioSel2Col.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        radioSel2Col.setSorteable(false);
+        // add item selection action
+        CmsListItemSelectionAction sel2Action = new CmsListItemSelectionAction(LIST_RACTION_SEL2, LIST_MACTION_COMPARE);
+        sel2Action.setName(Messages.get().container(Messages.GUI_HISTORY_SECOND_VERSION_0));
+        sel2Action.setEnabled(true);
+        radioSel2Col.addDirectAction(sel2Action);
+        metadata.addColumn(radioSel2Col);
     }
     
     /**
