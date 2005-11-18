@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2005/11/18 09:05:49 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/18 15:19:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +70,9 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
     /** list action id constant. */
     public static final String LIST_ACTION_ICON = "ai";
+
+    /** list action id constant. */
+    public static final String LIST_ACTION_TYPE = "at";
 
     /** list column id constant. */
     public static final String LIST_COLUMN_ATTRIBUTE = "ca";
@@ -106,17 +110,17 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     /** Request parameter name for the locale. */
     public static final String PARAM_LOCALE = "locale";
 
+    private String m_paramPath1;
+
+    private String m_paramPath2;
+
     private String m_paramTagId1;
-
+    
     private String m_paramTagId2;
-
+    
     private String m_paramVersion1;
 
     private String m_paramVersion2;
-    
-    private String m_paramPath1;
-    
-    private String m_paramPath2;
 
     /**
      * Public constructor.<p>
@@ -186,6 +190,26 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     }
 
     /**
+     * Returns the paramPath1.<p>
+     *
+     * @return the paramPath1
+     */
+    public String getParamPath1() {
+    
+        return m_paramPath1;
+    }
+
+    /**
+     * Returns the paramPath2.<p>
+     *
+     * @return the paramPath2
+     */
+    public String getParamPath2() {
+    
+        return m_paramPath2;
+    }
+
+    /**
      * Returns the paramTagId1.<p>
      *
      * @return the paramTagId1
@@ -223,6 +247,26 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     public String getParamVersion2() {
 
         return m_paramVersion2;
+    }
+
+    /**
+     * Sets the paramPath1.<p>
+     *
+     * @param paramPath1 the paramPath1 to set
+     */
+    public void setParamPath1(String paramPath1) {
+    
+        m_paramPath1 = paramPath1;
+    }
+
+    /**
+     * Sets the paramPath2.<p>
+     *
+     * @param paramPath2 the paramPath2 to set
+     */
+    public void setParamPath2(String paramPath2) {
+    
+        m_paramPath2 = paramPath2;
     }
 
     /**
@@ -313,6 +357,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         return result;
     }
 
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
@@ -324,6 +369,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         super.initMessages();
     }
 
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -338,9 +384,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
         // add state error action
         CmsListDirectAction addedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_ADDED) {
-
             public boolean isVisible() {
-
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
                 return CmsResourceComparison.TYPE_ADDED.equals(type);
             }
@@ -392,7 +436,12 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         typeCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
         typeCol.setWidth("10%");
         metadata.addColumn(typeCol);
-
+        CmsListDefaultAction typeColAction = new CmsListDefaultAction(LIST_ACTION_TYPE);
+        typeColAction.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
+        typeColAction.setEnabled(true);
+        typeCol.addDefaultAction(typeColAction);
+        metadata.addColumn(typeCol);
+        
         // add column for locale
         CmsListColumnDefinition localeCol = new CmsListColumnDefinition(LIST_COLUMN_LOCALE);
         localeCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_LOCALE_0));
@@ -420,6 +469,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         metadata.addColumn(version2Col);
     }
 
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
@@ -428,55 +478,12 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         // no-op
     }
 
+    
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
-    }
-
-    
-    /**
-     * Returns the paramPath1.<p>
-     *
-     * @return the paramPath1
-     */
-    public String getParamPath1() {
-    
-        return m_paramPath1;
-    }
-
-    
-    /**
-     * Sets the paramPath1.<p>
-     *
-     * @param paramPath1 the paramPath1 to set
-     */
-    public void setParamPath1(String paramPath1) {
-    
-        m_paramPath1 = paramPath1;
-    }
-
-    
-    /**
-     * Returns the paramPath2.<p>
-     *
-     * @return the paramPath2
-     */
-    public String getParamPath2() {
-    
-        return m_paramPath2;
-    }
-
-    
-    /**
-     * Sets the paramPath2.<p>
-     *
-     * @param paramPath2 the paramPath2 to set
-     */
-    public void setParamPath2(String paramPath2) {
-    
-        m_paramPath2 = paramPath2;
     }
 }
