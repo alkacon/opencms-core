@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/18 15:21:42 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,8 +36,11 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.main.CmsException;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentValueVisitor;
 import org.opencms.xml.page.CmsXmlPageFactory;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -51,6 +54,44 @@ import java.util.Locale;
  */
 public class CmsXmlDocumentComparison extends CmsResourceComparison {
 
+    /**
+     * Visitor that collects the xpath expressions of xml contents.<p>
+     */
+    class CmsXmlContentElementPathExtractor implements I_CmsXmlContentValueVisitor {
+
+        private List m_elementPaths;
+        
+        /**
+         * Returns the elementPaths.<p>
+         *
+         * @return the elementPaths
+         */
+        List getElementPaths() {
+        
+            return m_elementPaths;
+        }
+
+        /**
+         * Creates a CmsXmlContentElementPathExtractor.<p>
+         */
+        CmsXmlContentElementPathExtractor() {
+            
+            m_elementPaths = new ArrayList();
+        }
+        
+        /**
+         * 
+         * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
+         */
+        public void visit(I_CmsXmlContentValue value) {
+            
+            // only add simple types
+            if (value.isSimpleType()) {
+                m_elementPaths.add(new CmsElementComparison(value.getLocale().toString(), value.getPath()));
+            }
+        }
+    }
+    
     /** The compared elements.<p> */
     private List m_elements;
 
@@ -71,17 +112,25 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         I_CmsXmlDocument resource1;
         I_CmsXmlDocument resource2;
 
+        List elements1 = null;
+        List elements2 = null;
+        
         if (res1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()
             && res2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
             resource1 = CmsXmlPageFactory.unmarshal(cms, res1);
             resource2 = CmsXmlPageFactory.unmarshal(cms, res2);
+            elements1 = getElements(resource1);
+            elements2 = getElements(resource2);
         } else {
             resource1 = CmsXmlContentFactory.unmarshal(cms, res1);
+            CmsXmlContentElementPathExtractor visitor = new CmsXmlContentElementPathExtractor();
+            ((CmsXmlContent)resource1).visitAllValuesWith(visitor);
+            elements1 = visitor.getElementPaths();
             resource2 = CmsXmlContentFactory.unmarshal(cms, res2);
+            visitor = new CmsXmlContentElementPathExtractor();
+            ((CmsXmlContent)resource2).visitAllValuesWith(visitor);
+            elements2 = visitor.getElementPaths();
         }
-
-        List elements1 = getElements(resource1);
-        List elements2 = getElements(resource2);
 
         List removed = new ArrayList(elements1);
         removed.removeAll(elements2);
@@ -130,7 +179,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         m_elements.addAll(added);
         m_elements.addAll(union);
     }
-
+    
     /**
      * Returns the elements.<p>
      *
