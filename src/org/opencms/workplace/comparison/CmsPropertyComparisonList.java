@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/18 09:07:08 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,54 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     private String m_paramVersion1;
 
     private String m_paramVersion2;
+
+    private String m_paramPath1;
+    
+    private String m_paramPath2;
+    
+    
+    /**
+     * Returns the paramPath1.<p>
+     *
+     * @return the paramPath1
+     */
+    public String getParamPath1() {
+    
+        return m_paramPath1;
+    }
+
+    
+    /**
+     * Sets the paramPath1.<p>
+     *
+     * @param paramPath1 the paramPath1 to set
+     */
+    public void setParamPath1(String paramPath1) {
+    
+        m_paramPath1 = paramPath1;
+    }
+
+    
+    /**
+     * Returns the paramPath2.<p>
+     *
+     * @return the paramPath2
+     */
+    public String getParamPath2() {
+    
+        return m_paramPath2;
+    }
+
+    
+    /**
+     * Sets the paramPath2.<p>
+     *
+     * @param paramPath2 the paramPath2 to set
+     */
+    public void setParamPath2(String paramPath2) {
+    
+        m_paramPath2 = paramPath2;
+    }
 
     /**
      * Public constructor.<p>
@@ -191,11 +239,13 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
+        params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
+        params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
         params.put(PARAM_COMPARE, "properties");
         params.put(PARAM_RESOURCE, getParamResource());
         // forward to the difference screen
         getToolManager().jspForwardTool(this, "/history/comparison/difference", params);
-        listSave();
+        refreshList();
     }
 
     /**
@@ -295,16 +345,18 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         CmsFile resource1;
         CmsFile resource2;
         if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-            resource1 = getCms().readFile(getParamResource());
+            resource1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
         } else {
-            resource1 = getCms().readBackupFile(getParamResource(), Integer.parseInt(getParamTagId1()));
+            resource1 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()), 
+                Integer.parseInt(getParamTagId1()));
         }
         if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-            resource2 = getCms().readFile(getParamResource());
+            resource2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
         } else {
-            resource2 = getCms().readBackupFile(getParamResource(), Integer.parseInt(getParamTagId2()));
+            resource2 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()), 
+                Integer.parseInt(getParamTagId2()));
         }
-        Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getComparedProperties().iterator();
+        Iterator diffs = new CmsResourceComparison(getCms(), resource1, resource2).getComparedProperties().iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());

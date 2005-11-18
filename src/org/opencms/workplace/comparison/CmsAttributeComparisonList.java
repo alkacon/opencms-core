@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/18 09:05:28 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,11 +115,13 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         params.put(CmsHistoryList.PARAM_TAGID_2, getParamTagId2());
         params.put(CmsHistoryList.PARAM_VERSION_1, getParamVersion1());
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
+        params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
+        params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
         params.put(PARAM_COMPARE, "attributes");
         params.put(PARAM_RESOURCE, getParamResource());
         // forward to the difference screen
         getToolManager().jspForwardTool(this, "/history/comparison/difference", params);
-        listSave();
+        refreshList();
     }
 
     /**
@@ -131,16 +133,18 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         CmsFile resource1;
         CmsFile resource2;
         if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-            resource1 = getCms().readFile(getParamResource());
+            resource1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
         } else {
-            resource1 = getCms().readBackupFile(getParamResource(), Integer.parseInt(getParamTagId1()));
+            resource1 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()), 
+                Integer.parseInt(getParamTagId1()));
         }
         if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-            resource2 = getCms().readFile(getParamResource());
+            resource2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
         } else {
-            resource2 = getCms().readBackupFile(getParamResource(), Integer.parseInt(getParamTagId2()));
+            resource2 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()), 
+                Integer.parseInt(getParamTagId2()));
         }
-        Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getComparedAttributes().iterator();
+        Iterator diffs = new CmsResourceComparison(getCms(), resource1, resource2).getComparedAttributes().iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());

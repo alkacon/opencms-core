@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/11/16 12:12:40 $
- * Version: $Revision: 1.13.2.4 $
+ * Date   : $Date: 2005/11/18 09:05:01 $
+ * Version: $Revision: 1.13.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.4 $ 
+ * @version $Revision: 1.13.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_RESOURCE_PATH_0 = "GUI_HISTORY_COLS_RESOURCE_PATH_0";
     
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_MULTI_0 = "ERR_AVAILABILITY_MULTI_0";

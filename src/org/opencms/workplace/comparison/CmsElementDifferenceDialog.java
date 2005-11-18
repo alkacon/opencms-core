@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Attic/CmsElementDifferenceDialog.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/18 09:06:34 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -64,7 +64,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,6 +100,54 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
     private String m_paramVersion1;
 
     private String m_paramVersion2;
+
+    private String m_paramPath1;
+    
+    private String m_paramPath2;
+    
+    
+    /**
+     * Returns the paramPath1.<p>
+     *
+     * @return the paramPath1
+     */
+    public String getParamPath1() {
+    
+        return m_paramPath1;
+    }
+
+    
+    /**
+     * Sets the paramPath1.<p>
+     *
+     * @param paramPath1 the paramPath1 to set
+     */
+    public void setParamPath1(String paramPath1) {
+    
+        m_paramPath1 = paramPath1;
+    }
+
+    
+    /**
+     * Returns the paramPath2.<p>
+     *
+     * @return the paramPath2
+     */
+    public String getParamPath2() {
+    
+        return m_paramPath2;
+    }
+
+    
+    /**
+     * Sets the paramPath2.<p>
+     *
+     * @param paramPath2 the paramPath2 to set
+     */
+    public void setParamPath2(String paramPath2) {
+    
+        m_paramPath2 = paramPath2;
+    }
 
     /**
      * Default constructor.<p>
@@ -447,14 +495,16 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
             CmsFile file1;
             CmsFile file2;
             if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-                file1 = getCms().readFile(getParamResource());
+                file1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
             } else {
-                file1 = getCms().readBackupFile(getParamResource(), Integer.parseInt(getParamTagId1()));
+                file1 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()), 
+                    Integer.parseInt(getParamTagId1()));
             }
             if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-                file2 = getCms().readFile(getParamResource());
+                file2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
             } else {
-                file2 = getCms().readBackupFile(getParamResource(), Integer.parseInt(getParamTagId2()));
+                file2 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()), 
+                    Integer.parseInt(getParamTagId2()));
             }
             if ("properties".equals(getParamCompare())) {
 

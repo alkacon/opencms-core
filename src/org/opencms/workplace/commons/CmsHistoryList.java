@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2005/11/17 15:49:35 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/11/18 09:04:41 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.2 
  */
@@ -188,18 +188,24 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** constant for the offline project.<p> */
     public static final String OFFLINE_PROJECT = "offline";
 
-    /** list column id constant. */
+    /** parameter for the version of the first resource. */
     public static final String PARAM_TAGID_1 = "tagid1";
 
-    /** list column id constant. */
+    /** parameter for the tag id of the second resource. */
     public static final String PARAM_TAGID_2 = "tagid2";
 
-    /** list column id constant. */
+    /** parameter for the version of the first resource. */
     public static final String PARAM_VERSION_1 = "version1";
 
-    /** list column id constant. */
+    /** parameter for the version of the second resource. */
     public static final String PARAM_VERSION_2 = "version2";
 
+    /** parameter for the path of the first resource. */
+    public static final String PARAM_PATH_1 = "path1";
+
+    /** parameter for the path of the second resource. */
+    public static final String PARAM_PATH_2 = "path2";
+    
     /** Path to the list buttons. */
     public static final String PATH_BUTTONS = "buttons/";
     
@@ -245,6 +251,8 @@ public class CmsHistoryList extends A_CmsListDialog {
             params.put(PARAM_TAGID_2, item2.getId());
             params.put(PARAM_VERSION_1, item1.get(LIST_COLUMN_VERSION));
             params.put(PARAM_VERSION_2, item2.get(LIST_COLUMN_VERSION));
+            params.put(PARAM_PATH_1, item1.get(LIST_COLUMN_RESOURCE_PATH));
+            params.put(PARAM_PATH_2, item2.get(LIST_COLUMN_RESOURCE_PATH));
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             params.put(PARAM_RESOURCE, getParamResource());
@@ -474,20 +482,22 @@ public class CmsHistoryList extends A_CmsListDialog {
         
         // add column for resource path
         CmsListColumnDefinition pathCol = new CmsListColumnDefinition(LIST_COLUMN_RESOURCE_PATH);
-        pathCol.setVisible(false);
+        pathCol.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_RESOURCE_PATH_0));
+        pathCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
+        pathCol.setWidth("20%");
         metadata.addColumn(pathCol);
         
         // add column for date published
         CmsListColumnDefinition datePublishedCol = new CmsListColumnDefinition(LIST_COLUMN_DATE_PUBLISHED);
         datePublishedCol.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_DATE_PUBLISHED_0));
-        datePublishedCol.setWidth("30%");
+        datePublishedCol.setWidth("20%");
         datePublishedCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         metadata.addColumn(datePublishedCol);
 
         // add column for date last modified
         CmsListColumnDefinition nicenameCol = new CmsListColumnDefinition(LIST_COLUMN_DATE_LAST_MODIFIED);
         nicenameCol.setName(Messages.get().container(Messages.GUI_HISTORY_COLS_DATE_LAST_MODIFIED_0));
-        nicenameCol.setWidth("30%");
+        nicenameCol.setWidth("20%");
         nicenameCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         metadata.addColumn(nicenameCol);
         
