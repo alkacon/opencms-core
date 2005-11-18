@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2005/11/18 09:07:08 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/18 15:20:22 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
@@ -62,15 +63,12 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsPropertyComparisonList extends A_CmsListDialog {
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_ICON = "ai";
-
+    
     /** list action id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
 
@@ -394,9 +392,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add state error action
         CmsListDirectAction addedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_ADDED) {
-
             public boolean isVisible() {
-
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
                 return CmsResourceComparison.TYPE_ADDED.equals(type);
             }
@@ -408,9 +404,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add state error action
         CmsListDirectAction removedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_REMOVED) {
-
             public boolean isVisible() {
-
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
                 return CmsResourceComparison.TYPE_REMOVED.equals(type);
             }
@@ -422,9 +416,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add state error action
         CmsListDirectAction changedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_CHANGED) {
-
             public boolean isVisible() {
-
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
                 return CmsResourceComparison.TYPE_CHANGED.equals(type);
             }
@@ -436,9 +428,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add state error action
         CmsListDirectAction unchangedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_UNCHANGED) {
-
             public boolean isVisible() {
-
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
                 return CmsResourceComparison.TYPE_UNCHANGED.equals(type);
             }
@@ -453,8 +443,14 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
         typeCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
         typeCol.setWidth("10%");
+        CmsListDefaultAction typeColAction = new CmsListDefaultAction(CmsElementComparisonList.LIST_ACTION_TYPE);
+        typeColAction.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
+        typeColAction.setEnabled(true);
+        // set action for the name column
+        typeCol.addDefaultAction(typeColAction);
         metadata.addColumn(typeCol);
-
+        
+        
         // add column for name
         CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_PROPERTY_NAME);
         nameCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_PROPERTY_NAME_0));
