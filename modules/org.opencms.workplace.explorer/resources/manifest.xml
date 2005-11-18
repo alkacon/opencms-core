@@ -226,7 +226,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:tagid1=${param.tagid1}&tagid2=${param.tagid2}&version1=${param.version1}&version2=${param.version2}&resource=${param.resource}|path:/history/comparison]]></value>
+					<value><![CDATA[params:path1=${param.path1}&path2=${param.path2}&tagid1=${param.tagid1}&tagid2=${param.tagid2}&version1=${param.version1}&version2=${param.version2}&resource=${param.resource}|path:/history/comparison]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -260,7 +260,7 @@
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:version1=${param.version1}&version2=${param.version2}|path:/history/comparison/difference]]></value>
+					<value><![CDATA[params:path1=${param.path1}&path2=${param.path2}&version1=${param.version1}&version2=${param.version2}|path:/history/comparison/difference]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
