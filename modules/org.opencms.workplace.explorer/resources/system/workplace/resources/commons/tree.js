@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2005/11/19 13:42:50 $
- * Version: $Revision: 1.4.2.1 $
+ * Date   : $Date: 2005/11/19 17:08:38 $
+ * Version: $Revision: 1.4.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,13 @@ var treeHeadHtml1 =
 var treeHeadHtml2 =
 	"\">\n"
 	+ "<title>opencms explorer tree</title>\n"
+	+ "<script type=\"text/javascript\">\n"
+	+ "<!--\n"
+	+ "document.oncontextmenu = new Function('return false;');\n"
+	+ "document.onmousedown = new Function('return false;');\n"
+	+ "document.onmouseup = new Function('return false;');\n"
+	+ "//-->\n"
+	+ "</script>\n"
 	+ "<style type=\"text/css\">\n"
 	+ "body  { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 2px 0px 0px 2px; margin: 0px; backgound-color: #ffffff; }\n"
 	+ "p, td { vertical-align: bottom; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; color: #000000; }\n"
@@ -535,6 +542,7 @@ function doActionFolderOpen(doc, nodeId) {
     var target = "views/explorer/tree_files.jsp?resource=" + nodeName + params;
     tree_files.location.href = vr.contextPath + vr.workplacePath + target;
     if (inExplorer()) {
+    	top.cancelNextOpen = false;
         top.openFolder(nodeName);
     }
 }

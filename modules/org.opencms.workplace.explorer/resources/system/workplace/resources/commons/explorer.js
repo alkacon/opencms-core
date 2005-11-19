@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/16 12:00:07 $
- * Version: $Revision: 1.10.2.7 $
+ * Date   : $Date: 2005/11/19 17:08:38 $
+ * Version: $Revision: 1.10.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,47 +30,29 @@
  */
 
 var help_url="ExplorerAnsicht/index.html";
-
 var flaturl="";
-
-var mode = "explorerview";
-
-var showlinks = false;
-
+var mode="explorerview";
+var showlinks=false;
 var openfolderMethod="openFolder";
-
 var showKon=true;
-
-var autolock = false;
-
-var plainresid = -1;
-
+var autolock=false;
+var plainresid=-1;
 var win;
-
-var buttonType = 1;
-
-var link_newresource = "/system/workplace/commons/newresource.jsp";
-
-var link_uploadresource = "/system/workplace/commons/newresource_upload.jsp";
-
-var link_showresource = "/system/workplace/commons/displayresource.jsp";
-
-var last_id = -1;
-
-var active_mouse_id = -1;
-
-var selectedResources = new Array();
-
-var selectedStyles = new Array();
-
-var contextOpen = false;
-
-var displayResource = "/";
-
-var g_histLoc = 0;
-var g_history = null;
-
-var m_rootFolder = "/";
+var buttonType=1;
+var link_newresource="/system/workplace/commons/newresource.jsp";
+var link_uploadresource="/system/workplace/commons/newresource_upload.jsp";
+var link_showresource="/system/workplace/commons/displayresource.jsp";
+var last_id=-1;
+var active_mouse_id=-1;
+var active_from_text=false;
+var cancelNextOpen=false;
+var selectedResources=new Array();
+var selectedStyles=new Array();
+var contextOpen=false;
+var displayResource="/";
+var g_histLoc=0;
+var g_history=null;
+var m_rootFolder="/";
 
 
 function show_help(){
@@ -298,9 +280,17 @@ function showCols(cols) {
 }
 
 
-// set the last selected menu id
+// set the last selected menu id (from icon)
 function setId(id) {
 	active_mouse_id = id;
+	active_from_text = false;
+}
+
+
+// set the last selected menu id (from link text)
+function setId2(id) {
+	active_mouse_id = id;
+	active_from_text = true;
 }
 
 
@@ -554,11 +544,11 @@ function submitMultiAction(dialog) {
 	doc.forms["formmulti"].submit();
 }
 
-
 // handle the mouse clicks
 function handleOnClick(e) {
 
 	e = checkEvent(e);
+	cancelNextOpen = (selectedResources.length > 0);
 	if (contextOpen) {
 		// close eventually open context menu
 		closeContext();	
@@ -570,8 +560,17 @@ function handleOnClick(e) {
 	// unselect resources;
 	toggleSelectionStyle(false);
 	selectedStyles = new Array();
-
-	if (active_mouse_id < 0) {
+	
+	var btp = e.button;	
+	var keyHold = e.shiftKey || e.ctrlKey || e.altKey;
+	if (keyHold) {
+		// stop event bubbling
+		e.cancelBubble = true;
+		if (e.stopPropagation) {
+			e.stopPropagation();
+		}
+	}
+	if ((active_mouse_id < 0) || (active_from_text && !keyHold && (selectedResources.length <= 1) && (btp != 2))) {
 		// no icon clicked, reset selected resources and leave handler
 		last_id = -1;
 		selectedResources = new Array();
@@ -641,9 +640,11 @@ function handleOnClick(e) {
 			}
 		}
 		toggleSelectionStyle(true);
+		cancelNextOpen = keyHold || (selectedResources.length > 0);
 		return handleContext(e);
 	}
 	toggleSelectionStyle(true);
+	cancelNextOpen = keyHold || (selectedResources.length > 0);
 
 	return false;
 }
@@ -664,7 +665,6 @@ function checkEvent(e) {
 	}
 	return e;
 }
-
 
 // toggles the style of the selected resources
 function toggleSelectionStyle(isSelected) {
@@ -692,7 +692,11 @@ function toggleSelectionStyle(isSelected) {
 			if (isSelected) {
 				ah.className = styleName;
 			} else {
-				ah.className = selectedStyles[selectedResources[i]];
+				var cls = selectedStyles[selectedResources[i]];
+				if (cls.charAt(cls.length - 1) == 'i') {
+					cls = cls.substring(0, cls.length-1);
+				}
+				ah.className = cls;
 			}
 
 			rowStyle = styleName;
@@ -716,6 +720,28 @@ function toggleSelectionStyle(isSelected) {
 	}
 }
 
+function linkOver(obj, id) {
+
+	var cls = obj.className;
+	if (cls.charAt(cls.length - 1) != 'i') {
+		cls = cls + 'i';
+	}
+	obj.className = cls;
+	active_mouse_id = id;
+	active_from_text = true;
+}
+
+function linkOut(obj) {
+	
+	var cls = obj.className;
+	if (cls.charAt(cls.length - 1) == 'i') {
+		cls = cls.substring(0, cls.length-1);
+	}
+	obj.className = cls;
+	active_mouse_id = -1;
+	active_from_text = false;
+}
+
 
 function printList(wo) {
 	var i;
@@ -728,8 +754,9 @@ function printList(wo) {
 	+ top.frames.head.encoding
 	+ "\">\n"
 	+ "<script language=\"JavaScript\">\n"
-	+ "document.oncontextmenu = top.handleOnClick;"
-	+ "document.onclick = top.handleOnClick;"
+	+ "document.oncontextmenu = new Function('return false;');\n"
+	+ "document.onmousedown = new Function('return false;');\n"
+	+ "document.onmouseup = top.handleOnClick;\n"
 	+ "</script>"
 	+ "<style type='text/css'>\n"
 	+ "body { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 0px; margin: 0px; background-color: Window; } "
@@ -738,32 +765,27 @@ function printList(wo) {
 	+ "td.t125 { white-space: nowrap; width: 125px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t100 { white-space: nowrap; width: 100px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
 	+ "td.t75 { white-space: nowrap; width: 75px; background-color:ThreedFace; border-right: 1px solid ThreedDarkShadow; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreedDarkShadow; border-left: 1px solid ThreeDHighlight; } "
-	+ "a { text-decoration: none; } "
+	+ "a { text-decoration: none; cursor: pointer; } "
 
-	+ "td.fc{ color: #b40000; } "
-	+ "a.fc{ color: #b40000; } "
-	+ "a:visited.fc { color: #b40000; }"
-	+ "a:hover.fc { text-decoration: underline; color: #000088; } "
+	+ "td.fc { color: #b40000; } "
+	+ "a.fc { color: #b40000; } "
+	+ "a.fci { text-decoration: underline; color: #000088; } "
 
 	+ "td.fn { color: #0000aa; } "
 	+ "a.fn { color: #0000aa; } "
-	+ "a:visited.fn { color: #0000aa; } "
-	+ "a:hover.fn { text-decoration: underline; color: #000088; } "
+	+ "a.fni { text-decoration: underline; color: #000088; } "
 
 	+ "td.fd { color: #000000; text-decoration: line-through; } "
 	+ "a.fd { color: #000000; text-decoration: line-through; } "
-	+ "a:visited.fd { color: #000000; text-decoration: line-through; } "
-	+ "a:hover.fd { text-decoration: line-through underline; color: #000088; } "
+	+ "a.fdi { text-decoration: line-through underline; color: #000088; } "
 
 	+ "td.fp { color: #888888; } "
 	+ "a.fp { color: #888888; } "
-	+ "a:visited.fp { color: #888888; } "
-	+ "a:hover.fp { text-decoration: underline; color: #000088;  } "
+	+ "a.fpi { text-decoration: underline; color: #000088; } "
 
 	+ "td.nf { color:#000000; } "
 	+ "a.nf { color:#000000; } "
-	+ "a:visited.nf { color:#000000; } "
-	+ "a:hover.nf { text-decoration: underline; color: #000088; } "
+	+ "a.nfi { text-decoration: underline; color: #000088; } "
 
 	+ "div.cm { position: absolute; visibility: hidden; top: 0px; left: 0px; background-color: ThreeDFace; z-index: 100; border-left: 1px solid ThreeDFace; border-top: 1px solid ThreeDFace; border-bottom: 1px solid ThreedDarkShadow; border-right: 1px solid ThreedDarkShadow; filter:progid:DXImageTransform.Microsoft.Shadow(color=ThreeDShadow, Direction=135, Strength=3); } "
 	+ "div.cm2 { border-left: 1px solid ThreeDHighlight; border-top: 1px solid ThreeDHighlight; border-bottom: 1px solid ThreeDShadow; border-right: 1px solid ThreeDShadow; } "
@@ -780,11 +802,7 @@ function printList(wo) {
 	+ ".unselected { background: Window; color:WindowText; } "
 
 	+ "</style></head>";
-
-	var spanstart    = "<span class=\"cmenorm\" onmouseover=\"className='cmehigh';\" onmouseout=\"className='cmenorm';\" >";
-	var spanstartina = "<span class=\"inanorm\" onmouseover=\"className='inahigh';\" onmouseout=\"className='inanorm';\" >";
-	var spanend      = "</span>"
-
+	
 	var returnplace = wo.location.href;
 	if ((openfolderMethod != "openthisfolderflat") && (mode != "projectview")) {
 		var pos = returnplace.indexOf("/commons/");
@@ -950,12 +968,10 @@ function printList(wo) {
 					wo.write(vi.liste[i].path);
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
-				} else if (flaturl != "") {
-					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" " + ssclass + ">");
-					wo.write(vi.liste[i].name);
-					wo.write("</a>");
 				} else {
-					wo.write("<a href=\"javascript:top." + openfolderMethod + "('" + vi.liste[i].name + "')\" id=\"a" + i + "\" " + ssclass + ">");
+					wo.write("<a onclick=\"top." + openfolderMethod + "('" + vi.liste[i].name + "')\"");
+					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+					wo.write(" id=\"a" + i + "\" " + ssclass + ">");
 					wo.write(vi.liste[i].name);
 					wo.write("</a>");
 				}
@@ -963,19 +979,25 @@ function printList(wo) {
 				if ((mode == "galleryview") || showlinks) {
 					wo.writeln(vi.liste[i].path);
 				} else if (mode == "projectview" ) {
-					wo.write("<a href=\"javascript:top.openwinfull('");
+					wo.write("<a onclick=\"top.openwinfull('");
 					wo.write(vi.liste[i].path);
-					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
+					wo.write("');\"")
+					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+					wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
 				} else if (flaturl != "") {
-					wo.write("<a href=\"javascript:top.openwinfull('");
+					wo.write("<a onclick=\"top.openwinfull('");
 					wo.write(vr.actDirectory + vi.liste[i].name);
-					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
+					wo.write("');\"");
+					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+					wo.writeln("id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
 				} else {
-					wo.write("<a href=\"javascript:top.openwinfull('");
+					wo.write("<a onclick=\"top.openwinfull('");
 					wo.write(vr.actDirectory + vi.liste[i].name);
-					wo.writeln("');\" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
+					wo.write("');\"");
+					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+					wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
 				}
 			}
 			wo.writeln("</td>");
@@ -1033,6 +1055,9 @@ function simpleEscape(text) {
 
 
 function openwinfull(url) {
+	if (cancelNextOpen) {
+		return;
+	}
 	if (url != '#') {
 		w = screen.availWidth - 50;
 		h = screen.availHeight - 200;
@@ -1349,11 +1374,22 @@ function enableNewButton(showit){
 
 
 function openFolder(folderName) {
+	if (cancelNextOpen) {
+		return;
+	}
 	if (folderName.charAt(0) != '/') {
 		folderName = getDisplayResource() + folderName + "/";
 	}
 	setDisplayResource(folderName);
 	openurl();
+}
+
+
+function openthisfolderflat(thisdir){
+	if (cancelNextOpen) {
+		return;
+	}	
+	eval(flaturl + "?resource=" + vr.actDirectory+thisdir+"/\"");
 }
 
 
@@ -1375,11 +1411,6 @@ function reloadNodeList() {
 	if (window.body.explorer_body && window.body.explorer_body.explorer_tree) {
 		window.body.explorer_body.explorer_tree.loadNodeList(window.body.explorer_body.explorer_tree.tree_display.document, "&rootloaded=true");
 	}
-}
-
-
-function openthisfolderflat(thisdir){
-	eval(flaturl + "?resource=" + vr.actDirectory+thisdir+"/\"");
 }
 
 
