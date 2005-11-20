@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/I_CmsJspTagContentContainer.java,v $
- * Date   : $Date: 2005/11/09 14:41:19 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2005/11/20 22:22:05 $
+ * Version: $Revision: 1.9.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,73 +31,23 @@
 
 package org.opencms.jsp;
 
-import org.opencms.xml.A_CmsXmlDocument;
-
-import java.util.List;
-import java.util.Locale;
+import org.opencms.xml.I_CmsXmlDocument;
 
 /**
- * Provides access to a XML content document that was loaded by a parent tag.<p> 
+ * Provides access to a <code>{@link org.opencms.xml.I_CmsXmlDocument}</code> document that was loaded by a parent tag.<p> 
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.9.2.2 $ 
  * 
  * @since 6.0.0 
+ * 
+ * @deprecated this interface has been renamed to <code>{@link org.opencms.jsp.I_CmsXmlContentContainer}</code>
  */
-public interface I_CmsJspTagContentContainer {
-
-    /**
-     * Returns the name of the currently used XML content collector.<p>
-     * 
-     * @return the name of the currently used XML content collector
-     */
-    String getCollectorName();
-
-    /**
-     * Returns the parameters of the currently used XML content collector.<p>
-     * 
-     * @return the parameters of the currently used XML content collector
-     */
-    String getCollectorParam();
-
-    /**
-     * Returns the list of all currently loaded XML content documents.<p>
-     * 
-     * @return the list of all currently loaded XML content documents
-     */
-    List getCollectorResult();
-
-    /**
-     * Returns the resource name in the VFS for the currently loaded XML content document.<p>
-     *
-     * @return the resource name in the VFS for the currently loaded XML content document
-     */
-    String getResourceName();
+public interface I_CmsJspTagContentContainer extends I_CmsXmlContentContainer {
 
     /**
      * Returns the currently loaded OpenCms XML content document.<p>
      *
      * @return the currently loaded OpenCms XML content document
      */
-    A_CmsXmlDocument getXmlDocument();
-
-    /**
-     * Returns the currently selected element name for the current content.<p>
-     * 
-     * @return the currently selected element name for the current content
-     */
-    String getXmlDocumentElement();
-
-    /**
-     * Returns the currently selected locale for the current content.<p>
-     * 
-     * @return the currently selected locale for the current content
-     */
-    Locale getXmlDocumentLocale();
-
-    /**
-     * Returns <code>true</code> if the ancestor contains a preloaded collector result.<p> 
-     * 
-     * @return <code>true</code> if the ancestor contains a preloaded collector result
-     */
-    boolean isPreloader();
+    I_CmsXmlDocument getXmlDocument();
 }

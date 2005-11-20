@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoop.java,v $
- * Date   : $Date: 2005/11/09 14:41:19 $
- * Version: $Revision: 1.17.2.1 $
+ * Date   : $Date: 2005/11/20 22:22:05 $
+ * Version: $Revision: 1.17.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,8 +32,8 @@
 package org.opencms.jsp;
 
 import org.opencms.i18n.CmsMessageContainer;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.List;
 import java.util.Locale;
@@ -48,17 +48,20 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.17.2.1 $ 
+ * @version $Revision: 1.17.2.2 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagContentContainer {
+public class CmsJspTagContentLoop extends TagSupport implements I_CmsXmlContentContainer {
 
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 8832749526732064836L;
 
+    /** Reference to the parent 'contentload' tag. */
+    private I_CmsXmlContentContainer m_container;
+
     /** Reference to the looped content element. */
-    private A_CmsXmlDocument m_content;
+    private I_CmsXmlDocument m_content;
 
     /** Name of the current element (including the index). */
     private String m_currentElement;
@@ -66,23 +69,41 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     /** Name of the content node element to show. */
     private String m_element;
 
+    /** Indicates if this is the first content iteration loop. */
+    private boolean m_firstLoop;
+
     /** Index of the content node element to show. */
     private int m_index = -1;
 
     /** Refenence to the currently selected locale. */
     private Locale m_locale;
 
-    /** Reference to the parent 'contentload' tag. */
-    private I_CmsJspTagContentContainer m_parentTag;
+    /**
+     * Empty constructor, required for JSP tags.<p> 
+     */
+    public CmsJspTagContentLoop() {
+
+        super();
+    }
+
+    /**
+     * Constructor used when using <code>contentloop</code> from scriptlet code.<p> 
+     * 
+     * @param container the parent content container that provides the content element to loop
+     * @param element the element to loop in the content
+     */
+    public CmsJspTagContentLoop(I_CmsXmlContentContainer container, String element) {
+
+        m_element = element;
+        init(container);
+    }
 
     /**
      * @see javax.servlet.jsp.tagext.TagSupport#doAfterBody()
      */
     public int doAfterBody() {
 
-        if (m_content.hasValue(m_element, m_locale, m_index + 1)) {
-            m_index++;
-            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index + 1);
+        if (hasMoreContent()) {
             // one more element with the same name is available, loop again
             return EVAL_BODY_AGAIN;
         } else {
@@ -97,25 +118,19 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
             CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentloop");
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
-        m_parentTag = (I_CmsJspTagContentContainer)ancestor;
+        I_CmsXmlContentContainer container = (I_CmsXmlContentContainer)ancestor;
 
-        // append to parent element name (required for nested schemas)
-        m_element = CmsXmlUtils.concatXpath(m_parentTag.getXmlDocumentElement(), m_element);
+        // initialize the content 
+        init(container);
 
-        // get loaded content from parent <contentload> tag
-        m_content = m_parentTag.getXmlDocument();
-        m_locale = m_parentTag.getXmlDocumentLocale();
-        m_index = 0;
-
-        if (m_content.hasValue(m_element, m_locale)) {
+        if (hasMoreContent()) {
             // selected element is available at last once in content
-            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index + 1);
             return EVAL_BODY_INCLUDE;
         } else {
             // no value available for the selected element name, so we skip the whole body
@@ -124,27 +139,27 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorName()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getCollectorName()
      */
     public String getCollectorName() {
 
-        return m_parentTag.getCollectorName();
+        return m_container.getCollectorName();
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorParam()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getCollectorParam()
      */
     public String getCollectorParam() {
 
-        return m_parentTag.getCollectorParam();
+        return m_container.getCollectorParam();
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getCollectorResult()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getCollectorResult()
      */
     public List getCollectorResult() {
 
-        return m_parentTag.getCollectorResult();
+        return m_container.getCollectorResult();
     }
 
     /**
@@ -158,23 +173,23 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getResourceName()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getResourceName()
      */
     public String getResourceName() {
 
-        return m_parentTag.getResourceName();
+        return m_container.getResourceName();
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocument()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getXmlDocument()
      */
-    public A_CmsXmlDocument getXmlDocument() {
+    public I_CmsXmlDocument getXmlDocument() {
 
         return m_content;
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentElement()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getXmlDocumentElement()
      */
     public String getXmlDocumentElement() {
 
@@ -182,7 +197,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#getXmlDocumentLocale()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#getXmlDocumentLocale()
      */
     public Locale getXmlDocumentLocale() {
 
@@ -190,11 +205,31 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     }
 
     /**
-     * @see org.opencms.jsp.I_CmsJspTagContentContainer#isPreloader()
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#hasMoreContent()
+     */
+    public boolean hasMoreContent() {
+
+        if (m_firstLoop) {
+            m_firstLoop = false;
+        } else {
+            m_index++;
+        }
+        if (m_content.hasValue(m_element, m_locale, m_index)) {
+            m_currentElement = CmsXmlUtils.createXpath(m_element, m_index + 1);
+            // one more element with the same name is available, loop again
+            return true;
+        } else {
+            // no more elements with this name available, finish the loop
+            return false;
+        }
+    }
+
+    /**
+     * @see org.opencms.jsp.I_CmsXmlContentContainer#isPreloader()
      */
     public boolean isPreloader() {
 
-        return m_parentTag.isPreloader();
+        return m_container.isPreloader();
     }
 
     /**
@@ -206,7 +241,7 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
         m_currentElement = null;
         m_content = null;
         m_locale = null;
-        m_parentTag = null;
+        m_container = null;
         m_index = 0;
         super.release();
     }
@@ -219,5 +254,27 @@ public class CmsJspTagContentLoop extends TagSupport implements I_CmsJspTagConte
     public void setElement(String element) {
 
         m_element = element;
+    }
+
+    /**
+     * Initializes this content loop tag.<p>
+     * 
+     * @param container the parent content container that provides the content element to loop
+     */
+    protected void init(I_CmsXmlContentContainer container) {
+
+        m_container = container;
+
+        // append to parent element name (required for nested schemas)
+        m_element = CmsXmlUtils.concatXpath(m_container.getXmlDocumentElement(), m_element);
+
+        // get loaded content from parent <contentload> tag
+        m_content = m_container.getXmlDocument();
+        m_locale = m_container.getXmlDocumentLocale();
+        m_index = 0;
+        m_currentElement = null;
+
+        // the next loop is the first loop
+        m_firstLoop = true;
     }
 }

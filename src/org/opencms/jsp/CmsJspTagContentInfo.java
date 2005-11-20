@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/07/08 12:50:00 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2005/11/20 22:22:05 $
+ * Version: $Revision: 1.16.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.16.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content container" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
             // build a container
             CmsMessageContainer container = Messages.get().container(Messages.ERR_PARENTLESS_TAG_1, "contentinfo");
@@ -110,7 +110,7 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
             throw new JspTagException(msg);
         }
 
-        I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
+        I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
 
         String tagContent = "";
 

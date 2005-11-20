@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/10/09 07:04:29 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2005/11/20 22:22:05 $
+ * Version: $Revision: 1.14.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,8 +34,8 @@ package org.opencms.jsp;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.xml.A_CmsXmlDocument;
 import org.opencms.xml.CmsXmlUtils;
+import org.opencms.xml.I_CmsXmlDocument;
 
 import java.util.Locale;
 
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14.2.1 $ 
+ * @version $Revision: 1.14.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public class CmsJspTagContentCheck extends TagSupport {
         String prefix,
         boolean checkall,
         boolean checknone,
-        A_CmsXmlDocument content,
+        I_CmsXmlDocument content,
         Locale locale) {
 
         boolean found = false;
@@ -121,23 +121,23 @@ public class CmsJspTagContentCheck extends TagSupport {
     public int doStartTag() throws JspException {
 
         // get a reference to the parent "content load" class
-        Tag ancestor = findAncestorWithClass(this, I_CmsJspTagContentContainer.class);
+        Tag ancestor = findAncestorWithClass(this, I_CmsXmlContentContainer.class);
         if (ancestor == null) {
             CmsMessageContainer errMsgContainer = Messages.get().container(Messages.ERR_TAG_CONTENTCHECK_WRONG_PARENT_0);
             String msg = Messages.getLocalizedMessage(errMsgContainer, pageContext);
             throw new JspTagException(msg);
         }
-        I_CmsJspTagContentContainer contentContainer = (I_CmsJspTagContentContainer)ancestor;
+        I_CmsXmlContentContainer contentContainer = (I_CmsXmlContentContainer)ancestor;
         String prefix = contentContainer.getXmlDocumentElement();
 
         // get loaded content from parent <contentload> tag
-        A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
+        I_CmsXmlDocument content = contentContainer.getXmlDocument();
 
         if (m_locale == null) {
             m_locale = contentContainer.getXmlDocumentLocale();
         }
 
-        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, m_locale)) {
+        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, content, m_locale)) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
