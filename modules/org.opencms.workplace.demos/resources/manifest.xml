@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.0.0</opencms_version>
+		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.workplace.demos</name>
+		<nicename><![CDATA[OpenCms 6.0 Demos View]]></nicename>
+		<group>OpenCms Workplace Demos</group>
+		<class/>
+		<description><![CDATA[
+<p>This module contains several demos for the OpenCms 6 Administration Framework.</p>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+]]></description>
+		<version>1.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies>
+			<dependency name="org.opencms.workplace.administration" version="1.0.0"/>
+		</dependencies>
+		<exportpoints/>
+		<resources>
+			<resource uri="/system/workplace/demos/readme.txt"/>
+			<resource uri="/system/workplace/views/demos/"/>
+		</resources>
+		<parameters/>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/demos</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demos View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/demos/readme.txt</source>
+			<destination>system/workplace/demos/readme.txt</destination>
+			<type>plain</type>
+			<uuidresource>b1f1dfde-256b-46da-be12-4b5a0be1b421</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 14:18:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/views</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 09 Nov 2005 14:41:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 14:38:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/views/demos</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 09 Nov 2005 14:41:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 09 Nov 2005 14:38:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[50]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[admin-fs.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_DEMOS_VIEW_ROOT_NAME_0}]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/demos/admin-fs.html</source>
+			<destination>system/workplace/views/demos/admin-fs.html</destination>
+			<type>jsp</type>
+			<uuidresource>bd846c5c-4e0b-11da-ac8d-4b5a0381b421</uuidresource>
+			<datelastmodified>Wed, 09 Nov 2005 14:39:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 05 Nov 2005 14:52:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo Frameset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
