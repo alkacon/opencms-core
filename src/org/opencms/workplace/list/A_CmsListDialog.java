@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.32.2.1 $
+ * Date   : $Date: 2005/11/21 16:42:44 $
+ * Version: $Revision: 1.32.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.32.2.1 $ 
+ * @version $Revision: 1.32.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -225,9 +225,11 @@ public abstract class A_CmsListDialog extends CmsDialog {
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
-            getList().setSortedColumn(sortedColId, getLocale());
-            if (sortOrder != null && sortOrder == CmsListOrderEnum.ORDER_DESCENDING) {
+            if (sortedColId != null && getList().getMetadata().getColumnDefinition(sortedColId) != null) {
                 getList().setSortedColumn(sortedColId, getLocale());
+                if (sortOrder != null && sortOrder == CmsListOrderEnum.ORDER_DESCENDING) {
+                    getList().setSortedColumn(sortedColId, getLocale());
+                }
             }
             // save the current state of the list
             listSave();
