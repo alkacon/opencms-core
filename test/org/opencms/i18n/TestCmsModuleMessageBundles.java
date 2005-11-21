@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsModuleMessageBundles.java,v $
- * Date   : $Date: 2005/10/26 10:14:05 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/11/21 17:46:46 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ package org.opencms.i18n;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.15.2.1 $
+ * @version $Revision: 1.15.2.2 $
  * 
  * @since 6.0.0
  */
@@ -53,6 +53,9 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.frontend.templateone.form.Messages.get(),
             org.opencms.frontend.templateone.modules.Messages.get(),
             org.opencms.workplace.administration.Messages.get(),
+            org.opencms.workplace.demos.Messages.get(),
+            org.opencms.workplace.demos.list.Messages.get(),
+            org.opencms.workplace.demos.widget.Messages.get(),
             org.opencms.workplace.tools.content.Messages.get(),
             org.opencms.workplace.tools.content.check.Messages.get(),
             org.opencms.workplace.tools.database.Messages.get(),
@@ -64,7 +67,6 @@ public final class TestCmsModuleMessageBundles extends TestCmsMessageBundles {
             org.opencms.workplace.tools.accounts.Messages.get(),
             org.opencms.workplace.tools.cache.Messages.get(),
             org.opencms.workplace.tools.projects.Messages.get(),
-            org.opencms.workplace.tools.widgetdemo.Messages.get(),
             org.opencms.workplace.tools.workplace.Messages.get(),
             org.opencms.workplace.tools.workplace.rfsfile.Messages.get(),
             org.opencms.workplace.tools.workplace.broadcast.Messages.get()};
