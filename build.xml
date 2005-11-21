@@ -9,6 +9,7 @@
     <property name="opencms.input" 						location="${basedir}" />
     <property name="opencms.output"						location="${basedir}/../" />    	
 
+    <property name="opencms.build"			            location="${opencms.output}/build" />
     <property name="opencms.output.classes"             location="${opencms.output}/build/classes-core" />
     <property name="opencms.output.tests"               location="${opencms.output}/build/test" />
     <property name="opencms.output.jars"                location="${opencms.output}/build/jars-core" />
@@ -84,10 +85,10 @@
 	
 	<taskdef resource="org/opencms/util/ant/taskdefs.properties" loaderref="opencms"> 
 	  <classpath>
-	    <pathelement location="${opencms.input.libs}/ant-opencms-1.0.jar"/>
+	    <pathelement location="${opencms.input.libs}/ant-opencms-1.1.jar"/>
 	  </classpath>
 	</taskdef>
-	
+
 	<!-- 
 	  -	Checks if all required libraries are available
 	  -->
@@ -233,7 +234,7 @@ ${opencms.inputlib.textextraction}
     	
         <uptodate property="classesUpToDate" targetfile="${opencms.output.jars}/opencms.jar">
         	<srcfiles dir= "${opencms.input}/src" includes="**/*.java" excludes="${build.excludes},${excludes}"/>
-        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes}" />
+        	<srcfiles dir= "${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}" />
         </uptodate>
             	
        	<javac
@@ -283,7 +284,7 @@ ${opencms.inputlib.textextraction}
        	</javac>
 		
         <copy todir="${opencms.output.classes}">
-            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd" excludes="${excludes}"/>
+            <fileset dir="${opencms.input}/src" includes="**/*.properties,**/*.txt,**/*.xml,**/*.xsd,**/*.dtd,**/*.sql" excludes="${excludes}"/>
         </copy>              
                 
         <antcall target="versioninfo" />        
