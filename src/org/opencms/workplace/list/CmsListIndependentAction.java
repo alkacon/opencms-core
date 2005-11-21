@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/10/13 10:47:49 $
- * Version: $Revision: 1.17.2.2 $
+ * Date   : $Date: 2005/11/21 17:10:50 $
+ * Version: $Revision: 1.17.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,11 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17.2.2 $ 
+ * @version $Revision: 1.17.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListIndependentAction extends A_CmsListAction {
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_PRINT = "print";
 
     /**
      * Default Constructor.<p>
@@ -58,22 +55,6 @@ public class CmsListIndependentAction extends A_CmsListAction {
     public CmsListIndependentAction(String id) {
 
         super(id);
-    }
-
-    /**
-     * Creates a new list print action.<p>
-     * 
-     * @return a new list print action
-     */
-    public static final CmsListIndependentAction getDefaultPrintListAction() {
-
-        CmsListIndependentAction action = new CmsListIndependentAction(LIST_ACTION_PRINT);
-        action.setName(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_NAME_0));
-        action.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_HELP_0));
-        action.setIconPath("list/print.gif");
-        action.setEnabled(true);
-        action.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_PRINT_CONF_0));
-        return action;
     }
 
     /**
