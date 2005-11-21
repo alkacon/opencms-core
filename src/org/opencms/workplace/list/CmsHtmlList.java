@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/11/16 12:21:12 $
- * Version: $Revision: 1.32.2.3 $
+ * Date   : $Date: 2005/11/21 16:46:26 $
+ * Version: $Revision: 1.32.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,20 +51,26 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.3 $ 
+ * @version $Revision: 1.32.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlList {
-
-    /** Constant for item separator char used for coding/encoding multiselection. */
-    public static final String ITEM_SEPARATOR = "|";
 
     /** Standard list button location. */
     public static final String ICON_LEFT = "list/leftarrow.png";
 
     /** Standard list button location. */
     public static final String ICON_RIGHT = "list/rightarrow.png";
+
+    /** Constant for item separator char used for coding/encoding multiselection. */
+    public static final String ITEM_SEPARATOR = "|";
+
+    /** Var name for error message if no item has been selected. */
+    public final static String NO_SELECTION_HELP_VAR = "noSelHelp";
+
+    /** Var name for error message if number of selected items does not match. */
+    public final static String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
 
     /** Current displayed page number. */
     private int m_currentPage;
@@ -409,6 +415,31 @@ public class CmsHtmlList {
     }
 
     /**
+     * Generates the csv output for the list.<p>
+     * 
+     * Synchronized to not collide with <code>{@link #listHtml(CmsWorkplace)}</code>.<p> 
+     * 
+     * @param wp the workplace object
+     * 
+     * @return csv output
+     */
+    public synchronized String listCsv(CmsWorkplace wp) {
+
+        StringBuffer csv = new StringBuffer(5120);
+        csv.append(m_metadata.csvHeader(this, wp));
+        if (getContent().isEmpty()) {
+            csv.append(m_metadata.csvEmptyList(wp.getLocale()));
+        } else {
+            Iterator itItems = getContent().iterator();
+            while (itItems.hasNext()) {
+                CmsListItem item = (CmsListItem)itItems.next();
+                csv.append(m_metadata.csvItem(item, wp));
+            }
+        }
+        return wp.resolveMacros(csv.toString());
+    }
+
+    /**
      * Generates the html code for the list.<p>
      * 
      * Synchronized to not collide with <code>{@link #printableHtml(CmsWorkplace)}</code>.<p> 
@@ -419,7 +450,9 @@ public class CmsHtmlList {
      */
     public synchronized String listHtml(CmsWorkplace wp) {
 
-        if (displayedFrom() == 0) {
+        if (isPrintable()) {
+            m_visibleItems = new ArrayList(getContent());
+        } else if (displayedFrom() == 0) {
             // empty list
             m_visibleItems = new ArrayList();
         } else {
@@ -429,7 +462,9 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(5120);
         html.append(htmlBegin(wp));
         html.append(htmlTitle(wp));
-        html.append(htmlToolBar(wp));
+        if (!isPrintable()) {
+            html.append(htmlToolBar(wp));
+        }
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
         html.append(m_metadata.htmlHeader(this, wp));
         if (m_visibleItems.isEmpty()) {
@@ -439,21 +474,17 @@ public class CmsHtmlList {
             boolean odd = true;
             while (itItems.hasNext()) {
                 CmsListItem item = (CmsListItem)itItems.next();
-                html.append(m_metadata.htmlItem(item, wp, odd));
+                html.append(m_metadata.htmlItem(item, wp, odd, isPrintable()));
                 odd = !odd;
             }
         }
         html.append("</table>\n");
-        html.append(htmlPagingBar(wp));
+        if (!isPrintable()) {
+            html.append(htmlPagingBar(wp));
+        }
         html.append(htmlEnd(wp));
         return wp.resolveMacros(html.toString());
     }
-
-    /** Var name for error message if no item has been selected. */
-    public static final String NO_SELECTION_HELP_VAR = "noSelHelp";
-
-    /** Var name for error message if number of selected items does not match. */
-    public static final String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
 
     /**
      * Generate the need js code for the list.<p>
@@ -881,7 +912,7 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
-        if (m_visibleItems != null && !m_visibleItems.isEmpty()) {
+        if (!isPrintable() && m_visibleItems != null && !m_visibleItems.isEmpty()) {
             Iterator cols = getMetadata().getListColumns().iterator();
             while (cols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
@@ -1045,7 +1076,7 @@ public class CmsHtmlList {
         html.append("\t<tr>\n");
         html.append("\t\t<td align='left'>\n");
         html.append("\t\t\t");
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+        if (!isPrintable() && CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
             html.append(Messages.get().key(
                 wp.getLocale(),
                 Messages.GUI_LIST_TITLE_TEXT_4,

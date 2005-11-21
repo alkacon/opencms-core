@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/10/13 13:20:32 $
- * Version: $Revision: 1.21.2.3 $
+ * Date   : $Date: 2005/11/21 16:46:52 $
+ * Version: $Revision: 1.21.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.2.3 $ 
+ * @version $Revision: 1.21.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,6 +140,58 @@ public class CmsListColumnDefinition {
             listAction.setListId(m_listId);
         }        
         m_directActions.add(listAction);
+    }
+
+    /**
+     * returns the csv output for a cell.<p>
+     * 
+     * @param item the item to render the cell for
+     * @param wp the workplace context
+     * 
+     * @return csv output
+     */
+    public String csvCell(CmsListItem item, CmsWorkplace wp) {
+
+        if (!isVisible()) {
+            return "";
+        }
+        StringBuffer csv = new StringBuffer(512);
+        if (m_formatter == null) {
+            // unformatted output
+            if (item.get(m_id) != null) {
+                // null values are not showed by default
+                csv.append(item.get(m_id).toString());
+            } else {
+                Iterator itActions = m_directActions.iterator();
+                while (itActions.hasNext()) {
+                    I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
+                    if (action.isVisible()) {
+                        action.setItem(item);
+                        csv.append(action.getName().key(wp.getLocale()));
+                    }
+                }                
+            }
+        } else {
+            // formatted output
+            csv.append(m_formatter.format(item.get(m_id), wp.getLocale()));
+        }
+        return csv.toString();
+    }
+
+    /**
+     * Returns the csv output for a column header.<p>
+     * 
+     * @param list the list to generate the header code for
+     * @param wp the workplace instance
+     * 
+     * @return csv header
+     */
+    public String csvHeader(CmsHtmlList list, CmsWorkplace wp) {
+
+        if (!isVisible()) {
+            return "";
+        }
+        return getName().key(wp.getLocale());
     }
 
     /**
@@ -313,24 +365,39 @@ public class CmsListColumnDefinition {
      * 
      * @param item the item to render the cell for
      * @param wp the workplace context
+     * @param isPrintable if the list is to be printed
      * 
      * @return html code
      */
-    public String htmlCell(CmsListItem item, CmsWorkplace wp) {
+    public String htmlCell(CmsListItem item, CmsWorkplace wp, boolean isPrintable) {
 
         StringBuffer html = new StringBuffer(512);
         Iterator itActions = m_directActions.iterator();
         while (itActions.hasNext()) {
             I_CmsListDirectAction action = (I_CmsListDirectAction)itActions.next();
             action.setItem(item);
+            boolean enabled = action.isEnabled();
+            if (isPrintable) {
+                action.setEnabled(false);
+            }
             html.append(action.buttonHtml(wp));
+            if (isPrintable) {
+                action.setEnabled(enabled);
+            }
         }
         if (!m_defaultActions.isEmpty()) {
             Iterator itDefaultActions = m_defaultActions.iterator();
             while (itDefaultActions.hasNext()) {
                 I_CmsListDirectAction defAction = (I_CmsListDirectAction)itDefaultActions.next();
                 defAction.setItem(item);
+                boolean enabled = defAction.isEnabled();
+                if (isPrintable) {
+                    defAction.setEnabled(false);
+                }
                 html.append(defAction.buttonHtml(wp));
+                if (isPrintable) {
+                    defAction.setEnabled(enabled);
+                }
             }
         } else {
             if (m_formatter == null) {
@@ -421,7 +488,7 @@ public class CmsListColumnDefinition {
             id,
             getName().key(wp.getLocale()),
             helpText,
-            isSorteable(),
+            list.isPrintable()? false : isSorteable(),
             null,
             null,
             onClic));

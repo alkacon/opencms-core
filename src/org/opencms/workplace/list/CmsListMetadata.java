@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/11/16 12:21:12 $
- * Version: $Revision: 1.20.2.3 $
+ * Date   : $Date: 2005/11/21 16:50:21 $
+ * Version: $Revision: 1.20.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20.2.3 $ 
+ * @version $Revision: 1.20.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,6 +165,68 @@ public class CmsListMetadata {
     }
 
     /**
+     * Generates the csv output for an empty table.<p>
+     * 
+     * @param locale for localization
+     * 
+     * @return csv output
+     */
+    public String csvEmptyList(Locale locale) {
+
+        StringBuffer html = new StringBuffer(512);
+        html.append("\n");
+        return html.toString();
+    }
+
+    /**
+     * Returns the csv output for the header of the list.<p>
+     * 
+     * @param list the list to generate the csv output for
+     * @param wp the workplace instance
+     * 
+     * @return csv output
+     */
+    public String csvHeader(CmsHtmlList list, CmsWorkplace wp) {
+
+        StringBuffer csv = new StringBuffer(1024);
+        Iterator itCols = m_columns.elementList().iterator();
+        while (itCols.hasNext()) {
+            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            if (!col.isVisible()) {
+                continue;
+            }
+            csv.append(col.csvHeader(list, wp));
+            csv.append("\t");
+        }
+        csv.append("\n\n");
+        return csv.toString();
+    }
+
+    /**
+     * Returns the csv output for a list item.<p>
+     * 
+     * @param item the list item to render
+     * @param wp the workplace context
+     * 
+     * @return csv output
+     */
+    public String csvItem(CmsListItem item, CmsWorkplace wp) {
+
+        StringBuffer csv = new StringBuffer(1024);
+        Iterator itCols = m_columns.elementList().iterator();
+        while (itCols.hasNext()) {
+            CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
+            if (!col.isVisible()) {
+                continue;
+            }
+            csv.append(col.csvCell(item, wp));
+            csv.append("\t");
+        }
+        csv.append("\n");
+        return csv.toString();
+    }
+
+    /**
      * Returns a column definition object for a given column id.<p>
      * 
      * @param columnId the column id
@@ -239,23 +301,6 @@ public class CmsListMetadata {
     }
 
     /**
-     * Returns <code>true</code> if at least 'check' multiaction has been set.<p>
-     * 
-     * @return <code>true</code> if at least 'check' multiaction has been set
-     */
-    public boolean hasCheckMultiActions() {
-
-        Iterator it = m_multiActions.iterator();
-        while (it.hasNext()) {
-            CmsListMultiAction action = (CmsListMultiAction)it.next();
-            if (!(action instanceof CmsListRadioMultiAction)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
      * Returns the search action.<p>
      *
      * @return the search action
@@ -283,6 +328,23 @@ public class CmsListMetadata {
     public boolean hasActions() {
 
         return !m_indepActions.isEmpty();
+    }
+
+    /**
+     * Returns <code>true</code> if at least 'check' multiaction has been set.<p>
+     * 
+     * @return <code>true</code> if at least 'check' multiaction has been set
+     */
+    public boolean hasCheckMultiActions() {
+
+        Iterator it = m_multiActions.iterator();
+        while (it.hasNext()) {
+            CmsListMultiAction action = (CmsListMultiAction)it.next();
+            if (!(action instanceof CmsListRadioMultiAction)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -380,7 +442,7 @@ public class CmsListMetadata {
             CmsListColumnDefinition col = (CmsListColumnDefinition)itCols.next();
             html.append(col.htmlHeader(list, wp));
         }
-        if (hasCheckMultiActions()) {
+        if (!list.isPrintable() && hasCheckMultiActions()) {
             html.append("\t<th width='0' class='select'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listSelectAll' value='true' onClick=\"listSelect('");
             html.append(list.getId());
@@ -397,10 +459,11 @@ public class CmsListMetadata {
      * @param item the list item to render
      * @param wp the workplace context
      * @param odd if the position is odd or even
+     * @param isPrintable if the list is to be printed
      * 
      * @return html code
      */
-    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd) {
+    public String htmlItem(CmsListItem item, CmsWorkplace wp, boolean odd, boolean isPrintable) {
 
         StringBuffer html = new StringBuffer(1024);
         html.append("<tr class='");
@@ -429,10 +492,10 @@ public class CmsListMetadata {
                 html.append("'");
             }
             html.append(">\n");
-            html.append(col.htmlCell(item, wp));
+            html.append(col.htmlCell(item, wp, isPrintable));
             html.append("</td>\n");
         }
-        if (hasCheckMultiActions()) {
+        if (!isPrintable && hasCheckMultiActions()) {
             html.append("\t<td class='select' align='center'>\n");
             html.append("\t\t<input type='checkbox' class='checkbox' name='listMultiAction' value='");
             html.append(item.getId());
@@ -469,7 +532,7 @@ public class CmsListMetadata {
                 html.append("<td colspan='");
                 html.append(spanCols);
                 html.append("' style='padding-left: 20px; white-space:normal;'>\n");
-                html.append(lid.htmlCell(item, wp));
+                html.append(lid.htmlCell(item, wp, isPrintable));
                 html.append("\n</td>\n");
                 html.append("\n");
                 html.append("</tr>\n");
