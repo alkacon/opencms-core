@@ -44,7 +44,6 @@ import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.A_CmsListDirectJsAction;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
-import org.opencms.workplace.list.CmsListCsvExportIAction;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -55,11 +54,9 @@ import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListItemDetailsFormatter;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListMultiAction;
-import org.opencms.workplace.list.CmsListPrintIAction;
 import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.tools.accounts.Messages;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -67,7 +64,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -191,7 +187,7 @@ public class CmsListDemo11 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws IOException, ServletException {
+    public void executeListSingleActions() {
 
         CmsListItem item = getSelectedItem();
         CmsUUID userId = new CmsUUID(item.getId());
@@ -446,9 +442,6 @@ public class CmsListDemo11 extends A_CmsListDialog {
         refreshAction.setHelpText(new CmsMessageContainer(null, "Click here to refresh the list"));
         refreshAction.setIconPath(ICON_MULTI_ADD);
         metadata.addIndependentAction(refreshAction);
-
-        metadata.addIndependentAction(new CmsListCsvExportIAction());
-        metadata.addIndependentAction(new CmsListPrintIAction());
     }
 
     /**

@@ -53,7 +53,6 @@ import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.list.I_CmsListFormatter;
 import org.opencms.workplace.tools.accounts.Messages;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -62,7 +61,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -144,7 +142,7 @@ public class CmsListDemo7 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws IOException, ServletException {
+    public void executeListSingleActions() {
 
         CmsListItem item = getSelectedItem();
         CmsUUID userId = new CmsUUID(item.getId());

@@ -33,7 +33,6 @@ package org.opencms.workplace.demos.list;
 
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -179,7 +178,7 @@ public class CmsListDemo16b extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    protected List getListItems() {
 
         List ret = new ArrayList();
 

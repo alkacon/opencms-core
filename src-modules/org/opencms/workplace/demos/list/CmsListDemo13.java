@@ -191,7 +191,7 @@ public class CmsListDemo13 extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws IOException, ServletException {
+    public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
     }

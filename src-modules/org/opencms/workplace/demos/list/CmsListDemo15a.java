@@ -48,14 +48,12 @@ import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.list.I_CmsListFormatter;
 import org.opencms.workplace.tools.accounts.Messages;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -125,7 +123,7 @@ public class CmsListDemo15a extends A_CmsListDialog {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void executeListSingleActions() throws IOException, ServletException {
+    public void executeListSingleActions() {
 
         throwListUnsupportedActionException();
     }
