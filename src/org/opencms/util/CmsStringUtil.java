@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/11/16 12:12:11 $
- * Version: $Revision: 1.34.2.9 $
+ * Date   : $Date: 2005/11/21 15:33:14 $
+ * Version: $Revision: 1.34.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import java.awt.Color;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -55,7 +56,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.9 $ 
+ * @version $Revision: 1.34.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -741,6 +742,28 @@ public final class CmsStringUtil {
     }
 
     /**
+     * Replaces a set of <code>searchString</code> and <code>replaceString</code> pairs, 
+     * given by the <code>substitutions</code> Map parameter.<p>
+     * 
+     * @param source the constent which is scanned
+     * @param substitions the map of substitutions
+     * 
+     * @return the substituted String
+     * 
+     * @see #substitute(String, String, String)
+     */
+    public static String substitute(String source, Map substitions) {
+        
+        String result = source;
+        Iterator it = substitions.keySet().iterator();
+        while (it.hasNext()) {
+            String key = it.next().toString();
+            result = substitute(result, key, substitions.get(key).toString());
+        }
+        return result;
+    }
+    
+    /**
      * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
      * 
      * This is a high-performance implementation which should be used as a replacement for 
@@ -751,7 +774,7 @@ public final class CmsStringUtil {
      * @param searchString the String which is searched in content
      * @param replaceString the String which replaces <code>searchString</code>
      * 
-     * @return String the substituted String
+     * @return the substituted String
      */
     public static String substitute(String source, String searchString, String replaceString) {
 
