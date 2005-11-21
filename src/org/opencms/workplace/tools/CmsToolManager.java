@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/11/16 12:13:41 $
- * Version: $Revision: 1.40.2.8 $
+ * Date   : $Date: 2005/11/21 16:53:14 $
+ * Version: $Revision: 1.40.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.8 $ 
+ * @version $Revision: 1.40.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,8 +107,8 @@ public class CmsToolManager {
      */
     public CmsToolManager() {
 
-        m_tools = new CmsIdentifiableObjectContainer(true, false);
         m_roots = new CmsIdentifiableObjectContainer(true, false);
+        m_tools = new CmsIdentifiableObjectContainer(true, false);
         m_urls = new CmsIdentifiableObjectContainer(false, false);
     }
 
@@ -213,7 +213,7 @@ public class CmsToolManager {
     }
 
     /**
-     * Returns the navigation bar html code for the given tool path.<p>
+     * Returns the navegation bar html code for the given tool path.<p>
      * 
      * @param toolPath the path
      * @param wp the jsp page
@@ -355,7 +355,7 @@ public class CmsToolManager {
     /**
      * Returns a list of tool roots.<p>
      * 
-     * @return a list of CmsToolRoot objects 
+     * @return a list of {@link CmsToolRoot} objects 
      */
     public List getToolRoots() {
 
