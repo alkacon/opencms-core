@@ -40,7 +40,6 @@ import org.opencms.main.CmsRuntimeException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.A_CmsListDirectJsAction;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
@@ -370,9 +369,9 @@ public class CmsListDemo11 extends A_CmsListDialog {
         CmsListDirectAction deleteAction = new A_CmsListDirectJsAction(LIST_ACTION_DELETE) {
 
             /**
-             * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode(CmsWorkplace)
+             * @see org.opencms.workplace.list.A_CmsListDirectJsAction#jsCode()
              */
-            public String jsCode(CmsWorkplace wp) {
+            public String jsCode() {
 
                 String email = (String)getItem().get(LIST_COLUMN_EMAIL);
                 return "alert('the email of the select user is:" + CmsStringUtil.escapeJavaScript(email) + "');";

@@ -100,7 +100,8 @@ public class CmsListDemo16b extends A_CmsListDialog {
     /** list action id constant. */
     public static final String LIST_MACTION_ADD = "ma";
 
-    public static final Map usersOut = new HashMap();
+    /** the list data. */
+    public static Map usersOut = new HashMap();
 
     /** a set of action id's to use for adding. */
     protected static Set m_addActionIds = new HashSet();

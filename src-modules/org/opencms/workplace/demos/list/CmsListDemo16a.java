@@ -98,6 +98,7 @@ public class CmsListDemo16a extends A_CmsListDialog {
     /** list action id constant. */
     public static final String LIST_MACTION_REMOVE = "mr";
 
+    /** the list data. */
     public static Map usersIn;
     
     /**
