@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListRadioMultiAction.java,v $
- * Date   : $Date: 2005/11/16 12:21:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/21 16:51:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,7 +57,7 @@ public class CmsListRadioMultiAction extends CmsListMultiAction {
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param relatedActionIds the number of expected selections
+     * @param relatedActionIds the ids of the related item selection actions
      */
     public CmsListRadioMultiAction(String id, List relatedActionIds) {
 
