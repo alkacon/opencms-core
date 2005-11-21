@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/28 12:07:37 $
- * Version: $Revision: 1.557.2.12 $
+ * Date   : $Date: 2005/11/21 16:07:15 $
+ * Version: $Revision: 1.557.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -112,12 +112,6 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * @author Michael Moossen
- * 
- <<<<<<< CmsDriverManager.java
- * @version $Revision: 1.557.2.12 $
- =======
- * @version $Revision: 1.557.2.12 $
- >>>>>>> 1.557.2.1
  * 
  * @since 6.0.0
  */
