@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/10/25 18:38:50 $
- * Version: $Revision: 1.21.2.4 $
+ * Date   : $Date: 2005/11/21 15:32:17 $
+ * Version: $Revision: 1.21.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.4 $ 
+ * @version $Revision: 1.21.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,7 +142,7 @@ public final class CmsFileUtil {
      * 
      * @param filesize in bytes 
      * @param locale the locale of the current OpenCms user or the System's default locale if the first choice 
-     *               is not at hand. 
+     *               is not at hand.
      * 
      * @return the formatted filesize to Bytes, KB, MB or GB depending on the given value 
      **/
@@ -465,7 +465,7 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads a file with the given name from the RFS and returns the file content.<p> 
+     * Reads a file with the given name from the class loader and returns the file content.<p> 
      * 
      * @param filename the file to read 
      * @return the read file content
@@ -494,7 +494,7 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Reads a file from the RFS and converts it to a String with the specified encoding.<p> 
+     * Reads a file from the class loader and converts it to a String with the specified encoding.<p> 
      * 
      * @param filename the file to read 
      * @param encoding the encoding to use when converting the file content to a String

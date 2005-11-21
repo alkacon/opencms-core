@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/Attic/CmsIdentifiableObjectContainer.java,v $
- * Date   : $Date: 2005/07/26 13:13:41 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2005/11/21 15:33:51 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -56,7 +56,7 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
      * 
      * @author Michael Moossen  
      * 
-     * @version $Revision: 1.8 $
+     * @version $Revision: 1.8.2.1 $
      * 
      * @since 6.0.0
      */
@@ -121,8 +121,8 @@ public class CmsIdentifiableObjectContainer implements I_CmsIdentifiableObjectCo
     /**
      * Default Constructor.<p>
      * 
-     * @param uniqueIds if the list show check for unique ids
-     * @param relativeOrdered if the list show use relative ordering, instead of absolute ordering
+     * @param uniqueIds if the list should check unique ids
+     * @param relativeOrdered if the list should use relative ordering, instead of absolute ordering
      */
     public CmsIdentifiableObjectContainer(boolean uniqueIds, boolean relativeOrdered) {
 
