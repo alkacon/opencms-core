@@ -3,6 +3,8 @@ package org.opencms.loader;
 
 import com.alkacon.simapi.RenderSettings;
 import com.alkacon.simapi.Simapi;
+import com.alkacon.simapi.filter.GrayscaleFilter;
+import com.alkacon.simapi.filter.ShadowFilter;
 
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
@@ -14,7 +16,10 @@ import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
 
 import java.awt.Color;
+import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -28,11 +33,23 @@ public class CmsImageScaler {
     /** The name of the transparent color (for the backgound image). */
     public static final String COLOR_TRANSPARENT = "transparent";
 
+    /** The name of the grayscale image filter. */
+    public static final String FILTER_GRAYSCALE = "grayscale";
+
+    /** The name of the shadow image filter. */
+    public static final String FILTER_SHADOW = "shadow";
+
+    /** The supported image filter names. */
+    public static final List FILTERS = Arrays.asList(new String[] {FILTER_GRAYSCALE, FILTER_SHADOW});
+
     /** The (optional) parameter used for sending the scale information of an image in the http request. */
     public static final String PARAM_SCALE = "__scale";
 
     /** The scaler parameter to indicate the requested image background color (if required). */
     public static final String SCALE_PARAM_COLOR = "c";
+
+    /** The scaler parameter to indicate the requested image filter. */
+    public static final String SCALE_PARAM_FILTER = "f";
 
     /** The scaler parameter to indicate the requested image height. */
     public static final String SCALE_PARAM_HEIGHT = "h";
@@ -57,6 +74,9 @@ public class CmsImageScaler {
 
     /** The target background color (optional). */
     private Color m_color;
+
+    /** The list of image filter names (Strings) to apply. */
+    private List m_filters;
 
     /** The target height (required). */
     private int m_height;
@@ -156,6 +176,21 @@ public class CmsImageScaler {
     }
 
     /**
+     * Adds a filter name to the list of filters that should be applied to the image.<p>
+     * 
+     * @param filter the filter name to add
+     */
+    public void addFilter(String filter) {
+
+        if (CmsStringUtil.isNotEmpty(filter)) {
+            filter = filter.trim().toLowerCase();
+            if (FILTERS.contains(filter)) {
+                m_filters.add(filter);
+            }
+        }
+    }
+
+    /**
      * Returns the color.<p>
      *
      * @return the color
@@ -163,6 +198,16 @@ public class CmsImageScaler {
     public Color getColor() {
 
         return m_color;
+    }
+
+    /** 
+     * Returns the list of image filter names (Strings) to be applied to the image.<p> 
+     * 
+     * @return the list of image filter names (Strings) to be applied to the image
+     */
+    public List getFilters() {
+
+        return m_filters;
     }
 
     /**
@@ -325,18 +370,18 @@ public class CmsImageScaler {
 
         byte[] result = file.getContents();
 
-        Simapi scaler;
+        RenderSettings renderSettings;
         if ((m_renderMode == 0) && (m_quality == 0)) {
             // use default render mode and quality
-            scaler = new Simapi();
+            renderSettings = new RenderSettings(Simapi.RENDER_QUALITY);
         } else {
             // use special render mode and/or quality
-            RenderSettings renderSettings = new RenderSettings(m_renderMode);
+            renderSettings = new RenderSettings(m_renderMode);
             if (m_quality != 0) {
                 renderSettings.setCompressionQuality(m_quality / 100f);
             }
-            scaler = new Simapi(renderSettings);
         }
+        Simapi scaler = new Simapi(renderSettings);
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
         String imageType = Simapi.getImageType(file.getRootPath());
         if (imageType == null) {
@@ -357,11 +402,36 @@ public class CmsImageScaler {
         }
         try {
             BufferedImage image = Simapi.read(file.getContents());
+
+            Color color = getColor();
+
+            if (!m_filters.isEmpty()) {
+                Iterator i = m_filters.iterator();
+                while (i.hasNext()) {
+                    String filter = (String)i.next();
+                    if (FILTER_GRAYSCALE.equals(filter)) {
+                        // add a grayscale filter
+                        GrayscaleFilter grayscaleFilter = new GrayscaleFilter();
+                        renderSettings.addImageFilter(grayscaleFilter);
+                    } else if (FILTER_SHADOW.equals(filter)) {
+                        // add a drop shadow filter
+                        ShadowFilter shadowFilter = new ShadowFilter();
+                        shadowFilter.setXOffset(5);
+                        shadowFilter.setYOffset(5);
+                        shadowFilter.setOpacity(192);
+                        shadowFilter.setBackgroundColor(color.getRGB());
+                        color = Simapi.COLOR_TRANSPARENT;
+                        renderSettings.setTransparentReplaceColor(Simapi.COLOR_TRANSPARENT);
+                        renderSettings.addImageFilter(shadowFilter);
+                    }
+                }
+            }
+
             switch (getType()) {
                 // select the "right" method of scaling according to the "t" parameter
                 case 1:
                     // thumbnail generation mode (like 0 but no image enlargement)
-                    image = scaler.resize(image, getWidth(), getHeight(), getColor(), getPosition(), false);
+                    image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), false);
                     break;
                 case 2:
                     // scale to exact target size, crop what does not fit
@@ -377,8 +447,20 @@ public class CmsImageScaler {
                     break;
                 default:
                     // scale to exact target size with background padding
-                    image = scaler.resize(image, getWidth(), getHeight(), getColor(), getPosition(), true);
+                    image = scaler.resize(image, getWidth(), getHeight(), color, getPosition(), true);
             }
+
+            if (!m_filters.isEmpty()) {
+                Rectangle targetSize = scaler.applyFilterDimensions(getWidth(), getHeight());
+                image = scaler.resize(
+                    image,
+                    (int)targetSize.getWidth(),
+                    (int)targetSize.getHeight(),
+                    Simapi.COLOR_TRANSPARENT,
+                    Simapi.POS_CENTER);
+                image = scaler.applyFilters(image);
+            }
+
             // get the byte result for the scaled image
             result = scaler.getBytes(image, imageType);
         } catch (Exception e) {
@@ -534,6 +616,19 @@ public class CmsImageScaler {
             result.append(':');
             result.append(m_renderMode);
         }
+        if (!m_filters.isEmpty()) {
+            result.append(',');
+            result.append(CmsImageScaler.SCALE_PARAM_FILTER);
+            result.append(':');
+            Iterator i = m_filters.iterator();
+            while (i.hasNext()) {
+                String filter = (String)i.next();
+                result.append(filter);
+                if (i.hasNext()) {
+                    result.append(':');
+                }
+            }
+        }
         m_scaleParameters = result.toString();
         return m_scaleParameters;
     }
@@ -598,7 +693,10 @@ public class CmsImageScaler {
         m_width = -1;
         m_type = 0;
         m_position = 0;
+        m_renderMode = 0;
+        m_quality = 0;
         m_color = Color.WHITE;
+        m_filters = new ArrayList();
     }
 
     /**
@@ -632,31 +730,48 @@ public class CmsImageScaler {
             }
             if (CmsStringUtil.isNotEmpty(k) && CmsStringUtil.isNotEmpty(v)) {
                 // key and value are available
-                if (CmsImageScaler.SCALE_PARAM_HEIGHT.equals(k)) {
+                if (SCALE_PARAM_HEIGHT.equals(k)) {
                     // image height
                     m_height = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
-                } else if (CmsImageScaler.SCALE_PARAM_WIDTH.equals(k)) {
+                } else if (SCALE_PARAM_WIDTH.equals(k)) {
                     // image width
                     m_width = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
-                } else if (CmsImageScaler.SCALE_PARAM_TYPE.equals(k)) {
+                } else if (SCALE_PARAM_TYPE.equals(k)) {
                     // scaling type
                     m_type = getParamType(v);
-                } else if (CmsImageScaler.SCALE_PARAM_COLOR.equals(k)) {
+                } else if (SCALE_PARAM_COLOR.equals(k)) {
                     // image background color
                     if (COLOR_TRANSPARENT.indexOf(v) == 0) {
                         m_color = Simapi.COLOR_TRANSPARENT;
                     } else {
                         m_color = CmsStringUtil.getColorValue(v, Color.WHITE, k);
                     }
-                } else if (CmsImageScaler.SCALE_PARAM_POS.equals(k)) {
+                } else if (SCALE_PARAM_POS.equals(k)) {
                     // image position (depends on scale type)
                     m_position = getParamPosition(v);
-                } else if (CmsImageScaler.SCALE_PARAM_QUALITY.equals(k)) {
+                } else if (SCALE_PARAM_QUALITY.equals(k)) {
                     // image position (depends on scale type)
                     setQuality(CmsStringUtil.getIntValue(v, 0, k));
-                } else if (CmsImageScaler.SCALE_PARAM_RENDERMODE.equals(k)) {
+                } else if (SCALE_PARAM_RENDERMODE.equals(k)) {
                     // image position (depends on scale type)
                     setRenderMode(CmsStringUtil.getIntValue(v, 0, k));
+                } else if (SCALE_PARAM_FILTER.equals(k)) {
+                    // image filters to apply
+                    List filters = CmsStringUtil.splitAsList(v, ':');
+                    Iterator i = filters.iterator();
+                    while (i.hasNext()) {
+                        String filter = (String)i.next();
+                        filter = filter.trim().toLowerCase();
+                        Iterator j = FILTERS.iterator();
+                        while (j.hasNext()) {
+                            String candidate = (String)j.next();
+                            if (candidate.startsWith(filter)) {
+                                // found a matching filter
+                                addFilter(candidate);
+                                break;
+                            }
+                        }
+                    }
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
