@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/19 17:08:38 $
- * Version: $Revision: 1.10.2.9 $
+ * Date   : $Date: 2005/11/22 10:10:51 $
+ * Version: $Revision: 1.10.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -623,7 +623,6 @@ function handleOnClick(e) {
 			// not found, add resource to selection
 			selectedResources[selectedResources.length] = active_mouse_id;
 		}
-		last_id = active_mouse_id;
 	} else {
 		// common click, mark currently clicked resource if not clicked before
 		if (active_mouse_id != last_id) {
