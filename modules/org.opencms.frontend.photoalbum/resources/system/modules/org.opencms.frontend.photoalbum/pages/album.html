@@ -1,0 +1,26 @@
+<%@ page import="org.opencms.frontend.photoalbum.*" buffer="none" session="false" %><%
+
+CmsPhotoAlbumBean cms = new CmsPhotoAlbumBean(pageContext, request, response);
+
+// set the CSS style class names
+CmsPhotoAlbumStyle style = new CmsPhotoAlbumStyle();
+style.setClassThumbTable("pgThumbTable");
+style.setClassThumbImageTitle("pgThumbImageTitle");
+style.setClassThumbText("pgThumbText");
+style.setClassNavigation("pgNavigation");
+style.setClassDetailImageDescription("pgDetailImageDescription");
+style.setClassDetailImageTitle("pgDetailImageTitle");
+
+cms.setStyle(style);
+
+String template = cms.property("template", "search", "/system/modules/org.opencms.frontend.templateone/templates/main");
+
+cms.include(template, "head");
+
+%><style type="text/css">
+<%= cms.getContent("../resources/photoalbum.css") %>
+</style><div class="element"><%= cms.displayAlbum() %></div><%
+
+cms.include(template, "foot");
+
+%>

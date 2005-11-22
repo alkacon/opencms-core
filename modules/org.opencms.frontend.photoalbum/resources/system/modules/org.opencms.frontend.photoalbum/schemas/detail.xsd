@@ -1,0 +1,37 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="PhotoAlbumDetails" type="OpenCmsPhotoAlbumDetails"/>
+	
+	<xsd:complexType name="OpenCmsPhotoAlbumDetails">
+		<xsd:sequence>
+			<xsd:element name="PhotoAlbumDetail" type="OpenCmsPhotoAlbumDetail" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsPhotoAlbumDetail">
+		<xsd:sequence>
+			<xsd:element name="ShowTitle" type="OpenCmsBoolean" />
+			<xsd:element name="ShowDescription" type="OpenCmsBoolean" />
+			<xsd:element name="AlignTitle" type="OpenCmsString" />
+			<xsd:element name="ShowLinkOriginal" type="OpenCmsBoolean" />
+			<xsd:element name="Size" type="OpenCmsString" />
+			<xsd:element name="Filter" type="OpenCmsString" />
+			<xsd:element name="Background" type="OpenCmsColor" />
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.photoalbum.workplace"/>
+			<layouts>
+				<layout element="AlignTitle" widget="SelectorWidget" configuration="left:${key.photoalbum.text.align.left}|center:${key.photoalbum.text.align.center}|right:${key.photoalbum.text.align.right}" />
+				<layout element="Size" widget="SelectorWidget" configuration="300x225:300 x 225 ${key.photoalbum.thumbs.size.pixel}|400x300:400 x 300 ${key.photoalbum.thumbs.size.pixel}|600x450*:600 x 450 ${key.photoalbum.thumbs.size.pixel}|640x480:640 x 480 ${key.photoalbum.thumbs.size.pixel}|800x600:800 x 600 ${key.photoalbum.thumbs.size.pixel}|1000x750:1000 x 750 ${key.photoalbum.thumbs.size.pixel}" />
+				<layout element="Filter" widget="SelectorWidget" configuration="none:${key.photoalbum.filter.none}|shadow:${key.photoalbum.filter.shadow}|grayscale:${key.photoalbum.filter.grayscale}|grayscale.shadow:${key.photoalbum.filter.both}" />
+			</layouts>
+		</xsd:appinfo>
+
+	</xsd:annotation>  
+</xsd:schema>
