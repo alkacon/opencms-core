@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/11/16 12:12:26 $
- * Version: $Revision: 1.72.2.6 $
+ * Date   : $Date: 2005/11/22 13:21:38 $
+ * Version: $Revision: 1.72.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,7 +93,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.6 $ 
+ * @version $Revision: 1.72.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -683,6 +683,9 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
      */
     public CmsToolManager getToolManager() {
 
+        if (m_toolManager == null) {
+            m_toolManager = new CmsToolManager();
+        }
         return m_toolManager;
     }
 
@@ -800,10 +803,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             }
 
             // configures the tool manager
-            if (m_toolManager == null) {
-                m_toolManager = new CmsToolManager();
-            }
-            m_toolManager.configure(cms);
+            getToolManager().configure(cms);
 
             // throw away all cached message objects
             m_messages.clear();
