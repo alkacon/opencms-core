@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/10/31 15:17:11 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2005/11/22 10:44:33 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -145,6 +145,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
+            case I_CmsEventListener.EVENT_FLEX_CACHE_CLEAR:
             case I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY:
                 // flush Map
                 m_parts.clear();
