@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/I_CmsPrincipal.java,v $
- * Date   : $Date: 2005/08/03 08:58:54 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2005/11/22 13:20:43 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.14 $ 
+ * @version $Revision: 1.14.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -51,13 +51,13 @@ public interface I_CmsPrincipal {
     /** This flag is set for enabled principals in the database. */
     int FLAG_ENABLED = 0;
 
-    /** Flag to indicate a goup is a potential project manager group. */
+    /** Flag to indicate a group is a potential project manager group. */
     int FLAG_GROUP_PROJECT_MANAGER = 2;
 
-    /** Flag to indicate a goup is a potential project user group. */
+    /** Flag to indicate a group is a potential project user group. */
     int FLAG_GROUP_PROJECT_USER = 4;
 
-    /** Flag to indicate a goup is used as a role in the workflow. */
+    /** Flag to indicate a group is used as a role in the workflow. */
     int FLAG_GROUP_WORKFLOW_ROLE = 8;
 
     /** Identifier for group principals. */
