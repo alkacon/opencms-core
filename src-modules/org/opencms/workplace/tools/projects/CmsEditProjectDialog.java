@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsEditProjectDialog.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2005/11/22 13:39:12 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,12 +35,13 @@ import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsProject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsDisplayWidget;
+import org.opencms.widgets.CmsGroupWidget;
 import org.opencms.widgets.CmsInputWidget;
-import org.opencms.widgets.CmsSelectWidget;
 import org.opencms.widgets.CmsTextareaWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -271,9 +272,8 @@ public class CmsEditProjectDialog extends A_CmsProjectDialog {
             addWidget(new CmsWidgetDialogParameter(m_project, "name", PAGES[0], new CmsDisplayWidget()));
         }
         addWidget(new CmsWidgetDialogParameter(m_project, "description", "", PAGES[0], new CmsTextareaWidget(), 0, 1));
-        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsSelectWidget(
-            getSelectGroups(true))));
-        addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsSelectWidget(getSelectGroups(false))));
+        addWidget(new CmsWidgetDialogParameter(this, "managerGroup", PAGES[0], new CmsGroupWidget(new Integer(I_CmsPrincipal.FLAG_GROUP_PROJECT_MANAGER), null)));
+        addWidget(new CmsWidgetDialogParameter(this, "userGroup", PAGES[0], new CmsGroupWidget(null, null)));
         addWidget(new CmsWidgetDialogParameter(m_project, "deleteAfterPublishing", PAGES[0], new CmsCheckboxWidget()));
         if (isNewProject()) {
             addWidget(new CmsWidgetDialogParameter(this, "resources", PAGES[0], new CmsVfsFileWidget(false, "")));

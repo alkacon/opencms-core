@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/11/22 10:44:00 $
- * Version: $Revision: 1.13.2.6 $
+ * Date   : $Date: 2005/11/22 13:39:12 $
+ * Version: $Revision: 1.13.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,15 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.6 $ 
+ * @version $Revision: 1.13.2.7 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_HISTORY_COLS_RESOURCE_PATH_0 = "GUI_HISTORY_COLS_RESOURCE_PATH_0";
-    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_MULTI_0 = "ERR_AVAILABILITY_MULTI_0";
 
@@ -221,7 +218,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHTYPE_PLEASE_SELECT_0 = "GUI_CHTYPE_PLEASE_SELECT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMMENTIMAGES_TITLE_1 = "GUI_COMMENTIMAGES_TITLE_1";
 
@@ -325,6 +322,36 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EDIT_POINTER_LINK_URL_0 = "GUI_EDIT_POINTER_LINK_URL_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_INTRO_TITLE_0 = "GUI_GROUPSELECTION_INTRO_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_USER_TITLE_1 = "GUI_GROUPSELECTION_USER_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_ACTION_SELECT_HELP_0 = "GUI_GROUPSELECTION_LIST_ACTION_SELECT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_ACTION_SELECT_NAME_0 = "GUI_GROUPSELECTION_LIST_ACTION_SELECT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_COLS_ICON_0 = "GUI_GROUPSELECTION_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_COLS_ICON_HELP_0 = "GUI_GROUPSELECTION_LIST_COLS_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_COLS_NAME_0 = "GUI_GROUPSELECTION_LIST_COLS_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_ICON_HELP_0 = "GUI_GROUPSELECTION_LIST_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_ICON_NAME_0 = "GUI_GROUPSELECTION_LIST_ICON_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_LIST_NAME_0 = "GUI_GROUPSELECTION_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_0 = "GUI_HISTORY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -335,10 +362,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_COLS_DATE_PUBLISHED_0 = "GUI_HISTORY_COLS_DATE_PUBLISHED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_COLS_FILE_TYPE_0 = "GUI_HISTORY_COLS_FILE_TYPE_0";
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_HISTORY_COLS_RESOURCE_PATH_0 = "GUI_HISTORY_COLS_RESOURCE_PATH_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_COLS_RESTORE_0 = "GUI_HISTORY_COLS_RESTORE_0";
 
@@ -839,7 +869,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_PROJECT_0 = "GUI_PUBLISH_PROJECT_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_PROJECT_CONFIRMATION_1 = "GUI_PUBLISH_PROJECT_CONFIRMATION_1";
 
@@ -866,7 +896,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RENAMEIMAGES_PREFIX_0 = "GUI_RENAMEIMAGES_PREFIX_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RENAMEIMAGES_REMOVETITLE_0 = "GUI_RENAMEIMAGES_REMOVETITLE_0";
 
@@ -968,6 +998,45 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UNDO_LASTMODIFIED_INFO_3 = "GUI_UNDO_LASTMODIFIED_INFO_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_GROUP_BLOCK_1 = "GUI_USERSELECTION_GROUP_BLOCK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_INTRO_TITLE_1 = "GUI_USERSELECTION_INTRO_TITLE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_ACTION_SELECT_HELP_0 = "GUI_USERSELECTION_LIST_ACTION_SELECT_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_ACTION_SELECT_NAME_0 = "GUI_USERSELECTION_LIST_ACTION_SELECT_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_COLS_FULLNAME_0 = "GUI_USERSELECTION_LIST_COLS_FULLNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_COLS_ICON_0 = "GUI_USERSELECTION_LIST_COLS_ICON_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_COLS_ICON_HELP_0 = "GUI_USERSELECTION_LIST_COLS_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_COLS_LOGIN_0 = "GUI_USERSELECTION_LIST_COLS_LOGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_ICON_HELP_0 = "GUI_USERSELECTION_LIST_ICON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_ICON_NAME_0 = "GUI_USERSELECTION_LIST_ICON_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_LIST_NAME_0 = "GUI_USERSELECTION_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_TYPE_SYSTEM_0 = "GUI_USERSELECTION_TYPE_SYSTEM_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_USERSELECTION_TYPE_WEB_0 = "GUI_USERSELECTION_TYPE_WEB_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_COMPUTING_PUBRES_FAILED_0 = "LOG_COMPUTING_PUBRES_FAILED_0";

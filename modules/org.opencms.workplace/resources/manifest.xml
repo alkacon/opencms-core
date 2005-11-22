@@ -77,10 +77,12 @@
 			<resource uri="/system/workplace/resources/components/widgets/combobox.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/downloadgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/fileselector.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/groupselector.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/htmlgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/imagegallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/linkgallery.js"/>
 			<resource uri="/system/workplace/resources/components/widgets/tablegallery.js"/>
+			<resource uri="/system/workplace/resources/components/widgets/userselector.js"/>
 			<resource uri="/system/workplace/resources/filetypes/binary.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/downloadgallery.gif"/>
 			<resource uri="/system/workplace/resources/filetypes/folder.gif"/>
@@ -2291,6 +2293,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/components/widgets/groupselector.js</source>
+			<destination>system/workplace/resources/components/widgets/groupselector.js</destination>
+			<type>plain</type>
+			<uuidresource>481d0ed0-5444-22da-b8a7-4b5a0381b421</uuidresource>
+			<datelastmodified>Mon, 14 Nov 2005 07:34:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sun, 13 Nov 2005 10:50:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open Group selector]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/components/widgets/tablegallery.js</source>
 			<destination>system/workplace/resources/components/widgets/tablegallery.js</destination>
 			<type>plain</type>
@@ -2307,7 +2327,25 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file>		
+		</file>
+		<file>
+			<source>system/workplace/resources/components/widgets/userselector.js</source>
+			<destination>system/workplace/resources/components/widgets/userselector.js</destination>
+			<type>plain</type>
+			<uuidresource>481d0ed0-5433-11da-b8a7-4b5a0381b421</uuidresource>
+			<datelastmodified>Mon, 14 Nov 2005 07:34:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sun, 13 Nov 2005 10:50:19 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[JS to open User selector]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>

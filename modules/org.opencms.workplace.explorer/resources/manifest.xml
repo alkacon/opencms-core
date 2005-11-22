@@ -40,6 +40,7 @@
 			<resource uri="/system/workplace/commons/delete_standard.jsp"/>
 			<resource uri="/system/workplace/commons/displayresource.jsp"/>
 			<resource uri="/system/workplace/commons/editpointer.jsp"/>
+			<resource uri="/system/workplace/commons/group_selection.jsp"/>
 			<resource uri="/system/workplace/commons/lock.jsp"/>
 			<resource uri="/system/workplace/commons/lock_standard.jsp"/>
 			<resource uri="/system/workplace/commons/lockchange.jsp"/>
@@ -70,12 +71,15 @@
 			<resource uri="/system/workplace/commons/undochanges.jsp"/>
 			<resource uri="/system/workplace/commons/unlock.jsp"/>
 			<resource uri="/system/workplace/commons/unlock_standard.jsp"/>
+			<resource uri="/system/workplace/commons/user_selection.jsp"/>
 			<resource uri="/system/workplace/resources/buttons/back.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_up.png"/>
 			<resource uri="/system/workplace/resources/buttons/folder_up_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/group.png"/>
 			<resource uri="/system/workplace/resources/buttons/upload.png"/>
 			<resource uri="/system/workplace/resources/buttons/upload_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/user.png"/>
 			<resource uri="/system/workplace/resources/commons/empty.html"/>
 			<resource uri="/system/workplace/resources/commons/explorer.js"/>
 			<resource uri="/system/workplace/resources/commons/group.png"/>
@@ -1270,6 +1274,28 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/group_selection.jsp</source>
+			<destination>system/workplace/commons/group_selection.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>6ae16fb4-5444-22df-b8f7-4b5f0381b421</uuidresource>
+			<datelastmodified>Sun, 13 Nov 2005 10:51:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sun, 13 Nov 2005 10:51:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Group Selection]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/lock.jsp</source>
 			<destination>system/workplace/commons/lock.jsp</destination>
 			<type>jsp</type>
@@ -1928,6 +1954,81 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/user_selection.jsp</source>
+			<destination>system/workplace/commons/user_selection.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>6fe16ab4-5433-11da-b8a7-4b5a0381b421</uuidresource>
+			<datelastmodified>Sun, 13 Nov 2005 10:51:51 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sun, 13 Nov 2005 10:51:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - User Selection]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/explorer</destination>
+			<type>folder</type>
+			<datelastmodified>Sat, 05 Nov 2005 18:32:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 05 Nov 2005 14:40:37 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>default-file</name>
+					<value><![CDATA[/system/workplace/views/explorer/explorer_files.jsp]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Explorer Tools]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/explorer/readme.txt</source>
+			<destination>system/workplace/explorer/readme.txt</destination>
+			<type>plain</type>
+			<uuidresource>447d6976-4e0a-11da-a835-4b5a0381b421</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 05 Nov 2005 14:41:36 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/buttons</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
@@ -1991,6 +2092,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/group.png</source>
+			<destination>system/workplace/resources/buttons/group.png</destination>
+			<type>image</type>
+			<uuidresource>4fa819ab-d427-22d9-8431-b920bdab9bc1</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/buttons/upload.png</source>
 			<destination>system/workplace/resources/buttons/upload.png</destination>
 			<type>image</type>
@@ -2008,6 +2122,19 @@
 			<destination>system/workplace/resources/buttons/upload_in.png</destination>
 			<type>image</type>
 			<uuidresource>7775e2e8-d440-11d9-95e4-01ff5ab8f021</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/user.png</source>
+			<destination>system/workplace/resources/buttons/user.png</destination>
+			<type>image</type>
+			<uuidresource>4fa819ab-d427-11d9-8431-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

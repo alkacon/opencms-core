@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsEditScheduledJobInfoDialog.java,v $
- * Date   : $Date: 2005/11/12 08:51:34 $
- * Version: $Revision: 1.25.2.3 $
+ * Date   : $Date: 2005/11/22 13:39:12 $
+ * Version: $Revision: 1.25.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.widgets.CmsCheckboxWidget;
 import org.opencms.widgets.CmsComboWidget;
 import org.opencms.widgets.CmsInputWidget;
 import org.opencms.widgets.CmsSelectWidgetOption;
+import org.opencms.widgets.CmsUserWidget;
 import org.opencms.widgets.CmsVfsFileWidget;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWidgetDialog;
@@ -69,7 +70,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.3 $ 
+ * @version $Revision: 1.25.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,7 +214,10 @@ public class CmsEditScheduledJobInfoDialog extends CmsWidgetDialog {
             getComboCronExpressions())));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "reuseInstance", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "active", PAGES[0], new CmsCheckboxWidget()));
-        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsInputWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.userName", PAGES[0], new CmsUserWidget(
+            null,
+            null,
+            null)));
         addWidget(new CmsWidgetDialogParameter(m_jobInfo, "contextInfo.projectName", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(
             m_jobInfo,
