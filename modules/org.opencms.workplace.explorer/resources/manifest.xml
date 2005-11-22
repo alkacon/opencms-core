@@ -32,6 +32,7 @@
 			<resource uri="/system/workplace/commons/chaccbrowser.jsp"/>
 			<resource uri="/system/workplace/commons/chnav.jsp"/>
 			<resource uri="/system/workplace/commons/chtype.jsp"/>
+			<resource uri="/system/workplace/commons/commentimages.jsp"/>
 			<resource uri="/system/workplace/commons/confirm_content_notification.jsp"/>
 			<resource uri="/system/workplace/commons/copy.jsp"/>
 			<resource uri="/system/workplace/commons/copytoproject.jsp"/>
@@ -60,6 +61,7 @@
 			<resource uri="/system/workplace/commons/property_custom.jsp"/>
 			<resource uri="/system/workplace/commons/publishproject.jsp"/>
 			<resource uri="/system/workplace/commons/publishresource.jsp"/>
+			<resource uri="/system/workplace/commons/renameimages.jsp"/>
 			<resource uri="/system/workplace/commons/replace.jsp"/>
 			<resource uri="/system/workplace/commons/secure.jsp"/>
 			<resource uri="/system/workplace/commons/synchronize.jsp"/>
@@ -1092,6 +1094,28 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/commons/commentimages.jsp</source>
+			<destination>system/workplace/commons/commentimages.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>93e6c17a-574e-11da-8f45-3328c6d3b865</uuidresource>
+			<datelastmodified>Mon, 21 Nov 2005 11:59:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 17 Nov 2005 09:43:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Comment images]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/commons/confirm_content_notification.jsp</source>
 			<destination>system/workplace/commons/confirm_content_notification.jsp</destination>
 			<type>jsp</type>
@@ -1702,6 +1726,28 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Dialog - Publish resource]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/renameimages.jsp</source>
+			<destination>system/workplace/commons/renameimages.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>c9590a03-56a1-11da-8947-3328c6d3b865</uuidresource>
+			<datelastmodified>Thu, 17 Nov 2005 09:44:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 16 Nov 2005 13:06:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Dialog - Rename images]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
