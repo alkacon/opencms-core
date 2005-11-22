@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/11/01 23:43:33 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2005/11/22 14:50:41 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,12 +62,18 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20.2.1 $ 
+ * @version $Revision: 1.20.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_TAG_ATTRIBUTE_INVALID_3 = "GUI_ERR_TAG_ATTRIBUTE_INVALID_3";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_TAG_ATTRIBUTE_MISSING_2 = "GUI_ERR_TAG_ATTRIBUTE_MISSING_2";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_BAD_REQUEST_RESPONSE_0 = "ERR_BAD_REQUEST_RESPONSE_0";
 
