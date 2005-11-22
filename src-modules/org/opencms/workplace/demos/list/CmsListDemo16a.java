@@ -152,7 +152,7 @@ public class CmsListDemo16a extends A_CmsListDialog {
      */
     public void executeListSingleActions() throws CmsRuntimeException {
 
-        if (LIST_ACTION_REMOVE.contains(getParamListAction()) || getParamListAction().equals(LIST_DEFACTION_REMOVE)) {
+        if (LIST_ACTION_REMOVE.equals(getParamListAction()) || getParamListAction().equals(LIST_DEFACTION_REMOVE)) {
             CmsListItem listItem = getSelectedItem();
             CmsUser user = (CmsUser)usersIn.remove(listItem.getId());
             CmsListDemo16b.usersOut.put(listItem.getId(), user);
