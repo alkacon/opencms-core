@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2005/10/26 10:14:05 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/11/23 15:58:24 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.2
  */
@@ -346,10 +346,18 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
 
         List results = new ArrayList();
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DEBUG_RESOURCE_1, testResource.getResourceName()));
+        }
+
         //loop through all property tests
         for (int i = 0; i < properties.size(); i++) {
             try {
                 CmsContentCheckProperetyObject propObject = (CmsContentCheckProperetyObject)properties.get(i);
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DEBUG_PROPERTY_1, propObject.toString()));
+                }
 
                 // check if this test must be done for thies kind of resource
                 if ((propObject.getType().equals(CmsContentCheckProperetyObject.TYPE_BOTH))
@@ -364,9 +372,32 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                         propObject.getPropertyname(),
                         false).getValue();
 
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_DEBUG_PROPERTY_VALUE_1, prop));
+                    }
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(
+                            Messages.LOG_DEBUG_ISEMPTYCHECK_1,
+                            new Boolean(propObject.isEmpty())));
+                    }
+
                     // test if the property is empty
                     if (propObject.isEmpty() && CmsStringUtil.isEmpty(prop)) {
-                        results.add(Messages.get().key(Messages.ERR_CHECK_NO_PROPERTYNAME_1, propObject.getPropertyname()));
+                        results.add(Messages.get().key(
+                            Messages.ERR_CHECK_NO_PROPERTYNAME_1,
+                            propObject.getPropertyname()));
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(
+                                Messages.ERR_CHECK_NO_PROPERTYNAME_1,
+                                propObject.getPropertyname()));
+                        }
+                    }
+
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(
+                            Messages.LOG_DEBUG_ISFILENAME_1,
+                            new Boolean(propObject.isFilename())));
                     }
 
                     // test if the property does not start with the filename
@@ -377,8 +408,20 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                                 Messages.ERR_CHECK_CONTAINS_FILENAME_2,
                                 propObject.getPropertyname(),
                                 prop));
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(Messages.get().key(
+                                    Messages.ERR_CHECK_CONTAINS_FILENAME_2,
+                                    propObject.getPropertyname(),
+                                    prop));
+                            }
                         }
 
+                        if (LOG.isDebugEnabled()) {
+                            LOG.debug(Messages.get().key(
+                                Messages.LOG_DEBUG_CHECKLENGTH_2,
+                                new Integer(propObject.getLength()),
+                                new Integer(prop.length())));
+                        }
                         // test if the minmal property length is valid
                         if (propObject.getLength() > -1) {
                             if (prop.length() < propObject.getLength()) {
@@ -387,6 +430,13 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                                     propObject.getPropertyname(),
                                     prop,
                                     new Integer(prop.length())));
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(Messages.get().key(
+                                        Messages.ERR_CHECK_TOO_SHORT_3,
+                                        propObject.getPropertyname(),
+                                        prop,
+                                        new Integer(prop.length())));
+                                }
                             }
                         }
 
@@ -404,12 +454,24 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
                                 }
                                 String matchValue = prop;
                                 boolean match = Pattern.matches(regex, matchValue);
+
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(Messages.get().key(Messages.LOG_DEBUG_MATCHPATTERN_2, regex, matchValue));
+                                }
+
                                 if (matchResult != match) {
                                     results.add(Messages.get().key(
                                         Messages.ERR_CHECK_MATCH_3,
                                         propObject.getPropertyname(),
                                         prop,
                                         propObject.getValue().get(j)));
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(Messages.get().key(
+                                            Messages.ERR_CHECK_MATCH_3,
+                                            propObject.getPropertyname(),
+                                            prop,
+                                            propObject.getValue().get(j)));
+                                    }
                                 }
                             }
                         }

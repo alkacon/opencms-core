@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/Messages.java,v $
- * Date   : $Date: 2005/10/26 10:14:05 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/11/23 15:58:24 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.2 
  */
@@ -77,6 +77,27 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_PLUGIN_1 = "LOG_CREATE_PLUGIN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_CHECKLENGTH_2 = "LOG_DEBUG_CHECKLENGTH_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_ISEMPTYCHECK_1 = "LOG_DEBUG_ISEMPTYCHECK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_ISFILENAME_1 = "LOG_DEBUG_ISFILENAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_MATCHPATTERN_2 = "LOG_DEBUG_MATCHPATTERN_22";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_1 = "LOG_DEBUG_PROPERTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_VALUE_1 = "LOG_DEBUG_PROPERTY_VALUE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_RESOURCE_1 = "LOG_DEBUG_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_PROCESSING_PROPERTIES_2 = "LOG_ERROR_PROCESSING_PROPERTIES_2";
