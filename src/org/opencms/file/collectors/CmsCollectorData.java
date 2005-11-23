@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2005/11/08 15:03:12 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2005/11/23 08:15:27 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,14 +41,15 @@ import org.opencms.main.OpenCms;
 import org.apache.commons.logging.Log;
 
 /**
- * Data structure for the collector, parsed from the collector parameters.<p>
+ * Data structure for the collector, parsed from the collector parameters.
+ * <p>
  * 
- * @author Alexander Kandzior 
- * @author Thomas Weckert  
+ * @author Alexander Kandzior
+ * @author Thomas Weckert
  * 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.8.2.2 $
  * 
- * @since 6.0.0 
+ * @since 6.0.0
  */
 public class CmsCollectorData {
 
@@ -65,7 +66,8 @@ public class CmsCollectorData {
     private int m_type;
 
     /**
-     * Creates a new collector data set.<p>
+     * Creates a new collector data set.
+     * <p>
      * 
      * @param data the data to parse
      */
@@ -77,7 +79,8 @@ public class CmsCollectorData {
 
         int pos1 = data.indexOf('|');
         if (pos1 == -1) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1));
+            throw new CmsIllegalArgumentException(
+                Messages.get().container(Messages.ERR_COLLECTOR_PARAM_INVALID_1, data));
         }
 
         int pos2 = data.indexOf('|', pos1 + 1);
@@ -114,8 +117,9 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the count.<p>
-     *
+     * Returns the count.
+     * <p>
+     * 
      * @return the count
      */
     public int getCount() {
@@ -124,8 +128,9 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the file name.<p>
-     *
+     * Returns the file name.
+     * <p>
+     * 
      * @return the file name
      */
     public String getFileName() {
@@ -134,8 +139,9 @@ public class CmsCollectorData {
     }
 
     /**
-     * Returns the type.<p>
-     *
+     * Returns the type.
+     * <p>
+     * 
      * @return the type
      */
     public int getType() {
