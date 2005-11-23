@@ -1,0 +1,6 @@
+<%@ page import="org.opencms.workplace.list.*"%>
+<%	
+	// initialize the workplace class
+	CmsListPrintDialog wp = new CmsListPrintDialog(pageContext, request, response);        
+%>
+<%= wp.generateHtml() %>

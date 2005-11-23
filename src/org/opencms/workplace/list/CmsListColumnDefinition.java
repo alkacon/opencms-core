@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/11/21 16:46:52 $
- * Version: $Revision: 1.21.2.4 $
+ * Date   : $Date: 2005/11/23 12:56:48 $
+ * Version: $Revision: 1.21.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.2.4 $ 
+ * @version $Revision: 1.21.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,6 +87,9 @@ public class CmsListColumnDefinition {
 
     /** Display name. */
     private CmsMessageContainer m_name;
+
+    /** Is printable flag. */
+    private boolean m_printable = true;
 
     /** Flag for text wrapping. */
     private boolean m_textWrapping = false;
@@ -138,7 +141,7 @@ public class CmsListColumnDefinition {
 
         if (m_listId != null) {
             listAction.setListId(m_listId);
-        }        
+        }
         m_directActions.add(listAction);
     }
 
@@ -169,7 +172,7 @@ public class CmsListColumnDefinition {
                         action.setItem(item);
                         csv.append(action.getName().key(wp.getLocale()));
                     }
-                }                
+                }
             }
         } else {
             // formatted output
@@ -235,7 +238,7 @@ public class CmsListColumnDefinition {
         while (itDefActions.hasNext()) {
             I_CmsListDirectAction action = (I_CmsListDirectAction)itDefActions.next();
             ids.add(action.getId());
-        }        
+        }
         return Collections.unmodifiableList(ids);
     }
 
@@ -280,7 +283,7 @@ public class CmsListColumnDefinition {
         while (itDirActions.hasNext()) {
             I_CmsListDirectAction action = (I_CmsListDirectAction)itDirActions.next();
             ids.add(action.getId());
-        }        
+        }
         return Collections.unmodifiableList(ids);
     }
 
@@ -477,7 +480,7 @@ public class CmsListColumnDefinition {
                     new Object[] {getName().key(wp.getLocale())});
             }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%')<0) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
             html.append("\t<div style='display:block; width: ");
             html.append(getWidth());
             html.append("px;'>\n");
@@ -488,7 +491,7 @@ public class CmsListColumnDefinition {
             id,
             getName().key(wp.getLocale()),
             helpText,
-            list.isPrintable()? false : isSorteable(),
+            list.isPrintable() ? false : isSorteable(),
             null,
             null,
             onClic));
@@ -506,11 +509,21 @@ public class CmsListColumnDefinition {
                 html.append("' alt=''>\n");
             }
         }
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%')<0) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
             html.append("\t</div>\n");
         }
         html.append("</th>\n");
         return html.toString();
+    }
+
+    /**
+     * Returns the printable  .<p>
+     *
+     * @return the printable flag
+     */
+    public boolean isPrintable() {
+
+        return m_printable;
     }
 
     /**
@@ -593,6 +606,16 @@ public class CmsListColumnDefinition {
     public void setName(CmsMessageContainer name) {
 
         m_name = name;
+    }
+
+    /**
+     * Sets the printable flag.<p>
+     *
+     * @param printable the printable flag to set
+     */
+    public void setPrintable(boolean printable) {
+
+        m_printable = printable;
     }
 
     /**

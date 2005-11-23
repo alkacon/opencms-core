@@ -41,6 +41,7 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListPrintIAction;
 import org.opencms.workplace.list.CmsListSearchAction;
 import org.opencms.workplace.tools.accounts.Messages;
 
@@ -228,6 +229,9 @@ public class CmsListDemo3 extends A_CmsListDialog {
         CmsListSearchAction searchAction = new CmsListSearchAction(metadata.getColumnDefinition(LIST_COLUMN_LOGIN));
         searchAction.addColumn(metadata.getColumnDefinition(LIST_COLUMN_EMAIL));
         metadata.setSearchAction(searchAction);
+
+        // remove print action
+        metadata.getIndependentAction(CmsListPrintIAction.LIST_ACTION_ID).setVisible(false);
     }
 
 }

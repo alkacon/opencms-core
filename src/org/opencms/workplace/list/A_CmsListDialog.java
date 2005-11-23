@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/11/21 16:42:44 $
- * Version: $Revision: 1.32.2.2 $
+ * Date   : $Date: 2005/11/23 12:56:47 $
+ * Version: $Revision: 1.32.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.32.2.2 $ 
+ * @version $Revision: 1.32.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -835,6 +835,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
             setColumns(metadata);
             setIndependentActions(metadata);
+            metadata.addIndependentAction(new CmsListPrintIAction());
             setMultiActions(metadata);
             metadata.checkIds();
             m_metadatas.put(listDialogName, metadata);
@@ -992,7 +993,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
         try {
             getList().addAllItems(getListItems());
             // initialize detail columns
-            Iterator itDetails = getList().getMetadata().getListDetails().iterator();
+            Iterator itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
             while (itDetails.hasNext()) {
                 initializeDetail(((CmsListItemDetails)itDetails.next()).getId());
             }

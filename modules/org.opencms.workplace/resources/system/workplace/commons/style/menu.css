@@ -331,7 +331,11 @@ body, form {
   text-decoration: none;
   color: black;    
 }
-
+ 
+.list {
+	border-collapse: collapse;
+}
+	 
 .list td {
   text-align: left;
   vertical-align: middle;
@@ -362,7 +366,7 @@ body, form {
 .oddrowbg {
 	background-color: Window;
 }
-
+ 
 .pathbar {
    padding-top: 10px;
    padding-left: 10px;

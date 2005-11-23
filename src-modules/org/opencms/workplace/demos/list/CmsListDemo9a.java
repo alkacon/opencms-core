@@ -42,6 +42,7 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.list.CmsListColumnAlignEnum;
 import org.opencms.workplace.list.CmsListColumnDefinition;
+import org.opencms.workplace.list.CmsListCsvExportIAction;
 import org.opencms.workplace.list.CmsListDateMacroFormatter;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
@@ -309,6 +310,7 @@ public class CmsListDemo9a extends A_CmsListDialog {
         deleteCol.setWidth("20");
         deleteCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         deleteCol.setSorteable(false);
+        deleteCol.setPrintable(false);
         // add delete action
         CmsListDirectAction deleteAction = new CmsListDirectAction(LIST_ACTION_DELETE);
         deleteAction.setName(Messages.get().container(Messages.GUI_USERS_LIST_ACTION_DELETE_NAME_0));
@@ -380,6 +382,8 @@ public class CmsListDemo9a extends A_CmsListDialog {
         refreshAction.setHelpText(new CmsMessageContainer(null, "Click here to refresh the list"));
         refreshAction.setIconPath(ICON_MULTI_ADD);
         metadata.addIndependentAction(refreshAction);
+        
+        metadata.addIndependentAction(new CmsListCsvExportIAction());
     }
 
     /**

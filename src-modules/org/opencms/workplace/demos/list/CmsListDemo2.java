@@ -41,6 +41,7 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListItem;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
+import org.opencms.workplace.list.CmsListPrintIAction;
 import org.opencms.workplace.tools.accounts.Messages;
 
 import java.util.ArrayList;
@@ -223,7 +224,8 @@ public class CmsListDemo2 extends A_CmsListDialog {
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
-        // noop
+        // remove print action
+        metadata.getIndependentAction(CmsListPrintIAction.LIST_ACTION_ID).setVisible(false);
     }
 
 }

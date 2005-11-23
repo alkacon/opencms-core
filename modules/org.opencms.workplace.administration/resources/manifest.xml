@@ -31,6 +31,8 @@
 			<exportpoint uri="/system/modules/org.opencms.workplace.administration/lib/" destination="WEB-INF/lib/"/>
 		</exportpoints>
 		<resources>
+			<resource uri="/system/workplace/commons/list-csv.txt"/>
+			<resource uri="/system/workplace/commons/list-print.html"/>
 			<resource uri="/system/workplace/resources/admin/"/>
 			<resource uri="/system/workplace/resources/list/"/>
 			<resource uri="/system/workplace/views/admin/"/>
@@ -48,16 +50,7 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Users</uuidprincipal>
-					<flags>34</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules</destination>
@@ -113,30 +106,68 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/commons</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
 			<properties>
 				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[UTF-8]]></value>
+					<name>cache</name>
+					<value><![CDATA[false]]></value>
 				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/list-csv.txt</source>
+			<destination>system/workplace/commons/list-csv.txt</destination>
+			<type>jsp</type>
+			<uuidresource>82c2b8eb-551e-11da-a4cf-4b5a0381b421</uuidresource>
+			<datelastmodified>Mon, 14 Nov 2005 14:56:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Nov 2005 14:54:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
-					<name>login-form</name>
-					<value><![CDATA[/system/login/index.html]]></value>
+					<name>Title</name>
+					<value><![CDATA[List CSV Output]]></value>
 				</property>
 			</properties>
-			<accesscontrol>
-				<accessentry>
-					<uuidprincipal>GROUP.Guests</uuidprincipal>
-					<flags>38</flags>
-					<permissionset>
-						<allowed>0</allowed>
-						<denied>30</denied>
-					</permissionset>
-				</accessentry>
-			</accesscontrol>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/list-print.html</source>
+			<destination>system/workplace/commons/list-print.html</destination>
+			<type>jsp</type>
+			<uuidresource>8a3eb8eb-de1e-6fda-a4cf-4b5a0381b421</uuidresource>
+			<datelastmodified>Mon, 14 Nov 2005 14:56:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Nov 2005 14:54:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[List Print Preview]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources</destination>
@@ -350,6 +381,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/list/csv.png</source>
+			<destination>system/workplace/resources/list/csv.png</destination>
+			<type>image</type>
+			<uuidresource>bbdd9b7d-5509-11da-9ce1-4b5a0381b421</uuidresource>
+			<datelastmodified>Fri, 28 Oct 2005 15:20:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 14 Nov 2005 12:25:25 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/list/delete.png</source>
 			<destination>system/workplace/resources/list/delete.png</destination>
 			<type>image</type>
@@ -497,6 +541,19 @@
 			<destination>system/workplace/resources/list/multi_minus.png</destination>
 			<type>image</type>
 			<uuidresource>c4aaa11d-d427-11d9-8431-b920ebfd9bc1</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/print.png</source>
+			<destination>system/workplace/resources/list/print.png</destination>
+			<type>image</type>
+			<uuidresource>c4734fed-d427-4ed9-8431-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>

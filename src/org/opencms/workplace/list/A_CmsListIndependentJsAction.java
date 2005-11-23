@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/11/23 12:56:47 $
- * Version: $Revision: 1.17.2.4 $
+ * File   : $Source$
+ * Date   : $Date$
+ * Version: $Revision$
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,65 +33,53 @@ package org.opencms.workplace.list;
 
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
-import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 /**
- * Default implementation of a independent action for a html list.<p>
+ * Default implementation of a independent action for a html list column that can execute java script code.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17.2.4 $ 
+ * @version $Revision$ 
  * 
  * @since 6.0.0 
  */
-public class CmsListIndependentAction extends A_CmsListAction {
+public abstract class A_CmsListIndependentJsAction extends CmsListIndependentAction {
 
     /**
      * Default Constructor.<p>
      * 
      * @param id unique id
      */
-    public CmsListIndependentAction(String id) {
+    public A_CmsListIndependentJsAction(String id) {
 
         super(id);
     }
-    
+
     /**
-     * Help method to resolve the on clic text to use.<p>
+     * @see org.opencms.workplace.list.CmsListIndependentAction#resolveOnClic(org.opencms.workplace.CmsWorkplace)
+     */
+    protected String resolveOnClic(CmsWorkplace wp) {
+    
+        String confirmationMessage = getConfirmationMessage().key(wp.getLocale());
+        StringBuffer onClic = new StringBuffer(128);
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
+            onClic.append("if (confirm('");
+            onClic.append(CmsStringUtil.escapeJavaScript(confirmationMessage));
+            onClic.append("')) { ");
+        }
+        onClic.append(jsCode(wp));
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(confirmationMessage)) {
+            onClic.append(" } ");
+        }
+        return onClic.toString();
+    }
+
+    /**
+     * The js code to execute.<p>
      * 
      * @param wp the workplace context
      * 
-     * @return the on clic text
+     * @return js code to execute
      */
-    protected String resolveOnClic(CmsWorkplace wp) {
-        
-        return "listIndepAction('"
-            + getListId()
-            + "','"
-            + getId()
-            + "', '"
-            + CmsStringUtil.escapeJavaScript(wp.resolveMacros(getConfirmationMessage().key(wp.getLocale())))
-            + "');";
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(CmsWorkplace)
-     */
-    public String buttonHtml(CmsWorkplace wp) {
-
-        if (!isVisible()) {
-            return "";
-        } 
-        return A_CmsHtmlIconButton.defaultButtonHtml(
-            wp.getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            getId(),
-            getName().key(wp.getLocale()),
-            getHelpText().key(wp.getLocale()),
-            isEnabled(),
-            getIconPath(),
-            null,
-            resolveOnClic(wp));
-    }
+    public abstract String jsCode(CmsWorkplace wp);
 }

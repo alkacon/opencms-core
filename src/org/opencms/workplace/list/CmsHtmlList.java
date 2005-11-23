@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/11/21 16:46:26 $
- * Version: $Revision: 1.32.2.4 $
+ * Date   : $Date: 2005/11/23 12:56:47 $
+ * Version: $Revision: 1.32.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.4 $ 
+ * @version $Revision: 1.32.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -67,10 +67,10 @@ public class CmsHtmlList {
     public static final String ITEM_SEPARATOR = "|";
 
     /** Var name for error message if no item has been selected. */
-    public final static String NO_SELECTION_HELP_VAR = "noSelHelp";
+    public static final String NO_SELECTION_HELP_VAR = "noSelHelp";
 
     /** Var name for error message if number of selected items does not match. */
-    public final static String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
+    public static final String NO_SELECTION_MATCH_HELP_VAR = "noSelMatchHelp";
 
     /** Current displayed page number. */
     private int m_currentPage;
@@ -461,9 +461,22 @@ public class CmsHtmlList {
 
         StringBuffer html = new StringBuffer(5120);
         html.append(htmlBegin(wp));
-        html.append(htmlTitle(wp));
         if (!isPrintable()) {
+            html.append(htmlTitle(wp));
             html.append(htmlToolBar(wp));
+        } else {
+            html.append("<style type='text/css'>\n");            
+            html.append("td.listdetailitem, \n");
+            html.append(".linkdisabled {\n");
+            html.append("\tcolor: black;\n");
+            html.append("}\n");
+            html.append(".list th {\n");
+            html.append("\tborder: 1px solid black;\n");
+            html.append("}\n");
+            html.append(".list {\n");
+            html.append("\tborder: 1px solid black;\n");
+            html.append("}\n");
+            html.append("</style>");
         }
         html.append("<table width='100%' cellpadding='1' cellspacing='0' class='list'>\n");
         html.append(m_metadata.htmlHeader(this, wp));
@@ -913,7 +926,7 @@ public class CmsHtmlList {
         StringBuffer html = new StringBuffer(512);
         // help & confirmation text for actions if needed
         if (!isPrintable() && m_visibleItems != null && !m_visibleItems.isEmpty()) {
-            Iterator cols = getMetadata().getListColumns().iterator();
+            Iterator cols = getMetadata().getColumnDefinitions().iterator();
             while (cols.hasNext()) {
                 CmsListColumnDefinition col = (CmsListColumnDefinition)cols.next();
                 Iterator actions = col.getDirectActions().iterator();
@@ -954,7 +967,7 @@ public class CmsHtmlList {
         html.append("\t\t</table>\n");
         html.append(((CmsDialog)wp).dialogBlock(CmsWorkplace.HTML_END, m_name.key(wp.getLocale()), false));
         html.append("</div>\n");
-        if (getMetadata().isSearchable()) {
+        if (!isPrintable() && getMetadata().isSearchable()) {
             html.append("<script type='text/javascript'>\n");
             html.append("\tvar form = document.forms['");
             html.append(getId());
@@ -1076,31 +1089,48 @@ public class CmsHtmlList {
         html.append("\t<tr>\n");
         html.append("\t\t<td align='left'>\n");
         html.append("\t\t\t");
-        if (!isPrintable() && CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-            html.append(Messages.get().key(
-                wp.getLocale(),
-                Messages.GUI_LIST_TITLE_TEXT_4,
-                new Object[] {
-                    m_name.key(wp.getLocale()),
-                    new Integer(displayedFrom()),
-                    new Integer(displayedTo()),
-                    new Integer(getTotalSize())}));
+        if (getTotalNumberOfPages()>1) {
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                html.append(Messages.get().key(
+                    wp.getLocale(),
+                    Messages.GUI_LIST_TITLE_TEXT_4,
+                    new Object[] {
+                        m_name.key(wp.getLocale()),
+                        new Integer(displayedFrom()),
+                        new Integer(displayedTo()),
+                        new Integer(getTotalSize())}));
+            } else {
+                html.append(Messages.get().key(
+                    wp.getLocale(),
+                    Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
+                    new Object[] {
+                        m_name.key(wp.getLocale()),
+                        new Integer(displayedFrom()),
+                        new Integer(displayedTo()),
+                        new Integer(getSize()),
+                        new Integer(getTotalSize())}));
+            }
         } else {
-            html.append(Messages.get().key(
-                wp.getLocale(),
-                Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
-                new Object[] {
-                    m_name.key(wp.getLocale()),
-                    new Integer(displayedFrom()),
-                    new Integer(displayedTo()),
-                    new Integer(getSize()),
-                    new Integer(getTotalSize())}));
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
+                html.append(Messages.get().key(
+                    wp.getLocale(),
+                    Messages.GUI_LIST_SINGLE_TITLE_TEXT_2,
+                    new Object[] {
+                        m_name.key(wp.getLocale()),
+                        new Integer(getTotalSize())}));
+            } else {
+                html.append(Messages.get().key(
+                    wp.getLocale(),
+                    Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3,
+                    new Object[] {
+                        m_name.key(wp.getLocale()),
+                        new Integer(getSize()),
+                        new Integer(getTotalSize())}));
+            }
         }
         html.append("\n");
         html.append("\t\t</td>\n\t\t");
-        if (!isPrintable()) {
-            html.append(getMetadata().htmlActionBar(wp));
-        }
+        html.append(getMetadata().htmlActionBar(wp));
         html.append("\n\t</tr>\n");
         html.append("</table>\n");
         return html.toString();
