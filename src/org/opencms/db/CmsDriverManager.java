@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/11/21 16:07:15 $
- * Version: $Revision: 1.557.2.13 $
+ * Date   : $Date: 2005/11/23 12:52:06 $
+ * Version: $Revision: 1.557.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -7294,6 +7294,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeGroup(CmsDbContext dbc, CmsGroup group) throws CmsException {
 
+        m_groupCache.remove(new CacheId(group));
         m_userDriver.writeGroup(dbc, group);
         m_groupCache.put(new CacheId(group), group);
     }
@@ -7516,9 +7517,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
+        clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
         // update the cache
-        clearUserCache(user);
         putUserInCache(user);
     }
 
@@ -7539,9 +7540,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public void writeWebUser(CmsDbContext dbc, CmsUser user) throws CmsException {
 
+        clearUserCache(user);
         m_userDriver.writeUser(dbc, user);
         // update the cache
-        clearUserCache(user);
         putUserInCache(user);
     }
 
