@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/Messages.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/23 08:14:28 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.3
  */
@@ -55,7 +55,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DECORATION_MAP_FILL_2 = "LOG_DECORATION_MAP_FILL_2";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.jsp.decorator";
+    private static final String BUNDLE_NAME = "org.opencms.jsp.decorator.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
