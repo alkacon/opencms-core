@@ -379,7 +379,8 @@
 -->								 
 <!ELEMENT workplace-generaloptions (buttonstyle,
 									reporttype,
-									uploadapplet)>
+									uploadapplet,
+									publishbuttonappearance?)>
 <!--
 # The buttonstyle controls the appearence of the buttons on the workplace.
 # Possible values are [image|textimage|text].
@@ -396,7 +397,16 @@
 # If this element is set to "true", the upload applet is used for file uploads in the 
 # workplace explorer.
 -->	
-<!ELEMENT uploadapplet (#PCDATA)>									
+<!ELEMENT uploadapplet (#PCDATA)>
+
+<!--
+# This element controls the appearance of the "publish project" button in the workplace button bar.
+# Possible values are [always|auto|never].
+# - always (default) means that the button is always shown, depending on the current users permissions active or inactive.
+# - auto: the button is only available if the current user has permissions to publish the current project.
+# - never: the button is never shown.
+-->	
+<!ELEMENT publishbuttonappearance (#PCDATA)>									
 	
 <!--
 # The workplace startupsettings are used to define locale, project and view used directly

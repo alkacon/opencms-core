@@ -536,6 +536,7 @@
 					<buttonstyle>textimage</buttonstyle>
 					<reporttype>extended</reporttype>
 					<uploadapplet>true</uploadapplet>
+					<publishbuttonappearance>always</publishbuttonappearance>
 				</workplace-generaloptions>
 				<workplace-startupsettings>
 					<locale>en</locale>

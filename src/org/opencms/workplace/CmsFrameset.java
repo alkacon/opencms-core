@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.84.2.2 $
+ * Date   : $Date: 2005/11/23 13:25:27 $
+ * Version: $Revision: 1.84.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.84.2.2 $ 
+ * @version $Revision: 1.84.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,6 +88,15 @@ public class CmsFrameset extends CmsWorkplace {
 
     /** The request parameter for the workplace view selection. */
     public static final String PARAM_WP_VIEW = "wpView";
+    
+    /** Publish button appearance: show always. */
+    public static final String PUBLISHBUTTON_SHOW_ALWAYS = "always";
+    
+    /** Publish button appearance: show auto (only if user has publish permissions). */
+    public static final String PUBLISHBUTTON_SHOW_AUTO = "auto";
+    
+    /** Publish button appearance: show never. */
+    public static final String PUBLISHBUTTON_SHOW_NEVER = "never";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFrameset.class);
@@ -241,6 +250,36 @@ public class CmsFrameset extends CmsWorkplace {
     }
 
     /**
+     * Returns the html for the "publish project" button depending on the current users permissions and the default
+     * workplace settings.<p>
+     * 
+     * @return the html for the "publish project" button
+     */
+    public String getPublishButton() {
+
+        String publishButton = OpenCms.getWorkplaceManager().getDefaultUserSettings().getPublishButtonAppearance();
+        if (PUBLISHBUTTON_SHOW_NEVER.equals(publishButton)) {
+            return "";
+        }
+
+        int buttonStyle = getSettings().getUserSettings().getWorkplaceButtonStyle();
+
+        if (PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
+            if (getCms().isManagerOfProject()) {
+                return button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle);
+            } else {
+                return "";
+            }
+        }
+
+        if (getCms().isManagerOfProject()) {
+            return (button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle));
+        } else {
+            return (button(null, null, "publish_in.png", "button.publish", buttonStyle));
+        }
+    }
+
+    /**
      * Returns a html select box filled with the current users accessible sites.<p>
      * 
      * @param htmlAttributes attributes that will be inserted into the generated html 
@@ -339,16 +378,6 @@ public class CmsFrameset extends CmsWorkplace {
     public String getWorkplaceReloadUri() {
 
         return getJsp().link(CmsFrameset.JSP_WORKPLACE_URI);
-    }
-
-    /**
-     * Returns true if the user has publish permissions for the current project.<p>
-     * 
-     * @return true if the user has publish permissions for the current project
-     */
-    public boolean isPublishEnabled() {
-
-        return getCms().isManagerOfProject();
     }
 
     /**

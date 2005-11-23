@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/11/16 12:11:33 $
- * Version: $Revision: 1.39.2.4 $
+ * Date   : $Date: 2005/11/23 13:25:27 $
+ * Version: $Revision: 1.39.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.4 $
+ * @version $Revision: 1.39.2.5 $
  * 
  * @since 6.0.0
  */
@@ -215,6 +215,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the project node. */
     public static final String N_PROJECT = "project";
+    
+    /** The node name of the publish button appearance node. */
+    public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
 
     /** The node name of the report type node. */
     public static final String N_REPORTTYPE = "reporttype";
@@ -828,6 +831,16 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             + N_WORKPLACEGENERALOPTIONS
             + "/"
             + N_UPLOADAPPLET, "setUploadApplet", 0);
+        digester.addCallMethod("*/"
+            + N_WORKPLACE
+            + "/"
+            + N_USER
+            + "/"
+            + N_WORKPLACEPREFERENCES
+            + "/"
+            + N_WORKPLACEGENERALOPTIONS
+            + "/"
+            + N_PUBLISHBUTTONAPPEARANCE, "setPublishButtonAppearance", 0);
 
         // add workplace preferences startupsettings rules 
         digester.addCallMethod("*/"
@@ -1420,6 +1433,11 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         // add the <uploadapplet> node
         workplaceGeneraloptions.addElement(N_UPLOADAPPLET).setText(
             m_workplaceManager.getDefaultUserSettings().getUploadAppletString());
+        // add the <publishbuttonappearance> node if not empty
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance())) {
+            workplaceGeneraloptions.addElement(N_PUBLISHBUTTONAPPEARANCE).setText(
+                m_workplaceManager.getDefaultUserSettings().getPublishButtonAppearance());
+        }
         // add the <workplace-startupsettings> node
         Element workplaceStartupsettings = workplacePreferences.addElement(N_WORKPLACESTARTUPSETTINGS);
         // add the <locale> node

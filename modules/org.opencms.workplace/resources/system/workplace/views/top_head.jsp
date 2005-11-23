@@ -61,12 +61,12 @@
 </div>
 </form></td>
 
-<% 
-if (wp.isPublishEnabled()) {
-	out.println(wp.button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle));
-	} else {
-	out.println(wp.button(null, null, "publish_in.png", "button.publish", buttonStyle));
-}
+<%= 
+	
+	wp.getPublishButton() 
+
+
+%><%
 
 if (wp.showSiteSelector()) {
 

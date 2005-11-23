@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/09/16 09:08:54 $
- * Version: $Revision: 1.34.2.1 $
+ * Date   : $Date: 2005/11/23 13:25:27 $
+ * Version: $Revision: 1.34.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,14 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.34.2.1 $
+ * @version $Revision: 1.34.2.2 $
  * 
  * @since 6.0.0
  */
 public class CmsUserSettings {
+
+    /** Key for additional info of resources that were confirmemed by the user. */
+    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
 
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_COUNTRY = "USER_COUNTRY";
@@ -79,9 +82,45 @@ public class CmsUserSettings {
     /** Key for additional info address. */
     public static final String ADDITIONAL_INFO_ZIPCODE = "USER_ZIPCODE";
 
-    /** Key for additional info of resources that were confirmemed by the user. */
-    public static final String ADDITIONAL_INFO_CONFIRMED_RESOURCES = "ADDITIONAL_INFO_CONFIRMED_RESOURCES";
-    
+    /** Flag for displaying the date created column. */
+    public static final int FILELIST_DATE_CREATED = 1024;
+
+    /** Flag for displaying the date expired column. */
+    public static final int FILELIST_DATE_EXPIRED = 8192;
+
+    /** Flag for displaying the changed column. */
+    public static final int FILELIST_DATE_LASTMODIFIED = 4;
+
+    /** Flag for displaying the date released column. */
+    public static final int FILELIST_DATE_RELEASED = 4096;
+
+    /** Flag for displaying the locked column. */
+    public static final int FILELIST_LOCKEDBY = 256;
+
+    /** Flag for displaying the name column. */
+    public static final int FILELIST_NAME = 512;
+
+    /** Flag for displaying the access column. */
+    public static final int FILELIST_PERMISSIONS = 128;
+
+    /** Flag for displaying the size column. */
+    public static final int FILELIST_SIZE = 8;
+
+    /** Flag for displaying the state column. */
+    public static final int FILELIST_STATE = 16;
+
+    /** Flag for displaying the title column. */
+    public static final int FILELIST_TITLE = 1;
+
+    /** Flag for displaying the filetype column. */
+    public static final int FILELIST_TYPE = 2;
+
+    /** Flag for displaying the owner column. */
+    public static final int FILELIST_USER_CREATED = 32;
+
+    /** Flag for displaying the user who last modified column. */
+    public static final int FILELIST_USER_LASTMODIFIED = 2048;
+
     /** The default button style. */
     private static final int BUTTONSTYLE_DEFAULT = 1;
 
@@ -129,6 +168,8 @@ public class CmsUserSettings {
 
     private CmsUserProjectSettings m_projectSettings;
 
+    private String m_publishButtonAppearance;
+
     private boolean m_restrictExplorerView;
 
     private boolean m_showExportSettings;
@@ -156,45 +197,6 @@ public class CmsUserSettings {
     private int m_workplaceButtonStyle;
 
     private String m_workplaceReportType;
-
-    /** Flag for displaying the date created column. */
-    public static final int FILELIST_DATE_CREATED = 1024;
-
-    /** Flag for displaying the date expired column. */
-    public static final int FILELIST_DATE_EXPIRED = 8192;
-
-    /** Flag for displaying the changed column. */
-    public static final int FILELIST_DATE_LASTMODIFIED = 4;
-
-    /** Flag for displaying the date released column. */
-    public static final int FILELIST_DATE_RELEASED = 4096;
-
-    /** Flag for displaying the locked column. */
-    public static final int FILELIST_LOCKEDBY = 256;
-
-    /** Flag for displaying the name column. */
-    public static final int FILELIST_NAME = 512;
-
-    /** Flag for displaying the access column. */
-    public static final int FILELIST_PERMISSIONS = 128;
-
-    /** Flag for displaying the size column. */
-    public static final int FILELIST_SIZE = 8;
-
-    /** Flag for displaying the state column. */
-    public static final int FILELIST_STATE = 16;
-
-    /** Flag for displaying the title column. */
-    public static final int FILELIST_TITLE = 1;
-
-    /** Flag for displaying the filetype column. */
-    public static final int FILELIST_TYPE = 2;
-
-    /** Flag for displaying the owner column. */
-    public static final int FILELIST_USER_CREATED = 32;
-
-    /** Flag for displaying the user who last modified column. */
-    public static final int FILELIST_USER_LASTMODIFIED = 2048;
 
     /**
      * Creates an empty new user settings object.<p>
@@ -423,6 +425,16 @@ public class CmsUserSettings {
     public CmsUserProjectSettings getProjectSettings() {
 
         return m_projectSettings;
+    }
+
+    /**
+     * Returns the appearance of the "publish project" button.<p>
+     * 
+     * @return the appearance of the "publish project" button
+     */
+    public String getPublishButtonAppearance() {
+
+        return m_publishButtonAppearance;
     }
 
     /**
@@ -822,7 +834,7 @@ public class CmsUserSettings {
         // project settings
         try {
             m_projectSettings = ((CmsUserProjectSettings)m_user.getAdditionalInfo(PREFERENCES + PROJECT_SETTINGS));
-        } catch (Throwable t) { 
+        } catch (Throwable t) {
             m_projectSettings = null;
         }
         if (m_projectSettings == null) {
@@ -1342,6 +1354,16 @@ public class CmsUserSettings {
     public void setProjectSettings(CmsUserProjectSettings projectSettings) {
 
         m_projectSettings = projectSettings;
+    }
+
+    /**
+     * Sets the appearance of the "publish project" button.<p>
+     * 
+     * @param publishButtonAppearance the appearance of the "publish project" button
+     */
+    public void setPublishButtonAppearance(String publishButtonAppearance) {
+
+        m_publishButtonAppearance = publishButtonAppearance;
     }
 
     /**
