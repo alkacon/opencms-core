@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/tree.js,v $
- * Date   : $Date: 2005/11/19 17:08:38 $
- * Version: $Revision: 1.4.2.2 $
+ * Date   : $Date: 2005/11/23 09:19:54 $
+ * Version: $Revision: 1.4.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,20 +36,40 @@ var treeHeadHtml1 =
 
 var treeHeadHtml2 =
 	"\">\n"
-	+ "<title>opencms explorer tree</title>\n"
+	+ "<title>OpenCms explorer tree</title>\n"
 	+ "<script type=\"text/javascript\">\n"
 	+ "<!--\n"
 	+ "document.oncontextmenu = new Function('return false;');\n"
 	+ "document.onmousedown = new Function('return false;');\n"
 	+ "document.onmouseup = new Function('return false;');\n"
+	+ "function linkOver(obj) {\n"
+	+ "var cls = obj.className;\n"
+	+ "if (cls.charAt(cls.length - 1) != 'i') {\n"
+	+ "\tcls = cls + 'i';\n"
+	+ "}\n"
+	+ "obj.className = cls;\n"
+	+ "}\n"
+	+ "function linkOut(obj) {\n"
+	+ "var cls = obj.className;\n"
+	+ "if (cls.charAt(cls.length - 1) == 'i') {\n"
+	+ "\tcls = cls.substring(0, cls.length-1);\n"
+	+ "}\n"
+	+ "obj.className = cls;\n"
+	+ "}\n"
 	+ "//-->\n"
 	+ "</script>\n"
 	+ "<style type=\"text/css\">\n"
 	+ "body  { font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; padding: 2px 0px 0px 2px; margin: 0px; backgound-color: #ffffff; }\n"
 	+ "p, td { vertical-align: bottom; font-family: Verdana, Arial, Helvetica, sans-serif; font-size: 11px; white-space: nowrap; color: #000000; }\n"
-	+ "a     { vertical-align: bottom; text-decoration: none; }\n"
+	+ "a     { vertical-align: bottom; text-decoration: none; cursor: pointer; }\n"
 	+ "a.ig  { vertical-align: bottom; text-decoration: none; color: #888888; }\n"
+	+ "a.igi { vertical-align: bottom; text-decoration: underline; color: #000088; }\n"
 	+ "a.tf  { vertical-align: bottom; text-decoration: none; color: #000000; }\n"
+	+ "a.tfi { vertical-align: bottom; text-decoration: underline; color: #000088; }\n"
+	+ "a.fc  { vertical-align: bottom; color: #b40000; } "
+	+ "a.fci { vertical-align: bottom; text-decoration: underline; color: #000088; } "
+	+ "a.fn  { vertical-align: bottom; color: #0000aa; } "
+	+ "a.fni { vertical-align: bottom; text-decoration: underline; color: #000088; } "
 	+ "a:hover { vertical-align: bottom; text-decoration: underline; color: #000088; }\n"
 	+ "span.pad { }\n"
 	+ "img.icon { width: 16px; height: 16px; border: 0px; padding: 0px; margin: 0px; vertical-align: bottom; }\n"
@@ -81,12 +101,13 @@ function treeObject(){
 }
 
 
-function nodeObject(name, type, folder, id, parentId, grey, open){
+function nodeObject(name, type, folder, id, parentId, state, grey, open){
 	this.name = name;
 	this.type = type;
 	this.folder = (folder == 1) ? true : false;
 	this.id = id;
 	this.parentId = parentId;
+	this.state = state;
 	this.grey = (grey == 1) ? true : false;
 	this.open = open;
 	this.childs = null;
@@ -304,13 +325,28 @@ function dfsTree(doc, node, depth, last, shape) {
 			}
 		}
 	}
-
-	var color="class=\"tf\" ";
+	
+	var linkClass;
 	if(node.grey) {
-		color="class=\"ig\" ";
-	}
+		// grey folder
+		linkClass = "ig";
+	} else {
+		switch (node.state) {
+			case 1:
+				// changed folder
+				linkClass = "fc";
+				break;
+			case 2:
+				// new folder
+				linkClass = "fn";
+				break;
+			default:
+				// common folder
+				linkClass = "tf";
+		}
+	} 
 
-	doc.write("&nbsp;<a " + color + " href=\"javascript:parent.doAction(document, " + node.id + ");\">" + node.name + "</a>");
+	doc.write("&nbsp;<a class=\"" + linkClass + "\" onclick=\"parent.doAction(document, " + node.id + ");\" onmouseover=\"linkOver(this);\" onmouseout=\"linkOut(this);\">" + node.name + "</a>");
 
 	doc.writeln("</td></tr>");
 
@@ -426,7 +462,7 @@ function getNodeNameById(nodeId) {
 }
 
 
-function aC(name, type, folder, id, parentId, grey) {
+function aC(name, type, folder, id, parentId, state, grey) {
 	var theParent = tree.nodes[parentId];
 	var oldNode = tree.nodes[id];
 
@@ -434,11 +470,11 @@ function aC(name, type, folder, id, parentId, grey) {
 		// the node is not already present in the tree, so insert it
 		if (theParent == null) {
 			// this is the "root" node
-			tree.nodes[id] = new nodeObject(name, type, folder, id, null, grey, false);
+			tree.nodes[id] = new nodeObject(name, type, folder, id, null, state, grey, false);
 			tree.root = tree.nodes[id];
 		} else {
 			// this is a regular subnode
-			tree.nodes[id] = new nodeObject(name, type, folder, id, parentId, grey, false);
+			tree.nodes[id] = new nodeObject(name, type, folder, id, parentId, state, grey, false);
 			if (theParent.childs == null) {
 				theParent.childs = new Array();
 			}
@@ -446,7 +482,7 @@ function aC(name, type, folder, id, parentId, grey) {
 		}
 	} else {
 		// the node is already part of the tree, so just update it
-		newNode = new nodeObject(name, type, folder, id, parentId, oldNode.grey, oldNode.open);
+		newNode = new nodeObject(name, type, folder, id, parentId, oldNode.state, oldNode.grey, oldNode.open);
 		newNode.childs = oldNode.childs;
 		tree.nodes[id] = newNode;
 		// the parents "child node list" must have been cleared before adding new nodes

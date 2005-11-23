@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/11/23 09:19:54 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -458,6 +458,7 @@ public class CmsTree extends CmsWorkplace {
                     resource.getName(),
                     resource.getTypeId(),
                     resource.isFolder(),
+                    resource.getState(),
                     grey));
             }
 
@@ -633,11 +634,12 @@ public class CmsTree extends CmsWorkplace {
      * @param title the resource name
      * @param type the resource type 
      * @param folder if the resource is a folder
+     * @param state the resource state
      * @param grey if true, the node is displayed in grey
      *
      * @return the output for a tree node
      */
-    private String getNode(String path, String title, int type, boolean folder, boolean grey) {
+    private String getNode(String path, String title, int type, boolean folder, int state, boolean grey) {
 
         StringBuffer result = new StringBuffer(64);
         String parent = CmsResource.getParentFolder(path);
@@ -660,6 +662,9 @@ public class CmsTree extends CmsWorkplace {
         result.append(",");
         // hashcode of parent path
         result.append((parent != null) ? parent.hashCode() : 0);
+        result.append(",");
+        // resource state
+        result.append(state);
         result.append(",");
         // project status
         if (grey) {
@@ -698,7 +703,7 @@ public class CmsTree extends CmsWorkplace {
                 LOG.info(e);
             }
         }
-        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, false);
+        return getNode(resource.getRootPath(), title, resource.getTypeId(), true, resource.getState(), false);
     }
 
     /**
