@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/A_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/13 12:09:14 $
- * Version: $Revision: 1.36.2.4 $
+ * Date   : $Date: 2005/11/24 11:39:47 $
+ * Version: $Revision: 1.36.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36.2.4 $ 
+ * @version $Revision: 1.36.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -594,6 +594,12 @@ public abstract class A_CmsResourceType implements I_CmsResourceType {
             // if source existed, destination must "steal" the lock 
             securityManager.changeLock(cms.getRequestContext(), destinationResource);
         }
+    }
+
+    public void removeResourceFromProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
+    throws CmsException {
+
+        securityManager.removeResourceFromProject(cms.getRequestContext(), resource);
     }
 
     /**

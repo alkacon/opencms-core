@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/10/28 12:07:37 $
- * Version: $Revision: 1.93.2.7 $
+ * Date   : $Date: 2005/11/24 11:39:47 $
+ * Version: $Revision: 1.93.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -165,7 +165,7 @@ public final class CmsSecurityManager {
 
         return securityManager;
     }
-    
+
     /**
      * Updates the state of the given task as accepted by the current user.<p>
      * 
@@ -567,7 +567,7 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
     }
-    
+
     /**
      * Checks if the current user has the permissions to publish the given publish list 
      * (which contains the information about the resources / project to publish).<p>
@@ -674,7 +674,7 @@ public final class CmsSecurityManager {
      */
     public void checkPublishPermissions(CmsRequestContext context, CmsPublishList publishList)
     throws CmsException, CmsMultiException {
-    
+
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
             // check the access permissions
@@ -2149,7 +2149,12 @@ public final class CmsSecurityManager {
         List dependencies;
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
-            dependencies = m_driverManager.getResourcesForPrincipal(dbc, dbc.currentProject(), principalId, permissions, includeAttr);
+            dependencies = m_driverManager.getResourcesForPrincipal(
+                dbc,
+                dbc.currentProject(),
+                principalId,
+                permissions,
+                includeAttr);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_READ_RESOURCES_FOR_PRINCIPAL_LOG_1, principalId), e);
             dependencies = new ArrayList();
@@ -3754,7 +3759,7 @@ public final class CmsSecurityManager {
         }
         return result;
     }
-    
+
     /**
      * Reads all property objects from a resource.<p>
      * 
@@ -4019,7 +4024,7 @@ public final class CmsSecurityManager {
         }
         return result;
     }
-    
+
     /**
      * Returns a List of all siblings of the specified resource,
      * the specified resource being always part of the result set.<p>
@@ -4465,6 +4470,40 @@ public final class CmsSecurityManager {
     }
 
     /**
+     * Removes a resource from the current project of the user.<p>
+     * 
+     * @param context the current request context
+     * @param resource the resource to apply this operation to
+     * @throws CmsException if something goes wrong
+     * @throws CmsRoleViolationException if the current user does not have management access to the project.
+     * @see org.opencms.file.types.I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
+     */
+    public void removeResourceFromProject(CmsRequestContext context, CmsResource resource)
+    throws CmsException, CmsRoleViolationException {
+
+        CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
+        try {
+            checkOfflineProject(dbc);
+            checkManagerOfProjectRole(dbc, context.currentProject());
+
+            if (dbc.currentProject().getFlags() != CmsProject.PROJECT_STATE_UNLOCKED) {
+                throw new CmsLockException(org.opencms.lock.Messages.get().container(
+                    org.opencms.lock.Messages.ERR_RESOURCE_LOCKED_1,
+                    dbc.currentProject().getName()));
+            }
+
+            m_driverManager.removeResourceFromProject(dbc, resource);
+        } catch (Exception e) {
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_COPY_RESOURCE_TO_PROJECT_2,
+                context.getSitePath(resource),
+                context.currentProject().getName()), e);
+        } finally {
+            dbc.clear();
+        }
+    }
+
+    /**
      * Removes a user from a group.<p>
      *
      * @param context the current request context
@@ -4594,10 +4633,8 @@ public final class CmsSecurityManager {
      * @see CmsObject#setDateExpired(String, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#setDateExpired(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
-    public void setDateExpired(
-        CmsRequestContext context,
-        CmsResource resource,
-        long dateExpired) throws CmsException, CmsSecurityException {
+    public void setDateExpired(CmsRequestContext context, CmsResource resource, long dateExpired)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -4605,7 +4642,8 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.setDateExpired(dbc, resource, dateExpired);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_EXPIRED_2,
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_SET_DATE_EXPIRED_2,
                 new Object[] {new Date(dateExpired), context.getSitePath(resource)}), e);
         } finally {
             dbc.clear();
@@ -4625,10 +4663,8 @@ public final class CmsSecurityManager {
      * @see CmsObject#setDateLastModified(String, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#setDateLastModified(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
-    public void setDateLastModified(
-        CmsRequestContext context,
-        CmsResource resource,
-        long dateLastModified) throws CmsException, CmsSecurityException {
+    public void setDateLastModified(CmsRequestContext context, CmsResource resource, long dateLastModified)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -4636,7 +4672,8 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.setDateLastModified(dbc, resource, dateLastModified);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_LAST_MODIFIED_2,
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_SET_DATE_LAST_MODIFIED_2,
                 new Object[] {new Date(dateLastModified), context.getSitePath(resource)}), e);
         } finally {
             dbc.clear();
@@ -4656,10 +4693,8 @@ public final class CmsSecurityManager {
      * @see CmsObject#setDateReleased(String, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#setDateReleased(CmsObject, CmsSecurityManager, CmsResource, long, boolean)
      */
-    public void setDateReleased(
-        CmsRequestContext context,
-        CmsResource resource,
-        long dateReleased) throws CmsException, CmsSecurityException {
+    public void setDateReleased(CmsRequestContext context, CmsResource resource, long dateReleased)
+    throws CmsException, CmsSecurityException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         try {
@@ -4667,7 +4702,8 @@ public final class CmsSecurityManager {
             checkPermissions(dbc, resource, CmsPermissionSet.ACCESS_WRITE, true, CmsResourceFilter.IGNORE_EXPIRATION);
             m_driverManager.setDateReleased(dbc, resource, dateReleased);
         } catch (Exception e) {
-            dbc.report(null, Messages.get().container(Messages.ERR_SET_DATE_RELEASED_2,
+            dbc.report(null, Messages.get().container(
+                Messages.ERR_SET_DATE_RELEASED_2,
                 new Object[] {new Date(dateReleased), context.getSitePath(resource)}), e);
         } finally {
             dbc.clear();
@@ -4762,7 +4798,7 @@ public final class CmsSecurityManager {
      * @see CmsObject#touch(String, long, long, long, boolean)
      * @see org.opencms.file.types.I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
      */
-    
+
     /**
      * Set priority of a task.<p>
      *
@@ -4786,7 +4822,7 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
     }
-    
+
     /**
      * Set a Parameter for a task.<p>
      *
@@ -4812,7 +4848,7 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
     }
-    
+
     /**
      * Set timeout of a task.<p>
      *

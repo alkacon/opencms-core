@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.143.2.5 $
+ * Date   : $Date: 2005/11/24 11:39:47 $
+ * Version: $Revision: 1.143.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.143.2.5 $
+ * @version $Revision: 1.143.2.6 $
  * 
  * @since 6.0.0 
  */
@@ -1322,7 +1322,7 @@ public final class CmsObject {
 
         return getPublishList(directPublishResources, directPublishSiblings, true);
     }
-    
+
     /**
      * Returns a publish list with all new/changed/deleted resources of the current (offline)
      * project that actually get published for a direct publish of a List of resources.<p>
@@ -1336,8 +1336,10 @@ public final class CmsObject {
      * 
      * @throws CmsException if something goes wrong
      */
-    public CmsPublishList getPublishList(List directPublishResources, boolean directPublishSiblings, boolean publishSubResources)
-    throws CmsException {
+    public CmsPublishList getPublishList(
+        List directPublishResources,
+        boolean directPublishSiblings,
+        boolean publishSubResources) throws CmsException {
 
         return m_securityManager.fillPublishList(m_context, new CmsPublishList(
             directPublishResources,
@@ -2381,11 +2383,11 @@ public final class CmsObject {
     }
 
     /**
-     * Returns the list of all resources that define the "view" of the given project.<p>
+     * Returns the list of all resource names that define the "view" of the given project.<p>
      * 
      * @param project the project to get the project resources for
      * 
-     * @return the list of all resources, as <code>{@link String}</code> objects 
+     * @return the list of all resource names, as <code>{@link String}</code> objects 
      *              that define the "view" of the given project.
      * 
      * @throws CmsException if something goes wrong
@@ -2977,6 +2979,24 @@ public final class CmsObject {
     public CmsUser readWebUser(String username, String password) throws CmsException {
 
         return m_securityManager.readWebUser(m_context, username, password);
+    }
+
+    /**
+     * Removes a resource from the current project of the user.<p>
+     * 
+     * This is used to reduce the current users project with the
+     * specified resource, in case that the resource is already part of the project.
+     * The resource is not really removed like in a regular copy operation, 
+     * it is in fact only "disabled" in the current users project.<p>   
+     * 
+     * @param resourcename the name of the resource to remove to the current project (full path)
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    public void removeResourceFromProject(String resourcename) throws CmsException {
+
+        CmsResource resource = readResource(resourcename, CmsResourceFilter.ALL);
+        getResourceType(resource.getTypeId()).removeResourceFromProject(this, m_securityManager, resource);
     }
 
     /**

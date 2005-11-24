@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/11/23 12:52:06 $
- * Version: $Revision: 1.557.2.14 $
+ * Date   : $Date: 2005/11/24 11:39:47 $
+ * Version: $Revision: 1.557.2.15 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2741,6 +2741,160 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Fills the given publish list with the the VFS resources that actually get published.<p>
+     * 
+     * Please refer to the source code of this method for the rules on how to decide whether a
+     * new/changed/deleted <code>{@link CmsResource}</code> object can be published or not.<p>
+     * 
+     * @param dbc the current database context
+     * @param publishList must be initialized with basic publish information (Project or direct publish operation)
+     * 
+     * @return the given publish list filled with all new/changed/deleted files from the current (offline) project 
+     *      that will be published actually
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see org.opencms.db.CmsPublishList
+     */
+    public synchronized CmsPublishList fillPublishList(
+        CmsDbContext dbc,
+        CmsPublishList publishList) throws CmsException {
+
+        if (!publishList.isDirectPublish()) {
+            // when publishing a project, 
+            // all modified resources with the last change done in the current project are candidates if unlocked
+
+            List folderList = m_vfsDriver.readResourceTree(
+                dbc,
+                dbc.currentProject().getId(),
+                CmsDriverManager.READ_IGNORE_PARENT,
+                CmsDriverManager.READ_IGNORE_TYPE,
+                CmsResource.STATE_UNCHANGED,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READMODE_INCLUDE_TREE
+                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                    | CmsDriverManager.READMODE_EXCLUDE_STATE
+                    | CmsDriverManager.READMODE_ONLY_FOLDERS);
+
+            publishList.addFolders(filterResources(dbc, folderList, folderList));
+
+            List fileList = m_vfsDriver.readResourceTree(
+                dbc,
+                dbc.currentProject().getId(),
+                CmsDriverManager.READ_IGNORE_PARENT,
+                CmsDriverManager.READ_IGNORE_TYPE,
+                CmsResource.STATE_UNCHANGED,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READ_IGNORE_TIME,
+                CmsDriverManager.READMODE_INCLUDE_TREE
+                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                    | CmsDriverManager.READMODE_EXCLUDE_STATE
+                    | CmsDriverManager.READMODE_ONLY_FILES);
+
+            publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
+
+        } else {
+            // this is a direct publish
+            Iterator it = publishList.getDirectPublishResources().iterator();
+            while (it.hasNext()) {
+                // iterate all resources in the direct publish list
+                CmsResource directPublishResource = (CmsResource)it.next();
+                if (directPublishResource.isFolder()) {
+
+                    // when publishing a folder directly, 
+                    // the folder and all modified resources within the tree below this folder 
+                    // and with the last change done in the current project are candidates if unlocked
+
+                    if (CmsResource.STATE_UNCHANGED != directPublishResource.getState()
+                        && getLock(dbc, directPublishResource).isNullLock()) {
+                        publishList.addFolder(directPublishResource);
+                    }
+
+                    if (publishList.isPublishSubResources()) {
+                        // add all sub resources of the folder
+                        
+                        List folderList = m_vfsDriver.readResourceTree(
+                            dbc,
+                            dbc.currentProject().getId(),
+                            directPublishResource.getRootPath(),
+                            CmsDriverManager.READ_IGNORE_TYPE,
+                            CmsResource.STATE_UNCHANGED,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READMODE_INCLUDE_TREE
+                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                                | CmsDriverManager.READMODE_EXCLUDE_STATE
+                                | CmsDriverManager.READMODE_ONLY_FOLDERS);
+
+                        publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
+
+                        List fileList = m_vfsDriver.readResourceTree(
+                            dbc,
+                            dbc.currentProject().getId(),
+                            directPublishResource.getRootPath(),
+                            CmsDriverManager.READ_IGNORE_TYPE,
+                            CmsResource.STATE_UNCHANGED,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READ_IGNORE_TIME,
+                            CmsDriverManager.READMODE_INCLUDE_TREE
+                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
+                                | CmsDriverManager.READMODE_EXCLUDE_STATE
+                                | CmsDriverManager.READMODE_ONLY_FILES);
+
+                        publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
+                    }
+                } else if (directPublishResource.isFile()
+                    && CmsResource.STATE_UNCHANGED != directPublishResource.getState()) {
+
+                    // when publishing a file directly this file is the only candidate
+                    // if it is modified and unlocked
+
+                    if (getLock(dbc, directPublishResource).isNullLock()) {
+                        publishList.addFile(directPublishResource);
+                    }
+                }
+            }
+        }
+
+        // Step 2: if desired, extend the list of files to publish with related siblings
+        if (publishList.isPublishSiblings()) {
+
+            List publishFiles = publishList.getFileList();
+            int size = publishFiles.size();
+
+            for (int i = 0; i < size; i++) {
+                CmsResource currentFile = (CmsResource)publishFiles.get(i);
+                if (currentFile.getSiblingCount() > 1) {
+                    publishList.addFiles(filterSiblings(dbc, currentFile, publishList.getFolderList(), readSiblings(
+                        dbc,
+                        currentFile,
+                        CmsResourceFilter.ALL_MODIFIED)));
+                }
+            }
+        }
+
+        publishList.initialize();
+        return publishList;
+    }
+
+    /**
      * Forwards a task to a new user.<p>
      *
      * @param dbc the current database context
@@ -3181,160 +3335,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public I_CmsProjectDriver getProjectDriver() {
 
         return m_projectDriver;
-    }
-
-    /**
-     * Fills the given publish list with the the VFS resources that actually get published.<p>
-     * 
-     * Please refer to the source code of this method for the rules on how to decide whether a
-     * new/changed/deleted <code>{@link CmsResource}</code> object can be published or not.<p>
-     * 
-     * @param dbc the current database context
-     * @param publishList must be initialized with basic publish information (Project or direct publish operation)
-     * 
-     * @return the given publish list filled with all new/changed/deleted files from the current (offline) project 
-     *      that will be published actually
-     * 
-     * @throws CmsException if something goes wrong
-     * 
-     * @see org.opencms.db.CmsPublishList
-     */
-    public synchronized CmsPublishList fillPublishList(
-        CmsDbContext dbc,
-        CmsPublishList publishList) throws CmsException {
-
-        if (!publishList.isDirectPublish()) {
-            // when publishing a project, 
-            // all modified resources with the last change done in the current project are candidates if unlocked
-
-            List folderList = m_vfsDriver.readResourceTree(
-                dbc,
-                dbc.currentProject().getId(),
-                CmsDriverManager.READ_IGNORE_PARENT,
-                CmsDriverManager.READ_IGNORE_TYPE,
-                CmsResource.STATE_UNCHANGED,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READMODE_INCLUDE_TREE
-                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                    | CmsDriverManager.READMODE_EXCLUDE_STATE
-                    | CmsDriverManager.READMODE_ONLY_FOLDERS);
-
-            publishList.addFolders(filterResources(dbc, folderList, folderList));
-
-            List fileList = m_vfsDriver.readResourceTree(
-                dbc,
-                dbc.currentProject().getId(),
-                CmsDriverManager.READ_IGNORE_PARENT,
-                CmsDriverManager.READ_IGNORE_TYPE,
-                CmsResource.STATE_UNCHANGED,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READ_IGNORE_TIME,
-                CmsDriverManager.READMODE_INCLUDE_TREE
-                    | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                    | CmsDriverManager.READMODE_EXCLUDE_STATE
-                    | CmsDriverManager.READMODE_ONLY_FILES);
-
-            publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
-
-        } else {
-            // this is a direct publish
-            Iterator it = publishList.getDirectPublishResources().iterator();
-            while (it.hasNext()) {
-                // iterate all resources in the direct publish list
-                CmsResource directPublishResource = (CmsResource)it.next();
-                if (directPublishResource.isFolder()) {
-
-                    // when publishing a folder directly, 
-                    // the folder and all modified resources within the tree below this folder 
-                    // and with the last change done in the current project are candidates if unlocked
-
-                    if (CmsResource.STATE_UNCHANGED != directPublishResource.getState()
-                        && getLock(dbc, directPublishResource).isNullLock()) {
-                        publishList.addFolder(directPublishResource);
-                    }
-
-                    if (publishList.isPublishSubResources()) {
-                        // add all sub resources of the folder
-                        
-                        List folderList = m_vfsDriver.readResourceTree(
-                            dbc,
-                            dbc.currentProject().getId(),
-                            directPublishResource.getRootPath(),
-                            CmsDriverManager.READ_IGNORE_TYPE,
-                            CmsResource.STATE_UNCHANGED,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READMODE_INCLUDE_TREE
-                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                                | CmsDriverManager.READMODE_EXCLUDE_STATE
-                                | CmsDriverManager.READMODE_ONLY_FOLDERS);
-
-                        publishList.addFolders(filterResources(dbc, publishList.getFolderList(), folderList));
-
-                        List fileList = m_vfsDriver.readResourceTree(
-                            dbc,
-                            dbc.currentProject().getId(),
-                            directPublishResource.getRootPath(),
-                            CmsDriverManager.READ_IGNORE_TYPE,
-                            CmsResource.STATE_UNCHANGED,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READ_IGNORE_TIME,
-                            CmsDriverManager.READMODE_INCLUDE_TREE
-                                | CmsDriverManager.READMODE_INCLUDE_PROJECT
-                                | CmsDriverManager.READMODE_EXCLUDE_STATE
-                                | CmsDriverManager.READMODE_ONLY_FILES);
-
-                        publishList.addFiles(filterResources(dbc, publishList.getFolderList(), fileList));
-                    }
-                } else if (directPublishResource.isFile()
-                    && CmsResource.STATE_UNCHANGED != directPublishResource.getState()) {
-
-                    // when publishing a file directly this file is the only candidate
-                    // if it is modified and unlocked
-
-                    if (getLock(dbc, directPublishResource).isNullLock()) {
-                        publishList.addFile(directPublishResource);
-                    }
-                }
-            }
-        }
-
-        // Step 2: if desired, extend the list of files to publish with related siblings
-        if (publishList.isPublishSiblings()) {
-
-            List publishFiles = publishList.getFileList();
-            int size = publishFiles.size();
-
-            for (int i = 0; i < size; i++) {
-                CmsResource currentFile = (CmsResource)publishFiles.get(i);
-                if (currentFile.getSiblingCount() > 1) {
-                    publishList.addFiles(filterSiblings(dbc, currentFile, publishList.getFolderList(), readSiblings(
-                        dbc,
-                        currentFile,
-                        CmsResourceFilter.ALL_MODIFIED)));
-                }
-            }
-        }
-
-        publishList.initialize();
-        return publishList;
     }
 
     /**
@@ -4597,6 +4597,21 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
+     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the backup resource to read the properties from
+     * 
+     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
+     * 
+     * @throws CmsException if something goes wrong
+     */    
+    public List readBackupPropertyObjects(CmsDbContext dbc, CmsBackupResource resource) throws CmsException {
+        
+        return m_backupDriver.readBackupProperties(dbc, resource);        
+    }
+
+    /**
      * Reads all resources that are inside and changed in a specified project.<p>
      * 
      * @param dbc the current database context
@@ -5382,21 +5397,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
 
     /**
-     * Reads the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource.<p>
-     * 
-     * @param dbc the current database context
-     * @param resource the backup resource to read the properties from
-     * 
-     * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
-     * 
-     * @throws CmsException if something goes wrong
-     */    
-    public List readBackupPropertyObjects(CmsDbContext dbc, CmsBackupResource resource) throws CmsException {
-        
-        return m_backupDriver.readBackupProperties(dbc, resource);        
-    }
-    
-    /**
      * Reads all property objects mapped to a specified resource from the database.<p>
      * 
      * All properties in the result List will be in frozen (read only) state, so you can't change the values.<p>
@@ -5468,7 +5468,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return new ArrayList(properties);
     }
-
+    
     /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
@@ -6126,6 +6126,44 @@ public final class CmsDriverManager implements I_CmsEventListener {
         OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_RESOURCE_MODIFIED, Collections.singletonMap(
             "resource",
             resource)));
+    }
+
+    /**
+     * Removes a resource from the current project of the user.<p>
+     * 
+     * @param dbc the current database context
+     * @param resource the resource to apply this operation to
+     * 
+     * @throws CmsException if something goes wrong
+     * 
+     * @see CmsObject#copyResourceToProject(String)
+     * @see I_CmsResourceType#copyResourceToProject(CmsObject, CmsSecurityManager, CmsResource)
+     */
+    public void removeResourceFromProject(CmsDbContext dbc, CmsResource resource) throws CmsException {
+
+        // remove the resource to the project only if the resource is already in the project
+        if (isInsideCurrentProject(dbc, resource.getRootPath())) {
+            // check if there are already any subfolders of this resource
+            if (resource.isFolder()) {
+                List projectResources = m_projectDriver.readProjectResources(dbc, dbc.currentProject());
+                for (int i = 0; i < projectResources.size(); i++) {
+                    String resname = (String)projectResources.get(i);
+                    if (resname.startsWith(resource.getRootPath())) {
+                        // delete the existing project resource first
+                        m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getId(), resname);
+                    }
+                }
+            }
+            try {
+                m_projectDriver.deleteProjectResource(dbc, dbc.currentProject().getId(), resource.getRootPath());
+            } catch (CmsException exc) {
+                // if the subfolder exists already - all is ok
+            } finally {
+                OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_PROJECT_MODIFIED, Collections.singletonMap(
+                    "project",
+                    dbc.currentProject())));
+            }
+        }
     }
 
     /**

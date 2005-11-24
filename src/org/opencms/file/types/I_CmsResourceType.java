@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/I_CmsResourceType.java,v $
- * Date   : $Date: 2005/10/13 12:09:14 $
- * Version: $Revision: 1.25.2.4 $
+ * Date   : $Date: 2005/11/24 11:39:47 $
+ * Version: $Revision: 1.25.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import java.util.List;
  * @author Thomas Weckert  
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.25.2.4 $ 
+ * @version $Revision: 1.25.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -520,6 +520,27 @@ public interface I_CmsResourceType extends I_CmsConfigurationParameterHandler {
      * @see CmsSecurityManager#deleteResource(org.opencms.file.CmsRequestContext, CmsResource, int)
      */
     void moveResource(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource, String destination)
+    throws CmsException, CmsIllegalArgumentException;
+
+    /**
+     * Removes a resource from the current project of the user.<p>
+     * 
+     * This is used to reduce the current users project with the
+     * specified resource, in case that the resource is already part of the project.
+     * The resource is not really removed like in a regular copy operation, 
+     * it is in fact only "disabled" in the current users project.<p>   
+     * 
+     * @param cms the initialized CmsObject
+     * @param securityManager the initialized OpenCms security manager
+     * @param resource the resource to apply this operation to
+     * 
+     * @throws CmsException if something goes wrong
+     * @throws CmsIllegalArgumentException if the <code>resource</code> argument is null or of length 0
+     * 
+     * @see CmsObject#copyResourceToProject(String)
+     * @see CmsSecurityManager#copyResourceToProject(org.opencms.file.CmsRequestContext, CmsResource)
+     */
+    void removeResourceFromProject(CmsObject cms, CmsSecurityManager securityManager, CmsResource resource)
     throws CmsException, CmsIllegalArgumentException;
 
     /**
