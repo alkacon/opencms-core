@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/Messages.java,v $
- * Date   : $Date: 2005/11/22 10:38:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/24 10:31:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3
  */
@@ -76,7 +76,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_ERR_WRONG_THUMB_BGCOLOR_1 = "LOG_ERR_WRONG_THUMB_BGCOLOR_1";
 
     /** Name of the used resource bundle. */
-    private static final String BUNDLE_NAME = "org.opencms.frontend.photogallery.messages";
+    private static final String BUNDLE_NAME = "org.opencms.frontend.photoalbum.messages";
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
