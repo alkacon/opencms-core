@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2005/11/22 10:44:33 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2005/11/24 12:20:18 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -212,8 +212,8 @@ public final class CmsTemplateParts implements I_CmsEventListener {
         } catch (Throwable t) {
             // catch all errors to avoid displaying rubbish
             part = "";
-            if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
             }
         }
         return part;
@@ -244,7 +244,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
      * @return a unique part key
      */
     private String generateKey(String target, String element, String layout) {
-        
+
         try {
             if (element == null) {
                 // set element name to empty String for key generation

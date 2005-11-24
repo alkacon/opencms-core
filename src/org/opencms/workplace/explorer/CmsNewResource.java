@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.21.2.3 $
+ * Date   : $Date: 2005/11/24 12:20:18 $
+ * Version: $Revision: 1.21.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.3 $ 
+ * @version $Revision: 1.21.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -320,12 +320,13 @@ public class CmsNewResource extends CmsDialog {
             CmsPermissionSet permissions;
             try {
                 // get permissions of the current user
-                permissions = currSettings.getAccess().getAccessControlList().getPermissions(
+                permissions = currSettings.getAccess().getAccessControlList(getSettings().getUser()).getPermissions(
                     getSettings().getUser(),
                     getCms().getGroupsOfUser(getSettings().getUser().getName()));
             } catch (CmsException e) {
                 // error reading the groups of the current user
-                permissions = currSettings.getAccess().getAccessControlList().getPermissions(getSettings().getUser());
+                permissions = currSettings.getAccess().getAccessControlList(getSettings().getUser()).getPermissions(
+                    getSettings().getUser());
                 LOG.error(Messages.get().key(
                     Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
                     getSettings().getUser().getName()));

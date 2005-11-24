@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/10/19 09:50:28 $
- * Version: $Revision: 1.146.2.3 $
+ * Date   : $Date: 2005/11/24 12:20:18 $
+ * Version: $Revision: 1.146.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -89,7 +89,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.3 $ 
+ * @version $Revision: 1.146.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -597,12 +597,12 @@ public abstract class CmsWorkplace {
                 CmsPermissionSet permissions;
                 try {
                     // get permissions of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                    permissions = typeSettings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
                         cms.getRequestContext().currentUser(),
                         cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
                 } catch (CmsException e) {
                     // error reading the groups of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                    permissions = typeSettings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
                         cms.getRequestContext().currentUser());
                     if (LOG.isWarnEnabled()) {
                         CmsLog.getLog(CmsTree.class).warn(

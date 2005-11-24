@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2005/11/24 12:20:18 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsUser;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -51,11 +52,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExplorerTypeAccess {
+    
+    /** Principal key name for the default permission settings. */
+    public static final String PRINCIPAL_DEFAULT = "DEFAULT";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExplorerTypeAccess.class);
@@ -117,7 +121,7 @@ public class CmsExplorerTypeAccess {
                 // read the group
                 principal = OpenCms.getImportExportManager().translateGroup(principal);
                 principalId = cms.readGroup(principal).getId();
-            } else {
+            } else if (!key.startsWith(PRINCIPAL_DEFAULT)) {
                 // read the user
                 principal = OpenCms.getImportExportManager().translateUser(principal);
                 principalId = cms.readUser(principal).getId();
@@ -131,11 +135,21 @@ public class CmsExplorerTypeAccess {
     /**
      * Returns the list of access control entries of the explorer type setting.<p>
      * 
+     * @param currentUser the current user
      * @return the list of access control entries of the explorer type setting
      */
-    public CmsAccessControlList getAccessControlList() {
+    public CmsAccessControlList getAccessControlList(CmsUser currentUser) {
 
-        return m_accessControlList;
+        // create temporary acl to work with
+        CmsAccessControlList acl = m_accessControlList;
+        // get the default access permissions
+        String value = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
+        if (value != null) {
+            // found default access permissions, create entry for current user
+            CmsAccessControlEntry entry = new CmsAccessControlEntry(null, currentUser.getId(), value);
+            acl.add(entry);
+        }
+        return acl;
     }
 
     /**

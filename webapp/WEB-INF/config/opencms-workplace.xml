@@ -35,6 +35,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -77,6 +79,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -117,7 +121,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.TestGroup" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -165,6 +170,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -210,6 +217,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -256,6 +265,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -298,6 +309,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -339,6 +352,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -383,6 +398,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -423,6 +440,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -460,6 +479,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
@@ -498,6 +519,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="upload" key="fileicon.upload" icon="upload.png">
@@ -506,6 +529,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<defaultaccesscontrol>
@@ -513,6 +538,8 @@
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</defaultaccesscontrol>
 			<multicontextmenu>

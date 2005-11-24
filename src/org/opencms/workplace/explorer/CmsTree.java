@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsTree.java,v $
- * Date   : $Date: 2005/11/23 09:19:54 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2005/11/24 12:20:18 $
+ * Version: $Revision: 1.22.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.22.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -190,12 +190,12 @@ public class CmsTree extends CmsWorkplace {
             CmsPermissionSet permissions;
             try {
                 // get permissions of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                permissions = typeSettings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
                     cms.getRequestContext().currentUser(),
                     cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
             } catch (CmsException e) {
                 // error reading the groups of the current user
-                permissions = typeSettings.getAccess().getAccessControlList().getPermissions(
+                permissions = typeSettings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
                     cms.getRequestContext().currentUser());
                 LOG.error(Messages.get().key(
                     Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,

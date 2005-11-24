@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2005/11/24 12:20:18 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -276,12 +276,12 @@ public class CmsExplorerContextMenu {
             CmsPermissionSet permissions;
             try {
                 // get permissions of the current user
-                permissions = settings.getAccess().getAccessControlList().getPermissions(
+                permissions = settings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
                     cms.getRequestContext().currentUser(),
                     cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
             } catch (CmsException e) {
                 // error reading the groups of the current user
-                permissions = settings.getAccess().getAccessControlList().getPermissions(
+                permissions = settings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
                     cms.getRequestContext().currentUser());
                 LOG.error(e);
             }
