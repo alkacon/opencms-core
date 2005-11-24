@@ -8,7 +8,6 @@ import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 
 import org.xml.sax.ErrorHandler;
-import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
 /**
@@ -58,10 +57,6 @@ public class CmsAntTaskReadXMLProperty extends Task {
     public void execute() throws BuildException {
 
         boolean isAttr = (m_attribute != null && m_attribute.trim().length() > 0);
-        
-//        log("Xml File: " + m_xmlFile);
-//        log("xPath: " + m_element + (isAttr?"#"+m_attribute:""));
-//        log("property: " + m_property);
 
         // instantiate Digester and enable XML validation
         Digester digester = new Digester();
@@ -70,17 +65,26 @@ public class CmsAntTaskReadXMLProperty extends Task {
         digester.setRuleNamespaceURI(null);
         digester.setErrorHandler(new ErrorHandler() {
 
-            public void error(SAXParseException exception) throws SAXException {
+            /**
+             * @see org.xml.sax.ErrorHandler#error(org.xml.sax.SAXParseException)
+             */
+            public void error(SAXParseException exception) {
 
                 log(exception.getMessage(), exception.getLineNumber());
             }
 
-            public void fatalError(SAXParseException exception) throws SAXException {
+            /**
+             * @see org.xml.sax.ErrorHandler#fatalError(org.xml.sax.SAXParseException)
+             */
+            public void fatalError(SAXParseException exception) {
 
                 log(exception.getMessage(), exception.getLineNumber());
             }
 
-            public void warning(SAXParseException exception) throws SAXException {
+            /**
+             * @see org.xml.sax.ErrorHandler#warning(org.xml.sax.SAXParseException)
+             */
+            public void warning(SAXParseException exception) {
 
                 log(exception.getMessage(), exception.getLineNumber());
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/11/23 12:56:48 $
- * Version: $Revision: 1.20.2.5 $
+ * Date   : $Date: 2005/11/24 09:37:53 $
+ * Version: $Revision: 1.20.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20.2.5 $ 
+ * @version $Revision: 1.20.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,11 +189,9 @@ public class CmsListMetadata {
     /**
      * Generates the csv output for an empty table.<p>
      * 
-     * @param locale for localization
-     * 
      * @return csv output
      */
-    public String csvEmptyList(Locale locale) {
+    public String csvEmptyList() {
 
         StringBuffer html = new StringBuffer(512);
         html.append("\n");
@@ -203,12 +201,11 @@ public class CmsListMetadata {
     /**
      * Returns the csv output for the header of the list.<p>
      * 
-     * @param list the list to generate the csv output for
      * @param wp the workplace instance
      * 
      * @return csv output
      */
-    public String csvHeader(CmsHtmlList list, CmsWorkplace wp) {
+    public String csvHeader(CmsWorkplace wp) {
 
         StringBuffer csv = new StringBuffer(1024);
         Iterator itCols = m_columns.elementList().iterator();
@@ -217,7 +214,7 @@ public class CmsListMetadata {
             if (!col.isVisible()) {
                 continue;
             }
-            csv.append(col.csvHeader(list, wp));
+            csv.append(col.csvHeader(wp));
             csv.append("\t");
         }
         csv.append("\n\n");

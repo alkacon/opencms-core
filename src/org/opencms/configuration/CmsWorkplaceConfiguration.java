@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/11/23 13:25:27 $
- * Version: $Revision: 1.39.2.5 $
+ * Date   : $Date: 2005/11/24 09:37:53 $
+ * Version: $Revision: 1.39.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.5 $
+ * @version $Revision: 1.39.2.6 $
  * 
  * @since 6.0.0
  */
@@ -203,9 +203,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the context menu node. */
     public static final String N_MULTICONTEXTMENU = "multicontextmenu";
-
-    /** The node name of the name node. */
-    public static final String N_NAME = "name";
 
     /** The name of the new resource node. */
     public static final String N_NEWRESOURCE = "newresource";

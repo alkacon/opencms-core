@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/11/21 16:53:14 $
- * Version: $Revision: 1.40.2.9 $
+ * Date   : $Date: 2005/11/24 09:37:53 $
+ * Version: $Revision: 1.40.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.9 $ 
+ * @version $Revision: 1.40.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -355,7 +355,7 @@ public class CmsToolManager {
     /**
      * Returns a list of tool roots.<p>
      * 
-     * @return a list of {@link CmsToolRoot} objects 
+     * @return a list of {@link CmsToolRootHandler} objects 
      */
     public List getToolRoots() {
 

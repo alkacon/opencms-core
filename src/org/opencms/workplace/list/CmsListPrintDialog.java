@@ -127,10 +127,8 @@ public class CmsListPrintDialog extends CmsDialog {
      * Generates the printable output for the given list.<p>
      * 
      * @return html code
-     * 
-     * @throws ClassNotFoundException if the list dialog class is not found
      */
-    public String generateHtml() throws ClassNotFoundException {
+    public String generateHtml() {
 
         StringBuffer result = new StringBuffer(2048);
         result.append(htmlStart(null));

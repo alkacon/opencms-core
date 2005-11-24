@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/11/23 12:56:48 $
- * Version: $Revision: 1.21.2.5 $
+ * Date   : $Date: 2005/11/24 09:37:53 $
+ * Version: $Revision: 1.21.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import java.util.List;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.2.5 $ 
+ * @version $Revision: 1.21.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -184,12 +184,11 @@ public class CmsListColumnDefinition {
     /**
      * Returns the csv output for a column header.<p>
      * 
-     * @param list the list to generate the header code for
      * @param wp the workplace instance
      * 
      * @return csv header
      */
-    public String csvHeader(CmsHtmlList list, CmsWorkplace wp) {
+    public String csvHeader(CmsWorkplace wp) {
 
         if (!isVisible()) {
             return "";

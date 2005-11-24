@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/11/23 12:56:47 $
- * Version: $Revision: 1.32.2.5 $
+ * Date   : $Date: 2005/11/24 09:37:53 $
+ * Version: $Revision: 1.32.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.5 $ 
+ * @version $Revision: 1.32.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -426,9 +426,9 @@ public class CmsHtmlList {
     public synchronized String listCsv(CmsWorkplace wp) {
 
         StringBuffer csv = new StringBuffer(5120);
-        csv.append(m_metadata.csvHeader(this, wp));
+        csv.append(m_metadata.csvHeader(wp));
         if (getContent().isEmpty()) {
-            csv.append(m_metadata.csvEmptyList(wp.getLocale()));
+            csv.append(m_metadata.csvEmptyList());
         } else {
             Iterator itItems = getContent().iterator();
             while (itItems.hasNext()) {

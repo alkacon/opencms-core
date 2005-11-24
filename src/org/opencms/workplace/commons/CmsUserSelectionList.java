@@ -259,7 +259,11 @@ public class CmsUserSelectionList extends A_CmsListDialog {
     }
 
     /**
-     * @see org.opencms.workplace.tools.accounts.A_CmsGroupUsersList#getUsers()
+     * Returns the list of users for selection.<p>
+     * 
+     * @return a list of users
+     * 
+     * @throws CmsException if womething goes wrong
      */
     protected List getUsers() throws CmsException {
 
