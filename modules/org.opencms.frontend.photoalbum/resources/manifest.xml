@@ -371,14 +371,6 @@
 						<denied>30</denied>
 					</permissionset>
 				</accessentry>
-				<accessentry>
-					<uuidprincipal>GROUP.TestGroup</uuidprincipal>
-					<flags>38</flags>
-					<permissionset>
-						<allowed>1</allowed>
-						<denied>0</denied>
-					</permissionset>
-				</accessentry>
 			</accesscontrol>
 		</file>
 		<file>
