@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2005/11/15 09:42:27 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/24 09:30:55 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -137,10 +137,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      * @param source the String to split
      * @param delimiters the delimiters to split at
      * @param trim flag to indicate if leading and trailing whitespaces should be omitted
+     * @param includeDelimiters flag to indicate if the delimiters should be included as well
      *
      * @return the List of splitted Substrings
      */
-    public static List splitAsList(String source, String[] delimiters, boolean trim) {
+    public static List splitAsList(String source, String[] delimiters, boolean trim, boolean includeDelimiters) {
 
         List result = new ArrayList();
         String delimiter = new String();
@@ -165,7 +166,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             if ((i < n) || (i > 0) && (i < l)) {
                 result.add(trim ? source.substring(i, n).trim() : source.substring(i, n));
                 // add the delimiter to the list as well
-                if (n + delimiter.length() <= l) {
+                if (includeDelimiters && n + delimiter.length() <= l) {
                     result.add(source.substring(n, n + delimiter.length()));
                 }
             }
@@ -229,7 +230,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
 
             // split the input into single words
-            List wordList = splitAsList(text, delimiters, true);
+            List wordList = splitAsList(text, delimiters, true, true);
             Iterator i = wordList.iterator();
             while (i.hasNext()) {
                 String word = (String)i.next();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2005/11/16 11:26:36 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/24 09:30:55 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -188,7 +188,17 @@ public class CmsDecorationMap implements Comparable {
         CmsFile file = CmsFile.upgrade(res, cms);
         // get all the entries
         String unparsedContent = new String(file.getContents());
-        List entries = CmsStringUtil.splitAsList(unparsedContent, "\r\n");
+
+        String delimiter = "\r\n";
+        if (unparsedContent.indexOf(delimiter) == -1) {
+            // there was no \r\n delimiter in the csv file, so check if the lines are seperated by
+            // \n only
+            if (unparsedContent.indexOf("\n") > -1) {
+                delimiter = "\n";
+            }
+        }
+
+        List entries = CmsStringUtil.splitAsList(unparsedContent, delimiter);
         Iterator i = entries.iterator();
         while (i.hasNext()) {
             try {
@@ -200,7 +210,11 @@ public class CmsDecorationMap implements Comparable {
                         String key = entry.substring(0, speratator).trim();
                         String value = entry.substring(speratator + 1).trim();
                         if (CmsStringUtil.isNotEmpty(key) && CmsStringUtil.isNotEmpty(value)) {
-                            CmsDecorationObject decObj = new CmsDecorationObject(key, value, m_decoratorDefinition, m_locale);
+                            CmsDecorationObject decObj = new CmsDecorationObject(
+                                key,
+                                value,
+                                m_decoratorDefinition,
+                                m_locale);
                             decMap.put(key, decObj);
                         }
                     }

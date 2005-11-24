@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationObject.java,v $
- * Date   : $Date: 2005/11/15 09:42:27 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/11/24 09:30:55 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -51,6 +51,9 @@ public class CmsDecorationObject {
 
     /** Macro for the decoration. */
     public static final String MACRO_DECORATION = "decoration";
+
+    /** Macro for the decoration key. */
+    public static final String MACRO_DECORATIONKEY = "decorationkey";
 
     /** Macro for the locale. */
     public static final String MACRO_LOCALE = "locale";
@@ -183,6 +186,7 @@ public class CmsDecorationObject {
 
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         resolver.addMacro(MACRO_DECORATION, m_decoration);
+        resolver.addMacro(MACRO_DECORATIONKEY, m_decorationKey);
         if (m_locale != null) {
             resolver.addMacro(MACRO_LOCALE, m_locale.toString());
         }
