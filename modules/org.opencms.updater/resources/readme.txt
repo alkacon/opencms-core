@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.0.0 to OpenCms 6.0.2
+            Instructions for updating OpenCms 6.0.0 to OpenCms 6.0.3
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.0.0 to OpenCms 6.0.2:
+Follow the following steps to update from OpenCms 6.0.0 to OpenCms 6.0.3:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_6.0.0_to_6.0.2.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_6.0.0_to_6.0.3.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
@@ -67,11 +67,11 @@ Template One on your OpenCms server.
 
 After you confirmed the module selection, you should see the status report of the 
 module import. This report is also written to WEB-INF/logs/update.log. Check this 
-file for errors and exception after installation. There should be no exceptions
+file for errors and exceptions after installation. There should be no exceptions
 caused by the upgrade if everything went as expected. Some exceptions may occur 
-in case you have an advanced OpenCms installation with many of customized classes.
+in case you have an advanced OpenCms installation with many customized classes.
 
-The wizard will finish similar to the setup wizard. After the final conformation,
+The wizard will finish similar to the setup wizard. After the final confirmation,
 the wizard will be locked again (in the opencms.properties file).
 
 
@@ -98,7 +98,11 @@ Press the button 'Purge JSP repository'.
 
 * Now switch to the 'Explorer' view. Open the WYSIWYG editor for any page, and then
   open some of the galleries, e.g. the image gallery. Also open the editor for some 
-  XML contents in you site.
+  XML contents in your site.
+
+* Open the XMLContent editor for any xmlcontent mapping values to a file property
+  (e.g. /modulesdemo/modules/news/news_0001.html), and then edit the news title.
+  Save, exit and check the title property value of the edited file.
 
 
 IMPORTANT: PLEASE READ THIS
