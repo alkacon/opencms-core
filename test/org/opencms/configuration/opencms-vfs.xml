@@ -151,6 +151,7 @@
 				<widget class="org.opencms.widgets.CmsComboWidget" alias="ComboWidget" />				
 				<widget class="org.opencms.widgets.CmsDisplayWidget" alias="DisplayWidget" />
 				<widget class="org.opencms.widgets.CmsDownloadGalleryWidget" alias="DownloadGalleryWidget"/>
+				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget"/>
 				<widget class="org.opencms.widgets.CmsHtmlWidget" alias="HtmlWidget"/>
 				<widget class="org.opencms.widgets.CmsImageGalleryWidget" alias="ImageGalleryWidget"/>
 				<widget class="org.opencms.widgets.CmsInputWidget" alias="StringWidget"/>
@@ -159,9 +160,8 @@
 				<widget class="org.opencms.widgets.CmsSelectWidget" alias="SelectorWidget" />				
 				<widget class="org.opencms.widgets.CmsTableGalleryWidget" alias="TableGalleryWidget" />				
 				<widget class="org.opencms.widgets.CmsTextareaWidget" alias="TextareaWidget" />
-				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
 				<widget class="org.opencms.widgets.CmsUserWidget" alias="UserWidget"/>
-				<widget class="org.opencms.widgets.CmsGroupWidget" alias="GroupWidget"/>
+				<widget class="org.opencms.widgets.CmsVfsFileWidget" alias="VfsFileWidget"/>
 			</widgets>
 			<schematypes>
 				<schematype class="org.opencms.xml.types.CmsXmlBooleanValue" defaultwidget="org.opencms.widgets.CmsCheckboxWidget" />
