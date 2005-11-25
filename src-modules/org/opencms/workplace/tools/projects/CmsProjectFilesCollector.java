@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesCollector.java,v $
- * Date   : $Date: 2005/10/19 08:33:28 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/25 08:32:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,11 +45,11 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * Collector for receiving CmsResources from a CmsContentCheckResult.<p>
+ * Collector for receiving CmsResources from a project.<p>
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.0 
  */
@@ -65,7 +65,7 @@ public class CmsProjectFilesCollector implements I_CmsResourceCollector {
     public static final String PARAM_DELETED = "deleted";
 
     /** Parameter to get all modified resources. */
-    public static final String PARAM_MODIFIED = "modiefied";
+    public static final String PARAM_MODIFIED = "modified";
 
     /** Parameter to get all new resources. */
     public static final String PARAM_NEW = "new";
@@ -97,7 +97,6 @@ public class CmsProjectFilesCollector implements I_CmsResourceCollector {
      */
     public int compareTo(Object arg0) {
 
-        // TODO: Auto-generated method stub
         return 0;
     }
 

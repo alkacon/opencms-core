@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/10/19 09:10:25 $
- * Version: $Revision: 1.13.2.3 $
+ * Date   : $Date: 2005/11/25 08:32:31 $
+ * Version: $Revision: 1.13.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.tools.projects;
 
 import org.opencms.file.CmsProject;
-import org.opencms.file.collectors.I_CmsResourceCollector;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
@@ -70,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13.2.3 $ 
+ * @version $Revision: 1.13.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -249,14 +248,12 @@ public class CmsProjectsList extends A_CmsListDialog {
 
         if (getParamListAction().equals(LIST_DEFACTION_FILES)) {
             // forward to the edit user screen
+            getSettings().setCollector(new CmsProjectFilesCollector());
             getToolManager().jspForwardTool(this, "/projects/files", params);
-            I_CmsResourceCollector collector = new CmsProjectFilesCollector();
-            getSettings().setCollector(collector);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             getToolManager().jspForwardTool(this, "/projects/edit", params);
         } else if (getParamListAction().equals(LIST_ACTION_FILES)) {
-            I_CmsResourceCollector collector = new CmsProjectFilesCollector();
-            getSettings().setCollector(collector);
+            getSettings().setCollector(new CmsProjectFilesCollector());
             getToolManager().jspForwardTool(this, "/projects/files", params);
         } else if (getParamListAction().equals(LIST_ACTION_PUBLISH_ENABLED)) {
             getToolManager().jspForwardTool(this, "/projects/publish", params);
