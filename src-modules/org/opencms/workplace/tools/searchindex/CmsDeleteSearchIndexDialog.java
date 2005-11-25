@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDeleteSearchIndexDialog.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/25 10:23:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -94,7 +94,7 @@ public class CmsDeleteSearchIndexDialog extends A_CmsEditSearchIndexDialog {
             // if we go back to /searchindex/singleindex (overview) the deleted searchindex is not 
             // there any more in the CmsSearchManager and CmsOverviewSearchIndex.getUserObject will 
             // find null -> defineWidgets will provide null as bean...
-            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getToolPath() + "/index.html"));
+            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), getParentPath()));
         } catch (Throwable t) {
             errors.add(t);
         }

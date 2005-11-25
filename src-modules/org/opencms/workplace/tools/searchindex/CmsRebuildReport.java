@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsRebuildReport.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/11/25 10:23:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -150,10 +150,10 @@ public class CmsRebuildReport extends A_CmsListReport {
             // back to index overview
             Map params = new HashMap();
             params.put(A_CmsEditSearchIndexDialog.PARAM_INDEXNAME, indexes.get(0));
-            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/singleindex.html", params));
+            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/singleindex", params));
         } else {
             // back to search entry page
-            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex/index.html"));
+            setParamCloseLink(CmsToolManager.linkForToolPath(getJsp(), "/searchindex"));
         }
     }
 
