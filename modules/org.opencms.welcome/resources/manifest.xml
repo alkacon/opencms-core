@@ -57,7 +57,7 @@ It will also remove the "default" template.</p>
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[notes_6.0.2.html]]></value>
+					<value><![CDATA[notes_6.0.3.html]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -156,6 +156,36 @@ It will also remove the "default" template.</p>
 				<property>
 					<name>Title</name>
 					<value><![CDATA[OpenCms 6.0.2 Release Notes]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>release/notes_6.0.3.html</source>
+			<destination>release/notes_6.0.3.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>815e6461-5d04-11da-a3fb-23895cb0241f</uuidresource>
+			<datelastmodified>Fri, 25 Nov 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Nov 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[0.0025]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[OpenCms 6.0.3 Release Notes]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[OpenCms 6.0.3 Release Notes]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
