@@ -37,11 +37,11 @@
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
 				<newresource uri="newresource_folder.jsp" order="10" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -81,11 +81,11 @@
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
 				<newresource handler="org.opencms.workplace.explorer.CmsNewResourceXmlPage" uri="newresource_xmlpage.jsp" order="20" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -129,11 +129,11 @@
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
 				<newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -173,11 +173,11 @@
 			<explorertype name="image" key="fileicon.image" icon="image.gif">
 				<newresource uri="" order="40"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -216,11 +216,11 @@
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
 				<newresource uri="newresource.jsp?newresourcetype=jsp" order="50"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -262,11 +262,11 @@
 			<explorertype name="binary" key="fileicon.binary" icon="binary.gif">
 				<newresource uri="" order="60"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -304,11 +304,11 @@
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
 				<newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="true" autosettitle="true"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -343,11 +343,11 @@
 			<explorertype name="XMLTemplate" key="fileicon.XMLTemplate" icon="xmltemplate.gif">
 				<newresource uri="" order="80"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
@@ -383,31 +383,31 @@
 			<explorertype name="link" key="fileicon.link" icon="link.gif">
 				<newresource uri="newresource_sibling.jsp" order="90"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="upload" key="fileicon.upload" icon="upload.png">
 				<newresource uri="newresource_upload.jsp" order="100"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -445,11 +445,11 @@
 			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif">
 				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -494,11 +494,11 @@
 			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
 				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
@@ -540,11 +540,11 @@
 			</explorertype>
 			<defaultaccesscontrol>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</defaultaccesscontrol>
 			<multicontextmenu>
