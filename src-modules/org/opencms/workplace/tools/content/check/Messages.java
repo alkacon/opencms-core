@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/Messages.java,v $
- * Date   : $Date: 2005/11/23 15:58:24 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2005/11/25 11:06:33 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.1.2 
  */
@@ -88,7 +88,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DEBUG_ISFILENAME_1 = "LOG_DEBUG_ISFILENAME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_MATCHPATTERN_2 = "LOG_DEBUG_MATCHPATTERN_22";
+    public static final String LOG_DEBUG_MATCHPATTERN_2 = "LOG_DEBUG_MATCHPATTERN_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_PROPERTY_1 = "LOG_DEBUG_PROPERTY_1";
