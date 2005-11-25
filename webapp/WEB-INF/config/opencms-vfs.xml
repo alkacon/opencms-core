@@ -8,7 +8,7 @@
 				<loader class="com.opencms.legacy.CmsXmlTemplateLoader" />
 				<loader class="org.opencms.loader.CmsDumpLoader" />
 				<loader class="org.opencms.loader.CmsImageLoader">
-					<param name="image.scaling.enabled">false</param>		
+					<param name="image.scaling.enabled">true</param>		
 				</loader>		
 				<loader class="org.opencms.loader.CmsPointerLoader" />
 				<loader class="org.opencms.loader.CmsJspLoader" />

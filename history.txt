@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/24 12:47:48 $
- * Version: $Revision: 1.682.2.50 $
+ * Date   : $Date: 2005/11/25 09:46:10 $
+ * Version: $Revision: 1.682.2.51 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.5 -  November 24, 2005
+OpenCms 6.1.5 -  November 25, 2005
 ! In the explorer view, it's now possible to select resources by right-clicking on the name
 ! Added JSP scriptlet support for <cms:contentload>, <cms:contentloop> and <cms:contentshow> operations
 ! Image scaler now supports "filter" (f) option with possible 'grayscale' and 'shadow' values
@@ -27,6 +27,8 @@ OpenCms 6.1.5 -  November 24, 2005
 ! "Publish project" button can now be removed based on the opencms-workplace.xml <publishbuttonappearance> setting
 ! All list displays in the Administration backoffice offer a print version
 ! Project resources can now be modified in the project management "Edit project" dialog
+* Fixed issue with search indexes that contain an unknown project name writing lots of exceptions to the log
+- Activated image scaling option by default
 
 OpenCms 6.1.4 -  November 16, 2005
 ! Added dialog to compare and make a 'diff' of xml pages and xml content including content, properties and file attributes

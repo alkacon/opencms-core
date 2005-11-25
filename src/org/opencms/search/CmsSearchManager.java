@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/10/25 09:16:51 $
- * Version: $Revision: 1.53.2.7 $
+ * Date   : $Date: 2005/11/25 09:46:10 $
+ * Version: $Revision: 1.53.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.7 $ 
+ * @version $Revision: 1.53.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -973,6 +973,21 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchIndex index = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = (CmsSearchIndex)m_indexes.get(i);
+            
+            int todo = 0;
+            // TODO: better error checking here, what happens if index really don't exist?
+            
+            // check if the project for the index exists
+            try {
+                m_adminCms.readProject(index.getProject());
+            } catch (CmsException e) {
+                // the project does not exist
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_SEARCHINDEX_CREATE_BAD_PROJECT_2,
+                    index.getProject(),
+                    index.getName()));
+            }
+            
             try {
                 index.initialize();
             } catch (CmsException exc) {
