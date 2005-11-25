@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/11/25 10:34:21 $
- * Version: $Revision: 1.53.2.9 $
+ * Date   : $Date: 2005/11/25 11:48:49 $
+ * Version: $Revision: 1.53.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.9 $ 
+ * @version $Revision: 1.53.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -977,22 +977,6 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             int todo = 0;
             // TODO: better error checking here, what happens if index really don't exist?
 
-            // check if the project for the index exists
-            try {
-                m_adminCms.readProject(index.getProject());
-            } catch (CmsException e) {
-                if (LOG.isWarnEnabled()) {
-                    // the project does not exist
-                    LOG.warn(Messages.get().key(
-                        Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2,
-                        index.getProject(),
-                        index.getName()));
-                    LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, index.getName()));
-                }
-                // disable the index
-                index.setDisabled(true);
-            }
-
             try {
                 index.initialize();
             } catch (CmsException exc) {
@@ -1114,10 +1098,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         List resourcesToIndex,
         Map documentCache) throws CmsException {
 
-        if (index.isDisabled()) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, index.getName()));
-            }
+        if (!index.isOk(m_adminCms)) {
             return;
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/11/25 10:34:21 $
- * Version: $Revision: 1.56.2.4 $
+ * Date   : $Date: 2005/11/25 11:48:49 $
+ * Version: $Revision: 1.56.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.I_CmsConfigurationParameterHandler;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsRequestContext;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -72,7 +73,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.4 $ 
+ * @version $Revision: 1.56.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,6 +168,38 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_priority = -1;
     }
 
+    /**
+     * Checks everything is ok.<p>
+     * 
+     * Disables if not ok.<p>
+     * 
+     * @param cms the cms context
+     * 
+     * @return <code>true</code> if ok
+     */
+    public boolean isOk(CmsObject cms) {
+        
+        if (m_disabled) {
+            LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
+        } else {
+            // check if the project for the index exists
+            try {
+                cms.readProject(getProject());
+            } catch (CmsException e) {
+                // the project does not exist
+                if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2,
+                        getProject(),
+                        getName()));
+                    LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
+                }
+                // disable the index
+                m_disabled = true;
+            }
+        }
+        return !m_disabled;
+    }
     /**
      * Creates a new CmsSearchIndex with the given name.<p>
      * 
@@ -514,16 +547,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
-     * Returns the disabled flag.<p>
-     *
-     * @return the disabled flag
-     */
-    public boolean isDisabled() {
-
-        return m_disabled;
-    }
-
-    /**
      * Removes an index source from this search index.<p>
      * 
      * @param sourceName the index source name to remove
@@ -566,10 +589,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         // storage for the results found
         CmsSearchResultList searchResults = new CmsSearchResultList();
 
-        if (isDisabled()) {
-            if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, m_name));
-            }
+        if (!isOk(cms)) {
             return searchResults;
         }
 
@@ -779,16 +799,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         return searchResults;
-    }
-
-    /**
-     * Sets the disabled flag.<p>
-     *
-     * @param disabled the disabled flag to set
-     */
-    public void setDisabled(boolean disabled) {
-
-        m_disabled = disabled;
     }
 
     /**
