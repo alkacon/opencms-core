@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/11/25 09:46:10 $
- * Version: $Revision: 1.53.2.8 $
+ * Date   : $Date: 2005/11/25 10:34:21 $
+ * Version: $Revision: 1.53.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.8 $ 
+ * @version $Revision: 1.53.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -784,7 +784,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // if the folder does not yet exist it is also not locked
             return false;
         }
-        
+
         // check if the index is locked
         boolean indexLocked = true;
         try {
@@ -973,21 +973,26 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchIndex index = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = (CmsSearchIndex)m_indexes.get(i);
-            
+
             int todo = 0;
             // TODO: better error checking here, what happens if index really don't exist?
-            
+
             // check if the project for the index exists
             try {
                 m_adminCms.readProject(index.getProject());
             } catch (CmsException e) {
-                // the project does not exist
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_SEARCHINDEX_CREATE_BAD_PROJECT_2,
-                    index.getProject(),
-                    index.getName()));
+                if (LOG.isWarnEnabled()) {
+                    // the project does not exist
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2,
+                        index.getProject(),
+                        index.getName()));
+                    LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, index.getName()));
+                }
+                // disable the index
+                index.setDisabled(true);
             }
-            
+
             try {
                 index.initialize();
             } catch (CmsException exc) {
@@ -1109,6 +1114,13 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         List resourcesToIndex,
         Map documentCache) throws CmsException {
 
+        if (index.isDisabled()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, index.getName()));
+            }
+            return;
+        }
+
         // copy the stored admin context for the indexing
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
         // make sure a report is available
@@ -1130,7 +1142,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     IndexReader.unlock(FSDirectory.getDirectory(index.getPath(), false));
                 } catch (Exception e) {
                     // unable to force unlock of Lucene index, we can't continue this way
-                    CmsMessageContainer msg = Messages.get().container(Messages.ERR_INDEX_LOCK_FAILED_1, index.getName());
+                    CmsMessageContainer msg = Messages.get().container(
+                        Messages.ERR_INDEX_LOCK_FAILED_1,
+                        index.getName());
                     report.println(msg, I_CmsReport.FORMAT_ERROR);
                     throw new CmsIndexException(msg, e);
                 }

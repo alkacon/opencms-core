@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/11/25 09:46:10 $
- * Version: $Revision: 1.14.2.3 $
+ * Date   : $Date: 2005/11/25 10:34:21 $
+ * Version: $Revision: 1.14.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.14.2.3 $ 
+ * @version $Revision: 1.14.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,9 +105,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCH_PARAMS_1 = "ERR_SEARCH_PARAMS_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String ERR_SEARCHINDEX_CREATE_BAD_PROJECT_2 = "ERR_SEARCHINDEX_CREATE_BAD_PROJECT_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_SEARCHINDEX_CREATE_INVALID_NAME_1 = "ERR_SEARCHINDEX_CREATE_INVALID_NAME_1";
@@ -243,6 +240,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SEARCH_PRIORITY_TOO_LOW_2 = "LOG_SEARCH_PRIORITY_TOO_LOW_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2 = "LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_SEARCHINDEX_DISABLED_1 = "LOG_SEARCHINDEX_DISABLED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SEARCHING_FAILED_0 = "LOG_SEARCHING_FAILED_0";

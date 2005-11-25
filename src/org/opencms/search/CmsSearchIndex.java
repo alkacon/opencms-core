@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/09/26 16:19:04 $
- * Version: $Revision: 1.56.2.3 $
+ * Date   : $Date: 2005/11/25 10:34:21 $
+ * Version: $Revision: 1.56.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.3 $ 
+ * @version $Revision: 1.56.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,6 +121,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
+
+    /** An internal disabled flag, used for instance if the project does not exist. */
+    private boolean m_disabled;
 
     /** Documenttypes of folders/channels. */
     private Map m_documenttypes;
@@ -511,6 +514,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Returns the disabled flag.<p>
+     *
+     * @return the disabled flag
+     */
+    public boolean isDisabled() {
+
+        return m_disabled;
+    }
+
+    /**
      * Removes an index source from this search index.<p>
      * 
      * @param sourceName the index source name to remove
@@ -552,6 +565,13 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // storage for the results found
         CmsSearchResultList searchResults = new CmsSearchResultList();
+
+        if (isDisabled()) {
+            if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, m_name));
+            }
+            return searchResults;
+        }
 
         int previousPriority = Thread.currentThread().getPriority();
 
@@ -762,6 +782,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     }
 
     /**
+     * Sets the disabled flag.<p>
+     *
+     * @param disabled the disabled flag to set
+     */
+    public void setDisabled(boolean disabled) {
+
+        m_disabled = disabled;
+    }
+
+    /**
      * Sets the locale to index resources.<p>
      * 
      * @param locale the locale to index resources
@@ -820,7 +850,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public void setProject(String projectName) {
 
-        m_project = projectName;
+        setProjectName(projectName);
     }
 
     /**
