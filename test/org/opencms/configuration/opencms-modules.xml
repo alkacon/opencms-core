@@ -55,7 +55,7 @@
 			</resourcetypes>		
             <explorertypes>
             	<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
-					<newresource uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
+					<newresource uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false"/>
            		</explorertype>	
            </explorertypes>	
     	</module>

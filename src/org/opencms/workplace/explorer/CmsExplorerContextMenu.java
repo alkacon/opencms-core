@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/11/24 12:20:18 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessages;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -58,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.2 $ 
+ * @version $Revision: 1.12.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -273,19 +272,8 @@ public class CmsExplorerContextMenu {
 
         if (!isMultiMenu()) {
             // determine if this resource type is editable for the current user
-            CmsPermissionSet permissions;
-            try {
-                // get permissions of the current user
-                permissions = settings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
-                    cms.getRequestContext().currentUser(),
-                    cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-            } catch (CmsException e) {
-                // error reading the groups of the current user
-                permissions = settings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
-                    cms.getRequestContext().currentUser());
-                LOG.error(e);
-            }
-            if (permissions.getPermissionString().indexOf("+w") == -1) {
+            CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+            if (!permissions.requiresWritePermission()) {
                 // the type is not editable, set editable to false
                 entries += "vi.resource[" + resTypeId + "].editable = false;\n";
             }
@@ -373,5 +361,4 @@ public class CmsExplorerContextMenu {
         newRules.append(rules.substring(6));
         return newRules.toString();
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlList.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,9 +36,8 @@ import org.opencms.file.CmsUser;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
+import java.util.RandomAccess;
 import java.util.Set;
-import java.util.Vector;
 
 /**
  * An access control list contains the permission sets of all principals for a distinct resource
@@ -57,7 +56,7 @@ import java.util.Vector;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,23 +130,32 @@ public class CmsAccessControlList {
     public CmsPermissionSetCustom getPermissions(CmsUser user, List groups) {
 
         CmsPermissionSetCustom sum = new CmsPermissionSetCustom();
-        ListIterator pIterator = null;
-        if (groups != null) {
-            pIterator = groups.listIterator();
+        CmsPermissionSet p = (CmsPermissionSet)m_permissions.get(user.getId());
+        if (p != null) {
+            sum.addPermissions(p);
         }
-        I_CmsPrincipal principal = user;
-        do {
-            CmsPermissionSet permissions = (CmsPermissionSet)m_permissions.get(principal.getId());
-            if (permissions != null) {
-                sum.addPermissions(permissions);
-            }
-            if (pIterator != null && pIterator.hasNext()) {
-                principal = (I_CmsPrincipal)pIterator.next();
+        if (groups != null) {
+            I_CmsPrincipal principal;
+            if (groups instanceof RandomAccess) {
+                int size = groups.size();
+                for (int i = 0; i < size; i++) {
+                    principal = (I_CmsPrincipal)groups.get(i);
+                    p = (CmsPermissionSet)m_permissions.get(principal.getId());
+                    if (p != null) {
+                        sum.addPermissions(p);
+                    }
+                }
             } else {
-                principal = null;
+                Iterator it = groups.iterator();
+                while (it.hasNext()) {
+                    principal = (I_CmsPrincipal)it.next();
+                    p = (CmsPermissionSet)m_permissions.get(principal.getId());
+                    if (p != null) {
+                        sum.addPermissions(p);
+                    }
+                }
             }
-        } while (principal != null);
-
+        }
         return sum;
     }
 
@@ -172,7 +180,7 @@ public class CmsAccessControlList {
      * 
      * @return a string that displays the permissions
      */
-    public String getPermissionString(CmsUser user, Vector groups) {
+    public String getPermissionString(CmsUser user, List groups) {
 
         CmsPermissionSet permissions = getPermissions(user, groups);
         return permissions.getPermissionString();

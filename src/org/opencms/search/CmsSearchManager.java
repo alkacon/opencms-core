@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2005/11/25 11:48:49 $
- * Version: $Revision: 1.53.2.10 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.53.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,8 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.scheduler.I_CmsScheduledJob;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 import org.opencms.search.documents.I_CmsTermHighlighter;
+import org.opencms.security.CmsRole;
+import org.opencms.security.CmsRoleViolationException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
@@ -76,7 +78,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.10 $ 
+ * @version $Revision: 1.53.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -440,11 +442,20 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
      * Initializes the search manager.<p>
      * 
      * @param cms the cms object
+     * 
+     * @throws CmsRoleViolationException in case the given opencms object does not have <code>{@link CmsRole#SEARCH_MANAGER}</code> permissions
      */
-    public void initialize(CmsObject cms) {
+    public void initialize(CmsObject cms) throws CmsRoleViolationException {
 
-        // store the Admin cms to index Cms resources
-        m_adminCms = cms;
+        cms.checkRole(CmsRole.SEARCH_MANAGER);
+        try {
+            // store the Admin cms to index Cms resources
+            m_adminCms = OpenCms.initCmsObject(cms);
+        } catch (CmsException e) {
+            // this should never happen
+        }
+        // make sure the site root is the root site
+        m_adminCms.getRequestContext().setSiteRoot("/");
 
         // init. the search result cache
         LRUMap hashMap = new LRUMap(Integer.parseInt(m_resultCacheSize));
@@ -973,15 +984,32 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         CmsSearchIndex index = null;
         for (int i = 0, n = m_indexes.size(); i < n; i++) {
             index = (CmsSearchIndex)m_indexes.get(i);
-
-            int todo = 0;
-            // TODO: better error checking here, what happens if index really don't exist?
-
-            try {
-                index.initialize();
-            } catch (CmsException exc) {
-                if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_INIT_FAILED_1, index.getName()), exc);
+            // reset disabled flag
+            index.setEnabled(true);
+            // check if the index has been configured correctly
+            if (index.checkConfiguration(m_adminCms)) {
+                // the index is configured correctly
+                try {
+                    index.initialize();
+                } catch (CmsException e) {
+                    // in this case the index will be disabled
+                    if (CmsLog.INIT.isInfoEnabled()) {
+                        CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_INIT_FAILED_1, index.getName()), e);
+                    }
+                }
+            }
+            if (CmsLog.INIT.isInfoEnabled()) {
+                // output a log message if the index was successfully configured or not
+                if (index.isEnabled()) {
+                    CmsLog.INIT.info(Messages.get().key(
+                        Messages.INIT_INDEX_CONFIGURED_2,
+                        index.getName(),
+                        index.getProject()));
+                } else {
+                    CmsLog.INIT.info(Messages.get().key(
+                        Messages.INIT_INDEX_NOT_CONFIGURED_2,
+                        index.getName(),
+                        index.getProject()));
                 }
             }
         }
@@ -1098,16 +1126,19 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         List resourcesToIndex,
         Map documentCache) throws CmsException {
 
-        if (!index.isOk(m_adminCms)) {
-            return;
-        }
-
         // copy the stored admin context for the indexing
         CmsObject cms = OpenCms.initCmsObject(m_adminCms);
         // make sure a report is available
         if (report == null) {
             report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsSearchManager.class);
         }
+
+        // check if the index has been configured correctly
+        if (! index.checkConfiguration(cms)) {
+            // the index is disabled
+            return;
+        }
+
         // set site root and project for this index
         cms.getRequestContext().setSiteRoot("/");
         // switch to the index project

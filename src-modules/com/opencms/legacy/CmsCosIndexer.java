@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/legacy/Attic/CmsCosIndexer.java,v $
- * Date   : $Date: 2005/11/25 11:48:49 $
- * Version: $Revision: 1.14.2.2 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.14.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.index.IndexWriter;
 /**
  * Implements the indexing of cos data.<p>
  * 
- * @version $Revision: 1.14.2.2 $ $Date: 2005/11/25 11:48:49 $
+ * @version $Revision: 1.14.2.3 $ $Date: 2005/11/26 01:18:03 $
  * @author Carsten Weinholz (c.weinholz@alkacon.com)
  * @author Thomas Weckert (t.weckert@alkacon.com)
  * @since 5.3.1
@@ -275,10 +275,6 @@ public class CmsCosIndexer extends CmsMasterContent implements I_CmsIndexer {
         boolean channelReported = false;
         CmsProject currentProject = null;
         CmsRequestContext context = m_cms.getRequestContext();
-
-        if (!m_index.isOk(m_cms)) {
-            return;
-        }
 
         try {
             // save the current project

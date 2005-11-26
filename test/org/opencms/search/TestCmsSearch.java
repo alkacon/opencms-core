@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearch.java,v $
- * Date   : $Date: 2005/10/19 09:24:33 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import junit.framework.TestSuite;
  * Unit test for the cms search indexer.<p>
  * 
  * @author Carsten Weinholz 
- * @version $Revision: 1.15.2.3 $
+ * @version $Revision: 1.15.2.4 $
  */
 public class TestCmsSearch extends OpenCmsTestCase {
 
@@ -391,13 +391,30 @@ public class TestCmsSearch extends OpenCmsTestCase {
         cmsSearchBean.setSearchRoot("/");
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
+        printResults(results);
         assertEquals(8, results.size());
         assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
 
         cmsSearchBean.setSearchRoot(folderName);
         cmsSearchBean.setQuery("+Alkacon +OpenCms");
         results = cmsSearchBean.getSearchResult();
+        printResults(results);
         assertEquals(1, results.size());
         assertEquals("/sites/default" + folderName + "text.txt", ((CmsSearchResult)results.get(0)).getPath());        
+    }
+    
+    /**
+     * Prints the result form the search to System.out.<p>
+     * 
+     * @param results the result List to iterate
+     */
+    private void printResults(List results) {
+        
+        Iterator i = results.iterator();
+        int count = 0;
+        while (i.hasNext()) {
+            CmsSearchResult result = (CmsSearchResult)i.next();
+            System.out.println(++count + ": " + result.getPath() + " - " + result.getTitle());
+        }
     }
 }

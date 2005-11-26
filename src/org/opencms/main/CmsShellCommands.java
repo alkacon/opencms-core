@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/10/11 14:13:48 $
- * Version: $Revision: 1.80.2.2 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.80.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,6 +50,7 @@ import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsRole;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.util.CmsFileUtil;
@@ -75,7 +76,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.80.2.2 $ 
+ * @version $Revision: 1.80.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -212,6 +213,10 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.copyResourceToProject("/");
         } finally {
             m_cms.getRequestContext().restoreSiteRoot();
+        }
+        if (m_cms.hasRole(CmsRole.SEARCH_MANAGER)) {
+            // re-initialize the search indexes after default project generation
+            OpenCms.getSearchManager().initialize(m_cms);
         }
     }
 

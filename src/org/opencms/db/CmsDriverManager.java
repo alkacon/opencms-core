@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/11/24 11:39:47 $
- * Version: $Revision: 1.557.2.15 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.557.2.16 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3251,6 +3251,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     parent = getParent(dbc, parent.getName());
                 }
             }
+            // make group list unmodifiable for caching
+            allGroups = Collections.unmodifiableList(allGroups);
             m_userGroupsCache.put(cacheKey, allGroups);
         }
 

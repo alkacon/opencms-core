@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/11/24 12:20:18 $
- * Version: $Revision: 1.146.2.4 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.146.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
-import org.opencms.workplace.explorer.CmsTree;
 import org.opencms.workplace.help.CmsHelpTemplateBean;
 
 import java.io.IOException;
@@ -89,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.4 $ 
+ * @version $Revision: 1.146.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +142,7 @@ public abstract class CmsWorkplace {
 
     /** Directory name of content default_bodies folder. */
     public static final String VFS_DIR_DEFAULTBODIES = "default_bodies/";
-    
+
     /** Directory name of content templates folder. */
     public static final String VFS_DIR_TEMPLATES = "templates/";
 
@@ -223,13 +222,13 @@ public abstract class CmsWorkplace {
 
     /** Helper variable to store the id of the current project. */
     private int m_currentProjectId = -1;
-    
+
     /** Flag for indicating that request forwarded was. */
     private boolean m_forwarded;
 
     /** The current JSP action element. */
     private CmsJspActionElement m_jsp;
-    
+
     /** The macro resolver, this is cached to avoid multiple instance generation. */
     private CmsMacroResolver m_macroResolver;
 
@@ -590,29 +589,11 @@ public abstract class CmsWorkplace {
             // loop through all types and check which types can be displayed and edited for the user
             I_CmsResourceType type = (I_CmsResourceType)allResTypes.get(i);
             // get the settings for the resource type
-            CmsExplorerTypeSettings typeSettings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(
-                type.getTypeName());
-            if (typeSettings != null) {
+            CmsExplorerTypeSettings settings = OpenCms.getWorkplaceManager().getExplorerTypeSetting(type.getTypeName());
+            if (settings != null) {
                 // determine if this resource type is editable for the current user
-                CmsPermissionSet permissions;
-                try {
-                    // get permissions of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
-                        cms.getRequestContext().currentUser(),
-                        cms.getGroupsOfUser(cms.getRequestContext().currentUser().getName()));
-                } catch (CmsException e) {
-                    // error reading the groups of the current user
-                    permissions = typeSettings.getAccess().getAccessControlList(cms.getRequestContext().currentUser()).getPermissions(
-                        cms.getRequestContext().currentUser());
-                    if (LOG.isWarnEnabled()) {
-                        CmsLog.getLog(CmsTree.class).warn(
-                            org.opencms.workplace.explorer.Messages.get().key(
-                                org.opencms.workplace.explorer.Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
-                                cms.getRequestContext().currentUser().getName()),
-                            e);
-                    }
-                }
-                if (permissions.getPermissionString().indexOf("+w") != -1) {
+                CmsPermissionSet permissions = settings.getAccess().getPermissions(cms);
+                if (permissions.requiresWritePermission()) {
                     // user is allowed to edit this resource type
                     resourceTypes.put(new Integer(type.getTypeId()), type);
                 }
@@ -1177,7 +1158,7 @@ public abstract class CmsWorkplace {
         result.append("</script>\n");
         return result.toString();
     }
-    
+
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -1188,7 +1169,7 @@ public abstract class CmsWorkplace {
 
         checkLock(resource, org.opencms.lock.CmsLock.COMMON);
     }
-    
+
     /**
      * Checks the lock state of the resource and locks it if the autolock feature is enabled.<p>
      * 
@@ -1206,8 +1187,8 @@ public abstract class CmsWorkplace {
                 getCms().lockResource(resource, mode);
             }
         }
-    }    
-    
+    }
+
     /**
      * First sets site and project in the workplace settings, then fills all class parameter values from the data 
      * provided in the current request.<p>
@@ -1216,7 +1197,7 @@ public abstract class CmsWorkplace {
      * @param request the current request
      */
     public void fillParamValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
-        
+
         initSettings(settings, request);
         fillParamValues(request);
     }
@@ -1562,6 +1543,7 @@ public abstract class CmsWorkplace {
      * @return true, if a reload of the main body frame is required
      */
     public boolean initSettings(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // check if the user requested a project change
         String project = request.getParameter(PARAM_WP_PROJECT);
         boolean reloadRequired = false;
@@ -1579,7 +1561,7 @@ public abstract class CmsWorkplace {
                 if (LOG.isInfoEnabled()) {
                     LOG.info(e);
                 }
-            }   
+            }
             settings.setProject(Integer.parseInt(project));
         }
 
@@ -1597,7 +1579,7 @@ public abstract class CmsWorkplace {
             reloadRequired = true;
             settings.setExplorerResource(explorerResource);
         }
-        
+
         return reloadRequired;
     }
 
@@ -1731,8 +1713,7 @@ public abstract class CmsWorkplace {
                 }
                 if (parameters == null) {
                     result.append(" onLoad=\"window.top.body.admin_head.location.href='");
-                    result.append(getJsp().link(
-                        CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
+                    result.append(getJsp().link(CmsWorkplace.VFS_PATH_WORKPLACE + "action/administration_head.html"));
                     result.append("';\"");
                 }
             }
@@ -1850,7 +1831,7 @@ public abstract class CmsWorkplace {
 
         return CmsRequestUtil.createParameterMap(paramValues());
     }
-    
+
     /**
      * Returns all initialized parameters of the current workplace class 
      * as request parameters, i.e. in the form <code>key1=value1&key2=value2</code> etc.
@@ -1859,7 +1840,7 @@ public abstract class CmsWorkplace {
      * as request parameters
      */
     public String paramsAsRequest() {
-        
+
         StringBuffer result = new StringBuffer(512);
         Map params = paramValues();
         Iterator i = params.keySet().iterator();
@@ -2201,7 +2182,7 @@ public abstract class CmsWorkplace {
             // removed setting explorer resource to "/" to get the stored folder
         }
     }
-    
+
     /**
      * Returns a list of all methods of the current class instance that 
      * start with "getParam" and have no parameters.<p> 

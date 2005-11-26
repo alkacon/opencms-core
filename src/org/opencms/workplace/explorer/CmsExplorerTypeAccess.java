@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/11/24 12:20:18 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,11 +38,13 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
+import org.opencms.security.CmsPermissionSet;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -52,12 +54,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExplorerTypeAccess {
-    
+
     /** Principal key name for the default permission settings. */
     public static final String PRINCIPAL_DEFAULT = "DEFAULT";
 
@@ -109,47 +111,29 @@ public class CmsExplorerTypeAccess {
         Iterator i = m_accessControl.keySet().iterator();
         while (i.hasNext()) {
             String key = (String)i.next();
-            String value = (String)m_accessControl.get(key);
-            CmsUUID principalId = new CmsUUID();
-            // get the principal name from the principal String
-            String principal = key.substring(key.indexOf('.') + 1, key.length());
+            if (!PRINCIPAL_DEFAULT.equals(key)) {
+                String value = (String)m_accessControl.get(key);
+                CmsUUID principalId = new CmsUUID();
+                // get the principal name from the principal String
+                String principal = key.substring(key.indexOf('.') + 1, key.length());
 
-            // create an OpenCms user context with "Guest" permissions
-            CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
+                // create an OpenCms user context with "Guest" permissions
+                CmsObject cms = OpenCms.initCmsObject(OpenCms.getDefaultUsers().getUserGuest());
 
-            if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
-                // read the group
-                principal = OpenCms.getImportExportManager().translateGroup(principal);
-                principalId = cms.readGroup(principal).getId();
-            } else if (!key.startsWith(PRINCIPAL_DEFAULT)) {
-                // read the user
-                principal = OpenCms.getImportExportManager().translateUser(principal);
-                principalId = cms.readUser(principal).getId();
+                if (key.startsWith(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+                    // read the group
+                    principal = OpenCms.getImportExportManager().translateGroup(principal);
+                    principalId = cms.readGroup(principal).getId();
+                } else {
+                    // read the user
+                    principal = OpenCms.getImportExportManager().translateUser(principal);
+                    principalId = cms.readUser(principal).getId();
+                }
+                // create a new entry for the principal
+                CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId, value);
+                m_accessControlList.add(entry);
             }
-            // create a new entry for the principal
-            CmsAccessControlEntry entry = new CmsAccessControlEntry(null, principalId, value);
-            m_accessControlList.add(entry);
         }
-    }
-
-    /**
-     * Returns the list of access control entries of the explorer type setting.<p>
-     * 
-     * @param currentUser the current user
-     * @return the list of access control entries of the explorer type setting
-     */
-    public CmsAccessControlList getAccessControlList(CmsUser currentUser) {
-
-        // create temporary acl to work with
-        CmsAccessControlList acl = m_accessControlList;
-        // get the default access permissions
-        String value = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
-        if (value != null) {
-            // found default access permissions, create entry for current user
-            CmsAccessControlEntry entry = new CmsAccessControlEntry(null, currentUser.getId(), value);
-            acl.add(entry);
-        }
-        return acl;
     }
 
     /**
@@ -163,15 +147,62 @@ public class CmsExplorerTypeAccess {
     }
 
     /**
+     * Calculates the permissions for this explorer type settings 
+     * for the user in the given OpenCms user context.<p>  
+     *  
+     * @param cms the OpenCms user context to calculate the permissions for
+     * 
+     * @return the permissions for this explorer type settings for the user in the given OpenCms user context 
+     */
+    public CmsPermissionSet getPermissions(CmsObject cms) {
+
+        CmsAccessControlList acl = (CmsAccessControlList)m_accessControlList.clone();
+
+        CmsUser user = cms.getRequestContext().currentUser();
+        List groups = null;
+        try {
+            groups = cms.getGroupsOfUser(user.getName());
+        } catch (CmsException e) {
+            // error reading the groups of the current user
+            LOG.error(Messages.get().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
+        }
+        String defaultPermissions = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
+        // add the default permissions to the acl
+        if ((defaultPermissions != null) && !user.isGuestUser()) {
+            boolean found = false;
+            if (acl.getPermissions(user) != null) {
+                // acl already contains the user, no need for default
+                found = true;
+            }
+            if (!found && (groups != null)) {
+                // look up all groups to see if we need the default
+                Iterator i = groups.iterator();
+                while (i.hasNext()) {
+                    I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
+                    if (acl.getPermissions(principal) != null) {
+                        // acl already contains the group, no need for default
+                        found = true;
+                        break;
+                    }
+                }
+            }
+            if (!found) {
+                // add default access control settings for current user
+                CmsAccessControlEntry entry = new CmsAccessControlEntry(null, user.getId(), defaultPermissions);
+                acl.add(entry);
+            }
+        }
+
+        // get permissions of the current user
+        return acl.getPermissions(user, groups);
+    }
+
+    /**
      * Tests if there are any access information stored.<p>
      * @return true or false
      */
     public boolean isEmpty() {
 
-        boolean isEmpty = false;
-        if (m_accessControl.size() == 0) {
-            isEmpty = true;
-        }
-        return isEmpty;
+        return m_accessControl.isEmpty();
     }
 }

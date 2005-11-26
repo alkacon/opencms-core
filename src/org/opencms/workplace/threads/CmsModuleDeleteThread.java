@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/10/19 10:06:58 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.8.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,7 +27,7 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
- */ 
+ */
 
 package org.opencms.workplace.threads;
 
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProject;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
 import org.opencms.report.A_CmsReportThread;
 import org.opencms.report.I_CmsReport;
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.2.2 $ 
+ * @version $Revision: 1.8.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +118,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             }
             m_moduleNames = CmsModuleManager.topologicalSort(m_moduleNames, null);
             Collections.reverse(m_moduleNames);
-            
+
             Iterator j = m_moduleNames.iterator();
             while (j.hasNext()) {
                 String moduleName = (String)j.next();
@@ -134,22 +135,26 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
                     CmsProject.PROJECT_TYPE_TEMPORARY);
                 getCms().getRequestContext().setCurrentProject(project);
 
-                report.print(
-                    Messages.get().container(Messages.RPT_DELETE_MODULE_BEGIN_0),
-                    I_CmsReport.FORMAT_HEADLINE);
+                report.print(Messages.get().container(Messages.RPT_DELETE_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
                 report.println(org.opencms.report.Messages.get().container(
                     org.opencms.report.Messages.RPT_ARGUMENT_HTML_ITAG_1,
                     moduleName), I_CmsReport.FORMAT_HEADLINE);
 
                 // copy the resources to the project
-                List projectFiles = OpenCms.getModuleManager().getModule(moduleName).getResources();
-                for (int i = 0; i < projectFiles.size(); i++) {
-                    try {
-                        getCms().copyResourceToProject((String)projectFiles.get(i));
-                    } catch (CmsException e) {
-                        // may happen if the resource has already been deleted
-                        LOG.error(Messages.get().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)), e);
-                        report.println(e);
+                CmsModule module = OpenCms.getModuleManager().getModule(moduleName);
+                if (module != null) {
+                    List projectFiles = module.getResources();
+                    for (int i = 0; i < projectFiles.size(); i++) {
+                        try {
+                            String resourceName = (String)projectFiles.get(i);
+                            if (getCms().existsResource(resourceName)) {
+                                getCms().copyResourceToProject(resourceName);
+                            }
+                        } catch (CmsException e) {
+                            // may happen if the resource has already been deleted
+                            LOG.error(Messages.get().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)), e);
+                            report.println(e);
+                        }
                     }
                 }
                 // now delete the module
@@ -165,9 +170,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
                 report.println(
                     Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0),
                     I_CmsReport.FORMAT_HEADLINE);
-                report.println(
-                    Messages.get().container(Messages.RPT_DELETE_MODULE_END_0),
-                    I_CmsReport.FORMAT_HEADLINE);
+                report.println(Messages.get().container(Messages.RPT_DELETE_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
 
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_FINISHED_0));

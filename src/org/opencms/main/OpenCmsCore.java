@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.216.2.4 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.216.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216.2.4 $ 
+ * @version $Revision: 1.216.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -324,16 +324,21 @@ public final class OpenCmsCore {
 
         synchronized (m_eventListeners) {
             if (eventTypes == null) {
+                // no event types given - register the listener for all event types
                 eventTypes = new int[] {I_CmsEventListener.LISTENERS_FOR_ALL_EVENTS.intValue()};
             }
             for (int i = 0; i < eventTypes.length; i++) {
+                // register the listener for all configured event types
                 Integer eventType = new Integer(eventTypes[i]);
                 List listeners = (List)m_eventListeners.get(eventType);
                 if (listeners == null) {
                     listeners = new ArrayList();
                     m_eventListeners.put(eventType, listeners);
                 }
-                listeners.add(listener);
+                if (!listeners.contains(listener)) {
+                    // add listerner only if it is not already registered
+                    listeners.add(listener);
+                }
             }
         }
     }

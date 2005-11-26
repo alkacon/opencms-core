@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/Messages.java,v $
- * Date   : $Date: 2005/11/25 10:34:21 $
- * Version: $Revision: 1.14.2.4 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.14.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.14.2.4 $ 
+ * @version $Revision: 1.14.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,6 +144,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_SEARCH_INDEX_2 = "INIT_ADD_SEARCH_INDEX_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_INDEX_CONFIGURED_2 = "INIT_INDEX_CONFIGURED_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String INIT_INDEX_NOT_CONFIGURED_2 = "INIT_INDEX_NOT_CONFIGURED_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_SEARCH_DOC_TYPES_2 = "INIT_SEARCH_DOC_TYPES_2";

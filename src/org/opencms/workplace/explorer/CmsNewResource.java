@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/11/24 12:20:18 $
- * Version: $Revision: 1.21.2.4 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.21.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.4 $ 
+ * @version $Revision: 1.21.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -277,14 +277,14 @@ public class CmsNewResource extends CmsDialog {
         String nextUri = getParamNewResourceUri();
         if (!nextUri.startsWith("/")) {
             // no absolute path given, use default dialog path
-            nextUri = PATH_DIALOGS + nextUri;    
+            nextUri = PATH_DIALOGS + nextUri;
         }
-        
+
         setParamAction(DIALOG_NEWFORM);
         CmsUriSplitter splitter = new CmsUriSplitter(nextUri);
         Map params = CmsRequestUtil.createParameterMap(splitter.getQuery());
         params.putAll(paramsAsParameterMap());
-        sendForward(splitter.getPrefix(), params);        
+        sendForward(splitter.getPrefix(), params);
     }
 
     /**
@@ -300,38 +300,25 @@ public class CmsNewResource extends CmsDialog {
         result.append("<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\">");
 
         while (i.hasNext()) {
-            CmsExplorerTypeSettings currSettings = (CmsExplorerTypeSettings)i.next();
+            CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
 
             // check for the "new resource" page
             if (m_page == null) {
-                if (CmsStringUtil.isNotEmpty(currSettings.getNewResourcePage())) {
+                if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
                     continue;
                 }
-            } else if (!m_page.equals(currSettings.getNewResourcePage())) {
+            } else if (!m_page.equals(settings.getNewResourcePage())) {
                 continue;
             }
 
-            if (CmsStringUtil.isEmpty(currSettings.getNewResourceUri())) {
+            if (CmsStringUtil.isEmpty(settings.getNewResourceUri())) {
                 // no new resource URI specified for the current settings, dont't show the type
                 continue;
             }
 
             // check permissions for the type
-            CmsPermissionSet permissions;
-            try {
-                // get permissions of the current user
-                permissions = currSettings.getAccess().getAccessControlList(getSettings().getUser()).getPermissions(
-                    getSettings().getUser(),
-                    getCms().getGroupsOfUser(getSettings().getUser().getName()));
-            } catch (CmsException e) {
-                // error reading the groups of the current user
-                permissions = currSettings.getAccess().getAccessControlList(getSettings().getUser()).getPermissions(
-                    getSettings().getUser());
-                LOG.error(Messages.get().key(
-                    Messages.LOG_READ_GROUPS_OF_USER_FAILED_1,
-                    getSettings().getUser().getName()));
-            }
-            if (permissions.getPermissionString().indexOf("+c") == -1) {
+            CmsPermissionSet permissions = settings.getAccess().getPermissions(getCms());
+            if (!permissions.requiresControlPermission()) {
                 // the type has no permission for the current user to be created, don't show the type
                 continue;
             }
@@ -340,7 +327,7 @@ public class CmsNewResource extends CmsDialog {
             result.append("\t<td><input type=\"radio\" name=\"");
             result.append(PARAM_NEWRESOURCEURI);
             result.append("\"");
-            result.append(" value=\"" + CmsEncoder.encode(currSettings.getNewResourceUri()) + "\"");
+            result.append(" value=\"" + CmsEncoder.encode(settings.getNewResourceUri()) + "\"");
             if (CmsStringUtil.isNotEmpty(attributes)) {
                 result.append(" " + attributes);
             }
@@ -348,11 +335,11 @@ public class CmsNewResource extends CmsDialog {
             result.append("\t<td><img src=\""
                 + getSkinUri()
                 + "filetypes/"
-                + currSettings.getIcon()
+                + settings.getIcon()
                 + "\" border=\"0\" title=\""
-                + key(currSettings.getKey())
+                + key(settings.getKey())
                 + "\"></td>\n");
-            result.append("\t<td>" + key(currSettings.getKey()) + "</td>\n");
+            result.append("\t<td>" + key(settings.getKey()) + "</td>\n");
             result.append("</tr>\n");
 
         }
@@ -673,5 +660,4 @@ public class CmsNewResource extends CmsDialog {
             setParamTitle(key(Messages.GUI_NEWRESOURCE_0));
         }
     }
-
 }

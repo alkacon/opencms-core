@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/10/12 15:25:37 $
- * Version: $Revision: 1.32.2.1 $
+ * Date   : $Date: 2005/11/26 01:18:03 $
+ * Version: $Revision: 1.32.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.2.1 $ 
+ * @version $Revision: 1.32.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,7 +255,9 @@ public class CmsModuleManager {
                         // skip non-ZIP files
                         continue;
                     }
-                    modules.put(CmsModuleImportExportHandler.readModuleFromImport(moduleFile.getAbsolutePath()), moduleFile.getName());
+                    modules.put(
+                        CmsModuleImportExportHandler.readModuleFromImport(moduleFile.getAbsolutePath()),
+                        moduleFile.getName());
                 }
             }
         }
@@ -288,7 +290,8 @@ public class CmsModuleManager {
             Iterator itMods = modules.iterator();
             while (itMods.hasNext()) {
                 String moduleName = (String)itMods.next();
-                if (((List)moduleDependencies.get(moduleName)).isEmpty()) {
+                List deps = (List)moduleDependencies.get(moduleName);
+                if ((deps == null) || deps.isEmpty()) {
                     retList.add(moduleName);
                     Iterator itDeps = moduleDependencies.values().iterator();
                     while (itDeps.hasNext()) {
@@ -434,13 +437,15 @@ public class CmsModuleManager {
         while (itMods.hasNext()) {
             String moduleName = (String)itMods.next();
             List dependencies = (List)moduleDependencies.get(moduleName);
-            List depModules = new ArrayList(dependencies);
-            depModules.removeAll(moduleNames);
-            if (!depModules.isEmpty()) {
-                throw new CmsIllegalArgumentException(Messages.get().container(
-                    Messages.ERR_MODULE_SELECTION_INCONSISTENT_2,
-                    moduleName,
-                    depModules.toString()));
+            if (dependencies != null) {
+                List depModules = new ArrayList(dependencies);
+                depModules.removeAll(moduleNames);
+                if (!depModules.isEmpty()) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(
+                        Messages.ERR_MODULE_SELECTION_INCONSISTENT_2,
+                        moduleName,
+                        depModules.toString()));
+                }
             }
         }
     }
@@ -522,18 +527,20 @@ public class CmsModuleManager {
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                 }
-                // lock the resource
-                cms.lockResource(currentResource);
-                // delete the resource
-                cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-                // update the report
+                if (cms.existsResource(currentResource)) {
+                    // lock the resource
+                    cms.lockResource(currentResource);
+                    // delete the resource
+                    cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                    // update the report
 
-                report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
-                report.println(org.opencms.report.Messages.get().container(
-                    org.opencms.report.Messages.RPT_ARGUMENT_1,
-                    currentResource));
-                // unlock the resource (so it gets deleted with next publish)
-                cms.unlockResource(currentResource);
+                    report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
+                    report.println(org.opencms.report.Messages.get().container(
+                        org.opencms.report.Messages.RPT_ARGUMENT_1,
+                        currentResource));
+                    // unlock the resource (so it gets deleted with next publish)
+                    cms.unlockResource(currentResource);
+                }
             } catch (CmsException e) {
                 // ignore the exception and delete the next resource
                 LOG.error(Messages.get().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);

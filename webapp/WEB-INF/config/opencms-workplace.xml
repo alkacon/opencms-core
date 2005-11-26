@@ -31,13 +31,6 @@
 		<explorertypes>
 			<explorertype name="folder" key="fileicon.folder" icon="folder.gif">
 				<newresource uri="newresource_folder.jsp" order="5" autosetnavigation="false" autosettitle="false"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
 						<property name="Title"/>
@@ -68,158 +61,13 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="extendedfolder" key="fileicon.extendedfolder" icon="gallery.gif" reference="folder">
-				<newresource uri="newresource.jsp?page=extendedfolder" order="10"/>
+				<newresource uri="newresource.jsp?page=extendedfolder" order="10" autosetnavigation="false" autosettitle="false"/>
 			</explorertype>						
 			<explorertype name="structurecontent" key="fileicon.structurecontent" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource uri="newresource.jsp?page=structurecontent" order="15"/>
-			</explorertype>								
-			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<property name="Title"/>
-					</defaultproperties>
-					<contextmenu>
-						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
-						<separator order="70"/>
-						<entry key="explorer.context.opengallery" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
-						<entry key="explorer.context.renameimages" uri="commons/renameimages.jsp" rules="d d iiii aaai dddd" order="85"/>
-						<entry key="explorer.context.commentimages" uri="commons/commentimages.jsp" rules="d d iiii aaai dddd" order="90"/>
-						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-						<separator order="240"/>
-						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-						<separator order="340"/>
-						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
-					</contextmenu>
-				</editoptions>	
-			</explorertype>
-			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<property name="Title"/>
-					</defaultproperties>
-					<contextmenu>
-						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
-						<separator order="70"/>
-						<entry key="explorer.context.opengallery" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
-						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-						<separator order="240"/>
-						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-						<separator order="340"/>
-						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
-					</contextmenu>
-				</editoptions>
-			</explorertype>
-			<explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="downloadgallery">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30"/>
-			</explorertype>
-			<explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="downloadgallery">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40"/>
-			</explorertype>
-			<explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
-				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50"/>
-			</explorertype>
-			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
-				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
-				<editoptions>
-					<defaultproperties enabled="true" shownavigation="true">
-						<property name="Title"/>
-						<property name="Keywords"/>
-						<property name="Description"/>
-					</defaultproperties>
-					<contextmenu>
-						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
-						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
-						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
-						<separator order="40"/>
-						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
-						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
-						<separator order="70"/>
-						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
-						<separator order="100"/>
-						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
-						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
-						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
-						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
-						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
-						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
-						<separator order="240"/>
-						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
-						<separator order="260"/>
-						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
-						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
-						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
-						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
-						<separator order="330"/>
-						<entry key="explorer.context.editcontrolfile" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
-						<separator order="340"/>
-						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
-						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
-					</contextmenu>
-				</editoptions>
+				<newresource uri="newresource.jsp?page=structurecontent" order="15" autosetnavigation="false" autosettitle="false"/>
 			</explorertype>
 			<explorertype name="xmlpage" key="fileicon.xmlpage" icon="page.gif">
 				<newresource uri="newresource_xmlpage.jsp" order="20" autosetnavigation="false" autosettitle="false"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
 						<property name="Title"/>
@@ -261,13 +109,6 @@
 			</explorertype>
 			<explorertype name="plain" key="fileicon.plain" icon="plain.gif">
 				<newresource uri="newresource.jsp?newresourcetype=plain" order="30" autosetnavigation="false" autosettitle="false"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
 						<property name="Title"/>
@@ -304,14 +145,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="image" key="fileicon.image" icon="image.gif">
-				<newresource uri="" order="40"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
+				<newresource uri="" order="40" autosetnavigation="false" autosettitle="false"/>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
 						<property name="Title"/>
@@ -349,11 +183,9 @@
 			<explorertype name="jsp" key="fileicon.jsp" icon="jsp.gif">
 				<newresource uri="newresource.jsp?newresourcetype=jsp" order="50" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v"/>
 					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
@@ -393,14 +225,7 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="binary" key="fileicon.binary" icon="binary.gif">
-				<newresource uri="" order="60"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
+				<newresource uri="" order="60" autosetnavigation="false" autosettitle="false"/>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="false">
 						<property name="Title"/>
@@ -436,13 +261,6 @@
 			</explorertype>
 			<explorertype name="pointer" key="fileicon.pointer" icon="pointer.gif">
 				<newresource uri="newresource_pointer.jsp" order="70" autosetnavigation="false" autosettitle="false"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="true" shownavigation="true">
 						<property name="Title"/>
@@ -474,13 +292,11 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="XMLTemplate" key="fileicon.XMLTemplate" icon="xmltemplate.gif">
-				<newresource uri="" order="80"/>
+				<newresource uri="" order="80" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
+					<accessentry principal="DEFAULT" permissions="+r+v"/>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v"/>
 					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
 				</accesscontrol>
 				<editoptions>
 					<defaultproperties enabled="false" shownavigation="false"/>
@@ -514,32 +330,132 @@
 				</editoptions>
 			</explorertype>
 			<explorertype name="link" key="fileicon.link" icon="link.gif">
-				<newresource uri="newresource_sibling.jsp" order="90"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
+				<newresource uri="newresource_sibling.jsp" order="90" autosetnavigation="false" autosettitle="false"/>
 			</explorertype>
 			<explorertype name="upload" key="fileicon.upload" icon="upload.png">
-				<newresource uri="newresource_upload.jsp" order="100"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
-					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
-				</accesscontrol>
+				<newresource uri="newresource_upload.jsp" order="100" autosetnavigation="false" autosettitle="false"/>
+			</explorertype>
+			<explorertype name="imagegallery" key="fileicon.imagegallery" icon="imagegallery.gif">
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=imagegallery" order="10" autosetnavigation="false" autosettitle="false"/>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+					</defaultproperties>
+					<contextmenu>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
+						<separator order="40"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
+						<separator order="70"/>
+						<entry key="explorer.context.opengallery" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
+						<entry key="explorer.context.renameimages" uri="commons/renameimages.jsp" rules="d d iiii aaai dddd" order="85"/>
+						<entry key="explorer.context.commentimages" uri="commons/commentimages.jsp" rules="d d iiii aaai dddd" order="90"/>
+						<separator order="100"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
+						<separator order="240"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
+						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
+						<separator order="340"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+					</contextmenu>
+				</editoptions>	
+			</explorertype>
+			<explorertype name="downloadgallery" key="fileicon.downloadgallery" icon="downloadgallery.gif">
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=downloadgallery" order="20" autosetnavigation="false" autosettitle="false"/>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+					</defaultproperties>
+					<contextmenu>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
+						<separator order="40"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d aaaa aaaa dddd" order="60"/>
+						<separator order="70"/>
+						<entry key="explorer.context.opengallery" uri="commons/opengallery.jsp" rules="d d iiii aaai dddd" order="80"/>
+						<separator order="100"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d iiii aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid aaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
+						<separator order="240"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
+						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
+						<separator order="340"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+					</contextmenu>
+				</editoptions>
+			</explorertype>
+			<explorertype name="linkgallery" key="fileicon.linkgallery" icon="linkgallery.gif" reference="downloadgallery">
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=linkgallery" order="30" autosetnavigation="false" autosettitle="false"/>
+			</explorertype>
+			<explorertype name="htmlgallery" key="fileicon.htmlgallery" icon="htmlgallery.gif" reference="downloadgallery">
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=htmlgallery" order="40" autosetnavigation="false" autosettitle="false"/>
+			</explorertype>
+			<explorertype name="tablegallery" key="fileicon.tablegallery" icon="tablegallery.gif" reference="downloadgallery">
+				<newresource page="extendedfolder" uri="newresource.jsp?newresourcetype=tablegallery" order="50" autosetnavigation="false" autosettitle="false"/>
+			</explorertype>
+			<explorertype name="xmlcontent" key="fileicon.xmlcontent" icon="xmlcontent.gif">
+				<newresource page="structurecontent" uri="newresource.jsp?newresourcetype=xmlcontent" order="500" autosetnavigation="false" autosettitle="false"/>
+				<editoptions>
+					<defaultproperties enabled="true" shownavigation="true">
+						<property name="Title"/>
+						<property name="Keywords"/>
+						<property name="Description"/>
+					</defaultproperties>
+					<contextmenu>
+						<entry key="explorer.context.lock" uri="commons/lock.jsp" rules="d d aaaa dddd dddd" order="10"/>
+						<entry key="explorer.context.overridelock" uri="commons/lockchange.jsp" rules="d d dddd dddd aaaa" order="20"/>
+						<entry key="explorer.context.unlock" uri="commons/unlock.jsp" rules="d d dddd aaaa dddd" order="30"/>
+						<separator order="40"/>
+						<entry key="explorer.context.copytoproject" uri="commons/copytoproject.jsp" rules="d a dddd dddd dddd" order="50"/>
+						<entry key="explorer.context.publish" uri="commons/publishresource.jsp" rules="d d iaaa iaaa dddd" order="60"/>
+						<separator order="70"/>
+						<entry key="explorer.context.edit" uri="editors/editor.jsp" target="_top" rules="d d iiii aaai dddd" order="80"/>
+						<separator order="100"/>
+						<entry key="explorer.context.copy" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
+						<entry key="explorer.context.move" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
+						<entry key="explorer.context.delete" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
+						<entry key="explorer.context.touch" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
+						<entry key="explorer.context.availability" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
+						<entry key="explorer.context.undochanges" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
+						<entry key="explorer.context.undelete" uri="commons/undelete.jsp" rules="d d ddda ddda dddd" order="220"/>
+						<separator order="240"/>
+						<entry key="explorer.context.showsiblings" uri="views/explorer/explorer_files.jsp?showlinks=true" rules="a a aaaa aaaa aaaa" order="250"/>
+						<separator order="260"/>
+						<entry key="explorer.context.access" uri="commons/chacc.jsp" rules="a a iiii aaai dddd" order="300"/>
+						<entry key="explorer.context.secure" uri="commons/secure.jsp" rules="d d iiii aaai dddd" order="302"/>
+						<entry key="explorer.context.type" uri="commons/chtype.jsp" rules="d d iiii aaai dddd" order="305"/>
+						<entry key="explorer.context.chnav" uri="commons/chnav.jsp" rules="d d iiii aaai dddd" order="310"/>
+						<separator order="330"/>
+						<entry key="explorer.context.editcontrolfile" uri="editors/editor.jsp?editastext=true" target="_top" rules="d d iiii aaai dddd" order="335"/>
+						<separator order="340"/>
+						<entry key="explorer.context.history" uri="views/admin/admin-main.html?root=explorer&amp;path=%2Fhistory%2Findex.html" rules="a a aaai aaai aaai" order="350"/>
+						<entry key="explorer.context.property" uri="commons/property.jsp" rules="a a aaai aaai aaai" order="360"/>
+					</contextmenu>
+				</editoptions>
 			</explorertype>
 			<defaultaccesscontrol>
 				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 					<accessentry principal="DEFAULT" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Guests" permissions="-r-v-w-c"/>
 				</accesscontrol>
 			</defaultaccesscontrol>
 			<multicontextmenu>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/11/25 11:48:49 $
- * Version: $Revision: 1.56.2.5 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.56.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.5 $ 
+ * @version $Revision: 1.56.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,14 +123,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     /** The excerpt mode for this index. */
     private boolean m_createExcerpt;
 
-    /** An internal disabled flag, used for instance if the project does not exist. */
-    private boolean m_disabled;
-
     /** Documenttypes of folders/channels. */
     private Map m_documenttypes;
 
     /** The permission check mode for this index. */
     private boolean m_dontCheckPermissions;
+
+    /** An internal enabled flag, used to disable the index if for instance the configured project does not exist. */
+    private boolean m_enabled;
 
     /** The language filter of this index. */
     private String m_locale;
@@ -165,41 +165,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         m_sourceNames = new ArrayList();
         m_documenttypes = new HashMap();
         m_createExcerpt = true;
+        m_enabled = true;
         m_priority = -1;
     }
 
-    /**
-     * Checks everything is ok.<p>
-     * 
-     * Disables if not ok.<p>
-     * 
-     * @param cms the cms context
-     * 
-     * @return <code>true</code> if ok
-     */
-    public boolean isOk(CmsObject cms) {
-        
-        if (m_disabled) {
-            LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
-        } else {
-            // check if the project for the index exists
-            try {
-                cms.readProject(getProject());
-            } catch (CmsException e) {
-                // the project does not exist
-                if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
-                        Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2,
-                        getProject(),
-                        getName()));
-                    LOG.warn(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
-                }
-                // disable the index
-                m_disabled = true;
-            }
-        }
-        return !m_disabled;
-    }
     /**
      * Creates a new CmsSearchIndex with the given name.<p>
      * 
@@ -214,7 +183,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     throws CmsIllegalArgumentException {
 
         this();
-        this.setName(name);
+        setName(name);
     }
 
     /**
@@ -322,6 +291,41 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
     public void addSourceName(String sourceName) {
 
         m_sourceNames.add(sourceName);
+    }
+
+    /**
+     * Checks is this index has been configured correctly.<p>
+     * 
+     * In case the check fails, the <code>enabled</code> property
+     * is set to <code>false</code>
+     * 
+     * @param cms a OpenCms user context to perform the checks with (should have "Administrator" permissions)
+     *
+     * @return <code>true</code> in case the index is correctly configured and enabled after the check
+     * 
+     * @see #isEnabled()
+     */
+    public boolean checkConfiguration(CmsObject cms) {
+
+        if (isEnabled()) {
+            // check if the project for the index exists        
+            try {
+                cms.readProject(getProject());
+                setEnabled(true);
+            } catch (CmsException e) {
+                // the project does not exist, disable the index
+                setEnabled(false);
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2, getProject(), getName()));
+                }
+            }
+        } else {
+            if (LOG.isInfoEnabled()) {
+                LOG.info(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
+            }
+        }
+
+        return isEnabled();
     }
 
     /**
@@ -514,6 +518,11 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
      */
     public void initialize() throws CmsSearchException {
 
+        if (!isEnabled()) {
+            // index is disabled, no initialization is required
+            return;
+        }
+
         String sourceName = null;
         CmsSearchIndexSource indexSource = null;
         List searchIndexSourceDocumentTypes = null;
@@ -538,12 +547,24 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     resourceName = (String)resourceNames.get(j);
                     m_documenttypes.put(resourceName, searchIndexSourceDocumentTypes);
                 }
-            } catch (Exception exc) {
+            } catch (Exception e) {
+                // mark this index as disabled
+                setEnabled(false);
                 throw new CmsSearchException(Messages.get().container(
                     Messages.ERR_INDEX_SOURCE_ASSOCIATION_1,
-                    sourceName), exc);
+                    sourceName), e);
             }
         }
+    }
+
+    /**
+     * Returns <code>true</code> if this index is currently disabled.<p>
+     * 
+     * @return <code>true</code> if this index is currently disabled
+     */
+    public boolean isEnabled() {
+
+        return m_enabled;
     }
 
     /**
@@ -588,10 +609,6 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
 
         // storage for the results found
         CmsSearchResultList searchResults = new CmsSearchResultList();
-
-        if (!isOk(cms)) {
-            return searchResults;
-        }
 
         int previousPriority = Thread.currentThread().getPriority();
 
@@ -799,6 +816,16 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         }
 
         return searchResults;
+    }
+
+    /**
+     * Can be used to enable / disable this index.<p>
+     * 
+     * @param enabled the state of the index to set
+     */
+    public void setEnabled(boolean enabled) {
+
+        m_enabled = enabled;
     }
 
     /**

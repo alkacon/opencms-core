@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/11/24 09:37:53 $
- * Version: $Revision: 1.39.2.6 $
+ * Date   : $Date: 2005/11/26 01:18:02 $
+ * Version: $Revision: 1.39.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.configuration;
 
 import org.opencms.db.CmsExportPoint;
 import org.opencms.main.CmsLog;
+import org.opencms.main.OpenCms;
 import org.opencms.util.CmsRfsFileViewer;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceManager;
@@ -60,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.6 $
+ * @version $Revision: 1.39.2.7 $
  * 
  * @since 6.0.0
  */
@@ -524,7 +525,13 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
      */
     public static void generateExplorerTypesXml(Element startNode, List explorerTypes, boolean module) {
 
-        Iterator i = explorerTypes.iterator();
+        // we need the default access node later to check if the explorer type is an individual setting
+        CmsExplorerTypeAccess defaultAccess = null;
+        if (OpenCms.getWorkplaceManager() != null) {
+            defaultAccess = OpenCms.getWorkplaceManager().getDefaultAccess();
+        }
+
+        Iterator i = explorerTypes.iterator();        
         while (i.hasNext()) {
             // create an explorer type node
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
@@ -545,32 +552,25 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
                 newResElement.addAttribute(A_HANDLER, settings.getNewResourceHandlerClassName());
                 newResElement.addAttribute(A_URI, settings.getNewResourceUri());
                 newResElement.addAttribute(A_ORDER, settings.getNewResourceOrder());
-                if (settings.isAutoSetNavigation()) {
-                    newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
-                }
-                if (settings.isAutoSetTitle()) {
-                    newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
-                }
+                newResElement.addAttribute(A_AUTOSETNAVIGATION, String.valueOf(settings.isAutoSetNavigation()));
+                newResElement.addAttribute(A_AUTOSETTITLE, String.valueOf(settings.isAutoSetTitle()));
                 // create subnode <accesscontrol>            
-                List accessEntries = new ArrayList();
-                // sort accessEntries   
                 CmsExplorerTypeAccess access = settings.getAccess();
-                Iterator iter = access.getAccessEntries().keySet().iterator();
-                while (iter.hasNext()) {
-                    accessEntries.add(iter.next());
-                }
-                Collections.sort(accessEntries);
-
-                if (accessEntries.size() > 0) {
-                    Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
-                    Iterator k = accessEntries.iterator();
-
-                    while (k.hasNext()) {
-                        String key = (String)k.next();
-                        String value = (String)settings.getAccess().getAccessEntries().get(key);
-                        Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
-                        accessEntryElement.addAttribute(A_PRINCIPAL, key);
-                        accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                if (access != defaultAccess) {
+                    // don't output the node if this is in fact the default access settings
+                    List accessEntries = new ArrayList(access.getAccessEntries().keySet());
+                    // sort accessEntries
+                    Collections.sort(accessEntries);
+                    if (accessEntries.size() > 0) {
+                        Element accessControlElement = explorerTypeElement.addElement(N_ACCESSCONTROL);
+                        Iterator k = accessEntries.iterator();
+                        while (k.hasNext()) {
+                            String key = (String)k.next();
+                            String value = (String)settings.getAccess().getAccessEntries().get(key);
+                            Element accessEntryElement = accessControlElement.addElement(N_ACCESSENTRY);
+                            accessEntryElement.addAttribute(A_PRINCIPAL, key);
+                            accessEntryElement.addAttribute(A_PERMISSIONS, value);
+                        }
                     }
                 }
                 // create subnode <editoptions>
