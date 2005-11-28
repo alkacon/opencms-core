@@ -31,7 +31,7 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/admin/history/"/>
-			<resource uri="/system/workplace/resources/tools/history/"/>
+			<resource uri="/system/workplace/resources/tools/history/icons/"/>
 			<resource uri="/system/modules/org.opencms.workplace.tools.history/"/>
 		</resources>
 		<parameters/>
