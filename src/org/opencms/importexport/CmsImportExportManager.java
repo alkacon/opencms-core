@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportExportManager.java,v $
- * Date   : $Date: 2005/10/19 09:41:10 $
- * Version: $Revision: 1.28.2.2 $
+ * Date   : $Date: 2005/11/29 15:01:21 $
+ * Version: $Revision: 1.28.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.io.SAXReader;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.28.2.2 $ 
+ * @version $Revision: 1.28.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -398,12 +398,12 @@ public class CmsImportExportManager {
         if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ADDED_PRINCIPAL_TRANSLATION_3, type, from, to));
         }
-        if (type.equalsIgnoreCase(I_CmsPrincipal.PRINCIPAL_GROUP)) {
+        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(type)) {
             m_importGroupTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_GROUP_TRANSLATION_2, from, to));
             }
-        } else if (type.equalsIgnoreCase(I_CmsPrincipal.PRINCIPAL_USER)) {
+        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(type)) {
             m_importUserTranslations.put(from, to);
             if (LOG.isInfoEnabled()) {
                 LOG.info(Messages.get().key(Messages.INIT_IMPORTEXPORT_ADDED_USER_TRANSLATION_2, from, to));

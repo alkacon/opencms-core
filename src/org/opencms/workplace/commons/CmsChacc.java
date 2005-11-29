@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChacc.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.23.2.3 $
+ * Date   : $Date: 2005/11/29 15:01:52 $
+ * Version: $Revision: 1.23.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.3 $ 
+ * @version $Revision: 1.23.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,37 +80,49 @@ public class CmsChacc extends CmsDialog {
 
     /** Value for the action: add an access control entry. */
     public static final int ACTION_ADDACE = 300;
+    
     /** Value for the action: delete the permissions. */
     public static final int ACTION_DELETE = 200;
+    
     /** Value for the action: set the internal use flag. */
     public static final int ACTION_INTERNALUSE = 400;
 
     /** Request parameter value for the action: add an access control entry. */
     public static final String DIALOG_ADDACE = "addace";
+    
     /** Request parameter value for the action: delete the permissions. */
     public static final String DIALOG_DELETE = "delete";
+    
     /** Request parameter value for the action: set the internal use flag. */
     public static final String DIALOG_INTERNALUSE = "internaluse";
+    
     /** The dialog type. */
     public static final String DIALOG_TYPE = "chacc";
 
     /** Request parameter name for the inherit permissions parameter. */
     public static final String PARAM_INHERIT = "inherit";
+    
     /** Request parameter name for the internal use only flag. */
     public static final String PARAM_INTERNAL = "internal";
+    
     /** Request parameter name for the name parameter. */
     public static final String PARAM_NAME = "name";
+    
     /** Request parameter name for the overwrite inherited permissions parameter. */
     public static final String PARAM_OVERWRITEINHERITED = "overwriteinherited";
+    
     /** Request parameter name for the responsible parameter. */
     public static final String PARAM_RESPONSIBLE = "responsible";
+    
     /** Request parameter name for the type parameter. */
     public static final String PARAM_TYPE = "type";
+    
     /** Request parameter name for the view parameter. */
     public static final String PARAM_VIEW = "view";
 
     /** Constant for the request parameters suffix: allow. */
     public static final String PERMISSION_ALLOW = "allow";
+    
     /** Constant for the request parameters suffix: deny. */
     public static final String PERMISSION_DENY = "deny";
 
@@ -129,7 +141,10 @@ public class CmsChacc extends CmsDialog {
     /** Indicates if inheritance flags are set as hidden fields for resource folders. */
     private boolean m_inherit;
 
+    /** The name parameter. */
     private String m_paramName;
+    
+    /** The type parameter. */
     private String m_paramType;
 
     /** Stores all possible permission keys of a permission set. */
@@ -139,7 +154,7 @@ public class CmsChacc extends CmsDialog {
     private boolean m_showInheritedPermissions;
 
     /** The possible types of new access control entries. */
-    private String[] m_types = {"group", "user"};
+    private String[] m_types = {I_CmsPrincipal.PRINCIPAL_GROUP, I_CmsPrincipal.PRINCIPAL_USER};
 
     /** The possible type values of access control entries. */
     private int[] m_typesInt = {CmsAccessControlEntry.ACCESS_FLAGS_GROUP, CmsAccessControlEntry.ACCESS_FLAGS_USER};
