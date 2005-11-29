@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.557.2.16 $
+ * Date   : $Date: 2005/11/29 14:58:29 $
+ * Version: $Revision: 1.557.2.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -4707,18 +4707,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean getFiles) throws CmsException {
 
         // try to get the sub resources from the cache
-        String cacheKey;
-        if (getFolders && getFiles) {
-            cacheKey = CmsCacheKey.CACHE_KEY_SUBALL;
-        } else if (getFolders) {
-            cacheKey = CmsCacheKey.CACHE_KEY_SUBFOLDERS;
-        } else {
-            cacheKey = CmsCacheKey.CACHE_KEY_SUBFILES;
-        }
-        cacheKey = getCacheKey(
-            dbc.currentUser().getName() + cacheKey + filter.getCacheId(),
-            dbc.currentProject(),
-            resource.getRootPath());
+        String cacheKey = getCacheKey(new String[] {
+            dbc.currentUser().getName(),
+            getFolders ? (getFiles ? CmsCacheKey.CACHE_KEY_SUBALL : CmsCacheKey.CACHE_KEY_SUBFOLDERS)
+            : CmsCacheKey.CACHE_KEY_SUBFILES,
+            filter.getCacheId(),
+            resource.getRootPath()}, dbc.currentProject());
 
         List subResources = (List)m_resourceListCache.get(cacheKey);
 
@@ -5589,10 +5583,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException, CmsDataAccessException {
 
         // try to get the sub resources from the cache
-        String cacheKey = getCacheKey(
-            dbc.currentUser().getName() + filter.getCacheId() + readTree,
-            dbc.currentProject(),
-            parent.getRootPath());
+        String cacheKey = getCacheKey(new String[] {
+            dbc.currentUser().getName(),
+            filter.getCacheId(),
+            readTree ? "+" : "-",
+            parent.getRootPath()}, dbc.currentProject());
 
         List subResources = (List)m_resourceListCache.get(cacheKey);
 
@@ -5661,7 +5656,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List extractedResources = null;
 
-        String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path + "_" + propertyDefinition);
+        String cacheKey = getCacheKey(new String[] {path, propertyDefinition}, dbc.currentProject());
 
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
 
@@ -5702,11 +5697,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         List extractedResources = null;
 
-        String cacheKey = getCacheKey("_ResourcesWithProperty", dbc.currentProject(), path
-            + "_"
-            + propertyDefinition
-            + "_"
-            + value);
+        String cacheKey = getCacheKey(new String[] {path, propertyDefinition, value}, dbc.currentProject());
+
         if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
 
             // first read the property definition
@@ -8022,10 +8014,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean forFolder,
         int depth) throws CmsException {
 
-        String cacheKey = getCacheKey(
-            inheritedOnly + "_" + forFolder + "_" + depth + "_",
-            dbc.currentProject(),
-            resource.getStructureId().toString());
+        String cacheKey = getCacheKey(new String[] {
+            inheritedOnly ? "+" : "-",
+            forFolder ? "+" : "-",
+            Integer.toString(depth),
+            resource.getRootPath()}, dbc.currentProject());
+
         CmsAccessControlList acl = (CmsAccessControlList)m_accessControlListCache.get(cacheKey);
 
         // return the cached acl if already available
@@ -8082,52 +8076,39 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     private String getCacheKey(String prefix, boolean flag, int projectId, String resource) {
 
-        StringBuffer buffer = new StringBuffer(32);
+        StringBuffer b = new StringBuffer(64);
         if (prefix != null) {
-            buffer.append(prefix);
-            if (flag) {
-                buffer.append("_t_");
-            } else {
-                buffer.append("_f_");
-            }
+            b.append(prefix);
+            b.append(flag ? '+' : '-');
         }
         if (projectId >= CmsProject.ONLINE_PROJECT_ID) {
-            if (projectId == CmsProject.ONLINE_PROJECT_ID) {
-                buffer.append("on");
-            } else {
-                buffer.append("of");
-            }
-            buffer.append("_");
+            b.append(CmsProject.isOnlineProject(projectId) ? '+' : '-');
         }
-        buffer.append(resource);
-        return buffer.toString();
+        return b.append(resource).toString();
     }
 
     /**
      * Return a cache key build from the provided information.<p>
      * 
-     * @param prefix a prefix for the key
+     * @param keys an array of keys to generate the cache key from
      * @param project the project for which to genertate the key
-     * @param resource the resource for which to genertate the key
+     *
      * @return String a cache key build from the provided information
      */
-    private String getCacheKey(String prefix, CmsProject project, String resource) {
+    private String getCacheKey(String[] keys, CmsProject project) {
 
-        StringBuffer buffer = new StringBuffer(32);
-        if (prefix != null) {
-            buffer.append(prefix);
-            buffer.append("_");
+        StringBuffer b = new StringBuffer(64);
+        int len = keys.length;
+        if (len > 0) {
+            for (int i = 0; i < len; i++) {
+                b.append(keys[i]);
+                b.append('_');
+            }
         }
         if (project != null) {
-            if (project.isOnlineProject()) {
-                buffer.append("on");
-            } else {
-                buffer.append("of");
-            }
-            buffer.append("_");
+            b.append(project.isOnlineProject() ? '+' : '-');
         }
-        buffer.append(resource);
-        return buffer.toString();
+        return b.toString();
     }
 
     /**

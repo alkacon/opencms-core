@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2005/11/18 08:24:17 $
- * Version: $Revision: 1.20.2.2 $
+ * Date   : $Date: 2005/11/29 14:58:29 $
+ * Version: $Revision: 1.20.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.20.2.2 $ 
+ * @version $Revision: 1.20.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,14 +80,14 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
     public CmsI18nInfo getI18nInfo(HttpServletRequest req, CmsUser user, CmsProject project, String resourceName) {
 
         CmsLocaleManager localeManager = OpenCms.getLocaleManager();
-
-        String encoding;
         List defaultLocales = null;
+        String encoding = null;
+
         synchronized (m_adminCmsObject) {
             // must switch project id in stored Admin context to match current project
             m_adminCmsObject.getRequestContext().setCurrentProject(project);
-            // now get default m_locale names
 
+            // now get default m_locale names
             CmsResource res = null;
             try {
                 res = m_adminCmsObject.readResource(resourceName);
@@ -106,29 +106,34 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             }
 
             String defaultNames = null;
-            try {
-                defaultNames = m_adminCmsObject.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
-            } catch (CmsException e) {
-                LOG.warn(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
-            }
 
-            if (defaultNames != null) {
-                defaultLocales = localeManager.getAvailableLocales(defaultNames);
+            if (res != null) {
+                // the resource may not exist at all (e.g. if an unknown resource was requested by the user in the browser)
+                try {
+                    defaultNames = m_adminCmsObject.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
+                } catch (CmsException e) {
+                    LOG.warn(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                }
+                if (defaultNames != null) {
+                    defaultLocales = localeManager.getAvailableLocales(defaultNames);
+                }
+
+                // get the encoding
+                try {
+                    encoding = m_adminCmsObject.readPropertyObject(
+                        res,
+                        CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+                        true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
+                } catch (CmsException e) {
+                    if (LOG.isInfoEnabled()) {
+                        LOG.info(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                    }
+                }
             }
             if ((defaultLocales == null) || (defaultLocales.isEmpty())) {
                 defaultLocales = localeManager.getDefaultLocales();
             }
-
-            // get the encoding
-            try {
-                encoding = m_adminCmsObject.readPropertyObject(
-                    resourceName,
-                    CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
-                    true).getValue(OpenCms.getSystemInfo().getDefaultEncoding());
-            } catch (CmsException e) {
-                if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
-                }
+            if (encoding == null) {
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2005/11/29 14:58:29 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -547,13 +547,13 @@ public class CmsFlexController {
      */
     public void pop() {
 
-        if (m_flexRequestList.size() > 0) {
+        if ((m_flexRequestList != null) && !m_flexRequestList.isEmpty()) {
             m_flexRequestList.remove(m_flexRequestList.size() - 1);
         }
-        if (m_flexResponseList.size() > 0) {
+        if ((m_flexResponseList != null) && !m_flexRequestList.isEmpty()) {
             m_flexResponseList.remove(m_flexResponseList.size() - 1);
         }
-        if (m_flexContextInfoList.size() > 0) {
+        if ((m_flexContextInfoList != null) && !m_flexContextInfoList.isEmpty()) {
             CmsFlexRequestContextInfo info = (CmsFlexRequestContextInfo)m_flexContextInfoList.remove(m_flexContextInfoList.size() - 1);
             if (m_flexContextInfoList.size() > 0) {
                 ((CmsFlexRequestContextInfo)m_flexContextInfoList.get(0)).merge(info);
