@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/10/19 09:37:40 $
- * Version: $Revision: 1.108.2.1 $
+ * Date   : $Date: 2005/11/29 15:03:19 $
+ * Version: $Revision: 1.108.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.108.2.1 $
+ * @version $Revision: 1.108.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -856,7 +856,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         Connection conn = null;
 
         try {
-            conn = m_sqlManager.getConnection(dbc);
+            conn = m_sqlManager.getConnection(dbc, dbc.currentProject().getId());
             stmt = m_sqlManager.getPreparedStatement(conn, "C_GROUPS_READGROUP2");
 
             // read the group from the database
