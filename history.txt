@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.682.2.52 $
+ * Date   : $Date: 2005/11/29 15:02:21 $
+ * Version: $Revision: 1.682.2.53 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,6 +19,12 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 6.1.6 -  xxxx, 2005
+* Fixed issue in locale handler if non-existant resource has been requested
+* Fixed issue in FlexController that sometimes caused NPE errors during system startup
+! Added schema validation of <appinfo> node for XML content definitions that use the default content XML handler 
+- Some improvements to handling of ACL/ACE entries
+
 OpenCms 6.1.5 -  November 25, 2005
 ! In the explorer view, it's now possible to select resources by right-clicking on the name
 ! Added JSP scriptlet support for <cms:contentload>, <cms:contentloop> and <cms:contentshow> operations
@@ -31,7 +37,6 @@ OpenCms 6.1.5 -  November 25, 2005
 * Fixed issue in DTD of opencms-modules.xml by sharing mode nodes (e.g. explorertype) with opencms-workplace.xml
 - Activated image scaling option by default
 - Improved handling of default explorer type options
-
 
 OpenCms 6.1.4 -  November 16, 2005
 ! Added dialog to compare and make a 'diff' of xml pages and xml content including content, properties and file attributes
