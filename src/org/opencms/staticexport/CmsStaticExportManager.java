@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/10/19 10:14:36 $
- * Version: $Revision: 1.116.2.3 $
+ * Date   : $Date: 2005/12/01 09:50:49 $
+ * Version: $Revision: 1.116.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEvent;
@@ -48,6 +49,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
@@ -82,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.116.2.3 $ 
+ * @version $Revision: 1.116.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,14 +174,14 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** Temporary variable for reading the xml config file. */
     private CmsStaticExportExportRule m_exportTmpRule;
 
-    /** Temporary variable for reading the xml config file. */
-    private CmsStaticExportRfsRule m_rfsTmpRule;
-
     /** Export url to send internal requests to. */
     private String m_exportUrl;
 
     /** Export url with unstubstituted context values. */
     private String m_exportUrlConfigured;
+
+    /** Export url to send internal requests to without http://servername. */
+    private String m_exportUrlPrefix;
 
     /** Handler class for static export. */
     private I_CmsStaticExportHandler m_handler;
@@ -199,6 +201,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     /** List of configured rfs rules. */
     private List m_rfsRules;
 
+    /** Temporary variable for reading the xml config file. */
+    private CmsStaticExportRfsRule m_rfsTmpRule;
+
     /** Indicates if the static export is enabled or diabled. */
     private boolean m_staticExportEnabled;
 
@@ -216,9 +221,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
     /** Prefix to use for internal OpenCms files with unstubstituted context values. */
     private String m_vfsPrefixConfigured;
-
-    /** Export url to send internal requests to without http://servername. */
-    private String m_exportUrlPrefix;
 
     /**
      * Creates a new static export property object.<p>
@@ -355,6 +357,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
                 I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+                if (report == null) {
+                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+                }
                 getHandler().performEventPublishProject(publishHistoryId, report);
 
                 clearCaches(event);
@@ -473,7 +478,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             oldUri = cms.getRequestContext().getUri();
             cms.getRequestContext().setUri(vfsName);
         }
-   
+
         // do the export
         byte[] result = loader.export(cms, file, req, wrapRes);
 
@@ -850,17 +855,6 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     }
 
     /**
-     * Returns the export URL used for internal requests for exporting resources that require a 
-     * request / response (like JSP) without http://servername.<p>
-     * 
-     * @return the export URL used for internal requests for exporting resources like JSP without http://servername
-     */
-    public String getExportUrlPrefix() {
-
-        return m_exportUrlPrefix;
-    }
-
-    /**
      * Returns the export URL used for internal requests with unsubstituted context values, to be used 
      * when re-writing the configuration.<p>
      * 
@@ -873,6 +867,17 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     public String getExportUrlForConfiguration() {
 
         return m_exportUrlConfigured;
+    }
+
+    /**
+     * Returns the export URL used for internal requests for exporting resources that require a 
+     * request / response (like JSP) without http://servername.<p>
+     * 
+     * @return the export URL used for internal requests for exporting resources like JSP without http://servername
+     */
+    public String getExportUrlPrefix() {
+
+        return m_exportUrlPrefix;
     }
 
     /**
@@ -2215,7 +2220,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         File exportFile = null;
         String exportFileName = CmsFileUtil.normalizePath(exportPath + rfsName);
-        
+
         // make sure all required parent folder exist
         createExportFolder(exportPath, rfsName);
         // generate export file instance and output stream
