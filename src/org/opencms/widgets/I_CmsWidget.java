@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidget.java,v $
- * Date   : $Date: 2005/10/02 08:59:08 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2005/12/02 16:23:28 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import java.util.Map;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.7.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,22 @@ public interface I_CmsWidget {
      * @return a HTML &lt;div&gt; containing the help text for this widget
      */
     String getHelpText(I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter value);
+
+    /**
+     * Returns the <code>{@link I_CmsWidgetParameter#getStringValue(CmsObject)}</code>
+     * processed according to the output rules of this widget and the given widget dialog.<p>
+     * 
+     * @param cms the current users OpenCms context
+     * @param widgetDialog the dialog where the widget is used on
+     * @param param the widget parameter to generate the widget for
+     * 
+     * @return the <code>{@link I_CmsWidgetParameter#getStringValue(CmsObject)}</code>
+     *      processed according to the output rules of this widget
+     *      
+     * @see I_CmsWidgetParameter#getStringValue(CmsObject)
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getStringValue(CmsObject)
+     */
+    String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param);
 
     /**
      * Creates a duplicate of this widget instance.<p>

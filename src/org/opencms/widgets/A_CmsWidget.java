@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/10/02 08:59:08 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2005/12/02 16:23:28 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -219,6 +219,17 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             result.append("</div>\n");
             return result.toString();
         }
+    }
+
+    /**
+     * @see org.opencms.widgets.I_CmsWidget#getWidgetStringValue(org.opencms.file.CmsObject, org.opencms.widgets.I_CmsWidgetDialog, org.opencms.widgets.I_CmsWidgetParameter)
+     */
+    public String getWidgetStringValue(CmsObject cms, I_CmsWidgetDialog widgetDialog, I_CmsWidgetParameter param) {
+
+        if (param != null) {
+            return param.getStringValue(cms);
+        }
+        return null;
     }
 
     /**
