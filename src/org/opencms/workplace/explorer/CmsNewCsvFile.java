@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.23.2.3 $
+ * Date   : $Date: 2005/12/02 16:25:15 $
+ * Version: $Revision: 1.23.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.2.3 $ 
+ * @version $Revision: 1.23.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -609,7 +609,14 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
         String csvData = getParamCsvContent();
         String lineSeparator = System.getProperty("line.separator");
-        String formatString = csvData.substring(0, csvData.indexOf(lineSeparator));
+        int index = csvData.indexOf(lineSeparator);
+        if (index == -1) {
+            // e.g. on Windows machines, the line separator is \r\n, but the lines of
+            // pasted data are separated by \n
+            lineSeparator = "\n";
+            index = csvData.indexOf("\n");
+        }
+        String formatString = csvData.substring(0, index);
         String delimiter = getParamDelimiter();
 
         StringBuffer xml = new StringBuffer("<table>");
@@ -626,7 +633,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             xml.append("<tr>\n");
             String[] words = CmsStringUtil.splitAsArray(line, delimiter);
             for (int i = 0; i < words.length; i++) {
-                xml.append("\t<td>").append(removeStringDelimiters(words[i])).append("</td>\n");
+                xml.append("\t<td>");
+                xml.append(CmsStringUtil.escapeHtml(removeStringDelimiters(words[i])));
+                xml.append("</td>\n");
             }
             xml.append("</tr>\n");
         }
