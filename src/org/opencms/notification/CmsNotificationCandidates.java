@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2005/10/19 09:45:12 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/02 09:13:28 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -191,22 +192,22 @@ public class CmsNotificationCandidates {
                     Iterator responsibles = m_cms.readResponsibleUsers(resource).iterator();
                     while (responsibles.hasNext()) {
                         CmsUser responsible = (CmsUser)responsibles.next();
+                        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(responsible.getEmail())) {
+                            // check, if resultset already contains a content notification for the user
+                            CmsContentNotification contentNotification = (CmsContentNotification)result.get(responsible);
 
-                        // check, if resultset already contains a content notification for the user
-                        CmsContentNotification contentNotification = (CmsContentNotification)result.get(responsible);
-
-                        // if not add a new content notification
-                        if (contentNotification == null) {
-                            contentNotification = new CmsContentNotification(responsible, m_cms);
-                            result.put(responsible, contentNotification);
+                            // if not add a new content notification
+                            if (contentNotification == null) {
+                                contentNotification = new CmsContentNotification(responsible, m_cms);
+                                result.put(responsible, contentNotification);
+                            }
+                            List resourcesForResponsible = contentNotification.getNotificationCauses();
+                            if (resourcesForResponsible == null) {
+                                resourcesForResponsible = new ArrayList();
+                                contentNotification.setNotificationCauses(resourcesForResponsible);
+                            }
+                            resourcesForResponsible.add(resourceInfo);
                         }
-                        List resourcesForResponsible = contentNotification.getNotificationCauses();
-                        if (resourcesForResponsible == null) {
-                            resourcesForResponsible = new ArrayList();
-                            contentNotification.setNotificationCauses(resourcesForResponsible);
-                        }
-                        resourcesForResponsible.add(resourceInfo);
-
                     }
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
