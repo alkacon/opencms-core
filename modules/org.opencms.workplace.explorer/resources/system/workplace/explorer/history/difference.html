@@ -8,7 +8,7 @@
 		return;
 	}
 	// initialize the workplace class
-	CmsElementDifferenceDialog diffDialog = new CmsElementDifferenceDialog(pageContext, request, response);
+	CmsElementDifferenceDialog diffDialog = new CmsElementDifferenceDialog(wpWidget.getJsp());
 	// write the content of widget dialog
 	wpWidget.writeDialog();
 	// write the content of list dialog

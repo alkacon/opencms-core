@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2005/11/18 09:04:41 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2005/12/02 16:22:41 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsBackupProject;
 import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsFile;
+import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.2 
  */
@@ -302,7 +303,6 @@ public class CmsHistoryList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
         
         List result = new ArrayList();
-        String userName = "";
         List backupFileHeaders = getCms().readAllBackupFileHeaders(getParamResource());           
         Iterator i = backupFileHeaders.iterator();
         while (i.hasNext()) {
@@ -315,11 +315,6 @@ public class CmsHistoryList extends A_CmsListDialog {
             String filetype = String.valueOf(file.getTypeId());
             String dateLastModified = getMessages().getDateTime(file.getDateLastModified());             
             String datePublished = getMessages().getDateTime(project.getPublishingDate());
-            try {
-                userName = getCms().readUser(file.getUserLastModified()).getName();
-            } catch (CmsException e) {
-                userName = file.getLastModifiedByName();
-            }
             CmsListItem item = getList().newItem(versionId);
             //version
             item.set(LIST_COLUMN_VERSION, new VersionWrapper(new Integer(file.getVersionId())));
@@ -330,7 +325,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             // group           
             item.set(LIST_COLUMN_FILE_TYPE, filetype);
             // user           
-            item.set(LIST_COLUMN_USER, userName);
+            item.set(LIST_COLUMN_USER, readUserNameOfBackupFile(getCms(), file));
             // path           
             item.set(LIST_COLUMN_RESOURCE_PATH, file.getRootPath());
             // size 
@@ -339,7 +334,6 @@ public class CmsHistoryList extends A_CmsListDialog {
         }
         CmsFile onlineFile = getCms().readFile(getParamResource());
         CmsListItem item = getList().newItem("-1");
-        userName = getCms().readUser(onlineFile.getUserLastModified()).getName();
         //version
         item.set(LIST_COLUMN_VERSION, new VersionWrapper(OFFLINE_PROJECT));
         // filename
@@ -349,7 +343,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         // group           
         item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(onlineFile.getTypeId()));
         // user           
-        item.set(LIST_COLUMN_USER, userName);
+        item.set(LIST_COLUMN_USER, getCms().readUser(onlineFile.getUserLastModified()).getName());
         // size 
         item.set(LIST_COLUMN_SIZE, new Integer(onlineFile.getLength()).toString());
         // path
@@ -359,6 +353,28 @@ public class CmsHistoryList extends A_CmsListDialog {
         return result;
     }
 
+    /** 
+     * Returns the user last modified of a backup resource.<p>
+     * 
+     * @param cms the cms object
+     * @param file the file to use
+     * @return the user last modified of a backup resource
+     * @throws CmsException if something goes wrong
+     */
+    public static String readUserNameOfBackupFile(CmsObject cms, CmsFile file) throws CmsException {
+        String userName;
+        try {
+            userName = cms.readUser(file.getUserLastModified()).getName();
+        } catch (CmsException e) {
+            if (file instanceof CmsBackupResource) {
+                userName = ((CmsBackupResource)file).getLastModifiedByName();
+            } else {
+                throw e;
+            }
+        }  
+        return userName;
+    }
+    
     /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */

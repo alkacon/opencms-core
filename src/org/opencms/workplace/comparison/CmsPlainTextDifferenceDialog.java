@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Attic/CmsElementDifferenceDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Attic/CmsPlainTextDifferenceDialog.java,v $
  * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -33,30 +33,20 @@ import com.alkacon.diff.Diff;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
-import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
-import org.opencms.util.CmsDateUtil;
-import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
-import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.page.CmsXmlPageFactory;
-import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
-import java.text.DateFormat;
-import java.util.Date;
+import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
@@ -71,20 +61,11 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
-
-    /** constant indicating that the html is to be compared.<p> */
-    public static final String MODE_HTML = "html";
-
-    /** constant indicating that a textual representation of the html is to be compared.<p> */
-    public static final String MODE_TEXT = "text";
-
-    /** request parameter for the textmode.<p> */
-    public static final String PARAM_TEXTMODE = "textmode";
+public class CmsPlainTextDifferenceDialog extends CmsElementDifferenceDialog {
 
     private String m_copySource;
 
@@ -113,55 +94,12 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
     private String m_paramPath2;
     
     /**
-     * Returns the paramPath1.<p>
-     *
-     * @return the paramPath1
-     */
-    public String getParamPath1() {
-    
-        return m_paramPath1;
-    }
-
-    
-    /**
-     * Sets the paramPath1.<p>
-     *
-     * @param paramPath1 the paramPath1 to set
-     */
-    public void setParamPath1(String paramPath1) {
-    
-        m_paramPath1 = paramPath1;
-    }
-
-    
-    /**
-     * Returns the paramPath2.<p>
-     *
-     * @return the paramPath2
-     */
-    public String getParamPath2() {
-    
-        return m_paramPath2;
-    }
-
-    
-    /**
-     * Sets the paramPath2.<p>
-     *
-     * @param paramPath2 the paramPath2 to set
-     */
-    public void setParamPath2(String paramPath2) {
-    
-        m_paramPath2 = paramPath2;
-    }
-
-    /**
      * Default constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsElementDifferenceDialog(CmsJspActionElement jsp) {
-
+    public CmsPlainTextDifferenceDialog(CmsJspActionElement jsp) {
+        
         super(jsp);
     }
 
@@ -172,7 +110,7 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
      * @param req the JSP request
      * @param res the JSP response
      */
-    public CmsElementDifferenceDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+    public CmsPlainTextDifferenceDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
 
         this(new CmsJspActionElement(context, req, res));
     }
@@ -190,12 +128,12 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
         StringBuffer res2 = new StringBuffer(512);
         while (i.hasNext()) {
             CmsAttributeComparison compare = (CmsAttributeComparison)i.next();
-            res1.append(key(compare.getName())).append(": ").append(compare.getVersion1()).append("<br/>\n");
-            res2.append(key(compare.getName())).append(": ").append(compare.getVersion2()).append("<br/>\n");
+            res1.append(compare.getName()).append(": ").append(compare.getVersion1()).append("<br/>\n");
+            res2.append(compare.getName()).append(": ").append(compare.getVersion2()).append("<br/>\n");
         }
         return new String[] {res1.toString(), res2.toString()};
     }
-    
+
     /**
      * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
      * 
@@ -211,14 +149,12 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
         out.print("<link rel='stylesheet' type='text/css' href='");
         out.print(getStyleUri(getJsp()));
         out.println("diff.css'>");
-        out.println(dialogContentStart(getParamTitle()));
         out.print("<form name='diff-form' method='post' action='");
         out.print(getDialogUri());
         out.println("'>");
         out.println(allParamsAsHidden());
         out.println("</form>");
         out.println("<p style='text-align: right;'>");
-        
         String iconPath = null;
         String onClic = "javascript:document.forms['diff-form'].mode.value = '";
         if (getMode() == CmsDiffViewMode.ALL) {
@@ -246,46 +182,17 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
             // display all text, if there are no differences
             setMode(CmsDiffViewMode.ALL);
         }
-        
-        onClic = "javascript:document.forms['diff-form'].textmode.value = '";
-        CmsMessageContainer iconName = null;
-        if (MODE_HTML.equals(getParamTextmode())) {
-            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
-            onClic += MODE_TEXT;
-            iconName = Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0);
-        } else {
-            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
-            onClic += MODE_HTML;
-            iconName = Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0);
-        }
-        onClic += "'; document.forms['diff-form'].submit();";
-        out.println(A_CmsHtmlIconButton.defaultButtonHtml(
-            getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            "id",
-            iconName.key(getLocale()),
-            null,
-            true,
-            iconPath,
-            null,
-            onClic));
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre>");
         try {
             CmsHtmlDiffConfiguration conf = new CmsHtmlDiffConfiguration(getMode() == CmsDiffViewMode.ALL ? -1
             : getLinesBeforeSkip(), getLocale());
-            String originalSource = getOriginalSource();
-            String copySource = getCopySource();
-            if (MODE_TEXT.equals(getParamTextmode())) {
-                originalSource = CmsHtml2TextConverter.html2text(originalSource, CmsEncoder.ENCODING_ISO_8859_1);
-                copySource = CmsHtml2TextConverter.html2text(copySource, CmsEncoder.ENCODING_ISO_8859_1);
-            }
-            String diff = Diff.diffAsHtml(originalSource, copySource, conf);
+            String diff = Diff.diffAsHtml(getOriginalSource(), getCopySource(), conf);
             if (CmsStringUtil.isNotEmpty(diff)) {
                 out.println(diff);
-            } else if (getMode() == CmsDiffViewMode.ALL) {
-                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.escapeHtml(getOriginalSource()))); // print original source, if there are no differences
+            } else {
+                out.println(wrapLinesWithUnchangedStyle(getOriginalSource())); // print original source, if there are no differences
             }
         } catch (Exception e) {
             out.print(e);
@@ -296,25 +203,6 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
         out.println(dialogEnd());
         out.println(bodyEnd());
         out.println(htmlEnd());
-    }
-
-    /**
-     * 
-     * Returns a diff text wrapped with formatting style.<p>
-     * 
-     * @param diff the text to wrap with CSS formatting
-     * @return the text with formatting styles wrapped
-     * @throws IOException if something goes wrong
-     */
-    protected String wrapLinesWithUnchangedStyle(String diff) throws IOException {
-        
-        String line;
-        StringBuffer result = new StringBuffer();
-        BufferedReader br = new BufferedReader(new StringReader(diff));
-        while ((line = br.readLine()) != null) {
-            result.append("<div class=\"df-unc\"><span class=\"df-unc\">").append(line).append("</span></div>\n");
-        }
-        return result.toString();
     }
     
     /**
@@ -511,7 +399,6 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
 
         // add specific dialog resource bundle
         addMessages(Messages.get().getBundleName());
-        addMessages(org.opencms.workplace.commons.Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
     }
@@ -553,6 +440,8 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
             }
         } catch (CmsException e) {
             // no-op
+        } catch (UnsupportedEncodingException e) {
+            // no-op
         }
     }
 
@@ -573,22 +462,23 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
         m_copySource = propertyStrings[1];
     }
 
-    private void setElementsAsSource(CmsFile file1, CmsFile file2) throws CmsXmlException {
+    private void setElementsAsSource(CmsFile file1, CmsFile file2) throws CmsException, UnsupportedEncodingException {
 
         CmsObject cms = getCms();
-        I_CmsXmlDocument resource1;
-        I_CmsXmlDocument resource2;
-        if (file1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
-            resource1 = CmsXmlPageFactory.unmarshal(cms, file1);
-        } else {
-            resource1 = CmsXmlContentFactory.unmarshal(cms, file1);
-        }
-        if (file2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
-            resource2 = CmsXmlPageFactory.unmarshal(cms, file2);
-        } else {
-            resource2 = CmsXmlContentFactory.unmarshal(cms, file2);
-        }
         if (CmsStringUtil.isNotEmpty(getParamElement())) {
+
+            I_CmsXmlDocument resource1;
+            I_CmsXmlDocument resource2;
+            if (file1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+                resource1 = CmsXmlPageFactory.unmarshal(cms, file1);
+            } else {
+                resource1 = CmsXmlContentFactory.unmarshal(cms, file1);
+            }
+            if (file2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
+                resource2 = CmsXmlPageFactory.unmarshal(cms, file2);
+            } else {
+                resource2 = CmsXmlContentFactory.unmarshal(cms, file2);
+            }
             I_CmsXmlContentValue value1 = resource1.getValue(getParamElement(), new Locale(getParamLocale()));
             I_CmsXmlContentValue value2 = resource2.getValue(getParamElement(), new Locale(getParamLocale()));
             if (value1 == null) {
@@ -601,44 +491,11 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
             } else {
                 m_copySource = value2.getStringValue(cms);
             }
-        } else {
-            m_originalSource = extractElements(resource1);
-            m_copySource = extractElements(resource2);
+        } else { 
+            // compare whole plain text file
+            m_originalSource = new String(file1.getContents(), cms.getRequestContext().getEncoding());
+            m_copySource = new String(file2.getContents(), cms.getRequestContext().getEncoding());
         }
-    }
-    
-    private String extractElements(I_CmsXmlDocument xmlDoc) {
-        
-        StringBuffer result = new StringBuffer();
-        List locales = xmlDoc.getLocales();
-        Iterator i = locales.iterator();
-        boolean firstIter = true;
-        while (i.hasNext()) {
-            if (!firstIter) {
-                result.append("<br/><br/>-----");
-            }
-            Locale locale = (Locale)i.next();
-            result.append("<br/><br/>[");
-            result.append(locale.toString()).append(']');
-            List elements = xmlDoc.getValues(locale);
-            Iterator j = elements.iterator();
-            while (j.hasNext()) {
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
-                result.append("<br/><br/>[");
-                result.append(value.getName());
-                result.append("]<br/><br/>");
-                if (value instanceof CmsXmlDateTimeValue) {
-                    result.append(CmsDateUtil.getDateTime(
-                        new Date(Long.parseLong(value.getStringValue(getCms()))),
-                        DateFormat.SHORT,
-                        getCms().getRequestContext().getLocale()));
-                } else {
-                    result.append(value.getStringValue(getCms()));
-                }
-            }
-            firstIter = false;
-        }
-        return result.toString();
     }
 
     private void setPropertiesAsSource(CmsFile file1, CmsFile file2) throws CmsException {
@@ -647,5 +504,49 @@ public class CmsElementDifferenceDialog extends A_CmsDiffViewDialog {
         String[] propertyStrings = getAttributesAsString(comparison.getComparedProperties());
         m_originalSource = propertyStrings[0];
         m_copySource = propertyStrings[1];
+    }
+
+    
+    /**
+     * Returns the paramPath1.<p>
+     *
+     * @return the paramPath1
+     */
+    public String getParamPath1() {
+    
+        return m_paramPath1;
+    }
+
+    
+    /**
+     * Sets the paramPath1.<p>
+     *
+     * @param paramPath1 the paramPath1 to set
+     */
+    public void setParamPath1(String paramPath1) {
+    
+        m_paramPath1 = paramPath1;
+    }
+
+    
+    /**
+     * Returns the paramPath2.<p>
+     *
+     * @return the paramPath2
+     */
+    public String getParamPath2() {
+    
+        return m_paramPath2;
+    }
+
+    
+    /**
+     * Sets the paramPath2.<p>
+     *
+     * @param paramPath2 the paramPath2 to set
+     */
+    public void setParamPath2(String paramPath2) {
+    
+        m_paramPath2 = paramPath2;
     }
 }

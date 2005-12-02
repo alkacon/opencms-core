@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/02 16:22:41 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -48,7 +48,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,6 +128,17 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         out.println(dialogEnd());
         out.println(bodyEnd());
         out.println(htmlEnd());
+    }
+
+    
+    /**
+     * Sets the mode.<p>
+     *
+     * @param mode the mode to set
+     */
+    public void setMode(CmsDiffViewMode mode) {
+    
+        m_mode = mode;
     }
 
     /**

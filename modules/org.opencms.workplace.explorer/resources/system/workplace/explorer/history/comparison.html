@@ -1,26 +1,5 @@
 <%@ page import="org.opencms.workplace.comparison.*,org.opencms.workplace.list.*" %>
 <%
-	// initialize the widget dialog
-	CmsFileInfoDialog wpWidget = new CmsFileInfoDialog(pageContext, request, response);
-	// perform the widget actions   
-	wpWidget.displayDialog(true);
-	if (wpWidget.isForwarded()) {
-		return;
-	}
-	// initialize list dialogs
-	CmsElementComparisonList contentDiff = new CmsElementComparisonList(pageContext, request, response);
-	CmsPropertyComparisonList propertyDiff = new CmsPropertyComparisonList(contentDiff.getJsp());
-	CmsAttributeComparisonList attributeDiff = new CmsAttributeComparisonList(contentDiff.getJsp());
-	CmsThreeListsDialog wpThreeLists = new CmsThreeListsDialog(attributeDiff, contentDiff, propertyDiff) {
-            protected String defaultActionHtmlStart() {
-                return getActiveWp().getList().listJs(getActiveWp().getLocale())
-                    + getActiveWp().dialogContentStart(getActiveWp().getParamTitle());
-            }
-        };
-	// perform the active list actions
-	wpThreeLists.displayDialog(true);
-	// write the content of widget dialog
-	wpWidget.writeDialog();
-	// write the content of list dialog
-	wpThreeLists.writeDialog();
+    // initialize and write the widget dialog
+    new CmsResourceComparisonDialog(pageContext, request, response).displayDialog();
 %>

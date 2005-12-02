@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Messages.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/02 16:22:41 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,11 +36,29 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_COMPARE_ALL_0 = "GUI_COMPARE_COMPARE_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_VIEW_VERSION_1 = "GUI_COMPARE_VIEW_VERSION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_REMOVED_0 = "GUI_COMPARE_REMOVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_ADDED_0 = "GUI_COMPARE_ADDED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_CHANGED_0 = "GUI_COMPARE_CHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_UNCHANGED_0 = "GUI_COMPARE_UNCHANGED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_ATTRIBUTES_0 = "GUI_COMPARE_ATTRIBUTES_0";

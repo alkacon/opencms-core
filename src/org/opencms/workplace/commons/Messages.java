@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/11/22 13:39:12 $
- * Version: $Revision: 1.13.2.7 $
+ * Date   : $Date: 2005/12/02 16:22:41 $
+ * Version: $Revision: 1.13.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.7 $ 
+ * @version $Revision: 1.13.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -223,12 +223,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COMMENTIMAGES_TITLE_1 = "GUI_COMMENTIMAGES_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_NAVBAR_0 = "GUI_COMPARE_NAVBAR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_TOOL_NAME_0 = "GUI_COMPARE_TOOL_NAME_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_CONFIRMED_EXPIRATION_1 = "GUI_CONFIRMED_EXPIRATION_1";
 
     /** Message constant for key in the resource bundle. */
@@ -311,12 +305,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETE_WARNING_SIBLINGS_0 = "GUI_DELETE_WARNING_SIBLINGS_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIFF_NAVBAR_0 = "GUI_DIFF_NAVBAR_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_DIFF_TOOL_NAME_0 = "GUI_DIFF_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDIT_POINTER_LINK_URL_0 = "GUI_EDIT_POINTER_LINK_URL_0";
