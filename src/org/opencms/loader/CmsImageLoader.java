@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2005/11/15 16:39:23 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/12/04 00:06:16 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -252,12 +252,19 @@ public class CmsImageLoader extends CmsDumpLoader {
 
         CmsFile file;
         if (content != null) {
+            if (resource instanceof CmsFile) {
+                // the original file content must be modified (required e.g. for static export)
+                file = (CmsFile)resource;
+            } else {
+                // this is no file, but we don't want to use "upgrade" since we don't need to read the content from the VFS
+                file = new CmsFile(resource);
+            }
             // save the content in the file
-            file = new CmsFile(resource);
             file.setContents(content);
         } else {
-            // upgrade the file (load the content)
+            // we must read the content from the VFS (if this has not been done yet)
             file = CmsFile.upgrade(resource, cms);
+            // upgrade the file (load the content)
             if (scaler.isValid()) {
                 // valid scaling parameters found, scale the content
                 content = scaler.scaleImage(file);
