@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/11/29 14:58:29 $
- * Version: $Revision: 1.34.2.1 $
+ * Date   : $Date: 2005/12/04 00:04:22 $
+ * Version: $Revision: 1.34.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.1 $ 
+ * @version $Revision: 1.34.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -654,7 +654,7 @@ public class CmsFlexController {
      */
     private void updateRequestContextInfo() {
 
-        if (m_flexContextInfoList.size() > 0) {
+        if ((m_flexContextInfoList != null) && !m_flexContextInfoList.isEmpty()) {
             m_cmsObject.getRequestContext().setAttribute(
                 CmsRequestUtil.HEADER_LAST_MODIFIED,
                 m_flexContextInfoList.get(m_flexContextInfoList.size() - 1));
