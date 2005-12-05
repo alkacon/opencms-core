@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/10/27 17:13:11 $
- * Version: $Revision: 1.30.2.1 $
+ * Date   : $Date: 2005/12/05 14:30:38 $
+ * Version: $Revision: 1.30.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.30.2.1 $ 
+ * @version $Revision: 1.30.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -279,9 +279,10 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("aT('");
                 buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
+                exception = CmsStringUtil.escapeJavaScript(exception);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
-                    buf.append(CmsStringUtil.escapeJavaScript(tok.nextToken()));
+                    buf.append(tok.nextToken());
                     buf.append(getLineBreak());
                 }
                 buf.append("'); ");
@@ -298,9 +299,10 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("<span class='throw'>");
                 buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
+				exception = CmsStringUtil.escapeJavaScript(exception);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
-                    buf.append(CmsStringUtil.escapeJavaScript(tok.nextToken()));
+                    buf.append(tok.nextToken());
                     buf.append(getLineBreak());
                 }
                 buf.append("</span>");
