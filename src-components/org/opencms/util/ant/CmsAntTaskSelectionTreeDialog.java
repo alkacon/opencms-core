@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreeDialog.java,v $
- * Date   : $Date: 2005/12/08 13:29:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/08 14:07:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.swing.tree.TreePath;
  * @author Michael Moossen (original non-tree version)
  * @author Achim Westermann (modified tree version)
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.6
  * 
@@ -433,34 +433,39 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
      */
     private void selectDefaultNodes(DefaultMutableTreeNode node, String path, TreePath treePath) {
 
-        StringTokenizer tokenizer = new StringTokenizer(
-            m_promptTask.getDefaultValue(),
-            CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR);
-        String defaultEntry;
-        while (tokenizer.hasMoreTokens()) {
-            defaultEntry = tokenizer.nextToken();
-            // don't print in recursions for path
-            if (node.getLevel() == 1) {
-                System.out.println("Default entry: " + defaultEntry + ", path: " + path);
+        // allow root property to be set:
+        String defaultString = m_promptTask.getDefaultValue();
+        if ("root".equalsIgnoreCase(defaultString.trim())) {
+            if (node == m_tree.getModel().getRoot()) {
+                m_tree.setSelectionPath(treePath);
             }
-            if (defaultEntry.equals(path)) {
-                m_tree.addSelectionPath(treePath);
-                return;
+        } else {
+            StringTokenizer tokenizer = new StringTokenizer(defaultString, CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR);
+            String defaultEntry;
+            while (tokenizer.hasMoreTokens()) {
+                defaultEntry = tokenizer.nextToken();
+                // don't print in recursions for path
+                if (node.getLevel() == 1) {
+                    System.out.println("Default entry: " + defaultEntry + ", path: " + path);
+                }
+                if (defaultEntry.equals(path)) {
+                    m_tree.addSelectionPath(treePath);
+                    return;
+                }
             }
-        }
-        Enumeration children = node.children();
-        DefaultMutableTreeNode subNode;
-        String subPath;
-        while (children.hasMoreElements()) {
-            subPath = path;
-            if (subPath.length() != 0) {
-                subPath += ".";
+            Enumeration children = node.children();
+            DefaultMutableTreeNode subNode;
+            String subPath;
+            while (children.hasMoreElements()) {
+                subPath = path;
+                if (subPath.length() != 0) {
+                    subPath += ".";
+                }
+                subNode = (DefaultMutableTreeNode)children.nextElement();
+                subPath += subNode.toString();
+                selectDefaultNodes(subNode, subPath, treePath.pathByAddingChild(subNode));
             }
-            subNode = (DefaultMutableTreeNode)children.nextElement();
-            subPath += subNode.toString();
-            selectDefaultNodes(subNode, subPath, treePath.pathByAddingChild(subNode));
-        }
 
+        }
     }
-
 }
