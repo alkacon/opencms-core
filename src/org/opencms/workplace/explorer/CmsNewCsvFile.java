@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/12/02 16:25:15 $
- * Version: $Revision: 1.23.2.4 $
+ * Date   : $Date: 2005/12/08 11:53:50 $
+ * Version: $Revision: 1.23.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -81,7 +81,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.2.4 $ 
+ * @version $Revision: 1.23.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -111,6 +111,12 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     /** The delimiter to separate the text. */
     public static final char TEXT_DELIMITER = '"';
 
+    /** The delimiter to start a tag */
+    public static final String TAG_START_DELIMITER = "<";
+    
+    /** The delimiter to end a tag */
+    public static final String TAG_END_DELIMITER = ">";  
+    
     /** the delimiters, the csv data can be separated with.*/
     static final String[] DELIMITERS = {";", ",", "\t"};
 
@@ -634,7 +640,12 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             String[] words = CmsStringUtil.splitAsArray(line, delimiter);
             for (int i = 0; i < words.length; i++) {
                 xml.append("\t<td>");
-                xml.append(CmsStringUtil.escapeHtml(removeStringDelimiters(words[i])));
+                // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
+                if (words[i].startsWith(TAG_START_DELIMITER) && words[i].endsWith(TAG_END_DELIMITER)) {
+                    xml.append(removeStringDelimiters(words[i]));
+                } else {
+                    xml.append(CmsStringUtil.escapeHtml(removeStringDelimiters(words[i])));
+                }
                 xml.append("</td>\n");
             }
             xml.append("</tr>\n");
