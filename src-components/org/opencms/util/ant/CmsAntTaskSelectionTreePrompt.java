@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionPrompt.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreePrompt.java,v $
  * Date   : $Date: 2005/12/08 13:29:40 $
- * Version: $Revision: 1.5.2.2 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,31 +34,40 @@ package org.opencms.util.ant;
 import javax.swing.UIManager;
 
 /**
- * Ant task for a highly configurable Swing GUI based selection dialog.<p>
+ * Ant task for a highly configurable Swing GUI based selection dialog.
+ * <p>
  * 
- * Task that prompts user for selection to allow interactive builds.<p>
+ * Task that prompts user for selection to allow interactive builds.
+ * <p>
  * 
- * @author Michael Moossen
+ * @author Michael Moossen (original)
  * 
- * @version $Revision: 1.5.2.2 $
+ * @author Achim Westermann (modification)
+ * 
+ * @version $Revision: 1.1.2.1 $
  * 
  * @since 6.0.0
  */
-public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
+public class CmsAntTaskSelectionTreePrompt extends org.apache.tools.ant.Task {
 
     /** Options list separator constant. */
     public static final String LIST_SEPARATOR = ",";
 
     /** List of all options. */
     private String m_allValues; // required
-    /** The amount of columns to use for display of selection elements. */
-    private int m_columns = 2;
+
     /** List of by default selected options. */
     private String m_defaultValue = "";
+
+    /** Property to force initial tree expansion for the given amount of levels. */
+    private int m_expansionLevels = 0;
+
     /** Prompt message. */
     private String m_prompt = "Please make your choice:";
+
     /** Destination property. */
     private String m_property; // required
+
     /** Mode flag. */
     private boolean m_singleSelection = false;
 
@@ -66,18 +75,36 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     private String m_title = "Selection Dialog";
 
     /**
-     * Default constructor.<p>
+     * Default constructor.
+     * <p>
      */
-    public CmsAntTaskSelectionPrompt() {
+    public CmsAntTaskSelectionTreePrompt() {
 
         super();
     }
 
     /**
-     * Run the task.<p>
+     * For debuggin only.
+     * 
+     * @param args cmdline args.
+     */
+    public static void main(String[] args) {
+
+        CmsAntTaskSelectionTreePrompt prompt = new CmsAntTaskSelectionTreePrompt();
+        prompt.setAllValues("org.opencms.test,org.opencms.test.subtest,org.opencms.code,org.opencms.blabla,com.lgt.module,com.lgt.code,com.lgt.dummy");
+        prompt.setTitle("title");
+
+        prompt.execute();
+
+    }
+
+    /**
+     * Run the task.
+     * <p>
      * 
      * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
-     * modules if not.<p>
+     * modules if not.
+     * <p>
      * 
      * @throws org.apache.tools.ant.BuildException
      * 
@@ -87,7 +114,7 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
 
         log("Prompting user for " + m_property);
 
-        String value = new CmsAntTaskSelectionDialog(this).getSelection();
+        String value = new CmsAntTaskSelectionTreeDialog(this).getSelection();
 
         if (value == null) {
             value = "__ABORT__";
@@ -98,7 +125,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Returns the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.<p>
+     * Returns the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.
+     * <p>
      * 
      * @return Returns the all-modules list
      */
@@ -108,17 +136,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Returns the columns.<p>
-     * 
-     * @return the columns.
-     */
-    public int getColumns() {
-
-        return m_columns;
-    }
-
-    /**
-     * Returns the <code>{@link #LIST_SEPARATOR}</code> separated list of pre-selected modules.<p>
+     * Returns the <code>{@link #LIST_SEPARATOR}</code> separated list of pre-selected modules.
+     * <p>
      * 
      * @return Returns the pre-selected module list
      */
@@ -128,7 +147,20 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Returns the prompt.<p>
+     * Returns the expansionLevels.
+     * <p>
+     * 
+     * @return the expansionLevels
+     */
+    public int getExpansionLevels() {
+
+        // the mandatory "root" node is needed but invisible
+        return m_expansionLevels - 1;
+    }
+
+    /**
+     * Returns the prompt.
+     * <p>
      * 
      * @return the prompt
      */
@@ -138,7 +170,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Returns the property to store the user selection.<p>
+     * Returns the property to store the user selection.
+     * <p>
      * 
      * @return Returns the m_propertyName.
      */
@@ -148,7 +181,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Returns the title.<p>
+     * Returns the title.
+     * <p>
      * 
      * @return the title
      */
@@ -158,7 +192,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Initializes this task.<p>
+     * Initializes this task.
+     * <p>
      */
     public void init() {
 
@@ -171,7 +206,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Returns the Single Selection flag.<p>
+     * Returns the Single Selection flag.
+     * <p>
      * 
      * @return the single Selection flag
      */
@@ -181,7 +217,39 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.<p>
+     * Overridden to allow debugging.
+     * <p>
+     * 
+     * @see org.apache.tools.ant.Task#log(java.lang.String)
+     */
+    public void log(String arg0) {
+
+        try {
+            super.log(arg0);
+        } catch (Exception ex) {
+            System.err.println(arg0);
+        }
+
+    }
+
+    /**
+     * Overridden to allow debugging.
+     * <p>
+     * 
+     * @see org.apache.tools.ant.Task#log(java.lang.String, int)
+     */
+    public void log(String arg0, int arg1) {
+
+        try {
+            super.log(arg0, arg1);
+        } catch (Exception ex) {
+            System.err.println(arg0);
+        }
+    }
+
+    /**
+     * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of all available modules.
+     * <p>
      * 
      * @param allValues all-modules list to set
      */
@@ -191,17 +259,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Sets the columns.<p>
-     * 
-     * @param cols the columns to set
-     */
-    public void setColumns(String cols) {
-
-        m_columns = Integer.parseInt(cols);
-    }
-
-    /**
-     * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of pre-selected modules.<p>
+     * Sets the <code>{@link #LIST_SEPARATOR}</code> separated list of pre-selected modules.
+     * <p>
      * 
      * @param defaultValue the pre-selected module list to set
      */
@@ -211,7 +270,20 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Sets the prompt.<p>
+     * Sets the expansionLevels.
+     * <p>
+     * 
+     * @param expansionLevels the expansionLevels to set
+     */
+    public void setExpansionLevels(int expansionLevels) {
+
+        // the mandatory "root" node is needed but invisible
+        m_expansionLevels = expansionLevels + 1;
+    }
+
+    /**
+     * Sets the prompt.
+     * <p>
      * 
      * @param prompt the prompt to set
      */
@@ -231,7 +303,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Sets the single Selection flag.<p>
+     * Sets the single Selection flag.
+     * <p>
      * 
      * @param singleSelection the single Selection flag to set
      */
@@ -241,7 +314,8 @@ public class CmsAntTaskSelectionPrompt extends org.apache.tools.ant.Task {
     }
 
     /**
-     * Sets the title.<p>
+     * Sets the title.
+     * <p>
      * 
      * @param title the title to set
      */

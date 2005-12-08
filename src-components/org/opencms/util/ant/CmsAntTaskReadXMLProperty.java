@@ -1,3 +1,33 @@
+/*
+ * File   : $Source$
+ * Date   : $Date$
+ * Version: $Revision$
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
 
 package org.opencms.util.ant;
 
@@ -13,11 +43,11 @@ import org.xml.sax.SAXParseException;
 /**
  * Ant task for reading a property from a XML attribute or element.<p>
  * 
- * @author Michael Moossen  
+ * @author Michael Moossen
  * 
- * @version $Revision$ 
+ * @version $Revision$
  * 
- * @since 6.0.0 
+ * @since 6.0.0
  */
 public class CmsAntTaskReadXMLProperty extends Task {
 
@@ -47,11 +77,11 @@ public class CmsAntTaskReadXMLProperty extends Task {
     /**
      * Run the task.<p>
      * 
-     * Sets the given property to <code>__ABORT__</code> if canceled,
-     * or to a list of selected modules if not.<p>
+     * Sets the given property to <code>__ABORT__</code> if canceled, or to a list of selected
+     * modules if not.<p>
      * 
      * @throws BuildException if something goes wrong
-     *
+     * 
      * @see org.apache.tools.ant.Task#execute()
      */
     public void execute() throws BuildException {
@@ -111,7 +141,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the optional XML attribute.<p>
-     *
+     * 
      * @return the optional XML attribute
      */
     public String getAttribute() {
@@ -121,7 +151,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the XML element path.<p>
-     *
+     * 
      * @return the XML element path
      */
     public String getElement() {
@@ -141,7 +171,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the return value.<p>
-     *
+     * 
      * @return the return value
      */
     public String getValue() {
@@ -151,7 +181,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Returns the xmlFile absolute path.<p>
-     *
+     * 
      * @return the xmlFile absolute path
      */
     public String getXmlFile() {
@@ -161,7 +191,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the optional XML attribute.<p>
-     *
+     * 
      * @param attribute the optional XML attribute to set
      */
     public void setAttribute(String attribute) {
@@ -171,7 +201,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the XML element path.<p>
-     *
+     * 
      * @param element the XML element path to set
      */
     public void setElement(String element) {
@@ -180,7 +210,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
     }
 
     /**
-     * Sets the property for storing the selected value.
+     * Sets the property for storing the selected value.<p>
      * 
      * @param property The property to set
      */
@@ -191,7 +221,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the return value.<p>
-     *
+     * 
      * @param value the return value to set
      */
     public void setValue(String value) {
@@ -204,7 +234,7 @@ public class CmsAntTaskReadXMLProperty extends Task {
 
     /**
      * Sets the xmlFile absolute path.<p>
-     *
+     * 
      * @param xmlFile the xmlFile absolute path to set
      */
     public void setXmlFile(String xmlFile) {
