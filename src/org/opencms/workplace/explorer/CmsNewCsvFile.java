@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/12/08 11:50:45 $
- * Version: $Revision: 1.26 $
+ * Date   : $Date: 2005/12/09 11:37:13 $
+ * Version: $Revision: 1.27 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,6 +55,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.StringTokenizer;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -81,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.26 $ 
+ * @version $Revision: 1.27 $ 
  * 
  * @since 6.0.0 
  */
@@ -630,17 +631,35 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         BufferedReader br = new BufferedReader(new StringReader(csvData));
         while ((line = br.readLine()) != null) {
             xml.append("<tr>\n");
-            String[] words = CmsStringUtil.splitAsArray(line, delimiter);
-            for (int i = 0; i < words.length; i++) {
-                xml.append("\t<td>");
-                // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
-                if (words[i].startsWith(TAG_START_DELIMITER) && words[i].endsWith(TAG_END_DELIMITER)) {
-                    xml.append(removeStringDelimiters(words[i]));
-                } else {
-                    xml.append(CmsStringUtil.escapeHtml(removeStringDelimiters(words[i])));
+            
+            // must use tokenizer with delimiters include in order to handle empty cells appropriately
+            StringTokenizer t = new StringTokenizer(line, delimiter, true); 
+            boolean hasValue = false;
+            while (t.hasMoreElements()) {
+                String item = (String)t.nextElement();
+                if (!hasValue) {
+                    xml.append("\t<td>");
+                    hasValue = true;
                 }
-                xml.append("</td>\n");
+                if (!item.equals(delimiter)) {
+                    
+                    // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
+                    if (item.startsWith(TAG_START_DELIMITER) && item.endsWith(TAG_END_DELIMITER)) {
+                        xml.append(removeStringDelimiters(item));
+                    } else {
+                        xml.append(CmsStringUtil.escapeHtml(removeStringDelimiters(item)));
+                    }
+                } else {
+                    xml.append("</td>\n");
+                    hasValue = false;
+                }
             }
+            if (hasValue) {
+                xml.append("</td>\n");
+            } else {
+                xml.append("<td></td>\n");
+            }
+            
             xml.append("</tr>\n");
         }
 
