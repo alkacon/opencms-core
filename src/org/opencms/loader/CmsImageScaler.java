@@ -26,7 +26,13 @@ import java.util.List;
 import org.apache.commons.logging.Log;
 
 /**
- * Contains the parameters for the image scaler.<p>
+ * Creates scaled images, acting as it's own parameter container.<p>
+ * 
+ * @author  Alexander Kandzior 
+ * 
+ * @version $Revision: 1.1.2.6 $ 
+ * 
+ * @since 6.2.0
  */
 public class CmsImageScaler {
 
@@ -368,6 +374,19 @@ public class CmsImageScaler {
      */
     public byte[] scaleImage(CmsFile file) {
 
+        return scaleImage(file, 2500 * 2500);
+    }
+
+    /**
+     * Returns a scaled version of the given image file according this image scalers parameters.<p>
+     *  
+     * @param file the image file to scale
+     * @param  maxBlurSize the maximum image size to apply "blur" transformation before downscaling
+     * 
+     * @return a scaled version of the given image file according to the provided scaler parameters
+     */
+    public byte[] scaleImage(CmsFile file, int maxBlurSize) {
+
         byte[] result = file.getContents();
 
         RenderSettings renderSettings;
@@ -381,6 +400,9 @@ public class CmsImageScaler {
                 renderSettings.setCompressionQuality(m_quality / 100f);
             }
         }
+        // set max blur siuze
+        renderSettings.setMaximumBlurSize(maxBlurSize);
+        // new create the scaler
         Simapi scaler = new Simapi(renderSettings);
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
         String imageType = Simapi.getImageType(file.getRootPath());

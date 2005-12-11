@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2005/12/04 00:06:16 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2005/12/11 11:36:59 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.2.0 
  */
@@ -69,6 +69,9 @@ public class CmsImageLoader extends CmsDumpLoader {
 
     /** The configuration parameter for the OpenCms XML configuration to set the image cache respository. */
     public static final String CONFIGURATION_IMAGE_FOLDER = "image.folder";
+
+    /** The configuration parameter for the OpenCms XML configuration to set the maximum image blur size. */
+    public static final String CONFIGURATION_MAX_BLUR_SIZE = "image.scaling.maxblursize";
 
     /** The configuration parameter for the OpenCms XML configuration to enable the image scaling. */
     public static final String CONFIGURATION_SCALING_ENABLED = "image.scaling.enabled";
@@ -87,6 +90,9 @@ public class CmsImageLoader extends CmsDumpLoader {
 
     /** The name of the configured image cache repository. */
     private static String m_imageRepositoryFolder;
+
+    /** The maximum impage size (width * height) to apply image blurring when scaling (setting this to high may case "out of memory" errors). */
+    private static int m_maxBlurSize = (2500 * 2500);
 
     /** The disk cache to use for saving scaled image versions. */
     private static CmsVfsNameBasedDiskCache m_vfsDiskCache;
@@ -140,6 +146,13 @@ public class CmsImageLoader extends CmsDumpLoader {
             }
             if (CONFIGURATION_IMAGE_FOLDER.equals(paramName)) {
                 m_imageRepositoryFolder = paramValue.trim();
+            }
+            if (CONFIGURATION_MAX_BLUR_SIZE.equals(paramName)) {
+                try {
+                    m_maxBlurSize = Integer.valueOf(paramValue).intValue();
+                } catch (Exception e) {
+                    // ignore, use default value
+                }
             }
         }
         super.addConfigurationParameter(paramName, paramValue);
@@ -267,7 +280,7 @@ public class CmsImageLoader extends CmsDumpLoader {
             // upgrade the file (load the content)
             if (scaler.isValid()) {
                 // valid scaling parameters found, scale the content
-                content = scaler.scaleImage(file);
+                content = scaler.scaleImage(file, m_maxBlurSize);
                 // exchange the content of the file with the scaled version
                 file.setContents(content);
             }

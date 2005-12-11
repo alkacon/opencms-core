@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/12/04 00:06:16 $
- * Version: $Revision: 1.682.2.54 $
+ * Date   : $Date: 2005/12/11 11:36:59 $
+ * Version: $Revision: 1.682.2.55 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ OpenCms 6.1.6 -  xxxx, 2005
 ! Added schema validation of <appinfo> node for XML content definitions that use the default content XML handler 
 - Some improvements to handling of ACL/ACE entries
 * Fixed issue #997: Static export of scaled images don't work
+* Fixed issue in Simapi that causes bad quality when small thumbnails are generated
 
 OpenCms 6.1.5 -  November 25, 2005
 ! In the explorer view, it's now possible to select resources by right-clicking on the name
