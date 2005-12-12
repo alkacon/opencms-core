@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/12/12 19:26:55 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,22 +54,25 @@ import com.sun.image.codec.jpeg.JPEGImageEncoder;
 /**
  * Creates captcha images and validates the pharses submitted by a request parameter.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.6 $
+ * @author Thomas Weckert
+ * 
+ * @author Achim Westermann 
+ * 
+ * @version $Revision: 1.6.2.1 $
  */
 public class CmsCaptchaField extends A_CmsField {
-    
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsCaptchaField.class);
     
     /** Request parameter name of the captcha phrase. */
     public static final String C_PARAM_CAPTCHA_PHRASE = "captchaphrase";
     
-    /** The settings to render captcha images. */
-    private CmsCaptchaSettings m_captchaSettings;
-
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCaptchaField.class);
+    
     /** HTML field type: captcha image. */
     private static final String TYPE = "captcha";
+
+    /** The settings to render captcha images. */
+    private CmsCaptchaSettings m_captchaSettings;
     
     /**
      * Creates a new captcha field.<p>
@@ -89,14 +92,6 @@ public class CmsCaptchaField extends A_CmsField {
         setMandatory(true);
     }
 
-    /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
-     */
-    public String getType() {
-
-        return TYPE;
-    }
-    
     /**
      * Returns the type of the input field, e.g. "text" or "select".<p>
      * 
@@ -151,7 +146,7 @@ public class CmsCaptchaField extends A_CmsField {
         
         // line #4
         buf.append("<img src=\"")
-            .append(formHandler.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?" + captchaSettings.toRequestParams(formHandler)))
+            .append(formHandler.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?" + captchaSettings.toRequestParams(formHandler.getCmsObject())))
             .append("\" width=\"").append(captchaSettings.getImageWidth())
             .append("\" height=\"").append(captchaSettings.getImageHeight())
             .append("\" alt=\"\">").append("\n"); 
@@ -171,7 +166,48 @@ public class CmsCaptchaField extends A_CmsField {
         
         return buf.toString();
     }
+    
+    /**
+     * Returns the captcha settings of this field.<p>
+     * 
+     * @return the captcha settings of this field
+     */
+    public CmsCaptchaSettings getCaptchaSettings() {
+        
+        return m_captchaSettings;
+    }
 
+    /**
+     * @see org.opencms.frontend.templateone.form.I_CmsField#getType()
+     */
+    public String getType() {
+
+        return TYPE;
+    }
+    
+    /**
+     * Validates the captcha phrase entered by the user.<p>
+     * 
+     * @param jsp the Cms JSP
+     * @param captchaPhrase the captcha phrase to be validate
+     * @return true, if the captcha phrase entered by the user is correct, false otherwise
+     */
+    public boolean validateCaptchaPhrase(CmsJspActionElement jsp, String captchaPhrase) {
+        
+        boolean result = false;
+        String sessionId = jsp.getRequest().getSession().getId();  
+        
+        if (CmsStringUtil.isNotEmpty(captchaPhrase)) {
+            
+            ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings, jsp.getCmsObject());
+            if (captchaService != null) {
+                result = captchaService.validateResponseForID(sessionId, captchaPhrase).booleanValue();
+            }
+        }
+        
+        return result;
+    }
+    
     /**
      * Writes a Captcha JPEG image to the servlet response output stream.<p>
      * 
@@ -188,7 +224,7 @@ public class CmsCaptchaField extends A_CmsField {
             String sessionId = cms.getRequest().getSession().getId();
             Locale locale = cms.getRequestContext().getLocale();
             
-            BufferedImage captchaImage = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings).getImageChallengeForID(sessionId, locale);
+            BufferedImage captchaImage = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings, cms.getCmsObject()).getImageChallengeForID(sessionId, locale);
             JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(captchaImageOutput);
             jpegEncoder.encode(captchaImage);
             
@@ -219,39 +255,6 @@ public class CmsCaptchaField extends A_CmsField {
                 // intentionally left blank
             }
         }
-    }
-    
-    /**
-     * Validates the captcha phrase entered by the user.<p>
-     * 
-     * @param jsp the Cms JSP
-     * @param captchaPhrase the captcha phrase to be validate
-     * @return true, if the captcha phrase entered by the user is correct, false otherwise
-     */
-    public boolean validateCaptchaPhrase(CmsJspActionElement jsp, String captchaPhrase) {
-        
-        boolean result = false;
-        String sessionId = jsp.getRequest().getSession().getId();  
-        
-        if (CmsStringUtil.isNotEmpty(captchaPhrase)) {
-            
-            ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings);
-            if (captchaService != null) {
-                result = captchaService.validateResponseForID(sessionId, captchaPhrase).booleanValue();
-            }
-        }
-        
-        return result;
-    }
-    
-    /**
-     * Returns the captcha settings of this field.<p>
-     * 
-     * @return the captcha settings of this field
-     */
-    public CmsCaptchaSettings getCaptchaSettings() {
-        
-        return m_captchaSettings;
     }
 
 }

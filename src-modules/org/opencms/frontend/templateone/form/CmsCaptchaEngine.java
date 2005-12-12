@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2005/07/22 15:22:39 $
- * Version: $Revision: 1.1 $
+ * Date   : $Date: 2005/12/12 19:26:55 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,13 +56,16 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
 /**
  * A captcha engine using a Gimpy factory to create captchas.<p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.1 $
+ * @author Thomas Weckert 
+ * 
+ * @author Achim Westermann 
+ * 
+ * @version $Revision: 1.1.2.1 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
-    private CmsCaptchaSettings m_settings;
     private ImageCaptchaFactory m_factory;
+    private CmsCaptchaSettings m_settings;
 
     /**
      * Creates a new Captcha engine.<p>
@@ -78,15 +81,43 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
     }
 
     /**
+     * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha()
+     */
+    public ImageCaptcha getNextImageCaptcha() {
+
+        return m_factory.getImageCaptcha();
+    }
+
+    /**
+     * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha(java.util.Locale)
+     */
+    public ImageCaptcha getNextImageCaptcha(Locale locale) {
+
+        return m_factory.getImageCaptcha(locale);
+    }
+
+    /**
+     * Sets the settings.<p>
+     *
+     * @param settings the settings to set
+     */
+    public void setSettings(CmsCaptchaSettings settings) {
+    
+        m_settings = settings;
+        initGimpyFactory();
+    }
+
+    
+    /**
      * Initializes a Gimpy captcha factory.<p>
      */
     protected void initGimpyFactory() {
 
         WaterFilter water = new WaterFilter();
-        water.setAmplitude(3d);
+        water.setAmplitude(m_settings.getFilterAmplitude());
         water.setAntialias(true);
-        water.setPhase(20d);
-        water.setWavelength(70d);
+        water.setPhase(0);
+        water.setWavelength(m_settings.getFilterWaveLength());
 
         ImageDeformation backgroundDeformation = new ImageDeformationByFilters(new ImageFilter[] {});
         ImageDeformation textDeformation = new ImageDeformationByFilters(new ImageFilter[] {});
@@ -95,7 +126,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
         WordGenerator dictionary = new ComposeDictionaryWordGenerator(new FileDictionnary("toddlist"));
 
         TextPaster paster = new BaffleRandomTextPaster(new Integer(m_settings.getMinPhraseLength()), new Integer(
-            m_settings.getMaxPhraseLength()), m_settings.getFontColor(), new Integer(2), m_settings.getBackgroundColor());
+            m_settings.getMaxPhraseLength()), m_settings.getFontColor(), m_settings.getHolesPerGlyph(), m_settings.getBackgroundColor());
 
         BackgroundGenerator background = new UniColorBackgroundGenerator(
             new Integer(m_settings.getImageWidth()),
@@ -113,22 +144,6 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
             postDeformation);
 
         m_factory = new GimpyFactory(dictionary, wordToImage);
-    }
-
-    /**
-     * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha()
-     */
-    public ImageCaptcha getNextImageCaptcha() {
-
-        return m_factory.getImageCaptcha();
-    }
-
-    /**
-     * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha(java.util.Locale)
-     */
-    public ImageCaptcha getNextImageCaptcha(Locale locale) {
-
-        return m_factory.getImageCaptcha(locale);
     }
 
 }
