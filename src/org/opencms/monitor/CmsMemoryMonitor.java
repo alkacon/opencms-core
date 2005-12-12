@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/CmsMemoryMonitor.java,v $
- * Date   : $Date: 2005/06/27 23:22:30 $
- * Version: $Revision: 1.56 $
+ * Date   : $Date: 2005/12/12 09:51:24 $
+ * Version: $Revision: 1.57 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56 $ 
+ * @version $Revision: 1.57 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +143,7 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
 
     /** Flag for memory warning mail send. */
     private boolean m_warningSendSinceLastStatus;
-
+    
     /**
      * Empty constructor, required by OpenCms scheduler.<p>
      */
@@ -917,6 +917,23 @@ public class CmsMemoryMonitor implements I_CmsScheduledJob {
             }
             sm = null;
 
+            for (Iterator i = OpenCms.getSqlManager().getDbPoolNames().iterator(); i.hasNext();) {
+                String poolname = (String)i.next();
+                try {
+                    LOG.info(Messages.get().key(
+                        Messages.LOG_MM_CONNECTIONS_3,
+                        poolname,
+                        Integer.toString(OpenCms.getSqlManager().getActiveConnections(poolname)),
+                        Integer.toString(OpenCms.getSqlManager().getIdleConnections(poolname))));
+                } catch (Exception exc) {
+                    LOG.info(Messages.get().key(
+                        Messages.LOG_MM_CONNECTIONS_3,
+                        poolname,
+                        Integer.toString(-1),
+                        Integer.toString(-1)));                    
+                }
+            }
+            
             LOG.info(Messages.get().key(
                 Messages.LOG_MM_STARTUP_TIME_2,
                 CmsDateUtil.getDateTimeShort(OpenCms.getSystemInfo().getStartupTime()),
