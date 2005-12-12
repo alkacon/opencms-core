@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/monitor/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:38 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/12/12 10:26:10 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -50,6 +50,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CLEAR_CACHE_MEM_CONS_0 = "LOG_CLEAR_CACHE_MEM_CONS_0";
+
+    /** Message constant for key in the resource bundle. */ 
+    public static final String LOG_MM_CONNECTIONS_3 = "LOG_MM_CONNECTIONS_3"; 
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MM_CREATED_1 = "LOG_MM_CREATED_1";
