@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/12/12 10:19:31 $
- * Version: $Revision: 1.557.2.18 $
+ * Date   : $Date: 2005/12/12 10:47:47 $
+ * Version: $Revision: 1.557.2.19 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -8320,13 +8320,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 ObjectPool p = d.getConnectionPool(dbPoolUrl); 
                 return p.getNumActive(); 
             } 
-        } catch (Exception exc) { 
-            // TODO new message 
+        } catch (Exception exc) {  
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl); 
             throw new CmsDbException(message, exc); 
         } 
- 
-        // TODO new message 
+  
         CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl); 
         throw new CmsDbException(message); 
     } 
@@ -8346,13 +8344,11 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 ObjectPool p = d.getConnectionPool(dbPoolUrl); 
                 return p.getNumIdle(); 
             } 
-        } catch (Exception exc) { 
-            // TODO new message 
+        } catch (Exception exc) {  
             CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl); 
             throw new CmsDbException(message, exc); 
         } 
- 
-        // TODO new message 
+  
         CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl); 
         throw new CmsDbException(message); 
     } 
