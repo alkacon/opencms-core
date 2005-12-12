@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDbPool.java,v $
- * Date   : $Date: 2005/10/19 09:26:05 $
- * Version: $Revision: 1.41.2.2 $
+ * Date   : $Date: 2005/12/12 10:18:58 $
+ * Version: $Revision: 1.41.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.pool.impl.GenericObjectPool;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.41.2.2 $
+ * @version $Revision: 1.41.2.3 $
  * 
  * @since 6.0.0
  */
@@ -299,12 +299,18 @@ public final class CmsDbPool {
      */
     public static String getDbPoolName(Map configuration, String key) {
 
+        // TODO: name should be refactored to getDbPoolUrl 
+        // changed KEY_JDBC_URL to KEY_POOL_URL 
+        return configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_POOL_URL).toString(); 
+
+        /* 
         String jdbcUrl = configuration.get(KEY_DATABASE_POOL + '.' + key + '.' + KEY_JDBC_URL).toString();
         if (jdbcUrl.startsWith(OPENCMS_URL_PREFIX)) {
             return jdbcUrl.substring(jdbcUrl.indexOf(':'));
         } else {
             return jdbcUrl;
         }
+        */
     }
 
     /**
@@ -314,7 +320,7 @@ public final class CmsDbPool {
      * @return a list of database pool names
      */
     public static List getDbPoolNames(Map configuration) {
-
+        // TODO: name should be refactored to getDbPoolUrls
         ExtendedProperties config;
         if (configuration instanceof ExtendedProperties) {
             config = (ExtendedProperties)configuration;
