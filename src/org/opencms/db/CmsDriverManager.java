@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/12/12 10:47:47 $
- * Version: $Revision: 1.557.2.19 $
+ * Date   : $Date: 2005/12/12 12:58:40 $
+ * Version: $Revision: 1.557.2.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -3983,7 +3983,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsAuthentificationException, CmsDataAccessException, CmsPasswordEncryptionException {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(password)) {
-            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1));
+            throw new CmsDbEntryNotFoundException(Messages.get().container(Messages.ERR_UNKNOWN_USER_1, userName));
         }
         CmsUser newUser;
         try {
