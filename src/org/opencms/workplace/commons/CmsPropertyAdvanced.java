@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.23.2.6 $
+ * Date   : $Date: 2005/12/12 09:51:08 $
+ * Version: $Revision: 1.23.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.6 $ 
+ * @version $Revision: 1.23.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,6 +143,11 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public static final String PREFIX_USEPROPERTY = "useprop";
     /** Prefix for the input values. */
     public static final String PREFIX_VALUE = "valprop";
+    
+    /** Name for the shared (resource) property tab. */
+    public static final String TAB_RESOURCE = "tabres";
+    /** Name for the individual (structure) property tab. */
+    public static final String TAB_STRUCTURE = "tabstr";
 
     /** The URI to the customized property dialog. */
     public static final String URI_PROPERTY_CUSTOM_DIALOG = PATH_DIALOGS + "property_custom.jsp";
@@ -605,8 +610,8 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
     public List getTabParameterOrder() {
 
         ArrayList orderList = new ArrayList(2);
-        orderList.add("tabstr");
-        orderList.add("tabres");
+        orderList.add(TAB_STRUCTURE);
+        orderList.add(TAB_RESOURCE);
         return orderList;
     }
 
@@ -619,20 +624,16 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
         if (OpenCms.getWorkplaceManager().isEnableAdvancedPropertyTabs()) {
             // tabs are enabled, show both tabs except for folders
             if (m_isFolder) {
-                // resource is a folder, show only the configured tab
-                if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
-                    tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
-                } else {
-                    tabList.add(key(Messages.GUI_PROPERTIES_SHARED_0));
-                }
+                // resource is a folder, show only the individual properties tab
+                tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
             } else {
                 // resource is no folder, show both tabs
                 tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
                 tabList.add(key(Messages.GUI_PROPERTIES_SHARED_0));
             }
         } else {
-            // tabs are disabled, show only the configured tab
-            if (OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
+            // tabs are disabled, show only the configured tab except for folders
+            if (m_isFolder || OpenCms.getWorkplaceManager().isDefaultPropertiesOnStructure()) {
                 tabList.add(key(Messages.GUI_PROPERTIES_INDIVIDUAL_0));
             } else {
                 tabList.add(key(Messages.GUI_PROPERTIES_SHARED_0));
