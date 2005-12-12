@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionTreeDialog.java,v $
- * Date   : $Date: 2005/12/08 14:07:46 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/12 19:31:13 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.swing.tree.TreePath;
  * @author Michael Moossen (original non-tree version)
  * @author Achim Westermann (modified tree version)
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.6
  * 
@@ -235,6 +235,10 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
         StringBuffer ret = new StringBuffer();
         // TODO query the selected paths for all subnodes.
         TreePath[] pathArr = m_tree.getSelectionPaths();
+        // avoid NPE but skip loop:
+        if (pathArr == null) {
+            pathArr = new TreePath[0];
+        }
         TreePath path;
         StringBuffer pathString;
         DefaultMutableTreeNode node;
@@ -247,7 +251,6 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
         for (int i = 0; i < pathArr.length; i++) {
             pathString = new StringBuffer();
             path = pathArr[i];
-            System.out.println("path: " + path);
             // build the path string to the selected path:
             Object[] entries = path.getPath();
             // skip "root"
@@ -264,13 +267,11 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
             } else {
                 // first look, wether this is already a module, even if not leaf, (e.g.
                 // org.opencms.workplace <-> org.opencms.workplace.tools.accounts...)
-                System.out.print("Checking wether path: " + pathString + " is a module...");
                 if (m_allModuleList.contains(pathString.toString())) {
-                    System.out.println(" : YES!");
                     ret.append(pathString.toString());
                     ret.append(CmsAntTaskSelectionTreePrompt.LIST_SEPARATOR);
                 } else {
-                    System.out.println(" : NO!");
+                    // nop
                 }
                 // search all leaf nodes and append subpaths:
 
@@ -332,7 +333,6 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
             while (itPath.hasMoreTokens()) {
                 // is this node already there?
                 pathElement = itPath.nextToken();
-                System.out.println("pathelement : " + pathElement);
                 childEnum = node.children();
                 found = false;
                 while (childEnum.hasMoreElements()) {
@@ -342,14 +342,12 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
                         // found node for path String
                         // reuse old path, descend and continue with next path element.
                         node = child;
-                        System.out.println("Reusing node: " + pathElement);
                         found = true;
                         break;
                     }
                 }
                 if (!found) {
                     // did not break, node was not found
-                    System.out.println("Adding new node: " + pathElement);
                     child = new DefaultMutableTreeNode();
                     child.setUserObject(pathElement);
                     node.add(child);
@@ -421,7 +419,6 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
         String token;
         while (itPaths.hasMoreElements()) {
             token = itPaths.nextToken().trim();
-            System.out.println("Found module: " + token);
             m_allModuleList.add(token);
         }
     }
@@ -445,8 +442,8 @@ public class CmsAntTaskSelectionTreeDialog extends JDialog implements ActionList
             while (tokenizer.hasMoreTokens()) {
                 defaultEntry = tokenizer.nextToken();
                 // don't print in recursions for path
-                if (node.getLevel() == 1) {
-                    System.out.println("Default entry: " + defaultEntry + ", path: " + path);
+                if (node.getLevel() == 0) {
+                    System.out.println("Preselection: " + defaultEntry);
                 }
                 if (defaultEntry.equals(path)) {
                     m_tree.addSelectionPath(treePath);
