@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/10/12 09:42:15 $
- * Version: $Revision: 1.40 $
+ * Date   : $Date: 2005/12/12 10:45:56 $
+ * Version: $Revision: 1.41 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.40 $
+ * @version $Revision: 1.41 $
  * 
  * @since 6.0.0 
  */
@@ -53,6 +53,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESS_FOLDER_AS_FILE_1 = "ERR_ACCESS_FOLDER_AS_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACCESSING_POOL_1 = "ERR_ACCESSING_POOL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
@@ -551,6 +554,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNKNOWN_USER_1 = "ERR_UNKNOWN_USER_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNKNOWN_POOL_URL_1 = "ERR_UNKNOWN_POOL_URL_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_ALL_PROJECT_LOCKED_1 = "ERR_UNLOCK_ALL_PROJECT_LOCKED_1";
