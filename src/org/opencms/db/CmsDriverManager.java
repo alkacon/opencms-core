@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/10/19 10:21:41 $
- * Version: $Revision: 1.564 $
+ * Date   : $Date: 2005/12/12 09:49:14 $
+ * Version: $Revision: 1.565 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -102,6 +102,7 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
+import org.apache.commons.pool.ObjectPool;
 
 /**
  * The OpenCms driver manager.<p>
@@ -347,7 +348,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     private Map m_configuration;
 
     /** The list of initialized JDBC pools. */
-    private List m_connectionPools;
+    protected List m_connectionPools;
 
     /** Cache for groups. */
     private Map m_groupCache;
@@ -8259,4 +8260,56 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         return result;
     }
+    
+    /**
+     * Returns the number of active connections managed by a pool.<p>
+     * 
+     * @param dbPoolUrl the url of a pool
+     * @return the number of active connections
+     * @throws CmsDbException if something goes wrong
+     */
+    public int getActiveConnections (String dbPoolUrl) throws CmsDbException {
+        
+        try {
+            for (Iterator i = m_connectionPools.iterator(); i.hasNext();)  {
+                PoolingDriver d = (PoolingDriver)i.next();
+                ObjectPool p = d.getConnectionPool(dbPoolUrl);
+                return p.getNumActive();
+            }
+        } catch (Exception exc) {
+            // TODO new message
+            CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
+            throw new CmsDbException(message, exc);            
+        }
+        
+        // TODO new message
+        CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
+        throw new CmsDbException(message);
+    }
+    
+    /**
+     * Returns the number of idle connections managed by a pool.<p>
+     * 
+     * @param dbPoolUrl the url of a pool
+     * @return the number of idle connections
+     * @throws CmsDbException if something goes wrong
+     */
+    public int getIdleConnections (String dbPoolUrl) throws CmsDbException {
+        
+        try {
+            for (Iterator i = m_connectionPools.iterator(); i.hasNext();)  {
+                PoolingDriver d = (PoolingDriver)i.next();
+                ObjectPool p = d.getConnectionPool(dbPoolUrl);
+                return p.getNumIdle();
+            }
+        } catch (Exception exc) {
+            // TODO new message
+            CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
+            throw new CmsDbException(message, exc); 
+        }
+        
+        // TODO new message
+        CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
+        throw new CmsDbException(message);
+    } 
 }
