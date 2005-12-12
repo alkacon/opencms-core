@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/09/26 16:17:32 $
- * Version: $Revision: 1.39.2.4 $
+ * Date   : $Date: 2005/12/12 09:13:59 $
+ * Version: $Revision: 1.39.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.4 $ 
+ * @version $Revision: 1.39.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,9 +108,6 @@ public class CmsSearch implements Cloneable {
     /** The URL which leads to the previous result page. */
     protected String m_prevUrl;
 
-    /** The minimum length of the search query. */
-    protected int m_queryLength;
-
     /** The current search result. */
     protected List m_result;
 
@@ -133,7 +130,6 @@ public class CmsSearch implements Cloneable {
         m_searchResultCount = 0;
         m_matchesPerPage = 10;
         m_displayPages = 10;
-        m_queryLength = -1;
         m_parameters.setSort(CmsSearchParameters.SORT_DEFAULT);
         List fields = new ArrayList(2);
         fields.add(CmsSearchIndex.DOC_META_FIELDS[0]);
@@ -331,7 +327,7 @@ public class CmsSearch implements Cloneable {
      */
     public int getQueryLength() {
 
-        return m_queryLength;
+        return m_parameters.getQueryLength();
     }
 
     /**
@@ -712,7 +708,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setQueryLength(int length) {
 
-        m_queryLength = length;
+       m_parameters.setQueryLength(length);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2005/09/21 09:21:08 $
- * Version: $Revision: 1.5.2.2 $
+ * Date   : $Date: 2005/12/12 09:13:59 $
+ * Version: $Revision: 1.5.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.5.2.2 $
+ * @version $Revision: 1.5.2.3 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.2 $ 
+ * @version $Revision: 1.5.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,6 +99,9 @@ public class CmsSearchParameters {
 
     /** The current result page. */
     protected int m_page;
+
+    /** The minimum length of the search query. */
+    protected int m_queryLength;
 
     /** If <code>true</code>, the category count is calculated for all search results. */
     private boolean m_calculateCategories;
@@ -185,8 +188,8 @@ public class CmsSearchParameters {
         // null sort is allowed default
         m_sort = sort;
         m_page = 1;
+        m_queryLength = -1;
     }
-
     /**
      * Returns wether category counts are calculated for search results or not. <p>
      * 
@@ -196,7 +199,6 @@ public class CmsSearchParameters {
 
         return m_calculateCategories;
     }
-
     /**
      * Returns the list of categories to limit the search to.<p>
      *
@@ -206,7 +208,7 @@ public class CmsSearchParameters {
 
         return m_categories;
     }
-
+    
     /**
      * Returns the list of search index fields to search in.<p>
      *
@@ -235,6 +237,16 @@ public class CmsSearchParameters {
     public String getQuery() {
 
         return m_query;
+    }
+
+    /**
+     * Gets the minimum search query length.<p>
+     * 
+     * @return the minimum search query length
+     */
+    public int getQueryLength() {
+
+        return m_queryLength;
     }
 
     /**
@@ -564,12 +576,22 @@ public class CmsSearchParameters {
         query = CmsEncoder.decode(query);
 
         // for widget use the exception is thrown here to enforce the errmsg next to widget
-        if (query.trim().length() < 4) {
+        if (query.trim().length() < getQueryLength()) {
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_QUERY_TOO_SHORT_1,
-                new Integer(4)));
+                new Integer(getQueryLength())));
         }
         m_query = query;
+     }
+
+    /**
+     * Sets the minimum length of the search query.<p>
+     * 
+     * @param length the minimum search query length
+     */
+    public void setQueryLength(int length) {
+
+        m_queryLength = length;
     }
 
     /**
