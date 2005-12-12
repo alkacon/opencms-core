@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.25.2.4 $
+ * Date   : $Date: 2005/12/12 09:27:57 $
+ * Version: $Revision: 1.25.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.4 $ 
+ * @version $Revision: 1.25.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -432,8 +432,8 @@ public class CmsPreferences extends CmsTabDialog {
         options.add(key(Messages.GUI_PREF_PRESERVE_SIBLINGS_0));
         options.add(key(Messages.GUI_PREF_DELETE_SIBLINGS_0));
         List values = new ArrayList(2);
-        values.add(String.valueOf(CmsResource.DELETE_REMOVE_SIBLINGS));
         values.add(String.valueOf(CmsResource.DELETE_PRESERVE_SIBLINGS));
+        values.add(String.valueOf(CmsResource.DELETE_REMOVE_SIBLINGS));
         int selectedIndex = values.indexOf(getParamTabDiDeleteFileMode());
         return buildSelect(htmlAttributes, options, values, selectedIndex);
     }
