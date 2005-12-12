@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/11/29 14:58:29 $
- * Version: $Revision: 1.557.2.17 $
+ * Date   : $Date: 2005/12/12 10:19:31 $
+ * Version: $Revision: 1.557.2.18 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,6 +103,7 @@ import org.apache.commons.collections.ExtendedProperties;
 import org.apache.commons.collections.map.LRUMap;
 import org.apache.commons.dbcp.PoolingDriver;
 import org.apache.commons.logging.Log;
+import org.apache.commons.pool.ObjectPool;
 
 /**
  * The OpenCms driver manager.<p>
@@ -8303,4 +8304,56 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         return result;
     }
+    
+    /** 
+     * Returns the number of active connections managed by a pool.<p> 
+     * 
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of active connections 
+     * @throws CmsDbException if something goes wrong 
+     */ 
+    public int getActiveConnections (String dbPoolUrl) throws CmsDbException { 
+ 
+        try { 
+            for (Iterator i = m_connectionPools.iterator(); i.hasNext();)  { 
+                PoolingDriver d = (PoolingDriver)i.next(); 
+                ObjectPool p = d.getConnectionPool(dbPoolUrl); 
+                return p.getNumActive(); 
+            } 
+        } catch (Exception exc) { 
+            // TODO new message 
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl); 
+            throw new CmsDbException(message, exc); 
+        } 
+ 
+        // TODO new message 
+        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl); 
+        throw new CmsDbException(message); 
+    } 
+ 
+    /** 
+     * Returns the number of idle connections managed by a pool.<p> 
+     * 
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of idle connections 
+     * @throws CmsDbException if something goes wrong 
+     */ 
+    public int getIdleConnections (String dbPoolUrl) throws CmsDbException { 
+ 
+        try { 
+            for (Iterator i = m_connectionPools.iterator(); i.hasNext();)  { 
+                PoolingDriver d = (PoolingDriver)i.next(); 
+                ObjectPool p = d.getConnectionPool(dbPoolUrl); 
+                return p.getNumIdle(); 
+            } 
+        } catch (Exception exc) { 
+            // TODO new message 
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl); 
+            throw new CmsDbException(message, exc); 
+        } 
+ 
+        // TODO new message 
+        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl); 
+        throw new CmsDbException(message); 
+    } 
 }
