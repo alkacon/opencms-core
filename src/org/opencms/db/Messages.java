@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/Messages.java,v $
- * Date   : $Date: 2005/10/26 11:14:14 $
- * Version: $Revision: 1.38.2.4 $
+ * Date   : $Date: 2005/12/12 10:21:31 $
+ * Version: $Revision: 1.38.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.38.2.4 $
+ * @version $Revision: 1.38.2.5 $
  * 
  * @since 6.0.0 
  */
@@ -54,6 +54,9 @@ public final class Messages extends A_CmsMessageBundle {
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ACCESS_FOLDER_AS_FILE_1 = "ERR_ACCESS_FOLDER_AS_FILE_1";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_ACCESSING_POOL_1 = "ERR_ACCESSING_POOL_1";
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_ADD_USER_GROUP_FAILED_2 = "ERR_ADD_USER_GROUP_FAILED_2";
 
@@ -556,6 +559,9 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_UNKNOWN_USER_1 = "ERR_UNKNOWN_USER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String ERR_UNKNOWN_POOL_URL_1 = "ERR_UNKNOWN_POOL_URL_1";
+    
+    /** Message constant for key in the resource bundle. */
     public static final String ERR_UNLOCK_ALL_PROJECT_LOCKED_1 = "ERR_UNLOCK_ALL_PROJECT_LOCKED_1";
 
     /** Message constant for key in the resource bundle. */
@@ -629,7 +635,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_WRITE_WEB_USER_CONSTRAINT_0 = "ERR_WRITE_WEB_USER_CONSTRAINT_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0 = "GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0";
 
