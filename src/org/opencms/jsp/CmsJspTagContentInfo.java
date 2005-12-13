@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentInfo.java,v $
- * Date   : $Date: 2005/11/20 22:22:05 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2005/12/13 18:36:48 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.16.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,6 +95,16 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
 
     /** The name of the variable under which the content info bean should be saved in the page context. */
     private String m_variable;
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    public int doEndTag() {
+
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
+        return EVAL_PAGE;
+    }
 
     /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
@@ -236,6 +246,17 @@ public class CmsJspTagContentInfo extends TagSupport implements I_CmsMacroResolv
     public boolean isKeepEmptyMacros() {
 
         return true;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    public void release() {
+
+        m_scope = null;
+        m_value = null;
+        m_variable = null;
+        super.release();
     }
 
     /**

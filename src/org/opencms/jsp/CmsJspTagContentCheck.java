@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/11/20 22:22:05 $
- * Version: $Revision: 1.14.2.2 $
+ * Date   : $Date: 2005/12/13 18:36:48 $
+ * Version: $Revision: 1.14.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.14.2.2 $ 
+ * @version $Revision: 1.14.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,6 +116,16 @@ public class CmsJspTagContentCheck extends TagSupport {
     }
 
     /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    public int doEndTag() {
+
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
+        return EVAL_PAGE;
+    }
+
+    /**
      * @see javax.servlet.jsp.tagext.Tag#doStartTag()
      */
     public int doStartTag() throws JspException {
@@ -137,7 +147,10 @@ public class CmsJspTagContentCheck extends TagSupport {
             m_locale = contentContainer.getXmlDocumentLocale();
         }
 
-        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, content, m_locale)) {
+        // calculate the result
+        boolean result = contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, content, m_locale);
+
+        if (result) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;

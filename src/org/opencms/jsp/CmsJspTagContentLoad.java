@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentLoad.java,v $
- * Date   : $Date: 2005/11/20 22:22:05 $
- * Version: $Revision: 1.27.2.7 $
+ * Date   : $Date: 2005/12/13 18:36:48 $
+ * Version: $Revision: 1.27.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.tagext.Tag;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.27.2.7 $ 
+ * @version $Revision: 1.27.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,8 +252,20 @@ public class CmsJspTagContentLoad extends BodyTagSupport implements I_CmsXmlCont
             // another loop is required
             return EVAL_BODY_AGAIN;
         }
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
         // no more files are available, so skip the body and finish the loop
         return SKIP_BODY;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#doEndTag()
+     */
+    public int doEndTag() {
+
+        // need to release manually, JSP container may not call release as required (happens with Tomcat)
+        release();
+        return EVAL_PAGE;
     }
 
     /**
