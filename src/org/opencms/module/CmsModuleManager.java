@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.32.2.2 $
+ * Date   : $Date: 2005/12/13 17:11:49 $
+ * Version: $Revision: 1.32.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -67,7 +68,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.2.2 $ 
+ * @version $Revision: 1.32.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -519,33 +520,96 @@ public class CmsModuleManager {
         // now remove the module
         module = (CmsModule)m_modules.remove(moduleName);
 
-        // move through all module resources and delete them
-        for (int i = 0; i < module.getResources().size(); i++) {
-            String currentResource = null;
-            try {
-                currentResource = (String)module.getResources().get(i);
-                if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
-                }
-                if (cms.existsResource(currentResource)) {
-                    // lock the resource
-                    cms.lockResource(currentResource);
-                    // delete the resource
-                    cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-                    // update the report
+        CmsProject previousProject = cms.getRequestContext().currentProject();
+        try {
 
-                    report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
-                    report.println(org.opencms.report.Messages.get().container(
-                        org.opencms.report.Messages.RPT_ARGUMENT_1,
-                        currentResource));
-                    // unlock the resource (so it gets deleted with next publish)
-                    cms.unlockResource(currentResource);
-                }
+            CmsProject deleteProject = null;
+
+            try {
+                // try to read a (leftover) module delete project
+                deleteProject = cms.readProject(Messages.get().key(
+                    cms.getRequestContext().getLocale(),
+                    Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
+                    new Object[] {moduleName}));
             } catch (CmsException e) {
-                // ignore the exception and delete the next resource
-                LOG.error(Messages.get().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
-                report.println(e);
+                // create a Project to delete the module
+                deleteProject = cms.createProject(
+                    Messages.get().key(
+                        cms.getRequestContext().getLocale(),
+                        Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
+                        new Object[] {moduleName}),
+                    Messages.get().key(
+                        cms.getRequestContext().getLocale(),
+                        Messages.GUI_DELETE_MODULE_PROJECT_DESC_1,
+                        new Object[] {moduleName}),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    OpenCms.getDefaultUsers().getGroupAdministrators(),
+                    CmsProject.PROJECT_TYPE_TEMPORARY);
             }
+
+            cms.getRequestContext().setCurrentProject(deleteProject);
+
+            // copy the module resources to the project
+            List projectFiles = module.getResources();
+            for (int i = 0; i < projectFiles.size(); i++) {
+                try {
+                    String resourceName = (String)projectFiles.get(i);
+                    if (cms.existsResource(resourceName)) {
+                        cms.copyResourceToProject(resourceName);
+                    }
+                } catch (CmsException e) {
+                    // may happen if the resource has already been deleted
+                    LOG.error(Messages.get().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)), e);
+                    report.println(e);
+                }
+            }
+
+            report.print(Messages.get().container(Messages.RPT_DELETE_MODULE_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+            report.println(org.opencms.report.Messages.get().container(
+                org.opencms.report.Messages.RPT_ARGUMENT_HTML_ITAG_1,
+                moduleName), I_CmsReport.FORMAT_HEADLINE);
+
+            // move through all module resources and delete them
+            for (int i = 0; i < module.getResources().size(); i++) {
+                String currentResource = null;
+                try {
+                    currentResource = (String)module.getResources().get(i);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
+                    }
+                    if (cms.existsResource(currentResource)) {
+                        // lock the resource
+                        cms.lockResource(currentResource);
+                        // delete the resource
+                        cms.deleteResource(currentResource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+                        // update the report
+
+                        report.print(Messages.get().container(Messages.RPT_DELETE_0), I_CmsReport.FORMAT_NOTE);
+                        report.println(org.opencms.report.Messages.get().container(
+                            org.opencms.report.Messages.RPT_ARGUMENT_1,
+                            currentResource));
+                        // unlock the resource (so it gets deleted with next publish)
+                        cms.unlockResource(currentResource);
+                    }
+                } catch (CmsException e) {
+                    // ignore the exception and delete the next resource
+                    LOG.error(Messages.get().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
+                    report.println(e);
+                }
+            }
+
+            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
+
+            // now unlock and publish the project
+            cms.unlockProject(deleteProject.getId());
+            cms.publishProject(report);
+
+            report.println(Messages.get().container(Messages.RPT_PUBLISH_PROJECT_END_0), I_CmsReport.FORMAT_HEADLINE);
+            report.println(Messages.get().container(Messages.RPT_DELETE_MODULE_END_0), I_CmsReport.FORMAT_HEADLINE);
+        } catch (CmsException e) {
+            throw new CmsConfigurationException(e.getMessageContainer(), e);
+        } finally {
+            cms.getRequestContext().setCurrentProject(previousProject);
         }
 
         // initialize the export points (removes export points from deleted module)

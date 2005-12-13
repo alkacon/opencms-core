@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2005/10/27 11:02:46 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2005/12/13 17:11:49 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -526,33 +526,9 @@ public class CmsUpdateBean extends CmsSetupBean {
             Messages.get().container(Messages.RPT_BEGIN_UPDATE_MODULE_1, moduleName),
             I_CmsReport.FORMAT_HEADLINE);
         if (OpenCms.getModuleManager().getModule(moduleName) != null) {
-            report.println(
-                Messages.get().container(Messages.RPT_BEGIN_DELETE_MODULE_1, moduleName),
-                I_CmsReport.FORMAT_HEADLINE);
-            // copy the resources to the project
-            List projectFiles = OpenCms.getModuleManager().getModule(moduleName).getResources();
-            for (int i = 0; i < projectFiles.size(); i++) {
-                try {
-                    m_cms.copyResourceToProject((String)projectFiles.get(i));
-                } catch (CmsException e) {
-                    // may happen if the resource has already been deleted
-                    report.println(e);
-                }
-            }
             OpenCms.getModuleManager().deleteModule(m_cms, moduleName, true, report);
-            m_cms.unlockProject(m_cms.getRequestContext().currentProject().getId());
-            m_cms.publishProject(report);
-            report.println(
-                Messages.get().container(Messages.RPT_END_DELETE_MODULE_1, moduleName),
-                I_CmsReport.FORMAT_HEADLINE);
         }
-        report.println(
-            Messages.get().container(Messages.RPT_BEGIN_IMPORT_MODULE_1, moduleName),
-            I_CmsReport.FORMAT_HEADLINE);
         OpenCms.getImportExportManager().importData(m_cms, fileName, null, report);
-        report.println(
-            Messages.get().container(Messages.RPT_END_IMPORT_MODULE_1, moduleName),
-            I_CmsReport.FORMAT_HEADLINE);
         report.println(
             Messages.get().container(Messages.RPT_END_UPDATE_MODULE_1, moduleName),
             I_CmsReport.FORMAT_HEADLINE);

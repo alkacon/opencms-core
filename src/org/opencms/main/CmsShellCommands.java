@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.80.2.3 $
+ * Date   : $Date: 2005/12/13 17:11:49 $
+ * Version: $Revision: 1.80.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.80.2.3 $ 
+ * @version $Revision: 1.80.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -625,11 +625,11 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
-     * Exists so that the script can run without the wizard, does nothing.<p>
+     * Exists so that the setup script can run without the wizard, does nothing.<p>
      */
     public void importModulesFromSetupBean() {
 
-        // noop, exists so that the script can run without the wizard
+        // noop, exists so that the setup script can run without the wizard
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/Messages.java,v $
- * Date   : $Date: 2005/10/27 11:02:04 $
- * Version: $Revision: 1.15.2.4 $
+ * Date   : $Date: 2005/12/13 17:11:49 $
+ * Version: $Revision: 1.15.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,26 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.15.2.4 $ 
+ * @version $Revision: 1.15.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_MODULE_PROJECT_DESC_1 = "GUI_DELETE_MODULE_PROJECT_DESC_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETE_MODULE_PROJECT_NAME_1 = "GUI_DELETE_MODULE_PROJECT_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_MODULE_BEGIN_0 = "RPT_DELETE_MODULE_BEGIN_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_DELETE_MODULE_END_0 = "RPT_DELETE_MODULE_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_MOVE_RESOURCE_FAILED_1 = "LOG_MOVE_RESOURCE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHECK_DEPENDENCY_INVALID_MODE_1 = "ERR_CHECK_DEPENDENCY_INVALID_MODE_1";
@@ -112,7 +127,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_SAX_MODULE_IMPORT_1 = "ERR_SAX_MODULE_IMPORT_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_PROJECT_NAME_IMPORT_MODULE_1 = "GUI_PROJECT_NAME_IMPORT_MODULE_1";
+    public static final String GUI_IMPORT_MODULE_PROJECT_NAME_1 = "GUI_IMPORT_MODULE_PROJECT_NAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_IMPORT_MODULE_PROJECT_DESC_1 = "GUI_IMPORT_MODULE_PROJECT_DESC_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_EXPORT_POINT_2 = "INIT_ADD_EXPORT_POINT_2";

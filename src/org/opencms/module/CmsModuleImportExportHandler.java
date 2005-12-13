@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2005/10/27 11:02:04 $
- * Version: $Revision: 1.31.2.3 $
+ * Date   : $Date: 2005/12/13 17:11:49 $
+ * Version: $Revision: 1.31.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,14 +75,11 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31.2.3 $ 
+ * @version $Revision: 1.31.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
-
-    /** The name of the module import project. */
-    public static final String IMPORT_MODULE_PROJECT_NAME = "ImportModule";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsModuleImportExportHandler.class);
@@ -146,7 +143,9 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
                 if (entry != null) {
                     stream = importZip.getInputStream(entry);
                 } else {
-                    CmsMessageContainer message = Messages.get().container(Messages.ERR_NO_MANIFEST_MODULE_IMPORT_1, importResource);
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.ERR_NO_MANIFEST_MODULE_IMPORT_1,
+                        importResource);
                     LOG.error(message.key());
                     throw new CmsConfigurationException(message);
                 }
@@ -317,14 +316,20 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
                 try {
                     // try to read a (leftover) module import project
-                    importProject = cms.readProject(IMPORT_MODULE_PROJECT_NAME);
+                    importProject = cms.readProject(Messages.get().key(
+                        cms.getRequestContext().getLocale(),
+                        Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
+                        new Object[] {modulePackageName}));
                 } catch (CmsException e) {
                     // create a Project to import the module
                     importProject = cms.createProject(
-                        IMPORT_MODULE_PROJECT_NAME,
                         Messages.get().key(
                             cms.getRequestContext().getLocale(),
-                            Messages.GUI_PROJECT_NAME_IMPORT_MODULE_1,
+                            Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
+                            new Object[] {modulePackageName}),
+                        Messages.get().key(
+                            cms.getRequestContext().getLocale(),
+                            Messages.GUI_IMPORT_MODULE_PROJECT_DESC_1,
                             new Object[] {modulePackageName}),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),

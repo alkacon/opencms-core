@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleReplaceThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:55 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/12/13 17:11:49 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,7 +75,7 @@ public class CmsModuleReplaceThread extends A_CmsReportThread {
 
         super(cms, Messages.get().key(
             cms.getRequestContext().getLocale(),
-            Messages.GUI_DELETE_MODULE_THREAD_NAME_1,
+            Messages.GUI_REPLACE_MODULE_THREAD_NAME_1,
             new Object[] {moduleName}));
         m_moduleName = moduleName;
         m_zipName = zipName;
