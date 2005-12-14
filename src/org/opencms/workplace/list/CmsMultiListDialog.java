@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsMultiListDialog.java,v $
- * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/14 09:51:43 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.JspWriter;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,18 +163,14 @@ public class CmsMultiListDialog {
         StringBuffer result = new StringBuffer(2048);
         result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n"); 
         Iterator i = m_wps.iterator();
-        boolean firstIter = true;
         while (i.hasNext()) {
-            if (!firstIter) {
-                result.append("\t<tr><td height='20'/></tr>\n");
-            }
             A_CmsListDialog wp = (A_CmsListDialog)i.next();
             result.append("\t<tr>\n");
             result.append("\t\t<td valign='top'>\n");
             result.append("\t\t\t").append(wp.defaultActionHtmlContent()).append("\n");
             result.append("\t\t</td>\n");
             result.append("\t</tr>\n");
-            firstIter = false;
+            result.append("\t<tr><td height='20'/></tr>\n");
         }
         result.append("</table>\n");
         return result.toString();
@@ -187,7 +183,7 @@ public class CmsMultiListDialog {
      */
     protected String defaultActionHtmlEnd() {
 
-        return m_activeWp.defaultActionHtmlEnd();
+        return m_activeWp.defaultActionHtmlEnd() + m_activeWp.dialogContentEnd();
     }
 
     /**
