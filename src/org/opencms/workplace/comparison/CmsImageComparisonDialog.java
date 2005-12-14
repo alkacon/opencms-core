@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/14 16:20:02 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -39,7 +39,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,13 +94,18 @@ public class CmsImageComparisonDialog extends CmsDialog {
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
         out.println(dialogContentStart(null));
-        out.println("<table>\n");
-        out.println("\t<tr>\n");
-        out.println("\t\t<td><img src='");
+        out.println("<table cellpadding='0' cellspacing='0' border='0' class='maxwidth'><tr align='center'><th>");
+        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion1}));
+        out.println("</th><th>");
+        out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion2}));
+        out.println("</th></tr>");
+        out.println("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>");
+        out.println("\t<tr align='center'>\n");
+        out.println("\t\t<td width='50%'><img src='");
         out.print(getJsp().link(link1));
         out.print("' alt='");
         out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion1}));
-        out.print("'/></td>\n");
+        out.print("'/></td width=\'50%\'>\n");
         out.println("\t\t<td><img src='");
         out.print(getJsp().link(link2));
         out.print("' alt='");
