@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2005/12/14 16:20:31 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,12 +176,13 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
      * Returns the html code to display a file version.<p>
      * 
      * @param path the path of the file to be displayed
-     * @param tagId the version id of the file to be displayed
+     * @param tagId the tag id of the file to be displayed
+     * @param version the version of the file to be displayed
      * @return the html code to display a file version
      */
-    protected String getViewVersionButtonHtml(String path, String tagId) {
+    protected String getViewVersionButtonHtml(String path, String tagId, String version) {
 
-        String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, getParamVersion2()).key(
+        String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, version).key(
             getLocale());
         String iconPath = null;
         try {
@@ -191,7 +192,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting("plain").getIcon();
         }
         StringBuffer result = new StringBuffer(1024);
-        result.append("<span class='link' onClick='");
+        result.append("<span class='link' onClick=\"");
         result.append("window.open('");
         StringBuffer link = new StringBuffer(1024);
         if ("-1".equals(tagId)) {
@@ -207,8 +208,8 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             link.append(tagId);
         }
         result.append(getJsp().link(link.toString()));
-        result.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
-        result.append("'><img style='width: 16px; height: 16px;' src='");
+        result.append("','version','scrollbars=yes', 'resizable=yes', 'width=800', 'height=600')\">");
+        result.append("<img style='width: 16px; height: 16px;' src='");
         result.append(CmsWorkplace.getSkinUri());
         result.append(iconPath);
         result.append("' alt='");
@@ -237,21 +238,21 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // add the delete module multi action
+        // add the view version action
         CmsListIndependentAction viewVersion1 = new CmsListIndependentAction(LIST_ACTION_VIEW1) {
 
             public String buttonHtml(CmsWorkplace wp) {
 
-                return getViewVersionButtonHtml(getParamPath1(), getParamTagId1());
+                return getViewVersionButtonHtml(getParamPath1(), getParamTagId1(), getParamVersion1());
             }
         };
         metadata.addIndependentAction(viewVersion1);
-        // add the delete module multi action
+        // add the view version action
         CmsListIndependentAction viewVersion2 = new CmsListIndependentAction(LIST_ACTION_VIEW2) {
 
             public String buttonHtml(CmsWorkplace wp) {
 
-                return getViewVersionButtonHtml(getParamPath2(), getParamTagId2());
+                return getViewVersionButtonHtml(getParamPath2(), getParamTagId2(), getParamVersion2());
             }
         };
         metadata.addIndependentAction(viewVersion2);

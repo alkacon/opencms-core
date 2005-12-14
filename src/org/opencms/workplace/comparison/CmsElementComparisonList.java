@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2005/12/14 16:20:31 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -376,19 +376,25 @@ public class CmsElementComparisonList extends A_CmsListDialog {
         List result = new ArrayList();
         CmsFile resource1;
         CmsFile resource2;
-        if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-            resource1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
-        } else {
-            resource1 = getCms().readBackupFile(
-                getCms().getRequestContext().removeSiteRoot(getParamPath1()),
-                Integer.parseInt(getParamTagId1()));
-        }
-        if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-            resource2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
-        } else {
-            resource2 = getCms().readBackupFile(
-                getCms().getRequestContext().removeSiteRoot(getParamPath2()),
-                Integer.parseInt(getParamTagId2()));
+        try {
+            getCms().getRequestContext().saveSiteRoot();
+            getCms().getRequestContext().setSiteRoot("/");
+            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
+                resource1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
+            } else {
+                resource1 = getCms().readBackupFile(
+                    getCms().getRequestContext().removeSiteRoot(getParamPath1()),
+                    Integer.parseInt(getParamTagId1()));
+            }
+            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
+                resource2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
+            } else {
+                resource2 = getCms().readBackupFile(
+                    getCms().getRequestContext().removeSiteRoot(getParamPath2()),
+                    Integer.parseInt(getParamTagId2()));
+            }
+        } finally {
+            getCms().getRequestContext().restoreSiteRoot();
         }
         Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
         while (diffs.hasNext()) {
