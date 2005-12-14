@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlDocumentComparison.java,v $
- * Date   : $Date: 2005/11/18 15:21:42 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/14 09:52:45 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,38 +60,41 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
     class CmsXmlContentElementPathExtractor implements I_CmsXmlContentValueVisitor {
 
         private List m_elementPaths;
-        
+
+        /**
+         * Creates a CmsXmlContentElementPathExtractor.<p>
+         */
+        CmsXmlContentElementPathExtractor() {
+
+            m_elementPaths = new ArrayList();
+        }
+
+        /**
+         * 
+         * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
+         */
+        public void visit(I_CmsXmlContentValue value) {
+
+            // only add simple types
+            if (value.isSimpleType()) {
+                m_elementPaths.add(new CmsXmlContentElementComparison(
+                    value.getLocale().toString(),
+                    value.getPath(),
+                    value.getTypeName()));
+            }
+        }
+
         /**
          * Returns the elementPaths.<p>
          *
          * @return the elementPaths
          */
         List getElementPaths() {
-        
+
             return m_elementPaths;
         }
-
-        /**
-         * Creates a CmsXmlContentElementPathExtractor.<p>
-         */
-        CmsXmlContentElementPathExtractor() {
-            
-            m_elementPaths = new ArrayList();
-        }
-        
-        /**
-         * 
-         * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
-         */
-        public void visit(I_CmsXmlContentValue value) {
-            
-            // only add simple types
-            if (value.isSimpleType()) {
-                m_elementPaths.add(new CmsElementComparison(value.getLocale().toString(), value.getPath()));
-            }
-        }
     }
-    
+
     /** The compared elements.<p> */
     private List m_elements;
 
@@ -107,14 +110,12 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
     public CmsXmlDocumentComparison(CmsObject cms, CmsFile res1, CmsFile res2)
     throws CmsException {
 
-        super(cms, res1, res2);
-
         I_CmsXmlDocument resource1;
         I_CmsXmlDocument resource2;
 
         List elements1 = null;
         List elements2 = null;
-        
+
         if (res1.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()
             && res2.getTypeId() == CmsResourceTypeXmlPage.getStaticTypeId()) {
             resource1 = CmsXmlPageFactory.unmarshal(cms, res1);
@@ -137,7 +138,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         Iterator i = removed.iterator();
         while (i.hasNext()) {
             CmsElementComparison elem = (CmsElementComparison)i.next();
-            elem.setType(CmsResourceComparison.TYPE_REMOVED);
+            elem.setStatus(CmsResourceComparison.TYPE_REMOVED);
             String value = resource1.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
             elem.setVersion1(value);
             elem.setVersion2("");
@@ -147,7 +148,7 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
         i = added.iterator();
         while (i.hasNext()) {
             CmsElementComparison elem = (CmsElementComparison)i.next();
-            elem.setType(CmsResourceComparison.TYPE_ADDED);
+            elem.setStatus(CmsResourceComparison.TYPE_ADDED);
             elem.setVersion1("");
             String value = resource2.getValue(elem.getName(), new Locale(elem.getLocale())).getStringValue(cms);
             elem.setVersion2(value);
@@ -170,16 +171,16 @@ public class CmsXmlDocumentComparison extends CmsResourceComparison {
             elem.setVersion1(value1);
             elem.setVersion2(value2);
             if (!value1.equals(value2)) {
-                elem.setType(CmsResourceComparison.TYPE_CHANGED);
+                elem.setStatus(CmsResourceComparison.TYPE_CHANGED);
             } else {
-                elem.setType(CmsResourceComparison.TYPE_UNCHANGED);
+                elem.setStatus(CmsResourceComparison.TYPE_UNCHANGED);
             }
         }
         m_elements = new ArrayList(removed);
         m_elements.addAll(added);
         m_elements.addAll(union);
     }
-    
+
     /**
      * Returns the elements.<p>
      *

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2005/12/14 09:57:15 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,8 @@ import org.opencms.file.CmsBackupResource;
 import org.opencms.file.CmsBackupResourceHandler;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
+import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -74,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.2 
  */
@@ -131,9 +133,6 @@ public class CmsHistoryList extends A_CmsListDialog {
         }
         
     }
-
-    /** list action id constant. */
-    public static final String LIST_ACTION_ICON = "ai";
     
     /** List action export. */
     public static final String LIST_ACTION_RESTORE = "ar";
@@ -332,24 +331,27 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_SIZE, new Integer(file.getLength()).toString());
             result.add(item);
         }
-        CmsFile onlineFile = getCms().readFile(getParamResource());
-        CmsListItem item = getList().newItem("-1");
-        //version
-        item.set(LIST_COLUMN_VERSION, new VersionWrapper(OFFLINE_PROJECT));
-        // filename
-        item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
-        // nicename
-        item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(onlineFile.getDateLastModified()));
-        // group           
-        item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(onlineFile.getTypeId()));
-        // user           
-        item.set(LIST_COLUMN_USER, getCms().readUser(onlineFile.getUserLastModified()).getName());
-        // size 
-        item.set(LIST_COLUMN_SIZE, new Integer(onlineFile.getLength()).toString());
-        // path
-        item.set(LIST_COLUMN_RESOURCE_PATH, onlineFile.getRootPath());
-        result.add(item);
+        CmsFile offlineFile = getCms().readFile(getParamResource(), CmsResourceFilter.IGNORE_EXPIRATION);
         
+        // display offline version, if state is not unchanged
+        if (offlineFile.getState() != CmsResource.STATE_UNCHANGED) {
+            CmsListItem item = getList().newItem("-1");
+            //version
+            item.set(LIST_COLUMN_VERSION, new VersionWrapper(OFFLINE_PROJECT));
+            // filename
+            item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
+            // nicename
+            item.set(LIST_COLUMN_DATE_LAST_MODIFIED, getMessages().getDateTime(offlineFile.getDateLastModified()));
+            // group           
+            item.set(LIST_COLUMN_FILE_TYPE, String.valueOf(offlineFile.getTypeId()));
+            // user           
+            item.set(LIST_COLUMN_USER, getCms().readUser(offlineFile.getUserLastModified()).getName());
+            // size 
+            item.set(LIST_COLUMN_SIZE, new Integer(offlineFile.getLength()).toString());
+            // path
+            item.set(LIST_COLUMN_RESOURCE_PATH, offlineFile.getRootPath());
+            result.add(item);
+        }
         return result;
     }
 
@@ -410,15 +412,6 @@ public class CmsHistoryList extends A_CmsListDialog {
         previewCol.setVisible(false);
         previewCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
         previewCol.setSorteable(false);
-
-        // add icon action
-        CmsListDirectAction iconAction = new CmsListDirectAction(LIST_ACTION_ICON);
-        iconAction.setName(Messages.get().container(Messages.GUI_HISTORY_PREVIEW_0));
-        iconAction.setIconPath("tools/history/buttons/preview.png");
-        iconAction.setEnabled(true);
-        previewCol.addDirectAction(iconAction);
-        // add it to the list definition
-        metadata.addColumn(previewCol);
         
         // create column for icon
         CmsListColumnDefinition restoreCol = new CmsListColumnDefinition(LIST_COLUMN_RESTORE);
@@ -457,22 +450,14 @@ public class CmsHistoryList extends A_CmsListDialog {
                 boolean enabled, String iconPath, String confirmationMessage, String onClick, boolean singleHelp) {
                 StringBuffer jsCode = new StringBuffer(512);
                 jsCode.append("window.open('");
-                StringBuffer link = new StringBuffer(1024);
                 String versionId = getItem().getId().toString();
                 if ("-1".equals(versionId)) {
                     // offline version
-                    link.append(getParamResource());  
+                    jsCode.append(getParamResource());  
                 } else {
-                    // backup version
-                    link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
-                    //link.append(getCms().getRequestContext().addSiteRoot(getParamResource()));
-                    link.append(getItem().get(LIST_COLUMN_RESOURCE_PATH).toString());
-                    link.append('?');
-                    link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
-                    link.append('=');
-                    link.append(versionId);
+                    jsCode.append(getBackupLink(getItem().get(LIST_COLUMN_RESOURCE_PATH).toString(), 
+                        versionId));
                 }
-                jsCode.append(jsp.link(link.toString()));
                 jsCode.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
                 return super.defButtonHtml(jsp, id, helpId, name, helpText, enabled,
                     iconPath, confirmationMessage, jsCode.toString(), singleHelp);
@@ -483,6 +468,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         iconCol.addDirectAction(fileAction);
         // add it to the list definition
         metadata.addColumn(iconCol);
+        iconCol.setPrintable(false);
         
         // add column for version
         CmsListColumnDefinition versionCol = new CmsListColumnDefinition(LIST_COLUMN_VERSION);
@@ -557,6 +543,24 @@ public class CmsHistoryList extends A_CmsListDialog {
         sel2Action.setEnabled(true);
         radioSel2Col.addDirectAction(sel2Action);
         metadata.addColumn(radioSel2Col);
+    }
+    
+    /**
+     * Returns the link to a backup file.<p>
+     * 
+     * @param resourcePath the path of the file
+     * @param versionId the version of the file
+     * @return the link to a backup file
+     */
+    public static String getBackupLink(String resourcePath, String versionId) {
+        StringBuffer link = new StringBuffer();
+        link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
+        link.append(resourcePath);
+        link.append('?');
+        link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
+        link.append('=');
+        link.append(versionId);
+        return link.toString();
     }
     
     /**

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Attic/CmsHtmlDiffConfiguration.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceConfiguration.java,v $
+ * Date   : $Date: 2005/12/14 09:52:45 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @since 6.0.2
  */
-public class CmsHtmlDiffConfiguration extends HtmlDiffConfiguration {
+public class CmsHtmlDifferenceConfiguration extends HtmlDiffConfiguration {
 
     /**
      * Creates a new configuration object.<p> 
@@ -51,7 +51,7 @@ public class CmsHtmlDiffConfiguration extends HtmlDiffConfiguration {
      * @param lines the lines to show before skipping
      * @param locale the locale to use
      */
-    public CmsHtmlDiffConfiguration(int lines, Locale locale) {
+    public CmsHtmlDifferenceConfiguration(int lines, Locale locale) {
 
         super(new DiffConfiguration(lines, Messages.get().getBundleName(), Messages.GUI_DIFF_SKIP_LINES_1, locale));
         setDivStyleNames("df-unc", "df-add", "df-rem", "df-skp");

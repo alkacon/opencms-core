@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/12/14 09:52:45 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,10 +40,9 @@ import org.opencms.workplace.CmsWorkplace;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
-import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -62,7 +61,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -70,6 +69,8 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
     /** List id constant. */
     public static final String LIST_ID = "hiacl";
+
+    private static boolean m_showAllAttributes = false;
 
     /**
      * Public constructor.<p>
@@ -94,16 +95,6 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     }
 
     /**
-     * 
-     * @see org.opencms.workplace.CmsWorkplace#initMessages()
-     */
-    protected void initMessages() {
-
-        addMessages(org.opencms.workplace.commons.Messages.get().getBundleName());
-        super.initMessages();
-    }
-    
-    /**
      * Protected constructor.<p>
      * 
      * @param listId the id of the specialized list
@@ -121,6 +112,16 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     }
 
     /**
+     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
+     */
+    public void executeListIndepActions() {
+
+        m_showAllAttributes = !m_showAllAttributes;
+        refreshList();
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
     public void executeListSingleActions() throws IOException, ServletException {
@@ -133,7 +134,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         params.put(CmsHistoryList.PARAM_VERSION_2, getParamVersion2());
         params.put(CmsHistoryList.PARAM_PATH_1, getParamPath1());
         params.put(CmsHistoryList.PARAM_PATH_2, getParamPath2());
-        params.put(PARAM_COMPARE, "attributes");
+        params.put(PARAM_COMPARE, CmsResourceComparisonDialog.COMPARE_ATTRIBUTES);
         params.put(PARAM_RESOURCE, getParamResource());
         // forward to the difference screen
         getToolManager().jspForwardTool(this, "/history/comparison/difference", params);
@@ -145,40 +146,91 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-//        CmsFile resource1;
-//        CmsFile resource2;
-//        if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-//            resource1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
-//        } else {
-//            resource1 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()), 
-//                Integer.parseInt(getParamTagId1()));
-//        }
-//        if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-//            resource2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
-//        } else {
-//            resource2 = getCms().readBackupFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()), 
-//                Integer.parseInt(getParamTagId2()));
-//        }
-        Iterator diffs = new CmsResourceComparison(getCms(), getFile1(), getFile2()).getComparedAttributes().iterator();
+        Iterator diffs = CmsResourceComparison.compareAttributes(getCms(), getFile1(), getFile2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());
             item.set(LIST_COLUMN_PROPERTY_NAME, key(comparison.getName()));
             item.set(LIST_COLUMN_VERSION_1, CmsStringUtil.trimToSize(comparison.getVersion1(), TRIM_AT_LENGTH));
             item.set(LIST_COLUMN_VERSION_2, CmsStringUtil.trimToSize(comparison.getVersion2(), TRIM_AT_LENGTH));
-            if (CmsResourceComparison.TYPE_ADDED.equals(comparison.getType())) {
+            if (CmsResourceComparison.TYPE_ADDED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_ADDED_0));
-            } else if (CmsResourceComparison.TYPE_REMOVED.equals(comparison.getType())) {
+            } else if (CmsResourceComparison.TYPE_REMOVED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_REMOVED_0));
-            } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getType())) {
+            } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_CHANGED_0));
             } else {
-                item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_UNCHANGED_0));
+                if (!m_showAllAttributes) {
+                    // do not display entry
+                    continue;
+                } else {
+                    item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_UNCHANGED_0));
+                }
             }
             ret.add(item);
         }
         return ret;
-    }    
+    }
+
+    /**
+     * Returns the html code to display a file version.<p>
+     * 
+     * @param path the path of the file to be displayed
+     * @param tagId the version id of the file to be displayed
+     * @return the html code to display a file version
+     */
+    protected String getViewVersionButtonHtml(String path, String tagId) {
+
+        String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, getParamVersion2()).key(
+            getLocale());
+        String iconPath = null;
+        try {
+            String typeName = OpenCms.getResourceManager().getResourceType(getFile1().getTypeId()).getTypeName();
+            iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
+        } catch (CmsException e) {
+            iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting("plain").getIcon();
+        }
+        StringBuffer result = new StringBuffer(1024);
+        result.append("<span class='link' onClick='");
+        result.append("window.open('");
+        StringBuffer link = new StringBuffer(1024);
+        if ("-1".equals(tagId)) {
+            // offline version
+            link.append(getParamResource());
+        } else {
+            // backup version
+            link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
+            link.append(path);
+            link.append('?');
+            link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
+            link.append('=');
+            link.append(tagId);
+        }
+        result.append(getJsp().link(link.toString()));
+        result.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
+        result.append("'><img style='width: 16px; height: 16px;' src='");
+        result.append(CmsWorkplace.getSkinUri());
+        result.append(iconPath);
+        result.append("' alt='");
+        result.append(label);
+        result.append("' title='");
+        result.append(label);
+        result.append("'>&nbsp;<a href='#'>");
+        result.append(label);
+        result.append("</a></span>");
+
+        return result.toString();
+    }
+
+    /**
+     * 
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
+     */
+    protected void initMessages() {
+
+        addMessages(org.opencms.workplace.commons.Messages.get().getBundleName());
+        super.initMessages();
+    }
 
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
@@ -187,88 +239,32 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
         // add the delete module multi action
         CmsListIndependentAction viewVersion1 = new CmsListIndependentAction(LIST_ACTION_VIEW1) {
+
             public String buttonHtml(CmsWorkplace wp) {
-                String jsCode = getViewVersionJS(getParamPath1(), getParamTagId1());
-                return A_CmsHtmlIconButton.defaultButtonHtml(
-                    wp.getJsp(),
-                    CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                    getId(),
-                    getName().key(wp.getLocale()),
-                    getHelpText().key(wp.getLocale()),
-                    isEnabled(),
-                    getIconPath(),
-                    null,
-                    jsCode);
+
+                return getViewVersionButtonHtml(getParamPath1(), getParamTagId1());
             }
         };
-        viewVersion1.setName(Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, getParamVersion1()));
-        String iconPath = ICON_MULTI_DELETE;
-        try {
-            String typeName = OpenCms.getResourceManager().getResourceType(getFile1().getTypeId()).getTypeName();
-            iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
-        } catch (CmsException e) {
-            // ignore, icon path is set anyway
-        }
-        viewVersion1.setIconPath(iconPath);
-        viewVersion1.setEnabled(true);
         metadata.addIndependentAction(viewVersion1);
         // add the delete module multi action
         CmsListIndependentAction viewVersion2 = new CmsListIndependentAction(LIST_ACTION_VIEW2) {
 
             public String buttonHtml(CmsWorkplace wp) {
 
-                String jsCode = getViewVersionJS(getParamPath2(), getParamTagId2());
-                return A_CmsHtmlIconButton.defaultButtonHtml(
-                    wp.getJsp(),
-                    CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                    getId(),
-                    getName().key(wp.getLocale()),
-                    getHelpText().key(wp.getLocale()),
-                    isEnabled(),
-                    getIconPath(),
-                    null,
-                    jsCode);
+                return getViewVersionButtonHtml(getParamPath2(), getParamTagId2());
             }
         };
-        viewVersion2.setName(Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, getParamVersion2()));
-        iconPath = ICON_MULTI_DELETE;
-        try {
-            String typeName = OpenCms.getResourceManager().getResourceType(getFile2().getTypeId()).getTypeName();
-            iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
-        } catch (CmsException e) {
-            // ignore, icon path is set anyway
-        }
-        viewVersion2.setIconPath(iconPath);
-        viewVersion2.setEnabled(true);
         metadata.addIndependentAction(viewVersion2);
-    }
-    
-    /**
-     * Returns the javascript code to display a file version.<p>
-     * 
-     * @param path the path of the file to be displayed
-     * @param tagId the version id of the file to be displayed
-     * @return the javascript code to display a file version
-     */
-    protected String getViewVersionJS(String path, String tagId) {
-        StringBuffer jsCode = new StringBuffer(512);
-        jsCode.append("window.open('");
-        StringBuffer link = new StringBuffer(1024);
-        if ("-1".equals(tagId)) {
-            // offline version
-            link.append(getParamResource());  
+
+        // add event details
+        CmsListItemDetails eventDetails = new CmsListItemDetails(LIST_IACTION_SHOW);
+        if (m_showAllAttributes) {
+            eventDetails.setVisible(true);
         } else {
-            // backup version
-            link.append(CmsBackupResourceHandler.BACKUP_HANDLER);
-            //link.append(getCms().getRequestContext().addSiteRoot(getParamResource()));
-            link.append(path);
-            link.append('?');
-            link.append(CmsBackupResourceHandler.PARAM_VERSIONID);
-            link.append('=');
-            link.append(tagId);
+            eventDetails.setVisible(false);
         }
-        jsCode.append(getJsp().link(link.toString()));
-        jsCode.append("','version','scrollbars=yes, resizable=yes, width=800, height=600')");
-        return jsCode.toString();
+        eventDetails.setShowActionName(Messages.get().container(Messages.GUI_COMPARE_SHOW_ALL_ATTRIBUTES_0));
+        eventDetails.setHideActionName(Messages.get().container(Messages.GUI_COMPARE_HIDE_IDENTICAL_ATTRIBUTES_0));
+        metadata.addItemDetails(eventDetails);
     }
 }

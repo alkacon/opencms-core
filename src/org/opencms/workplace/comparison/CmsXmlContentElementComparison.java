@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparison.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsXmlContentElementComparison.java,v $
  * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.2 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,67 +32,46 @@
 package org.opencms.workplace.comparison;
 
 /**
- * Comparison of two xml page elements.<p>
+ * Comparison of two xml content elements.<p>
  * 
  * @author Jan Baudisch
  */
-public class CmsElementComparison extends CmsAttributeComparison {
+public class CmsXmlContentElementComparison extends CmsElementComparison {
 
-    /** The element locale.<p> */
-    private String m_locale;
+    /** The element type.<p> */
+    private String m_type;
 
     /** 
      * Creates a new element comparison.<p> 
      * 
-     * @param locale the locale of the comparison
-     * @param name the name of the element
+     * @param locale the locale of the compared element
+     * @param type the type of the compared element
+     * @param name the name of the compared element
      */
-    public CmsElementComparison(String locale, String name) {
+    public CmsXmlContentElementComparison(String locale, String name, String type) {
 
-        m_locale = locale;
-        setName(name);
+        super(locale, name);
+        m_type = type;
     }
 
     /**
-     * 
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object o) {
-
-        if (!(o instanceof CmsElementComparison)) {
-            return false;
-        }
-        CmsElementComparison diffItem = (CmsElementComparison)o;
-        return getName().equals(diffItem.getName()) && m_locale.equals(diffItem.getLocale());
-    }
-
-    /**
-     * Returns the locale.<p>
+     * Returns the type.<p>
      *
-     * @return the locale
+     * @return the type
      */
-    public String getLocale() {
+    public String getType() {
 
-        return m_locale;
+        return m_type;
     }
 
     /**
-     * 
-     * @see java.lang.Object#hashCode()
-     */
-    public int hashCode() {
-
-        return m_locale.hashCode() + getName().hashCode();
-    }
-
-    /**
-     * Sets the locale.<p>
+     * Sets the type.<p>
      *
-     * @param locale the locale to set
+     * @param type the type to set
      */
-    public void setLocale(String locale) {
+    public void setType(String type) {
 
-        m_locale = locale;
+        m_type = type;
     }
 
 }

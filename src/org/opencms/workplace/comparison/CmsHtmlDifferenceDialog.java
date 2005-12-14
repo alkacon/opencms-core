@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
  * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -30,47 +30,61 @@ package org.opencms.workplace.comparison;
 
 import com.alkacon.diff.Diff;
 
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.list.A_CmsListDialog;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
 import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
-import org.opencms.workplace.tools.Messages;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.StringReader;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.jsp.JspException;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.JspWriter;
+import javax.servlet.jsp.PageContext;
 
 /**
- * Provides a GUI for the configuration file comparison dialog.<p> 
+ * Provides a GUI for the file comparison dialog.<p> 
  *
- * @author Michael Moossen  
- * @author Jan Baudisch
+ * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public abstract class A_CmsDiffViewDialog extends CmsDialog {
+public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
 
-    /** Diff mode. */
-    private CmsDiffViewMode m_mode;
+    /** constant indicating that the html is to be compared.<p> */
+    public static final String MODE_HTML = "html";
+
+    /** constant indicating that a textual representation of the html is to be compared.<p> */
+    public static final String MODE_TEXT = "text";
+
+    /** request parameter for the textmode.<p> */
+    public static final String PARAM_TEXTMODE = "textmode";
 
     /**
      * Default constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
-    protected A_CmsDiffViewDialog(CmsJspActionElement jsp) {
+    public CmsHtmlDifferenceDialog(CmsJspActionElement jsp) {
 
         super(jsp);
-        setParamStyle(STYLE_NEW);
+    }
+
+    /**
+     * Public constructor with JSP variables.<p>
+     * 
+     * @param context the JSP page context
+     * @param req the JSP request
+     * @param res the JSP response
+     */
+    public CmsHtmlDifferenceDialog(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
+        this(new CmsJspActionElement(context, req, res));
     }
 
     /**
@@ -94,8 +108,8 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         out.println("'>");
         out.println(allParamsAsHidden());
         out.println("</form>");
-        // icon is displayed on the right in order that the user needs not scroll to the icon for long lines
         out.println("<p>");
+
         String iconPath = null;
         String onClic = "javascript:document.forms['diff-form'].mode.value = '";
         if (getMode() == CmsDiffViewMode.ALL) {
@@ -123,6 +137,29 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
             // display all text, if there are no differences
             setMode(CmsDiffViewMode.ALL);
         }
+
+        onClic = "javascript:document.forms['diff-form'].textmode.value = '";
+        CmsMessageContainer iconName = null;
+        if (MODE_HTML.equals(getParamTextmode())) {
+            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
+            onClic += MODE_TEXT;
+            iconName = Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0);
+        } else {
+            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
+            onClic += MODE_HTML;
+            iconName = Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0);
+        }
+        onClic += "'; document.forms['diff-form'].submit();";
+        out.println(A_CmsHtmlIconButton.defaultButtonHtml(
+            getJsp(),
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            "id",
+            iconName.key(getLocale()),
+            null,
+            true,
+            iconPath,
+            null,
+            onClic));
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");
@@ -130,11 +167,17 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
             CmsHtmlDifferenceConfiguration conf = new CmsHtmlDifferenceConfiguration(
                 getMode() == CmsDiffViewMode.ALL ? -1 : getLinesBeforeSkip(),
                 getLocale());
-            String diff = Diff.diffAsHtml(getOriginalSource(), getCopySource(), conf);
+            String originalSource = getOriginalSource();
+            String copySource = getCopySource();
+            if (MODE_TEXT.equals(getParamTextmode())) {
+                originalSource = CmsHtml2TextConverter.html2text(originalSource, CmsEncoder.ENCODING_ISO_8859_1);
+                copySource = CmsHtml2TextConverter.html2text(copySource, CmsEncoder.ENCODING_ISO_8859_1);
+            }
+            String diff = Diff.diffAsHtml(originalSource, copySource, conf);
             if (CmsStringUtil.isNotEmpty(diff)) {
                 out.println(diff);
-            } else {
-                out.println(wrapLinesWithUnchangedStyle(getOriginalSource())); // print original source, if there are no differences
+            } else if (getMode() == CmsDiffViewMode.ALL) {
+                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.escapeHtml(getOriginalSource()))); // print original source, if there are no differences
             }
         } catch (Exception e) {
             out.print(e);
@@ -148,76 +191,13 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
     }
 
     /**
-     * Returns the mode.<p>
-     *
-     * @return the mode
-     */
-    public CmsDiffViewMode getMode() {
-
-        return m_mode;
-    }
-
-    /**
-     * Returns the parameter value for the Mode.<p>
-     *
-     * @return the parameter value for the Mode
-     */
-    public String getParamMode() {
-
-        if (m_mode == null) {
-            return null;
-        }
-        return m_mode.getMode();
-    }
-
-    /**
-     * Sets the mode.<p>
-     *
-     * @param mode the mode to set
-     */
-    public void setMode(CmsDiffViewMode mode) {
-
-        m_mode = mode;
-    }
-
-    /**
-     * Sets the parameter value for the Mode.<p>
-     *
-     * @param mode the parameter value for the Mode to set
-     */
-    public void setParamMode(String mode) {
-
-        m_mode = CmsDiffViewMode.valueOf(mode);
-    }
-
-    /**
-     * Returns the text to compare as copy.<p>
-     * 
-     * @return the text to compare as copy
-     */
-    protected abstract String getCopySource();
-
-    /**
-     * Returns the number of lines to show before they are skipped.<p>
-     * 
-     * @return the number of lines to show before they are skipped
-     */
-    protected abstract int getLinesBeforeSkip();
-
-    /**
-     * Returns the text to compare as original.<p>
-     * 
-     * @return the text to compare as original
-     */
-    protected abstract String getOriginalSource();
-
-    /**
      * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
     protected void initMessages() {
 
         // add specific dialog resource bundle
         addMessages(Messages.get().getBundleName());
+        addMessages(org.opencms.workplace.commons.Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
     }
@@ -228,49 +208,18 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamMode())) {
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamTextmode())) {
             // ensure a valid mode is set
-            m_mode = CmsDiffViewMode.DIFF_ONLY;
-        }
-        // test the needed parameters
-        try {
-            validateParamaters();
-        } catch (Exception e) {
-            // close if parameters not available
-            setAction(ACTION_CANCEL);
-            try {
-                actionCloseDialog();
-            } catch (JspException e1) {
-                // noop
-            }
-            return;
+            setParamTextmode(MODE_TEXT);
         }
     }
 
     /**
-     * Validates the parameters.<p>
      * 
-     * @throws Exception if something goes wrong
+     * @see org.opencms.workplace.comparison.A_CmsDiffViewDialog#validateParamaters()
      */
-    protected abstract void validateParamaters() throws Exception;
+    protected void validateParamaters() {
 
-    /**
-     * 
-     * Returns a diff text wrapped with formatting style.<p>
-     * 
-     * @param diff the text to wrap with CSS formatting
-     * @return the text with formatting styles wrapped
-     * @throws IOException if something goes wrong
-     */
-    protected String wrapLinesWithUnchangedStyle(String diff) throws IOException {
-
-        String line;
-        StringBuffer result = new StringBuffer();
-        BufferedReader br = new BufferedReader(new StringReader(diff));
-        while ((line = br.readLine()) != null) {
-            result.append("<div class=\"df-unc\"><span class=\"df-unc\">").append(line).append("</span></div>\n");
-        }
-        return result.toString();
+        // noop
     }
-
 }

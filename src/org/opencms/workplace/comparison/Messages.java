@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Messages.java,v $
- * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/14 09:52:45 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,32 +36,20 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_COMPARE_ALL_0 = "GUI_COMPARE_COMPARE_ALL_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_VIEW_VERSION_1 = "GUI_COMPARE_VIEW_VERSION_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_REMOVED_0 = "GUI_COMPARE_REMOVED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_ADDED_0 = "GUI_COMPARE_ADDED_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_CHANGED_0 = "GUI_COMPARE_CHANGED_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_COMPARE_UNCHANGED_0 = "GUI_COMPARE_UNCHANGED_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_ATTRIBUTES_0 = "GUI_COMPARE_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_CHANGED_0 = "GUI_COMPARE_CHANGED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_COLS_ICON_0 = "GUI_COMPARE_COLS_ICON_0";
@@ -77,6 +65,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_COLS_STATUS_0 = "GUI_COMPARE_COLS_STATUS_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_COMPARE_COLS_TYPE_0 = "GUI_COMPARE_COLS_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_COMPARE_ALL_0 = "GUI_COMPARE_COMPARE_ALL_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_CONTENT_0 = "GUI_COMPARE_CONTENT_0";
@@ -94,10 +88,37 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_COMPARE_ELEM_UNCHANGED_0 = "GUI_COMPARE_ELEM_UNCHANGED_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_HIDE_IDENTICAL_ATTRIBUTES_0 = "GUI_COMPARE_HIDE_IDENTICAL_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_HIDE_IDENTICAL_ELEMENTS_0 = "GUI_COMPARE_HIDE_IDENTICAL_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_HIDE_IDENTICAL_PROPERTIES_0 = "GUI_COMPARE_HIDE_IDENTICAL_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_PROPERTIES_0 = "GUI_COMPARE_PROPERTIES_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_REMOVED_0 = "GUI_COMPARE_REMOVED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_SHOW_ALL_ATTRIBUTES_0 = "GUI_COMPARE_SHOW_ALL_ATTRIBUTES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_SHOW_ALL_ELEMENTS_0 = "GUI_COMPARE_SHOW_ALL_ELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_SHOW_ALL_PROPERTIES_0 = "GUI_COMPARE_SHOW_ALL_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_UNCHANGED_0 = "GUI_COMPARE_UNCHANGED_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_VERSION_1 = "GUI_COMPARE_VERSION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_VIEW_VERSION_1 = "GUI_COMPARE_VIEW_VERSION_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIFF_MODE_ALL_NAME_0 = "GUI_DIFF_MODE_ALL_NAME_0";

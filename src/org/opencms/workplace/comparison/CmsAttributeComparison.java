@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparison.java,v $
- * Date   : $Date: 2005/11/16 12:12:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/14 09:52:45 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ public class CmsAttributeComparison {
     private String m_name;
 
     /** The type of the property comparison.<p> */
-    private String m_type;
+    private String m_status;
 
     /** The first value of the property.<p> */
     private String m_version1;
@@ -75,13 +75,13 @@ public class CmsAttributeComparison {
         boolean v1Empty = CmsStringUtil.isEmptyOrWhitespaceOnly(version1);
         boolean v2Empty = CmsStringUtil.isEmptyOrWhitespaceOnly(version2);
         if (v1Empty && !v2Empty) {
-            m_type = CmsResourceComparison.TYPE_ADDED;
+            m_status = CmsResourceComparison.TYPE_ADDED;
         } else if (!v1Empty && v2Empty) {
-            m_type = CmsResourceComparison.TYPE_REMOVED;
+            m_status = CmsResourceComparison.TYPE_REMOVED;
         } else if ((v1Empty && v2Empty) || version1.equals(version2)) {
-            m_type = CmsResourceComparison.TYPE_UNCHANGED;
+            m_status = CmsResourceComparison.TYPE_UNCHANGED;
         } else {
-            m_type = CmsResourceComparison.TYPE_CHANGED;
+            m_status = CmsResourceComparison.TYPE_CHANGED;
         }
     }
 
@@ -99,7 +99,7 @@ public class CmsAttributeComparison {
         m_name = name;
         m_version1 = version1;
         m_version2 = version2;
-        m_type = type;
+        m_status = type;
     }
 
     /**
@@ -117,9 +117,9 @@ public class CmsAttributeComparison {
      *
      * @return the type
      */
-    public String getType() {
+    public String getStatus() {
 
-        return m_type;
+        return m_status;
     }
 
     /**
@@ -157,9 +157,9 @@ public class CmsAttributeComparison {
      *
      * @param type the type to set
      */
-    public void setType(String type) {
+    public void setStatus(String type) {
 
-        m_type = type;
+        m_status = type;
     }
 
     /**

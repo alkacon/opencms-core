@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2005/12/14 09:52:45 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsFile;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsHistoryList;
@@ -44,6 +45,7 @@ import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDefaultAction;
 import org.opencms.workplace.list.CmsListDirectAction;
 import org.opencms.workplace.list.CmsListItem;
+import org.opencms.workplace.list.CmsListItemDetails;
 import org.opencms.workplace.list.CmsListMetadata;
 import org.opencms.workplace.list.CmsListOrderEnum;
 
@@ -59,17 +61,25 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
 
+import org.apache.commons.logging.Log;
+
 /**
  * List for property comparison including columns for property name and the values. <p>
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsPropertyComparisonList extends A_CmsListDialog {
-    
+
+    /** view first file action constant. */
+    public static final String LIST_ACTION_VIEW1 = "v1";
+
+    /** view second file action constant. */
+    public static final String LIST_ACTION_VIEW2 = "v2";
+
     /** list action id constant. */
     public static final String LIST_COLUMN_ICON = "ci";
 
@@ -94,12 +104,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /** list independent action id constant. */
     public static final String LIST_IACTION_SHOW = "is";
 
-    /** view first file action constant. */
-    public static final String LIST_ACTION_VIEW1 = "v1";
-    
-    /** view second file action constant. */
-    public static final String LIST_ACTION_VIEW2 = "v2";
-    
     /** List id constant. */
     public static final String LIST_ID = "hipcl";
 
@@ -109,6 +113,20 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     /** The maximum length of properties and attributes to be displayed.<p> */
     protected static final int TRIM_AT_LENGTH = 60;
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyComparisonList.class);
+
+    /** flag indicating to show all files or just the files with differences. */
+    private static boolean m_showAllProperties = false;
+
+    private CmsFile m_file1;
+
+    private CmsFile m_file2;
+
+    private String m_paramPath1;
+
+    private String m_paramPath2;
+
     private String m_paramTagId1;
 
     private String m_paramTagId2;
@@ -117,57 +135,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     private String m_paramVersion2;
 
-    private String m_paramPath1;
-    
-    private String m_paramPath2;
-    
-    private CmsFile m_file1;
-    
-    private CmsFile m_file2;
-    
-    
-    /**
-     * Returns the paramPath1.<p>
-     *
-     * @return the paramPath1
-     */
-    public String getParamPath1() {
-    
-        return m_paramPath1;
-    }
-
-    
-    /**
-     * Sets the paramPath1.<p>
-     *
-     * @param paramPath1 the paramPath1 to set
-     */
-    public void setParamPath1(String paramPath1) {
-    
-        m_paramPath1 = paramPath1;
-    }
-
-    
-    /**
-     * Returns the paramPath2.<p>
-     *
-     * @return the paramPath2
-     */
-    public String getParamPath2() {
-    
-        return m_paramPath2;
-    }
-
-    
-    /**
-     * Sets the paramPath2.<p>
-     *
-     * @param paramPath2 the paramPath2 to set
-     */
-    public void setParamPath2(String paramPath2) {
-    
-        m_paramPath2 = paramPath2;
-    }
+    private int m_resourceType;
 
     /**
      * Public constructor.<p>
@@ -230,6 +198,16 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     }
 
     /**
+     * 
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
+     */
+    public void executeListIndepActions() {
+
+        m_showAllProperties = !m_showAllProperties;
+        refreshList();
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
     public void executeListMultiActions() {
@@ -254,6 +232,46 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         params.put(PARAM_RESOURCE, getParamResource());
         // forward to the difference screen
         getToolManager().jspForwardTool(this, "/history/comparison/difference", params);
+    }
+
+    /**
+     * Returns the file1.<p>
+     *
+     * @return the file1
+     */
+    public CmsFile getFile1() {
+
+        return m_file1;
+    }
+
+    /**
+     * Returns the file2.<p>
+     *
+     * @return the file2
+     */
+    public CmsFile getFile2() {
+
+        return m_file2;
+    }
+
+    /**
+     * Returns the paramPath1.<p>
+     *
+     * @return the paramPath1
+     */
+    public String getParamPath1() {
+
+        return m_paramPath1;
+    }
+
+    /**
+     * Returns the paramPath2.<p>
+     *
+     * @return the paramPath2
+     */
+    public String getParamPath2() {
+
+        return m_paramPath2;
     }
 
     /**
@@ -294,6 +312,36 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     public String getParamVersion2() {
 
         return m_paramVersion2;
+    }
+
+    /**
+     * Returns the resourceType.<p>
+     *
+     * @return the resourceType
+     */
+    public int getResourceType() {
+
+        return m_resourceType;
+    }
+
+    /**
+     * Sets the paramPath1.<p>
+     *
+     * @param paramPath1 the paramPath1 to set
+     */
+    public void setParamPath1(String paramPath1) {
+
+        m_paramPath1 = paramPath1;
+    }
+
+    /**
+     * Sets the paramPath2.<p>
+     *
+     * @param paramPath2 the paramPath2 to set
+     */
+    public void setParamPath2(String paramPath2) {
+
+        m_paramPath2 = paramPath2;
     }
 
     /**
@@ -343,28 +391,33 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // no-op
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
     protected List getListItems() throws CmsException {
 
         List ret = new ArrayList();
-        Iterator diffs = new CmsResourceComparison(getCms(), m_file1, m_file2).getComparedProperties().iterator();
+        Iterator diffs = CmsResourceComparison.compareProperties(getCms(), getFile1(), getFile2()).iterator();
         while (diffs.hasNext()) {
             CmsAttributeComparison comparison = (CmsAttributeComparison)diffs.next();
             CmsListItem item = getList().newItem(comparison.getName());
             item.set(LIST_COLUMN_PROPERTY_NAME, comparison.getName());
             item.set(LIST_COLUMN_VERSION_1, CmsStringUtil.trimToSize(comparison.getVersion1(), TRIM_AT_LENGTH));
             item.set(LIST_COLUMN_VERSION_2, CmsStringUtil.trimToSize(comparison.getVersion2(), TRIM_AT_LENGTH));
-            if (CmsResourceComparison.TYPE_ADDED.equals(comparison.getType())) {
+            if (CmsResourceComparison.TYPE_ADDED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_ADDED_0));
-            } else if (CmsResourceComparison.TYPE_REMOVED.equals(comparison.getType())) {
+            } else if (CmsResourceComparison.TYPE_REMOVED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_REMOVED_0));
-            } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getType())) {
+            } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_CHANGED_0));
             } else {
-                item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_UNCHANGED_0));
+                if (!m_showAllProperties) {
+                    // do not display entry
+                    continue;
+                } else {
+                    item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_UNCHANGED_0));
+                }
             }
             ret.add(item);
         }
@@ -380,106 +433,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         addMessages(Messages.get().getBundleName());
         // add default resource bundles
         super.initMessages();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-        
-        metadata.setVolatile(true);
-        // create column for icon
-        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
-        iconCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_ICON_0));
-        iconCol.setWidth("20");
-        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
-        iconCol.setSorteable(true);
-        iconCol.setPrintable(false);
-
-        // add state error action
-        CmsListDirectAction addedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_ADDED) {
-            public boolean isVisible() {
-                String type = getItem().get(LIST_COLUMN_TYPE).toString();
-                return key(Messages.GUI_COMPARE_ADDED_0).equals(type);
-            }
-        };
-        addedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_ADDED_0));
-        addedAction.setIconPath("tools/history/buttons/added.png");
-        addedAction.setEnabled(true);
-        iconCol.addDirectAction(addedAction);
-
-        // add state error action
-        CmsListDirectAction removedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_REMOVED) {
-            public boolean isVisible() {
-                String type = getItem().get(LIST_COLUMN_TYPE).toString();
-                return key(Messages.GUI_COMPARE_REMOVED_0).equals(type);
-            }
-        };
-        removedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_REMOVED_0));
-        removedAction.setIconPath("tools/history/buttons/removed.png");
-        removedAction.setEnabled(true);
-        iconCol.addDirectAction(removedAction);
-
-        // add state error action
-        CmsListDirectAction changedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_CHANGED) {
-            public boolean isVisible() {
-                String type = getItem().get(LIST_COLUMN_TYPE).toString();
-                return key(Messages.GUI_COMPARE_CHANGED_0).equals(type);
-            }
-        };
-        changedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_CHANGED_0));
-        changedAction.setIconPath("tools/history/buttons/changed.png");
-        changedAction.setEnabled(true);
-        iconCol.addDirectAction(changedAction);
-
-        // add state error action
-        CmsListDirectAction unchangedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_UNCHANGED) {
-            public boolean isVisible() {
-                String type = getItem().get(LIST_COLUMN_TYPE).toString();
-                return key(Messages.GUI_COMPARE_UNCHANGED_0).equals(type);
-            }
-        };
-        unchangedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_UNCHANGED_0));
-        unchangedAction.setIconPath("tools/history/buttons/unchanged.png");
-        unchangedAction.setEnabled(true);
-        iconCol.addDirectAction(unchangedAction);
-        metadata.addColumn(iconCol);
-
-        // add column for type
-        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
-        typeCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
-        typeCol.setWidth("10%");
-        CmsListDefaultAction typeColAction = new CmsListDefaultAction(CmsElementComparisonList.LIST_ACTION_TYPE);
-        typeColAction.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
-        typeColAction.setEnabled(true);
-        // set action for the name column
-        typeCol.addDefaultAction(typeColAction);
-        typeCol.setPrintable(true);
-        metadata.addColumn(typeCol);
-        
-        
-        // add column for name
-        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_PROPERTY_NAME);
-        nameCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_PROPERTY_NAME_0));
-        nameCol.setWidth("20%");
-        nameCol.setPrintable(true);
-        metadata.addColumn(nameCol);
-
-        // add column for first value
-        CmsListColumnDefinition version1Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_1);
-        version1Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
-        version1Col.setWidth("35%");
-        version1Col.setSorteable(false);
-        version1Col.setPrintable(true);
-        metadata.addColumn(version1Col);
-
-        // add column for second value
-        CmsListColumnDefinition version2Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_2);
-        version2Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
-        version2Col.setWidth("35%");
-        version2Col.setSorteable(false);
-        version2Col.setPrintable(true);
-        metadata.addColumn(version2Col);
     }
 
     /**
@@ -504,50 +457,143 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
                     getCms().getRequestContext().removeSiteRoot(getParamPath2()),
                     Integer.parseInt(getParamTagId2()));
             }
+            m_resourceType = m_file1.getTypeId();
         } catch (CmsException e) {
-            // TODO
-            // LOG.error(e.getStackTrace(), e);   
+
+            LOG.error(e.getStackTrace(), e);
         }
     }
-    
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        metadata.setVolatile(true);
+        // create column for icon
+        CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
+        iconCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_ICON_0));
+        iconCol.setWidth("20");
+        iconCol.setAlign(CmsListColumnAlignEnum.ALIGN_CENTER);
+        iconCol.setSorteable(true);
+
+        // add state error action
+        CmsListDirectAction addedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_ADDED) {
+
+            public boolean isVisible() {
+
+                String type = getItem().get(LIST_COLUMN_TYPE).toString();
+                return key(Messages.GUI_COMPARE_ADDED_0).equals(type);
+            }
+        };
+        addedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_ADDED_0));
+        addedAction.setIconPath("tools/history/buttons/added.png");
+        addedAction.setEnabled(true);
+        iconCol.addDirectAction(addedAction);
+
+        // add state error action
+        CmsListDirectAction removedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_REMOVED) {
+
+            public boolean isVisible() {
+
+                String type = getItem().get(LIST_COLUMN_TYPE).toString();
+                return key(Messages.GUI_COMPARE_REMOVED_0).equals(type);
+            }
+        };
+        removedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_REMOVED_0));
+        removedAction.setIconPath("tools/history/buttons/removed.png");
+        removedAction.setEnabled(true);
+        iconCol.addDirectAction(removedAction);
+
+        // add state error action
+        CmsListDirectAction changedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_CHANGED) {
+
+            public boolean isVisible() {
+
+                String type = getItem().get(LIST_COLUMN_TYPE).toString();
+                return key(Messages.GUI_COMPARE_CHANGED_0).equals(type);
+            }
+        };
+        changedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_CHANGED_0));
+        changedAction.setIconPath("tools/history/buttons/changed.png");
+        changedAction.setEnabled(true);
+        iconCol.addDirectAction(changedAction);
+
+        // add state error action
+        CmsListDirectAction unchangedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_UNCHANGED) {
+
+            public boolean isVisible() {
+
+                String type = getItem().get(LIST_COLUMN_TYPE).toString();
+                return key(Messages.GUI_COMPARE_UNCHANGED_0).equals(type);
+            }
+        };
+        unchangedAction.setName(Messages.get().container(Messages.GUI_COMPARE_ELEM_UNCHANGED_0));
+        unchangedAction.setIconPath("tools/history/buttons/unchanged.png");
+        unchangedAction.setEnabled(true);
+        iconCol.addDirectAction(unchangedAction);
+        metadata.addColumn(iconCol);
+        iconCol.setPrintable(false);
+
+        // add column for type
+        CmsListColumnDefinition typeCol = new CmsListColumnDefinition(LIST_COLUMN_TYPE);
+        typeCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
+        typeCol.setWidth("10%");
+        CmsListDefaultAction typeColAction = new CmsListDefaultAction(CmsElementComparisonList.LIST_ACTION_STATUS);
+        typeColAction.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_STATUS_0));
+        typeColAction.setEnabled(true);
+        // set action for the name column
+        typeCol.addDefaultAction(typeColAction);
+        metadata.addColumn(typeCol);
+        typeCol.setPrintable(true);
+
+        // add column for name
+        CmsListColumnDefinition nameCol = new CmsListColumnDefinition(LIST_COLUMN_PROPERTY_NAME);
+        nameCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_PROPERTY_NAME_0));
+        nameCol.setWidth("20%");
+        metadata.addColumn(nameCol);
+        nameCol.setPrintable(true);
+
+        // add column for first value
+        CmsListColumnDefinition version1Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_1);
+        version1Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+        version1Col.setWidth("35%");
+        version1Col.setSorteable(false);
+        metadata.addColumn(version1Col);
+        version1Col.setPrintable(true);
+
+        // add column for second value
+        CmsListColumnDefinition version2Col = new CmsListColumnDefinition(LIST_COLUMN_VERSION_2);
+        version2Col.setName(Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
+        version2Col.setWidth("35%");
+        version2Col.setSorteable(false);
+        metadata.addColumn(version2Col);
+        version2Col.setPrintable(true);
+    }
+
     /**
      * 
      * @see org.opencms.workplace.list.A_CmsListDialog#setIndependentActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        // no-op
+        // add event details
+        CmsListItemDetails eventDetails = new CmsListItemDetails(LIST_IACTION_SHOW);
+        if (!m_showAllProperties) {
+            eventDetails.setVisible(true);
+        } else {
+            eventDetails.setVisible(false);
+        }
+        eventDetails.setShowActionName(Messages.get().container(Messages.GUI_COMPARE_SHOW_ALL_PROPERTIES_0));
+        eventDetails.setHideActionName(Messages.get().container(Messages.GUI_COMPARE_HIDE_IDENTICAL_PROPERTIES_0));
+        metadata.addItemDetails(eventDetails);
     }
-    
+
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setMultiActions(CmsListMetadata metadata) {
 
         // no-op
-    }
-
-
-    
-    /**
-     * Returns the file1.<p>
-     *
-     * @return the file1
-     */
-    public CmsFile getFile1() {
-    
-        return m_file1;
-    }
-
-
-    
-    /**
-     * Returns the file2.<p>
-     *
-     * @return the file2
-     */
-    public CmsFile getFile2() {
-    
-        return m_file2;
     }
 }
