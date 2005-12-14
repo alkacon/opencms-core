@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/14 10:40:00 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,6 @@ import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.CmsMultiListDialog;
-import org.opencms.workplace.tools.CmsExplorerDialog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
 import org.opencms.xml.content.CmsXmlContentFactory;
@@ -80,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -575,7 +574,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 try {
                     result.append(value.getDocument().getContentDefinition().getContentHandler().getWidget(value).getWidgetStringValue(
                         getCms(),
-                        new CmsExplorerDialog(getJsp()),
+                        new CmsFileInfoDialog(getJsp()),
                         (I_CmsWidgetParameter)value));
                 } catch (CmsXmlException e) {
                     LOG.error(e.getMessage(), e);
