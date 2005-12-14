@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/12/14 10:49:30 $
- * Version: $Revision: 1.682.2.58 $
+ * Date   : $Date: 2005/12/14 10:54:27 $
+ * Version: $Revision: 1.682.2.59 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.1.7 - ???
+! Extended content comparison for images, plain text, pdf, rtf, doc, xls and ppt files
 * Fixed issue with removing temporary flag after editing content
 * Fixed issue with linebreaks in HTML-Converter
 - Some improvements in decorator
