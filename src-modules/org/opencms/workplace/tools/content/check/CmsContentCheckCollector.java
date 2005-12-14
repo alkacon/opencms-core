@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckCollector.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,8 @@
 package org.opencms.workplace.tools.content.check;
 
 import org.opencms.file.CmsObject;
-import org.opencms.file.collectors.I_CmsResourceCollector;
+import org.opencms.workplace.list.CmsListResourcesCollector;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -42,11 +41,11 @@ import java.util.List;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2 
  */
-public class CmsContentCheckCollector implements I_CmsResourceCollector {
+public class CmsContentCheckCollector extends CmsListResourcesCollector {
 
     /** Parameter of the default collector name. */
     public static final String COLLECTOR_NAME = "checkresources";
@@ -60,15 +59,6 @@ public class CmsContentCheckCollector implements I_CmsResourceCollector {
     /** Parameter to get all resources with  warnings. */
     public static final String PARAM_WARNING = "warning";
 
-    /** The collector name. */
-    private String m_collectorName;
-
-    /** The colelctor parameter. */
-    private String m_collectorParameter;
-
-    /** Sort order. Not used yet. */
-    private int m_order;
-
     /** The list of resources delivered by the collector. */
     private CmsContentCheckResult m_results;
 
@@ -78,20 +68,10 @@ public class CmsContentCheckCollector implements I_CmsResourceCollector {
      */
     public CmsContentCheckCollector(CmsContentCheckResult results) {
 
+        super(null);
+        setDefaultCollectorName(COLLECTOR_NAME);
+        setDefaultCollectorParam(PARAM_ALL);
         m_results = results;
-        m_collectorName = COLLECTOR_NAME;
-        m_collectorParameter = PARAM_ALL;
-        m_order = 0;
-
-    }
-
-    /**
-     * @see java.lang.Comparable#compareTo(java.lang.Object)
-     */
-    public int compareTo(Object arg0) {
-
-        // TODO: Auto-generated method stub
-        return 0;
     }
 
     /**
@@ -99,65 +79,9 @@ public class CmsContentCheckCollector implements I_CmsResourceCollector {
      */
     public List getCollectorNames() {
 
-        List names = new ArrayList();
+        List names = super.getCollectorNames();
         names.add(COLLECTOR_NAME);
         return names;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject)
-     */
-    public String getCreateLink(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateLink(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public String getCreateLink(CmsObject cms, String collectorName, String param) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject)
-     */
-    public String getCreateParam(CmsObject cms) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getCreateParam(org.opencms.file.CmsObject, java.lang.String, java.lang.String)
-     */
-    public String getCreateParam(CmsObject cms, String collectorName, String param) {
-
-        return null;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getDefaultCollectorName()
-     */
-    public String getDefaultCollectorName() {
-
-        return m_collectorName;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getDefaultCollectorParam()
-     */
-    public String getDefaultCollectorParam() {
-
-        return m_collectorParameter;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#getOrder()
-     */
-    public int getOrder() {
-
-        return m_order;
     }
 
     /**
@@ -165,7 +89,7 @@ public class CmsContentCheckCollector implements I_CmsResourceCollector {
      */
     public List getResults(CmsObject cms) {
 
-        return getResults(cms, COLLECTOR_NAME, m_collectorParameter);
+        return getResults(cms, COLLECTOR_NAME, getDefaultCollectorParam());
     }
 
     /**
@@ -184,29 +108,4 @@ public class CmsContentCheckCollector implements I_CmsResourceCollector {
             return m_results.getAllResources();
         }
     }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorName(java.lang.String)
-     */
-    public void setDefaultCollectorName(String collectorName) {
-
-        m_collectorName = collectorName;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#setDefaultCollectorParam(java.lang.String)
-     */
-    public void setDefaultCollectorParam(String param) {
-
-        m_collectorParameter = param;
-    }
-
-    /**
-     * @see org.opencms.file.collectors.I_CmsResourceCollector#setOrder(int)
-     */
-    public void setOrder(int order) {
-
-        m_order = order;
-    }
-
 }

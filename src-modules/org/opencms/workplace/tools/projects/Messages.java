@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -131,6 +131,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0 = "GUI_PROJECT_EDITOR_LABEL_IDENTIFICATION_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_PROJECT_FILES_LIST_NAME_0 = "GUI_PROJECT_FILES_LIST_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECT_HISTORY_ADMIN_TOOL_GROUP_0 = "GUI_PROJECT_HISTORY_ADMIN_TOOL_GROUP_0";
@@ -256,12 +259,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROJECTS_LIST_COLS_CREATION_0 = "GUI_PROJECTS_LIST_COLS_CREATION_0";
 
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECTS_LIST_COLS_CREATION_FORMAT_1 = "GUI_PROJECTS_LIST_COLS_CREATION_FORMAT_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECTS_LIST_COLS_CREATION_NEVER_0 = "GUI_PROJECTS_LIST_COLS_CREATION_NEVER_0";
-
-    /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_DELETE_0 = "GUI_PROJECTS_LIST_COLS_DELETE_0";
 
     /** Message contant for key in the resource bundle. */
@@ -314,12 +311,6 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_PUBLISHED_DATE_0 = "GUI_PROJECTS_LIST_COLS_PUBLISHED_DATE_0";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECTS_LIST_COLS_PUBLISHING_FORMAT_1 = "GUI_PROJECTS_LIST_COLS_PUBLISHING_FORMAT_1";
-
-    /** Message contant for key in the resource bundle. */
-    public static final String GUI_PROJECTS_LIST_COLS_PUBLISHING_NEVER_0 = "GUI_PROJECTS_LIST_COLS_PUBLISHING_NEVER_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_PROJECTS_LIST_COLS_USER_0 = "GUI_PROJECTS_LIST_COLS_USER_0";

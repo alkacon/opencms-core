@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckFilesDialog.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,39 +32,44 @@
 package org.opencms.workplace.tools.content.check;
 
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.explorer.CmsExplorer;
-import org.opencms.workplace.tools.CmsExplorerDialog;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.CmsListMetadata;
 
-import java.io.IOException;
-import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
- * Explorer dialog for the content check files view.<p>
+ * Result List Dialog.<p>
  * 
- * @author Michael Emmerich
+ * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2 
  */
-public class CmsContentCheckFilesDialog extends CmsExplorerDialog {
+public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
+
+    /** list id constant. */
+    public static final String LIST_ID = "checkcontent";
+
+    /** The results of the content check. */
+    CmsContentCheckResult m_results;
 
     /**
-     * Public constructor with JSP action element.<p>
+     * Public constructor.<p>
      * 
      * @param jsp an initialized JSP action element
      */
     public CmsContentCheckFilesDialog(CmsJspActionElement jsp) {
 
-        super(jsp);
+        super(
+            jsp,
+            LIST_ID,
+            Messages.get().container(Messages.GUI_CHECKCONTENT_LIST_NAME_0));
     }
 
     /**
@@ -80,112 +85,70 @@ public class CmsContentCheckFilesDialog extends CmsExplorerDialog {
     }
 
     /**
-     * Generates the dialog starting html code.<p>
-     * 
-     * @return html code
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    public String defaultActionHtml() {
+    protected List getListItems() {
 
-        String params = allParamsAsRequest();
-        if (params.indexOf("projectid=") < 0) {
-            params += "&projectid=" + getCms().getRequestContext().currentProject().getId();
+        // get the content check result object
+        Map objects = (Map)getSettings().getDialogObject();
+        Object o = objects.get(CmsContentCheckDialog.class.getName());
+        if ((o != null) && (o instanceof CmsContentCheck)) {
+            m_results = ((CmsContentCheck)o).getResults();
+        } else {
+            m_results = new CmsContentCheckResult();
         }
-        String titleSrc = getFrameSource("tool_title", getJsp().link(
-            "/system/workplace/admin/contenttools/check/result-fs-title.html")
-            + "?"
-            + params);
-        String contentSrc = getFrameSource("tool_content", getJsp().link(
-            "/system/workplace/admin/projects/project_files.html")
-            + "?"
-            + params);
-        StringBuffer html = new StringBuffer(1024);
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
-        html.append("<html>\n");
-        html.append("\t<head>\n");
-        html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(
-            "\">\n");
-        html.append("\t\t<title>\n");
-        html.append("\t\t\t").append(key("label.wptitle")).append(" ").append(getSettings().getUser().getName()).append(
-            "@").append(getJsp().getRequest().getServerName()).append("\n");
-        html.append("\t\t</title>\n");
-        html.append("\t</head>\n");
-        html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
-        html.append("\t\t<frame ").append(titleSrc).append(" frameborder='0' border='0' noresize scrolling='no'>\n");
-
-        html.append("\t\t<frame ").append(contentSrc).append(
-            " frameborder='0' border='0' noresize scrolling='auto' framespacing='0' marginheight='2' marginwidth='2' >\n");
-        html.append("\t</frameset>\n");
-        html.append("</html>\n");
-        return html.toString();
+        return getListItemsFromResources(m_results.getAllResources());
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#displayDialog()
-     */
-    public void displayDialog() throws IOException, ServletException {
-
-        displayExplorerView();
-    }
-
-    /**
-     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
-     * @throws ServletException if forwarding explorer view fails
-     * @throws IOException if forwarding explorer view fails
-     */
-    public void displayExplorerView() throws IOException, ServletException {
-
-        getSettings().setExplorerMode(CmsExplorer.VIEW_PROJECT);
-        try {
-            getSettings().setExplorerProjectId(getCms().getRequestContext().currentProject().getId());
-        } catch (Exception e) {
-            // ignore
-        }
-
-        Map params = new HashMap();
-        params.put(CmsExplorer.PARAMETER_MODE, getSettings().getExplorerMode());
-        params.put(CmsExplorer.PARAMETER_PROJECTID, new Integer(getSettings().getExplorerProjectId()));
-        getToolManager().jspForwardPage(this, FILE_EXPLORER_FILELIST, params);
-    }
-
-    /**
-     * Validates the needed parameters and display the frameset.<p>
-     * 
-     * @throws IOException in case of errros displaying to the required page
-     */
-    public void displayFrameSet() throws IOException {
-
-        JspWriter out = getJsp().getJspContext().getOut();
-        out.print(defaultActionHtml());
-    }
-
-    /**
-     * @see org.opencms.workplace.tools.CmsExplorerDialog#defineWidgets()
-     */
-    protected void defineWidgets() {
-
-        // noop 
-    }
-
-    /**
-     * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
     protected void initMessages() {
 
         // add specific dialog resource bundle
         addMessages(org.opencms.workplace.tools.content.Messages.get().getBundleName());
-        addMessages("org.opencms.workplace.workplace");
         addMessages(Messages.get().getBundleName());
-        // add default resource bundles
         super.initMessages();
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    public void executeListMultiActions() {
 
-        super.initWorkplaceRequestValues(settings, request);
+        throwListUnsupportedActionException();
+    }
 
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
+     */
+    public void executeListSingleActions() {
+
+        throwListUnsupportedActionException();
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
+     */
+    protected void fillDetails(String detailId) {
+
+        // no details
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setColumns(CmsListMetadata metadata) {
+
+        setColumnVisibilities();
+        addExplorerColumns(metadata);
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // no LMA        
     }
 }

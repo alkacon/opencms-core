@@ -17,7 +17,7 @@
 <p>This module contains the tools for managing the OpenCms projects.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.1.1</version>
+		<version>1.1.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
@@ -251,10 +251,10 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/projects/project_files-fs.html</source>
-			<destination>system/workplace/admin/projects/project_files-fs.html</destination>
+			<source>system/workplace/admin/projects/project_files.html</source>
+			<destination>system/workplace/admin/projects/project_files.html</destination>
 			<type>jsp</type>
-			<uuidresource>fb3aa9b0-e3bd-11d9-b8a4-b1fdb8b4e144</uuidresource>
+			<uuidresource>cb5bbdbd-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -287,33 +287,11 @@
 				</property>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Tool with Explorer View Frameset]]></value>
+					<value><![CDATA[Project Files]]></value>
 				</property>
 				<property>
 					<name>admintoolhandler-args</name>
 					<value><![CDATA[params:projectid=${param.projectid}&projectname=${param.projectname}&action=initial|path:/projects/files]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/projects/project_files.html</source>
-			<destination>system/workplace/admin/projects/project_files.html</destination>
-			<type>jsp</type>
-			<uuidresource>cb5bbdbd-d8ce-11d9-a5d9-efaaea26ed93</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Project Files]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

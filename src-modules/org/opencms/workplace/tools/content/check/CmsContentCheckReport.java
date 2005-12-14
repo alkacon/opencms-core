@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckReport.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -101,7 +101,11 @@ public class CmsContentCheckReport extends A_CmsListReport {
                 m_contentCheck = (CmsContentCheck)((Map)getSettings().getDialogObject()).get(getParamClassname());
                 I_CmsResourceCollector collector = new CmsContentCheckCollector(m_contentCheck.getResults());
                 getSettings().setCollector(collector);
-                actionCloseDialog();
+                try {
+                    getToolManager().jspForwardTool(this, "/contenttools/check/result", null);
+                } catch (Exception e) {
+                    actionCloseDialog();
+                }
                 break;
             case ACTION_CANCEL:
                 actionCloseDialog();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/10/26 10:14:05 $
- * Version: $Revision: 1.13.2.3 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.13.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Achim Westermann 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.3 $ 
+ * @version $Revision: 1.13.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,10 +80,19 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHECKCONTENT_ADMIN_TOOL_NAME_0 = "GUI_CHECKCONTENT_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_HELP_0 = "GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_NAME_0 = "GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String   GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_HELP_0 = "GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_HELP_0";
+    public static final String GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_GROUP_0 = "GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_HELP_0 = "GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0 = "GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0 = "GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0";

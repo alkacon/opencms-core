@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/Messages.java,v $
- * Date   : $Date: 2005/11/23 12:56:48 $
- * Version: $Revision: 1.14.2.3 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.14.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.14.2.3 $ 
+ * @version $Revision: 1.14.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,6 +74,39 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ACTION_PRINT_NAME_0 = "GUI_ACTION_PRINT_NAME_0";
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1 = "GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_LOCK_HELP_0 = "GUI_EXPLORER_LIST_ACTION_LOCK_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2 = "GUI_EXPLORER_LIST_ACTION_LOCK_NAME_2";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_OUTPROJECT_NAME_1 = "GUI_EXPLORER_LIST_ACTION_OUTPROJECT_NAME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_PROJECTSTATE_HELP_0 = "GUI_EXPLORER_LIST_ACTION_PROJECTSTATE_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_RES_HELP_0 = "GUI_EXPLORER_LIST_ACTION_RES_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0 = "GUI_EXPLORER_LIST_ACTION_UNLOCK_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_ICON_0 = "GUI_EXPLORER_LIST_COLS_ICON_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_ICON_HELP_0 = "GUI_EXPLORER_LIST_COLS_ICON_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_LOCK_0 = "GUI_EXPLORER_LIST_COLS_LOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LIST_COLS_PROJSTATE_0 = "GUI_EXPLORER_LIST_COLS_PROJSTATE_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_CSV_CONF_0 = "GUI_LIST_ACTION_CSV_CONF_0";
 
     /** Message contant for key in the resource bundle. */
@@ -81,6 +114,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_CSV_NAME_0 = "GUI_LIST_ACTION_CSV_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_EXPLORER_SWITCH_CONF_0 = "GUI_LIST_ACTION_EXPLORER_SWITCH_CONF_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0 = "GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0 = "GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_LIST_SWITCH_HELP_0 = "GUI_LIST_ACTION_LIST_SWITCH_HELP_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_ACTION_LIST_SWITCH_NAME_0 = "GUI_LIST_ACTION_LIST_SWITCH_NAME_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_ACTION_NO_SELECTION_0 = "GUI_LIST_ACTION_NO_SELECTION_0";
@@ -132,6 +180,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Name of the used resource bundle. */
     public static final String GUI_LIST_COLUMN_NO_SORT_1 = "GUI_LIST_COLUMN_NO_SORT_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_DATE_FORMAT_1 = "GUI_LIST_DATE_FORMAT_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String GUI_LIST_DATE_FORMAT_NEVER_0 = "GUI_LIST_DATE_FORMAT_NEVER_0";
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_LIST_EMPTY_0 = "GUI_LIST_EMPTY_0";

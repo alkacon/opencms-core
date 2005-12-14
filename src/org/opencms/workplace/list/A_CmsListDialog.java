@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/11/23 12:56:47 $
- * Version: $Revision: 1.32.2.3 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.32.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.32.2.3 $ 
+ * @version $Revision: 1.32.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -186,6 +186,9 @@ public abstract class A_CmsListDialog extends CmsDialog {
     /** The column to sort the list. */
     private String m_paramSortCol;
 
+    /** The column to search the list. */
+    private String m_searchColId;
+    
     /**
      * Public constructor.<p>
      * @param jsp an initialized JSP action element
@@ -213,15 +216,13 @@ public abstract class A_CmsListDialog extends CmsDialog {
         if (isForwarded()) {
             return;
         }
+        m_searchColId = searchableColId;
         // try to read the list from the session
         listRecovery(listId);
         // initialization 
         if (getList() == null) {
             // create the list
             setList(new CmsHtmlList(listId, listName, getMetadata(this.getClass().getName(), listId)));
-            if (searchableColId != null && getList().getMetadata().getColumnDefinition(searchableColId) != null) {
-                setSearchAction(searchableColId);
-            }
             // set the number of items per page from the user settings
             getList().setMaxItemsPerPage(getSettings().getUserSettings().getExplorerFileEntries());
             // sort the list
@@ -421,7 +422,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
     public CmsHtmlList getList() {
 
         if (m_list != null && m_list.getMetadata() == null) {
-            m_list.setMetadata(getMetadata(this.getClass().getName(), m_list.getId()));
+            m_list.setMetadata(getMetadata(getClass().getName(), m_list.getId()));
         }
         return m_list;
     }
@@ -834,6 +835,8 @@ public abstract class A_CmsListDialog extends CmsDialog {
             CmsListMetadata metadata = new CmsListMetadata(listId);
 
             setColumns(metadata);
+            // always check the search action
+            setSearchAction(metadata, m_searchColId);
             setIndependentActions(metadata);
             metadata.addIndependentAction(new CmsListPrintIAction());
             setMultiActions(metadata);
@@ -944,16 +947,19 @@ public abstract class A_CmsListDialog extends CmsDialog {
      * 
      * Can be overriden for more sofisticated search.<p>
      * 
+     * @param metadata the metadata of the list to do searchable
      * @param columnId the if of the column to search into
      */
-    protected void setSearchAction(String columnId) {
+    protected void setSearchAction(CmsListMetadata metadata, String columnId) {
 
-        if (getList().getMetadata().getSearchAction() == null) {
-            // makes the list searchable
-            CmsListSearchAction searchAction = new CmsListSearchAction(getList().getMetadata().getColumnDefinition(
-                columnId));
-            searchAction.useDefaultShowAllAction();
-            getList().getMetadata().setSearchAction(searchAction);
+        CmsListColumnDefinition col = metadata.getColumnDefinition(columnId); 
+        if (columnId != null && col != null) {
+            if (metadata.getSearchAction() == null) {
+                // makes the list searchable
+                CmsListSearchAction searchAction = new CmsListSearchAction(col);
+                searchAction.useDefaultShowAllAction();
+                metadata.setSearchAction(searchAction);
+            }
         }
     }
 

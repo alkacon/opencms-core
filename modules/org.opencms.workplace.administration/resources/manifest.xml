@@ -18,7 +18,7 @@
 <p>Its allows you to install and/or develop administration tools for OpenCms 6.</p>
 <p><i>(c) 2004-2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -32,6 +32,7 @@
 		</exportpoints>
 		<resources>
 			<resource uri="/system/workplace/commons/list-csv.txt"/>
+			<resource uri="/system/workplace/commons/list-explorer.html"/>
 			<resource uri="/system/workplace/commons/list-print.html"/>
 			<resource uri="/system/workplace/resources/admin/"/>
 			<resource uri="/system/workplace/resources/list/"/>
@@ -143,6 +144,28 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[List CSV Output]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/commons/list-explorer.html</source>
+			<destination>system/workplace/commons/list-explorer.html</destination>
+			<type>jsp</type>
+			<uuidresource>a8569182-5d0b-11da-a6ec-23cc0017c940</uuidresource>
+			<datelastmodified>Fri, 25 Nov 2005 08:41:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 24 Nov 2005 16:59:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[List Explorer View]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -446,6 +469,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/list/explorer.png</source>
+			<destination>system/workplace/resources/list/explorer.png</destination>
+			<type>image</type>
+			<uuidresource>99676050-5d95-11da-a0f2-23cc0017c940</uuidresource>
+			<datelastmodified>Fri, 25 Nov 2005 09:26:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Nov 2005 09:26:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/list/inactive.png</source>
 			<destination>system/workplace/resources/list/inactive.png</destination>
 			<type>image</type>
@@ -466,6 +502,19 @@
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/list.png</source>
+			<destination>system/workplace/resources/list/list.png</destination>
+			<type>image</type>
+			<uuidresource>996c1b44-5d95-11da-a0f2-23cc0017c940</uuidresource>
+			<datelastmodified>Fri, 25 Nov 2005 09:26:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Nov 2005 09:26:46 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -749,6 +798,42 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[External Admin frameset]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/admin/list-explorer.html</source>
+			<destination>system/workplace/views/admin/list-explorer.html</destination>
+			<type>jsp</type>
+			<uuidresource>eff426fb-5d90-11da-a0f2-23cc0017c940</uuidresource>
+			<datelastmodified>Fri, 25 Nov 2005 08:53:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Nov 2005 08:53:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Title for List-Explorer View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/views/admin/list-title.html</source>
+			<destination>system/workplace/views/admin/list-title.html</destination>
+			<type>jsp</type>
+			<uuidresource>7ce83f76-5d90-11da-a0f2-23cc0017c940</uuidresource>
+			<datelastmodified>Fri, 25 Nov 2005 12:55:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 25 Nov 2005 08:50:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Title for List-Explorer View]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

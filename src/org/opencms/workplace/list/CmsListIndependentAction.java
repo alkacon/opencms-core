@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListIndependentAction.java,v $
- * Date   : $Date: 2005/11/23 12:56:47 $
- * Version: $Revision: 1.17.2.4 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.17.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,11 +41,14 @@ import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.17.2.4 $ 
+ * @version $Revision: 1.17.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListIndependentAction extends A_CmsListAction {
+
+    /** List independent action id constant. */
+    public static final String ACTION_EXPLORER_SWITCH_ID = "iaes";
 
     /**
      * Default Constructor.<p>
@@ -93,5 +96,22 @@ public class CmsListIndependentAction extends A_CmsListAction {
             getIconPath(),
             null,
             resolveOnClic(wp));
+    }
+    
+    /**
+     * Returns the default explorer switch action for explorer list dialogs.<p>
+     * 
+     * @return the default explorer switch action
+     */
+    public static CmsListIndependentAction getDefaultExplorerSwitchAction() {
+        
+        CmsListIndependentAction defAction = new CmsListIndependentAction(ACTION_EXPLORER_SWITCH_ID);
+        defAction.setName(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_NAME_0));
+        defAction.setHelpText(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_HELP_0));
+        defAction.setConfirmationMessage(Messages.get().container(Messages.GUI_LIST_ACTION_EXPLORER_SWITCH_CONF_0));
+        defAction.setIconPath("list/explorer.png");
+        defAction.setEnabled(true);
+        defAction.setVisible(true);
+        return defAction;
     }
 }

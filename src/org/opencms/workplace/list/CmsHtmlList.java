@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/11/24 09:37:53 $
- * Version: $Revision: 1.32.2.6 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.32.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.6 $ 
+ * @version $Revision: 1.32.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,6 +205,19 @@ public class CmsHtmlList {
     public int getCurrentPage() {
 
         return m_currentPage;
+    }
+
+    /**
+     * Returns all items of the current page.<p>
+     * 
+     * @return all items of the current page, a list of {@link CmsListItem} objects
+     */
+    public List getCurrentPageItems() {
+
+        if (getSize()==0) {
+            return Collections.EMPTY_LIST;
+        }
+        return Collections.unmodifiableList(getContent().subList(displayedFrom() - 1, displayedTo()));
     }
 
     /**
@@ -452,11 +465,8 @@ public class CmsHtmlList {
 
         if (isPrintable()) {
             m_visibleItems = new ArrayList(getContent());
-        } else if (displayedFrom() == 0) {
-            // empty list
-            m_visibleItems = new ArrayList();
         } else {
-            m_visibleItems = new ArrayList(getContent().subList(displayedFrom() - 1, displayedTo()));
+            m_visibleItems = new ArrayList(getCurrentPageItems());
         }
 
         StringBuffer html = new StringBuffer(5120);
@@ -465,7 +475,7 @@ public class CmsHtmlList {
             html.append(htmlTitle(wp));
             html.append(htmlToolBar(wp));
         } else {
-            html.append("<style type='text/css'>\n");            
+            html.append("<style type='text/css'>\n");
             html.append("td.listdetailitem, \n");
             html.append(".linkdisabled {\n");
             html.append("\tcolor: black;\n");
@@ -1089,7 +1099,7 @@ public class CmsHtmlList {
         html.append("\t<tr>\n");
         html.append("\t\t<td align='left'>\n");
         html.append("\t\t\t");
-        if (getTotalNumberOfPages()>1) {
+        if (getTotalNumberOfPages() > 1) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
                 html.append(Messages.get().key(
                     wp.getLocale(),
@@ -1115,17 +1125,12 @@ public class CmsHtmlList {
                 html.append(Messages.get().key(
                     wp.getLocale(),
                     Messages.GUI_LIST_SINGLE_TITLE_TEXT_2,
-                    new Object[] {
-                        m_name.key(wp.getLocale()),
-                        new Integer(getTotalSize())}));
+                    new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
             } else {
                 html.append(Messages.get().key(
                     wp.getLocale(),
                     Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3,
-                    new Object[] {
-                        m_name.key(wp.getLocale()),
-                        new Integer(getSize()),
-                        new Integer(getTotalSize())}));
+                    new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
             }
         }
         html.append("\n");

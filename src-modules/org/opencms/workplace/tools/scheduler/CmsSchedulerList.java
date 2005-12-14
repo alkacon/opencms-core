@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/CmsSchedulerList.java,v $
- * Date   : $Date: 2005/09/16 13:11:13 $
- * Version: $Revision: 1.25.2.1 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.25.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import javax.servlet.jsp.PageContext;
  * @author Michael Moossen 
  * @author Andreas Zahner  
  * 
- * @version $Revision: 1.25.2.1 $ 
+ * @version $Revision: 1.25.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -497,10 +497,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         lastExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         lastExecCol.setListItemComparator(new CmsListItemDefaultComparator());
         // create date formatter for last execution time
-        CmsListDateMacroFormatter listDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1), Messages.get().container(
-            Messages.GUI_JOBS_LIST_COL_LASTEXE_NEVER_0));
-        lastExecCol.setFormatter(listDateFormatter);
+        lastExecCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(lastExecCol);
 
         // add column for next execution time
@@ -510,10 +507,7 @@ public class CmsSchedulerList extends A_CmsListDialog {
         nextExecCol.setAlign(CmsListColumnAlignEnum.ALIGN_LEFT);
         nextExecCol.setListItemComparator(new CmsListItemDefaultComparator());
         // create date formatter for next execution time
-        listDateFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1), Messages.get().container(
-            Messages.GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0));
-        nextExecCol.setFormatter(listDateFormatter);
+        nextExecCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(nextExecCol);
     }
 

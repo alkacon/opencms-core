@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/scheduler/Messages.java,v $
- * Date   : $Date: 2005/11/12 08:51:34 $
- * Version: $Revision: 1.16.2.3 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.16.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.16.2.3 $ 
+ * @version $Revision: 1.16.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -283,22 +283,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_JOBS_LIST_COL_LASTEXE_0 = "GUI_JOBS_LIST_COL_LASTEXE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1 = "GUI_JOBS_LIST_COL_LASTEXE_FORMAT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_LASTEXE_NEVER_0 = "GUI_JOBS_LIST_COL_LASTEXE_NEVER_0";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_NAME_0 = "GUI_JOBS_LIST_COL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_COL_NEXTEXE_0 = "GUI_JOBS_LIST_COL_NEXTEXE_0";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1 = "GUI_JOBS_LIST_COL_NEXTEXE_FORMAT_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0 = "GUI_JOBS_LIST_COL_NEXTEXE_NEVER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_JOBS_LIST_NAME_0 = "GUI_JOBS_LIST_NAME_0";

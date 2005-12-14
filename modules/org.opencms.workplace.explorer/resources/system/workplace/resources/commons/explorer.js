@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/11/22 10:10:51 $
- * Version: $Revision: 1.10.2.10 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.10.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -225,7 +225,7 @@ function updateWindowStore() {
 		theTree = window.body.explorer_body.explorer_tree;
 	}
 
-	if ((mode == "projectview") || (mode == "galleryview")) {
+	if ((mode == "listview") || (mode == "galleryview")) {
                 var theDoc = null;
                 if (window.body.admin_content.tool_content) {
                    theDoc = window.body.admin_content.tool_content;
@@ -803,7 +803,7 @@ function printList(wo) {
 	+ "</style></head>";
 	
 	var returnplace = wo.location.href;
-	if ((openfolderMethod != "openthisfolderflat") && (mode != "projectview")) {
+	if ((openfolderMethod != "openthisfolderflat") && (mode != "listview")) {
 		var pos = returnplace.indexOf("/commons/");
 		if (pos >= 0) {
 			returnplace = returnplace.substring(0, pos + 1) + returnplace.substring(pos + 9);
@@ -963,7 +963,7 @@ function printList(wo) {
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
 			if (vi.liste[i].isFolder) {
-				if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
+				if ((mode == "listview") || (mode == "galleryview") || showlinks) {
 					wo.write(vi.liste[i].path);
 				} else if (vi.liste[i].state == 3) {
 					wo.write(vi.liste[i].name);
@@ -977,7 +977,7 @@ function printList(wo) {
 			} else {
 				if ((mode == "galleryview") || showlinks) {
 					wo.writeln(vi.liste[i].path);
-				} else if (mode == "projectview" ) {
+				} else if (mode == "listview" ) {
 					wo.write("<a onclick=\"top.openwinfull('");
 					wo.write(vi.liste[i].path);
 					wo.write("');\"")
@@ -1037,7 +1037,7 @@ function printList(wo) {
 function getResourceAbsolutePath(i) {
 
 	var resourceName = vr.actDirectory + vi.liste[i].name;
-	if ((mode == "projectview") || (mode == "galleryview") || showlinks) {
+	if ((mode == "listview") || (mode == "galleryview") || showlinks) {
 		if (vi.liste[i].type == 0) {
 			resourceName = vi.liste[i].path.substring(0, vi.liste[i].path.lastIndexOf("/"));
 		} else {

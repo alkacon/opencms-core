@@ -256,10 +256,7 @@ public class CmsListDemo5 extends A_CmsListDialog {
         lastLoginCol.setName(Messages.get().container(Messages.GUI_USERS_LIST_COLS_LASTLOGIN_0));
         lastLoginCol.setWidth("20%");
         lastLoginCol.setSorteable(true);
-        CmsListDateMacroFormatter lastLoginFormatter = new CmsListDateMacroFormatter(Messages.get().container(
-            Messages.GUI_USERS_LIST_COLS_LASTLOGIN_FORMAT_1), Messages.get().container(
-            Messages.GUI_USERS_LIST_COLS_LASTLOGIN_NEVER_0));
-        lastLoginCol.setFormatter(lastLoginFormatter);
+        lastLoginCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(lastLoginCol);
     }
 

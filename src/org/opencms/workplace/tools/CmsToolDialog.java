@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/11/16 12:13:41 $
- * Version: $Revision: 1.30.2.4 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.30.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30.2.4 $ 
+ * @version $Revision: 1.30.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -149,7 +149,6 @@ public class CmsToolDialog extends CmsWorkplace {
         // uplevel button only if needed
         if (getParentPath() != toolPath) {
             html.append("\t\t\t<td class='uplevel'>\n\t\t\t\t");
-            String onClic = "openPage('" + upLevelLink + "');";
             html.append(A_CmsHtmlIconButton.defaultButtonHtml(
                 getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
@@ -159,7 +158,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 true,
                 "admin/images/up.png",
                 null,
-                onClic));
+                "openPage('" + upLevelLink + "');"));
             html.append("\n\t\t\t</td>\n");
         }
         html.append("\t\t</tr>\n");

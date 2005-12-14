@@ -18,7 +18,7 @@
 <p>Install this module if you want to modify file properties or content elements.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.4</version>
+		<version>1.0.5</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -40,8 +40,6 @@
 			<resource uri="/system/workplace/admin/contenttools/changeelementlocale.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/index.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/report.html"/>
-			<resource uri="/system/workplace/admin/contenttools/check/result-fs-title.html"/>
-			<resource uri="/system/workplace/admin/contenttools/check/result-fs.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/result.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/plugin/propertycheck/"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/small/"/>
@@ -481,46 +479,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/check/result-fs-title.html</source>
-			<destination>system/workplace/admin/contenttools/check/result-fs-title.html</destination>
-			<type>jsp</type>
-			<uuidresource>4253f583-3fb5-11da-9335-11c9c0330e35</uuidresource>
-			<datelastmodified>Tue, 18 Oct 2005 09:09:50 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Oct 2005 08:57:49 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Title Frame for Exlorer View]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/contenttools/check/result-fs.html</source>
-			<destination>system/workplace/admin/contenttools/check/result-fs.html</destination>
-			<type>jsp</type>
-			<uuidresource>656f8075-3fa9-11da-a01d-11c9c0330e35</uuidresource>
-			<datelastmodified>Tue, 18 Oct 2005 08:10:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 18 Oct 2005 07:32:54 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Frameset for result view]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/admin/contenttools/check/result.html</source>
 			<destination>system/workplace/admin/contenttools/check/result.html</destination>
 			<type>jsp</type>
@@ -532,12 +490,36 @@
 			<flags>0</flags>
 			<properties>
 				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[Content Check result]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial|path:/contenttools/check/result]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

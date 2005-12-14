@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/10/19 09:58:11 $
- * Version: $Revision: 1.31.2.3 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.31.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.3 $ 
+ * @version $Revision: 1.31.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,11 +99,8 @@ public class CmsExplorer extends CmsWorkplace {
     /** The "projectid" parameter. */
     public static final String PARAMETER_PROJECTID = "projectid";
 
-    /** The "contentcheck" view selection. */
-    public static final String VIEW_CONTENTCHECK = "contentcheck";
-
-    /** The "projectview" view selection. */
-    public static final String VIEW_PROJECT = "projectview";
+    /** The "list" view selection. */
+    public static final String VIEW_LIST = "listview";
 
     /** The "siblings:" location prefix for VFS sibling display. */
     private static final String LOCATION_SIBLING = "siblings:";
@@ -148,10 +145,8 @@ public class CmsExplorer extends CmsWorkplace {
 
         // if mode is "listonly", only the list will be shown
         boolean galleryView = VIEW_GALLERY.equals(getSettings().getExplorerMode());
-        // if mode is "projectview", all changed files in that project will be shown
-        boolean projectView = VIEW_PROJECT.equals(getSettings().getExplorerMode());
-        // if mode is "projectview", all changed files in that project will be shown
-        boolean contentcheckView = VIEW_CONTENTCHECK.equals(getSettings().getExplorerMode());
+        // if mode is "listview", all file in the set collector will be shown
+        boolean listView = VIEW_LIST.equals(getSettings().getExplorerMode());
         // if VFS links should be displayed, this is true
         boolean showVfsLinks = getSettings().getExplorerShowLinks();
 
@@ -283,7 +278,7 @@ public class CmsExplorer extends CmsWorkplace {
         int numberOfPages = 0;
         int maxEntrys = getSettings().getUserSettings().getExplorerFileEntries();
 
-        if (!(galleryView || projectView || showVfsLinks || contentcheckView)) {
+        if (!(galleryView || showVfsLinks || listView)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to split
@@ -300,13 +295,9 @@ public class CmsExplorer extends CmsWorkplace {
         }
         // set the right project
         CmsProject project;
-        if (projectView) {
-            try {
-                project = getCms().readProject(getSettings().getProject());
-            } catch (CmsException ex) {
-                project = getCms().getRequestContext().currentProject();
-            }
-        } else {
+        try {
+            project = getCms().readProject(getSettings().getProject());
+        } catch (CmsException ex) {
             project = getCms().getRequestContext().currentProject();
         }
 
@@ -343,7 +334,7 @@ public class CmsExplorer extends CmsWorkplace {
             content.append("\",");
 
             // position 2: path
-            if (projectView || showVfsLinks || galleryView || contentcheckView) {
+            if (showVfsLinks || galleryView || listView) {
                 content.append("\"");
                 content.append(path);
                 content.append("\",");
@@ -644,7 +635,7 @@ public class CmsExplorer extends CmsWorkplace {
             settings.setExplorerMode(mode);
         } else {
             // null argument, use explorer view if no other view currently specified
-            if (!(VIEW_PROJECT.equals(settings.getExplorerMode()) || VIEW_GALLERY.equals(settings.getExplorerMode()) || VIEW_CONTENTCHECK.equals(settings.getExplorerMode()))) {
+            if (!(VIEW_GALLERY.equals(settings.getExplorerMode()) || VIEW_LIST.equals(settings.getExplorerMode()))) {
                 settings.setExplorerMode(VIEW_EXPLORER);
             }
         }
@@ -756,7 +747,7 @@ public class CmsExplorer extends CmsWorkplace {
                 }
                 return Collections.EMPTY_LIST;
             }
-        } else if (VIEW_PROJECT.equals(getSettings().getExplorerMode())) {
+        } else if (VIEW_LIST.equals(getSettings().getExplorerMode())) {
 
             // select status to be shown
             String criteria = getSettings().getExplorerProjectFilter();
@@ -772,7 +763,7 @@ public class CmsExplorer extends CmsWorkplace {
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
                         LOG.info(e);
-                    }                 
+                    }
                 }
             }
 

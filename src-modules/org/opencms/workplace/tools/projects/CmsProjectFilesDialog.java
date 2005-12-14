@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/07/27 10:26:51 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2005/12/14 10:36:37 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,18 @@
 
 package org.opencms.workplace.tools.projects;
 
-import org.opencms.db.CmsProjectResourcesDisplayMode;
-import org.opencms.db.CmsUserProjectSettings;
-import org.opencms.db.CmsUserSettings;
+import org.opencms.file.CmsProject;
+import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.util.CmsStringUtil;
-import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.explorer.CmsExplorer;
-import org.opencms.workplace.tools.CmsExplorerDialog;
-import org.opencms.workplace.tools.CmsToolManager;
+import org.opencms.main.CmsException;
+import org.opencms.workplace.list.A_CmsListExplorerDialog;
+import org.opencms.workplace.list.CmsListIndependentAction;
+import org.opencms.workplace.list.CmsListMetadata;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.jsp.JspException;
-import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
 
 /**
@@ -57,11 +50,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsProjectFilesDialog extends CmsExplorerDialog {
+public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
+
+    /** list id constant. */
+    public static final String LIST_ID = "lpr";
 
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
@@ -73,7 +69,7 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
      */
     public CmsProjectFilesDialog(CmsJspActionElement jsp) {
 
-        super(jsp);
+        super(jsp, LIST_ID, Messages.get().container(Messages.GUI_PROJECT_FILES_LIST_NAME_0));
     }
 
     /**
@@ -89,109 +85,30 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
     }
 
     /**
-     * Generates the dialog starting html code.<p>
-     * 
-     * @return html code
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
      */
-    public String defaultActionHtml() {
+    public void executeListIndepActions() {
 
-        String params = allParamsAsRequest();
-        if (params.indexOf("projectid=") < 0) {
-            params += "&projectid=" + getParamProjectid();
+        if (getParamListAction().equals(CmsListIndependentAction.ACTION_EXPLORER_SWITCH_ID)) {
+            getSettings().setProject(Integer.parseInt(getParamProjectid()));
         }
-        String titleSrc = getFrameSource("tool_title", getJsp().link(
-            CmsToolManager.ADMINVIEW_ROOT_LOCATION + "/tool-title.html")
-            + "?"
-            + params);
-        String contentSrc = getFrameSource("tool_content", getJsp().link(
-            "/system/workplace/admin/projects/project_files.html")
-            + "?"
-            + params);
-        StringBuffer html = new StringBuffer(1024);
-        html.append("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Frameset//EN\" \"http://www.w3.org/TR/html4/frameset.dtd\">\n");
-        html.append("<html>\n");
-        html.append("\t<head>\n");
-        html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(
-            "\">\n");
-        html.append("\t\t<title>\n");
-        html.append("\t\t\t").append(key("label.wptitle")).append(" ").append(getSettings().getUser().getName()).append(
-            "@").append(getJsp().getRequest().getServerName()).append("\n");
-        html.append("\t\t</title>\n");
-        html.append("\t</head>\n");
-        html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
-        html.append("\t\t<frame ").append(titleSrc).append(" frameborder='0' border='0' noresize scrolling='no'>\n");
-        html.append("\t\t<frame ").append(contentSrc).append(
-            " frameborder='0' border='0' noresize scrolling='auto' framespacing='0' marginheight='2' marginwidth='2' >\n");
-        html.append("\t</frameset>\n");
-        html.append("</html>\n");
-        return html.toString();
+        super.executeListIndepActions();
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#displayDialog()
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListMultiActions()
      */
-    public void displayDialog() throws IOException, ServletException {
+    public void executeListMultiActions() {
 
-        displayExplorerView();
+        throwListUnsupportedActionException();
     }
 
     /**
-     * Performs the dialog actions depending on the initialized action and displays the dialog form.<p>
-     * 
-     * @throws ServletException if forwarding explorer view fails
-     * @throws IOException if forwarding explorer view fails
+     * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
-    public void displayExplorerView() throws IOException, ServletException {
+    public void executeListSingleActions() {
 
-        getSettings().setExplorerMode(CmsExplorer.VIEW_PROJECT);
-        try {
-            getSettings().setExplorerProjectId(new Integer(getParamProjectid()).intValue());
-        } catch (Exception e) {
-            // ignore
-        }
-        boolean modeSet = false;
-        try {
-            CmsUserSettings settings = new CmsUserSettings(getCms());
-            CmsUserProjectSettings prjSettings = settings.getProjectSettings();
-            if (prjSettings != null) {
-                CmsProjectResourcesDisplayMode filter = prjSettings.getProjectFilesMode();
-                if (filter != null) {
-                    getSettings().setExplorerProjectFilter(filter.toString());
-                    modeSet = true;
-                }
-            }
-        } catch (Exception e) {
-            // ignore
-        }
-        if (!modeSet) {
-            // set default value if user has no settings
-            getSettings().setExplorerProjectFilter(CmsProjectResourcesDisplayMode.ALL_CHANGES.toString());
-        }
-        Map params = new HashMap();
-        params.put(CmsExplorer.PARAMETER_PROJECTFILTER, getSettings().getExplorerProjectFilter());
-        params.put(CmsExplorer.PARAMETER_PROJECTID, new Integer(getSettings().getExplorerProjectId()));
-        getToolManager().jspForwardPage(this, FILE_EXPLORER_FILELIST, params);
-    }
-
-    /**
-     * Validates the needed parameters and display the frameset.<p>
-     * 
-     * @throws JspException if close action fail
-     * @throws IOException in case of errros displaying to the required page
-     */
-    public void displayFrameSet() throws JspException, IOException {
-
-        try {
-            // validate parameter
-            getCms().readProject(new Integer(getParamProjectid()).intValue()).getName();
-        } catch (Exception e) {
-            setAction(ACTION_CANCEL);
-            actionCloseDialog();
-            return;
-        }
-
-        JspWriter out = getJsp().getJspContext().getOut();
-        out.print(defaultActionHtml());
+        throwListUnsupportedActionException();
     }
 
     /**
@@ -215,19 +132,31 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.tools.CmsExplorerDialog#defineWidgets()
+     * @see org.opencms.workplace.list.A_CmsListDialog#fillDetails(java.lang.String)
      */
-    protected void defineWidgets() {
+    protected void fillDetails(String detailId) {
 
-        // retrieve the stored project id
-        Object o = getDialogObject();
-        if (o != null && CmsStringUtil.isEmptyOrWhitespaceOnly(getParamProjectid())) {
-            setParamProjectid(o.toString());
+        // no-details
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
+     */
+    protected List getListItems() throws CmsException {
+
+        int projectId = new Integer(getParamProjectid()).intValue();
+        List resources = getCms().readProjectView(projectId, CmsResource.STATE_KEEP);
+        CmsProject oldProject = getCms().getRequestContext().currentProject();
+        try {
+            getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
+            return getListItemsFromResources(resources);
+        } finally {
+            getCms().getRequestContext().setCurrentProject(oldProject);
         }
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#initMessages()
+     * @see org.opencms.workplace.CmsWorkplace#initMessages()
      */
     protected void initMessages() {
 
@@ -238,14 +167,37 @@ public class CmsProjectFilesDialog extends CmsExplorerDialog {
     }
 
     /**
-     * @see org.opencms.workplace.CmsWidgetDialog#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
-    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    protected void setColumns(CmsListMetadata metadata) {
 
-        super.initWorkplaceRequestValues(settings, request);
-        // save the current params
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamProjectid())) {
-            setDialogObject(getParamProjectid());
+        int projectId = new Integer(getParamProjectid()).intValue();
+        CmsProject oldProject = getCms().getRequestContext().currentProject();
+        try {
+            getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
+            setColumnVisibilities();
+            addExplorerColumns(metadata);
+        } catch (CmsException e) {
+            setColumnVisibilities();
+            addExplorerColumns(metadata);
+        } finally {
+            getCms().getRequestContext().setCurrentProject(oldProject);
         }
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#setMultiActions(org.opencms.workplace.list.CmsListMetadata)
+     */
+    protected void setMultiActions(CmsListMetadata metadata) {
+
+        // no LMAs
+    }
+
+    /**
+     * @see org.opencms.workplace.list.A_CmsListDialog#validateParamaters()
+     */
+    protected void validateParamaters() throws Exception {
+
+        getCms().readProject(Integer.parseInt(getParamProjectid()));
     }
 }
