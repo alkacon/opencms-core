@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2005/12/13 17:11:49 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2005/12/14 10:31:37 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.setup;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.main.CmsException;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
@@ -44,7 +43,6 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -55,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
