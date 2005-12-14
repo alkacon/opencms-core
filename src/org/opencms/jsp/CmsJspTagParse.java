@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2005/11/22 14:50:41 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/14 10:20:41 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,17 +53,23 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.3
  */
 public class CmsJspTagParse extends BodyTagSupport {
 
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -6541745426202242240L;
+    /** The name of the mandatory Tag attribute for the visitor class an instance of will be guided throught the body content. */
+    public static final String ATT_VISITOR_CLASS = "visitorClass";
+
+    /** Tag name constant for log output. */
+    public static final String TAG_NAME = "parse";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsJspTagParse.class);
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = -6541745426202242240L;
 
     /** The attribute value of the param attribute - currently unused. */
     private String m_param;
@@ -97,7 +103,7 @@ public class CmsJspTagParse extends BodyTagSupport {
                 LOG.error(Messages.get().key(
                     cmsContext.getLocale(),
                     Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
-                    new Object[] {"cms:parse", "visitorClass"}));
+                    new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
             }
             result = content;
         } else {
@@ -113,7 +119,7 @@ public class CmsJspTagParse extends BodyTagSupport {
                     LOG.error(Messages.get().key(
                         cmsContext.getLocale(),
                         Messages.ERR_PROCESS_TAG_1,
-                        new Object[] {"parse"}), e);
+                        new Object[] {TAG_NAME}), e);
                 }
             }
 
@@ -139,7 +145,7 @@ public class CmsJspTagParse extends BodyTagSupport {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(
                             Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
-                            new Object[] {"cms:parse", "visitorClass"}));
+                            new Object[] {TAG_NAME, ATT_VISITOR_CLASS}));
                     }
 
                 }
@@ -152,13 +158,13 @@ public class CmsJspTagParse extends BodyTagSupport {
                     Object instance = cl.newInstance();
                     // cast
                     visitor = (I_CmsHtmlNodeVisitor)instance;
-                    content = parseTagAction(this.getBodyContent().getString(), pageContext, visitor);
+                    content = parseTagAction(getBodyContent().getString(), pageContext, visitor);
 
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(
                             Messages.GUI_ERR_TAG_ATTRIBUTE_INVALID_3,
-                            new Object[] {"cms:parse", "visitorClass", I_CmsHtmlNodeVisitor.class.getName()}));
+                            new Object[] {TAG_NAME, ATT_VISITOR_CLASS, I_CmsHtmlNodeVisitor.class.getName()}));
 
                     }
                     if (LOG.isDebugEnabled()) {
@@ -171,13 +177,18 @@ public class CmsJspTagParse extends BodyTagSupport {
                     getBodyContent().clear();
                     getBodyContent().print(content);
                     getBodyContent().writeOut(pageContext.getOut());
+                    // need to release manually, JSP container may not call release as required (happens with Tomcat)
+                    release();
+
                 } catch (Exception ex) {
+                    release();
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "parse"), ex);
+                        LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, TAG_NAME), ex);
                     }
                     // this is severe
                     throw new JspException(ex);
                 }
+
             }
 
         }
@@ -196,17 +207,6 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
-     * Sets the param.
-     * <p>
-     * 
-     * @param param the param to set
-     */
-    public void setParam(String param) {
-
-        m_param = param;
-    }
-
-    /**
      * Returns the visitorClass.
      * <p>
      * 
@@ -215,6 +215,27 @@ public class CmsJspTagParse extends BodyTagSupport {
     public String getVisitorClass() {
 
         return m_visitorClassname;
+    }
+
+    /**
+     * @see javax.servlet.jsp.tagext.Tag#release()
+     */
+    public void release() {
+
+        m_visitorClassname = null;
+        m_param = null;
+        super.release();
+    }
+
+    /**
+     * Sets the param.
+     * <p>
+     * 
+     * @param param the param to set
+     */
+    public void setParam(String param) {
+
+        m_param = param;
     }
 
     /**
