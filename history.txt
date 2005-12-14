@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/12/13 16:32:56 $
- * Version: $Revision: 1.682.2.56 $
+ * Date   : $Date: 2005/12/14 10:48:04 $
+ * Version: $Revision: 1.682.2.57 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,12 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.1.7 - December xx, 2005
+* Fixed issue with removing temporary flag after editing content
+* Fixed issue with linebreaks in HTML-Converter
+- Some improvements in decorator
+
 
 OpenCms 6.1.6 - December 13, 2005
 * Fixed issue in locale handler if non-existant resource has been requested
