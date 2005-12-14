@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2005/11/24 09:30:55 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/12/14 10:48:35 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,14 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.3 
  */
 public class CmsDecorationMap implements Comparable {
+
+    /** The seperator for the CSV file. */
+    public static final String CSV_SEPERATOR = "|";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsDecorationMap.class);
@@ -205,7 +208,7 @@ public class CmsDecorationMap implements Comparable {
                 String entry = (String)i.next();
                 // extract key and value
                 if (CmsStringUtil.isNotEmpty(entry)) {
-                    int speratator = entry.indexOf(";");
+                    int speratator = entry.indexOf(CSV_SEPERATOR);
                     if (speratator > -1) {
                         String key = entry.substring(0, speratator).trim();
                         String value = entry.substring(speratator + 1).trim();

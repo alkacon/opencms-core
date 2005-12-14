@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2005/11/24 09:30:55 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/12/14 10:48:35 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,7 +36,6 @@ import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import org.htmlparser.Text;
@@ -50,20 +49,39 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.3 
  */
 public class CmsHtmlDecorator extends CmsHtmlParser {
 
     /** Delimiters for string seperation. */
-    private static final String[] DELIMITERS = {" ", ",", ".", ";", ":", "!", "(", ")", "'", "&nbsp;"};
+    private static final String[] DELIMITERS = {
+        " ",
+        ",",
+        ".",
+        ";",
+        ":",
+        "!",
+        "(",
+        ")",
+        "'",
+        "?",
+        "\"",
+        "&nbsp;",
+        "&quot;",
+        "\r\n",
+        "\n"
+        };
 
     /** Delimiters for second level string seperation. */
-    private static final String[] DELIMITERS_SECOND_LEVEL = {"-"};
+    private static final String[] DELIMITERS_SECOND_LEVEL = {"-",  "@", "/"};
 
-    /** Non translaotors, those strings must nut be translated. */
-    private static final String[] NON_TRANSLATORS = {"&nbsp;"};
+    /** Steps for forward lookup in workd list. */
+    private static final int FORWARD_LOOKUP = 5;
+
+    /** Non translators, strings starting with those values must not be translated. */
+    private static final String[] NON_TRANSLATORS = {"&nbsp;", "&quot;"};
 
     /** The decoration configuration.<p> */
     CmsDecoratorConfiguration m_config;
@@ -169,6 +187,11 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 if (includeDelimiters && n + delimiter.length() <= l) {
                     result.add(source.substring(n, n + delimiter.length()));
                 }
+            } else {
+                // add the delimiter to the list as well
+                if (includeDelimiters && source.startsWith(delimiter)) {
+                    result.add(delimiter);
+                }
             }
             i = n + delimiter.length();
 
@@ -231,12 +254,12 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
 
             // split the input into single words
             List wordList = splitAsList(text, delimiters, true, true);
-            Iterator i = wordList.iterator();
-            while (i.hasNext()) {
-                String word = (String)i.next();
+
+            for (int i = 0; i < wordList.size(); i++) {
+                String word = (String)wordList.get(i);
 
                 // test if the word must be decoded
-                if (mustDecode(word)) {
+                if (mustDecode(word, wordList, i)) {
                     word = Translate.decode(word);
                 }
 
@@ -250,13 +273,39 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 // if there is a decoration obejct for this word, we must do the decoration
                 // if not, we must test if the word itself consits of several parts diveded by
                 // second level delimiters
-                // if no second level delimiters are found, its a word without any decoration at all
+                // if no second level delimiters are found, it is a word without any decoration at all
                 // which can be added to the result directly.
                 if (decObj == null) {
                     if (hasDelimiter(word, DELIMITERS_SECOND_LEVEL) && recursive) {
                         appendText(word, DELIMITERS_SECOND_LEVEL, false);
                     } else {
-                        m_result.append(word);
+                        // make a forward lookup to the next elements of the word list to check
+                        // if the combination of word and delimiter can be found as a decoration key
+                        // an example would be "Dr." wich must be decorated with "Doctor"
+                        StringBuffer decKey = new StringBuffer();
+                        decKey.append(word);
+                        // calculate how much forward looking must be made
+                        int forwardLookup = wordList.size() - i-1;
+                        if (forwardLookup > FORWARD_LOOKUP) {
+                            forwardLookup = FORWARD_LOOKUP;
+                        }
+                        if (i < wordList.size() - forwardLookup) {
+                            for (int j = 1; j <= forwardLookup; j++) {
+                                decKey.append(wordList.get(i + j));
+                                decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
+                                if (decObj != null) {
+                                    // decorate the current word with the following delimiter
+                                    m_result.append(decObj.getContentDecoration(m_config));
+                                    // important, we must skip the next element of the list
+                                    i += j;
+                                    break;
+                                }
+                            }
+                        }
+                        if (decObj == null) {
+                            // no decoration was found, use the word alone
+                            m_result.append(word);
+                        }
                     }
                 } else {
                     // decorate the current word
@@ -294,13 +343,25 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      * @param word the word to test
      * @return true if the word must be decoded, false otherweise
      */
-    private boolean mustDecode(String word) {
+    private boolean mustDecode(String word, List wordList, int count) {
 
         boolean decode = true;
-        for (int i = 0; i < NON_TRANSLATORS.length; i++) {
-            if (word.equals(NON_TRANSLATORS[i])) {
-                decode = false;
-                break;
+        String nextWord = null;
+
+        if (count < wordList.size() - 1) {
+            nextWord = (String)wordList.get(count + 1);
+        }
+        // test if the current word contains a "&" and the following with a ";"
+        // if so, we must not decode the word
+        if (nextWord != null && word.indexOf("&") > -1 && nextWord.startsWith(";")) {
+            return false;
+        } else {
+            // now scheck if the word matches one of the non decoder tokens
+            for (int i = 0; i < NON_TRANSLATORS.length; i++) {
+                if (word.startsWith(NON_TRANSLATORS[i])) {
+                    decode = false;
+                    break;
+                }
             }
         }
         return decode;

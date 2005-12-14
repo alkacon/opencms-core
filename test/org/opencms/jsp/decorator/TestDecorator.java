@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/jsp/decorator/TestDecorator.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/14 10:48:35 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import junit.framework.TestSuite;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.3
  */
@@ -105,7 +105,7 @@ public class TestDecorator extends OpenCmsTestCase {
         String resultText1 ="The <abbr title=\"Content Management System\">CMS</abbr> stores its data in the <abbr title=\"Virtual File System\">VFS</abbr> and exports some of it to the <abbr title=\"Real File System\">RFS</abbr>./r/n To export files form the <abbr>VFS</abbr> to the <abbr>RFS</abbr> you must configure your <abbr>CMS</abbr> correctly.";
         
         String inputText2 = "<h1>The CMS</h1>The CMS stores its data in the <a href=\"#\">VFS</a> and exports some of it to the RFS./r/n To export files form the VFS to the RFS you must configure your CMS correctly.";
-        String resultText2 ="<h1>The <abbr title=\"Content Management System\">CMS</abbr></h1>The <abbr>CMS</abbr> stores its data in the <a href=\"#\"><abbr title=\"Virtual File System\">VFS</abbr></a>and exports some of it to the <abbr title=\"Real File System\">RFS</abbr>./r/n To export files form the <abbr>VFS</abbr> to the <abbr>RFS</abbr> you must configure your <abbr>CMS</abbr> correctly.";
+        String resultText2 ="<h1>The <abbr title=\"Content Management System\">CMS</abbr></h1>The <abbr>CMS</abbr> stores its data in the <a href=\"#\"><abbr title=\"Virtual File System\">VFS</abbr></a> and exports some of it to the <abbr title=\"Real File System\">RFS</abbr>./r/n To export files form the <abbr>VFS</abbr> to the <abbr>RFS</abbr> you must configure your <abbr>CMS</abbr> correctly.";
         
         String inputText3 = "This is a test for VFS&nbsp;RFS and VFS.";
         String resultText3 = "This is a test for <abbr>VFS</abbr>&nbsp;<abbr>RFS</abbr> and <abbr>VFS</abbr>.";
@@ -115,6 +115,46 @@ public class TestDecorator extends OpenCmsTestCase {
         
         String inputText5 = "The CMS has a nice user interface, the so called CMS-UI. This must not be mixed up with the CMS-IU!";
         String resultText5 = "The <abbr>CMS</abbr> has a nice user interface, the so called <abbr title=\"Content Management System User Interface\">CMS-UI</abbr>. This must not be mixed up with the <abbr>CMS</abbr>-IU!";
+  
+        String inputText6 = "Does it work to use a '?' as a delimiter for the CMS?";
+        String resultText6 = "Does it work to use a '?' as a delimiter for the <abbr>CMS</abbr>?";
+ 
+        String inputText6a = "This is VFS@CMS.";
+        String resultText6a = "This is <abbr>VFS</abbr>@<abbr>CMS</abbr>.";
+        
+        String inputText6b = "This is ABC@DEF.";
+        String resultText6b = "This is <abbr title=\"A strange thing with a @ in it\">ABC@DEF</abbr>.";
+
+        String inputText7 = "<Strong>CMS</strong>. Will it be decorated? <h1>VFS</h1>: Is very nice!";
+        String resultText7 = "<Strong><abbr>CMS</abbr></strong>. Will it be decorated? <h1><abbr>VFS</abbr></h1>: Is very nice!";
+  
+        String inputText7a = "Test with a dash - the dashes should be still there - even if I write RFS.";
+        String resultText7a = "Test with a dash - the dashes should be still there - even if I write <abbr>RFS</abbr>.";
+    
+        String inputText8 = "Hello, my name is Dr. Bull!";
+        String resultText8 = "Hello, my name is <abbr title=\"Doctor\">Dr.</abbr> Bull!";
+        
+        String inputText8a = "<p>Dr. Dr.</p>";
+        String resultText8a = "<p><abbr>Dr.</abbr> <abbr>Dr.</abbr></p>";       
+        
+        String inputText9 = "Do we find words with multiple lookups, e.g. CMS?";
+        String resultText9 = "Do we find words with multiple lookups, <abbr title=\"example given\">e.g.</abbr> <abbr>CMS</abbr>?";
+
+        String inputText9a = "Another example: z. B. is very nice.";
+        String resultText9a = "Another example: <abbr title=\"zum Beispiel\">z. B.</abbr> is very nice.";
+        
+        String inputText10 = "Let's see: ZB MED - a CMS decoration in the VFS with a blank in it.";
+        String resultText10 = "Let's see: <abbr title=\"a decoarion with a blank in it\">ZB MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
+
+        String inputText10a = "Let's see: ZB&nbsp;MED - a CMS decoration in the VFS with a blank in it.";
+        String resultText10a = "Let's see: <abbr title=\"a decoarion with a blank in it\">ZB&nbsp;MED</abbr> - a <abbr>CMS</abbr> decoration in the <abbr>VFS</abbr> with a blank in it.";
+
+        
+        String inputText11 = "This is a word inside quotations: \"CMS\".";
+        String resultText11 = "This is a word inside quotations: \"<abbr>CMS</abbr>\".";
+        
+        String inputText11a = "This is a word inside quotations: &quot;CMS&quot;.";
+        String resultText11a = "This is a word inside quotations: &quot;<abbr>CMS</abbr>&quot;.";
         
         String preTextFirst = "<abbr title=\"${decoration}\">";
         String postTextFirst = "</abbr>";
@@ -139,7 +179,14 @@ public class TestDecorator extends OpenCmsTestCase {
         decorationMap.put("VFS", new CmsDecorationObject("VFS", "Virtual File System", decDef1, locale));
         decorationMap.put("RFS", new CmsDecorationObject("RFS", "Real File System", decDef1, locale));
         decorationMap.put("TÜV", new CmsDecorationObject("TÜV", "Technischer Überwachungsverein", decDef1, locale));
+        decorationMap.put("Dr.", new CmsDecorationObject("Dr.", "Doctor", decDef1, locale));
+        decorationMap.put("z. B.", new CmsDecorationObject("z. B.", "zum Beispiel", decDef1, locale));
+        decorationMap.put("e.g.", new CmsDecorationObject("e.g.", "example given", decDef1, locale));
+        decorationMap.put("ZB MED", new CmsDecorationObject("ZB MED", "a decoarion with a blank in it", decDef1, locale));
+        decorationMap.put("ZB&nbsp;MED", new CmsDecorationObject("ZB&nbsp;MED", "a decoarion with a blank in it", decDef1, locale));        
         decorationMap.put("CMS-UI", new CmsDecorationObject("CMS-UI", "Content Management System User Interface", decDef1, locale));
+        decorationMap.put("ABC@DEF", new CmsDecorationObject("ABC@DEF", "A strange thing with a @ in it", decDef1, locale));
+        
         
         // create a decorator  configuration
         CmsDecoratorConfiguration configuration = new CmsDecoratorConfiguration(getCmsObject());
@@ -185,6 +232,76 @@ public class TestDecorator extends OpenCmsTestCase {
         System.out.println(inputText5);
         System.out.println(result);
         assertEquals(resultText5, result);
+        System.out.println("");
+        
+        System.out.println("Testing decoration with additional delimiters");
+        result = CmsHtmlDecorator.doDecoration(inputText6, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText6);
+        System.out.println(result);
+        assertEquals(resultText6, result);
+        result = CmsHtmlDecorator.doDecoration(inputText6a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText6a);
+        System.out.println(result);
+        assertEquals(resultText6a, result);
+        result = CmsHtmlDecorator.doDecoration(inputText6b, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText6b);
+        System.out.println(result);
+        assertEquals(resultText6b, result);
+        System.out.println("");
+        
+        System.out.println("Testing decoration after closing tags");
+        result = CmsHtmlDecorator.doDecoration(inputText7, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText7);
+        System.out.println(result);
+        assertEquals(resultText7, result);
+        result = CmsHtmlDecorator.doDecoration(inputText7a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText7a);
+        System.out.println(result);
+        assertEquals(resultText7a, result);
+        System.out.println("");
+        
+        System.out.println("Testing decoration with decoration keys including delimiters (Dr.)");
+        result = CmsHtmlDecorator.doDecoration(inputText8, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText8);
+        System.out.println(result);
+        assertEquals(resultText8, result);
+        result = CmsHtmlDecorator.doDecoration(inputText8a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText8a);
+        System.out.println(result);
+        assertEquals(resultText8a, result);
+        System.out.println("");
+        
+        System.out.println("Testing decoration with decoration keys including multiple delimiters (z.B.)");
+        result = CmsHtmlDecorator.doDecoration(inputText9, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText9);
+        System.out.println(result);
+        assertEquals(resultText9, result);
+        result = CmsHtmlDecorator.doDecoration(inputText9a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText9a);
+        System.out.println(result);
+        assertEquals(resultText9a, result);
+        System.out.println("");
+        
+        System.out.println("Testing decoration with blank in it");
+        result = CmsHtmlDecorator.doDecoration(inputText10, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText10);
+        System.out.println(result);
+        assertEquals(resultText10, result);
+        result = CmsHtmlDecorator.doDecoration(inputText10a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText10a);
+        System.out.println(result);
+        assertEquals(resultText10a, result);
+        System.out.println("");
+        
+        System.out.println("Testing decoration inside of quatations");
+        result = CmsHtmlDecorator.doDecoration(inputText11, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText11);
+        System.out.println(result);
+        assertEquals(resultText11, result);
+        result = CmsHtmlDecorator.doDecoration(inputText11a, processor, CmsEncoder.ENCODING_ISO_8859_1);
+        System.out.println(inputText11a);
+        System.out.println(result);
+        assertEquals(resultText11a, result);
         System.out.println("");
     }
     
