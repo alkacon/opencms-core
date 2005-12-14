@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2005/12/14 16:47:39 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspWriter;
  * @author Michael Moossen  
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -134,7 +134,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
             if (CmsStringUtil.isNotEmpty(diff)) {
                 out.println(diff);
             } else {
-                out.println(wrapLinesWithUnchangedStyle(getOriginalSource())); // print original source, if there are no differences
+                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(CmsStringUtil.escapeHtml(getOriginalSource()),"<br/>","\n"))); // print original source, if there are no differences
             }
         } catch (Exception e) {
             out.print(e);
