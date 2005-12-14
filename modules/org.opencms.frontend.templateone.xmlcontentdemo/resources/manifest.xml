@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="ISO-8859-1"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.1.6</opencms_version>
+		<createdate>Wed, 14 Dec 2005 15:03:02 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,12 +13,10 @@
 		<nicename><![CDATA[OpenCms 6.0 Template One XML content demo]]></nicename>
 		<group>Template One</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains demo resources for OpenCms 6.0 XML content.</p>
+		<description><![CDATA[<p>This module contains demo resources for OpenCms 6.0 XML content.</p>
 <p>Install this module if you want to see the structured content capabilities of OpenCms.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.0.0</version>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -52,7 +50,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="article" key="fileicon.article" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=article" order="25" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -60,7 +58,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="widgetdemo" key="fileicon.widgetdemo" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=widgetdemo" order="26" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -68,7 +66,7 @@
 				</accesscontrol>
 			</explorertype>
 			<explorertype name="bookmark" key="fileicon.bookmark" icon="xmlcontent.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=bookmark" order="27" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -81,9 +79,9 @@
 		<file>
 			<destination>system</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 03 Nov 2005 09:08:47 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -276,7 +274,7 @@
 		<file>
 			<destination>xmlcontentdemo</destination>
 			<type>microsite</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 15:01:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -476,11 +474,37 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>xmlcontentdemo/detail_scriptlet.jsp</source>
+			<destination>xmlcontentdemo/detail_scriptlet.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>269c7c22-59f5-11da-8fbe-f7eb3434d401</uuidresource>
+			<datelastmodified>Tue, 22 Nov 2005 11:57:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sun, 20 Nov 2005 18:40:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article detail view using scriptlet code]]></value>
+				</property>
+				<property>
+					<name>collector</name>
+					<value><![CDATA[singleFile]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>xmlcontentdemo/include.jsp</source>
 			<destination>xmlcontentdemo/include.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>d13bd579-1f34-11d9-9f84-bdb3d9688e5d</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:45:57 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -492,7 +516,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[2.890625]]></value>
+					<value><![CDATA[5]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
@@ -509,10 +533,10 @@
 			<source>xmlcontentdemo/list.jsp</source>
 			<destination>xmlcontentdemo/list.jsp</destination>
 			<type>jsp</type>
-			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>259abd33-6cb1-11da-9545-9fcffb4fa0bd</uuidresource>
+			<datelastmodified>Wed, 14 Dec 2005 14:57:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Wed, 14 Dec 2005 14:51:45 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -521,16 +545,46 @@
 					<value><![CDATA[false]]></value>
 				</property>
 				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[List demo]]></value>
+				</property>
+				<property>
 					<name>Title</name>
 					<value><![CDATA[XML content article demo page]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
 				</property>
 				<property>
 					<name>collector</name>
 					<value><![CDATA[allInFolderDateReleasedDesc]]></value>
 				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>xmlcontentdemo/list_content-scriptlet.html</source>
+			<destination>xmlcontentdemo/list_content-scriptlet.html</destination>
+			<type>xmlpage</type>
+			<uuidresource>7eae63b7-6cb1-11da-9545-9fcffb4fa0bd</uuidresource>
+			<datelastmodified>Wed, 14 Dec 2005 15:00:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 14 Dec 2005 14:54:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>512</flags>
+			<properties>
 				<property>
-					<name>style_side_uri</name>
-					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
+					<name>template</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone/templates/main]]></value>
+				</property>
+				<property type="shared">
+					<name>Title</name>
+					<value><![CDATA[Contents for list view]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -540,7 +594,7 @@
 			<destination>xmlcontentdemo/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:54:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -558,11 +612,49 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>xmlcontentdemo/list_scriptlet.jsp</source>
+			<destination>xmlcontentdemo/list_scriptlet.jsp</destination>
+			<type>jsp</type>
+			<uuidresource>11b29a38-58ea-11da-997a-f7eb3434d401</uuidresource>
+			<datelastmodified>Wed, 14 Dec 2005 14:59:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Sat, 19 Nov 2005 10:48:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Scriptlet list demo]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XML content article demo page using scriptlet code]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/xmlcontentdemo/side-elements/newfeatures.html]]></value>
+				</property>
+				<property>
+					<name>collector</name>
+					<value><![CDATA[allInFolderDateReleasedDesc]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>xmlcontentdemo/list_tree.jsp</source>
 			<destination>xmlcontentdemo/list_tree.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>b62c9903-2126-11d9-aca1-33454537bb5d</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:44:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -574,7 +666,7 @@
 				</property>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[1.890625]]></value>
+					<value><![CDATA[3]]></value>
 				</property>
 				<property>
 					<name>xmlcontent-side-uri</name>
@@ -600,7 +692,7 @@
 			<destination>xmlcontentdemo/side_element_demo.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>22d10d1e-1158-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:47:02 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -608,7 +700,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.59375]]></value>
+					<value><![CDATA[7]]></value>
 				</property>
 				<property>
 					<name>xmlcontent-side-uri</name>
@@ -1010,7 +1102,7 @@
 		<file>
 			<destination>xmlcontentdemo/subfolder</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:45:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1018,7 +1110,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[3.890625]]></value>
+					<value><![CDATA[4]]></value>
 				</property>
 				<property>
 					<name>default-file</name>
@@ -1080,10 +1172,11 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>xmlcontentdemo/subfolder/list.jsp</source>
 			<destination>xmlcontentdemo/subfolder/list.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>340d9711-1128-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:43:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1112,7 +1205,7 @@
 			<destination>xmlcontentdemo/subfolder/list_content.html</destination>
 			<type>xmlpage</type>
 			<uuidresource>a4b2122f-1141-11d9-831f-b70b5b3477aa</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:54:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1132,7 +1225,7 @@
 		<file>
 			<destination>xmlcontentdemo/widgetdemo</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 14 Dec 2005 14:46:27 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -1140,7 +1233,7 @@
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[4.890625]]></value>
+					<value><![CDATA[6]]></value>
 				</property>
 				<property>
 					<name>default-file</name>
@@ -1636,12 +1729,17 @@
 			<destination>system/workplace/resources/filetypes/article.gif</destination>
 			<type>image</type>
 			<uuidresource>a17837da-2769-11d9-a415-1fd2a335da0f</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 13 Oct 2005 08:55:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

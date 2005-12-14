@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="header">
+      <links>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/xmlcontentdemo/list.jsp]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h1>Scriptlet access to XML content demo page</h1>
+<p>This is a simple JSP page that produces similar output (except this text) as the Tag based list page <a target="_self" href="${link0}">/xmlcontentdemo/list.jsp</a>. The creation of this page is based on scriptlet access to the OpenCms XML content instead of jsp tag access. </p>
+<p>
+To check the funcitionality of scriptlet access to XML content for detail pages the property <span style="font-weight: bold;">template-elements</span> on the top folder /xmlcontentdemo/ of this page may be changed from <br /><span style="font-weight: bold;">/xmlcontentdemo/detail.jsp</span> <br />to <span style="font-weight: bold;"><br />/xmlcontentdemo/detail_scriptlet.jsp</span>. <br />For a single file test this property may also be set to an article directly which will override the property value on the top level folder.<br /></p>]]></content>
+    </element>
+    <element name="footer">
+      <links>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/xmlcontentdemo/side_element_demo.html]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<p>Above you see a list dynamically generated using xmlcontent 
+objects.</p>
+<p><em>Please note:</em> A powerful 
+option of OpenCms 6.0 is to create such a list as a page element, and 
+include this element in your template. Click <a target="_self" href="${link0}">here 
+</a>          
+      to see such a page in 
+action.</p>]]></content>
+    </element>
+  </page>
+</pages>
