@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/10/09 09:08:26 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2005/12/15 15:19:38 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -680,7 +680,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                             // user has read permission
                             if (cnt >= start) {
                                 // do not use the resource to obtain the raw content, read it from the lucene document !
-                                if (m_createExcerpt) {
+                                // documents must not have content (i.e. images), so check if the content field exists
+                                if (m_createExcerpt && doc.getField(I_CmsDocumentFactory.DOC_CONTENT) != null) {
                                     excerpt = getExcerpt(
                                         doc.getField(I_CmsDocumentFactory.DOC_CONTENT).stringValue(),
                                         finalQuery,
