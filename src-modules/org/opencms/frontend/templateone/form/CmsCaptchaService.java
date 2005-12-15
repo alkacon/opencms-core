@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaService.java,v $
- * Date   : $Date: 2005/09/20 07:31:03 $
- * Version: $Revision: 1.2 $
+ * Date   : $Date: 2005/12/15 14:42:07 $
+ * Version: $Revision: 1.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,25 +31,55 @@
 
 package org.opencms.frontend.templateone.form;
 
-
-import com.octo.captcha.service.image.EhcacheManageableImageCaptchaService;
+import com.octo.captcha.service.captchastore.MapCaptchaStore;
+import com.octo.captcha.service.image.AbstractManageableImageCaptchaService;
 import com.octo.captcha.service.image.ImageCaptchaService;
 
 /**
- * Provides the facility to create and cache the captcha images.<p>
+ * Provides the facility to create and cache the captcha images.
+ * <p>
  * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2 $
+ * @author Thomas Weckert 
+ * 
+ * @author Achim Westermann
+ * 
+ * @version $Revision: 1.3 $
  */
-public class CmsCaptchaService extends EhcacheManageableImageCaptchaService implements ImageCaptchaService {
+public class CmsCaptchaService extends AbstractManageableImageCaptchaService implements ImageCaptchaService {
 
     /**
-     * Creates a new captcha service.<p>
+     * Creates a new captcha service.
+     * <p>
+     * 
+     * minGuarantedStorageDelayInSeconds = 180s maxCaptchaStoreSize = 100000
+     * captchaStoreLoadBeforeGarbageCollection=75000
+     * 
      * @param captchaSettings the settings to render captcha images
      */
     public CmsCaptchaService(CmsCaptchaSettings captchaSettings) {
-
-        super(new CmsCaptchaEngine(captchaSettings), 180, 100000);
+   
+        super(new MapCaptchaStore(), new CmsCaptchaEngine(captchaSettings), 180, 100000, 75000);    
     }
+    
+    
+    
+    /**
+     * Implant new captcha settings to this service.
+     * <p>
+     * This is an expensive method as new Image filters and many processing objects are allocated anew. 
+     * Prefer using the {@link CmsCaptchaServiceCache#getCaptchaService(CmsCaptchaSettings, org.opencms.file.CmsObject)} method instead. 
+     * It will return cached instances for equal settings.
+     * <p>
+     *
+     * @param settings the captcha settings to implant.
+     */
+    protected void setSettings(CmsCaptchaSettings settings) {
+
+        CmsCaptchaEngine captchaEngine = (CmsCaptchaEngine)engine;
+        captchaEngine.setSettings(settings);
+    }
+    
+    
+    
 
 }

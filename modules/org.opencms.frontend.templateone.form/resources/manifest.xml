@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0.0</opencms_version>
-		<createdate>Mon, 19 Sep 2005 12:54:00 GMT</createdate>
+		<opencms_version>6.0.3</opencms_version>
+		<createdate>Thu, 15 Dec 2005 11:23:06 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -16,10 +16,10 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
-		<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies/>
@@ -31,6 +31,7 @@
 		<resources>
 			<resource uri="/system/modules/org.opencms.frontend.templateone.form/"/>
 			<resource uri="/system/workplace/resources/filetypes/emailform.gif"/>
+			<resource uri="/system/workplace/admin/captcha/captcha.settings"/>
 		</resources>
 		<parameters>
 			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.form/;/system/workplace/resources/filetypes/emailform.gif</param>
@@ -48,7 +49,7 @@
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60"/>
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -63,7 +64,7 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Wed, 16 Nov 2005 16:12:41 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -81,9 +82,9 @@
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -176,12 +177,17 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 11:21:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -189,24 +195,34 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>ef61baa7-695b-11d9-8aac-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 11:21:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 11:21:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -214,12 +230,17 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_fr.properties</destination>
 			<type>plain</type>
 			<uuidresource>9bef44b1-1f73-11da-9ddd-8f106d5078a1</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 11:21:47 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -227,12 +248,17 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_it.properties</destination>
 			<type>plain</type>
 			<uuidresource>a918b6d4-1f73-11da-9ddd-8f106d5078a1</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 11:21:58 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -312,6 +338,10 @@
 					<name>Title</name>
 					<value><![CDATA[corner]]></value>
 				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:130,h:87]]></value>
+				</property>
 			</properties>
 			<accesscontrol/>
 		</file>
@@ -329,6 +359,10 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[corner]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:130,h:87]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -386,12 +420,16 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages/captcha</destination>
 			<type>jsp</type>
 			<uuidresource>0cad6a0a-f90e-11d9-b740-c7beef112ba5</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 10:02:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
 				<property>
 					<name>cache</name>
 					<value><![CDATA[never;]]></value>
@@ -399,10 +437,6 @@
 				<property>
 					<name>content-encoding</name>
 					<value><![CDATA[UTF-8]]></value>
-				</property>
-				<property type="shared">
-					<name>export</name>
-					<value><![CDATA[false]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -416,7 +450,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages/form.html</destination>
 			<type>jsp</type>
 			<uuidresource>ffb9f73b-63b8-11d9-ab74-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Sat, 10 Dec 2005 19:29:36 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -453,7 +487,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Sat, 10 Dec 2005 18:47:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -525,7 +559,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/optionalformcaptcha.xsd</destination>
 			<type>plain</type>
 			<uuidresource>8175f1c2-f851-11d9-9e77-c7beef112ba5</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 12 Dec 2005 18:55:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -541,9 +575,9 @@
 		<file>
 			<destination>system/workplace</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -572,11 +606,64 @@
 			</accesscontrol>
 		</file>
 		<file>
+			<destination>system/workplace/admin</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/captcha</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 15 Dec 2005 07:57:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Dec 2005 07:57:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/captcha/captcha.settings</source>
+			<destination>system/workplace/admin/captcha/captcha.settings</destination>
+			<type>emailform</type>
+			<uuidresource>7d459f12-6d40-11da-a45a-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 15 Dec 2005 11:14:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Dec 2005 07:57:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locale-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.form/pages/form.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -585,9 +672,9 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -603,7 +690,12 @@
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>

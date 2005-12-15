@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaSettings.java,v $
- * Date   : $Date: 2005/10/10 16:11:12 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2005/12/15 14:42:07 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,15 @@
 
 package org.opencms.frontend.templateone.form;
 
+import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.CmsException;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.xml.content.CmsXmlContent;
+import org.opencms.xml.content.CmsXmlContentFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.awt.Color;
@@ -43,537 +47,888 @@ import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 
-/**
- * Stores the settings to render captcha images.<p>
- * 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
- */
-public class CmsCaptchaSettings {
+import org.apache.commons.logging.Log;
 
-    /** The image width in pixels. */
-    private int m_imageWidth;
-    
-    /** The image height in pixels. */
-    private int m_imageHeight;
-    
-    /** minimum font size in pixels. */
-    private int m_minFontSize;
-    
-    /** The maximum font size in pixels. */
-    private int m_maxFontSize;
-    
-    /** The minimum phrase length. */
-    private int m_minPhraseLength;
-    
-    /** The maximum phrase length. */
-    private int m_maxPhraseLength;
-    
-    /** The font color. */
-    private Color m_fontColor;
-    
-    /** The the background color. */
-    private Color m_backgroundColor;
-    
-    /** An ID to store the settings in a map. */
-    private String m_key;
-    
-    /** Request parameter for the image width. */
-    public static final String C_PARAM_IMAGE_WIDTH = "w";
-    
-    /** Request parameter for the image height. */
-    public static final String C_PARAM_IMAGE_HEIGHT = "h";
-    
-    /** Request parameter for the min. font size. */
-    public static final String C_PARAM_MIN_FONT_SIZE = "minfs";
-    
-    /** Request parameter for the max. font size. */
-    public static final String C_PARAM_MAX_FONT_SIZE = "maxfs";
-    
-    /** Request parameter for the min phrase length. */
-    public static final String C_PARAM_MIN_PHRASE_LENGTH = "minpl";
-    
-    /** Request parameter for the max phrase length. */
-    public static final String C_PARAM_MAX_PHRASE_LENGTH = "maxpl";
-    
-    /** Request parameter for the font color. */
-    public static final String C_PARAM_FONT_COLOR = "fcol";
-    
+/**
+ * Stores the settings to render captcha images.
+ * <p>
+ * 
+ * @author Thomas Weckert
+ * 
+ * @author Achim Westermann
+ * 
+ * @version $Revision: 1.4 $
+ */
+public final class CmsCaptchaSettings implements Cloneable {
+
     /** Request parameter for the background color. */
     public static final String C_PARAM_BACKGROUND_COLOR = "bgcol";
-    
-    /**
-     * Creates captcha settings with default settings as used in the JCaptcha lib.<p>
-     */
-    public CmsCaptchaSettings() {
-        
-        m_imageWidth = 150;
-        m_imageHeight = 50;
 
-        m_minFontSize = 40;
-        m_maxFontSize = 40;
+    /** Request parameter for the filter amplitude. */
+    public static final String C_PARAM_FILTER_AMPLITUDE = "famplit";
 
-        m_minPhraseLength = 6;
-        m_maxPhraseLength = 7;
-        
-        m_fontColor = Color.BLACK;
-        m_backgroundColor = Color.WHITE;
-        
-        m_key = createKey();
-    }
-    
+    /** Request parameter for the filter amplitude. */
+    public static final String C_PARAM_FILTER_WAVE_LENGTH = "fwavlen";
+
+    /** Request parameter for the font color. */
+    public static final String C_PARAM_FONT_COLOR = "fcol";
+
+    /** Request parameter for the font color. */
+    public static final String C_PARAM_HOLES_PER_GLYPH = "holes";
+
+    /** Request parameter for the image height. */
+    public static final String C_PARAM_IMAGE_HEIGHT = "h";
+
+    /** Request parameter for the image width. */
+    public static final String C_PARAM_IMAGE_WIDTH = "w";
+
+    /** Request parameter for the max. font size. */
+    public static final String C_PARAM_MAX_FONT_SIZE = "maxfs";
+
+    /** Request parameter for the max phrase length. */
+    public static final String C_PARAM_MAX_PHRASE_LENGTH = "maxpl";
+
+    /** Request parameter for the min. font size. */
+    public static final String C_PARAM_MIN_FONT_SIZE = "minfs";
+
+    /** Request parameter for the min phrase length. */
+    public static final String C_PARAM_MIN_PHRASE_LENGTH = "minpl";
+
+    /** Request parameter for the min phrase length. */
+    public static final String C_PARAM_USE_BACKGROUND_IMAGE = "bgimg";
+
+    /** The path to the global captcha XML content containing all default values. */
+    private static final String DEFAULT_SETTINGS_VFS_PATH = "/system/workplace/admin/captcha/captcha.settings";
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsCaptchaSettings.class);
+
+    /** The the background color. */
+    private Color m_backgroundColor;
+
+    /** The filter amplitude for the water filter that bends the text. */
+    private int m_filterAmplitude = -1;
+
+    /** The filter wave length for the water filter that bends the text. */
+    private int m_filterWaveLength = -1;
+
+    /** The font color. */
+    private Color m_fontColor = null;
+
+    /** The amount of holes per glyph. */
+    private Integer m_holesPerGlyp = null;
+
+    /** The image height in pixels. */
+    private int m_imageHeight = -1;
+
+    /** The image width in pixels. */
+    private int m_imageWidth = -1;
+
+    /** The maximum font size in pixels. */
+    private int m_maxFontSize = -1;
+
+    /** The maximum phrase length. */
+    private int m_maxPhraseLength = -1;
+
+    /** minimum font size in pixels. */
+    private int m_minFontSize = -1;
+
+    /** The minimum phrase length. */
+    private int m_minPhraseLength = -1;
+    /** The flag that decides wethter a background image or a background color is used. */
+    private boolean m_useBackgroundImage = false;
+
     /**
-     * Creates new captcha settings from an XML content.<p>
+     * Private constructor for the clone method.
+     * <p>
      * 
-     * @param cms the current user's Cms object
-     * @param content the XML content of the form
-     * @param locale the current locale
+     * May only be called from {@link #clone()} as that method guarantees to install the default
+     * value from the master captcha settings.
+     * <p>
      */
-    public CmsCaptchaSettings(CmsObject cms, CmsXmlContent content, Locale locale) {
-        
-        I_CmsXmlContentValue xmlFormCaptcha = content.getValue(CmsForm.NODE_CAPTCHA, locale);
-        String xPathFormCaptcha = xmlFormCaptcha.getPath() + "/";
-        
-        // image width
-        String stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_IMAGEWIDTH, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_imageWidth = Integer.parseInt(stringValue);
-        } else {
-            m_imageWidth = 150;
-        }
-        
-        // image height
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_IMAGEHEIGHT, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_imageHeight = Integer.parseInt(stringValue);
-        } else {
-            m_imageHeight = 50;
-        }
-        
-        // min. phrase length
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MIN_PHRASE_LENGTH, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_minPhraseLength = Integer.parseInt(stringValue);
-        } else {
-            m_minPhraseLength = 6;
-        }
-        
-        // max. phrase length
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MAX_PHRASE_LENGTH, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_maxPhraseLength = Integer.parseInt(stringValue);
-        } else {
-            m_maxPhraseLength = 7;
-        }
-        
-        // min. font size
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MIN_FONT_SIZE, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_minFontSize = Integer.parseInt(stringValue);
-        } else {
-            m_minFontSize = 40;
-        }
-        
-        // max. font size
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MAX_FONT_SIZE, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_maxFontSize = Integer.parseInt(stringValue);
-        } else {
-            m_maxFontSize = 40;
-        }
-        
-        // font color
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_FONTCOLOR, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            setFontColor(stringValue);
-        } else {
-            m_fontColor = Color.BLACK;
-        }
-        
-        // background color
-        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_BACKGROUNDCOLOR, locale);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            setBackgroundColor(stringValue);
-        } else {
-            m_backgroundColor = Color.WHITE;
-        }
-        
-        m_key = createKey();
+    private CmsCaptchaSettings() {
+
+        // nop
     }
-    
+
     /**
-     * Creates new captcha settings from request parameters.<p>
+     * Private singleton constructor that creates the single master captcha settings instance.
+     * <p>
      * 
-     * @param jsp a Cms JSP page
+     * It accesses an XML content located at {@link #DEFAULT_SETTINGS_VFS_PATH} to read global
+     * default settings. These settings will be installed and copied to all further instances that
+     * will be spread.
+     * <p>
+     * 
+     * @param cms to access the default XML content with the settings
      */
-    public CmsCaptchaSettings(CmsJspActionElement jsp) {
-        
-        HttpServletRequest request = jsp.getRequest();
-        
-        // image width
-        String stringValue = request.getParameter(C_PARAM_IMAGE_WIDTH);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_imageWidth = Integer.parseInt(stringValue);
-        } else {
-            m_imageWidth = 150;
-        }
-        
-        // image height
-        stringValue = request.getParameter(C_PARAM_IMAGE_HEIGHT);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_imageHeight = Integer.parseInt(stringValue);
-        } else {
-            m_imageHeight = 50;
-        }
-        
-        // min. phrase length
-        stringValue = request.getParameter(C_PARAM_MIN_PHRASE_LENGTH);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_minPhraseLength = Integer.parseInt(stringValue);
-        } else {
-            m_minPhraseLength = 6;
-        }
-        
-        // max. phrase length
-        stringValue = request.getParameter(C_PARAM_MAX_PHRASE_LENGTH);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_maxPhraseLength = Integer.parseInt(stringValue);
-        } else {
-            m_maxPhraseLength = 7;
-        }
-        
-        // min. font size
-        stringValue = request.getParameter(C_PARAM_MIN_FONT_SIZE);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_minFontSize = Integer.parseInt(stringValue);
-        } else {
-            m_minFontSize = 40;
-        }
-        
-        // max. font size
-        stringValue = request.getParameter(C_PARAM_MAX_FONT_SIZE);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            m_maxFontSize = Integer.parseInt(stringValue);
-        } else {
-            m_maxFontSize = 40;
-        }
-        
-        // font color
-        stringValue = request.getParameter(C_PARAM_FONT_COLOR);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
-            setFontColor(stringValue);
-        } else {
-            m_fontColor = Color.BLACK;
-        }
-        
-        // background color
-        stringValue = request.getParameter(C_PARAM_BACKGROUND_COLOR);
-        if (CmsStringUtil.isNotEmpty(stringValue)) {
-            stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
-            setBackgroundColor(stringValue);
-        } else {
-            m_backgroundColor = Color.WHITE;
-        }
-        
-        m_key = createKey();
+    private CmsCaptchaSettings(CmsObject cms) {
+
+        initDefaultConfiguration(cms);
     }
-    
+
     /**
-     * Returns the background color.<p>
-     *
+     * Returns a clone of the singleton instance of the
+     * <em>"master"</em>  <code>CmsCaptchaSettings</code> and potential overridden values from
+     * the request context.
+     * <p>
+     * 
+     * The <em>"master"</em>  <code>CmsCaptchaSettings</code> are read from an XML content that
+     * contains the global defaults.
+     * <p>
+     * 
+     * @param jsp used to potentially access the XML content with the default captcha settings and
+     *            to read overriden values from the request parameters.
+     * 
+     * @return a clone of the singleton instance of the
+     *         <em>"master"</em>  <code>CmsCaptchaSettings</code>.
+     */
+    public static CmsCaptchaSettings getInstance(CmsJspActionElement jsp) {
+
+        CmsObject cms = jsp.getCmsObject();
+        CmsCaptchaSettings result = new CmsCaptchaSettings(cms);
+        return (CmsCaptchaSettings)result.clone();
+    }
+
+    /**
+     * Returns an instance configured with the defaults of the XML content at
+     * {@link #DEFAULT_SETTINGS_VFS_PATH}.
+     * <p>
+     * 
+     * To get customized settings the settings returned from this method will have to be used for
+     * the methods:
+     * 
+     * <ul>
+     * <li> {@link #init(CmsJspActionElement)} </li>
+     * <li> {@link #init(CmsObject, CmsXmlContent, Locale)} </li>
+     * </ul>
+     * <p>
+     * 
+     * @param cms used to access the XML content with the default captcha settings.
+     * 
+     * @return a clone of the singleton instance of the
+     *         <em>"master"</em>  <code>CmsCaptchaSettings</code>.
+     */
+    public static CmsCaptchaSettings getInstance(CmsObject cms) {
+
+        CmsCaptchaSettings result = new CmsCaptchaSettings(cms);
+        return (CmsCaptchaSettings)result.clone();
+    }
+
+    /**
+     * Returns the background color.
+     * <p>
+     * 
      * @return the background color
      */
     public Color getBackgroundColor() {
 
         return m_backgroundColor;
     }
-    
+
     /**
-     * Returns the background color as a hex string.<p>
-     *
+     * Returns the background color as a hex string.
+     * <p>
+     * 
      * @return the background color as a hex string
      */
     public String getBackgroundColorString() {
-        
+
         StringBuffer buf = new StringBuffer();
-        
+
         buf.append("#");
         buf.append(toHexString(m_backgroundColor.getRed()));
         buf.append(toHexString(m_backgroundColor.getGreen()));
         buf.append(toHexString(m_backgroundColor.getBlue()));
-        
+
         return buf.toString();
     }
-    
-    /**
-     * Sets the background color.<p>
-     *
-     * @param backgroundColor the background color to set
-     */
-    public void setBackgroundColor(Color backgroundColor) {
 
-        m_backgroundColor = backgroundColor;
-    }
-    
     /**
-     * Sets the background color as a hex string.<p>
-     *
-     * @param backgroundColor the background color to set as a hex string
+     * Returns the filter amplitude for the water filter that bends the text.
+     * <p>
+     * 
+     * @return the filter amplitude for the water filter that bends the text.
      */
-    public void setBackgroundColor(String backgroundColor) {
-        
-        if (backgroundColor.startsWith("#")) {
-            backgroundColor = backgroundColor.substring(1);
-        }
-        
-        m_backgroundColor = new Color(Integer.valueOf(backgroundColor, 16).intValue());
+    public int getFilterAmplitude() {
+
+        return m_filterAmplitude;
     }
-    
+
     /**
-     * Returns the font color.<p>
-     *
+     * Returns the filter wave length for the water filter that bends the text.
+     * <p>
+     * 
+     * @return the filter wave length for the water filter that bends the text.
+     */
+    public int getFilterWaveLength() {
+
+        return m_filterWaveLength;
+    }
+
+    /**
+     * Returns the font color.
+     * <p>
+     * 
      * @return the font color
      */
     public Color getFontColor() {
 
         return m_fontColor;
     }
-    
+
     /**
-     * Returns the font color as a hex string.<p>
-     *
+     * Returns the font color as a hex string.
+     * <p>
+     * 
      * @return the font color as a hex string
      */
     public String getFontColorString() {
-        
+
         StringBuffer buf = new StringBuffer();
-        
+
         buf.append("#");
         buf.append(toHexString(m_fontColor.getRed()));
         buf.append(toHexString(m_fontColor.getGreen()));
         buf.append(toHexString(m_fontColor.getBlue()));
-        
+
         return buf.toString();
     }
-    
-    /**
-     * Sets the font color.<p>
-     *
-     * @param fontColor the font color to set
-     */
-    public void setFontColor(Color fontColor) {
 
-        m_fontColor = fontColor;
-    }
-    
     /**
-     * Sets the font color as a hex string.<p>
-     *
-     * @param fontColor the font color to set as a hex string
+     * Returns the holes per glyph for a captcha image text (distortion).
+     * 
+     * @return the holes per glyph for a captcha image text
      */
-    public void setFontColor(String fontColor) {
-        
-        if (fontColor.startsWith("#")) {
-            fontColor = fontColor.substring(1);
-        }
-        
-        m_fontColor = new Color(Integer.valueOf(fontColor, 16).intValue());
+    public Integer getHolesPerGlyph() {
+
+        return m_holesPerGlyp;
     }
-    
+
     /**
-     * Returns the image height.<p>
-     *
+     * Returns the image height.
+     * <p>
+     * 
      * @return the image height
      */
     public int getImageHeight() {
 
         return m_imageHeight;
     }
-    
-    /**
-     * Sets the image height.<p>
-     *
-     * @param imageHeight the image height to set
-     */
-    public void setImageHeight(int imageHeight) {
 
-        m_imageHeight = imageHeight;
-    }
-    
     /**
-     * Returns the image width.<p>
-     *
+     * Returns the image width.
+     * <p>
+     * 
      * @return the image width
      */
     public int getImageWidth() {
 
         return m_imageWidth;
     }
-    
-    /**
-     * Sets the image width.<p>
-     *
-     * @param imageWidth the image width to set
-     */
-    public void setImageWidth(int imageWidth) {
 
-        m_imageWidth = imageWidth;
-    }
-    
     /**
-     * Returns the max. font size.<p>
-     *
+     * Returns the max. font size.
+     * <p>
+     * 
      * @return the max. font size
      */
     public int getMaxFontSize() {
 
         return m_maxFontSize;
     }
-    
-    /**
-     * Sets the max. font size.<p>
-     *
-     * @param maxFontSize the max. font size to set
-     */
-    public void setMaxFontSize(int maxFontSize) {
 
-        m_maxFontSize = maxFontSize;
-    }
-    
     /**
-     * Returns the max. phrase length.<p>
-     *
+     * Returns the max. phrase length.
+     * <p>
+     * 
      * @return the max. phrase length
      */
     public int getMaxPhraseLength() {
 
         return m_maxPhraseLength;
     }
-    
-    /**
-     * Sets the max. phrase length.<p>
-     *
-     * @param maxPhraseLength the max. phrase length to set
-     */
-    public void setMaxPhraseLength(int maxPhraseLength) {
 
-        m_maxPhraseLength = maxPhraseLength;
-    }
-    
     /**
-     * Returns the min. font size.<p>
-     *
+     * Returns the min. font size.
+     * <p>
+     * 
      * @return the min. font size
      */
     public int getMinFontSize() {
 
         return m_minFontSize;
     }
-    
-    /**
-     * Sets the min. font size.<p>
-     *
-     * @param minFontSize the min. font size to set
-     */
-    public void setMinFontSize(int minFontSize) {
 
-        m_minFontSize = minFontSize;
-    }
-    
     /**
-     * Returns the min. phrase length.<p>
-     *
+     * Returns the min. phrase length.
+     * <p>
+     * 
      * @return the min. phrase length
      */
     public int getMinPhraseLength() {
 
         return m_minPhraseLength;
     }
-    
+
     /**
-     * Sets the min. phrase length.<p>
-     *
+     * Configures the instance with values overridden from the the request parameters.
+     * <p>
+     * 
+     * @param jsp a Cms JSP page
+     * 
+     * @see #C_PARAM_BACKGROUND_COLOR
+     * 
+     * @see #C_PARAM_FILTER_AMPLITUDE
+     * 
+     */
+    public void init(CmsJspActionElement jsp) {
+
+        HttpServletRequest request = jsp.getRequest();
+
+        // image width
+        String stringValue = request.getParameter(C_PARAM_IMAGE_WIDTH);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_imageWidth = Integer.parseInt(stringValue);
+        }
+
+        // image height
+        stringValue = request.getParameter(C_PARAM_IMAGE_HEIGHT);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_imageHeight = Integer.parseInt(stringValue);
+        }
+
+        // min. phrase length
+        stringValue = request.getParameter(C_PARAM_MIN_PHRASE_LENGTH);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_minPhraseLength = Integer.parseInt(stringValue);
+        }
+
+        // max. phrase length
+        stringValue = request.getParameter(C_PARAM_MAX_PHRASE_LENGTH);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_maxPhraseLength = Integer.parseInt(stringValue);
+        }
+
+        // min. font size
+        stringValue = request.getParameter(C_PARAM_MIN_FONT_SIZE);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_minFontSize = Integer.parseInt(stringValue);
+        }
+
+        // max. font size
+        stringValue = request.getParameter(C_PARAM_MAX_FONT_SIZE);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_maxFontSize = Integer.parseInt(stringValue);
+        }
+
+        // font color
+        stringValue = request.getParameter(C_PARAM_FONT_COLOR);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
+            setFontColor(stringValue);
+        }
+
+        // background color
+        stringValue = request.getParameter(C_PARAM_BACKGROUND_COLOR);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            stringValue = CmsEncoder.unescape(stringValue, jsp.getRequestContext().getEncoding());
+            setBackgroundColor(stringValue);
+        }
+
+        // holes per glyph
+        stringValue = request.getParameter(C_PARAM_HOLES_PER_GLYPH);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setHolesPerGlyph(Integer.parseInt(stringValue));
+        }
+
+        // filter amplitude
+        stringValue = request.getParameter(C_PARAM_FILTER_AMPLITUDE);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setFilterAmplitude(Integer.parseInt(stringValue));
+        }
+
+        // filter wave length
+        stringValue = request.getParameter(C_PARAM_FILTER_WAVE_LENGTH);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setFilterWaveLength(Integer.parseInt(stringValue));
+        }
+        // flag for generation of background image (vs. background color)
+        stringValue = request.getParameter(C_PARAM_USE_BACKGROUND_IMAGE);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setUseBackgroundImage(Boolean.valueOf(stringValue).booleanValue());
+        }
+    }
+
+    /**
+     * Configures the instance with overridden values from the given XML content.
+     * <p>
+     * 
+     * <h3>Xmlcontent configuration notes</h3>
+     * <ol>
+     * <li>
+     * <ul>
+     * <li> If the xmlcontent contains no node for BackgroundColor ({@link CmsForm#NODE_CAPTCHA_BACKGROUNDCOLOR}),
+     * a background image will be used. </li>
+     * <li> If the xmlcontent node contains an empty node (trimmable to the empty String), the
+     * default background colour {@link Color#WHITE}) will be used as background. </li>
+     * <li> Else the chosen background color will be used. </li>
+     * </ul>
+     * </li>
+     * </ol>
+     * <p>
+     * 
+     * 
+     * @param cms the current user's Cms object
+     * 
+     * @param content the XML content of the form
+     * 
+     * @param locale the current locale
+     * 
+     */
+    public void init(CmsObject cms, CmsXmlContent content, Locale locale) {
+
+        I_CmsXmlContentValue xmlFormCaptcha = content.getValue(CmsForm.NODE_CAPTCHA, locale);
+        String xPathFormCaptcha = xmlFormCaptcha.getPath() + "/";
+
+        // image width
+        String stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_IMAGEWIDTH, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_imageWidth = Integer.parseInt(stringValue);
+        }
+
+        // image height
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_IMAGEHEIGHT, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_imageHeight = Integer.parseInt(stringValue);
+        }
+
+        // min. phrase length
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MIN_PHRASE_LENGTH, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_minPhraseLength = Integer.parseInt(stringValue);
+        }
+
+        // max. phrase length
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MAX_PHRASE_LENGTH, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_maxPhraseLength = Integer.parseInt(stringValue);
+        }
+
+        // min. font size
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MIN_FONT_SIZE, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_minFontSize = Integer.parseInt(stringValue);
+        }
+
+        // max. font size
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_MAX_FONT_SIZE, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            m_maxFontSize = Integer.parseInt(stringValue);
+        }
+
+        // font color
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_FONTCOLOR, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setFontColor(stringValue);
+        }
+
+        // background color
+        // if the field is defined but left blank, the default background color will be used
+        // if the field is not defined a gimpy background image will be used
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_BACKGROUNDCOLOR, locale);
+        if (stringValue == null) {
+            // don't set useBackground.. to false as there may have been a valid setting in default
+            // XML content singleton and the setting has been made there
+        }
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setBackgroundColor(stringValue);
+            m_useBackgroundImage = false;
+        }
+
+        // holes per glyph
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_HOLESPERGLYPH, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setHolesPerGlyph(Integer.parseInt(stringValue));
+        }
+
+        // filter amplitude
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_FILTER_AMPLITUDE, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setFilterAmplitude(Integer.parseInt(stringValue));
+        }
+
+        // filter wave length
+        stringValue = content.getStringValue(cms, xPathFormCaptcha + CmsForm.NODE_CAPTCHA_FILTER_WAVELENGTH, locale);
+        if (CmsStringUtil.isNotEmpty(stringValue)) {
+            setFilterWaveLength(Integer.parseInt(stringValue));
+        }
+
+    }
+
+    /**
+     * Returns the flag that decides wethter a background image or a background color is used.
+     * <p>
+     * 
+     * @return the flag that decides wethter a background image or a background color is used
+     */
+    public boolean isUseBackgroundImage() {
+
+        return m_useBackgroundImage;
+    }
+
+    /**
+     * Sets the background color.
+     * <p>
+     * 
+     * @param backgroundColor the background color to set
+     */
+    public void setBackgroundColor(Color backgroundColor) {
+
+        m_backgroundColor = backgroundColor;
+    }
+
+    /**
+     * Sets the background color as a hex string.
+     * <p>
+     * 
+     * @param backgroundColor the background color to set as a hex string
+     */
+    public void setBackgroundColor(String backgroundColor) {
+
+        if (CmsStringUtil.isNotEmpty(backgroundColor)) {
+            if (backgroundColor.startsWith("#")) {
+                backgroundColor = backgroundColor.substring(1);
+            }
+
+            m_backgroundColor = new Color(Integer.valueOf(backgroundColor, 16).intValue());
+            m_useBackgroundImage = false;
+        } else if (backgroundColor != null) {
+            // not totally empty but consists of whitespaces only: use default value
+            // this happens e.g. if the XML content to configure did contain the node but left the
+            // value empty
+            // in this case the default background color will be used
+            m_useBackgroundImage = false;
+            m_backgroundColor = Color.WHITE;
+        } else {
+            // really empty and null - not even defined in XML content:
+            // don't use background color but a gimpy background image
+            m_useBackgroundImage = true;
+            // the color is not used but we have to avoid NPE in getBackgroundColorString()
+            m_backgroundColor = Color.WHITE;
+        }
+    }
+
+    /**
+     * Sets the filter amplitude for the water filter that will bend the text.
+     * 
+     * @param i the filter amplitude for the water filter that will bend the text to set.
+     */
+    public void setFilterAmplitude(int i) {
+
+        m_filterAmplitude = i;
+
+    }
+
+    /**
+     * Sets the filter wave length for the water filter that bends the text.
+     * <p>
+     * 
+     * @param filterWaveLength the filter wave length for the water filter that bends the text to
+     *            set
+     */
+    public void setFilterWaveLength(int filterWaveLength) {
+
+        m_filterWaveLength = filterWaveLength;
+    }
+
+    /**
+     * Sets the font color.
+     * <p>
+     * 
+     * @param fontColor the font color to set
+     */
+    public void setFontColor(Color fontColor) {
+
+        m_fontColor = fontColor;
+    }
+
+    /**
+     * Sets the font color as a hex string.
+     * <p>
+     * 
+     * @param fontColor the font color to set as a hex string
+     */
+    public void setFontColor(String fontColor) {
+
+        if (CmsStringUtil.isNotEmpty(fontColor)) {
+            if (fontColor.startsWith("#")) {
+                fontColor = fontColor.substring(1);
+            }
+
+            m_fontColor = new Color(Integer.valueOf(fontColor, 16).intValue());
+        } else {
+            m_fontColor = Color.BLACK;
+        }
+    }
+
+    /**
+     * Sets the holes per glyph for a captcha image text (distortion).
+     * 
+     * @param holes the holes per glyph for a captcha image text to set.
+     */
+    public void setHolesPerGlyph(int holes) {
+
+        m_holesPerGlyp = new Integer(holes);
+    }
+
+    /**
+     * Sets the image height.
+     * <p>
+     * 
+     * @param imageHeight the image height to set
+     */
+    public void setImageHeight(int imageHeight) {
+
+        m_imageHeight = imageHeight;
+    }
+
+    /**
+     * Sets the image width.
+     * <p>
+     * 
+     * @param imageWidth the image width to set
+     */
+    public void setImageWidth(int imageWidth) {
+
+        m_imageWidth = imageWidth;
+    }
+
+    /**
+     * Sets the max. font size.
+     * <p>
+     * 
+     * @param maxFontSize the max. font size to set
+     */
+    public void setMaxFontSize(int maxFontSize) {
+
+        m_maxFontSize = maxFontSize;
+    }
+
+    /**
+     * Sets the max. phrase length.
+     * <p>
+     * 
+     * @param maxPhraseLength the max. phrase length to set
+     */
+    public void setMaxPhraseLength(int maxPhraseLength) {
+
+        m_maxPhraseLength = maxPhraseLength;
+    }
+
+    /**
+     * Sets the min. font size.
+     * <p>
+     * 
+     * @param minFontSize the min. font size to set
+     */
+    public void setMinFontSize(int minFontSize) {
+
+        m_minFontSize = minFontSize;
+    }
+
+    /**
+     * Sets the min. phrase length.
+     * <p>
+     * 
      * @param minPhraseLength the min. phrase length to set
      */
     public void setMinPhraseLength(int minPhraseLength) {
 
         m_minPhraseLength = minPhraseLength;
     }
-    
+
     /**
-     * Creates a key to store the settings in a map.<p>
+     * Returns the flag that decides wethter a background image or a background color is used.
+     * <p>
      * 
-     * @return a key to store the settings in a map
+     * @param useBackgroundImage the flag that decides wethter a background image or a background
+     *            color is used.
      */
-    private String createKey() {
-        
-        StringBuffer buf = new StringBuffer();
-        
-        buf.append(m_imageWidth);
-        buf.append("-");
-        buf.append(m_imageHeight);
-        buf.append("-");
-        buf.append(m_minFontSize);
-        buf.append("-");
-        buf.append(m_maxFontSize);
-        buf.append("-");
-        buf.append(m_minPhraseLength);
-        buf.append("-");
-        buf.append(m_maxPhraseLength);
-        buf.append("-");
-        buf.append(m_fontColor.toString());
-        buf.append("-");
-        buf.append(m_backgroundColor.toString());
-        
-        return buf.toString();
+    public void setUseBackgroundImage(boolean useBackgroundImage) {
+
+        m_useBackgroundImage = useBackgroundImage;
     }
-    
+
     /**
-     * Returns the key to store the settings in a map.<p>
+     * Creates a request parameter string from including all captcha settings.
+     * <p>
      * 
-     * @return the key to store the settings in a map
-     */
-    public String getKey() {
-        
-        return m_key;
-    }
-    
-    /**
-     * Creates a request parameter string from including all captcha settings.<p>
-     * 
-     * @param jsp the Cms JSP page
+     * @param cms needed for the context / encoding
      * @return a request parameter string from including all captcha settings
      */
-    public String toRequestParams(CmsJspActionElement jsp) {
-        
+    public String toRequestParams(CmsObject cms) {
+
         StringBuffer buf = new StringBuffer();
-        
+
         buf.append(C_PARAM_IMAGE_WIDTH).append("=").append(m_imageWidth);
         buf.append("&").append(C_PARAM_IMAGE_HEIGHT).append("=").append(m_imageHeight);
         buf.append("&").append(C_PARAM_MIN_FONT_SIZE).append("=").append(m_minFontSize);
         buf.append("&").append(C_PARAM_MAX_FONT_SIZE).append("=").append(m_maxFontSize);
         buf.append("&").append(C_PARAM_MIN_PHRASE_LENGTH).append("=").append(m_minPhraseLength);
         buf.append("&").append(C_PARAM_MAX_PHRASE_LENGTH).append("=").append(m_maxPhraseLength);
-        buf.append("&").append(C_PARAM_FONT_COLOR).append("=").append(CmsEncoder.escape(getFontColorString(), jsp.getRequestContext().getEncoding()));
-        buf.append("&").append(C_PARAM_BACKGROUND_COLOR).append("=").append(CmsEncoder.escape(getBackgroundColorString(), jsp.getRequestContext().getEncoding()));
-
+        buf.append("&").append(C_PARAM_FONT_COLOR).append("=").append(
+            CmsEncoder.escape(getFontColorString(), cms.getRequestContext().getEncoding()));
+        buf.append("&").append(C_PARAM_BACKGROUND_COLOR).append("=").append(
+            CmsEncoder.escape(getBackgroundColorString(), cms.getRequestContext().getEncoding()));
+        buf.append("&").append(C_PARAM_HOLES_PER_GLYPH).append("=").append(m_holesPerGlyp);
+        buf.append("&").append(C_PARAM_FILTER_AMPLITUDE).append("=").append(m_filterAmplitude);
+        buf.append("&").append(C_PARAM_USE_BACKGROUND_IMAGE).append("=").append(Boolean.toString(m_useBackgroundImage));
         return buf.toString();
     }
-    
+
     /**
-     * Converts a color range of a color into a hex string.<p>
+     * @see java.lang.Object#clone()
+     */
+    protected Object clone() {
+
+        CmsCaptchaSettings result = new CmsCaptchaSettings();
+        // copy all members here:
+        result.m_backgroundColor = m_backgroundColor;
+        result.m_filterAmplitude = m_filterAmplitude;
+        result.m_filterWaveLength = m_filterWaveLength;
+        result.m_fontColor = m_fontColor;
+        result.m_holesPerGlyp = m_holesPerGlyp;
+        result.m_imageHeight = m_imageHeight;
+        result.m_imageWidth = m_imageWidth;
+        result.m_maxFontSize = m_maxFontSize;
+        result.m_maxPhraseLength = m_maxPhraseLength;
+        result.m_minFontSize = m_minFontSize;
+        result.m_useBackgroundImage = m_useBackgroundImage;
+        result.m_minPhraseLength = m_minPhraseLength;
+
+        return result;
+    }
+
+    private void initDefaultConfiguration(CmsObject cms) {
+
+        CmsFile captchaSettingsFile;
+        try {
+            captchaSettingsFile = cms.readFile(DEFAULT_SETTINGS_VFS_PATH);
+            CmsXmlContent xmlFormCaptcha = CmsXmlContentFactory.unmarshal(cms, captchaSettingsFile);
+
+            // read the settings:
+
+            // image width
+            String stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_IMAGEWIDTH, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                m_imageWidth = Integer.parseInt(stringValue);
+            } else {
+                // implant hardcoded system defaults if someone messed up the configuration in
+                // master XML content to avoid potential side effects
+                m_imageWidth = 150;
+            }
+
+            // image height
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_IMAGEHEIGHT, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                m_imageHeight = Integer.parseInt(stringValue);
+            } else {
+                m_imageHeight = 50;
+            }
+
+            // min. phrase length
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_MIN_PHRASE_LENGTH, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                m_minPhraseLength = Integer.parseInt(stringValue);
+            } else {
+                m_minPhraseLength = 6;
+            }
+
+            // max. phrase length
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_MAX_PHRASE_LENGTH, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                m_maxPhraseLength = Integer.parseInt(stringValue);
+            } else {
+                m_maxPhraseLength = 7;
+            }
+
+            // min. font size
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_MIN_FONT_SIZE, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                m_minFontSize = Integer.parseInt(stringValue);
+            } else {
+                m_minFontSize = 20;
+            }
+
+            // max. font size
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_MAX_FONT_SIZE, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                m_maxFontSize = Integer.parseInt(stringValue);
+            } else {
+                m_maxFontSize = 40;
+            }
+
+            // font color
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_FONTCOLOR, Locale.ENGLISH);
+            // internal null / emtpy string test with default assignment:
+            setFontColor(stringValue);
+
+            // background color
+            // if the field is defined but left blank, the default background color will be used
+            // if the field is not defined a gimpy background image will be used
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_BACKGROUNDCOLOR, Locale.ENGLISH);
+            setBackgroundColor(stringValue);
+
+            // holes per glyph
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_HOLESPERGLYPH, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                setHolesPerGlyph(Integer.parseInt(stringValue));
+            } else {
+                setHolesPerGlyph(1);
+            }
+
+            // filter amplitude
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_FILTER_AMPLITUDE, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                setFilterAmplitude(Integer.parseInt(stringValue));
+            } else {
+                setFilterAmplitude(2);
+            }
+
+            // filter wave length
+            stringValue = xmlFormCaptcha.getStringValue(cms, CmsForm.NODE_CAPTCHA_FILTER_WAVELENGTH, Locale.ENGLISH);
+            if (CmsStringUtil.isNotEmpty(stringValue)) {
+                setFilterWaveLength(Integer.parseInt(stringValue));
+            } else {
+                setFilterWaveLength(60);
+            }
+
+        } catch (CmsException e) {
+
+            if (LOG.isErrorEnabled()) {
+
+                LOG.error(
+                    Messages.get().container(Messages.LOG_ERR_READ_CAPTCHA_DEFAULT_1, DEFAULT_SETTINGS_VFS_PATH),
+                    e);
+            }
+        }
+
+    }
+
+    /**
+     * Converts a color range of a color into a hex string.
+     * <p>
      * 
      * @param colorRange the color range of a color
      * @return the hex string of the color range
      */
     private String toHexString(int colorRange) {
-        
+
         if (colorRange < 10) {
             return "0" + Integer.toHexString(colorRange);
         } else {
             return Integer.toHexString(colorRange);
         }
     }
-    
 }

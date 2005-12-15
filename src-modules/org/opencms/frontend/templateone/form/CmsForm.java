@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2005/12/15 14:42:07 $
+ * Version: $Revision: 1.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,28 +58,64 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.22 $ 
+ * 
+ * @author Thomas Weckert 
+ * 
+ * @version $Revision: 1.23 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsForm {
     
-    /** Resource type ID of XML content forms. */
-    private static final String TYPE_NAME = "emailform";
-
     /** Mail type: html mail. */
     public static final String MAILTYPE_HTML = "html";
-    
+
     /** Mail type: text mail. */
     public static final String MAILTYPE_TEXT = "text";
+    
+    /** Configuration node name for the optional captcha. */
+    public static final String NODE_CAPTCHA = "FormCaptcha";
+
+    /** Configuration node name for the optional captcha background color. */
+    public static final String NODE_CAPTCHA_BACKGROUNDCOLOR = "BackgroundColor";
+    
+    /** Configuration node name for the field value node. */
+    public static final String NODE_CAPTCHA_FILTER_AMPLITUDE = "FilterAmplitude";
+    
+    /** Configuration node name for the optional captcha image holes per glyph. */
+    public static final String NODE_CAPTCHA_FILTER_WAVELENGTH = "FilterWaveLength";
+    
+    /** Configuration node name for the optional captcha font color. */
+    public static final String NODE_CAPTCHA_FONTCOLOR = "FontColor";
+    
+    /** Configuration node name for the optional captcha image holes per glyph. */
+    public static final String NODE_CAPTCHA_HOLESPERGLYPH = "HolesPerGlyph";
+    
+    /** Configuration node name for the optional captcha image height. */
+    public static final String NODE_CAPTCHA_IMAGEHEIGHT = "ImageHeight";
+    
+    /** Configuration node name for the optional captcha image width. */
+    public static final String NODE_CAPTCHA_IMAGEWIDTH = "ImageWidth";   
+
+    /** Configuration node name for the optional captcha max. font size. */
+    public static final String NODE_CAPTCHA_MAX_FONT_SIZE = "MaxFontSize";   
+
+    /** Configuration node name for the optional captcha max. phrase length. */
+    public static final String NODE_CAPTCHA_MAX_PHRASE_LENGTH = "MaxPhraseLength";
+    
+    /** Configuration node name for the optional captcha min. font size. */
+    public static final String NODE_CAPTCHA_MIN_FONT_SIZE = "MinFontSize";
+    
+    
+    /** Configuration node name for the optional captcha min. phrase length. */
+    public static final String NODE_CAPTCHA_MIN_PHRASE_LENGTH = "MinPhraseLength";
 
     /** Configuration node name for the confirmation mail checkbox label text. */
     public static final String NODE_CONFIRMATIONMAILCHECKBOXLABEL = "ConfirmationCheckboxLabel";
     
     /** Configuration node name for the confirmation mail enabled node. */
     public static final String NODE_CONFIRMATIONMAILENABLED = "ConfirmationMailEnabled";
-    
+
     /** Configuration node name for the confirmation mail input field node. */
     public static final String NODE_CONFIRMATIONMAILFIELD = "ConfirmationField";
     
@@ -91,40 +127,37 @@ public class CmsForm {
     
     /** Configuration node name for the confirmation mail text node. */
     public static final String NODE_CONFIRMATIONMAILTEXT = "ConfirmationMailText";
-
-    /** Configuration node name for the optional target URI. */
-    public static final String NODE_TARGET_URI = "TargetUri";
     
     /** Configuration node name for the Email node. */
     public static final String NODE_EMAIL = "Email";
-    
+
     /** Configuration node name for the field value node. */
     public static final String NODE_FIELDDEFAULTVALUE = "FieldDefault";
     
+    /** Configuration node name for the field error message node. */
+    public static final String NODE_FIELDERRORMESSAGE = "FieldErrorMessage";
+    
     /** Configuration node name for the field item node. */
     public static final String NODE_FIELDITEM = "FieldItem";
-
+    
     /** Configuration node name for the field description node. */
     public static final String NODE_FIELDLABEL = "FieldLabel";
     
     /** Configuration node name for the field mandatory node. */
     public static final String NODE_FIELDMANDATORY = "FieldMandatory";
-    
+
     /** Configuration node name for the field type node. */
     public static final String NODE_FIELDTYPE = "FieldType";
-    
+
     /** Configuration node name for the field validation node. */
     public static final String NODE_FIELDVALIDATION = "FieldValidation";
     
-    /** Configuration node name for the field error message node. */
-    public static final String NODE_FIELDERRORMESSAGE = "FieldErrorMessage";
-
     /** Configuration node name for the form attributes node. */
     public static final String NODE_FORMATTRIBUTES = "FormAttributes";
     
     /** Configuration node name for the form check page text node. */
     public static final String NODE_FORMCHECKTEXT = "CheckText";
-    
+
     /** Configuration node name for the form confirmation text node. */
     public static final String NODE_FORMCONFIRMATION = "FormConfirmation";
     
@@ -133,10 +166,10 @@ public class CmsForm {
     
     /** Configuration node name for the form text node. */
     public static final String NODE_FORMTEXT = "FormText";
-
+    
     /** Configuration node name for the input field node. */
     public static final String NODE_INPUTFIELD = "InputField";
-
+    
     /** Configuration node name for the item description node. */
     public static final String NODE_ITEMDESCRIPTION = "ItemDescription";
     
@@ -145,7 +178,7 @@ public class CmsForm {
     
     /** Configuration node name for the item value node. */
     public static final String NODE_ITEMVALUE = "ItemValue";
-
+    
     /** Configuration node name for the Email bcc recipient(s) node. */
     public static final String NODE_MAILBCC = "MailBCC";
     
@@ -154,7 +187,7 @@ public class CmsForm {
     
     /** Configuration node name for the Email sender address node. */
     public static final String NODE_MAILFROM = "MailFrom";
-    
+
     /** Configuration node name for the Email subject node. */
     public static final String NODE_MAILSUBJECT = "MailSubject";
     
@@ -175,62 +208,42 @@ public class CmsForm {
     
     /** Configuration node name for the Show check page node. */
     public static final String NODE_SHOWCHECK = "ShowCheck";
-
+    
+    /** Configuration node name for the optional target URI. */
+    public static final String NODE_TARGET_URI = "TargetUri";
+    
     /** Request parameter name for the optional send confirmation email checkbox. */
     public static final String PARAM_SENDCONFIRMATION = "sendconfirmation";
     
-    /** Configuration node name for the optional captcha. */
-    public static final String NODE_CAPTCHA = "FormCaptcha";
-    
-    /** Configuration node name for the optional captcha image width. */
-    public static final String NODE_CAPTCHA_IMAGEWIDTH = "ImageWidth";
-    
-    /** Configuration node name for the optional captcha image height. */
-    public static final String NODE_CAPTCHA_IMAGEHEIGHT = "ImageHeight";
-    
-    /** Configuration node name for the optional captcha min. phrase length. */
-    public static final String NODE_CAPTCHA_MIN_PHRASE_LENGTH = "MinPhraseLength";
-    
-    /** Configuration node name for the optional captcha max. phrase length. */
-    public static final String NODE_CAPTCHA_MAX_PHRASE_LENGTH = "MaxPhraseLength";
-    
-    /** Configuration node name for the optional captcha min. font size. */
-    public static final String NODE_CAPTCHA_MIN_FONT_SIZE = "MinFontSize";
-    
-    /** Configuration node name for the optional captcha max. font size. */
-    public static final String NODE_CAPTCHA_MAX_FONT_SIZE = "MaxFontSize";
-    
-    /** Configuration node name for the optional captcha font color. */
-    public static final String NODE_CAPTCHA_FONTCOLOR = "FontColor";
-    
-    /** Configuration node name for the optional captcha background color. */
-    public static final String NODE_CAPTCHA_BACKGROUNDCOLOR = "BackgroundColor";
+    /** Resource type ID of XML content forms. */
+    private static final String TYPE_NAME = "emailform";
+
+    private CmsCaptchaField m_captchaField;
 
     private List m_configurationErrors;
-
     private String m_confirmationMailCheckboxLabel;
     private boolean m_confirmationMailEnabled;
     private int m_confirmationMailField;
     private boolean m_confirmationMailOptional;
     private String m_confirmationMailSubject;
     private String m_confirmationMailText;
-    private String m_confirmationMailTextPlain;
 
+    private String m_confirmationMailTextPlain;
+    
     /** Stores the form input fields. */
     private List m_fields;
-    
+
     /** Allows to access form fields internally by name. */
     private Map m_fieldsByName;
-
+    private String m_formAction;
     private String m_formAttributes;
     private String m_formCheckText;
     private String m_formConfirmationText;
     private String m_formFieldAttributes;
+
     private String m_formText;
-    private  String m_targetUri;
 
     private boolean m_hasMandatoryFields;
-
     private String m_mailBCC;
     private String m_mailCC;
     private String m_mailFrom;
@@ -239,12 +252,11 @@ public class CmsForm {
     private String m_mailText;
     private String m_mailTextPlain;
     private String m_mailTo;
-    private String m_mailType;
 
-    private boolean m_showCheck;
+    private String m_mailType;
     
-    private CmsCaptchaField m_captchaField;
-    private String m_formAction;
+    private boolean m_showCheck;
+    private  String m_targetUri;
 
     /**
      * Default constructor which parses the configuration file.<p>
@@ -284,6 +296,34 @@ public class CmsForm {
      */
     public static String getStaticType() {
         return TYPE_NAME;
+    }
+
+    /**
+     * Tests, if the captcha field (if configured at all) should be displayed on the check page.<p>
+     * 
+     * @return true, if the captcha field should be displayed on the check page
+     */
+    public boolean captchaFieldIsOnCheckPage() {
+        return getShowCheck();
+    }
+
+    /**
+     * Tests, if the captcha field (if configured at all) should be displayed on the input page.<p>
+     * 
+     * @return true, if the captcha field should be displayed on the input page
+     */
+    public boolean captchaFieldIsOnInputPage() {
+        return !getShowCheck();
+    }
+
+    /**
+     * Returns the (opt.) captcha field of this form.<p>
+     * 
+     * @return the (opt.) captcha field of this form
+     */
+    public CmsCaptchaField getCaptchaField() {
+        
+        return m_captchaField;
     }
 
     /**
@@ -354,6 +394,24 @@ public class CmsForm {
     public List getFields() {
 
         return m_fields;
+    }
+
+    /**
+     * Returns the value for a field specified by it's name (Xpath).<p>
+     * 
+     * @param fieldName the field's name (Xpath)
+     * @return the field value, or null
+     */
+    public String getFieldStringValueByName(String fieldName) {
+        
+        I_CmsField field = (I_CmsField)m_fieldsByName.get(fieldName);
+        if (field != null) {
+            
+            String fieldValue = field.getValue();
+            return (fieldValue != null) ? fieldValue.trim() : "";
+        }
+        
+        return "";
     }
 
     /** 
@@ -507,6 +565,27 @@ public class CmsForm {
     }
 
     /**
+     * Returns the target URI of this form.<p>
+     * 
+     * This optional target URI can be used to redirect the user to an OpenCms page instead of displaying a confirmation
+     * text from the form's XML content.<p>
+     * 
+     * @return the target URI
+     */
+    public String getTargetUri() {
+        return m_targetUri;
+    }
+
+    /**
+     * Tests if a captcha field is configured for this form.<p>
+     * 
+     * @return true, if a captcha field is configured for this form
+     */
+    public boolean hasCaptchaField() {
+        return m_captchaField != null;
+    }
+
+    /**
      * Returns if the form has configuration errors.<p>
      *
      * @return true if the form has configuration errors, otherwise false
@@ -524,6 +603,18 @@ public class CmsForm {
     public boolean hasMandatoryFields() {
 
         return m_hasMandatoryFields;
+    }
+
+    /**
+     * Tests if this form has a target URI specified.<p>
+     * 
+     * This optional target URI can be used to redirect the user to an OpenCms page instead of displaying a confirmation
+     * text from the form's XML content.<p>
+     * 
+     * @return the target URI
+     */
+    public boolean hasTargetUri() {
+        return CmsStringUtil.isNotEmpty(m_targetUri);
     }
 
     /**
@@ -573,6 +664,15 @@ public class CmsForm {
     }
 
     /**
+     * Tests if the check page was submitted.<p>
+     * 
+     * @return true, if the check page was submitted
+     */
+    public boolean isCheckPageSubmitted() {
+        return CmsFormHandler.ACTION_CONFIRMED.equals(m_formAction);
+    }
+
+    /**
      * Returns if the optional confirmation mail is enabled.<p>
      *
      * @return true if the optional confirmation mail is enabled, otherwise false
@@ -593,13 +693,55 @@ public class CmsForm {
     }
 
     /**
+     * Tests if the input page was submitted.<p>
+     * 
+     * @return true, if the input page was submitted
+     */
+    public boolean isInputFormSubmitted() {
+        return CmsFormHandler.ACTION_SUBMIT.equals(m_formAction);
+    }
+
+    /**
+     * Removes the captcha field from the list of all fields, if present.<p>
+     * 
+     * @return the removed captcha field, or null
+     */
+    public I_CmsField removeCaptchaField() {
+        
+        for (int i = 0, n = m_fields.size(); i < n; i++) {
+            
+            I_CmsField field = (I_CmsField)m_fields.get(i);
+            if (field != null && CmsCaptchaField.class.isAssignableFrom(getClass())) {
+                
+                removeField(field);
+                return field;
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Adds a field to the form.<p>
+     * 
+     * @param field the field to be added to the form
+     */
+    protected void addField(I_CmsField field) {
+        
+        m_fields.add(field);
+        
+        // the fields are also internally backed in a map keyed by their field name
+        m_fieldsByName.put(field.getName(), field);
+    }
+
+    /**
      * Marks the individual items of checkboxes, selectboxes and radiobuttons as selected depending on the given request parameters.<p>
      * 
      * @param request the current request
      * @param field the current field
      * @param value the value of the input field
      * 
-     * @return "true" if the current item is selected or checked, otherwise false
+     * @return <code>"true"</code> if the current item is selected or checked, otherwise false
      */
     protected String readSelectedFromRequest(HttpServletRequest request, I_CmsField field, String value) {
 
@@ -610,7 +752,7 @@ public class CmsForm {
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
                     if (value.equals(values[i])) {
-                        return "true";
+                        return Boolean.toString(true);
                     }
                 }
             }
@@ -619,13 +761,26 @@ public class CmsForm {
             String fieldValue = request.getParameter(field.getName());
             if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.equals(value) && !"".equals(value)) {
                 // mark this as selected
-                result = "true";
+                result = Boolean.toString(true);
             } else {
                 // do not mark it as selected
                 result = "";
             }
         }
         return result;
+    }
+
+    /**
+     * Removes a field from the form fields.<p>
+     * 
+     * @param field the field to be removed
+     */
+    protected void removeField(I_CmsField field) {
+        
+        m_fields.remove(field);
+        
+        // the fields are also internally backed in a map keyed by their field name
+        m_fieldsByName.remove(field);
     }
 
     /**
@@ -706,19 +861,6 @@ public class CmsForm {
     protected void setConfirmationMailTextPlain(String confirmationMailTextPlain) {
 
         m_confirmationMailTextPlain = confirmationMailTextPlain;
-    }
-
-    /**
-     * Adds a field to the form.<p>
-     * 
-     * @param field the field to be added to the form
-     */
-    protected void addField(I_CmsField field) {
-        
-        m_fields.add(field);
-        
-        // the fields are also internally backed in a map keyed by their field name
-        m_fieldsByName.put(field.getName(), field);
     }
 
     /**
@@ -810,7 +952,7 @@ public class CmsForm {
 
         m_mailFrom = mailFrom;
     }
-
+    
     /**
      * Sets the mail subject.<p>
      * 
@@ -840,7 +982,7 @@ public class CmsForm {
 
         m_mailText = mailText;
     }
-
+    
     /**
      * Sets the mail text as plain text.<p>
      * 
@@ -850,7 +992,7 @@ public class CmsForm {
 
         m_mailTextPlain = mailTextPlain;
     }
-
+    
     /**
      * Sets the mail recipient(s).<p>
      * 
@@ -860,7 +1002,7 @@ public class CmsForm {
 
         m_mailTo = mailTo;
     }
-
+    
     /**
      * Sets the mail type ("text" or "html").<p>
      * 
@@ -870,7 +1012,7 @@ public class CmsForm {
 
         m_mailType = mailType;
     }
-
+    
     /**
      * Sets if the check page should be shown.<p>
      *
@@ -880,7 +1022,19 @@ public class CmsForm {
 
         m_showCheck = showCheck;
     }
-
+    
+    /**
+     * Sets the target URI of this form.<p>
+     * 
+     * This optional target URI can be used to redirect the user to an OpenCms page instead of displaying a confirmation
+     * text from the form's XML content.<p>
+     * 
+     * @param targetUri the target URI
+     */
+    protected void setTargetUri(String targetUri) {
+        m_targetUri = targetUri;
+    }
+    
     /**
      * Creates the checkbox field to activate the confirmation mail in the input form.<p>
      * 
@@ -896,18 +1050,18 @@ public class CmsForm {
         field.setLabel(messages.key("form.confirmation.label"));
         // check the field status
         boolean isChecked = false;
-        if (!initial && "true".equals(jsp.getRequest().getParameter(PARAM_SENDCONFIRMATION))) {
+        if (!initial && Boolean.valueOf(jsp.getRequest().getParameter(PARAM_SENDCONFIRMATION)).booleanValue()) {
             // checkbox is checked by user
             isChecked = true;
         }
         // create item for field
-        CmsFieldItem item = new CmsFieldItem("true", getConfirmationMailCheckboxLabel(), isChecked);
+        CmsFieldItem item = new CmsFieldItem(Boolean.toString(true), getConfirmationMailCheckboxLabel(), isChecked);
         List items = new ArrayList(1);
         items.add(item);
         field.setItems(items);
         return field;
     }
-
+    
     /**
      * Checks if the given value is empty and returns in that case the default value.<p>
      * 
@@ -922,7 +1076,50 @@ public class CmsForm {
         }
         return defaultValue;
     }
+    
+    /**
+     * Initializes the optional captcha field.<p>
+     * 
+     * @param jsp the initialized CmsJspActionElement to access the OpenCms API
+     * @param xmlContent the XML configuration content
+     * @param locale the currently active Locale
+     * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
+     */
+    private void initCaptchaField(CmsJspActionElement jsp, CmsXmlContent xmlContent, Locale locale, boolean initial) {
+        
+        boolean captchaFieldIsOnInputPage = captchaFieldIsOnInputPage();
+        boolean displayCheckPage = captchaFieldIsOnCheckPage() && isInputFormSubmitted();
+        boolean submittedCheckPage = captchaFieldIsOnCheckPage() && isCheckPageSubmitted();
 
+        if (captchaFieldIsOnInputPage || displayCheckPage || submittedCheckPage) {
+
+            CmsObject cms = jsp.getCmsObject();
+            
+            I_CmsXmlContentValue xmlValueCaptcha = xmlContent.getValue(NODE_CAPTCHA, locale);
+            if (xmlValueCaptcha != null) {
+
+                // get the field label
+                String xPathCaptcha = xmlValueCaptcha.getPath() + "/";
+                String stringValue = xmlContent.getStringValue(cms, xPathCaptcha + NODE_FIELDLABEL, locale);
+                String fieldLabel = getConfigurationValue(stringValue, "");
+
+                // get the field value
+                String fieldValue = "";
+                if (!initial) {
+                    fieldValue = jsp.getRequest().getParameter(CmsCaptchaField.C_PARAM_CAPTCHA_PHRASE);
+                    if (fieldValue == null) {
+                        fieldValue = "";
+                    }
+                }
+
+                // get the image settings from the XML content
+                CmsCaptchaSettings captchaSettings = CmsCaptchaSettings.getInstance(cms);
+                captchaSettings.init(cms, xmlContent, locale);
+                m_captchaField = new CmsCaptchaField(captchaSettings, fieldLabel, fieldValue);
+            }
+        }
+    }
+    
     /**
      * Initializes the general online form settings.<p>
      * 
@@ -1054,7 +1251,7 @@ public class CmsForm {
                 messages.key("form.confirmation.checkbox")));
         }
     }
-
+    
     /**
      * Initializes the field objects of the form.<p>
      * 
@@ -1168,7 +1365,7 @@ public class CmsForm {
                             if (initial) {
                                 // only fill in values from configuration file if called initially
                                 if (isPreselected) {
-                                    selected = "true";
+                                    selected = Boolean.toString(true);
                                 }
                             } else {
                                 // get selected flag from request for current item
@@ -1206,48 +1403,6 @@ public class CmsForm {
     }
     
     /**
-     * Initializes the optional captcha field.<p>
-     * 
-     * @param jsp the initialized CmsJspActionElement to access the OpenCms API
-     * @param xmlContent the XML configuration content
-     * @param locale the currently active Locale
-     * @param initial if true, field values are filled with values specified in the XML configuration, otherwise values are read from the request
-     */
-    private void initCaptchaField(CmsJspActionElement jsp, CmsXmlContent xmlContent, Locale locale, boolean initial) {
-        
-        boolean captchaFieldIsOnInputPage = captchaFieldIsOnInputPage();
-        boolean displayCheckPage = captchaFieldIsOnCheckPage() && isInputFormSubmitted();
-        boolean submittedCheckPage = captchaFieldIsOnCheckPage() && isCheckPageSubmitted();
-
-        if (captchaFieldIsOnInputPage || displayCheckPage || submittedCheckPage) {
-
-            CmsObject cms = jsp.getCmsObject();
-            
-            I_CmsXmlContentValue xmlValueCaptcha = xmlContent.getValue(NODE_CAPTCHA, locale);
-            if (xmlValueCaptcha != null) {
-
-                // get the field label
-                String xPathCaptcha = xmlValueCaptcha.getPath() + "/";
-                String stringValue = xmlContent.getStringValue(cms, xPathCaptcha + NODE_FIELDLABEL, locale);
-                String fieldLabel = getConfigurationValue(stringValue, "");
-
-                // get the field value
-                String fieldValue = "";
-                if (!initial) {
-                    fieldValue = jsp.getRequest().getParameter(CmsCaptchaField.C_PARAM_CAPTCHA_PHRASE);
-                    if (fieldValue == null) {
-                        fieldValue = "";
-                    }
-                }
-
-                // get the image settings from the XML content
-                CmsCaptchaSettings captchaSettings = new CmsCaptchaSettings(cms, xmlContent, locale);
-                m_captchaField = new CmsCaptchaField(captchaSettings, fieldLabel, fieldValue);
-            }
-        }
-    }
-
-    /**
      * Initializes the member variables.<p>
      */
     private void initMembers() {
@@ -1270,7 +1425,7 @@ public class CmsForm {
         setConfirmationMailText("");
         setConfirmationMailTextPlain("");
     }
-
+    
     /**
      * Validates the loaded online form configuration and creates a list of error messages, if necessary.<p>
      * 
@@ -1295,148 +1450,6 @@ public class CmsForm {
                 getConfigurationErrors().add(messages.key("form.configuration.error.emailfield.type"));
             }
         }
-    }
-    
-    /**
-     * Returns the (opt.) captcha field of this form.<p>
-     * 
-     * @return the (opt.) captcha field of this form
-     */
-    public CmsCaptchaField getCaptchaField() {
-        
-        return m_captchaField;
-    }
-    
-    /**
-     * Tests, if the captcha field (if configured at all) should be displayed on the input page.<p>
-     * 
-     * @return true, if the captcha field should be displayed on the input page
-     */
-    public boolean captchaFieldIsOnInputPage() {
-        return !getShowCheck();
-    }
-    
-    /**
-     * Tests, if the captcha field (if configured at all) should be displayed on the check page.<p>
-     * 
-     * @return true, if the captcha field should be displayed on the check page
-     */
-    public boolean captchaFieldIsOnCheckPage() {
-        return getShowCheck();
-    }
-    
-    /**
-     * Tests if the check page was submitted.<p>
-     * 
-     * @return true, if the check page was submitted
-     */
-    public boolean isCheckPageSubmitted() {
-        return CmsFormHandler.ACTION_CONFIRMED.equals(m_formAction);
-    }
-    
-    /**
-     * Tests if the input page was submitted.<p>
-     * 
-     * @return true, if the input page was submitted
-     */
-    public boolean isInputFormSubmitted() {
-        return CmsFormHandler.ACTION_SUBMIT.equals(m_formAction);
-    }
-    
-    /**
-     * Tests if a captcha field is configured for this form.<p>
-     * 
-     * @return true, if a captcha field is configured for this form
-     */
-    public boolean hasCaptchaField() {
-        return m_captchaField != null;
-    }
-    
-    /**
-     * Removes the captcha field from the list of all fields, if present.<p>
-     * 
-     * @return the removed captcha field, or null
-     */
-    public I_CmsField removeCaptchaField() {
-        
-        for (int i = 0, n = m_fields.size(); i < n; i++) {
-            
-            I_CmsField field = (I_CmsField)m_fields.get(i);
-            if (field != null && CmsCaptchaField.class.isAssignableFrom(getClass())) {
-                
-                removeField(field);
-                return field;
-            }
-        }
-
-        return null;
-    }
-    
-    /**
-     * Removes a field from the form fields.<p>
-     * 
-     * @param field the field to be removed
-     */
-    protected void removeField(I_CmsField field) {
-        
-        m_fields.remove(field);
-        
-        // the fields are also internally backed in a map keyed by their field name
-        m_fieldsByName.remove(field);
-    }
-    
-    /**
-     * Sets the target URI of this form.<p>
-     * 
-     * This optional target URI can be used to redirect the user to an OpenCms page instead of displaying a confirmation
-     * text from the form's XML content.<p>
-     * 
-     * @param targetUri the target URI
-     */
-    protected void setTargetUri(String targetUri) {
-        m_targetUri = targetUri;
-    }
-    
-    /**
-     * Returns the target URI of this form.<p>
-     * 
-     * This optional target URI can be used to redirect the user to an OpenCms page instead of displaying a confirmation
-     * text from the form's XML content.<p>
-     * 
-     * @return the target URI
-     */
-    public String getTargetUri() {
-        return m_targetUri;
-    }
-    
-    /**
-     * Tests if this form has a target URI specified.<p>
-     * 
-     * This optional target URI can be used to redirect the user to an OpenCms page instead of displaying a confirmation
-     * text from the form's XML content.<p>
-     * 
-     * @return the target URI
-     */
-    public boolean hasTargetUri() {
-        return CmsStringUtil.isNotEmpty(m_targetUri);
-    }
-    
-    /**
-     * Returns the value for a field specified by it's name (Xpath).<p>
-     * 
-     * @param fieldName the field's name (Xpath)
-     * @return the field value, or null
-     */
-    public String getFieldStringValueByName(String fieldName) {
-        
-        I_CmsField field = (I_CmsField)m_fieldsByName.get(fieldName);
-        if (field != null) {
-            
-            String fieldValue = field.getValue();
-            return (fieldValue != null) ? fieldValue.trim() : "";
-        }
-        
-        return "";
     }
 
 }
