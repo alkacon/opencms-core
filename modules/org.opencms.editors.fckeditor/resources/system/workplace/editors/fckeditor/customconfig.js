@@ -19,7 +19,7 @@ String cssPath = extConf.getUriStyleSheet();
 // XML code has to be placed in the same folder where the template CSS style sheet is located.
 // The file name has to be exactly like the file name of the CSS with the suffix "_style.xml" added. 
 // E.g. for the CSS file "style.css" the style definition file has to be named "style.css_style.xml".
-// An example for a style XML can be found in the VFS folder "/system/workplace/resources/editors/fckeditor/fckstyles.xml". 
+// An example for a style XML can be found in the VFS file "/system/workplace/resources/editors/fckeditor/fckstyles.xml". 
 boolean styleXMLPresent = false;
 if (CmsStringUtil.isNotEmpty(cssPath)) {
 	String styleXML = cssPath + CmsFCKEditor.SUFFIX_STYLESXML;

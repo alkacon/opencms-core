@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2005/12/16 14:12:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/16 15:15:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.http.HttpServletRequest;
  * has to be named <code>style.css_style.xml</code>.<p>
  * 
  * An example for a style XML can be found 
- * in the VFS folder <code>/system/workplace/resources/editors/fckeditor/fckstyles.xml</code>.<p>
+ * in the VFS file <code>/system/workplace/resources/editors/fckeditor/fckstyles.xml</code>.<p>
  * 
  * The following editor uses this class:
  * <ul>
@@ -69,7 +69,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.7
  */
