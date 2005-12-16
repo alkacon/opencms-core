@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsHtmlWidgetOption.java,v $
- * Date   : $Date: 2005/10/01 20:50:06 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2005/12/16 14:12:40 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.List;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.1
  */
@@ -69,22 +69,22 @@ public class CmsHtmlWidgetOption {
     public static final String EDITOR_DEFAULTHEIGHT = "260px";
 
     /** Option for the "anchor" dialog. */
-    private static final String OPTION_ANCHOR = "anchor";
+    public static final String OPTION_ANCHOR = "anchor";
 
     /** The delimiter to use in the configuration String. */
-    private static final String OPTION_DELIMITER = ",";
+    public static final String OPTION_DELIMITER = ",";
 
     /** Option for the "formatselect" selector. */
-    private static final String OPTION_FORMATSELECT = "formatselect";
+    public static final String OPTION_FORMATSELECT = "formatselect";
 
     /** Option for the "height" configuration. */
-    private static final String OPTION_HEIGHT = "height:";
+    public static final String OPTION_HEIGHT = "height:";
 
     /** Option for the "link" dialog. */
-    private static final String OPTION_LINK = "link";
+    public static final String OPTION_LINK = "link";
 
     /** Option for the "source" code mode. */
-    private static final String OPTION_SOURCE = "source";
+    public static final String OPTION_SOURCE = "source";
 
     private List m_displayGalleries;
     private String m_editorHeight;

@@ -38,3 +38,7 @@ option.linkstyleinputs=false
 option.images=true
 option.specialchars=true
 option.table=true
+option.form=false
+option.style=false
+option.flash=false
+option.spellcheck=false

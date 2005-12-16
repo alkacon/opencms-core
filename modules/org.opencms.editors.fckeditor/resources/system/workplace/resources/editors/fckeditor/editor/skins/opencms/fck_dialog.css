@@ -1,0 +1,131 @@
+/*
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: fck_dialog.css
+ * 	Styles used by the dialog boxes.
+ * 
+ * File Authors:
+ * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
+ */
+
+body
+{
+	margin: 0px;
+	padding: 10px;
+}
+
+body, td, input, select, textarea
+{
+	font-size: 11px;
+	font-family: 'Microsoft Sans Serif' , Arial, Helvetica, Verdana;
+}
+
+body, .BackColor
+{
+	background-color: ButtonFace;
+}
+
+.PopupBody
+{
+	margin: 0px;
+	padding: 0px;
+}
+
+.PopupTitle
+{
+	font-weight: bold;
+	font-size: 14pt;
+	color: MenuText;
+	background-color: ButtonFace;
+	padding: 3px 10px 3px 10px;
+}
+
+.PopupButtons
+{
+	border-top: ThreeDDarkShadow 1px solid;
+	background-color: ButtonFace;
+	padding: 7px 10px 7px 10px;
+}
+
+.Button
+{
+	border-right: ButtonShadow 1px solid;
+	border-top: ButtonShadow 1px solid;
+	border-left: ButtonShadow 1px solid;
+	color: ButtonText;
+	border-bottom: ButtonShadow 1px solid;
+	background-color: ButtonFace;
+}
+
+.DarkBackground
+{
+	background-color: ThreeDShadow;
+}
+
+.LightBackground
+{
+	background-color: ThreeDLightShadow;
+}
+
+.PopupTitleBorder
+{
+	border-bottom: ThreeDDarkShadow 1px solid;
+}
+
+.PopupTabArea
+{
+	color: WindowText;
+	background-color: ButtonFace;
+}
+
+.PopupTabEmptyArea
+{
+	padding-left: 10px ;
+	border-bottom: ThreeDShadow 1px solid;
+}
+
+.PopupTab, .PopupTabSelected
+{
+	border-right: ThreeDDarkShadow 1px solid;
+	border-top: ThreeDDarkShadow 1px solid;
+	border-left: ThreeDDarkShadow 1px solid;
+	padding-right: 5px;
+	padding-left: 5px;
+	padding-bottom: 3px;
+	padding-top: 3px;
+	color: WindowText;
+}
+
+.PopupTab
+{
+	margin-top: 1px;
+	border-bottom: ThreeDShadow 1px solid;
+	cursor: pointer;
+	cursor: hand;
+}
+
+.PopupTabSelected
+{
+	font-weight:bold;
+	cursor: default;
+	padding-top: 4px;
+	border-bottom: ButtonFace 1px solid;
+	background-color: ButtonFace;
+}
+
+.PopupSelectionBox
+{
+	border: ThreeDShadow 1px solid;
+	background-color: ButtonFace;
+	cursor: pointer;
+	cursor: hand;
+}
