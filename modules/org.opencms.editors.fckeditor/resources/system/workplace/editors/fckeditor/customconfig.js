@@ -201,11 +201,17 @@ FCKConfig.ToolbarSets["OpenCms"] = [
 FCKConfig.ImageUpload = false;
 FCKConfig.ImageBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/browser.html?Type=Image&Connector=<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
 FCKConfig.ImageUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp?Type=Image") %>";
+FCKConfig.ImageBrowserWindowWidth  = 700;
+FCKConfig.ImageBrowserWindowHeight = 500;
 
 FCKConfig.LinkUpload = false;
 FCKConfig.LinkBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/browser.html?Connector=<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
 FCKConfig.LinkUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
+FCKConfig.LinkBrowserWindowWidth  = 700;
+FCKConfig.LinkBrowserWindowHeight = 500;
 
 FCKConfig.FlashUpload = false;
 FCKConfig.FlashBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/browser.html?Type=Flash&Connector=<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
 FCKConfig.FlashUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp?Type=Flash") %>";
+FCKConfig.FlashBrowserWindowWidth  = 700;
+FCKConfig.FlashBrowserWindowHeight = 500;
