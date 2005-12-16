@@ -34,6 +34,7 @@
 			<resource uri="/system/workplace/editors/fckeditor/"/>
 			<resource uri="/system/workplace/resources/editors/fckeditor/"/>
 			<resource uri="/system/workplace/resources/components/widgets/fckeditor.js"/>
+			<resource uri="/system/modules/org.opencms.editors.fckeditor/"/>
 		</resources>
 		<parameters/>
 	</module>
