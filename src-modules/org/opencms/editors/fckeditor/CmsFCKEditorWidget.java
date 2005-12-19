@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2005/12/16 14:12:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/19 09:45:17 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.7
  */
@@ -244,8 +244,12 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
 
         StringBuffer result = new StringBuffer(64);
         result.append("function initFCKeditor() {\n");
-        // set time out to avoid toolbar error message on direct publish button click
-        result.append("\tsetTimeout(\"generateEditors();\", 100);\n");
+        // set time out for IE to avoid toolbar error message on direct publish button click
+        result.append("\tif (navigator.userAgent.toLowerCase().indexOf(\"msie\") != -1) {\n");
+        result.append("\t\tsetTimeout(\"generateEditors();\", 50);\n");
+        result.append("\t} else {");
+        result.append("\t\tgenerateEditors();\n");
+        result.append("\t}\n");
         result.append("}\n");
         return result.toString();
     }
