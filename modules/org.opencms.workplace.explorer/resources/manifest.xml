@@ -181,7 +181,7 @@
 			<uuidresource>447d6976-4e0a-11da-a835-4b5a0381b421</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Sat, 05 Nov 2005 14:41:36 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -190,9 +190,9 @@
 		<file>
 			<destination>system/workplace/explorer/history</destination>
 			<type>folder</type>
-			<datelastmodified>Fri, 11 Nov 2005 14:14:33 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 07 Nov 2005 09:49:02 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -208,9 +208,9 @@
 			<destination>system/workplace/explorer/history/comparison.html</destination>
 			<type>jsp</type>
 			<uuidresource>883c690b-50f9-11da-84ab-29ec6bce001d</uuidresource>
-			<datelastmodified>Wed, 16 Nov 2005 08:47:46 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Wed, 09 Nov 2005 08:19:22 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -242,9 +242,9 @@
 			<destination>system/workplace/explorer/history/difference.html</destination>
 			<type>jsp</type>
 			<uuidresource>790e055b-4f79-11da-acca-29ec6bce001d</uuidresource>
-			<datelastmodified>Wed, 16 Nov 2005 08:16:43 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 07 Nov 2005 10:30:10 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -276,9 +276,9 @@
 			<destination>system/workplace/explorer/history/index.html</destination>
 			<type>jsp</type>
 			<uuidresource>ba415d66-4f73-11da-bca8-29ec6bce001d</uuidresource>
-			<datelastmodified>Wed, 16 Nov 2005 08:17:45 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 07 Nov 2005 09:49:02 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
