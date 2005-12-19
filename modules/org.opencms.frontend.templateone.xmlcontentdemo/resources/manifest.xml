@@ -15,7 +15,8 @@
 		<class/>
 		<description><![CDATA[<p>This module contains demo resources for OpenCms 6.0 XML content.</p>
 <p>Install this module if you want to see the structured content capabilities of OpenCms.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+]]></description>
 		<version>1.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
@@ -119,6 +120,54 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css</source>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css</destination>
+			<type>plain</type>
+			<uuidresource>b84d6205-e54a-11d9-8ea2-b7f5f5443f03</uuidresource>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Style Definitions for HTML Tables]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/transformation.table.xslt</source>
+			<destination>system/modules/org.opencms.frontend.templateone.xmlcontentdemo/transformation.table.xslt</destination>
+			<type>plain</type>
+			<uuidresource>bcf6a824-e4c2-11d9-8813-b7f5f5443f03</uuidresource>
+			<datelastmodified>Fri, 02 Dec 2005 13:38:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Jun 2005 15:15:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[true]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSLT for Uploading CSV Files]]></value>
+				</property>
+				<property>
+					<name>style_side_uri</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css]]></value>
+				</property>
+				<property>
+					<name>stylesheet</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -1616,19 +1665,23 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>xmlcontentdemo/widgetdemo/tables/fruit-flies.html</source>
-			<destination>xmlcontentdemo/widgetdemo/tables/fruit-flies.html</destination>
+			<source>xmlcontentdemo/widgetdemo/tables/golden-palm-winners.html</source>
+			<destination>xmlcontentdemo/widgetdemo/tables/golden-palm-winners.html</destination>
 			<type>plain</type>
-			<uuidresource>dbfad975-e4ba-11d9-8813-b7f5f5443f03</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>2c4b4021-6665-11da-92e9-4191fce0a26c</uuidresource>
+			<datelastmodified>Tue, 06 Dec 2005 14:33:45 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 06 Dec 2005 14:32:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Statistics About Fruit Flies]]></value>
+					<value><![CDATA[Winners of the Palme d'Or, Cannes]]></value>
+				</property>
+				<property>
+					<name>stylesheet</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.xmlcontentdemo/table.css]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
