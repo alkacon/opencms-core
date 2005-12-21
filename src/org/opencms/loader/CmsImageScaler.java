@@ -23,6 +23,8 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.apache.commons.logging.Log;
 
 /**
@@ -30,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.2.0
  */
@@ -50,6 +52,12 @@ public class CmsImageScaler {
 
     /** The (optional) parameter used for sending the scale information of an image in the http request. */
     public static final String PARAM_SCALE = "__scale";
+
+    /** The default maximum image size (width * height) to apply image blurring when downscaling (setting this to high may case "out of memory" errors). */
+    public static final int SCALE_DEFAULT_MAX_BLUR_SIZE = 2500 * 2500;
+
+    /** The default maximum image size (width or height) to allow when updowscaling an image using request parameters. */
+    public static final int SCALE_DEFAULT_MAX_SIZE = 1500;
 
     /** The scaler parameter to indicate the requested image background color (if required). */
     public static final String SCALE_PARAM_COLOR = "c";
@@ -87,6 +95,9 @@ public class CmsImageScaler {
     /** The target height (required). */
     private int m_height;
 
+    /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may case "out of memory" errors). */
+    private int m_maxBlurSize;
+
     /** The target position (optional). */
     private int m_position;
 
@@ -104,6 +115,14 @@ public class CmsImageScaler {
 
     /** The target width (required). */
     private int m_width;
+
+    /**
+     * Creates a new, empty image scaler object.<p>
+     */
+    public CmsImageScaler() {
+
+        init();
+    }
 
     /**
      * Creates a new image scaler for the given image contained in the byte array.<p>
@@ -169,7 +188,31 @@ public class CmsImageScaler {
     }
 
     /**
-     * Creates a new image scaler based on the given String.<p>
+     * Creates a new image scaler based on the given http request.<p>
+     * 
+     * @param request the http request to read the parameters from
+     * @param maxScaleSize the maximum scale size (width or height) for the image
+     * @param maxBlurSize the maximum size of the image (width * height) to apply blur (may cause "out of memory" for large images)
+     */
+    public CmsImageScaler(HttpServletRequest request, int maxScaleSize, int maxBlurSize) {
+
+        init();
+        m_maxBlurSize = maxBlurSize;
+        String parameters = request.getParameter(CmsImageScaler.PARAM_SCALE);
+        if (CmsStringUtil.isNotEmpty(parameters)) {
+            parseParameters(parameters);
+            if (isValid()) {
+                // valid parameters, check if scale size is not to big
+                if ((getWidth() > maxScaleSize) || (getHeight() > maxScaleSize)) {
+                    // scale size is to big, reset scaler
+                    init();
+                }
+            }
+        }
+    }
+
+    /**
+     * Creates a new image scaler based on the given parameter String.<p>
      * 
      * @param parameters the scale parameters to use
      */
@@ -374,19 +417,6 @@ public class CmsImageScaler {
      */
     public byte[] scaleImage(CmsFile file) {
 
-        return scaleImage(file, 2500 * 2500);
-    }
-
-    /**
-     * Returns a scaled version of the given image file according this image scalers parameters.<p>
-     *  
-     * @param file the image file to scale
-     * @param  maxBlurSize the maximum image size to apply "blur" transformation before downscaling
-     * 
-     * @return a scaled version of the given image file according to the provided scaler parameters
-     */
-    public byte[] scaleImage(CmsFile file, int maxBlurSize) {
-
         byte[] result = file.getContents();
 
         RenderSettings renderSettings;
@@ -401,7 +431,7 @@ public class CmsImageScaler {
             }
         }
         // set max blur siuze
-        renderSettings.setMaximumBlurSize(maxBlurSize);
+        renderSettings.setMaximumBlurSize(m_maxBlurSize);
         // new create the scaler
         Simapi scaler = new Simapi(renderSettings);
         // calculate a valid image type supported by the imaging libary (e.g. "JPEG", "GIF")
@@ -719,6 +749,7 @@ public class CmsImageScaler {
         m_quality = 0;
         m_color = Color.WHITE;
         m_filters = new ArrayList();
+        m_maxBlurSize = SCALE_DEFAULT_MAX_BLUR_SIZE;
     }
 
     /**

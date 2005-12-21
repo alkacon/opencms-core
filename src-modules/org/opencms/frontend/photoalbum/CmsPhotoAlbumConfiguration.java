@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumConfiguration.java,v $
- * Date   : $Date: 2005/11/22 10:38:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/21 07:33:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -590,8 +590,8 @@ public class CmsPhotoAlbumConfiguration {
     protected void initMembers() {
 
         // initialize member image scaler objects
-        setDetailImageScaler(new CmsImageScaler(null));
-        setThumbNailScaler(new CmsImageScaler(null));
+        setDetailImageScaler(new CmsImageScaler());
+        setThumbNailScaler(new CmsImageScaler());
 
         // set defaults
         setVfsPathGallery("/");

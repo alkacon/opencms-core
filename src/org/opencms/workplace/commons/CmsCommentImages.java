@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCommentImages.java,v $
- * Date   : $Date: 2005/11/22 10:44:01 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/21 07:33:24 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3
  */
@@ -272,7 +272,7 @@ public class CmsCommentImages extends CmsDialog {
 
         if (m_imageScaler == null) {
             // not initialized, create image scaler with default settings
-            m_imageScaler = new CmsImageScaler(null);
+            m_imageScaler = new CmsImageScaler();
             m_imageScaler.setWidth(THUMB_WIDTH);
             m_imageScaler.setHeight(THUMB_HEIGHT);
             m_imageScaler.setRenderMode(Simapi.RENDER_SPEED);

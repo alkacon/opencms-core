@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/11/21 15:32:17 $
- * Version: $Revision: 1.21.2.5 $
+ * Date   : $Date: 2005/12/21 07:33:24 $
+ * Version: $Revision: 1.21.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.5 $ 
+ * @version $Revision: 1.21.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,7 +437,7 @@ public final class CmsFileUtil {
             directory.delete();
         }
     }
-
+        
     /**
      * Reads a file from the RFS and returns the file content.<p> 
      * 
@@ -450,18 +450,34 @@ public final class CmsFileUtil {
 
         // create input and output stream
         FileInputStream in = new FileInputStream(file);
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // read the file content
-        int c;
-        while ((c = in.read()) != -1) {
-            out.write(c);
+        // get the size of the file
+        long length = file.length();
+
+        // you cannot create an array using a long type, it needs to be an int
+        if (length > Integer.MAX_VALUE) {
+            // File is too large
+            throw new IOException("File '" + file.getName() + "' is to large (" + length + " bytes)");
         }
 
-        in.close();
-        out.close();
+        // create the byte array to hold the data
+        byte[] bytes = new byte[(int)length];
 
-        return out.toByteArray();
+        // read in the bytes
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length && (numRead = in.read(bytes, offset, bytes.length - offset)) >= 0) {
+            offset += numRead;
+        }
+
+        // ensure all the bytes have been read in
+        if (offset < bytes.length) {
+            throw new IOException("Could not completely read file " + file.getName());
+        }
+
+        // close the input stream and return bytes
+        in.close();
+        return bytes;
     }
 
     /**

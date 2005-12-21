@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsImageLoader.java,v $
- * Date   : $Date: 2005/12/11 11:36:59 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2005/12/21 07:33:24 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.2.0 
  */
@@ -72,6 +72,9 @@ public class CmsImageLoader extends CmsDumpLoader {
 
     /** The configuration parameter for the OpenCms XML configuration to set the maximum image blur size. */
     public static final String CONFIGURATION_MAX_BLUR_SIZE = "image.scaling.maxblursize";
+
+    /** The configuration parameter for the OpenCms XML configuration to set the maximum image scale size. */
+    public static final String CONFIGURATION_MAX_SCALE_SIZE = "image.scaling.maxsize";
 
     /** The configuration parameter for the OpenCms XML configuration to enable the image scaling. */
     public static final String CONFIGURATION_SCALING_ENABLED = "image.scaling.enabled";
@@ -91,8 +94,11 @@ public class CmsImageLoader extends CmsDumpLoader {
     /** The name of the configured image cache repository. */
     private static String m_imageRepositoryFolder;
 
-    /** The maximum impage size (width * height) to apply image blurring when scaling (setting this to high may case "out of memory" errors). */
-    private static int m_maxBlurSize = (2500 * 2500);
+    /** The maximum image size (width * height) to apply image blurring when downscaling (setting this to high may case "out of memory" errors). */
+    private static int m_maxBlurSize = CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE;
+
+    /** The maximum image size (width or height) to allow when upscaling an image using request parameters. */
+    private static int m_maxScaleSize = CmsImageScaler.SCALE_DEFAULT_MAX_SIZE;
 
     /** The disk cache to use for saving scaled image versions. */
     private static CmsVfsNameBasedDiskCache m_vfsDiskCache;
@@ -147,12 +153,14 @@ public class CmsImageLoader extends CmsDumpLoader {
             if (CONFIGURATION_IMAGE_FOLDER.equals(paramName)) {
                 m_imageRepositoryFolder = paramValue.trim();
             }
+            if (CONFIGURATION_MAX_SCALE_SIZE.equals(paramName)) {
+                m_maxScaleSize = CmsStringUtil.getIntValue(paramValue, CmsImageScaler.SCALE_DEFAULT_MAX_SIZE, paramName);
+            }
             if (CONFIGURATION_MAX_BLUR_SIZE.equals(paramName)) {
-                try {
-                    m_maxBlurSize = Integer.valueOf(paramValue).intValue();
-                } catch (Exception e) {
-                    // ignore, use default value
-                }
+                m_maxBlurSize = CmsStringUtil.getIntValue(
+                    paramValue,
+                    CmsImageScaler.SCALE_DEFAULT_MAX_BLUR_SIZE,
+                    paramName);
             }
         }
         super.addConfigurationParameter(paramName, paramValue);
@@ -226,7 +234,7 @@ public class CmsImageLoader extends CmsDumpLoader {
                 return;
             }
             // get the scale information from the request
-            CmsImageScaler scaler = new CmsImageScaler(req.getParameter(CmsImageScaler.PARAM_SCALE));
+            CmsImageScaler scaler = new CmsImageScaler(req, m_maxScaleSize, m_maxBlurSize);
             // load the file from the cache
             CmsFile file = getScaledImage(cms, resource, scaler);
             // now perform standarad load operation inherited from dump loader
@@ -280,7 +288,7 @@ public class CmsImageLoader extends CmsDumpLoader {
             // upgrade the file (load the content)
             if (scaler.isValid()) {
                 // valid scaling parameters found, scale the content
-                content = scaler.scaleImage(file, m_maxBlurSize);
+                content = scaler.scaleImage(file);
                 // exchange the content of the file with the scaled version
                 file.setContents(content);
             }

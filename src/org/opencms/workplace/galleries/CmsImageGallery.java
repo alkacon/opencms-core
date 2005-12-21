@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/10/11 12:00:29 $
- * Version: $Revision: 1.13.2.4 $
+ * Date   : $Date: 2005/12/21 07:33:24 $
+ * Version: $Revision: 1.13.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.4 $ 
+ * @version $Revision: 1.13.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,27 +115,29 @@ public class CmsImageGallery extends A_CmsGallery {
             if (CmsStringUtil.isEmpty(getParamDialogMode())) {
                 // in editor mode, create a valid link from resource path
                 uri = getJsp().link(uri);
-                // try to read the image size infromation from the "image.size" property
-                // the property will contain the information as following "h:x,w:y" with x and y integer vaulues
-                try {
-                    CmsProperty imageSize = getJsp().getCmsObject().readPropertyObject(
-                        getParamResourcePath(),
-                        CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
-                        false);
-                    if (!imageSize.isNullProperty()) {
-                        // parse property value using standard procedures
-                        CmsImageScaler scaler = new CmsImageScaler(imageSize.getValue());
-                        // javascript requires "null" String
-                        if (scaler.getWidth() > 0) {
-                            width = String.valueOf(scaler.getWidth());
+                if (CmsImageLoader.isEnabled()) {
+                    // try to read the image size infromation from the "image.size" property
+                    // the property will contain the information as following "h:x,w:y" with x and y integer values
+                    try {
+                        CmsProperty imageSize = getJsp().getCmsObject().readPropertyObject(
+                            getParamResourcePath(),
+                            CmsPropertyDefinition.PROPERTY_IMAGE_SIZE,
+                            false);
+                        if (!imageSize.isNullProperty()) {
+                            // parse property value using standard procedures
+                            CmsImageScaler scaler = new CmsImageScaler(imageSize.getValue());
+                            // javascript requires "null" String
+                            if (scaler.getWidth() > 0) {
+                                width = String.valueOf(scaler.getWidth());
+                            }
+                            if (scaler.getHeight() > 0) {
+                                height = String.valueOf(scaler.getHeight());
+                            }
                         }
-                        if (scaler.getHeight() > 0) {
-                            height = String.valueOf(scaler.getHeight());
-                        }
+                    } catch (CmsException e) {
+                        // the size information could not be read (maybe the property was deleted)
+                        // contine without any size information
                     }
-                } catch (CmsException e) {
-                    // the size information could not be read (maybe the property was deleted)
-                    // contine without any size information
                 }
             }
             return button("javascript:pasteImage('"
@@ -204,14 +206,18 @@ public class CmsImageGallery extends A_CmsGallery {
      */
     public void init() {
 
-        m_defaultScaleParams = new CmsImageScaler(getGalleryTypeParams());
-        if (!m_defaultScaleParams.isValid()) {
-            // no valid parameters have been provided, use defaults
-            m_defaultScaleParams.setType(0);
-            m_defaultScaleParams.setPosition(0);
-            m_defaultScaleParams.setWidth(120);
-            m_defaultScaleParams.setHeight(90);
-            m_defaultScaleParams.setColor(new Color(221, 221, 221));
+        if (CmsImageLoader.isEnabled()) {
+            m_defaultScaleParams = new CmsImageScaler(getGalleryTypeParams());
+            if (!m_defaultScaleParams.isValid()) {
+                // no valid parameters have been provided, use defaults
+                m_defaultScaleParams.setType(0);
+                m_defaultScaleParams.setPosition(0);
+                m_defaultScaleParams.setWidth(120);
+                m_defaultScaleParams.setHeight(90);
+                m_defaultScaleParams.setColor(new Color(221, 221, 221));
+            }
+        } else {
+            m_defaultScaleParams = null;
         }
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2005/12/14 18:16:18 $
- * Version: $Revision: 1.682.2.60 $
+ * Date   : $Date: 2005/12/21 07:33:24 $
+ * Version: $Revision: 1.682.2.61 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,7 +25,7 @@ OpenCms 6.1.7 - ???
 * Fixed issue with linebreaks in HTML-Converter
 - Some improvements in decorator
 ! New explorer list in Projects and Content Check Tools
-* More improvements to Simapi regarding Thumbnail generation quality
+* More improvements to Simapi and image scaler regarding Thumbnail generation quality
 
 OpenCms 6.1.6 - December 13, 2005
 * Fixed issue in locale handler if non-existant resource has been requested
