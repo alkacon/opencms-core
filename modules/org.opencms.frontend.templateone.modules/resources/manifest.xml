@@ -18,7 +18,7 @@
 <p>Install this module if you want to work with news, articles, job offerings, and so on.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.2</version>
+		<version>1.0.3</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -112,6 +112,15 @@
 				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/linklist.xsd</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="layout" id="51">
+				<properties>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-layout.html]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.templateone.modules/schemas/layouts.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="news" key="fileicon.news" icon="article.gif" reference="xmlcontent">
@@ -148,6 +157,14 @@
 			</explorertype>
 			<explorertype name="linklist" key="fileicon.linklist" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=linklist" order="54"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="layout" key="fileicon.layout" icon="xmlcontent.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="" order="55" autosetnavigation="false" autosettitle="false"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -317,6 +334,43 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/_configuration</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 20 Dec 2005 15:04:38 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 Dec 2005 15:04:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/copyresources/_configuration/layoutright</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/copyresources/_configuration/layoutright</destination>
+			<type>layout</type>
+			<uuidresource>0650c6f9-716a-11da-9603-15cf0a83806f</uuidresource>
+			<datelastmodified>Tue, 20 Dec 2005 15:06:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 Dec 2005 15:05:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[Individual right layout]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.templateone.modules/pages/detail-layout.html]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Individual right layout]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1063,6 +1117,24 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-layout.html</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-layout.html</destination>
+			<type>jsp</type>
+			<uuidresource>3c5346df-716f-11da-8617-15cf0a83806f</uuidresource>
+			<datelastmodified>Tue, 20 Dec 2005 15:44:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 20 Dec 2005 15:42:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout XML content detail view]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html</source>
 			<destination>system/modules/org.opencms.frontend.templateone.modules/pages/detail-links.html</destination>
 			<type>jsp</type>
@@ -1401,6 +1473,42 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Nested XSD for extended jobs]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/layoutitem.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/layoutitem.xsd</destination>
+			<type>plain</type>
+			<uuidresource>e2af9d97-7077-11da-a93c-15cf0a83806f</uuidresource>
+			<datelastmodified>Tue, 20 Dec 2005 13:59:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Dec 2005 10:11:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for a layout item]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.modules/schemas/layouts.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.modules/schemas/layouts.xsd</destination>
+			<type>plain</type>
+			<uuidresource>1cc4b952-7075-11da-a93c-15cf0a83806f</uuidresource>
+			<datelastmodified>Tue, 20 Dec 2005 15:07:21 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Dec 2005 09:52:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for user defined layouts]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

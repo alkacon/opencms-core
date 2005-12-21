@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/10/19 10:00:35 $
- * Version: $Revision: 1.28.2.2 $
+ * Date   : $Date: 2005/12/21 09:41:58 $
+ * Version: $Revision: 1.28.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
+import org.opencms.frontend.templateone.modules.CmsLayoutXmlContentHandler;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
@@ -54,6 +55,7 @@ import org.opencms.workplace.commons.CmsPropertyCustom;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -70,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.2 $ 
+ * @version $Revision: 1.28.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -719,7 +721,11 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             String description = "";
             try {
                 description = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue(
-                    path);
+                    null);
+                if (CmsStringUtil.isEmpty(description)) {
+                    description = getCms().readPropertyObject(path, CmsPropertyDefinition.PROPERTY_TITLE, false).getValue(
+                        path);
+                }
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
@@ -861,7 +867,31 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
             configFolder = VFS_PATH_CONFIGFILES_RIGHT;
         }
         try {
+            // first get the default layout files for the list type
             result = getCms().readResources(configFolder, CmsResourceFilter.ONLY_VISIBLE_NO_DELETED);
+
+            // add eventual individual layout files for the list type in the microsite 
+            String configPath = getCms().readPropertyObject(
+                getParamResource(),
+                CmsTemplateBean.PROPERTY_CONFIGPATH,
+                true).getValue();
+            if (CmsStringUtil.isNotEmpty(configPath)) {
+                int type = OpenCms.getResourceManager().getResourceType(CmsLayoutXmlContentHandler.CONFIG_RESTYPE_NAME).getTypeId();
+                CmsResourceFilter filter = CmsResourceFilter.ONLY_VISIBLE_NO_DELETED.addRequireType(type);
+                Iterator i = getCms().readResources(configPath, filter, false).iterator();
+                while (i.hasNext()) {
+                    CmsResource res = (CmsResource)i.next();
+                    // read column property
+                    String column = getCms().readPropertyObject(
+                        getCms().getSitePath(res),
+                        CmsLayoutXmlContentHandler.PROPERTY_LAYOUT_COLUMN,
+                        false).getValue();
+                    if (listType.equals(column)) {
+                        // add resource to list
+                        result.add(res);
+                    }
+                }
+            }
         } catch (CmsException e) {
             // error reading resources
             if (LOG.isErrorEnabled()) {
