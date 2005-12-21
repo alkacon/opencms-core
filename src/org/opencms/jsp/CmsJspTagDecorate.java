@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2005/11/14 15:04:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2005/12/21 16:00:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -116,7 +116,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
         // This will always be true if the page is called through OpenCms 
         if (CmsFlexController.isCmsRequest(req)) {
             try {
-                String content = decorateTagAction(this.getBodyContent().getString(), getFile(), getLocale(), req);
+                String content = decorateTagAction(getBodyContent().getString(), getFile(), getLocale(), req);
                 getBodyContent().clear();
                 getBodyContent().print(content);
                 getBodyContent().writeOut(pageContext.getOut());
