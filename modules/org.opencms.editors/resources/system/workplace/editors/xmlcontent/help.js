@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2005/06/23 11:12:02 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2005/12/21 09:42:32 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,24 +76,12 @@ function hideHelp(id) {
     text.style.visibility = "hidden";
     text.style.left = "0px";
     text.style.top =  "0px";
-    if (browser.isIE) {
-    	// show select boxes which were hidden
-    	for (var i=0; i<selectBoxes.length; i++) {
-    		if (selectBoxes[i].style.display == "none") {
-    			selectBoxes[i].style.display = "";
-    		}
-    	}
-    }
+    showSelectBoxes();
 }
 
 function showHelpX(id, helpId) { 
 
     var text = document.getElementById("help" + helpId);
-    
-    // get all select boxes for Internet Explorer
-    if (browser.isIE && selectBoxes == null) {
-    	selectBoxes = document.getElementsByTagName("select");
-    }
     
     if (text.style.visibility == "visible") {
         return;
@@ -150,8 +138,16 @@ function showHelpX(id, helpId) {
     text.style.top =  y + "px";
     text.style.visibility = "visible";
     
-    if (browser.isIE) {
-    	// hide select boxes which are in help bubble area to avoid display issues
+    hideSelectBoxes(text, y);
+}
+
+// hide select boxes which are in help or combo area to avoid display issues
+function hideSelectBoxes(elem, y) {
+	if (browser.isIE) {
+    	if (selectBoxes == null) {
+    		selectBoxes = document.getElementsByTagName("select");
+    	}
+    	var textHeight = elem.scrollHeight;
     	for (var i=0; i<selectBoxes.length; i++) {
     		var topPos = findPosY(selectBoxes[i]);
     		if (topPos + selectBoxes[i].offsetHeight >= y && topPos <= y + textHeight) {
@@ -160,4 +156,18 @@ function showHelpX(id, helpId) {
     		}
     	}
     }
+}
+
+// show select boxes which were hidden
+function showSelectBoxes() {
+	if (browser.isIE) {
+		if (selectBoxes == null) {
+    		selectBoxes = document.getElementsByTagName("select");
+    	}
+    	for (var i=0; i<selectBoxes.length; i++) {
+    		if (selectBoxes[i].style.display == "none") {
+    			selectBoxes[i].style.display = "";
+    		}
+    	}
+    }	
 }

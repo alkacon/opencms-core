@@ -111,6 +111,8 @@ function showCombo(itemId, comboId) {
     
     text.style.visibility = "visible";
     activeCombo = text;
+    
+    hideSelectBoxes(text, y);
 }
 
 function setComboValue(itemId, valueId) {
@@ -132,6 +134,7 @@ function hideCombo() {
 		activeCombo.style.visibility = "hidden";
     	activeCombo = null;
 	}
+	showSelectBoxes();
 }
 
 function initComboBox() {
