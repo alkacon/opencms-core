@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/11/24 11:39:47 $
- * Version: $Revision: 1.93.2.8 $
+ * Date   : $Date: 2005/12/23 14:08:17 $
+ * Version: $Revision: 1.93.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2299,7 +2299,9 @@ public final class CmsSecurityManager {
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         List result = null;
         try {
-            checkRole(dbc, CmsRole.SYSTEM_USER);
+            if (type != CmsUser.USER_TYPE_WEBUSER) {
+                checkRole(dbc, CmsRole.SYSTEM_USER);
+            }
             result = m_driverManager.getUsers(dbc, type);
         } catch (Exception e) {
             dbc.report(null, Messages.get().container(Messages.ERR_GET_USERS_OF_TYPE_1, new Integer(type)), e);
