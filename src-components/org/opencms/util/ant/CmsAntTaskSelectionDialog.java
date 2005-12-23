@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/CmsAntTaskSelectionDialog.java,v $
- * Date   : $Date: 2005/08/05 08:29:14 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/27 14:53:01 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,13 +54,14 @@ import javax.swing.JToggleButton;
 import javax.swing.border.Border;
 
 /**
- * This is a highly configurable Swing GUI dialog for selection.<p>
+ * This is a highly configurable Swing GUI dialog for selection.
+ * <p>
  * 
- * @author Michael Moossen  
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.14 $
  * 
- * @since 6.0.0 
+ * @since 6.0.0
  * 
  * @see CmsAntTaskSelectionPrompt
  */
@@ -80,44 +81,46 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
     /** Border. */
     private final Border m_border = BorderFactory.createEmptyBorder(C_BORDER_SIZE, C_BORDER_SIZE, 0, C_BORDER_SIZE);
-    
+
     /** Panel for buttons. */
     private final JPanel m_buttons = new JPanel();
-    
+
     /** Cancel button. */
     private final JButton m_cancel = new JButton("Cancel");
-    
+
     /** Main Panel. */
     private final JPanel m_content = new JPanel();
-    
+
     /** Array of by default selected items. */
     private String[] m_defList = null;
-    
+
     /** Label for prompt. */
     private JLabel m_label = null;
-    
+
     /** Ok button. */
     private final JButton m_ok = new JButton("Ok");
-    
+
     /** Associated ant task. */
     private final CmsAntTaskSelectionPrompt m_promptTask;
-    
+
     /** Select all button. */
     private final JButton m_selAll = new JButton("All");
-    
+
     /** Array of selection buttons, check boxes or radio buttons. */
     private JToggleButton[] m_selections = null;
-    
+
     /** Select none button. */
     private final JButton m_selNone = new JButton("None");
-    
+
     /** Scrollable view. */
     private final JScrollPane m_view = new JScrollPane(m_content);
 
     /**
-     * Default Constructor.<p>
+     * Default Constructor.
+     * <p>
      * 
-     * @param promptTask the <code>{@link CmsAntTaskSelectionPrompt}</code> object.<p>
+     * @param promptTask the <code>{@link CmsAntTaskSelectionPrompt}</code> object.
+     *            <p>
      */
     public CmsAntTaskSelectionDialog(CmsAntTaskSelectionPrompt promptTask) {
 
@@ -157,7 +160,14 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
 
         m_view.setBorder(m_border);
         m_selections = new JToggleButton[m_promptTask.getAllValues().split(CmsAntTaskSelectionPrompt.LIST_SEPARATOR).length];
-        m_content.setLayout(new GridLayout(m_selections.length, 1));
+
+        // layout of selection elements
+        int elements = m_selections.length;
+
+        GridLayout layout = new GridLayout(elements / m_promptTask.getColumns()+1, m_promptTask.getColumns());
+        layout.setHgap(20);
+        m_content.setLayout(layout);
+
         for (int i = 0; i < m_selections.length; i++) {
             if (m_promptTask.isSingleSelection()) {
                 m_selections[i] = new JRadioButton(m_allList[i].trim(), firstPositionOfItemInArray(
@@ -192,7 +202,7 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
         pack();
     }
 
-    /** 
+    /**
      * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
      */
     public void actionPerformed(ActionEvent e) {
@@ -212,8 +222,8 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     }
 
     /**
-     * Returns <code>null</code> if the dialog was canceled, 
-     * or a list of selected items if not.<p>
+     * Returns <code>null</code> if the dialog was canceled, or a list of selected items if not.
+     * <p>
      * 
      * @return the user selection
      */
@@ -237,16 +247,18 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     }
 
     /**
-     * Centers the dialog on the screen.<p>
-     *
-     * If the size of the dialog exceeds that of the screen, 
-     * then the size of the dialog is reset to the size of the screen.<p>
+     * Centers the dialog on the screen.
+     * <p>
+     * 
+     * If the size of the dialog exceeds that of the screen, then the size of the dialog is reset to
+     * the size of the screen.
+     * <p>
      */
     private void center() {
 
         Dimension screen = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension window = getSize();
-        //ensure that no parts of the dialog will be off-screen
+        // ensure that no parts of the dialog will be off-screen
         int height = window.height;
         int width = window.width;
         if (window.height > screen.height) {
@@ -264,8 +276,9 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     }
 
     /**
-     * Looks for the position of a string in an array of string,
-     * performing triming and taking into account the null cases.<p>
+     * Looks for the position of a string in an array of string, performing triming and taking into
+     * account the null cases.
+     * <p>
      * 
      * @param array the string array to search in
      * @param item the item to search for
@@ -289,7 +302,9 @@ public class CmsAntTaskSelectionDialog extends JDialog implements ActionListener
     }
 
     /**
-     * Returns the array of items selected by default, if no one is given all items will be considered.<p>
+     * Returns the array of items selected by default, if no one is given all items will be
+     * considered.
+     * <p>
      * 
      * @return the array of items selected by default
      */
