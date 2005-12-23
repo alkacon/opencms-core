@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/Messages.java,v $
- * Date   : $Date: 2005/11/25 11:06:33 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2005/12/23 14:09:16 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.1.2 
  */
@@ -67,6 +67,36 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHECKCONTENT_CONFIGURATION_PROPERTY_HELP_0 = "GUI_CHECKCONTENT_CONFIGURATION_PROPERTY_HELP_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_HELP_0 = "GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_NAME_0 = "GUI_CHECKCONTENT_DETAIL_HIDE_ERRORINFO_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_HIDE_WARNINGINFO_HELP_0 = "GUI_CHECKCONTENT_DETAIL_HIDE_WARNINGINFO_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_HIDE_WARNINGINFO_NAME_0 = "GUI_CHECKCONTENT_DETAIL_HIDE_WARNINGINFO_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_HELP_0 = "GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_NAME_0 = "GUI_CHECKCONTENT_DETAIL_SHOW_ERRORINFO_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_HELP_0 = "GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0 = "GUI_CHECKCONTENT_DETAIL_SHOW_WARNINGINFO_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_LABEL_ERROR_0 = "GUI_CHECKCONTENT_LABEL_ERROR_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHECKCONTENT_LABEL_WARNING_0 = "GUI_CHECKCONTENT_LABEL_WARNING_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CHECKCONTENT_LIST_NAME_0 = "GUI_CHECKCONTENT_LIST_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -79,25 +109,43 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_CREATE_PLUGIN_1 = "LOG_CREATE_PLUGIN_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_CHECKLENGTH_2 = "LOG_DEBUG_CHECKLENGTH_2";
+    public static final String LOG_DEBUG_PROPERTY_CHECKLENGTH_2 = "LOG_DEBUG_PROPERTY_CHECKLENGTH_2";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_ISEMPTYCHECK_1 = "LOG_DEBUG_ISEMPTYCHECK_1";
+    public static final String LOG_DEBUG_PROPERTY_CONFIG_FILE_1 = "LOG_DEBUG_PROPERTY_CONFIG_FILE_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_ISFILENAME_1 = "LOG_DEBUG_ISFILENAME_1";
+    public static final String LOG_DEBUG_PROPERTY_CONFIG_FILENAME_1 = "LOG_DEBUG_PROPERTY_CONFIG_FILENAME_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_MATCHPATTERN_2 = "LOG_DEBUG_MATCHPATTERN_2";
+    public static final String LOG_DEBUG_PROPERTY_CONFIG_PROPERTY_3 = "LOG_DEBUG_PROPERTY_CONFIG_PROPERTY_3";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_PROPERTY_1 = "LOG_DEBUG_PROPERTY_1";
+    public static final String LOG_DEBUG_PROPERTY_CONFIG_XPATH_2 = "LOG_DEBUG_PROPERTY_CONFIG_XPATH_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_CONFIGURED_ERRORS_2 = "LOG_DEBUG_PROPERTY_CONFIGURED_ERRORS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_CONFIGURED_WARNINGS_2 = "LOG_DEBUG_PROPERTY_CONFIGURED_WARNINGS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_ISEMPTYCHECK_1 = "LOG_DEBUG_PROPERTY_ISEMPTYCHECK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_ISFILENAME_1 = "LOG_DEBUG_PROPERTY_ISFILENAME_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_MATCHPATTERN_2 = "LOG_DEBUG_PROPERTY_MATCHPATTERN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_PROPERTY_1 = "LOG_DEBUG_PROPERTY_PROPERTY_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_PROPERTY_RESOURCE_1 = "LOG_DEBUG_PROPERTY_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_PROPERTY_VALUE_1 = "LOG_DEBUG_PROPERTY_VALUE_1";
-
-    /** Message constant for key in the resource bundle. */
-    public static final String LOG_DEBUG_RESOURCE_1 = "LOG_DEBUG_RESOURCE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERROR_PROCESSING_PROPERTIES_2 = "LOG_ERROR_PROCESSING_PROPERTIES_2";
