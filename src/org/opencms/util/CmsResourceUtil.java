@@ -433,14 +433,15 @@ public final class CmsResourceUtil {
 
         if (isInsideCurrentProject() && isEditable()) {
             switch (m_resource.getState()) {
-                case CmsResource.STATE_UNCHANGED:
-                    return "nf";
                 case CmsResource.STATE_CHANGED:
                     return "fc";
                 case CmsResource.STATE_NEW:
                     return "fn";
                 case CmsResource.STATE_DELETED:
                     return "fd";
+                case CmsResource.STATE_UNCHANGED:
+                default:
+                    return "nf";
             }
         }
         return "fp";
@@ -636,6 +637,7 @@ public final class CmsResourceUtil {
 
         m_resource = resource;
         m_lock = null;
+        m_resourceType = null;
     }
 
 }
