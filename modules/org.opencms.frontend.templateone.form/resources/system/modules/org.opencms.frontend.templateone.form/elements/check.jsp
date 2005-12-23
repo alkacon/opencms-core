@@ -61,7 +61,7 @@ if (captchaField != null) {
 	
 	out.println("<tr>\n\t<td valign=\"middle\">" + fieldLabel + "</td>");
 	out.println("\t<td valign=\"top\" style=\"font-weight: bold;\">");
-	out.println("\t<img src=\"" + cms.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha") + "?" + captchaSettings.toRequestParams(cms) + "\" width=\"" + captchaSettings.getImageWidth() + "\" height=\"" + captchaSettings.getImageHeight() + "\" alt=\"\" border=\"1\"><br>");
+	out.println("\t<img src=\"" + cms.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha") + "?" + captchaSettings.toRequestParams(cms.getCmsObject()) + "\" width=\"" + captchaSettings.getImageWidth() + "\" height=\"" + captchaSettings.getImageHeight() + "\" alt=\"\" border=\"1\"><br>");
 	out.println("\t<input type=\"text\" name=\"" + captchaField.getName() + "\" value=\"\">" + errorMessage);
 	out.println("\t</td>\n</tr>\n");
 }
