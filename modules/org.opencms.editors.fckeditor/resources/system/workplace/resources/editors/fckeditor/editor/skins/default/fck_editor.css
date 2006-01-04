@@ -109,15 +109,17 @@ body
 
 .TB_Button_Off, .TB_Combo_Off
 {
-	filter: alpha(opacity=70);
-	-moz-opacity: 0.70;
+	opacity: 0.70; /* Safari, Opera and Mozilla */
+	filter: alpha(opacity=70); /* IE */
+	/* -moz-opacity: 0.70; Mozilla (Old) */
 	background-color: #efefde;
 }
 
 .TB_Button_Disabled, .TB_Combo_Disabled
 {
-	filter: gray() alpha(opacity=30);
-	-moz-opacity: 0.30;
+	opacity: 0.30; /* Safari, Opera and Mozilla */
+	filter: gray() alpha(opacity=30); /* IE */
+	/* -moz-opacity: 0.30; Mozilla (Old) */
 }
 
 .TB_Button_On_Over, .TB_Button_Off_Over

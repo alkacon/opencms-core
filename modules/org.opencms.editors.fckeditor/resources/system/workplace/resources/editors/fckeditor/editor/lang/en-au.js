@@ -86,6 +86,8 @@ Find				: "Find",
 Replace				: "Replace",
 SpellCheck			: "Check Spell",
 UniversalKeyboard	: "Universal Keyboard",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Form",
 Checkbox		: "Checkbox",
@@ -107,6 +109,7 @@ InsertCell			: "Insert Cell",
 DeleteCells			: "Delete Cells",
 MergeCells			: "Merge Cells",
 SplitCell			: "Split Cell",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Cell Properties",
 TableProperties		: "Table Properties",
 ImageProperties		: "Image Properties",
@@ -135,6 +138,8 @@ UnknownCommand		: "Unknown command name \"%1\"",
 NotImplemented		: "Command not implemented",
 UnknownToolbarSet	: "Toolbar set \"%1\" doesn't exist",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -279,6 +284,7 @@ DlgTableHeight		: "Height",
 DlgTableCellSpace	: "Cell spacing",
 DlgTableCellPad		: "Cell padding",
 DlgTableCaption		: "Caption",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Cell Properties",

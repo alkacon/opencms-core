@@ -26,8 +26,8 @@ if ( !( FCKCodeFormatter = NS.FCKCodeFormatter ) )
 	FCKCodeFormatter.Regex = new Object() ;
 
 	// Regex for line breaks.
-	FCKCodeFormatter.Regex.BlocksOpener = /\<(P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TITLE|META|LINK|BASE|SCRIPT|LINK|TD|AREA|OPTION)[^\>]*\>/gi ;
-	FCKCodeFormatter.Regex.BlocksCloser = /\<\/(P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TITLE|META|LINK|BASE|SCRIPT|LINK|TD|AREA|OPTION)[^\>]*\>/gi ;
+	FCKCodeFormatter.Regex.BlocksOpener = /\<(P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TITLE|META|LINK|BASE|SCRIPT|LINK|TD|TH|AREA|OPTION)[^\>]*\>/gi ;
+	FCKCodeFormatter.Regex.BlocksCloser = /\<\/(P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TITLE|META|LINK|BASE|SCRIPT|LINK|TD|TH|AREA|OPTION)[^\>]*\>/gi ;
 
 	FCKCodeFormatter.Regex.NewLineTags	= /\<(BR|HR)[^\>]\>/gi ;
 
@@ -40,10 +40,23 @@ if ( !( FCKCodeFormatter = NS.FCKCodeFormatter ) )
 	FCKCodeFormatter.Regex.DecreaseIndent = /^\<\/(HTML|HEAD|BODY|FORM|TABLE|TBODY|THEAD|TR|UL|OL)[ \>]/i ;
 	FCKCodeFormatter.Regex.FormatIndentatorRemove = new RegExp( FCKConfig.FormatIndentator ) ;
 
+	FCKCodeFormatter.Regex.ProtectedTags = /(<PRE[^>]*>)([\s\S]*?)(<\/PRE>)/gi ;
+
+	FCKCodeFormatter._ProtectData = function( outer, opener, data, closer )
+	{
+		return opener + '___FCKpd___' + FCKCodeFormatter.ProtectedData.addItem( data ) + closer ;
+	}
+
 	FCKCodeFormatter.Format = function( html )
 	{
+		// Protected content that remain untouched during the
+		// process go in the following array.
+		FCKCodeFormatter.ProtectedData = new Array() ;
+		
+		var sFormatted = html.replace( this.Regex.ProtectedTags, FCKCodeFormatter._ProtectData ) ;
+	
 		// Line breaks.
-		var sFormatted	= html.replace( this.Regex.BlocksOpener, '\n$&' ) ; ;
+		 sFormatted		= sFormatted.replace( this.Regex.BlocksOpener, '\n$&' ) ; ;
 		sFormatted		= sFormatted.replace( this.Regex.BlocksCloser, '$&\n' ) ;
 		sFormatted		= sFormatted.replace( this.Regex.NewLineTags, '$&\n' ) ;
 		sFormatted		= sFormatted.replace( this.Regex.MainTags, '\n$&\n' ) ;
@@ -68,6 +81,13 @@ if ( !( FCKCodeFormatter = NS.FCKCodeFormatter ) )
 			
 			if ( this.Regex.IncreaseIndent.test( sLine ) )
 				sIndentation += FCKConfig.FormatIndentator ;
+		}
+		
+		// Now we put back the protected data.
+		for ( var i = 0 ; i < FCKCodeFormatter.ProtectedData.length ; i++ )
+		{
+			var oRegex = new RegExp( '___FCKpd___' + i ) ;
+			sFormatted = sFormatted.replace( oRegex, FCKCodeFormatter.ProtectedData[i] ) ;
 		}
 
 		return sFormatted.trim() ;

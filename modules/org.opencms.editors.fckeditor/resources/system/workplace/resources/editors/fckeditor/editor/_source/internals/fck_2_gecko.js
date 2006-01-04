@@ -58,16 +58,16 @@ FCK.ExecuteRedirectedNamedCommand = function( commandName, commandParameter )
 			FCK.EditorWindow.print() ;
 			break ;
 		case 'Paste' :
-			try			{ if ( FCK.Paste() ) FCK.ExecuteNamedCommand( 'Paste' ) ; }
-			catch (e)	{ alert( FCKLang.PasteErrorPaste ) ; }
+			try			{ if ( FCK.Paste() ) FCK.ExecuteNamedCommand( 'Paste', null, true ) ; }
+			catch (e)	{ alert(FCKLang.PasteErrorPaste) ; }
 			break ;
 		case 'Cut' :
-			try			{ FCK.ExecuteNamedCommand( 'Cut' ) ; }
-			catch (e)	{ alert( FCKLang.PasteErrorCut ) ; }
+			try			{ FCK.ExecuteNamedCommand( 'Cut', null, true ) ; }
+			catch (e)	{ alert(FCKLang.PasteErrorCut) ; }
 			break ;
 		case 'Copy' :
-			try			{ FCK.ExecuteNamedCommand( 'Copy' ) ; }
-			catch (e)	{ alert( FCKLang.PasteErrorCopy ) ; }
+			try			{ FCK.ExecuteNamedCommand( 'Copy', null, true ) ; }
+			catch (e)	{ alert(FCKLang.PasteErrorCopy) ; }
 			break ;
 			
 		// START iCM MODIFICATIONS
@@ -138,18 +138,14 @@ FCK.Paste = function()
 // selected content if any.
 FCK.InsertHtml = function( html )
 {
+	html = FCKConfig.ProtectedSource.Protect( html ) ;
+	html = FCK.ProtectUrls( html ) ;
+
 	// Delete the actual selection.
 	var oSel = FCKSelection.Delete() ;
 	
-//	var oContainer	= oSel.getRangeAt(0).startContainer ;
-//	var iOffSet		= oSel.getRangeAt(0).startOffset ;
-	
 	// Get the first available range.
 	var oRange = oSel.getRangeAt(0) ;
-	
-//	var oRange = this.EditorDocument.createRange() ;
-//	oRange.setStart( oContainer, iOffSet ) ;
-//	oRange.setEnd( oContainer, iOffSet ) ;
 	
 	// Create a fragment with the input HTML.
 	var oFragment = oRange.createContextualFragment( html ) ;
@@ -161,13 +157,9 @@ FCK.InsertHtml = function( html )
 	oRange.insertNode(oFragment) ;
 	
 	// Set the cursor after the inserted fragment.
-	oRange.setEndAfter( oLastNode ) ;
-	oRange.setStartAfter( oLastNode ) ;
+	FCKSelection.SelectNode( oLastNode ) ;
+	FCKSelection.Collapse( false ) ;
 	
-	oSel.removeAllRanges() ;
-	oSel = FCK.EditorWindow.getSelection() ;
-	oSel.addRange( oRange ) ;
-		
 	this.Focus() ;
 }
 
@@ -183,8 +175,8 @@ FCK.InsertElement = function( element )
 	oRange.insertNode( element ) ;
 	
 	// Set the cursor after the inserted fragment.
-	oRange.setEndAfter( element ) ;
-	oRange.setStartAfter( element ) ;
+	FCKSelection.SelectNode( element ) ;
+	FCKSelection.Collapse( false ) ;
 
 	this.Focus() ;
 }

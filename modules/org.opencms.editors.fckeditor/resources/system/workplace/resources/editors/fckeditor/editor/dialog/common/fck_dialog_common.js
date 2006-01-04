@@ -92,3 +92,34 @@ String.prototype.remove = function( start, length )
 
 	return s ;
 }
+
+function OpenFileBrowser( url, width, height )
+{
+	// oEditor must be defined.
+	
+	var iLeft = ( oEditor.FCKConfig.ScreenWidth  - width ) / 2 ;
+	var iTop  = ( oEditor.FCKConfig.ScreenHeight - height ) / 2 ;
+
+	var sOptions = "toolbar=no,status=no,resizable=yes,dependent=yes" ;
+	sOptions += ",width=" + width ;
+	sOptions += ",height=" + height ;
+	sOptions += ",left=" + iLeft ;
+	sOptions += ",top=" + iTop ;
+
+	// The "PreserveSessionOnFileBrowser" because the above code could be 
+	// blocked by popup blockers.
+	if ( oEditor.FCKConfig.PreserveSessionOnFileBrowser && oEditor.FCKBrowserInfo.IsIE )
+	{
+		// The following change has been made otherwise IE will open the file 
+		// browser on a different server session (on some cases):
+		// http://support.microsoft.com/default.aspx?scid=kb;en-us;831678
+		// by Simone Chiaretta.
+		var oWindow = oEditor.window.open( url, 'FCKBrowseWindow', sOptions ) ;
+		if ( oWindow )
+			oWindow.opener = window ;
+		else
+			alert( oEditor.FCKLang.BrowseServerBlocked ) ;
+    }
+    else
+		window.open( url, 'FCKBrowseWindow', sOptions ) ;
+}

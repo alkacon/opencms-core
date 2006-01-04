@@ -1,22 +1,35 @@
 <cfsetting enablecfoutputonly="yes" showdebugoutput="no">
-<!--- @Packager.Header
-<FileDescription>
-	File Browser connector for ColdFusion.
-	(based on the original CF connector by Hendrik Kramer - hk@lwd.de)
-
-	Note: 
-	FCKeditor requires that the connector responds with UTF-8 encoded XML.
-	As ColdFusion 5 does not fully support UTF-8 encoding, we force ASCII 
-	file and folder names in this connector to allow CF5 send a UTF-8 
-	encoded response - code points under 127 in UTF-8 are stored using a 
-	single byte, using the same encoding as ASCII, which is damn handy. 
-	This is all grand for the English speakers, like meself, but I dunno 
-	how others are gonna take to it. Well, the previous version of this 
-	connector already did this with file names and nobody seemed to mind, 
-	so fingers-crossed nobody will mind their folder names being munged too.
-	  
-</FileDescription>
-<Author name="Mark Woods" email="mark@thickpaddy.com" />
+<!---
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: connector.cfm
+ * 	File Browser connector for ColdFusion.
+ * 	(based on the original CF connector by Hendrik Kramer - hk@lwd.de)
+ * 
+ * 	Note: 
+ * 	FCKeditor requires that the connector responds with UTF-8 encoded XML.
+ * 	As ColdFusion 5 does not fully support UTF-8 encoding, we force ASCII 
+ * 	file and folder names in this connector to allow CF5 send a UTF-8 
+ * 	encoded response - code points under 127 in UTF-8 are stored using a 
+ * 	single byte, using the same encoding as ASCII, which is damn handy. 
+ * 	This is all grand for the English speakers, like meself, but I dunno 
+ * 	how others are gonna take to it. Well, the previous version of this 
+ * 	connector already did this with file names and nobody seemed to mind, 
+ * 	so fingers-crossed nobody will mind their folder names being munged too.
+ * 	  
+ * 
+ * File Authors:
+ * 		Mark Woods (mark@thickpaddy.com)
+ * 		Wim Lemmens (didgiman@gmail.com)
 --->
 
 <cfparam name="url.command">
@@ -65,15 +78,24 @@
 	} else {
 		serverPath = replaceNoCase(getBaseTemplatePath(),replace(cgi.script_name,"/",fs,"all"),"");
 	}
-	if ( right(serverPath,1) neq fs ) {
-		serverPath = serverPath & fs;
-	}
 			
 	// map the user files path to a physical directory
 	userFilesServerPath = serverPath & replace(userFilesPath,"/",fs,"all");
 	
 	xmlContent = ""; // append to this string to build content
 </cfscript>
+
+<cfif not config.enabled>
+
+	<cfset xmlContent = "<Error number=""1"" text=""This connector is disabled. Please check the 'editor/filemanager/browser/default/connectors/cfm/config.cfm' file"" />">
+	
+<cfelseif find("..",url.currentFolder)>
+	
+	<cfset xmlContent = "<Error number=""102"" />">
+	
+</cfif>
+
+<cfif not len(xmlContent)>
 
 <!--- create directories in physical path if they don't already exist --->
 <cfset currentPath = serverPath>
@@ -82,9 +104,7 @@
 	<cfloop list="#userFilesPath#" index="name" delimiters="/">
 		
 		<cfif not directoryExists(currentPath & fs & name)>
-			
-				<cfdirectory action="create" directory="#currentPath##name#" mode="755">
-			
+				<cfdirectory action="create" directory="#currentPath##fs##name#" mode="755">
 		</cfif>
 		
 		<cfset currentPath = currentPath & fs & name>
@@ -92,10 +112,8 @@
 	</cfloop>
 	
 	<!--- create sub-directory for file type if it doesn't already exist --->
-	<cfif not directoryExists(userFilesServerPath & fs & url.type)>
-	
+		<cfif not directoryExists(userFilesServerPath & url.type)>	
 		<cfdirectory action="create" directory="#userFilesServerPath##url.type#" mode="755">
-	
 	</cfif>
 
 <cfcatch>
@@ -106,14 +124,6 @@
 </cfcatch>
 </cftry>
 
-<cfif not config.enabled>
-
-	<cfset xmlContent = "<Error number=""1"" text=""This connector is disabled. Please check the 'editor/filemanager/browser/default/connectors/cfm/config.cfm' file"" />">
-	
-<cfelseif find("..",url.currentFolder)>
-	
-	<cfset xmlContent = "<Error number=""102"" />">
-	
 </cfif>
 
 <cfif not len(xmlContent)>
@@ -142,6 +152,10 @@
 					nameConflict="makeunique"
 					mode="644"
 					attributes="normal">
+				
+				<cfif cffile.fileSize EQ 0>
+					<cfthrow>
+				</cfif>
 				
 				<cfif ( len(lAllowedExtensions) and not listFindNoCase(lAllowedExtensions,cffile.ServerFileExt) )
 					or ( len(lDeniedExtensions) and listFindNoCase(lDeniedExtensions,cffile.ServerFileExt) )>
@@ -343,6 +357,7 @@
 	xmlFooter = '</Connector>';
 </cfscript>
 
+<cfheader name="Expires" value="#GetHttpTimeString(Now())#">
 <cfheader name="Pragma" value="no-cache">
 <cfheader name="Cache-Control" value="no-cache, no-store, must-revalidate">
 <cfcontent reset="true" type="text/xml; charset=UTF-8">

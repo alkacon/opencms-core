@@ -20,25 +20,55 @@
 
 var FCKContextMenu = new Object() ;
 
+FCKContextMenu._Panel = new FCKPanel( FCKBrowserInfo.IsIE ? window : window.parent ) ;
+FCKContextMenu._Panel.PanelDiv.className = 'CM_ContextMenu' ;
+FCKContextMenu._Panel.AppendStyleSheet( FCKConfig.SkinPath + 'fck_contextmenu.css' ) ;
+FCKContextMenu._Panel.IsContextMenu = true ;
+
+FCKContextMenu._Document = FCKContextMenu._Panel.Document ;
+
 // This property is internally used to indicate that the context menu has been created.
 FCKContextMenu._IsLoaded = false ;
+
+FCKContextMenu.Show = function( x, y )
+{
+	if ( !this._IsLoaded )
+		this.Reload() ;
+	
+	this.RefreshState() ;
+
+	// If not IE, x and y are relative to the editing area, so we must "fix" it.
+	if ( !FCKBrowserInfo.IsIE )
+	{
+		var oCoordsA = FCKTools.GetElementPosition( FCK.EditorWindow.frameElement, this._Panel._Window ) ;
+		x += oCoordsA.X ;
+		y += oCoordsA.Y ;
+	}
+
+	this._Panel.Show( x, y ) ;
+}
+
+FCKContextMenu.Hide = function()
+{
+	this._Panel.Hide() ;
+}
 
 // This method creates the context menu inside a DIV tag. Take a look at the end of this file for a sample output.
 FCKContextMenu.Reload = function()
 {
 	// Create the Main DIV that holds the Context Menu.
-	this._Div = this._Document.createElement( 'DIV' ) ;
-	this._Div.className			= 'CM_ContextMenu' ;
-	this._Div.style.position	= 'absolute' ;
-	this._Div.style.visibility	= 'hidden' ;
-	this._Document.body.appendChild( this._Div );
+//	this._Div = this._Document.createElement( 'DIV' ) ;
+//	this._Div.className			= 'CM_ContextMenu' ;
+//	this._Div.style.position	= 'absolute' ;
+//	this._Div.style.visibility	= 'hidden' ;
+//	this._Document.body.appendChild( this._Div );
 
 	// Create the main table for the menu items.
 	var oTable = this._Document.createElement( 'TABLE' ) ;
 	oTable.cellSpacing = 0 ;
 	oTable.cellPadding = 0 ;
-	oTable.border = 0 ;
-	this._Div.appendChild( oTable ) ;
+	this._Panel.PanelDiv.appendChild( oTable ) ;
+//	this._Div.appendChild( oTable ) ;
 
 	// Load all configured groups.
 	this.Groups = new Object() ;
@@ -49,6 +79,8 @@ FCKContextMenu.Reload = function()
 		this.Groups[ sGroup ] = this._GetGroup( sGroup ) ;
 		this.Groups[ sGroup ].CreateTableRows( oTable ) ;
 	}
+
+	FCKTools.DisableSelection( this._Panel.Document.body ) ;
 
 	this._IsLoaded = true ;
 }
@@ -93,13 +125,22 @@ FCKContextMenu._GetGroup = function( groupName )
 			oGroup.Add( new FCKContextMenuItem( this, 'TableMergeCells'		, FCKLang.MergeCells, true ) ) ;
 			oGroup.Add( new FCKContextMenuItem( this, 'TableSplitCell'		, FCKLang.SplitCell, true ) ) ;
 			oGroup.Add( new FCKContextMenuSeparator() ) ;
+			oGroup.Add( new FCKContextMenuItem( this, 'TableDelete'			, FCKLang.TableDelete, false ) ) ;
+			oGroup.Add( new FCKContextMenuSeparator() ) ;
 			oGroup.Add( new FCKContextMenuItem( this, 'TableCellProp'		, FCKLang.CellProperties, true ) ) ;
 			oGroup.Add( new FCKContextMenuItem( this, 'TableProp'			, FCKLang.TableProperties, true ) ) ;
 
 			break ;
 
 		case 'Table' :
-			return new FCKContextMenuGroup( true, this, 'Table', FCKLang.TableProperties, true ) ;
+			oGroup = new FCKContextMenuGroup() ;
+			
+			oGroup.Add( new FCKContextMenuSeparator() ) ;
+			oGroup.Add( new FCKContextMenuItem( this, 'TableDelete'	, FCKLang.TableDelete, false ) ) ;
+			oGroup.Add( new FCKContextMenuSeparator() ) ;
+			oGroup.Add( new FCKContextMenuItem( this, 'Table'		, FCKLang.TableProperties, true ) ) ;
+			
+			break ;
 
 		case 'Image' :
 			return new FCKContextMenuGroup( true, this, 'Image', FCKLang.ImageProperties, true ) ;
@@ -196,8 +237,8 @@ Sample Context Menu Output
 <div class="CM_ContextMenu">
 	<table cellSpacing="0" cellPadding="0" border="0">
 		<tr class="CM_Disabled">
-			<td class="CM_Icon"><img alt="" src="icons/cut.gif" width="21" height="20" unselectable="on"></td>
-			<td class="CM_Label" unselectable="on">Cut</td>
+			<td class="CM_Icon"><img alt="" src="icons/cut.gif" width="21" height="20"></td>
+			<td class="CM_Label">Cut</td>
 		</tr>
 		<tr class="CM_Disabled">
 			<td class="CM_Icon"><img height="20" alt="" src="icons/copy.gif" width="21"></td>

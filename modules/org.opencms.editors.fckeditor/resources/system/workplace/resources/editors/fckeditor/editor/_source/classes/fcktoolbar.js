@@ -36,7 +36,7 @@ var FCKToolbar = function()
 
 	var oCell = this.DOMRow.insertCell(-1) ;
 	oCell.className = 'TB_Start' ;
-	oCell.innerHTML = '<img src="' + FCKConfig.SkinPath + 'images/toolbar.start.gif" width="7" height="21" style="VISIBILITY: hidden" onload="this.style.visibility = \'\';" unselectable="on">' ;
+	oCell.innerHTML = '<img src="' + FCKConfig.SkinPath + 'images/toolbar.start.gif" width="7" height="21" style="VISIBILITY: hidden" onload="this.style.visibility = \'\';">' ;
 
 	FCKToolbarSet.DOMElement.appendChild( e ) ;
 }
@@ -50,13 +50,12 @@ FCKToolbar.prototype.AddItem = function( toolbarItem )
 FCKToolbar.prototype.AddSeparator = function()
 {
 	var oCell = this.DOMRow.insertCell(-1) ;
-	oCell.unselectable = 'on' ;
-	oCell.innerHTML = '<img src="' + FCKConfig.SkinPath + 'images/toolbar.separator.gif" width="5" height="21" style="VISIBILITY: hidden" onload="this.style.visibility = \'\';" unselectable="on">' ;
+	oCell.innerHTML = '<img src="' + FCKConfig.SkinPath + 'images/toolbar.separator.gif" width="5" height="21" style="VISIBILITY: hidden" onload="this.style.visibility = \'\';">' ;
 }
 
 FCKToolbar.prototype.AddTerminator = function()
 {
 	var oCell = this.DOMRow.insertCell(-1) ;
 	oCell.className = 'TB_End' ;
-	oCell.innerHTML = '<img src="' + FCKConfig.SkinPath + 'images/toolbar.end.gif" width="12" height="21" style="VISIBILITY: hidden" onload="this.style.visibility = \'\';" unselectable="on">' ;
+	oCell.innerHTML = '<img src="' + FCKConfig.SkinPath + 'images/toolbar.end.gif" width="12" height="21" style="VISIBILITY: hidden" onload="this.style.visibility = \'\';">' ;
 }

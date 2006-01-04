@@ -148,6 +148,9 @@ function GetMetadata( name )
 
 window.onload = function ()
 {
+	// Show/Hide the "Browse Server" button.
+	GetE('tdBrowse').style.display = oEditor.FCKConfig.ImageBrowser ? "" : "none";
+
 	// First of all, translate the dialog box texts
 	oEditor.FCKLanguageManager.TranslatePage( document ) ;
 
@@ -372,26 +375,7 @@ function SelectColor( wich )
 
 function BrowseServerBack()
 {
-	var iLeft = (FCKConfig.ScreenWidth  - FCKConfig.ImageBrowserWindowWidth) / 2 ;
-	var iTop  = (FCKConfig.ScreenHeight - FCKConfig.ImageBrowserWindowHeight) / 2 ;
-
-	var sOptions = "toolbar=no,status=no,resizable=yes,dependent=yes" ;
-	sOptions += ",width=" + FCKConfig.LinkBrowserWindowWidth ;
-	sOptions += ",height=" + FCKConfig.LinkBrowserWindowHeight ;
-	sOptions += ",left=" + iLeft ;
-	sOptions += ",top=" + iTop ;
-
-	if ( oEditor.FCKBrowserInfo.IsIE )
-	{
-		// The following change has been made otherwise IE will open the file 
-		// browser on a different server session (on some cases):
-		// http://support.microsoft.com/default.aspx?scid=kb;en-us;831678
-		// by Simone Chiaretta.
-		var oWindow = oEditor.window.open( FCKConfig.ImageBrowserURL, "FCKBrowseWindow", sOptions ) ;
-		oWindow.opener = window ;
-    }
-    else
-		window.open( FCKConfig.ImageBrowserURL, "FCKBrowseWindow", sOptions ) ;
+	OpenFileBrowser( FCKConfig.ImageBrowserURL, FCKConfig.ImageBrowserWindowWidth, FCKConfig.ImageBrowserWindowHeight ) ;
 }
 
 function SetUrl( url )
@@ -499,7 +483,7 @@ function SetUrl( url )
 						<table cellSpacing="0" cellPadding="0" width="100%" border="0">
 							<tr>
 								<td width="100%"><input id="txtBackImage" style="WIDTH: 100%" type="text" onchange="UpdatePreview();" onkeyup="UpdatePreview();"></td>
-								<td nowrap>&nbsp;<input id="btnBrowse" onclick="BrowseServerBack();" type="button" fckLang="DlgBtnBrowseServer" value="Browse Server" fckLang="DlgBtnBrowseServer"></td>
+								<td id="tdBrowse" nowrap>&nbsp;<input id="btnBrowse" onclick="BrowseServerBack();" type="button" fckLang="DlgBtnBrowseServer" value="Browse Server" fckLang="DlgBtnBrowseServer"></td>
 							</tr>
 						</table>
 						<input id="chkBackNoScroll" type="checkbox" onclick="UpdatePreview();"> <label for="chkBackNoScroll" fckLang="DlgDocBgNoScroll">Nonscrolling

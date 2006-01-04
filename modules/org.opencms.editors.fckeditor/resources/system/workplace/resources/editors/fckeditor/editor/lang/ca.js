@@ -85,6 +85,8 @@ Find				: "Cercar",
 Replace				: "Remplaçar",
 SpellCheck			: "Verificar sintaxi",
 UniversalKeyboard	: "Teclat universal",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Formulari",
 Checkbox		: "Casella de verificació",
@@ -106,6 +108,7 @@ InsertCell			: "Afegir Cel·la",
 DeleteCells			: "Eliminar Cel·les",
 MergeCells			: "Fusionar Cel·les",
 SplitCell			: "Separar Cel·les",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Proprietats de Cel·la",
 TableProperties		: "Proprietats de Taula",
 ImageProperties		: "Proprietats d'Image",
@@ -134,6 +137,8 @@ UnknownCommand		: "Nom de comanda desconegut \"%1\"",
 NotImplemented		: "Mètode no implementat",
 UnknownToolbarSet	: "Conjunt de barra d'eines \"%1\" inexistent",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Alçada",
 DlgTableCellSpace	: "Cell spacing",
 DlgTableCellPad		: "Cell padding",
 DlgTableCaption		: "Capçalera",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Proprietats de Cel·la",

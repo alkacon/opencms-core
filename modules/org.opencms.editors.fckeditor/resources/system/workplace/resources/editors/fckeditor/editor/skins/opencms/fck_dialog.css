@@ -129,3 +129,15 @@ body, .BackColor
 	cursor: pointer;
 	cursor: hand;
 }
+
+.SpecialCharsOut
+{
+	background-color: Window;
+	color: WindowText;
+}
+
+.SpecialCharsOver
+{
+	background-color: ThreeDShadow;
+	color: Window;
+}

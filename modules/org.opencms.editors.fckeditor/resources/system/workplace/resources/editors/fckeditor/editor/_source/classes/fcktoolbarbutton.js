@@ -37,14 +37,14 @@ FCKToolbarButton.prototype.CreateInstance = function( parentToolbar )
 	this.DOMDiv.FCKToolbarButton = this ;
 	
 	var sHtml =
-		'<table title="' + this.Tooltip + '" cellspacing="0" cellpadding="0" border="0" unselectable="on">' +
+		'<table title="' + this.Tooltip + '" cellspacing="0" cellpadding="0" border="0">' +
 			'<tr>' ;
 	
 	if ( this.Style != FCK_TOOLBARITEM_ONLYTEXT ) 
-		sHtml += '<td class="TB_Icon" unselectable="on"><img src="' + this.IconPath + '" width="21" height="21" unselectable="on"></td>' ;
+		sHtml += '<td class="TB_Icon"><img src="' + this.IconPath + '" width="21" height="21"></td>' ;
 	
 	if ( this.Style != FCK_TOOLBARITEM_ONLYICON ) 
-		sHtml += '<td class="TB_Text" unselectable="on" nowrap>' + this.Label + '</td>' ;
+		sHtml += '<td class="TB_Text" nowrap>' + this.Label + '</td>' ;
 	
 	sHtml +=	
 			'</tr>' +
@@ -61,7 +61,7 @@ FCKToolbarButton.prototype.CreateInstance = function( parentToolbar )
 FCKToolbarButton.prototype.RefreshState = function()
 {
 /*
-	TODO: Delete this commend block on stable version.
+	TODO: Delete this comment block on stable version.
 	// Gets the actual state.
 //	var eState ;
 

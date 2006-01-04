@@ -311,8 +311,8 @@ if ( FCKConfig.ProcessHTMLEntities )
 	}
 
 	// Create and Compile the Regex used to separate the entities from the text.
-	FCKXHtmlEntities.EntitiesRegex = new RegExp('','') ;
-	FCKXHtmlEntities.EntitiesRegex.compile( '[' + FCKXHtmlEntities.Chars + ']|[^' + FCKXHtmlEntities.Chars + ']+', 'g' ) ;
+	FCKXHtmlEntities.EntitiesRegex = new RegExp('[' + FCKXHtmlEntities.Chars + ']|[^' + FCKXHtmlEntities.Chars + ']+','g') ;
+//	FCKXHtmlEntities.EntitiesRegex.compile( '[' + FCKXHtmlEntities.Chars + ']|[^' + FCKXHtmlEntities.Chars + ']+', 'g' ) ;
 }
 else
 {

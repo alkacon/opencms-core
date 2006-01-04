@@ -33,7 +33,7 @@ var oDOM = oEditor.FCK.EditorDocument ;
 var table ;
 var e = oEditor.FCKSelection.GetSelectedElement() ;
 
-if ( ! e && document.location.search.substr(1) == 'Parent' )
+if ( ( !e && document.location.search.substr(1) == 'Parent' ) || ( e && e.tagName != 'TABLE' ) )
 	e = oEditor.FCKSelection.MoveToAncestorNode( 'TABLE' ) ;
 
 if ( e && e.tagName == "TABLE" )
@@ -75,6 +75,7 @@ window.onload = function()
 		document.getElementById('selAlignment').value	= table.align ;
 		document.getElementById('txtCellPadding').value	= table.cellPadding	;
 		document.getElementById('txtCellSpacing').value	= table.cellSpacing	;
+		document.getElementById('txtSummary').value     = table.summary;
 //		document.getElementById('cmbFontStyle').value	= table.className ;
 
 		if (table.caption) document.getElementById('txtCaption').value = table.caption.innerHTML ;
@@ -107,6 +108,7 @@ function Ok()
 	table.align			= document.getElementById('selAlignment').value ;
 	table.cellPadding	= document.getElementById('txtCellPadding').value ;
 	table.cellSpacing	= document.getElementById('txtCellSpacing').value ;
+	table.summary       = document.getElementById('txtSummary').value ;
 //	table.className		= cmbFontStyle.value ;
 	
 	if ( document.getElementById('txtCaption').value != '')
@@ -263,8 +265,14 @@ function IsDigit( e )
 						<tr>
 							<td nowrap><span fckLang="DlgTableCaption">Caption</span>:</td>
 							<td>&nbsp;</td>
-							<td width="100%">&nbsp;
+							<td width="100%" nowrap>&nbsp;
 								<input id="txtCaption" type="text" style="WIDTH: 100%"></td>
+						</tr>
+						<tr>
+							<td nowrap><span fckLang="DlgTableSummary">Summary</span>:</td>
+							<td>&nbsp;</td>
+							<td width="100%" nowrap>&nbsp;
+								<input id="txtSummary" type="text" style="WIDTH: 100%"></td>
 						</tr>
 					</table>
 				</td>

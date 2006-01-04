@@ -194,8 +194,10 @@ function LoadSelection()
 	var sType = 'url' ;
 
 	// Get the actual Link href.
-	var sHRef = oLink.getAttribute('href',2) + '' ;
-
+	var sHRef = oLink.getAttribute( '_fcksavedurl' ) ;
+	if ( !sHRef || sHRef.length == 0 )
+		sHRef = oLink.getAttribute( 'href' , 2 ) + '' ;
+	
 	// TODO: Wait stable version and remove the following commented lines.
 //	if ( sHRef.startsWith( FCK.BaseUrl ) )
 //		sHRef = sHRef.remove( 0, FCK.BaseUrl.length ) ;
@@ -236,7 +238,7 @@ function LoadSelection()
 			GetE('txtUrl').value = sUrl ;
 		}
 	}
-	else if ( sHRef.substr(0,1) == '#' && sHRef.length > 2 )	// It is an anchor link.
+	else if ( sHRef.substr(0,1) == '#' && sHRef.length > 1 )	// It is an anchor link.
 	{
 		sType = 'anchor' ;
 		GetE('cmbAnchorName').value = GetE('cmbAnchorId').value = sHRef.substr(1) ;
@@ -485,6 +487,8 @@ function Ok()
 		if ( ! oLink )
 			return true ;
 	}
+	
+	SetAttribute( oLink, '_fcksavedurl', sUri ) ;
 
 	// Target
 	if( GetE('cmbTarget').value != 'popup' )
@@ -500,44 +504,26 @@ function Ok()
 	SetAttribute( oLink, 'accesskey', GetE('txtAttAccessKey').value ) ;
 	SetAttribute( oLink, 'tabindex'	, ( GetE('txtAttTabIndex').value > 0 ? GetE('txtAttTabIndex').value : null ) ) ;
 	SetAttribute( oLink, 'title'	, GetE('txtAttTitle').value ) ;
-	SetAttribute( oLink, 'class'	, GetE('txtAttClasses').value ) ;
 	SetAttribute( oLink, 'type'		, GetE('txtAttContentType').value ) ;
 	SetAttribute( oLink, 'charset'	, GetE('txtAttCharSet').value ) ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
+	{
+		SetAttribute( oLink, 'className', GetE('txtAttClasses').value ) ;
 		oLink.style.cssText = GetE('txtAttStyle').value ;
+	}
 	else
+	{
+		SetAttribute( oLink, 'class', GetE('txtAttClasses').value ) ;
 		SetAttribute( oLink, 'style', GetE('txtAttStyle').value ) ;
+	}
 
 	return true ;
 }
 
 function BrowseServer()
 {
-	// Set the browser window feature.
-	var iWidth	= FCKConfig.LinkBrowserWindowWidth ;
-	var iHeight	= FCKConfig.LinkBrowserWindowHeight ;
-
-	var iLeft = (FCKConfig.ScreenWidth  - iWidth) / 2 ;
-	var iTop  = (FCKConfig.ScreenHeight - iHeight) / 2 ;
-
-	var sOptions = "toolbar=no,status=no,resizable=yes,dependent=yes" ;
-	sOptions += ",width=" + iWidth ;
-	sOptions += ",height=" + iHeight ;
-	sOptions += ",left=" + iLeft ;
-	sOptions += ",top=" + iTop ;
-
-	if ( oEditor.FCKBrowserInfo.IsIE )
-	{
-		// The following change has been made otherwise IE will open the file 
-		// browser on a different server session (on some cases):
-		// http://support.microsoft.com/default.aspx?scid=kb;en-us;831678
-		// by Simone Chiaretta.
-		var oWindow = oEditor.window.open( FCKConfig.LinkBrowserURL, "FCKBrowseWindow", sOptions ) ;
-		oWindow.opener = window ;
-    }
-    else
-		window.open( FCKConfig.LinkBrowserURL, "FCKBrowseWindow", sOptions ) ;
+	OpenFileBrowser( FCKConfig.LinkBrowserURL, FCKConfig.LinkBrowserWindowWidth, FCKConfig.LinkBrowserWindowHeight ) ;
 }
 
 function SetUrl( url )

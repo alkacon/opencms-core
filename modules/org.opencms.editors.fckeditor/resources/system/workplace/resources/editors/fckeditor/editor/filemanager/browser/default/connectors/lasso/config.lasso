@@ -9,16 +9,14 @@
  * For further information visit:
  * 		http://www.fckeditor.net/
  * 
+ * "Support Open Source software. What about a donation today?"
+ * 
  * File Name: config.lasso
  * 	Configuration file for the File Manager Connector for Lasso.
  * 
  * File Authors:
  * 		Jason Huck (jason.huck@corefive.com)
- 
  */
-
-
-
 
     /*.....................................................................     
     The connector uses the file tags, which require authentication. Enter a

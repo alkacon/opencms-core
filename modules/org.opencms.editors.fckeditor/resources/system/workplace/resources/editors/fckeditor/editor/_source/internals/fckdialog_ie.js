@@ -22,5 +22,9 @@ FCKDialog.Show = function( dialogInfo, dialogName, pageUrl, dialogWidth, dialogH
 	if ( !parentWindow )
 		parentWindow = window ;
 
+	this.IsOpened = true ;
+	
 	parentWindow.showModalDialog( pageUrl, dialogInfo, "dialogWidth:" + dialogWidth + "px;dialogHeight:" + dialogHeight + "px;help:no;scroll:no;status:no") ;
+	
+	this.IsOpened = false ;
 }

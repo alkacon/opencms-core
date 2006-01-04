@@ -86,6 +86,8 @@ Find				: "Leita",
 Replace				: "Set í staðin",
 SpellCheck			: "Stavseting",
 UniversalKeyboard	: "Universalt Tastatur",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Seta inn Form",
 Checkbox		: "Seta inn Avmerkingarboks",
@@ -107,6 +109,7 @@ InsertCell			: "Seta inn sellu",
 DeleteCells			: "Sletta sellu",
 MergeCells			: "Flætta sellur",
 SplitCell			: "Deila sellur",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Eginleikar fyri sellu",
 TableProperties		: "Eginleikar fyri talvu",
 ImageProperties		: "Eginleikar fyri mynd",
@@ -135,6 +138,8 @@ UnknownCommand		: "Kenni ikki ordra \"%1\"",
 NotImplemented		: "Ordrin er ikki gjørdur virkin",
 UnknownToolbarSet	: "Amboðalinjan \"%1\" finst ikki",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -279,6 +284,7 @@ DlgTableHeight		: "Hædd",
 DlgTableCellSpace	: "Fjarstøða millum sellur",
 DlgTableCellPad		: "Sellu breddi",
 DlgTableCaption		: "Heiti",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Sellu eginleikar",

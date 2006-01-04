@@ -67,10 +67,10 @@ DEFINE CLASS goFckeditor AS CONTAINER OLEPUBLIC
 			ENDIF
 
 			&& Render the LINKED HIDDEN FIELD.
-			html = html + [<input type="hidden" id="]+THIS.cInstanceName +[" name="]+THIS.cInstanceName +[" value="]+HtmlValue+[">]
+			html = html + [<input type="hidden" id="]+THIS.cInstanceName +[" name="]+THIS.cInstanceName +[" value="]+HtmlValue+[" style="display:none" />]
 
 			&& Render the configurations HIDDEN FIELD.
-			html = html + [<input type="hidden" id="]+THIS.cInstanceName +[___Config" value="]+THIS.GetConfigFieldString() + [">] +CHR(13)+CHR(10)
+			html = html + [<input type="hidden" id="]+THIS.cInstanceName +[___Config" value="]+THIS.GetConfigFieldString() + [" style="display:none" />] +CHR(13)+CHR(10)
 
 			&& Render the EDITOR IFRAME.
 			html = html + [<iframe id="]+THIS.cInstanceName +[___Frame" src="Link" width="]+THIS.cWIDTH+[" height="]+THIS.cHEIGHT+[" frameborder="no" scrolling="no"></iframe>]
@@ -87,7 +87,7 @@ DEFINE CLASS goFckeditor AS CONTAINER OLEPUBLIC
 				HeightCSS = THIS.cHEIGHT
 			ENDIF
 
-			html = html + [<textarea name="]+THIS.cInstanceName +[" rows="4" cols="40" style="width: ]+WidthCSS+[ height: ]+HeightCSS+[" wrap="virtual">]+HtmlValue+[</textarea>]
+			html = html + [<textarea name="]+THIS.cInstanceName +[" rows="4" cols="40" style="width: ]+WidthCSS+[ height: ]+HeightCSS+[">]+HtmlValue+[</textarea>]
 		ENDIF
 
 		html = html + [</div>]

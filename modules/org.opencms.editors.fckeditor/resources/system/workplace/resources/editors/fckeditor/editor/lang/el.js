@@ -85,6 +85,8 @@ Find				: "Αναζήτηση",
 Replace				: "Αντικατάσταση",
 SpellCheck			: "Check Spell",	//MISSING
 UniversalKeyboard	: "Universal Keyboard",	//MISSING
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Form",	//MISSING
 Checkbox		: "Checkbox",	//MISSING
@@ -106,6 +108,7 @@ InsertCell			: "Εισαγωγή Κελιού",
 DeleteCells			: "Διαγραφή Κελιών",
 MergeCells			: "Ενοποίηση Κελιών",
 SplitCell			: "Διαχωρισμός Κελιού",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Ιδιότητες Κελιού",
 TableProperties		: "Ιδιότητες Πίνακα",
 ImageProperties		: "Ιδιότητες Εικόνας",
@@ -134,6 +137,8 @@ UnknownCommand		: "Άγνωστή εντολή \"%1\"",
 NotImplemented		: "Η εντολή δεν έχει ενεργοποιηθεί",
 UnknownToolbarSet	: "Η μπάρα εργαλείων \"%1\" δεν υπάρχει",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Ύψος",
 DlgTableCellSpace	: "Cell spacing",
 DlgTableCellPad		: "Cell padding",
 DlgTableCaption		: "Υπέρτιτλος",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Ιδιότητες Κελιού",

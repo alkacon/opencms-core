@@ -75,3 +75,24 @@ FCKTools.CreateXmlObject = function( object )
 		FCKLang.NoActiveX = null ;
 	}
 }
+
+FCKTools.DisableSelection = function( element )
+{
+	element.unselectable = 'on' ;
+
+	var e, i = 0 ;
+	while ( e = element.all[ i++ ] )
+	{
+		switch ( e.tagName )
+		{
+			case 'IFRAME' :
+			case 'TEXTAREA' :
+			case 'INPUT' :
+			case 'SELECT' :
+				/* Ignore the above tags */
+				break ;
+			default :
+				e.unselectable = 'on' ;
+		}
+	}
+}

@@ -86,6 +86,8 @@ Find				: "חיפוש",
 Replace				: "החלפה",
 SpellCheck			: "בדיקת איות",
 UniversalKeyboard	: "מקלדת אוניברסלית",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "טופס",
 Checkbox		: "תיבת סימון",
@@ -107,6 +109,7 @@ InsertCell			: "הוספת תא",
 DeleteCells			: "מחיקת תאים",
 MergeCells			: "מיזוג תאים",
 SplitCell			: "פיצול תאים",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "תכונות התא",
 TableProperties		: "תכונות הטבלה",
 ImageProperties		: "תכונות התמונה",
@@ -135,6 +138,8 @@ UnknownCommand		: "שם פעולה לא ידוע \"%1\"",
 NotImplemented		: "הפקודה לא מיושמת",
 UnknownToolbarSet	: "ערכת סרגל הכלים \"%1\" לא קיימת",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "אישור",
@@ -279,6 +284,7 @@ DlgTableHeight		: "גובה",
 DlgTableCellSpace	: "מרווח תא",
 DlgTableCellPad		: "ריפוד תא",
 DlgTableCaption		: "כיתוב",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "תכונות תא",

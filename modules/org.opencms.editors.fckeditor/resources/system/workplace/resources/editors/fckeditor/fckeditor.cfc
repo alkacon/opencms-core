@@ -1,30 +1,42 @@
 <cfcomponent output="false" displayname="FCKeditor" hint="Create an instance of the FCKeditor.">
-<!--- @Packager.Header
-<FileDescription>
-	ColdFusion MX integration. 
-	Note this CFC is created for use only with Coldfusion MX and above.
-	For older version, check the fckeditor.cfm.
-
-	Syntax: 
-
-	&lt;cfscript&gt;
-			fckEditor = createObject("component", "fckEditorV2/fckeditor");
-			fckEditor.instanceName="myEditor";
-			fckEditor.basePath="/fckEditorV2/";
-			fckEditor.value="This is my &lt;strong&gt;initial&lt;/strong&gt; html text.";
-			fckEditor.width="100%";
-			fckEditor.height="200";
-		 	// ... additional parameters ...
-			fckEditor.create(); // create instance now.
-	&lt;/cfscript&gt;
-
-	See your macromedia coldfusion mx documentation for more info.
-
-	*** Note: 
-	Do not use path names with a "." (dot) in the name. This is a coldfusion 
-	limitation with the cfc invocation.
-</FileDescription>
-<Author name="Hendrik Kramer" email="hk@lwd.de" />
+<!---
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: fckeditor.cfc
+ * 	ColdFusion MX integration. 
+ * 	Note this CFC is created for use only with Coldfusion MX and above.
+ * 	For older version, check the fckeditor.cfm.
+ * 
+ * 	Syntax: 
+ * 
+ * 	<cfscript>
+ * 			fckEditor = createObject("component", "fckEditorV2/fckeditor");
+ * 			fckEditor.instanceName="myEditor";
+ * 			fckEditor.basePath="/fckEditorV2/";
+ * 			fckEditor.value="This is my <strong>initial</strong> html text.";
+ * 			fckEditor.width="100%";
+ * 			fckEditor.height="200";
+ * 		 	// ... additional parameters ...
+ * 			fckEditor.create(); // create instance now.
+ * 	</cfscript>
+ * 
+ * 	See your macromedia coldfusion mx documentation for more info.
+ * 
+ * 	*** Note: 
+ * 	Do not use path names with a "." (dot) in the name. This is a coldfusion 
+ * 	limitation with the cfc invocation.
+ * 
+ * File Authors:
+ * 		Hendrik Kramer (hk@lwd.de)
 --->
 <cffunction 
 	name="create" 
@@ -117,7 +129,7 @@
 
 	<cfoutput>
 	<div>
-	<textarea name="#this.instanceName#" rows="4" cols="40" style="WIDTH: #width#; HEIGHT: #height#" wrap="virtual">#HTMLEditFormat(this.value)#</textarea>
+	<textarea name="#this.instanceName#" rows="4" cols="40" style="WIDTH: #width#; HEIGHT: #height#">#HTMLEditFormat(this.value)#</textarea>
 	</div>
 	</cfoutput>
 
@@ -148,8 +160,8 @@
 
 	<cfoutput>
 	<div>
-	<input type="hidden" id="#this.instanceName#" name="#this.instanceName#" value="#HTMLEditFormat(this.value)#" />
-	<input type="hidden" id="#this.instanceName#___Config" value="#GetConfigFieldString()#" />
+	<input type="hidden" id="#this.instanceName#" name="#this.instanceName#" value="#HTMLEditFormat(this.value)#" style="display:none" />
+	<input type="hidden" id="#this.instanceName#___Config" value="#GetConfigFieldString()#" style="display:none" />
 	<iframe id="#this.instanceName#___Frame" src="#sURL#" width="#this.width#" height="#this.height#" frameborder="no" scrolling="no"></iframe>
 	</div>
 	</cfoutput>

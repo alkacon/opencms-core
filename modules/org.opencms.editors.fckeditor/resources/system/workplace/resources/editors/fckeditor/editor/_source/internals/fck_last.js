@@ -24,7 +24,7 @@ if ( FCKLang && window.document.dir.toLowerCase() != FCKLang.Dir.toLowerCase() )
 	window.document.dir = FCKLang.Dir ;
 	
 // Activate pasting operations.
-if ( FCKConfig.ForcePasteAsPlainText )
+if ( FCKConfig.ForcePasteAsPlainText || FCKConfig.AutoDetectPasteFromWord )
 	FCK.Events.AttachEvent( "OnPaste", FCK.Paste ) ;
 
 // START iCM Modifications
@@ -57,6 +57,8 @@ function CompleteLoading()
 
 	FCK.AttachToOnSelectionChange( FCKToolbarSet.RefreshItemsState ) ;
 	//FCK.AttachToOnSelectionChange( FCKSelection._Reset ) ;
+
+	FCKTools.DisableSelection( document.body ) ;
 
 	FCK.SetStatus( FCK_STATUS_COMPLETE ) ;
 

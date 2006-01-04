@@ -26,7 +26,10 @@ FCKSelection.GetType = function()
 		this._Type = 'Text' ;
 
 		// Check if the actual selection is a Control (IMG, TABLE, HR, etc...).
-		var oSel = FCK.EditorWindow.getSelection() ;
+		var oSel ;
+		try { oSel = FCK.EditorWindow.getSelection() ; }
+		catch (e) {}
+		
 		if ( oSel && oSel.rangeCount == 1 )
 		{
 			var oRange = oSel.getRangeAt(0) ;
@@ -51,7 +54,7 @@ FCKSelection.GetSelectedElement = function()
 FCKSelection.GetParentElement = function()
 {
 	if ( this.GetType() == 'Control' )
-		return FCKSelection.GetSelectedElement().parentElement ;
+		return FCKSelection.GetSelectedElement().parentNode ;
 	else
 	{
 		var oSel = FCK.EditorWindow.getSelection() ;
@@ -139,6 +142,7 @@ FCKSelection.Delete = function()
 
 	return oSel ;
 }
+
 // START iCM MODIFICATIONS
 /*
 // Move the cursor position (the selection point) to a specific offset within a specific node

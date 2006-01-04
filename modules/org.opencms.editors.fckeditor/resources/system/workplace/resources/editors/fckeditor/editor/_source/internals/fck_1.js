@@ -18,6 +18,8 @@
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
  */
 
+var FCK_StartupValue ;
+
 FCK.Events	= new FCKEvents( FCK ) ;
 FCK.Toolbar	= null ;
 
@@ -38,6 +40,9 @@ FCK.StartEditor = function()
 
 	// Set the editor's startup contents
 	this.SetHTML( FCKTools.GetLinkedFieldValue() ) ;
+	
+	// Save the startup value for the "IsDirty()" check.
+	this.ResetIsDirty() ;
 
 	// Attach the editor to the form onsubmit event
 	FCKTools.AttachToLinkedFieldFormSubmit( this.UpdateLinkedField ) ;
@@ -50,6 +55,13 @@ FCK.StartEditor = function()
 function Window_OnFocus()
 {
 	FCK.Focus() ;
+	FCK.Events.FireEvent( "OnFocus" ) ;
+}
+
+function Window_OnBlur()
+{
+	if ( !FCKDialog.IsOpened )
+		return FCK.Events.FireEvent( "OnBlur" ) ;
 }
 
 FCK.SetStatus = function( newStatus )
@@ -59,7 +71,8 @@ FCK.SetStatus = function( newStatus )
 	if ( newStatus == FCK_STATUS_ACTIVE )
 	{
 		// Force the focus in the window to go to the editor.
-		window.onfocus = window.document.body.onfocus = Window_OnFocus ;
+		window.frameElement.onfocus	= window.document.body.onfocus = Window_OnFocus ;
+		window.frameElement.onblur	= Window_OnBlur ;
 
 		// Force the focus in the editor.
 		if ( FCKConfig.StartupFocus )
@@ -108,7 +121,7 @@ FCK.SetStatus = function( newStatus )
 		FCKScriptLoader.AddScript( '_source/classes/fckcontextmenuseparator.js' ) ;
 		FCKScriptLoader.AddScript( '_source/classes/fckcontextmenugroup.js' ) ;
 		FCKScriptLoader.AddScript( '_source/internals/fckcontextmenu.js' ) ;
-		FCKScriptLoader.AddScript( '_source/internals/fckcontextmenu_' + sBrowserSuffix + '.js' ) ;
+//		FCKScriptLoader.AddScript( '_source/internals/fckcontextmenu_' + sBrowserSuffix + '.js' ) ;
 		FCKScriptLoader.AddScript( '_source/classes/fckplugin.js' ) ;
 		FCKScriptLoader.AddScript( '_source/internals/fckplugins.js' ) ;
 		FCKScriptLoader.AddScript( '_source/internals/fck_last.js' ) ;
@@ -127,8 +140,11 @@ FCK.SetStatus = function( newStatus )
 	this.Events.FireEvent( 'OnStatusChange', newStatus ) ;
 }
 
+// Deprecated : returns the same value as GetXHTML.
 FCK.GetHTML = function( format )
 {
+	FCK.GetXHTML( format ) ;
+/*	
 	var sHTML ;
 
 	if ( FCK.EditMode == FCK_EDITMODE_WYSIWYG )
@@ -149,6 +165,7 @@ FCK.GetHTML = function( format )
 		return FCKCodeFormatter.Format( sHTML ) ;
 	else
 		return sHTML ;
+*/
 }
 
 FCK.GetXHTML = function( format )
@@ -157,10 +174,6 @@ FCK.GetXHTML = function( format )
 
 	if ( bSource )
 		this.SwitchEditMode() ;
-
-	// TODO: Wait stable version and remove the following commented lines.
-//	if ( FCKBrowserInfo.IsIE )
-//		FCK.CheckRelativeLinks() ;
 
 	var sXHTML ;
 	
@@ -191,10 +204,11 @@ FCK.GetXHTML = function( format )
 
 FCK.UpdateLinkedField = function()
 {
-	if ( FCKConfig.EnableXHTML )
+	// EnableXHTML has been deprecated
+//	if ( FCKConfig.EnableXHTML )
 		FCK.LinkedField.value = FCK.GetXHTML( FCKConfig.FormatOutput ) ;
-	else
-		FCK.LinkedField.value = FCK.GetHTML( FCKConfig.FormatOutput ) ;
+//	else
+//		FCK.LinkedField.value = FCK.GetHTML( FCKConfig.FormatOutput ) ;
 		
 	FCK.Events.FireEvent( 'OnAfterLinkedFieldUpdate' ) ;
 }
@@ -230,6 +244,32 @@ FCK.OnAfterSetHTML = function()
 		oProcessor.ProcessDocument( FCK.EditorDocument ) ;
 
 	this.Events.FireEvent( 'OnAfterSetHTML' ) ;
+}
+
+// Saves URLs on links and images on special attributes, so they don't change when 
+// moving around.
+FCK.ProtectUrls = function( html )
+{
+	// <A> href
+	html = html.replace( FCKRegexLib.ProtectUrlsAApo	, '$1$2$3$2 _fcksavedurl=$2$3$2' ) ;
+	html = html.replace( FCKRegexLib.ProtectUrlsANoApo	, '$1$2 _fcksavedurl="$2"' ) ;
+
+	// <IMG> src
+	html = html.replace( FCKRegexLib.ProtectUrlsImgApo	, '$1$2$3$2 _fcksavedurl=$2$3$2' ) ;
+	html = html.replace( FCKRegexLib.ProtectUrlsImgNoApo, '$1$2 _fcksavedurl="$2"' ) ;
+	
+	return html ;
+}
+
+FCK.IsDirty = function()
+{
+	return ( FCK_StartupValue != FCK.EditorDocument.body.innerHTML ) ;
+}
+
+FCK.ResetIsDirty = function()
+{
+	if ( FCK.EditorDocument.body )
+		FCK_StartupValue = FCK.EditorDocument.body.innerHTML ;
 }
 
 // Advanced document processors.
@@ -274,6 +314,21 @@ FCKDocumentProcessors.addItem( FCKAnchorsProcessor ) ;
 var FCKPageBreaksProcessor = new Object() ;
 FCKPageBreaksProcessor.ProcessDocument = function( document )
 {
+	var aDIVs = document.getElementsByTagName( 'DIV' ) ;
+
+	var eDIV ;
+	var i = aDIVs.length - 1 ;
+	while ( i >= 0 && ( eDIV = aDIVs[i--] ) )
+	{
+		if ( eDIV.style.pageBreakAfter == 'always' && eDIV.childNodes.length == 1 && eDIV.childNodes[0].style && eDIV.childNodes[0].style.display == 'none' )
+		{
+			var oFakeImage = FCKDocumentProcessors_CreateFakeImage( 'FCK__PageBreak', eDIV.cloneNode(true) ) ;
+			
+			eDIV.parentNode.insertBefore( oFakeImage, eDIV ) ;
+			eDIV.parentNode.removeChild( eDIV ) ;
+		}
+	}
+/*
 	var aCenters = document.getElementsByTagName( 'CENTER' ) ;
 
 	var oCenter ;
@@ -288,6 +343,7 @@ FCKPageBreaksProcessor.ProcessDocument = function( document )
 			oCenter.parentNode.removeChild( oCenter ) ;
 		}
 	}
+*/
 }
 
 FCKDocumentProcessors.addItem( FCKPageBreaksProcessor ) ;
@@ -309,7 +365,19 @@ FCKFlashProcessor.ProcessDocument = function( document )
 	{
 		if ( oEmbed.src.endsWith( '.swf', true ) )
 		{
-			var oImg = FCKDocumentProcessors_CreateFakeImage( 'FCK__Flash', oEmbed.cloneNode(true) ) ;
+			var oCloned = oEmbed.cloneNode( true ) ;
+			
+			// On IE, some properties are not getting clonned properly, so we 
+			// must fix it. Thanks to Alfonso Martinez.
+			if ( FCKBrowserInfo.IsIE )
+			{
+				oCloned.setAttribute( 'scale', oEmbed.getAttribute( 'scale' ) );
+				oCloned.setAttribute( 'play', oEmbed.getAttribute( 'play' ) );
+				oCloned.setAttribute( 'loop', oEmbed.getAttribute( 'loop' ) );
+				oCloned.setAttribute( 'menu', oEmbed.getAttribute( 'menu' ) );
+			}
+		
+			var oImg = FCKDocumentProcessors_CreateFakeImage( 'FCK__Flash', oCloned ) ;
 			oImg.setAttribute( '_fckflash', 'true', 0 ) ;
 			
 			FCKFlashProcessor.RefreshView( oImg, oEmbed ) ;

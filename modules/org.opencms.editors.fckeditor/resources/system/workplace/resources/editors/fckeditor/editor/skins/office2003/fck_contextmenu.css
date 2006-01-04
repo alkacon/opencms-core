@@ -17,7 +17,7 @@
  * 		Frederico Caldeira Knabben (fredck@fckeditor.net)
  */
 
-.CM_ContextMenu, .CM_ContextMenu *
+.BaseFont, .ForceBaseFont *, .CM_ContextMenu, .CM_ContextMenu *
 {
 	font-size: 11px;
 	font-family: 'Microsoft Sans Serif' , Tahoma, Arial, Verdana, Sans-Serif;
@@ -49,8 +49,9 @@
 
 .CM_Option .CM_Icon IMG
 {
-	filter: alpha(opacity=70);
-	-moz-opacity: 0.70;
+	opacity: 0.70; /* Safari, Opera and Mozilla */
+	filter: alpha(opacity=70); /* IE */
+	/* -moz-opacity: 0.70; Mozilla (Old) */
 }
 
 .CM_Disabled 
@@ -60,8 +61,9 @@
 
 .CM_Disabled .CM_Icon IMG, .CM_Disabled .CM_Label
 {
-	filter: gray() alpha(opacity=30);
-	-moz-opacity: 0.30;
+	opacity: 0.30; /* Safari, Opera and Mozilla */
+	filter: gray() alpha(opacity=30); /* IE */
+	/* -moz-opacity: 0.30; Mozilla (Old) */
 }
 
 .CM_Option .CM_Label, .CM_Over .CM_Label
@@ -80,12 +82,12 @@
 	background-color: #466ca6;
 }
 
-.CM_Separator TD
+.CM_Separator .CM_Label
 {
 	height: 3px;
 }
 
-.CM_Separator .CM_Label DIV
+.CM_Separator_Line
 {
 	border-top: #b9b99d 1px solid;
 	margin-left: 2px;
@@ -207,8 +209,9 @@
 	overflow: visible;
 	padding-right: 5px;
 	padding-left: 5px;
-	filter: alpha(opacity=70); 
-	-moz-opacity:0.75;
+	opacity: 0.75; /* Safari, Opera and Mozilla */
+	filter: alpha(opacity=70); /* IE */
+	/* -moz-opacity: 0.75; Mozilla (Old) */
 	height: 23px;
 	background-color: #f7f8fd;
 }
@@ -235,8 +238,9 @@
 
 .SC_FieldDisabled .SC_FieldButton, .SC_FieldDisabled .SC_FieldCaption
 {
-	filter: gray() alpha(opacity=30); 
-	-moz-opacity:0.30;
+	opacity: 0.30; /* Safari, Opera and Mozilla */
+	filter: gray() alpha(opacity=30); /* IE */
+	/* -moz-opacity: 0.30; Mozilla (Old) */
 }
 
 .SC_FieldOver

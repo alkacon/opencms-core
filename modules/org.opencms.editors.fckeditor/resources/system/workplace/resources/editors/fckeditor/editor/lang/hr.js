@@ -85,6 +85,8 @@ Find				: "Pronađi",
 Replace				: "Zamijeni",
 SpellCheck			: "Provjeri pravopis",
 UniversalKeyboard	: "Univerzalna tipkovnica",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Form",
 Checkbox		: "Checkbox",
@@ -106,6 +108,7 @@ InsertCell			: "Ubaci ćelije",
 DeleteCells			: "Izbriši ćelije",
 MergeCells			: "Spoji ćelije",
 SplitCell			: "Razdvoji ćelije",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Svojstva ćelije",
 TableProperties		: "Svojstva tablice",
 ImageProperties		: "Svojstva slike",
@@ -134,6 +137,8 @@ UnknownCommand		: "Nepoznata naredba \"%1\"",
 NotImplemented		: "Naredba nije implementirana",
 UnknownToolbarSet	: "Traka s alatima \"%1\" ne postoji",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Visina",
 DlgTableCellSpace	: "Prostornost ćelija",
 DlgTableCellPad		: "Razmak ćelija",
 DlgTableCaption		: "Naslov",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Svojstva ćelije",

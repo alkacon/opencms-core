@@ -85,6 +85,8 @@ Find				: "Hľadať",
 Replace				: "Nahradiť",
 SpellCheck			: "Kontrola pravopisu",
 UniversalKeyboard	: "Univerzálna klávesnica",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Formulár",
 Checkbox		: "Zaškrtávacie políčko",
@@ -106,6 +108,7 @@ InsertCell			: "Vložiť bunku",
 DeleteCells			: "Zmazať bunky",
 MergeCells			: "Zlúčiť bunky",
 SplitCell			: "Rozdeliť bunku",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Vlastnosti bunky",
 TableProperties		: "Vlastnosti tabulky",
 ImageProperties		: "Vlastnosti obrázka",
@@ -134,6 +137,8 @@ UnknownCommand		: "Neznámy príkaz \"%1\"",
 NotImplemented		: "Príkaz nie je implementovaný",
 UnknownToolbarSet	: "Panel nástrojov \"%1\" neexistuje",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Výška",
 DlgTableCellSpace	: "Vzdialenosť buniek",
 DlgTableCellPad		: "Odsadenie obsahu",
 DlgTableCaption		: "Popis",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Vlastnosti bunky",

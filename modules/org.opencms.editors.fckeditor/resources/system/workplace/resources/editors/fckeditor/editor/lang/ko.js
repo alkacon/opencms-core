@@ -86,6 +86,8 @@ Find				: "찾기",
 Replace				: "바꾸기",
 SpellCheck			: "철자검사",
 UniversalKeyboard	: "다국어 입력기",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "폼",
 Checkbox		: "체크박스",
@@ -107,6 +109,7 @@ InsertCell			: "셀 삽입",
 DeleteCells			: "셀 삭제",
 MergeCells			: "셀 합치기",
 SplitCell			: "셀 나누기",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "셀 속성",
 TableProperties		: "표 속성",
 ImageProperties		: "이미지 속성",
@@ -135,6 +138,8 @@ UnknownCommand		: "알수없는 기능입니다. : \"%1\"",
 NotImplemented		: "기능이 실행되지 않았습니다.",
 UnknownToolbarSet	: "툴바 설정이 없습니다. : \"%1\"",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "예",
@@ -279,6 +284,7 @@ DlgTableHeight		: "높이",
 DlgTableCellSpace	: "셀 간격",
 DlgTableCellPad		: "셀 여백",
 DlgTableCaption		: "캡션",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "셀 설정",

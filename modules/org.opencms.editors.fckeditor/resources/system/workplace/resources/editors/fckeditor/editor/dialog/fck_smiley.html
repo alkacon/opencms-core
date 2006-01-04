@@ -39,6 +39,7 @@ function InsertSmiley( url )
 {
 	var oImg = oEditor.FCK.CreateElement( 'IMG' ) ;
 	oImg.src = url ;
+	oImg.setAttribute( '_fcksavedurl', url ) ;
 
 	window.parent.Cancel() ;
 }

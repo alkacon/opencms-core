@@ -30,7 +30,7 @@ var FCKLang = oEditor.FCKLang ;
 
 window.onload = function()
 {
-	document.getElementById('txtHtml').value = oEditor.FCK.GetHTML() ;
+	document.getElementById('txtHtml').value = oEditor.FCK.EditorDocument.body.innerHTML ;
 
 	var oSpeller = new spellChecker( document.getElementById('txtHtml') ) ;
 	oSpeller.OnFinished = oSpeller_OnFinished ;

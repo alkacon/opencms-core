@@ -53,6 +53,9 @@ FCKTableCommand.prototype.Execute = function()
 		case 'TableSplitCell' :
 			FCKTableHandler.SplitCell() ;
 			break ;
+		case 'TableDelete' :
+			FCKTableHandler.DeleteTable() ;
+			break ;
 		default :
 			alert( FCKLang.UnknownCommand.replace( /%1/g, this.Name ) ) ;
 	}

@@ -14,7 +14,7 @@
  * 	Norwegian language file.
  * 
  * File Authors:
- * 		Martin Kronstad (www.siteman.no) (martin.kronstad@broadpark.no)
+ * 		Martin Kronstad (www.siteman.no) (martin.kronstad@gmail.com)
  */
 
 var FCKLang =
@@ -85,6 +85,8 @@ Find				: "Finn",
 Replace				: "Erstatt",
 SpellCheck			: "Stavekontroll",
 UniversalKeyboard	: "Universelt tastatur",
+PageBreakLbl		: "Sideskift",
+PageBreak			: "Sett inn sideskift",
 
 Form			: "Skjema",
 Checkbox		: "Sjekkboks",
@@ -106,6 +108,7 @@ InsertCell			: "Sett inn celle",
 DeleteCells			: "Slett celler",
 MergeCells			: "Slå sammen celler",
 SplitCell			: "Splitt celler",
+TableDelete			: "Slett tabell",
 CellProperties		: "Celleegenskaper",
 TableProperties		: "Tabellegenskaper",
 ImageProperties		: "Bildeegenskaper",
@@ -133,7 +136,9 @@ UnknownToolbarItem	: "Ukjent menyvalg \"%1\"",
 UnknownCommand		: "Ukjent kommando \"%1\"",
 NotImplemented		: "Kommando ikke ennå implimentert",
 UnknownToolbarSet	: "Verktøylinjesett \"%1\" finnes ikke",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+NoActiveX			: "Din nettleser's sikkerhetsinstillinger kan begrense noen av funksjonene i redigeringsverktøyet. Du må aktivere \"Kjør ActiveXkontroller og plugins\". Du kan oppleve feil og advarsler om manglende funksjoner",
+BrowseServerBlocked : "Kunne ikke åpne dialogboksen for filarkiv. Pass på at du har slått av popupstoppere.",
+DialogBlocked		: "Kunne ikke åpne dialogboksen. Pass på at du har slått av popupstoppere.",
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Høyde",
 DlgTableCellSpace	: "Celle marg",
 DlgTableCellPad		: "Celle polstring",
 DlgTableCaption		: "Tittel",
+DlgTableSummary		: "Sammendrag",
 
 // Table Cell Dialog
 DlgCellTitle		: "Celle egenskaper",
@@ -416,7 +422,7 @@ BulletedListProp	: "Uordnet listeegenskaper",
 NumberedListProp	: "Ordnet listeegenskaper",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Sirkel",
-DlgLstTypeDisc		: "Disc",	//MISSING
+DlgLstTypeDisc		: "Hel sirkel",
 DlgLstTypeSquare	: "Firkant",
 DlgLstTypeNumbers	: "Numre(1, 2, 3)",
 DlgLstTypeLCase		: "Små bokstaver (a, b, c)",

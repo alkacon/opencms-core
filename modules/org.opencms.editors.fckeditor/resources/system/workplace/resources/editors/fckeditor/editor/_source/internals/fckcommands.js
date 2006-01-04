@@ -47,7 +47,7 @@ FCKCommands.GetCommand = function( commandName )
 
 		case 'Image'		: oCommand = new FCKDialogCommand( 'Image'		, FCKLang.DlgImgTitle			, 'dialog/fck_image.html'		, 450, 400 ) ; break ;
 		case 'Flash'		: oCommand = new FCKDialogCommand( 'Flash'		, FCKLang.DlgFlashTitle			, 'dialog/fck_flash.html'		, 450, 400 ) ; break ;
-		case 'SpecialChar'	: oCommand = new FCKDialogCommand( 'SpecialChar', FCKLang.DlgSpecialCharTitle	, 'dialog/fck_specialchar.html'	, 400, 300 ) ; break ;
+		case 'SpecialChar'	: oCommand = new FCKDialogCommand( 'SpecialChar', FCKLang.DlgSpecialCharTitle	, 'dialog/fck_specialchar.html'	, 400, 320 ) ; break ;
 		case 'Smiley'		: oCommand = new FCKDialogCommand( 'Smiley'		, FCKLang.DlgSmileyTitle		, 'dialog/fck_smiley.html'		, FCKConfig.SmileyWindowWidth, FCKConfig.SmileyWindowHeight ) ; break ;
 		case 'Table'		: oCommand = new FCKDialogCommand( 'Table'		, FCKLang.DlgTableTitle			, 'dialog/fck_table.html'		, 400, 250 ) ; break ;
 		case 'TableProp'	: oCommand = new FCKDialogCommand( 'Table'		, FCKLang.DlgTableTitle			, 'dialog/fck_table.html?Parent', 400, 250 ) ; break ;
@@ -80,6 +80,7 @@ FCKCommands.GetCommand = function( commandName )
 		case 'TableDeleteCells'		: oCommand = new FCKTableCommand('TableDeleteCells') ; break ;
 		case 'TableMergeCells'		: oCommand = new FCKTableCommand('TableMergeCells') ; break ;
 		case 'TableSplitCell'		: oCommand = new FCKTableCommand('TableSplitCell') ; break ;
+		case 'TableDelete'			: oCommand = new FCKTableCommand('TableDelete') ; break ;
 
 		case 'Form'			: oCommand = new FCKDialogCommand( 'Form'		, FCKLang.Form			, 'dialog/fck_form.html'		, 380, 230 ) ; break ;
 		case 'Checkbox'		: oCommand = new FCKDialogCommand( 'Checkbox'	, FCKLang.Checkbox		, 'dialog/fck_checkbox.html'	, 380, 230 ) ; break ;

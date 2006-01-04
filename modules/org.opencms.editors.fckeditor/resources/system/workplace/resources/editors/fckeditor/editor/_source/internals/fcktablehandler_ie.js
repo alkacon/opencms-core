@@ -22,7 +22,8 @@ FCKTableHandler.GetSelectedCells = function()
 	var aCells = new Array() ;
 
 	var oRange = FCK.EditorDocument.selection.createRange() ;
-	var oParent = oRange.parentElement() ;
+//	var oParent = oRange.parentElement() ;
+	var oParent = FCKSelection.GetParentElement() ;
 	
 	if ( oParent && oParent.tagName == "TD" )
 		aCells[0] = oParent ;

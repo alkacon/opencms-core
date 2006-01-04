@@ -85,6 +85,8 @@ Find				: "Хайх",
 Replace				: "Солих",
 SpellCheck			: "Check Spell",	//MISSING
 UniversalKeyboard	: "Universal Keyboard",	//MISSING
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Form",	//MISSING
 Checkbox		: "Checkbox",	//MISSING
@@ -106,6 +108,7 @@ InsertCell			: "Нүх оруулах",
 DeleteCells			: "Нүх устгах",
 MergeCells			: "Нүх нэгтэх",
 SplitCell			: "Нүх тусгайрлах",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Хоосон зайн шинж чанар",
 TableProperties		: "Хүснэгт",
 ImageProperties		: "Зураг",
@@ -134,6 +137,8 @@ UnknownCommand		: "\"%1\" комманд нэр мэдагдэхгүй байн�
 NotImplemented		: "Зөвшөөрөгдөхгүй комманд",
 UnknownToolbarSet	: "Багажны хэсэгт \"%1\" оноох, үүсээгүй байна",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Өндөр",
 DlgTableCellSpace	: "Нүх хоорондын зай",
 DlgTableCellPad		: "Нүх доторлох",
 DlgTableCaption		: "Тайлбар",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Хоосон зайн шинж чанар",

@@ -91,16 +91,14 @@ FCKXHtml._AppendChildNodes = function( xmlNode, htmlNode, isBlockElement )
 {
 	var iCount = 0 ;
 	
-	if ( htmlNode.hasChildNodes() )
-	{
-		// Get all children nodes.
-		var oChildren = htmlNode.childNodes ;
+	var oNode = htmlNode.firstChild ;
 
-		for ( var i = 0 ; i < oChildren.length ; i++ )
-		{
-			if ( this._AppendNode( xmlNode, oChildren[i] ) )
-				iCount++ ;
-		}
+	while ( oNode )
+	{
+		if ( this._AppendNode( xmlNode, oNode ) )
+			iCount++ ;
+
+		oNode = oNode.nextSibling ;
 	}
 	
 	if ( iCount == 0 )
@@ -120,6 +118,9 @@ FCKXHtml._AppendChildNodes = function( xmlNode, htmlNode, isBlockElement )
 
 FCKXHtml._AppendNode = function( xmlNode, htmlNode )
 {
+	if ( !htmlNode )
+		return ;
+
 	switch ( htmlNode.nodeType )
 	{
 		// Element Node.
@@ -134,10 +135,16 @@ FCKXHtml._AppendNode = function( xmlNode, htmlNode )
 			if ( htmlNode.getAttribute('_fckdelete') )
 				return false ;
 
-			// Create the Element.
+			// Get the element name.
 			var sNodeName = htmlNode.nodeName ;
+			
+			//Add namespace:
+			if ( FCKBrowserInfo.IsIE && htmlNode.scopeName && htmlNode.scopeName != 'HTML' )
+				sNodeName = htmlNode.scopeName + ':' + sNodeName ;
 
 			// Check if the node name is valid, otherwise ignore this tag.
+			// If the nodeName starts with a slash, it is a orphan closing tag.
+			// On some strange cases, the nodeName is empty, even if the node exists.
 			if ( !FCKRegexLib.ElementName.test( sNodeName ) )
 				return false ;
 
@@ -150,18 +157,13 @@ FCKXHtml._AppendNode = function( xmlNode, htmlNode )
 			// So here, the "mark" is checked... if the element is Ok, then mark it.
 			if ( htmlNode._fckxhtmljob && htmlNode._fckxhtmljob == FCKXHtml.CurrentJobNum )
 				return false ;
-			else
-				htmlNode._fckxhtmljob = FCKXHtml.CurrentJobNum ;
-
-			// If the nodeName starts with a slash, it is a orphan closing tag.
-			// On some strange cases, the nodeName is empty, even if the node exists.
-//			if ( sNodeName.length == 0 || sNodeName.substr(0,1) == '/' )
-//				break ;
 
 			var oNode = this._CreateNode( sNodeName ) ;
 			
 			// Add all attributes.
 			FCKXHtml._AppendAttributes( xmlNode, htmlNode, oNode, sNodeName ) ;
+			
+			htmlNode._fckxhtmljob = FCKXHtml.CurrentJobNum ;
 
 			// Tag specific processing.
 			var oTagProcessor = FCKXHtml.TagProcessors[ sNodeName ] ;
@@ -265,11 +267,26 @@ FCKXHtml._AppendSpecialItem = function( item )
 // An object that hold tag specific operations.
 FCKXHtml.TagProcessors = new Object() ;
 
-FCKXHtml.TagProcessors['img'] = function( node )
+FCKXHtml.TagProcessors['img'] = function( node, htmlNode )
 {
 	// The "ALT" attribute is required in XHTML.
 	if ( ! node.attributes.getNamedItem( 'alt' ) )
 		FCKXHtml._AppendAttribute( node, 'alt', '' ) ;
+
+	var sSavedUrl = htmlNode.getAttribute( '_fcksavedurl' ) ;
+	if ( sSavedUrl && sSavedUrl.length > 0 )
+		FCKXHtml._AppendAttribute( node, 'src', sSavedUrl ) ;
+
+	return node ;
+}
+
+FCKXHtml.TagProcessors['a'] = function( node, htmlNode )
+{
+	var sSavedUrl = htmlNode.getAttribute( '_fcksavedurl' ) ;
+	if ( sSavedUrl && sSavedUrl.length > 0 )
+		FCKXHtml._AppendAttribute( node, 'href', sSavedUrl ) ;
+
+	FCKXHtml._AppendChildNodes( node, htmlNode, false ) ;
 
 	return node ;
 }

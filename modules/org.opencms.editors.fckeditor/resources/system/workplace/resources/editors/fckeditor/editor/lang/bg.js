@@ -85,6 +85,8 @@ Find				: "Търси",
 Replace				: "Замести",
 SpellCheck			: "Провери правописа",
 UniversalKeyboard	: "Универсална клавиатура",
+PageBreakLbl		: "Нов ред",
+PageBreak			: "Вмъкни нов ред",
 
 Form			: "Формуляр",
 Checkbox		: "Поле за отметка",
@@ -106,6 +108,7 @@ InsertCell			: "Добави клетка",
 DeleteCells			: "Изтрий клетките",
 MergeCells			: "Обедини клетките",
 SplitCell			: "Раздели клетката",
+TableDelete			: "Изтрий таблицата",
 CellProperties		: "Параметри на клетката",
 TableProperties		: "Параметри на таблицата",
 ImageProperties		: "Параметри на изображението",
@@ -134,6 +137,8 @@ UnknownCommand		: "Непозната команда \"%1\"",
 NotImplemented		: "Командата не е имплементирана",
 UnknownToolbarSet	: "Панелът \"%1\" не съществува",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "ОК",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Височина",
 DlgTableCellSpace	: "Разстояние между клетките",
 DlgTableCellPad		: "Отстъп на съдържанието в клетките",
 DlgTableCaption		: "Заглавие",
+DlgTableSummary		: "Резюме",
 
 // Table Cell Dialog
 DlgCellTitle		: "Параметри на клетката",
@@ -416,7 +422,7 @@ BulletedListProp	: "Параметри на ненумерирания спис�
 NumberedListProp	: "Параметри на нумерирания списък",
 DlgLstType			: "Тип",
 DlgLstTypeCircle	: "Окръжност",
-DlgLstTypeDisc		: "Disc",	//MISSING
+DlgLstTypeDisc		: "Кръг",
 DlgLstTypeSquare	: "Квадрат",
 DlgLstTypeNumbers	: "Числа (1, 2, 3)",
 DlgLstTypeLCase		: "Малки букви (a, b, c)",

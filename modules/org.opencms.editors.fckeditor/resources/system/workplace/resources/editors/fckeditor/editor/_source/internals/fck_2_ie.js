@@ -53,7 +53,7 @@ FCK.Paste = function()
 	else if ( FCKConfig.AutoDetectPasteFromWord )
 	{
 		var sHTML = FCK.GetClipboardHTML() ;
-		var re = /<\w[^>]* class="?MsoNormal"?/gi ;
+		var re = /<\w[^>]*(( class="?MsoNormal"?)|(="mso-))/gi ;
 		if ( re.test( sHTML ) )
 		{
 			if ( confirm( FCKLang["PasteWordConfirm"] ) )

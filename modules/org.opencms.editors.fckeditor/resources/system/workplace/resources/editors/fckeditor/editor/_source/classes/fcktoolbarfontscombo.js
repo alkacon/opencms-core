@@ -38,5 +38,5 @@ FCKToolbarFontsCombo.prototype.CreateItems = function( targetSpecialCombo )
 	var aFonts = FCKConfig.FontNames.split(';') ;
 	
 	for ( var i = 0 ; i < aFonts.length ; i++ )
-		this._Combo.AddItem( aFonts[i], '<span style="font-family: \'' + aFonts[i] + '\'; font-size: 12px;">' + aFonts[i] + '</span>' ) ;
+		this._Combo.AddItem( aFonts[i], '<font face="' + aFonts[i] + '" style="font-size: 12px">' + aFonts[i] + '</font>' ) ;
 }

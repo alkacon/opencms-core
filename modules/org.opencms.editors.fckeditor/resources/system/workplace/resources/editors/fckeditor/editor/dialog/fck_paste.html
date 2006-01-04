@@ -31,8 +31,6 @@ window.onload = function ()
 	// First of all, translate the dialog box texts
 	oEditor.FCKLanguageManager.TranslatePage(document) ;
 	
-	window.parent.SetOkButton( true ) ;	
-
 	if ( window.parent.dialogArguments.CustomValue == 'Word' )
 	{
 		var oFrame = document.getElementById('frmData')
@@ -48,6 +46,9 @@ window.onload = function ()
 		document.getElementById('txtData').style.display = '' ;
 		document.getElementById('oWordCommands').style.display = 'none' ;
 	}
+
+	window.parent.SetOkButton( true ) ;	
+	window.parent.SetAutoSize( true ) ;	
 }
 
 function Ok()

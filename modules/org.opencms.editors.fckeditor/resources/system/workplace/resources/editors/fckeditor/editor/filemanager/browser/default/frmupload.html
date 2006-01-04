@@ -47,10 +47,10 @@ function OnSubmit()
 	return true ;
 }
 
-function OnUploadCompleted( errorNumber, fileName )
+function OnUploadCompleted( errorNumber, data )
 {
 	// Reset the Upload Worker Frame.
-	window.parent.frames['frmUploadWorker'].location = 'about:blank' ;
+	window.parent.frames['frmUploadWorker'].location = '../../../fckblank.html' ;
 	
 	// Reset the upload form (On IE we must do a little trick to avout problems).
 	if ( document.all )
@@ -67,9 +67,12 @@ function OnUploadCompleted( errorNumber, fileName )
 		case 0 :
 			window.parent.frames['frmResourcesList'].Refresh() ;
 			break ;
+		case 1 :	// Custom error.
+			alert( data ) ;
+			break ;
 		case 201 :
 			window.parent.frames['frmResourcesList'].Refresh() ;
-			alert( 'A file with the same name is already available. The uploaded file has been renamed to "' + fileName + '"' ) ;
+			alert( 'A file with the same name is already available. The uploaded file has been renamed to "' + data + '"' ) ;
 			break ;
 		case 202 :
 			alert( 'Invalid file' ) ;

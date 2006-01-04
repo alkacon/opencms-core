@@ -86,6 +86,8 @@ Find				: "Localizar",
 Replace				: "Substituir",
 SpellCheck			: "Verificar Ortografia",
 UniversalKeyboard	: "Teclado Universal",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Formulário",
 Checkbox		: "Caixa de Seleção",
@@ -107,6 +109,7 @@ InsertCell			: "Inserir Células",
 DeleteCells			: "Remover Células",
 MergeCells			: "Mesclar Células",
 SplitCell			: "Dividir Célular",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Formatar Célula",
 TableProperties		: "Formatar Tabela",
 ImageProperties		: "Formatar Figura",
@@ -135,6 +138,8 @@ UnknownCommand		: "O comando \"%1\" não é reconhecido",
 NotImplemented		: "O comando não foi implementado",
 UnknownToolbarSet	: "A barra de ferramentas \"%1\" não existe",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -219,7 +224,7 @@ DlgLnkAnchorById	: "Pelo Id do Elemento",
 DlgLnkNoAnchors		: "&lt;Não há âncoras disponíveis neste documento&gt;",
 DlgLnkEMail			: "Endereço E-Mail",
 DlgLnkEMailSubject	: "Assunto da Mensagem",
-DlgLnkEMailBody		: "Corpo da Mesagem",
+DlgLnkEMailBody		: "Corpo da Mensagem",
 DlgLnkUpload		: "Enviar ao Servidor",
 DlgLnkBtnUpload		: "Enviar ao Servidor",
 
@@ -279,6 +284,7 @@ DlgTableHeight		: "Altura",
 DlgTableCellSpace	: "Espaçamento",
 DlgTableCellPad		: "Enchimento",
 DlgTableCaption		: "Legenda",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Formatar célula",

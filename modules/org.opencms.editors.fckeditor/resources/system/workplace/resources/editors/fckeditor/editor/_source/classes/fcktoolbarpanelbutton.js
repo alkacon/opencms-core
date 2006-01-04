@@ -25,17 +25,18 @@ var FCKToolbarPanelButton = function( commandName, label, tooltip, style )
 	this.Tooltip	= tooltip ? tooltip : ( label ? label : commandName) ;
 	this.Style		= style ? style : FCK_TOOLBARITEM_ONLYICON ;
 	this.State		= FCK_UNKNOWN ;
+	this.IconPath	= FCKConfig.SkinPath + 'toolbar/' + commandName.toLowerCase() + '.gif' ;
 }
 
 FCKToolbarPanelButton.prototype.Click = function(e)
 {
 	// For Mozilla we must stop the event propagation to avoid it hiding 
 	// the panel because of a click outside of it.
-	if ( e )
-	{
-		e.stopPropagation() ;
-		FCKPanelEventHandlers.OnDocumentClick( e ) ;
-	}
+//	if ( e )
+//	{
+//		e.stopPropagation() ;
+//		FCKPanelEventHandlers.OnDocumentClick( e ) ;
+//	}
 
 	if ( this.State != FCK_TRISTATE_DISABLED )
 	{
@@ -54,17 +55,17 @@ FCKToolbarPanelButton.prototype.CreateInstance = function( parentToolbar )
 	this.DOMDiv.FCKToolbarButton = this ;
 	
 	var sHtml =
-		'<table title="' + this.Tooltip + '" cellspacing="0" cellpadding="0" border="0" unselectable="on">' +
+		'<table title="' + this.Tooltip + '" cellspacing="0" cellpadding="0" border="0">' +
 			'<tr>' ;
 			
 	if ( this.Style != FCK_TOOLBARITEM_ONLYTEXT ) 
-		sHtml += '<td class="TB_Icon" unselectable="on"><img src="' + FCKConfig.SkinPath + 'toolbar/' + this.Command.Name.toLowerCase() + '.gif" width="21" height="21" unselectable="on"></td>' ;
-				
+		sHtml += '<td class="TB_Icon"><img src="' + this.IconPath + '" width="21" height="21"></td>' ;
+		
 	if ( this.Style != FCK_TOOLBARITEM_ONLYICON ) 
-		sHtml += '<td class="TB_Text" unselectable="on" nowrap>' + this.Label + '</td>' ;
+		sHtml += '<td class="TB_Text" nowrap>' + this.Label + '</td>' ;
 	
 	sHtml +=
-				'<td class="TB_ButtonArrow" unselectable="on"><img src="' + FCKConfig.SkinPath + 'images/toolbar.buttonarrow.gif" width="5" height="3"></td>' +
+				'<td class="TB_ButtonArrow"><img src="' + FCKConfig.SkinPath + 'images/toolbar.buttonarrow.gif" width="5" height="3"></td>' +
 			'</tr>' +
 		'</table>' ;
 	

@@ -62,10 +62,16 @@ FCKTableHandler.DeleteTable = function( table )
 	// If no table has been passed as a parameer,
 	// then get the table where the selection is placed in.	
 	if ( !table )
-		table = FCKSelection.MoveToAncestorNode("TABLE") ;
+	{
+		var table = FCKSelection.GetSelectedElement() ;
+		if ( !table || table.tagName != 'TABLE' )
+			table = FCKSelection.MoveToAncestorNode("TABLE") ;
+	}
 	if ( !table ) return ;
 
 	// Delete the table.
+	FCKSelection.SelectNode( table ) ;
+	FCKSelection.Collapse();
 	table.parentNode.removeChild( table ) ;
 }
 
@@ -113,7 +119,8 @@ FCKTableHandler.InsertColumn = function()
 FCKTableHandler.DeleteColumns = function()
 {
 	// Get the cell where the selection is placed in.
-	var oCell = FCKSelection.MoveToAncestorNode("TD") ;
+	var oCell = FCKSelection.MoveToAncestorNode('TD') || FCKSelection.MoveToAncestorNode('TH') ;
+
 	if ( !oCell ) return ;
 	
 	// Get the cell's table.	
@@ -156,7 +163,7 @@ FCKTableHandler.InsertCell = function( cell )
 //	oNewCell.innerHTML = "&nbsp;" ;
 
 	// If it is the last cell in the row.
-	if ( oCell.cellIndex == oCell.parentNode.cells.lenght - 1 )
+	if ( oCell.cellIndex == oCell.parentNode.cells.length - 1 )
 	{
 		// Add the new cell at the end of the row.
 		oCell.parentNode.appendChild( oNewCell ) ;

@@ -25,20 +25,31 @@ FCK.Name			= FCKURLParams[ 'InstanceName' ] ;
 FCK.Status			= FCK_STATUS_NOTLOADED ;
 FCK.EditMode		= FCK_EDITMODE_WYSIWYG ;
 
-// There is a bug on IE... getElementById returns any META tag that has the
-// name set to the ID you are looking for. So the best way in to get the array
-// by names and look for the correct one.
-// As ASP.Net generates a ID that is different from the Name, we must also
-// look for the field based on the ID.
-
-var aElements = window.parent.document.getElementsByName( FCK.Name ) ;
-aElements[ aElements.length ] = window.parent.document.getElementById( FCK.Name ) ;
-var i = 0;
-while ( ( FCK.LinkedField = aElements[i++] ) )
+FCK.LoadLinkedFile = function()
 {
-	if ( FCK.LinkedField.tagName == 'INPUT' || FCK.LinkedField.tagName == 'TEXTAREA' )
-		break ;
+	// There is a bug on IE... getElementById returns any META tag that has the
+	// name set to the ID you are looking for. So the best way in to get the array
+	// by names and look for the correct one.
+	// As ASP.Net generates a ID that is different from the Name, we must also
+	// look for the field based on the ID (the first one is the ID).
+	
+	var oDocument = window.parent.document ;
+
+	var eLinkedField		= oDocument.getElementById( FCK.Name ) ;
+	var colElementsByName	= oDocument.getElementsByName( FCK.Name ) ;
+
+	var i = 0;
+	while ( eLinkedField || i == 0 )
+	{
+		if ( eLinkedField && ( eLinkedField.tagName == 'INPUT' || eLinkedField.tagName == 'TEXTAREA' ) )
+		{
+			FCK.LinkedField = eLinkedField ;
+			break ;
+		}
+		eLinkedField = colElementsByName[i++] ;
+	}
 }
+FCK.LoadLinkedFile() ;
 
 var FCKTempBin = new Object() ;
 FCKTempBin.Elements = new Array() ;

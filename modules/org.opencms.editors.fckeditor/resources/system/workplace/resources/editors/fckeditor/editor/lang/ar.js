@@ -85,6 +85,8 @@ Find				: "بحث",
 Replace				: "استبدال",
 SpellCheck			: "تدقيق إملائي",
 UniversalKeyboard	: "لوحة المفاتيح العالمية",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "نموذج",
 Checkbox		: "خانة اختيار",
@@ -106,6 +108,7 @@ InsertCell			: "إدراج خلية",
 DeleteCells			: "حذف خلايا",
 MergeCells			: "دمج خلايا",
 SplitCell			: "تقسيم خلية",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "خصائص الخلية",
 TableProperties		: "خصائص الجدول",
 ImageProperties		: "خصائص الصورة",
@@ -134,6 +137,8 @@ UnknownCommand		: "أمر غير معروف \"%1\"",
 NotImplemented		: "لم يتم دعم هذا الأمر",
 UnknownToolbarSet	: "لم أتمكن من العثور على طقم الأدوات \"%1\" ",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "موافق",
@@ -278,6 +283,7 @@ DlgTableHeight		: "الارتفاع",
 DlgTableCellSpace	: "تباعد الخلايا",
 DlgTableCellPad		: "المسافة البادئة",
 DlgTableCaption		: "الوصف",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "خصائص الخلية",

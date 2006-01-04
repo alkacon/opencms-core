@@ -65,8 +65,8 @@ LeftJustify			: "Venstrestillet",
 CenterJustify		: "Centreret",
 RightJustify		: "Højrestillet",
 BlockJustify		: "Lige margener",
-DecreaseIndent		: "Forøg indrykning",
-IncreaseIndent		: "Formindsk indrykning",
+DecreaseIndent		: "Formindsk indrykning",
+IncreaseIndent		: "Forøg indrykning",
 Undo				: "Fortryd",
 Redo				: "Anuller fortryd",
 NumberedListLbl		: "Tal opstilling",
@@ -86,6 +86,8 @@ Find				: "Søg",
 Replace				: "Erstat",
 SpellCheck			: "Stavekontrol",
 UniversalKeyboard	: "Universalt Tastatur",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Indsæt Form",
 Checkbox		: "Indsæt Afkrydsningsboks",
@@ -107,6 +109,7 @@ InsertCell			: "Indsæt celle",
 DeleteCells			: "Slet celle",
 MergeCells			: "Flet celler",
 SplitCell			: "Opdel celler",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Celle egenskaber",
 TableProperties		: "Tabel egenskaber",
 ImageProperties		: "Billed egenskaber",
@@ -134,7 +137,9 @@ UnknownToolbarItem	: "Ukendt værktøjslinje objekt \"%1\"",
 UnknownCommand		: "Ukendt kommando navn \"%1\"",
 NotImplemented		: "Kommandoen er ikke implementeret",
 UnknownToolbarSet	: "Værktøjslinjen \"%1\" eksisterer ikke",
-NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+NoActiveX			: "Din browsers sikkerhedsindstillinger kan begrænse nogle af editorens muligheder. Du skal slå \"Kør ActiveX-objekter og plug-ins\" til. Du vil måske opleve fejl og manglende muligheder.",
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -279,6 +284,7 @@ DlgTableHeight		: "Højde",
 DlgTableCellSpace	: "Afstand mellem celler",
 DlgTableCellPad		: "Celle margin",
 DlgTableCaption		: "Titel",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Celle egenskaber",
@@ -417,7 +423,7 @@ BulletedListProp	: "Punkttegnopstilling egenskaber",
 NumberedListProp	: "Talopstilling egenskaber",
 DlgLstType			: "Type",
 DlgLstTypeCircle	: "Cirkel",
-DlgLstTypeDisc		: "Disc",	//MISSING
+DlgLstTypeDisc		: "Flade",
 DlgLstTypeSquare	: "Firkant",
 DlgLstTypeNumbers	: "Nummereret (1, 2, 3)",
 DlgLstTypeLCase		: "Små bogstaver (a, b, c)",

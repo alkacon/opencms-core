@@ -1,6 +1,5 @@
 [//lasso
 /*
- 
  * FCKeditor - The text editor for internet
  * Copyright (C) 2003-2005 Frederico Caldeira Knabben
  * 
@@ -8,21 +7,19 @@
  * 		http://www.opensource.org/licenses/lgpl-license.php
  * 
  * For further information visit:
- 
  * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
  * 
  * File Name: fckeditor.lasso
  * 	This is the integration file for Lasso.
- * 	
- * 	It defines the FCKeditor class ("custom type" in Lasso terms) 
- *		that can be used to create editor instances in Lasso pages on server side.
+ * 
+ * 	It defines the FCKeditor class ("custom type" in Lasso terms) that can 
+ * 	be used to create editor instances in Lasso pages on server side.
  * 
  * File Authors:
  * 		Jason Huck (jason.huck@corefive.com)
- 
  */
-
-
 
 	define_type(
 		'editor', 
@@ -64,7 +61,7 @@
 			if(self->isCompatibleBrowser);
 				local('out' = '
 					<div>
-						<input type="hidden" id="' + self->instancename + '" name="' + self->instancename + '" value="' + encode_html(self->initialvalue) + '">
+						<input type="hidden" id="' + self->instancename + '" name="' + self->instancename + '" value="' + encode_html(self->initialvalue) + '" style="display:none" />
 						' + self->parseConfig + '
 						<iframe id="' + self->instancename + '___Frame" src="' + self->basepath + 'editor/fckeditor.html?InstanceName=' + self->instancename + '&Toolbar=' + self->toolbarset + '" width="' + self->width + '" height="' + self->height + '" frameborder="no" scrolling="no"></iframe>
 					</div>
@@ -72,7 +69,7 @@
 			else;
 				local('out' = '
 					<div>
-						<textarea name="' + self->instancename + '" rows="4" cols="40" style="width: ' + self->width + '; height: ' + self->height + '" wrap="virtual">' + encode_html(self->initialvalue) + '</textarea>
+						<textarea name="' + self->instancename + '" rows="4" cols="40" style="width: ' + self->width + '; height: ' + self->height + '">' + encode_html(self->initialvalue) + '</textarea>
 					</div>	
 				');
 			/if;		
@@ -92,7 +89,7 @@
 					loop_count > 1 ? #out += '&amp;';			
 					#out += encode_html(#this->first) + '=' + encode_html(#this->second);
 				/iterate;			
-				#out += '">\n';			
+				#out += '" style="display:none" />\n';			
 				return(@#out);
 			/if;
 		/define_tag;

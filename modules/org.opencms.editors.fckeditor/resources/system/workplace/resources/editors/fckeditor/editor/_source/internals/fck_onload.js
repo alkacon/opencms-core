@@ -153,6 +153,9 @@ function LoadCustomConfigFile()
 function LoadPageConfig()
 {
 	FCKConfig.LoadPageConfig() ;
+	
+	if ( FCKConfig.AllowQueryStringDebug && (/fckdebug=true/i).test( window.top.location.search ) )
+		FCKConfig.Debug = true ;
 
 	// Load the styles for the configured skin.
 	LoadStyles() ;

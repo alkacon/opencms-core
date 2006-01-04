@@ -33,6 +33,13 @@ FCKDialog.Show = function( dialogInfo, dialogName, pageUrl, dialogWidth, dialogH
 		parentWindow = window ;
 	
 	var oWindow = parentWindow.open( '', 'FCKeditorDialog_' + dialogName, sOption, true ) ;
+	
+	if ( !oWindow )
+	{
+		alert( FCKLang.DialogBlocked ) ;
+		return ;
+	}
+		
 	oWindow.moveTo( iLeft, iTop ) ;
 	oWindow.resizeTo( dialogWidth, dialogHeight ) ;
 	oWindow.focus() ;

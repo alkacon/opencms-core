@@ -1,23 +1,35 @@
 <cfsetting enablecfoutputonly="Yes">
-<!--- @Packager.Header
-<FileDescription>
-	ColdFusion integration. 
-	Note this module is created for use with Coldfusion 4.52 and above.
-	For a cfc version for coldfusion mx check the fckeditor.cfc.
-
-	Syntax: 
-
-	&lt;cfmodule name="path/to/cfc/fckeditor" 
-		instanceName="myEditor"
-		toolbarSet="..."
-		width="..."
-		height="..:"
-		value="..."
-		config="..." 
-	&gt;
-</FileDescription>
-<Author name="Hendrik Kramer" email="hk@lwd.de" />
-<Author name="Mark Woods" email="mark@thickpaddy.com" />
+<!---
+ * FCKeditor - The text editor for internet
+ * Copyright (C) 2003-2005 Frederico Caldeira Knabben
+ * 
+ * Licensed under the terms of the GNU Lesser General Public License:
+ * 		http://www.opensource.org/licenses/lgpl-license.php
+ * 
+ * For further information visit:
+ * 		http://www.fckeditor.net/
+ * 
+ * "Support Open Source software. What about a donation today?"
+ * 
+ * File Name: fckeditor.cfm
+ * 	ColdFusion integration. 
+ * 	Note this module is created for use with Coldfusion 4.52 and above.
+ * 	For a cfc version for coldfusion mx check the fckeditor.cfc.
+ * 
+ * 	Syntax: 
+ * 
+ * 	<cfmodule name="path/to/cfc/fckeditor" 
+ * 		instanceName="myEditor"
+ * 		toolbarSet="..."
+ * 		width="..."
+ * 		height="..:"
+ * 		value="..."
+ * 		config="..." 
+ * 	>
+ * 
+ * File Authors:
+ * 		Hendrik Kramer (hk@lwd.de)
+ * 		Mark Woods (mark@thickpaddy.com)
 --->
 <!--- ::
 	 * 	Attribute validation
@@ -129,8 +141,8 @@ else
 
 	<cfoutput>
 	<div>
-	<input type="hidden" id="#attributes.instanceName#" name="#attributes.instanceName#" value="#HTMLEditFormat(attributes.value)#" />
-	<input type="hidden" id="#attributes.instanceName#___Config" value="#sConfig#" />
+	<input type="hidden" id="#attributes.instanceName#" name="#attributes.instanceName#" value="#HTMLEditFormat(attributes.value)#" style="display:none" />
+	<input type="hidden" id="#attributes.instanceName#___Config" value="#sConfig#" style="display:none" />
 	<iframe id="#attributes.instanceName#___Frame" src="#sURL#" width="#attributes.width#" height="#attributes.height#" frameborder="no" scrolling="no"></iframe>
 	</div>
 	</cfoutput>
@@ -152,7 +164,7 @@ else
 	<!--- Fixed Bug ##1075166. hk@lwd.de 20041206 --->
 	<cfoutput>
 	<div>
-	<textarea name="#attributes.instanceName#" rows="4" cols="40" style="WIDTH: #attributes.width#; HEIGHT: #attributes.height#" wrap="virtual">#HTMLEditFormat(attributes.value)#</textarea>
+	<textarea name="#attributes.instanceName#" rows="4" cols="40" style="WIDTH: #attributes.width#; HEIGHT: #attributes.height#">#HTMLEditFormat(attributes.value)#</textarea>
 	</div>
 	</cfoutput>	
 

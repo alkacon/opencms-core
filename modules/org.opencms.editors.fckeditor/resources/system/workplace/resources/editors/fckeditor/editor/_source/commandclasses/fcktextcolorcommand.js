@@ -31,10 +31,13 @@ var FCKTextColorCommand = function( type )
 	*/
 
 	this._Panel = new FCKPanel() ;
-	this._Panel.StyleSheet = FCKConfig.SkinPath + 'fck_contextmenu.css' ;
-	this._Panel.Create() ;
+	this._Panel.AppendStyleSheet( FCKConfig.SkinPath + 'fck_contextmenu.css' ) ;
+//	this._Panel.StyleSheet = FCKConfig.SkinPath + 'fck_contextmenu.css' ;
+//	this._Panel.Create() ;
 
 	this._CreatePanelBody( this._Panel.Document, this._Panel.PanelDiv ) ;
+	
+	FCKTools.DisableSelection( this._Panel.Document.body ) ;
 	
 	//	END ###
 }
@@ -123,6 +126,7 @@ FCKTextColorCommand.prototype._CreatePanelBody = function( targetDocument, targe
 
 	// Create the Table that will hold all colors.
 	var oTable = targetDiv.appendChild( targetDocument.createElement( "TABLE" ) ) ;
+	oTable.className = 'ForceBaseFont' ;		// Firefox 1.5 Bug.
 	oTable.style.tableLayout = 'fixed' ;
 	oTable.cellPadding = 0 ;
 	oTable.cellSpacing = 0 ;
@@ -138,7 +142,7 @@ FCKTextColorCommand.prototype._CreatePanelBody = function( targetDocument, targe
 		'<table cellspacing="0" cellpadding="0" width="100%" border="0">\
 			<tr>\
 				<td><div class="ColorBoxBorder"><div class="ColorBox" style="background-color: #000000"></div></div></td>\
-				<td nowrap width="100%" align="center" unselectable="on">' + FCKLang.ColorAutomatic + '</td>\
+				<td nowrap width="100%" align="center">' + FCKLang.ColorAutomatic + '</td>\
 			</tr>\
 		</table>' ;
 

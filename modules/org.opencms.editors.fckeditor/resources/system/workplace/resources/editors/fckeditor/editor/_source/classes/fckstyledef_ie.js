@@ -50,10 +50,19 @@ FCKStyleDef.prototype._AddAttributes = function( targetElement )
 {
 	for ( var a in this.Attributes )
 	{
-		if ( a.toLowerCase() == 'style' )
-			targetElement.style.cssText = this.Attributes[a] ;
-		else
-			targetElement.setAttribute( a, this.Attributes[a], 0 ) ;
+		switch ( a.toLowerCase() )
+		{
+			case 'style' :
+				targetElement.style.cssText = this.Attributes[a] ;
+				break ;
+				
+			case 'class' :
+				targetElement.setAttribute( 'className', this.Attributes[a], 0 ) ;
+				break ;
+				
+			default :
+				targetElement.setAttribute( a, this.Attributes[a], 0 ) ;
+		}
 	}
 }
 
@@ -65,10 +74,7 @@ FCKStyleDef.prototype._RemoveDuplicates = function( parent )
 		this._RemoveDuplicates( oChild ) ;
 		
 		if ( this.IsEqual( oChild ) )
-		{
-			oChild.insertAdjacentHTML( 'beforeBegin', oChild.innerHTML ) ;
-			oChild.parentElement.removeChild( oChild ) ;
-		}
+			FCKTools.RemoveOuterTags( oChild ) ;
 	}
 }
 

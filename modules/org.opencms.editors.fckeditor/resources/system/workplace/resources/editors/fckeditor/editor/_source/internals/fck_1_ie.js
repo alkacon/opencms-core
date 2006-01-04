@@ -73,7 +73,6 @@ function Doc_OnKeyDown()
 {
 	var e = FCK.EditorWindow.event ;
 
-//	FCKDebug.Output( 'KeyCode: ' + e.keyCode ) ;
 
 	switch ( e.keyCode )
 	{
@@ -98,7 +97,17 @@ function Doc_OnKeyDown()
 				return false ;
 			}
 			break ;
-			
+		
+		case 8 :	// BACKSPACE
+			// We must delete a control selection by code and cancels the 
+			// keystroke, otherwise IE will execute the browser's "back" button.
+			if ( FCKSelection.GetType() == 'Control' )
+			{
+				FCKSelection.Delete() ;
+				return false ;
+			}
+			break ;
+		
 		case 9 :	// TAB
 			if ( FCKConfig.TabSpaces > 0 && !(e.ctrlKey || e.altKey || e.shiftKey) )
 			{
@@ -205,6 +214,7 @@ FCK.SetHTML = function( html, forceWYSIWYG )
 	if ( forceWYSIWYG || FCK.EditMode == FCK_EDITMODE_WYSIWYG )
 	{
 		html = FCKConfig.ProtectedSource.Protect( html ) ;
+		html = FCK.ProtectUrls( html ) ;
 
 		var sHtml ;
 
@@ -238,7 +248,8 @@ FCK.SetHTML = function( html, forceWYSIWYG )
 			sHtml += '</head><body>' + html  + '</body></html>' ;
 		}
 
-		this.EditorDocument.open( '', '_self', '', true ) ;
+//		this.EditorDocument.open( '', '_self', '', true ) ;		// This one opens popups in IE 5.5 - BUG 1204220 (I was not able to reproduce the problem).
+		this.EditorDocument.open( '', 'replace' ) ;
 		this.EditorDocument.write( sHtml ) ;
 		this.EditorDocument.close() ;
 
@@ -253,6 +264,9 @@ FCK.SetHTML = function( html, forceWYSIWYG )
 
 FCK.InsertHtml = function( html )
 {
+	html = FCKConfig.ProtectedSource.Protect( html ) ;
+	html = FCK.ProtectUrls( html ) ;
+
 	FCK.Focus() ;
 
 	FCKUndo.SaveUndoStep() ;
@@ -264,7 +278,7 @@ FCK.InsertHtml = function( html )
 	if ( oSel.type.toLowerCase() != "none" )
 		oSel.clear() ;
 
-	// Inset the HTML.
+	// Insert the HTML.
 	oSel.createRange().pasteHTML( html ) ;
 }
 

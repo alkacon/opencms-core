@@ -98,7 +98,7 @@ FCKTools.AddSelectOption = function( targetDocument, selectElement, optionText, 
 
 	return oOption ;
 }
-
+/*
 FCKTools.RemoveAllSelectOptions = function( selectElement )
 {
 	for ( var i = selectElement.options.length - 1 ; i >= 0 ; i-- )
@@ -122,7 +122,7 @@ FCKTools.SelectNoCase = function( selectElement, value, defaultValue )
 	
 	if ( defaultValue != null ) FCKTools.SelectNoCase( selectElement, defaultValue ) ;
 }
-
+*/
 FCKTools.HTMLEncode = function( text )
 {
 	if ( !text )
@@ -136,7 +136,7 @@ FCKTools.HTMLEncode = function( text )
 
 	return text ;
 }
-
+/*
 //**
 // FCKTools.GetResultingArray: Gets a array from a string (where the elements 
 // are separated by a character), a fuction (that returns a array) or a array.
@@ -153,21 +153,33 @@ FCKTools.GetResultingArray = function( arraySource, separator )
 			else return new Array() ;
 	}
 }
-
-FCKTools.GetElementPosition = function( el )
+*/
+FCKTools.GetElementPosition = function( el, relativeWindow )
 {
-	// Initializes the Coordinates object that will be returned by the function.
+// Initializes the Coordinates object that will be returned by the function.
 	var c = { X:0, Y:0 } ;
 	
+	var oWindow = relativeWindow || window ;
+
 	// Loop throw the offset chain.
 	while ( el )
 	{
 		c.X += el.offsetLeft ;
 		c.Y += el.offsetTop ;
-		
-		el = el.offsetParent ;
+
+		if ( el.offsetParent == null )
+		{
+			var oOwnerWindow = FCKTools.GetElementWindow( el ) ;
+			
+			if ( oOwnerWindow != oWindow )
+				el = oOwnerWindow.frameElement ;
+			else
+				break ;
+		}
+		else
+			el = el.offsetParent ;
 	}
-	
+
 	// Return the Coordinates object
 	return c ;
 }
@@ -213,6 +225,36 @@ FCKTools.ConvertHtmlSizeToStyle = function( size )
 {
 	return size.endsWith( '%' ) ? size : ( size + 'px' ) ;
 }
+
+// Get the window object where the element is placed in.
+FCKTools.GetElementWindow = function( element )
+{
+	var oDocument = element.ownerDocument || element.document ;
+	
+	// With Safari, there is not way to retrieve the window from the document, so we must fix it.
+	if ( FCKBrowserInfo.IsSafari && !oDocument.parentWindow )
+		FCKTools._FixDocumentParentWindow( window.top ) ;
+	
+	return oDocument.parentWindow || oDocument.defaultView ;
+}
+
+/*
+	This is a Safari specific function that fix the reference to the parent 
+	window from the document object.
+*/
+FCKTools._FixDocumentParentWindow = function( targetWindow )
+{
+	targetWindow.document.parentWindow = targetWindow ; 
+	
+	for ( var i = 0 ; i < targetWindow.frames.length ; i++ )
+		FCKTools._FixDocumentParentWindow( targetWindow.frames[i] ) ;
+}
+
+FCKTools.CancelEvent = function( e )
+{
+	return false ;
+}
+
 // START iCM MODIFICATIONS
 /*
 // Transfers the supplied attributes to the supplied node

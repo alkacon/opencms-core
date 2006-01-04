@@ -92,12 +92,17 @@ function LoadSelection()
 	GetE('cmbScale').value		= GetAttribute( oEmbed, 'scale', '' ).toLowerCase() ;
 	
 	GetE('txtAttTitle').value		= oEmbed.title ;
-	GetE('txtAttClasses').value		= oEmbed.getAttribute('class',2) || '' ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
-		GetE('txtAttStyle').value	= oEmbed.style.cssText ;
+	{
+		GetE('txtAttClasses').value = oEmbed.getAttribute('className') || '' ;
+		GetE('txtAttStyle').value = oEmbed.style.cssText ;
+	}
 	else
-		GetE('txtAttStyle').value	= oEmbed.getAttribute('style',2) ;
+	{
+		GetE('txtAttClasses').value = oEmbed.getAttribute('class',2) || '' ;
+		GetE('txtAttStyle').value = oEmbed.getAttribute('style',2) ;
+	}
 
 	UpdatePreview() ;
 }
@@ -150,38 +155,55 @@ function UpdateEmbed( e )
 	SetAttribute( e, 'id'	, GetE('txtAttId').value ) ;
 	SetAttribute( e, 'scale', GetE('cmbScale').value ) ;
 	
-	if ( !GetE('chkAutoPlay').checked )	SetAttribute( e, 'play', 'false' ) ;
-	if ( !GetE('chkLoop').checked )		SetAttribute( e, 'loop', 'false' ) ;
-	if ( !GetE('chkMenu').checked )		SetAttribute( e, 'menu', 'false' ) ;
+	SetAttribute( e, 'play', GetE('chkAutoPlay').checked ? 'true' : 'false' ) ;
+	SetAttribute( e, 'loop', GetE('chkLoop').checked ? 'true' : 'false' ) ;
+	SetAttribute( e, 'menu', GetE('chkMenu').checked ? 'true' : 'false' ) ;
 
 	SetAttribute( e, 'title'	, GetE('txtAttTitle').value ) ;
-	SetAttribute( e, 'class'	, GetE('txtAttClasses').value ) ;
 
 	if ( oEditor.FCKBrowserInfo.IsIE )
+	{
+		SetAttribute( e, 'className', GetE('txtAttClasses').value ) ;
 		e.style.cssText = GetE('txtAttStyle').value ;
+	}
 	else
+	{
+		SetAttribute( e, 'class', GetE('txtAttClasses').value ) ;
 		SetAttribute( e, 'style', GetE('txtAttStyle').value ) ;
+	}
+}
+
+var ePreview ;
+
+function SetPreviewElement( previewEl )
+{
+	ePreview = previewEl ;
+	
+	if ( GetE('txtUrl').value.length > 0 )
+		UpdatePreview() ;
 }
 
 function UpdatePreview()
 {
-	var oCell = GetE('ePreviewCell') ;
-	
-	while ( oCell.firstChild )
-		oCell.removeChild( oCell.firstChild ) ;
+	if ( !ePreview )
+		return ;
+		
+	while ( ePreview.firstChild )
+		ePreview.removeChild( ePreview.firstChild ) ;
 
 	if ( GetE('txtUrl').value.length == 0 )
-		oCell.innerHTML = '&nbsp;' ;
+		ePreview.innerHTML = '&nbsp;' ;
 	else
 	{
-		var e = document.createElement( 'EMBED' ) ;
+		var oDoc	= ePreview.ownerDocument || ePreview.document ;
+		var e		= oDoc.createElement( 'EMBED' ) ;
 		
 		e.src		= GetE('txtUrl').value ;
 		e.type		= 'application/x-shockwave-flash' ;
 		e.width		= '100%' ;
 		e.height	= '100%' ;
 		
-		oCell.appendChild( e ) ;
+		ePreview.appendChild( e ) ;
 	}
 }
 
@@ -189,40 +211,19 @@ function UpdatePreview()
 
 function BrowseServer()
 {
-	OpenServerBrowser(
-		'Flash',
-		FCKConfig.FlashBrowserURL,
-		FCKConfig.FlashBrowserWindowWidth,
-		FCKConfig.FlashBrowserWindowHeight ) ;
+	OpenFileBrowser( FCKConfig.FlashBrowserURL, FCKConfig.FlashBrowserWindowWidth, FCKConfig.FlashBrowserWindowHeight ) ;
 }
 
-function OpenServerBrowser( type, url, width, height )
-{
-	var iLeft = (FCKConfig.ScreenWidth  - width) / 2 ;
-	var iTop  = (FCKConfig.ScreenHeight - height) / 2 ;
-
-	var sOptions = "toolbar=no,status=no,resizable=yes,dependent=yes" ;
-	sOptions += ",width=" + width ;
-	sOptions += ",height=" + height ;
-	sOptions += ",left=" + iLeft ;
-	sOptions += ",top=" + iTop ;
-
-	if ( oEditor.FCKBrowserInfo.IsIE )
-	{
-		// The following change has been made otherwise IE will open the file 
-		// browser on a different server session (on some cases):
-		// http://support.microsoft.com/default.aspx?scid=kb;en-us;831678
-		// by Simone Chiaretta.
-		var oWindow = oEditor.window.open( url, "FCKBrowseWindow", sOptions ) ;
-		oWindow.opener = window ;
-    }
-    else
-		window.open( url, "FCKBrowseWindow", sOptions ) ;
-}
-
-function SetUrl( url )
+function SetUrl( url, width, height )
 {
 	GetE('txtUrl').value = url ;
+	
+	if ( width )
+		GetE('txtWidth').value = width ;
+		
+	if ( height ) 
+		GetE('txtHeight').value = height ;
+
 	UpdatePreview() ;
 
 	window.parent.SetSelectedTab( 'Info' ) ;

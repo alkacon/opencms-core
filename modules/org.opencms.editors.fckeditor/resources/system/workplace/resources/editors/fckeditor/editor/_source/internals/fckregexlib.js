@@ -23,7 +23,7 @@ var FCKRegexLib = new Object() ;
 FCKRegexLib.AposEntity		= /&apos;/gi ;
 
 // Used by the Styles combo to identify styles that can't be applied to text.
-FCKRegexLib.ObjectElements	= /^(?:IMG|TABLE|TR|TD|INPUT|SELECT|TEXTAREA|HR|OBJECT)$/i ;
+FCKRegexLib.ObjectElements	= /^(?:IMG|TABLE|TR|TD|TH|INPUT|SELECT|TEXTAREA|HR|OBJECT|A|UL|OL|LI)$/i ;
 
 // START iCM MODIFICATIONS
 // Added TABLE and CAPTION to the block elements for ENTER key handling
@@ -32,7 +32,7 @@ FCKRegexLib.ObjectElements	= /^(?:IMG|TABLE|TR|TD|INPUT|SELECT|TEXTAREA|HR|OBJEC
 FCKRegexLib.BlockElements	= /^(?:P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TD|TABLE|CAPTION)$/i ;
 */
 // END iCM MODIFICATIONS
-FCKRegexLib.BlockElements	= /^(?:P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TD)$/i ;
+FCKRegexLib.BlockElements	= /^(?:P|DIV|H1|H2|H3|H4|H5|H6|ADDRESS|PRE|OL|UL|LI|TD|TH)$/i ;
 
 // Elements marked as empty "Empty" in the XHTML DTD.
 FCKRegexLib.EmptyElements	= /^(?:BASE|META|LINK|HR|BR|PARAM|IMG|AREA|INPUT)$/i ;
@@ -56,7 +56,7 @@ FCKRegexLib.HeadCloser		= /<\/head\s*>/i ;
 FCKRegexLib.TableBorderClass = /\s*FCK__ShowTableBorders\s*/ ;
 
 // Validate element names.
-FCKRegexLib.ElementName = /^[A-Za-z_:][\w.-:]*$/ ;
+FCKRegexLib.ElementName = /^[A-Za-z_:][\w.\-:]*$/ ;
 
 // Used in conjuction with the FCKConfig.ForceSimpleAmpersand configuration option.
 FCKRegexLib.ForceSimpleAmpersand = /___FCKAmp___/g ;
@@ -90,3 +90,9 @@ FCKRegexLib.EmOpener = /<EM([ \>])/gi ;
 FCKRegexLib.EmCloser = /<\/EM>/gi ;
 
 FCKRegexLib.GeckoEntitiesMarker = /#\?-\:/g ;
+
+FCKRegexLib.ProtectUrlsAApo		= /(<a\s.*?href=)("|')(.+?)\2/gi ;
+FCKRegexLib.ProtectUrlsANoApo	= /(<a\s.*?href=)([^"'][^ >]+)/gi ;
+
+FCKRegexLib.ProtectUrlsImgApo	= /(<img\s.*?src=)("|')(.+?)\2/gi ;
+FCKRegexLib.ProtectUrlsImgNoApo	= /(<img\s.*?src=)([^"'][^ >]+)/gi ;

@@ -22,11 +22,11 @@
 // wich named commands must be handled separately.
 FCK.RedirectNamedCommands = new Object() ;
 
-FCK.ExecuteNamedCommand = function( commandName, commandParameter )
+FCK.ExecuteNamedCommand = function( commandName, commandParameter, noRedirect )
 {
 	FCKUndo.SaveUndoStep() ;
 
-	if ( FCK.RedirectNamedCommands[ commandName ] != null )
+	if ( !noRedirect && FCK.RedirectNamedCommands[ commandName ] != null )
 		FCK.ExecuteRedirectedNamedCommand( commandName, commandParameter ) ;
 	else
 	{
@@ -161,10 +161,13 @@ FCK.SwitchEditMode = function()
 	{
 		if ( FCKBrowserInfo.IsIE )
 			FCKUndo.SaveUndoStep() ;
-		document.getElementById('eSourceField').value = ( FCKConfig.EnableXHTML && FCKConfig.EnableSourceXHTML ? FCK.GetXHTML( FCKConfig.FormatSource ) : FCK.GetHTML( FCKConfig.FormatSource ) ) ;
+
+		// EnableXHTML and EnableSourceXHTML has been deprecated
+//		document.getElementById('eSourceField').value = ( FCKConfig.EnableXHTML && FCKConfig.EnableSourceXHTML ? FCK.GetXHTML( FCKConfig.FormatSource ) : FCK.GetHTML( FCKConfig.FormatSource ) ) ;
+		document.getElementById('eSourceField').value = FCK.GetXHTML( FCKConfig.FormatSource ) ;
 	}
 	else
-		FCK.SetHTML( FCK.GetHTML(), true ) ;
+		FCK.SetHTML( document.getElementById('eSourceField').value, true ) ;
 
 	// Updates the actual mode status.
 	FCK.EditMode = bWYSIWYG ? FCK_EDITMODE_SOURCE : FCK_EDITMODE_WYSIWYG ;

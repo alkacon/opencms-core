@@ -90,6 +90,13 @@ FCKTools.CreateXmlObject = function( object )
 	}
 	return null ;
 }
+
+FCKTools.DisableSelection = function( element )
+{
+	element.style.MozUserSelect	= 'none' ;	// Gecko only.
+	// element.style.userSelect	= 'none' ;	// CSS3 (not supported yet).
+}
+
 // START iCM Modifications
 /*
 // Starting at the specified node, find the first inline node of the sequence

@@ -37,10 +37,13 @@ function FCKToolbarSpecialCombo_OnSelect( itemId, item )
 
 FCKToolbarSpecialCombo.prototype.CreateInstance = function( parentToolbar )
 {
-	this._Combo = new FCKSpecialCombo( this.GetLabel() ) ;
+	this._Combo = new FCKSpecialCombo( this.GetLabel(), this.FieldWidth, this.PanelWidth, this.PanelMaxHeight ) ;
+	
+	/*
 	this._Combo.FieldWidth		= this.FieldWidth		!= null ? this.FieldWidth		: 100 ;
 	this._Combo.PanelWidth		= this.PanelWidth		!= null ? this.PanelWidth		: 150 ;
 	this._Combo.PanelMaxHeight	= this.PanelMaxHeight	!= null ? this.PanelMaxHeight	: 150 ;
+	*/
 	
 	//this._Combo.Command.Name = this.Command.Name;
 //	this._Combo.Label	= this.Label ;
@@ -81,7 +84,14 @@ FCKToolbarSpecialCombo.prototype.RefreshState = function()
 			if ( this.RefreshActiveItems )
 				this.RefreshActiveItems( this._Combo, sValue ) ;
 			else
+			{
+				if ( this._LastValue == sValue )
+					return ;
+	
+				this._LastValue = sValue ;
+
 				FCKToolbarSpecialCombo_RefreshActiveItems( this._Combo, sValue ) ;
+			}
 		}
 		else
 			eState = FCK_TRISTATE_DISABLED ;

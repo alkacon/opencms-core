@@ -22,7 +22,7 @@ var FCKConfig = FCK.Config = new Object() ;
 // Editor Base Path
 if ( document.location.protocol == 'file:' )
 {
-	FCKConfig.BasePath = document.location.pathname.substr(1) ;
+	FCKConfig.BasePath = unescape( document.location.pathname.substr(1) ) ;
 	FCKConfig.BasePath = FCKConfig.BasePath.replace( /\\/gi, '/' ) ;
 	FCKConfig.BasePath = 'file://' + FCKConfig.BasePath.substring(0,FCKConfig.BasePath.lastIndexOf('/')+1) ;
 }

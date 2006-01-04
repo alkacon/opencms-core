@@ -85,6 +85,8 @@ Find				: "Претрага",
 Replace				: "Замена",
 SpellCheck			: "Провери спеловање",
 UniversalKeyboard	: "Универзална тастатура",
+PageBreakLbl		: "Page Break",	//MISSING
+PageBreak			: "Insert Page Break",	//MISSING
 
 Form			: "Форма",
 Checkbox		: "Поље за потврду",
@@ -106,6 +108,7 @@ InsertCell			: "Унеси ћелије",
 DeleteCells			: "Обриши ћелије",
 MergeCells			: "Спој ћелије",
 SplitCell			: "Раздвоји ћелије",
+TableDelete			: "Delete Table",	//MISSING
 CellProperties		: "Особине ћелије",
 TableProperties		: "Особине табеле",
 ImageProperties		: "Особине слике",
@@ -134,6 +137,8 @@ UnknownCommand		: "Непозната наредба \"%1\"",
 NotImplemented		: "Наредба није имплементирана",
 UnknownToolbarSet	: "Toolbar \"%1\" не постоји",
 NoActiveX			: "You browser's security settings could limit some features of the editor. You must enable the option \"Run ActiveX controls and plug-ins\". You may experience errors and notice missing features.",	//MISSING
+BrowseServerBlocked : "The resources browser could not be opened. Make sure that all popup blockers are disabled.",	//MISSING
+DialogBlocked		: "It was not possible to open the dialog window. Make sure all popup blockers are disabled.",	//MISSING
 
 // Dialogs
 DlgBtnOK			: "OK",
@@ -278,6 +283,7 @@ DlgTableHeight		: "Висина",
 DlgTableCellSpace	: "Ћелијски простор",
 DlgTableCellPad		: "Размак ћелија",
 DlgTableCaption		: "Наслов табеле",
+DlgTableSummary		: "Summary",	//MISSING
 
 // Table Cell Dialog
 DlgCellTitle		: "Особине ћелије",

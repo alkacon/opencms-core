@@ -82,8 +82,6 @@ function GetCase()
 	return ( document.getElementById('chkCase').checked ? '' : 'i' ) ;
 }
 
-var oRange = oEditor.FCK.EditorDocument.body.createTextRange() ;
-
 function Ok()
 {
 	if ( document.getElementById('txtFind').value.length == 0 )
@@ -94,6 +92,11 @@ function Ok()
 	else
 		FindGecko() ;
 }
+
+var oRange ;
+
+if ( oEditor.FCKBrowserInfo.IsIE )
+	oRange = oEditor.FCK.EditorDocument.body.createTextRange() ;
 
 function FindIE()
 {

@@ -32,7 +32,7 @@ if ( !window.parent.FCKeditorAPI )
 	FCKeditorAPI.__Instances = new Object() ;
 
 	// Set the current version.
-	FCKeditorAPI.Version = '2.1.1' ;
+	FCKeditorAPI.Version = '2.2' ;
 
 	// Function used to get a instance of an existing editor present in the 
 	// page.

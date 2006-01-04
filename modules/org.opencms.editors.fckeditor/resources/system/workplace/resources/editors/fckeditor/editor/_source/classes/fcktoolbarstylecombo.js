@@ -37,6 +37,8 @@ FCKToolbarStyleCombo.prototype.CreateItems = function( targetSpecialCombo )
 {
 	// Add the Editor Area CSS to the Styles panel so the style classes are previewed correctly.
 	FCKTools.AppendStyleSheet( targetSpecialCombo._Panel.Document, FCKConfig.EditorAreaCSS ) ;
+	
+	targetSpecialCombo._Panel.Document.body.className += ' ForceBaseFont' ;
 
 	// For some reason Gecko is blocking inside the "RefreshVisibleItems" function.
 	if ( ! FCKBrowserInfo.IsGecko )
