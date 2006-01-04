@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/12/16 14:12:40 $
- * Version: $Revision: 1.56.2.3 $
+ * Date   : $Date: 2006/01/04 16:28:38 $
+ * Version: $Revision: 1.56.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.3 $ 
+ * @version $Revision: 1.56.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,16 +310,7 @@ public class CmsLinkManager {
                 if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
                     return absolutePath + suffix;
                 }
-                // HACK: some editor components (e.g. FCKeditor) mix up the editor URL with the current request URL and servlet path
-                //absolutePath = getAbsoluteUri(path, context + cms.getRequestContext().getSiteRoot() + "/");
-                absolutePath = getAbsoluteUri(path, CmsWorkplace.VFS_PATH_EDITORS + "fckeditor/");
-                if (CmsStringUtil.isNotEmpty(OpenCms.getSystemInfo().getServletPath()) && absolutePath.startsWith(OpenCms.getSystemInfo().getServletPath())) {
-                    absolutePath = cms.getRequestContext().addSiteRoot(absolutePath.substring(OpenCms.getSystemInfo().getServletPath().length()));
-                    if (CmsSiteManager.getSiteRoot(absolutePath) != null) {
-                        return absolutePath + suffix;
-                    }
-                }
-                // HACK: same as two above, but XmlContent editor has one path element more
+                // HACK: same as above, but XmlContent editor has one path element more
                 absolutePath = getAbsoluteUri(path, cms.getRequestContext().getSiteRoot()
                     + CmsWorkplace.VFS_PATH_EDITORS
                     + "xmlcontent/");
