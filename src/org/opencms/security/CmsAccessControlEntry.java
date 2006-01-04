@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsAccessControlEntry.java,v $
- * Date   : $Date: 2005/09/16 08:51:57 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2006/01/04 16:38:37 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.StringTokenizer;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -213,14 +213,14 @@ public class CmsAccessControlEntry {
     /**
      * Returns the string representation of the "responsible" flag.<p>
      * 
-     * @return string of the format {{+|-}s}*
+     * @return string of the format {{+|-}l}*
      */
     public String getResponsibleString() {
 
         if (isResponsible()) {
             return "+l";
         } else  {
-            return "+l";
+            return "-l";
         }
     }
     
