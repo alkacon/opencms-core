@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorWidget.java,v $
- * Date   : $Date: 2005/12/19 09:45:17 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/04 16:27:49 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.7
  */
@@ -98,15 +98,17 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
      * Builds the toolbar button configuration String for the OpenCms specific buttons of the editor widget.<p>
      * 
      * @param toolbar the toolbar configuration defining the buttons to show
-     * @param widgetOptions the options String containing the button names to show
+     * @param widgetOptionsString the options String containing the button names to show
      * @return true if at least one button was added to the toolbar, otherwise false
      */
-    public static boolean buildOpenCmsButtonRow(StringBuffer toolbar, String widgetOptions) {
+    public static boolean buildOpenCmsButtonRow(StringBuffer toolbar, String widgetOptionsString) {
 
         boolean buttonRendered = false;
+        
 
-        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(widgetOptions)) {
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(widgetOptionsString)) {
             // configuration String found, build buttons to show
+            List widgetOptions = CmsStringUtil.splitAsList(widgetOptionsString, CmsHtmlWidgetOption.OPTION_DELIMITER);
             StringBuffer custom = new StringBuffer(512);
 
             // show source button if configured
@@ -206,12 +208,12 @@ public class CmsFCKEditorWidget extends A_CmsHtmlWidget {
      * Returns if the given button is configured to be shown.<p>
      * 
      * @param buttonName the name of the button to check
-     * @param widgetOptions the options String containing the button names to show
+     * @param widgetOptions the options List containing the button names to show
      * @return true if the given button is configured to be shown
      */
-    protected static boolean showButton(String buttonName, String widgetOptions) {
+    protected static boolean showButton(String buttonName, List widgetOptions) {
 
-        return (widgetOptions.indexOf(buttonName) != -1);
+        return (widgetOptions.contains(buttonName));
     }
 
     /**
