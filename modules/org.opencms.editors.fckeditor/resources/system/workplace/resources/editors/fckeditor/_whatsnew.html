@@ -21,7 +21,395 @@
 	</head>
 	<body>
 		<H3>
-			Version 2.1.1</H3>
+			Version 2.2</H3>
+<P>New Features and Improvements:</P>
+<UL>
+  <LI> Let's welcome Wim Lemmens (didgiman). He's our new 
+  responsible for the ColdFusion integration. In this version we are introducing 
+  his new files with the following changes: 
+  <UL>
+    <LI>The "<STRONG>Uploader</STRONG>", used for quick uploads,&nbsp;is now 
+    available <STRONG>natively for ColdFusion</STRONG>.
+    <LI>Small bugs have been corrected in the <STRONG>File Browser 
+    connector</STRONG>.
+    <LI>The samples now work as is, even if you don't install the editor in the 
+    "/FCKeditor" directory.</LI></UL>
+  <LI>And a big welcome also to "Andrew Liu", our 
+  responsible for the <STRONG>Python</STRONG> integration. This version is 
+  bringing <STRONG>native support for Python</STRONG>       , including the 
+  File Browser connector and Quick Upload. 
+  <LI>The "<STRONG>IsDirty()</STRONG>" and "<STRONG>ResetIsDirty()</STRONG>" 
+  functions have been&nbsp;added to the&nbsp;JavaScript API&nbsp;to check if 
+  the editor content has been changed.* 
+  <LI>New language files: 
+  <UL>
+    <LI><STRONG>Hindi</STRONG> (by Utkarshraj Atmaram)
+    <LI><STRONG>Latvian </STRONG>(by Janis Klavin)</LI></UL>
+  <LI>For&nbsp;the interface, now we have complete 
+  <STRONG>RTL support</STRONG>    also for 
+  the drop-down toolbar commands, color selectors and context menu. 
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1325113&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1325113</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1277661&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1277661</A>] The new "Delete Table" command is available in 
+  the Context Menu when right-clicking inside a table.
+  <LI>The "FCKConfig.DisableTableHandles" configuration 
+  option is now working on Firefox 1.5. 
+  <LI>The new "<STRONG>OnBlur</STRONG>" and "<STRONG>OnFocus</STRONG>" events have been added to 
+  the JavaScript API (IE only). See&nbsp;"_samples/html/sample09.html"&nbsp;* 
+  <LI><STRONG><FONT color="#ff0000">Attention</FONT></STRONG>: The 
+  "<STRONG>GetHTML</STRONG>" function has been deprecated. It now returns the 
+  same value as "<STRONG>GetXHTML</STRONG>". 
+  The same is valid for the "EnableXHTML" and "EnableSourceXHTML" that have no 
+  effects now. The editor now works with XHTML output        
+   only.
+  <LI><STRONG><FONT color="#ff0000">Attention</FONT></STRONG>: A new 
+  "<STRONG>PreserveSessionOnFileBrowser</STRONG>" configuration option has been 
+  introduced. It makes it possible to set whenever is needed to maintain the 
+  user session in the File Browser. It is disabled by default, as it has very 
+  specific usage and may cause the File Browser to be blocked by popup blockers. 
+  If you have custom File Browsers that depends on session information, remember 
+  to activate it.
+  <LI><STRONG><FONT color="#ff0000">Attention</FONT></STRONG>: The 
+  "<STRONG>fun</STRONG>" smileys set has been removed from the package. If you 
+  are using it, you must manually copy it to newer installations and upgrades.
+  <LI><STRONG><FONT color="#ff0000">Attention</FONT></STRONG>: The 
+  "<STRONG>mcpuk</STRONG>" file browser has been removed from the package. We 
+  have no ways to support it. There were also some licensing issues with it. Its 
+  web site can still be found at <A 
+  href="http://mcpuk.net/fbxp/">http://mcpuk.net/fbxp/</A>.
+  <LI>It is now possible to set different CSS styles for 
+  the chars in the Special Chars dialog window by adding the "SpecialCharsOut" 
+  and "SpecialCharsOver" in the "fck_dialog.css" skin file.*
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1268726&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1268726</A>] Added table "summary" support in the table dialog. Thanks 
+  to Sebastien-Mahe.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1284380&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1284380</A>] It is now possible to define the icon of 
+  a FCKToolbarPanelButton object without being tied to the skin path (just like 
+  FCKToolbarButton). Thanks to Ian Sullivan.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1338610&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1338610</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1263009&amp;group_id=75348&amp;atid=543656" 
+  target="_blank">SF Patch-1263009</A>] New characters have been added to the "Special Characters" 
+  dialog window. Thanks to Deian.
+  <LI>You can set the QueryString value "fckdebug=true" to activate "debug mode" 
+  in the editor (showing the debug window), overriding the configurations. The 
+  "AllowQueryStringDebug" configuration option is also available so you can 
+  disable this feature.</LI></UL>
+<P>Fixed Bugs:</P>
+<UL>
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1363548&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1363548</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1364425&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1364425</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1335045&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1335045</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1289661&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1289661</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1225370&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1225370</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1156291&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1156291</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1165914&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1165914</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1111877&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1111877</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1092373&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1092373</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1101596&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1101596</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1246952&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1246952</A>] The URLs for links and images are now correctly 
+  preserved as entered, no matter if you are using relative or absolute paths.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1162809&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1162809</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1205638&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1205638</A>] The "Image" and "Flash"&nbsp;dialog windows now loads the 
+  preview correctly if the "BaseHref" configuration option is set. 
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1329807&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1329807</A>] The alert boxes are now showing correctly when doing 
+  cut/copy/paste operations on Firefox installations when it is not possible to 
+  execute that operations due to security settings. 
+  <LI>A new "Panel" system (used in the drop-dowm toolbar 
+  commands, color selectors and context menu) has been developed. The following 
+  bugs have been fixed with it: 
+  <UL>
+    <LI>[<A 
+    href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1186927&amp;group_id=75348&amp;atid=543653" 
+    target="_blank">SF BUG-1186927</A>] On IE, sometimes the context menu was being partially hidden.*
+    <LI> On Firefox, the context menu was flashing in the wrong position 
+    before showing.
+    <LI>On Firefox 1.5, the Color Selector was not working.
+    <LI>On Firefox 1.5, the fonts in the panels were too 
+    big.
+    <LI>[<A 
+    href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1076435&amp;group_id=75348&amp;atid=543653" 
+    target="_blank">SF BUG-1076435</A>] [<A 
+    href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1200631&amp;group_id=75348&amp;atid=543653" 
+    target="_blank">SF BUG-1200631</A>] On Firefox, sometimes the context menu was 
+    being shown in the wrong position.</LI></UL>                  
+           
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/?func=detail&amp;atid=543653&amp;aid=1364094&amp;group_id=75348" 
+  target="_blank">SF BUG-1364094</A>] Font families were <A 
+  href="https://bugzilla.mozilla.org/show_bug.cgi?id=317572" target="_blank">not 
+  being rendered correctly on Firefox</A>         
+         .
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/?func=detail&amp;atid=543653&amp;aid=1315954&amp;group_id=75348" 
+  target="_blank">SF BUG-1315954</A>] No error is thrown when pasting some case specific code from 
+  editor to editor.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1341553&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1341553</A>] A small fix for a security alert in the File&nbsp;Browser has been applied.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1370953&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1370953</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1339898&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1339898</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1323319&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1323319</A>] A message will be shown to the user (instead 
+  of a JS error)&nbsp;if a "popup blocker" blocks the "Browser Server" button. 
+  Thanks to Erwin Verdonk.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1370355&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1370355</A>] Anchor links that points to a single character anchor, like 
+  "#A", are now correctly detected in the Link dialog window. Thanks to Ricky 
+  Casey.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1368998&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1368998</A>] Custom error processing has been added to the file upload on 
+  the File Browser.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1367802&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1367802</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1207740&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1207740</A>] A message is shown to the user if a dialog 
+  box is blocked by a popup blocker in Firefox.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1358891&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1358891</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1340960&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1340960</A>] The editor not works locally (without a web server) on 
+  directories where the path contains spaces.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1357247&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1357247</A>] The editor now intercepts SHIFT + INS keystrokes when needed.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1328488&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1328488</A>] <STRONG><FONT 
+  color="#ff0000">Attention</FONT></STRONG>: The Page Break command now 
+  produces different tags&nbsp;to avoid&nbsp;XHTML compatibility issues. Any 
+  Page Break previously applied to content produced with previous versions of FCKeditor will 
+  not me rendered now, even if&nbsp;they will still be working correctly.
+  <LI>It is now possible to allow cut/copy/past operations on Firefox using the 
+  <A 
+  href="http://kb.mozillazine.org/Granting_JavaScript_access_to_the_clipboard" 
+  target="_blank">user.js</A>         
+              
+     file.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1336792&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1336792</A>] A fix has been applied to the XHTML processor to allow tag 
+  names with the "minus" char (-).
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1339560&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1339560</A>] The editor now correctly removes the "selected" option for 
+  checkboxes and radio buttons.
+  <LI>The Table dialog box now selects the table correctly 
+  when right-clicking on objects (like images) placed inside the table.
+  <LI><STRONG><FONT color="#ff0000">Attention</FONT></STRONG> : A few changes have been made 
+  in the skins. If you have a custom skin, it is recommended you to make a diff 
+  of the fck_contextmenu.css file of the default skin with your implementation.
+  <LI>Mouse select (marking&nbsp;things in blue, like 
+  selecting text) has been disabled on panels (drop-down menu commands, color 
+  selector and context menu) and toolbar, for both IE and Firefox. 
+  <LI>On Gecko, fake borders will not be applied to tables 
+  with the border attribute set to more than 0, but placed inside tables with 
+  border set to 0.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1360717&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1360717</A>] A wrapping issue in the "Silver" skin has been corrected. 
+  Thanks to Ricky Casey.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1251145&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1251145</A>] In IE, the focus is now maintained in the text when clicking 
+  in the empty area&nbsp;following it.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1181386&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1181386</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1237791&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1237791</A>] The "Stylesheet Classes" field in the Link dialog window in now applied 
+  correctly on IE. Thanks to Andrew Crowe.
+  <LI>The "Past from Word" dialog windows is now showing 
+  correctly on Firefox on some languages.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1315008&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1315008</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1241992&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1241992</A>] IE, when selecting objects (like images) and hitting 
+  the "Backspace" button, the browser's "back" will not get executed anymore and 
+  the object will be correctly deleted.
+  <LI>The "AutoDetectPasteFromWord" is now working correctly in IE. Thanks to 
+  Juan Ant. Gmez.
+  <LI>A small enhancement has been made in the Word pasting 
+  detection. Thanks to Juan Ant. Gmez.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1090686&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1090686</A>] No more conflict with Firefox "Type-Ahead Find" feature.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=942653&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-942653</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1155856&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1155856</A>] The "width" and "height" of images sized 
+  using the inline handlers are now correctly loaded in the image dialog box.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1209093&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1209093</A>] When "Full Page Editing" is active, in the 
+  "Document Properties" dialog, the "Browse Server" button for the page 
+  background is now correctly hidden if "ImageBrowser" is set to "false" in the 
+  configurations file. Thanks to Richard.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1120266&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1120266</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1186196&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1186196</A>] The editor now retains the focus when 
+  selecting commands in the toolbar.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1244480&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1244480</A>] The editor now will look first to linked fields "ids" 
+  and&nbsp;second to "names".
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1252905&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1252905</A>] The "InsertHtml" function now preserves URLs 
+  as entered.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1266317&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1266317</A>] Toolbar commands are not anymore executed 
+  outside the editor.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1365664&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1365664</A>] The "wrap=virtual" attribute has been removed from the 
+  integration files for validation purposes. No big impact.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=972193&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-972193</A>] Now just one click is needed to active the cursor inside the 
+  editor.
+  <LI>The hidden fields used by the editor are now protected 
+  from changes using the "Web Developer Add-On &gt; Forms &gt; Display Forms 
+  Details" extension. Thanks to Jean-Marie Griess.
+  <LI>On IE, the "Format" toolbar dropdown now reflects the 
+  current paragraph type on IE. Because of a bug in the browser, it is quite 
+  dependent on the browser language and the editor interface language (both must 
+  be the same). Also, as the "Normal (DIV)" type is seen by IE as "Normal", to 
+  avoid confusion, both types are ignored by this fix.
+  <LI>On some very rare cases, IE was loosing the "align" 
+  attribute for DIV tags. Fixed.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/?func=detail&amp;atid=543653&amp;aid=1388799&amp;group_id=75348" 
+  target="_blank">SF BUG-1388799</A>] The code formatter was removing spaces on the beginning of 
+  lines inside PRE tags. Fixed.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1387135&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1387135</A>] No more "NaN" values in the image dialog, when changing the 
+  sizes in some situations.
+  <LI>Corrected a small type in the table handler.
+  <LI>You can now set the "z-index" for floating panels (toolbar dropdowns, 
+  color selectors, context menu) in Firefox, avoiding having them hidden under 
+  another objects. By default it is set to 10,000. Use the FloatingPanelsZIndex 
+  configuration option to change this value.</LI></UL>
+<P><STRONG>Special thanks</STRONG>  to <A href="https://sourceforge.net/users/alfonsoml/" 
+target="_blank">Alfonso Martinez</A>, 
+who have provided many patches and suggestions for the following features / 
+fixes present in this version. I encourage all you to <A 
+href="https://sourceforge.net/donate/index.php?user_id=1356422">donate</A> to Alfonso, as a way to say thanks for 
+his nice open source approach. Thanks Alfonso!. Check out his contributions:</P>
+<UL>
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/?func=detail&amp;atid=543653&amp;aid=1364094&amp;group_id=75348" 
+  target="_blank">SF BUG-1352539</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1208348&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1208348</A>] With Firefox, no more "fake" selections are 
+  appearing when inserting images, tables, special chars or when using the 
+  "insertHtml" function.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/?func=detail&amp;atid=543655&amp;aid=1382588&amp;group_id=75348" 
+  target="_blank">SF Patch-1382588</A>] The "FCKConfig.DisableImageHandles" 
+  configuration option is not working on Firefox 1.5.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1368586&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1368586</A>] Some fixes have been applied to the Flash 
+  dialog box and the Flash pre-processor.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1360253&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1360253</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1378782&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1378782</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1305899&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1305899</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1344738&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1344738</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1347808&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1347808</A>] On dialogs, some fields&nbsp;became 
+  impossible to select or change when using Firefox. It has been fixed.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1357445&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1357445</A>] Add support for DIV in the Format 
+  drop-down combo for Firefox.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1350465&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1350465</A>] [<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1376175&amp;group_id=75348&amp;atid=543653" 
+  target="_blank">SF BUG-1376175</A>] The "Cell Properties" dialog now works 
+  correctly when right-clicking in an object (image, for example) placed inside 
+  the cell itself.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1349166&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1349166</A>] On IE, there is now support for namespaces 
+  on tags names.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1350552&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1350552</A>] Fix the display issue when applying styles 
+  on tables.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1352320&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1352320</A>  ] Fixed&nbsp;a wrong&nbsp;usage of the 
+  "parentElement" property on Gecko.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1355007&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1355007</A>] The new "FCKDebug.OutputObject" function 
+  is available to dump all object information in the debug window.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1329500&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1329500</A>] It is now possible to delete table 
+  columns when clicking on a TH cell of the column.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1315351&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1315351</A>] It is now possible to pass the image width 
+  and height to the "SetUrl" function of the Flash dialog box.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1327384&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1327384</A>] TH tags are now correctly handled by the 
+  source code formatter and the "FillEmptyBlocks" configuration option.
+  <LI>[<A 
+  href="https://sourceforge.net/tracker/index.php?func=detail&amp;aid=1327406&amp;group_id=75348&amp;atid=543655" 
+  target="_blank">SF Patch-1327406</A>] Fake borders are now displayed for TH elements on tables 
+  with border set to 0. Also, on Firefox, it will now work even if the border 
+  attribute is not defined and the borders are not dotted.
+  <LI>Hidden fields now get rendered on Firefox.
+  <LI>The BasePath is now included in the debugger URL to avoid problems when 
+  calling it from plugins.</LI></UL>
+<P>* This version has been partially sponsored by <A 
+href="http://www.alkacon.com" target="_blank">Alkacon Software</A>.</P>
+<H3>Version 2.1.1</H3>
 		<P>New Features and Improvements:</P>
 		<UL>
 			<LI>

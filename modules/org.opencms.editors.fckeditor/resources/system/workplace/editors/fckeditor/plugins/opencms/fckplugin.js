@@ -207,7 +207,7 @@ function createLink(linkInformation) {
 var exitCommand = function() { this.Name = 'Exit'; }
 exitCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 exitCommand.prototype.Execute = function() {
-	if (confirm("<%= wp.key("editor.message.exit") %>")) {
+	if (!FCK.IsDirty() || confirm("<%= wp.key("editor.message.exit") %>")) {
 		execAction(FCK.LinkedField.form, '<%= CmsSimplePageEditor.EDITOR_EXIT %>','_top');
 	}
 }

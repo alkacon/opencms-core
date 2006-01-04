@@ -66,6 +66,8 @@ FCKConfig.ToolbarSets["OpenCmsWidget"] = [
         <%= toolbar %>
 ];
 
+FCKConfig.PreserveSessionOnFileBrowser = true;
+
 FCKConfig.ImageUpload = false;
 FCKConfig.ImageBrowserURL = FCKConfig.BasePath + "filemanager/browser/default/browser.html?Type=Image&Connector=<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp") %>";
 FCKConfig.ImageUploadURL = "<%= cms.link(CmsEditor.PATH_EDITORS + "fckeditor/filebrowser/connector.jsp?Type=Image") %>";
