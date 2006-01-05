@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2005/11/10 07:29:08 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2006/01/05 11:39:46 $
+ * Version: $Revision: 1.19.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.19.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -437,7 +437,12 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\t\tvar winLeft = window.screenLeft;\n");
         html.append("\t}\n");
         html.append("\n");
-        html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
+        
+        if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
+            html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
+        } else {            
+            html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=yes,location=yes,toolbar=yes,menubar=yes,directories=no,status=yes,resizable=yes\";\n");
+        }
         html.append("\tvar OpenCmsWin = window.open(url, name, openerStr);\n");
         html.append("\n");
         html.append("\ttry{\n");
