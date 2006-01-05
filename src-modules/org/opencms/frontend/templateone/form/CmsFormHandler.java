@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2005/12/15 14:42:07 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/01/05 13:11:24 $
+ * Version: $Revision: 1.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,8 +62,10 @@ import org.apache.commons.logging.Log;
  * output formats of a submitted form.<p>
  * 
  * @author Andreas Zahner 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.21 $ 
+ * @author Thomas Weckert
+ * @author Jan Baudisch
+ * 
+ * @version $Revision: 1.22 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,9 +108,6 @@ public class CmsFormHandler extends CmsJspActionElement {
     private CmsMessages m_messages;
     
     private Boolean m_isValidatedCorrect;
-    
-    /** Temporarily stores the submitted field values for output generation. */
-    private List m_fieldValues;
 
     /**
      * Constructor, creates the necessary form configuration objects.<p>
@@ -236,53 +235,6 @@ public class CmsFormHandler extends CmsJspActionElement {
     }
 
     /**
-     * Creates a list of field values to create an output for email or confirmation pages.<p>
-     * 
-     * The list contains CmsFieldValue objects with the following information:
-     * <ol>
-     * <li>the label (or name) of the field</li>
-     * <li>the submitted value of the field, for checkboxes a comma separated list</li>
-     * <li>a flag if the field should be displayed, false for hidden fields</li>
-     * </ol>
-     * 
-     * @return list of field values to create an output for email or confirmation pages
-     */
-    public List createValuesFromFields() {
-
-        if (m_fieldValues == null) {
-            
-            // get the form field size
-            List fields = getFormConfiguration().getFields();
-            int fieldSize = fields.size();
-            if (getFormConfiguration().isConfirmationMailEnabled()
-                && getFormConfiguration().isConfirmationMailOptional()) {
-                // decrease field size to avoid displaying optional confirmation email checkbox
-                fieldSize -= 1;
-            }
-            
-            // create the empty result list
-            List result = new ArrayList();
-
-            for (int i = 0, n = fields.size(); i < n; i++) {
-                
-                // add field field value object to list
-                I_CmsField currentField = (I_CmsField)fields.get(i);
-                
-                if (currentField != null) {
-                    CmsFieldValue fieldValue = new CmsFieldValue(currentField);
-                    result.add(fieldValue);
-                }
-            }
-            
-            // store the generated list for further usage to avoid unnecessary rebuilding
-            m_fieldValues = result;
-        }
-        
-        // return generated list of field values
-        return m_fieldValues;
-    }
-
-    /**
      * Returns the errors found when validating the form.<p>
      * 
      * @return the errors found when validating the form
@@ -340,8 +292,6 @@ public class CmsFormHandler extends CmsJspActionElement {
         setMessages(new CmsMessages("/org/opencms/frontend/templateone/form/workplace", getRequestContext().getLocale()));
         // get the form configuration
         setFormConfiguration(new CmsForm(this, getMessages(), isInitial(), formConfigUri, formAction));
-        // turn the request values into field value objects
-        createValuesFromFields();
     }
 
     /**
@@ -600,7 +550,7 @@ public class CmsFormHandler extends CmsJspActionElement {
      */
     protected String createMailTextFromFields(boolean isHtmlMail, boolean isConfirmationMail) {
 
-        List fieldValues = createValuesFromFields();
+        List fieldValues = getFormConfiguration().getFields();
         StringBuffer result = new StringBuffer(fieldValues.size() * 8);
         if (isHtmlMail) {
             // create html head with style definitions and body
@@ -670,19 +620,19 @@ public class CmsFormHandler extends CmsJspActionElement {
         // generate output for submitted form fields
         Iterator i = fieldValues.iterator();
         while (i.hasNext()) {
-            CmsFieldValue current = (CmsFieldValue)i.next();
+            I_CmsField current = (I_CmsField)i.next();
             if (isHtmlMail) {
                 // format output as HTML
                 result.append("<tr><td class=\"fieldlabel\">");
                 result.append(current.getLabel());
                 result.append("</td><td class=\"fieldvalue\">");
-                result.append(convertToHtmlValue(current.getValue()));
+                result.append(convertToHtmlValue(current.toString()));
                 result.append("</td></tr>\n");
             } else {
                 // format output as plain text
                 result.append(current.getLabel());
                 result.append("\t");
-                result.append(current.getValue());
+                result.append(current.toString());
                 result.append("\n");
             }
         }

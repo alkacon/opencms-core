@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2006/01/05 12:10:45 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/01/05 13:11:24 $
+ * Version: $Revision: 1.25 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,10 +58,10 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner 
- * 
  * @author Thomas Weckert 
+ * @author Jan Baudisch
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.25 $ 
  * 
  * @since 6.0.0 
  */
@@ -728,7 +728,7 @@ public class CmsForm {
                     }
                 }
             }
-        } else {
+        } else if (CmsSelectionField.class.isAssignableFrom(field.getClass()) || CmsRadioButtonField.class.isAssignableFrom(field.getClass())) {
             // select box or radio button
             String fieldValue = request.getParameter(field.getName());
             if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.equals(value) && !"".equals(value)) {
@@ -738,6 +738,9 @@ public class CmsForm {
                 // do not mark it as selected
                 result = "";
             }
+        } else {
+            // always display fields value arrays
+            result = Boolean.toString(true);
         }
         return result;
     }
@@ -1276,12 +1279,15 @@ public class CmsForm {
             } else {
                 // get field value from request for standard fields
                 if (!CmsCheckboxField.class.isAssignableFrom(field.getClass())) {
-                    String fieldValue = jsp.getRequest().getParameter(field.getName());
-                    if (fieldValue == null) {
-                        // set empty String as value for non present request parameters
-                        fieldValue = "";
+                    String[] parameterValues = jsp.getRequest().getParameterValues(field.getName());
+                    StringBuffer value = new StringBuffer();
+                    for (int j = 0; j < parameterValues.length; j++) {
+                        if (j != 0) {
+                            value.append(", ");
+                        }
+                        value.append(parameterValues[j]);
                     }
-                    field.setValue(fieldValue);
+                    field.setValue(value.toString());
                 }
             }
 

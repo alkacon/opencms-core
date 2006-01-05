@@ -30,13 +30,13 @@ function runConfirmValues() {
 
 <table border="0" style="margin-top: 14px;">
 <%
-List resultList = formHandler.createValuesFromFields();
+List resultList = formHandler.getFormConfiguration().getFields();
 
 for (int i = 0, n = resultList.size(); i < n; i++) {
-	CmsFieldValue current = (CmsFieldValue)resultList.get(i);
-	if (current.isShow()) {
+	I_CmsField current = (I_CmsField)resultList.get(i);
+	if (!CmsHiddenField.class.isAssignableFrom(current.getClass())) {
 		out.print("<tr>\n\t<td valign=\"top\">" + current.getLabel() + "</td>");
-		out.print("\n\t<td valign=\"top\" style=\"font-weight: bold;\">" + formHandler.convertToHtmlValue(current.getValue()) + "</td></tr>\n");
+		out.print("\n\t<td valign=\"top\" style=\"font-weight: bold;\">" + formHandler.convertToHtmlValue(current.toString()) + "</td></tr>\n");
 	}
 }
 
@@ -61,7 +61,7 @@ if (captchaField != null) {
 	
 	out.println("<tr>\n\t<td valign=\"middle\">" + fieldLabel + "</td>");
 	out.println("\t<td valign=\"top\" style=\"font-weight: bold;\">");
-	out.println("\t<img src=\"" + cms.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha") + "?" + captchaSettings.toRequestParams(cms) + "\" width=\"" + captchaSettings.getImageWidth() + "\" height=\"" + captchaSettings.getImageHeight() + "\" alt=\"\" border=\"1\"><br>");
+	out.println("\t<img src=\"" + cms.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha") + "?" + captchaSettings.toRequestParams(cms.getCmsObject()) + "\" width=\"" + captchaSettings.getImageWidth() + "\" height=\"" + captchaSettings.getImageHeight() + "\" alt=\"\" border=\"1\"><br>");
 	out.println("\t<input type=\"text\" name=\"" + captchaField.getName() + "\" value=\"\">" + errorMessage);
 	out.println("\t</td>\n</tr>\n");
 }
