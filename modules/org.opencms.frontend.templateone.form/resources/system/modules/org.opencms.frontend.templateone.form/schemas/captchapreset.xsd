@@ -1,0 +1,50 @@
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+	
+	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
+		
+	<xsd:element name="CaptchaPresets" type="OpenCmsCaptchaPresets"/>
+	
+	<xsd:complexType name="OpenCmsCaptchaPresets">
+		<xsd:sequence>
+			<xsd:element name="CaptchaPreset" type="OpenCmsCaptchaPreset" minOccurs="0" maxOccurs="unbounded"/>
+		</xsd:sequence>
+	</xsd:complexType>
+
+	<xsd:complexType name="OpenCmsCaptchaPreset">
+		<xsd:sequence>
+            <xsd:element name="Name" type="OpenCmsString" />
+            <xsd:element name="Characters" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="ImageWidth" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="ImageHeight" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MinPhraseLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MaxPhraseLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MinFontSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="MaxFontSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="FontColor" type="OpenCmsColor" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="BackgroundColor" type="OpenCmsColor" minOccurs="0" maxOccurs="1" />
+			<xsd:element name="HolesPerGlyph" type="OpenCmsString" minOccurs="0" maxOccurs="1" />                        
+			<xsd:element name="FilterAmplitude" type="OpenCmsString" minOccurs="0" maxOccurs="1" />                        
+			<xsd:element name="FilterWaveLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />                        
+			
+		</xsd:sequence>
+		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
+	</xsd:complexType>
+	
+	<xsd:annotation>
+		<xsd:appinfo>
+			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
+			<layouts>
+				<layout element="HolesPerGlyph" widget="SelectorWidget" configuration="0|1|2|3|4|5" />
+				<layout element="FilterAmplitude" widget="SelectorWidget" configuration="0|1|2|3|4|5|6|7|8|9|10" />
+				<layout element="FilterWaveLength" widget="SelectorWidget" configuration="40|60|80|100|140|180|220|250|300" /> -->
+			</layouts>
+			<mappings>
+				<mapping element="Name" mapto="property:Title" />
+			</mappings>
+			<defaults>
+				<default element="Characters" value="abcdefghijklmnopqrstuvwxyz" />
+			</defaults>
+		</xsd:appinfo>
+	</xsd:annotation>  
+ 
+</xsd:schema>

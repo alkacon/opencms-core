@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/12/15 14:42:07 $
- * Version: $Revision: 1.23 $
+ * Date   : $Date: 2006/01/05 12:10:45 $
+ * Version: $Revision: 1.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.23 $ 
+ * @version $Revision: 1.24 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,40 +75,6 @@ public class CmsForm {
     
     /** Configuration node name for the optional captcha. */
     public static final String NODE_CAPTCHA = "FormCaptcha";
-
-    /** Configuration node name for the optional captcha background color. */
-    public static final String NODE_CAPTCHA_BACKGROUNDCOLOR = "BackgroundColor";
-    
-    /** Configuration node name for the field value node. */
-    public static final String NODE_CAPTCHA_FILTER_AMPLITUDE = "FilterAmplitude";
-    
-    /** Configuration node name for the optional captcha image holes per glyph. */
-    public static final String NODE_CAPTCHA_FILTER_WAVELENGTH = "FilterWaveLength";
-    
-    /** Configuration node name for the optional captcha font color. */
-    public static final String NODE_CAPTCHA_FONTCOLOR = "FontColor";
-    
-    /** Configuration node name for the optional captcha image holes per glyph. */
-    public static final String NODE_CAPTCHA_HOLESPERGLYPH = "HolesPerGlyph";
-    
-    /** Configuration node name for the optional captcha image height. */
-    public static final String NODE_CAPTCHA_IMAGEHEIGHT = "ImageHeight";
-    
-    /** Configuration node name for the optional captcha image width. */
-    public static final String NODE_CAPTCHA_IMAGEWIDTH = "ImageWidth";   
-
-    /** Configuration node name for the optional captcha max. font size. */
-    public static final String NODE_CAPTCHA_MAX_FONT_SIZE = "MaxFontSize";   
-
-    /** Configuration node name for the optional captcha max. phrase length. */
-    public static final String NODE_CAPTCHA_MAX_PHRASE_LENGTH = "MaxPhraseLength";
-    
-    /** Configuration node name for the optional captcha min. font size. */
-    public static final String NODE_CAPTCHA_MIN_FONT_SIZE = "MinFontSize";
-    
-    
-    /** Configuration node name for the optional captcha min. phrase length. */
-    public static final String NODE_CAPTCHA_MIN_PHRASE_LENGTH = "MinPhraseLength";
 
     /** Configuration node name for the confirmation mail checkbox label text. */
     public static final String NODE_CONFIRMATIONMAILCHECKBOXLABEL = "ConfirmationCheckboxLabel";
@@ -257,6 +223,12 @@ public class CmsForm {
     
     private boolean m_showCheck;
     private  String m_targetUri;
+
+    /** Configuration node name for the optional captcha. */
+    public static final String NODE_CAPTCHA_PRESET = "Preset";
+
+    /** Configuration node name for the optional captcha. */
+    public static final String NODE_CAPTCHA_CHARACTERS = "Characters";
 
     /**
      * Default constructor which parses the configuration file.<p>
@@ -1091,6 +1063,7 @@ public class CmsForm {
         boolean displayCheckPage = captchaFieldIsOnCheckPage() && isInputFormSubmitted();
         boolean submittedCheckPage = captchaFieldIsOnCheckPage() && isCheckPageSubmitted();
 
+        // Todo: read the captcha settings here, don't provide xmlcontent with form!!!
         if (captchaFieldIsOnInputPage || displayCheckPage || submittedCheckPage) {
 
             CmsObject cms = jsp.getCmsObject();
@@ -1113,7 +1086,7 @@ public class CmsForm {
                 }
 
                 // get the image settings from the XML content
-                CmsCaptchaSettings captchaSettings = CmsCaptchaSettings.getInstance(cms);
+                CmsCaptchaSettings captchaSettings = CmsCaptchaSettings.getInstance(jsp);
                 captchaSettings.init(cms, xmlContent, locale);
                 m_captchaField = new CmsCaptchaField(captchaSettings, fieldLabel, fieldValue);
             }

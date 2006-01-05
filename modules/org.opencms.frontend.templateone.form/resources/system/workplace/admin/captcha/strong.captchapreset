@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<CaptchaPresets xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone.form/schemas/captchapreset.xsd">
+  <CaptchaPreset language="en">
+    <Name><![CDATA[Strong]]></Name>
+    <ImageWidth><![CDATA[200]]></ImageWidth>
+    <ImageHeight><![CDATA[60]]></ImageHeight>
+    <MinPhraseLength><![CDATA[5]]></MinPhraseLength>
+    <MaxPhraseLength><![CDATA[7]]></MaxPhraseLength>
+    <MinFontSize><![CDATA[25]]></MinFontSize>
+    <MaxFontSize><![CDATA[40]]></MaxFontSize>
+    <FontColor>#000000</FontColor>
+    <HolesPerGlyph><![CDATA[1]]></HolesPerGlyph>
+    <FilterAmplitude><![CDATA[5]]></FilterAmplitude>
+    <FilterWaveLength><![CDATA[100]]></FilterWaveLength>
+  </CaptchaPreset>
+</CaptchaPresets>

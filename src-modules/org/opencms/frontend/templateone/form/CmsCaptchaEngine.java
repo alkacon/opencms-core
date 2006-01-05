@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2005/12/15 14:42:07 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/01/05 12:10:45 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,7 +34,6 @@ package org.opencms.frontend.templateone.form;
 import org.opencms.main.OpenCms;
 
 import java.awt.image.ImageFilter;
-import java.io.File;
 import java.util.Locale;
 
 import com.jhlabs.image.WaterFilter;
@@ -64,13 +63,13 @@ import com.octo.captcha.image.gimpy.GimpyFactory;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
     /** The configured image captcha factory. */
     private ImageCaptchaFactory m_factory;
-    
+
     /** The settings for this captcha engine. */
     private CmsCaptchaSettings m_settings;
 
@@ -92,7 +91,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
      * @see com.octo.captcha.engine.image.ImageCaptchaEngine#getNextImageCaptcha()
      */
     public ImageCaptcha getNextImageCaptcha() {
-        
+
         return m_factory.getImageCaptcha();
     }
 
@@ -134,9 +133,9 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
         // FileDictionnary will be renamed correctly in next release! The argument denotes a
         // java.util.ResourceBundle properies file: toddlist.properties e.g. in root of jcaptcha jar
-//         WordGenerator dictionary = new ComposeDictionaryWordGenerator(new
-//         FileDictionnary("toddlist"));
-        WordGenerator randomWords = new RandomWordGenerator("1234567890");
+        // WordGenerator dictionary = new ComposeDictionaryWordGenerator(new
+        // FileDictionnary("toddlist"));
+        WordGenerator randomWords = new RandomWordGenerator(m_settings.getCharacterPool());
 
         TextPaster paster = new BaffleRandomTextPaster(
             new Integer(m_settings.getMinPhraseLength()),
@@ -147,10 +146,9 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
         BackgroundGenerator background;
         if (m_settings.isUseBackgroundImage()) {
-            background = new FileReaderRandomBackgroundGenerator(
-                new Integer(m_settings.getImageWidth()),
-                new Integer(m_settings.getImageHeight()),
-                OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebInf("gimpybackgrounds" + File.separatorChar));
+            background = new FileReaderRandomBackgroundGenerator(new Integer(m_settings.getImageWidth()), new Integer(
+                m_settings.getImageHeight()), OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
+                "resources/captchabackgrounds/"));
 
         } else {
             background = new UniColorBackgroundGenerator(new Integer(m_settings.getImageWidth()), new Integer(

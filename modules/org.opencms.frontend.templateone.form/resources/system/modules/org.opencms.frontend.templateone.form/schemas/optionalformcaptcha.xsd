@@ -12,20 +12,8 @@
 
 	<xsd:complexType name="OpenCmsFormCaptcha">
 		<xsd:sequence>
-			<xsd:element name="FieldLabel" type="OpenCmsString" />
-			
-			<xsd:element name="ImageWidth" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="ImageHeight" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="MinPhraseLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="MaxPhraseLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="MinFontSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="MaxFontSize" type="OpenCmsString" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="FontColor" type="OpenCmsColor" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="BackgroundColor" type="OpenCmsColor" minOccurs="0" maxOccurs="1" />
-			<xsd:element name="HolesPerGlyph" type="OpenCmsString" minOccurs="0" maxOccurs="1" />                        
-			<xsd:element name="FilterAmplitude" type="OpenCmsString" minOccurs="0" maxOccurs="1" />                        
-			<xsd:element name="FilterWaveLength" type="OpenCmsString" minOccurs="0" maxOccurs="1" />                        
-			
+			<xsd:element name="FieldLabel" type="OpenCmsString" />			
+            <xsd:element name="Preset" type="OpenCmsString" minOccurs="0" maxOccurs="1" />	
 		</xsd:sequence>
 		<xsd:attribute name="language" type="OpenCmsLocale" use="optional"/>
 	</xsd:complexType>
@@ -34,12 +22,11 @@
 		<xsd:appinfo>
 			<resourcebundle name="org.opencms.frontend.templateone.form.workplace"/>
 			<layouts>
-				<layout element="HolesPerGlyph" widget="SelectorWidget" configuration="0|1|2|3|4|5" />
-				<layout element="FilterAmplitude" widget="SelectorWidget" configuration="0|1|2|3|4|5|6|7|8|9|10" />
-				<layout element="FilterWaveLength" widget="SelectorWidget" configuration="10|20|30|40|50|60|70|80|90|100" />
+				<layout element="Preset" widget="org.opencms.frontend.templateone.form.CmsSelectWidgetXmlcontentType" configuration="folder=/|resourcetypeName=captchapreset|displayOptionMacro=${property.Title}|sortMacro=${property.collector.priority}"/>
 			</layouts>
-
+			<defaults>
+				<default element="FieldLabel" value="${key.GUI_FORMCAPTCHA_LABEL_DEFAULT_0}" />
+			</defaults>
 		</xsd:appinfo>
-	</xsd:annotation>  
- 
+	</xsd:annotation>   
 </xsd:schema>
