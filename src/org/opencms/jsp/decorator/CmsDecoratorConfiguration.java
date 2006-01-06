@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecoratorConfiguration.java,v $
- * Date   : $Date: 2005/11/15 14:15:50 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/01/06 14:05:20 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,13 +50,12 @@ import java.util.Locale;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.3 
  */
 
 public class CmsDecoratorConfiguration {
-
 
     /** The xpath for the decoration configuration. */
     private static final String XPATH_DECORATION = "decoration";
@@ -155,8 +154,6 @@ public class CmsDecoratorConfiguration {
         init();
     }
 
-
-
     /**
      * Adds decorations defined in a <code>{@link CmsDecorationDefintion}</code> object to the map of all decorations.<p>
      * @param decorationDefinition the <code>{@link CmsDecorationDefintion}</code> the decorations to be added
@@ -211,6 +208,23 @@ public class CmsDecoratorConfiguration {
     public void setDecorations(CmsDecorationBundle decorations) {
 
         m_decorations = decorations;
+    }
+
+    /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer buf = new StringBuffer();
+        buf.append(this.getClass().getName());
+        buf.append(" [configFile = '");
+        buf.append(m_configFile);
+        buf.append("', decorations = '");
+        buf.append(m_decorations);
+        buf.append("', locale = '");
+        buf.append(m_locale);
+        buf.append("']");
+        return buf.toString();
     }
 
     /**

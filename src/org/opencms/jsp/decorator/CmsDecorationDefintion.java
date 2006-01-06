@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2005/11/15 14:15:50 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/06 14:05:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -137,9 +137,15 @@ public class CmsDecorationDefintion {
 
         // get configfile basename and the list of all decoration map files
         List decorationMapFiles = getDecorationMapFiles(cms);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_DEFINITION_MAP_FILES_2, decorationMapFiles, locale));
+        }
 
         // create decoration maps
         List decorationMaps = getDecorationMaps(cms, decorationMapFiles);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_DEFINITION_MAPS_2, decorationMaps, locale));
+        }
 
         // now that we have all decoration maps we can build the decoration bundle
         // the bundele is depending on the locale, if a locale is given, only those decoration maps that contain the

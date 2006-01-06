@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationMap.java,v $
- * Date   : $Date: 2005/12/14 10:48:35 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/01/06 14:05:20 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.1.3 
  */
@@ -186,12 +186,18 @@ public class CmsDecorationMap implements Comparable {
      */
     private Map fillMap(CmsObject cms, CmsResource res) throws CmsException {
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_MAP_FILL_MAP_2, m_name, m_decoratorDefinition));
+        }
+
         Map decMap = new HashMap();
         // upgrade the resource to get the file content
         CmsFile file = CmsFile.upgrade(res, cms);
         // get all the entries
         String unparsedContent = new String(file.getContents());
 
+        
+        
         String delimiter = "\r\n";
         if (unparsedContent.indexOf(delimiter) == -1) {
             // there was no \r\n delimiter in the csv file, so check if the lines are seperated by
@@ -199,9 +205,18 @@ public class CmsDecorationMap implements Comparable {
             if (unparsedContent.indexOf("\n") > -1) {
                 delimiter = "\n";
             }
-        }
+        } 
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_MAP_FILL_MAP_DELIMITER_2, res.getName(), CmsStringUtil.escapeJavaScript(delimiter)));
+        }
+        
+        
         List entries = CmsStringUtil.splitAsList(unparsedContent, delimiter);
+        
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_MAP_FILL_MAP_SPLIT_LIST_2, res.getName(), entries));
+        }
         Iterator i = entries.iterator();
         while (i.hasNext()) {
             try {
@@ -219,6 +234,12 @@ public class CmsDecorationMap implements Comparable {
                                 m_decoratorDefinition,
                                 m_locale);
                             decMap.put(key, decObj);
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(Messages.get().key(
+                                    Messages.LOG_DECORATION_MAP_ADD_DECORATION_OBJECT_2,
+                                    decObj,
+                                    key));
+                            }
                         }
                     }
                 }

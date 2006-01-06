@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/Messages.java,v $
- * Date   : $Date: 2005/11/23 08:14:28 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/06 14:05:20 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Emmerich (m.emmerich@alkacon.com)
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.3
  */
@@ -52,8 +52,50 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_DECORATION_DEFINITION_CREATE_MAP_2 = "LOG_DECORATION_DEFINITION_CREATE_MAP_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String LOG_DECORATION_DEFINITION_MAP_FILES_2 = "LOG_DECORATION_DEFINITION_MAP_FILES_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DECORATION_DEFINITION_MAPS_2 = "LOG_DECORATION_DEFINITION_MAPS_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DECORATION_MAP_ADD_DECORATION_OBJECT_2 = "LOG_DECORATION_MAP_ADD_DECORATION_OBJECT_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String LOG_DECORATION_MAP_FILL_2 = "LOG_DECORATION_MAP_FILL_2";
 
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DECORATION_MAP_FILL_MAP_2 = "LOG_DECORATION_MAP_FILL_MAP_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_APPEND_TEXT_2 = "LOG_HTML_DECORATOR_APPEND_TEXT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_DECODED_WORD_1 = "LOG_HTML_DECORATOR_DECODED_WORD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1 = "LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1 = "LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1 = "LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_DECORATION_FOUND_2 = "LOG_HTML_DECORATOR_DECORATION_FOUND_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3 = "LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_HTML_DECORATOR_PROCESS_WORD_2 = "LOG_HTML_DECORATOR_PROCESS_WORD_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DECORATION_MAP_FILL_MAP_DELIMITER_2 = "LOG_DECORATION_MAP_FILL_MAP_DELIMITER_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DECORATION_MAP_FILL_MAP_SPLIT_LIST_2 = "LOG_DECORATION_MAP_FILL_MAP_SPLIT_LIST_2";
+    
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.jsp.decorator.messages";
 

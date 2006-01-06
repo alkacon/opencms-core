@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2005/12/14 10:48:35 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/01/06 14:05:20 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,11 +32,14 @@
 package org.opencms.jsp.decorator;
 
 import org.opencms.file.CmsObject;
+import org.opencms.main.CmsLog;
 import org.opencms.util.CmsHtmlParser;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.logging.Log;
 
 import org.htmlparser.Text;
 import org.htmlparser.util.Translate;
@@ -49,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.1.3 
  */
@@ -71,14 +74,16 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         "&nbsp;",
         "&quot;",
         "\r\n",
-        "\n"
-        };
+        "\n"};
 
     /** Delimiters for second level string seperation. */
-    private static final String[] DELIMITERS_SECOND_LEVEL = {"-",  "@", "/"};
+    private static final String[] DELIMITERS_SECOND_LEVEL = {"-", "@", "/", "."};
 
     /** Steps for forward lookup in workd list. */
     private static final int FORWARD_LOOKUP = 5;
+
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsHtmlDecorator.class);
 
     /** Non translators, strings starting with those values must not be translated. */
     private static final String[] NON_TRANSLATORS = {"&nbsp;", "&quot;"};
@@ -250,17 +255,31 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
      */
     private void appendText(String text, String[] delimiters, boolean recursive) {
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_APPEND_TEXT_2, m_config, text));
+        }
+
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
 
             // split the input into single words
-            List wordList = splitAsList(text, delimiters, true, true);
+            List wordList = splitAsList(text, delimiters, false, true);
 
             for (int i = 0; i < wordList.size(); i++) {
                 String word = (String)wordList.get(i);
 
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
+                        word,
+                        new Boolean(mustDecode(word, wordList, i))));
+                }
+
                 // test if the word must be decoded
                 if (mustDecode(word, wordList, i)) {
                     word = Translate.decode(word);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECODED_WORD_1, word));
+                    }
                 }
 
                 // test if the word is no delimiter
@@ -270,14 +289,23 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     decObj = (CmsDecorationObject)m_decorations.get(word);
                 }
 
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2, decObj, word));
+                }
+
                 // if there is a decoration obejct for this word, we must do the decoration
                 // if not, we must test if the word itself consits of several parts diveded by
                 // second level delimiters
-                // if no second level delimiters are found, it is a word without any decoration at all
-                // which can be added to the result directly.
                 if (decObj == null) {
                     if (hasDelimiter(word, DELIMITERS_SECOND_LEVEL) && recursive) {
-                        appendText(word, DELIMITERS_SECOND_LEVEL, false);
+                        // add the following symbol if possbile to allow the second level decoration
+                        // test to make a forward lookup as well
+                        String secondLevel = word;
+                        if (i < wordList.size() - 1) {
+                            secondLevel = word + (String)wordList.get(i + 1);
+                            i++;
+                        }
+                        appendText(secondLevel, DELIMITERS_SECOND_LEVEL, false);
                     } else {
                         // make a forward lookup to the next elements of the word list to check
                         // if the combination of word and delimiter can be found as a decoration key
@@ -285,7 +313,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                         StringBuffer decKey = new StringBuffer();
                         decKey.append(word);
                         // calculate how much forward looking must be made
-                        int forwardLookup = wordList.size() - i-1;
+                        int forwardLookup = wordList.size() - i - 1;
                         if (forwardLookup > FORWARD_LOOKUP) {
                             forwardLookup = FORWARD_LOOKUP;
                         }
@@ -293,7 +321,19 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                             for (int j = 1; j <= forwardLookup; j++) {
                                 decKey.append(wordList.get(i + j));
                                 decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
+                                if (LOG.isDebugEnabled()) {
+                                    LOG.debug(Messages.get().key(
+                                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
+                                        decObj,
+                                        word,
+                                        new Integer(j)));
+                                }
                                 if (decObj != null) {
+                                    if (LOG.isDebugEnabled()) {
+                                        LOG.debug(Messages.get().key(
+                                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                                            decObj.getContentDecoration(m_config)));
+                                    }
                                     // decorate the current word with the following delimiter
                                     m_result.append(decObj.getContentDecoration(m_config));
                                     // important, we must skip the next element of the list
@@ -303,16 +343,27 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                             }
                         }
                         if (decObj == null) {
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1, word));
+                            }
                             // no decoration was found, use the word alone
                             m_result.append(word);
                         }
                     }
                 } else {
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(Messages.get().key(
+                            Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
+                            decObj.getContentDecoration(m_config)));
+                    }
                     // decorate the current word
                     m_result.append(decObj.getContentDecoration(m_config));
                 }
             }
         } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1, text));
+            }
             m_result.append(text);
         }
     }
