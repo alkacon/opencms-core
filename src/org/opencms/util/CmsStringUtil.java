@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/01/06 16:59:54 $
+ * Version: $Revision: 1.37 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.37 $ 
  * 
  * @since 6.0.0 
  */
@@ -66,6 +66,9 @@ public final class CmsStringUtil {
     /** Regular expression that matches the HTML body start tag. */
     public static final String BODY_START_REGEX = "<\\s*body[^>]*>";
 
+    /** Constant for <code>"false"</code>. */
+    public static final String FALSE = Boolean.toString(false);
+
     /** a convienient shorthand to the line separator constant. */
     public static final String LINE_SEPARATOR = System.getProperty("line.separator");
 
@@ -74,6 +77,9 @@ public final class CmsStringUtil {
 
     /** a convienient shorthand for tabulations.  */
     public static final String TABULATOR = "  ";
+
+    /** Constant for <code>"true"</code>. */
+    public static final String TRUE = Boolean.toString(true);
 
     /** Regex pattern that matches an end body tag. */
     private static final Pattern BODY_END_PATTERN = Pattern.compile(BODY_END_REGEX, Pattern.CASE_INSENSITIVE);
