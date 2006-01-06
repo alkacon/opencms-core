@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsUserSettings.java,v $
- * Date   : $Date: 2005/11/23 13:25:27 $
- * Version: $Revision: 1.34.2.2 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.34.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  * @author  Andreas Zahner 
  * @author  Michael Emmerich 
  * 
- * @version $Revision: 1.34.2.2 $
+ * @version $Revision: 1.34.2.3 $
  * 
  * @since 6.0.0
  */
@@ -76,7 +76,15 @@ public class CmsUserSettings {
     /** Key for additional info start settings. */
     public static final String ADDITIONAL_INFO_STARTSETTINGS = "USER_STARTSETTINGS";
 
-    /** Key for additional info address. */
+    /** Key for additional info city. */
+    // Value must unfortunatly still be "USER_TOWN" or existing serialized user information will be lost
+    public static final String ADDITIONAL_INFO_CITY = "USER_TOWN";
+    
+    /**
+     *  Key for additional info city.
+     *  
+     *  @deprecated use {@link #ADDITIONAL_INFO_CITY} instead
+     */
     public static final String ADDITIONAL_INFO_TOWN = "USER_TOWN";
 
     /** Key for additional info address. */

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2005/10/19 09:41:10 $
- * Version: $Revision: 1.81.2.3 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.81.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,12 +45,12 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81.2.3 $ 
+ * @version $Revision: 1.81.2.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -353,28 +353,12 @@ public abstract class A_CmsImport implements I_CmsImport {
                 }
 
                 InputStream stream = m_importZip.getInputStream(entry);
-
-                int charsRead = 0;
                 int size = new Long(entry.getSize()).intValue();
-                byte[] buffer = new byte[size];
-                while (charsRead < size) {
-                    charsRead += stream.read(buffer, charsRead, size - charsRead);
-                }
-                stream.close();
-                return buffer;
+                return CmsFileUtil.readFully(stream, size);
             } else {
                 // no - use directory
                 File file = new File(m_importResource, filename);
-                FileInputStream fileStream = new FileInputStream(file);
-
-                int charsRead = 0;
-                int size = new Long(file.length()).intValue();
-                byte[] buffer = new byte[size];
-                while (charsRead < size) {
-                    charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-                }
-                fileStream.close();
-                return buffer;
+                return CmsFileUtil.readFile(file);
             }
         } catch (FileNotFoundException fnfe) {
             if (LOG.isErrorEnabled()) {

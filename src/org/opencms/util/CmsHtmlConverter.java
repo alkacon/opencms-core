@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlConverter.java,v $
- * Date   : $Date: 2005/12/14 10:49:04 $
- * Version: $Revision: 1.20.2.5 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.20.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,9 +41,6 @@ import org.opencms.main.CmsLog;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.List;
@@ -60,7 +57,7 @@ import org.w3c.tidy.Tidy;
  *   
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.20.2.5 $ 
+ * @version $Revision: 1.20.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -400,41 +397,6 @@ public class CmsHtmlConverter {
     public String getEncoding() {
 
         return m_encoding;
-    }
-
-    /**
-     * Returns a byte array containing the content of server FS file.<p>
-     *
-     * @param file the name of the file to read
-     * @return bytes[] the content of the file
-     * @throws Exception if something goes wrong
-     */
-    public byte[] getFileBytes(File file) throws Exception {
-
-        byte[] buffer = null;
-        FileInputStream fileStream = null;
-        int charsRead;
-        int size;
-        try {
-            fileStream = new FileInputStream(file);
-            charsRead = 0;
-            size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-            }
-            return buffer;
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
-        }
     }
 
     /**

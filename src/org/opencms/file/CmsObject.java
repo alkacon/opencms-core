@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2005/11/24 11:39:47 $
- * Version: $Revision: 1.143.2.6 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.143.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
 import org.opencms.security.CmsSecurityException;
@@ -82,7 +83,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.143.2.6 $
+ * @version $Revision: 1.143.2.7 $
  * 
  * @since 6.0.0 
  */
@@ -189,28 +190,15 @@ public final class CmsObject {
         int flags) throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        CmsAccessControlEntry acEntry = null;
-        I_CmsPrincipal principal = null;
 
-        if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
-            principal = readGroup(principalName);
-            acEntry = new CmsAccessControlEntry(
-                res.getResourceId(),
-                principal.getId(),
-                allowedPermissions,
-                deniedPermissions,
-                flags);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
-        } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
-            principal = readUser(principalName);
-            acEntry = new CmsAccessControlEntry(
-                res.getResourceId(),
-                principal.getId(),
-                allowedPermissions,
-                deniedPermissions,
-                flags);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_USER);
-        }
+        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
+            res.getResourceId(),
+            principal.getId(),
+            allowedPermissions,
+            deniedPermissions,
+            flags);
+        acEntry.setFlagsForPrincipal(principal);
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
@@ -233,18 +221,13 @@ public final class CmsObject {
     throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        CmsAccessControlEntry acEntry = null;
-        I_CmsPrincipal principal = null;
 
-        if ("group".equals(principalType.toLowerCase())) {
-            principal = readGroup(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
-        } else if ("user".equals(principalType.toLowerCase())) {
-            principal = readUser(principalName);
-            acEntry = new CmsAccessControlEntry(res.getResourceId(), principal.getId(), permissionString);
-            acEntry.setFlags(CmsAccessControlEntry.ACCESS_FLAGS_USER);
-        }
+        I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+        CmsAccessControlEntry acEntry = new CmsAccessControlEntry(
+            res.getResourceId(),
+            principal.getId(),
+            permissionString);
+        acEntry.setFlagsForPrincipal(principal);
 
         m_securityManager.writeAccessControlEntry(m_context, res, acEntry);
     }
@@ -3069,30 +3052,22 @@ public final class CmsObject {
      * 
      * @param resourceName name of the resource
      * @param principalType the type of the principal (currently group or user)
-     * @param principalName name of the principal
+     * @param principalName the name of the principal
      * 
      * @throws CmsException if something goes wrong
      */
     public void rmacc(String resourceName, String principalType, String principalName) throws CmsException {
 
         CmsResource res = readResource(resourceName, CmsResourceFilter.ALL);
-        I_CmsPrincipal principal = null;
-        CmsUUID principalId = null;
 
-        try {
-            if (I_CmsPrincipal.PRINCIPAL_GROUP.equalsIgnoreCase(principalType)) {
-                principal = readGroup(principalName);
-                principalId = principal.getId();
-            } else if (I_CmsPrincipal.PRINCIPAL_USER.equalsIgnoreCase(principalType)) {
-                principal = readUser(principalName);
-                principalId = principal.getId();
-            }
-        } catch (CmsException exc) {
-            // cw: fallback - deleting ace's must be possible even if principal is missing
-            principalId = new CmsUUID(principalName);
+        if (CmsUUID.isValidUUID(principalName)) {
+            // principal name is in fact a UUID, probably the user was already deleted
+            m_securityManager.removeAccessControlEntry(m_context, res, new CmsUUID(principalName));
+        } else {
+            // principal name not a UUID, assume this is a normal name
+            I_CmsPrincipal principal = CmsPrincipal.readPrincipal(this, principalType, principalName);
+            m_securityManager.removeAccessControlEntry(m_context, res, principal.getId());
         }
-
-        m_securityManager.removeAccessControlEntry(m_context, res, principalId);
     }
 
     /**

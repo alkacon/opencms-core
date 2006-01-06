@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2005/09/16 08:56:31 $
- * Version: $Revision: 1.61.2.1 $
- * Date   : $Date: 2005/09/16 08:56:31 $
- * Version: $Revision: 1.61.2.1 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.61.2.2 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.61.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,10 +43,10 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.report.I_CmsReport;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.DataOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.61.2.1 $ 
+ * @version $Revision: 1.61.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -478,43 +478,6 @@ public class CmsSynchronize {
     }
 
     /**
-     * Returns a byte array containing the content of server FS file.<p>
-     *
-     * @param file the name of the file to read
-     * 
-     * @return bytes[] the content of the file
-     * 
-     * @throws IOException if something goes wrong
-     */
-    private byte[] getFileBytes(File file) throws IOException {
-
-        byte[] buffer = null;
-        FileInputStream fileStream = null;
-        int charsRead;
-        int size;
-        try {
-            fileStream = new FileInputStream(file);
-            charsRead = 0;
-            size = new Long(file.length()).intValue();
-            buffer = new byte[size];
-            while (charsRead < size) {
-                charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-            }
-            return buffer;
-        } catch (IOException e) {
-            throw e;
-        } finally {
-            try {
-                if (fileStream != null) {
-                    fileStream.close();
-                }
-            } catch (IOException e) {
-                // ignore
-            }
-        }
-    }
-
-    /**
      * Gets the corresponding file to a resource in the VFS. <p>
      * 
      * @param res path to the resource inside the VFS
@@ -557,7 +520,7 @@ public class CmsSynchronize {
 
         try {
             // get the content of the FS file
-            byte[] content = getFileBytes(fsFile);
+            byte[] content = CmsFileUtil.readFile(fsFile);
 
             // create the file
             String filename = translate(fsFile.getName());
@@ -964,7 +927,7 @@ public class CmsSynchronize {
         vfsFile = m_cms.readFile(resourcename, CmsResourceFilter.IGNORE_EXPIRATION);
         // import the content from the FS
         try {
-            vfsFile.setContents(getFileBytes(fsFile));
+            vfsFile.setContents(CmsFileUtil.readFile(fsFile));
         } catch (IOException e) {
             throw new CmsSynchronizeException(Messages.get().container(Messages.ERR_IMPORT_1, fsFile.getName()));
         }

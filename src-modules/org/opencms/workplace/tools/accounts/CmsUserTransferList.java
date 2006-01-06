@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsUserTransferList.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
@@ -72,7 +71,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -264,17 +263,17 @@ public class CmsUserTransferList extends A_CmsListDialog {
                     CmsUser user = getCms().readUser(userName);
                     // address
                     html.append(user.getAddress());
-                    if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN) != null) {
+                    if (user.getCity() != null) {
                         html.append("<br>");
-                        if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE) != null) {
-                            html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE));
+                        if (user.getZipcode() != null) {
+                            html.append(user.getZipcode());
                             html.append(" ");
                         }
-                        html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN));
+                        html.append(user.getCity());
                     }
-                    if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY) != null) {
+                    if (user.getCountry() != null) {
                         html.append("<br>");
-                        html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY));
+                        html.append(user.getCountry());
                     }
                 } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups

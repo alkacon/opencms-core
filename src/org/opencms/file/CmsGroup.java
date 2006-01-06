@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsGroup.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.file;
 
 import org.opencms.main.CmsIllegalArgumentException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
@@ -40,47 +41,36 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * A group in the OpenCms permission system.<p>
+ * A group principal in the OpenCms permission system.<p>
  *
- * @author Michael Emmerich 
  * @author Alexander Kandzior 
+ * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16.2.1 $
+ * @version $Revision: 1.16.2.2 $
  * 
  * @since 6.0.0 
  * 
  * @see CmsUser
  */
-public class CmsGroup implements I_CmsPrincipal {
-
-    /** The description of the group. */
-    private String m_description;
-
-    /** The flags of the group. */
-    private int m_flags;
-
-    /** The id of the group. */
-    private CmsUUID m_id;
-
-    /** The name of the group. */
-    private String m_name;
+public class CmsGroup extends CmsPrincipal implements I_CmsPrincipal {
 
     /** The parent id of the group. */
     private CmsUUID m_parentId;
 
     /**
-     * Default Constructor.<p> 
+     * Creates a new, empty OpenCms group principal.
      */
     public CmsGroup() {
 
-        // noop
+        int todo = 0;
+        // check different semantic between empty user / group constructors (variable initialization yes/no)
     }
 
     /**
-     * Constructor, creates a new Cms group object.
+     * Creates a new OpenCms group principal.
      * 
-     * @param id the id of the group
-     * @param parentId the parent group of the group (or UNKNOWN_ID)
+     * @param id the unique id of the group
+     * @param parentId the is of the parent group
      * @param name the name of the group
      * @param description the description of the group
      * @param flags the flags of the group    
@@ -95,20 +85,6 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Validates a group name.<p>
-     * 
-     * The parameter should not be empty.<p>
-     * 
-     * @param name the login to validate
-     */
-    public static void checkName(String name) {
-
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_GROUPNAME_VALIDATION_0));
-        }
-    }
-
-    /**
      * Filters out all groups with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
      * 
      * @param groups the list of <code>{@link CmsGroup}</code>
@@ -116,7 +92,11 @@ public class CmsGroup implements I_CmsPrincipal {
      * @return the filtered groups list
      */
     public static List filterCore(List groups) {
-    
+
+        // TODO: should this method really be here?
+        // TODO: unify with user based on new Principal class
+        int todo = 0;
+
         Iterator it = groups.iterator();
         while (it.hasNext()) {
             CmsGroup group = (CmsGroup)it.next();
@@ -137,7 +117,11 @@ public class CmsGroup implements I_CmsPrincipal {
      * @return the filtered groups list
      */
     public static List filterCoreFlag(List groups, int flag) {
-    
+
+        // TODO: should this method really be here?
+        // TODO: unify with user based on new Principal class
+        int todo = 0;
+
         Iterator it = groups.iterator();
         while (it.hasNext()) {
             CmsGroup group = (CmsGroup)it.next();
@@ -157,7 +141,11 @@ public class CmsGroup implements I_CmsPrincipal {
      * @return the filtered groups list
      */
     public static List filterFlag(List groups, int flag) {
-    
+
+        // TODO: should this method really be here?
+        // TODO: unify with user based on new Principal class
+        int todo = 0;
+
         Iterator it = groups.iterator();
         while (it.hasNext()) {
             CmsGroup group = (CmsGroup)it.next();
@@ -169,9 +157,22 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Returns a clone of this Objects instance.<p>
+     * Checks if the provided group name is valid and can be used as an argument value 
+     * for {@link #setName(String)}.<p> 
      * 
-     * @return a clone of this instance
+     * A group name must not be empty or whitespace only.<p>
+     * 
+     * @param name the group name to check
+     */
+    public void checkName(String name) {
+
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(name)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_GROUPNAME_VALIDATION_0));
+        }
+    }
+
+    /**
+     * @see java.lang.Object#clone()
      */
     public Object clone() {
 
@@ -179,73 +180,21 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof CmsGroup) {
-            return ((CmsGroup)obj).m_id.equals(m_id);
-        }
-        return false;
-    }
-
-    /**
-     * Returns the description of this group.<p>
-     * 
-     * @return the description of this group
-     */
-    public String getDescription() {
-
-        return m_description;
-    }
-
-    /**
      * Returns true if this group is disabled.<p>
      * 
      * @return true if this group is disabled
+     * 
+     * @deprecated use {@link CmsPrincipal#isEnabled()} instead
      */
     public boolean getDisabled() {
 
-        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == I_CmsPrincipal.FLAG_DISABLED;
+        return !isEnabled();
     }
 
     /**
-     * Returns this groups flags.<p>
+     * Returns the parent group id of this group.<p>
      * 
-     * @return this groups flags
-     */
-    public int getFlags() {
-
-        return m_flags;
-    }
-
-    /**
-     * Returns the id of this group.<p> 
-     * 
-     * @return id the id of this group
-     */
-    public CmsUUID getId() {
-
-        return m_id;
-    }
-
-    /**
-     * Returns the name of this group.<p>
-     * 
-     * @return name the name of this group
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
-     * Returns the parent id of this group, or UNKNOWN_ID.<p>
-     * 
-     * @return the parent id of this group
+     * @return the parent group id of this group
      */
     public CmsUUID getParentId() {
 
@@ -253,9 +202,9 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Returns true if this group is enabled as a project user group.<p> 
+     * Returns <code>true</code> if this group is enabled as a project user group.<p> 
      * 
-     * @return true if this group is enabled as a project user group 
+     * @return <code>true</code> if this group is enabled as a project user group 
      */
     public boolean getProjectCoWorker() {
 
@@ -263,9 +212,9 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Returns true if this group is enabled as a project manager group.<p> 
+     * Returns <code>true</code> if this group is enabled as a project manager group.<p> 
      * 
-     * @return true if this group is enabled as a project manager group
+     * @return <code>true</code> if this group is enabled as a project manager group
      */
     public boolean getProjectManager() {
 
@@ -273,9 +222,9 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * Returns true if this group is enabled as a role for tasks group.<p>
+     * Returns <code>true</code> if this group is enabled as a role for tasks.<p>
      * 
-     * @return true if this group is enabled as a role for tasks group 
+     * @return <code>true</code> if this group is enabled as a role for tasks
      */
     public boolean getRole() {
 
@@ -283,94 +232,39 @@ public class CmsGroup implements I_CmsPrincipal {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @see org.opencms.security.I_CmsPrincipal#isGroup()
      */
-    public int hashCode() {
+    public boolean isGroup() {
 
-        if (m_id != null) {
-            return m_id.hashCode();
-        }
-        return CmsUUID.getNullUUID().hashCode();
+        return true;
     }
 
     /**
-     * Returns the enabled flag.<p>
-     * 
-     * It should replace the <code>{@link #getDisabled()}</code> method.<p> 
-     * 
-     * @return the enabled flag
+     * @see org.opencms.security.I_CmsPrincipal#isUser()
      */
-    public boolean isEnabled() {
+    public boolean isUser() {
 
-        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == 0;
+        return false;
     }
 
     /**
-     * Sets the description of this group.<p>
+     * Disables this group.<p>
      * 
-     * @param description the description of this group
-     */
-    public void setDescription(String description) {
-
-        m_description = description;
-    }
-
-    /**
-     * Disables this group by setting the FLAG_DISABLED flag.<p>
+     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
      */
     public void setDisabled() {
 
-        if (!getDisabled()) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
-        }
+        setEnabled(false);
     }
 
     /**
-     * Enables this group by setting the FLAG_ENABLED flag.<p>
+     * Enables this group.<p>
+     * 
+     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
      */
     public void setEnabled() {
 
-        if (getDisabled()) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
-        }
-    }
-
-    /**
-     * Sets the enabled flag.<p>
-     * 
-     * It should replace the <code>{@link #setDisabled()}</code> and 
-     * the <code>{@link #setEnabled()}</code> methods.<p> 
-     * 
-     * @param enabled the enabled flag
-     */
-    public void setEnabled(boolean enabled) {
-
-        if (enabled) {
-            setEnabled();
-        } else {
-            setDisabled();
-        }
-    }
-
-    /**
-     * Sets this groups flags.<p>
-     * 
-     * @param flags the flags to set
-     */
-    public void setFlags(int flags) {
-
-        m_flags = flags;
-    }
-
-    /**
-     * Sets the name.<p>
-     *
-     * @param name the name to set
-     */
-    public void setName(String name) {
-
-        checkName(name);
-        m_name = name;
+        setEnabled(true);
     }
 
     /**

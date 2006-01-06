@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2005/12/09 11:38:57 $
- * Version: $Revision: 1.23.2.6 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.23.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.2.6 $ 
+ * @version $Revision: 1.23.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -112,10 +112,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
     /** The delimiter to separate the text. */
     public static final char TEXT_DELIMITER = '"';
 
-    /** The delimiter to start a tag */
+    /** The delimiter to start a tag. */
     public static final String TAG_START_DELIMITER = "<";
     
-    /** The delimiter to end a tag */
+    /** The delimiter to end a tag. */
     public static final String TAG_END_DELIMITER = ">";  
     
     /** the delimiters, the csv data can be separated with.*/

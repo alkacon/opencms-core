@@ -164,8 +164,8 @@ public class CmsListDemo9 extends A_CmsListDialog {
                     CmsListItem listItem = (CmsListItem)itItems.next();
                     String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = getCms().readUser(usrName);
-                    if (user.getDisabled()) {
-                        user.setEnabled();
+                    if (!user.isEnabled()) {
+                        user.setEnabled(true);
                         //getCms().writeUser(user);
                     }
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsImportFolder.java,v $
- * Date   : $Date: 2005/07/21 16:06:09 $
- * Version: $Revision: 1.32 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.32.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
@@ -61,7 +62,7 @@ import java.util.zip.ZipInputStream;
  *
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.32 $
+ * @version $Revision: 1.32.2.1 $
  * 
  * @since 6.0.0
  */
@@ -156,27 +157,6 @@ public class CmsImportFolder {
     }
 
     /**
-     * Returns a byte array containing the content of a file from the real file system.<p>
-     *
-     * @param file the file to read
-     * @return the content of the read file
-     * @throws Exception if something goes wrong during file IO
-     */
-    private byte[] getFileBytes(File file) throws Exception {
-
-        FileInputStream fileStream = new FileInputStream(file);
-        int charsRead = 0;
-        int size = new Long(file.length()).intValue();
-        byte[] buffer = new byte[size];
-        while (charsRead < size) {
-            charsRead += fileStream.read(buffer, charsRead, size - charsRead);
-        }
-        fileStream.close();
-        fileStream = null;
-        return buffer;
-    }
-
-    /**
      * Stores the import resource in an Object member variable.<p>
      * @throws CmsVfsException if the file to import is no valid zipfile
      */
@@ -219,7 +199,7 @@ public class CmsImportFolder {
             } else {
                 // import file into cms
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(currentFile.getName()).getTypeId();
-                byte[] content = getFileBytes(currentFile);
+                byte[] content = CmsFileUtil.readFile(currentFile);
                 // create the file
                 m_cms.createResource(importPath + currentFile.getName(), type, content, null);
                 content = null;
@@ -237,6 +217,9 @@ public class CmsImportFolder {
      */
     private void importZipResource(ZipInputStream zipStreamIn, String importPath, boolean noSubFolder) throws Exception {
 
+        int todo = 0;
+        // TODO: this method looks very crude, it should be re-written sometime...
+        
         boolean isFolder = false;
         boolean exit = false;
         int j, r, stop, charsRead, size;
@@ -291,7 +274,7 @@ public class CmsImportFolder {
                 actImportPath += path[r];
                 actImportPath += "/";
             }
-            if (!isFolder) {
+            if (!isFolder) {                               
                 // import file into cms
                 int type = OpenCms.getResourceManager().getDefaultTypeForName(path[path.length - 1]).getTypeId();
                 size = new Long(entry.getSize()).intValue();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/extractors/A_CmsTextExtractor.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,10 @@
 
 package org.opencms.search.extractors;
 
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -43,7 +43,7 @@ import java.io.InputStream;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,23 +85,10 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
      */
     public I_CmsExtractionResult extractText(InputStream in, String encoding) throws Exception {
 
-        ByteArrayOutputStream out = new ByteArrayOutputStream(512);
-        int c = 0;
-        while (true) {
-            try {
-                c = in.read();
-                if (c < 0) {
-                    break;
-                }
-                out.write(c);
-            } catch (IOException e) {
-                // finished
-                break;
-            }
-        }
-
+        // read the byte content
+        byte[] text = CmsFileUtil.readFully(in);
         // call byte array based method of extraction
-        return extractText(out.toByteArray(), encoding);
+        return extractText(text, encoding);
     }
 
     /**
@@ -119,16 +106,7 @@ public abstract class A_CmsTextExtractor implements I_CmsTextExtractor {
         }
 
         // read the input stream fully and copy it to a byte array
-        ByteArrayOutputStream out = new ByteArrayOutputStream(4096);
-        int c = 0;
-        while (true) {
-            c = in.read();
-            if (c < 0) {
-                break;
-            }
-            out.write(c);
-        }
-        m_inputBuffer = out.toByteArray();
+        m_inputBuffer = CmsFileUtil.readFully(in);
 
         // now return a reader from the byte array
         return new ByteArrayInputStream(m_inputBuffer);

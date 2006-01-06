@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2005/11/29 15:43:18 $
- * Version: $Revision: 1.108.2.3 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.108.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.108.2.3 $
+ * @version $Revision: 1.108.2.4 $
  * 
  * @since 6.0.0 
  */
@@ -1689,7 +1689,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         // avoid warning
-        projectmanager.setEnabled();
+        projectmanager.setEnabled(true);
     }
 
     /**

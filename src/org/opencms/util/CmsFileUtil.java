@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2005/12/21 07:33:24 $
- * Version: $Revision: 1.21.2.6 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.21.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
 
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileFilter;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.6 $ 
+ * @version $Revision: 1.21.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -127,12 +128,13 @@ public final class CmsFileUtil {
 
         FileInputStream in = new FileInputStream(inputFile);
         FileOutputStream out = new FileOutputStream(outputFile);
-        int c;
 
-        while ((c = in.read()) != -1) {
-            out.write(c);
+        // transfer bytes from in to out
+        byte[] buf = new byte[1024];
+        int len;
+        while ((len = in.read(buf)) > 0) {
+            out.write(buf, 0, len);
         }
-
         in.close();
         out.close();
     }
@@ -437,7 +439,7 @@ public final class CmsFileUtil {
             directory.delete();
         }
     }
-        
+
     /**
      * Reads a file from the RFS and returns the file content.<p> 
      * 
@@ -451,33 +453,8 @@ public final class CmsFileUtil {
         // create input and output stream
         FileInputStream in = new FileInputStream(file);
 
-        // get the size of the file
-        long length = file.length();
-
-        // you cannot create an array using a long type, it needs to be an int
-        if (length > Integer.MAX_VALUE) {
-            // File is too large
-            throw new IOException("File '" + file.getName() + "' is to large (" + length + " bytes)");
-        }
-
-        // create the byte array to hold the data
-        byte[] bytes = new byte[(int)length];
-
-        // read in the bytes
-        int offset = 0;
-        int numRead = 0;
-        while (offset < bytes.length && (numRead = in.read(bytes, offset, bytes.length - offset)) >= 0) {
-            offset += numRead;
-        }
-
-        // ensure all the bytes have been read in
-        if (offset < bytes.length) {
-            throw new IOException("Could not completely read file " + file.getName());
-        }
-
-        // close the input stream and return bytes
-        in.close();
-        return bytes;
+        // read the content
+        return readFully(in, (int)file.length());
     }
 
     /**
@@ -495,18 +472,8 @@ public final class CmsFileUtil {
         if (in == null) {
             throw new FileNotFoundException(filename);
         }
-        ByteArrayOutputStream out = new ByteArrayOutputStream();
 
-        // read the file content
-        int c;
-        while ((c = in.read()) != -1) {
-            out.write(c);
-        }
-
-        in.close();
-        out.close();
-
-        return out.toByteArray();
+        return readFully(in);
     }
 
     /**
@@ -520,6 +487,86 @@ public final class CmsFileUtil {
     public static String readFile(String filename, String encoding) throws IOException {
 
         return new String(readFile(filename), encoding);
+    }
+
+    /**
+     * Reads all bytes from the given input stream and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from 
+     * @return the byte content of the input stream
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in) throws IOException {
+
+        if (in instanceof ByteArrayInputStream) {
+            // content can be read in one pass
+            return readFully(in, in.available());
+        }
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream(2048);
+        if (in.available() > 0) {
+            // read the file content in available chunks
+            int offset = 0;
+            int numRead = 0;
+            do {
+                int available = in.available();
+                if (available > 0) {
+                    byte[] bytes = new byte[available];
+                    numRead = in.read(bytes, offset, bytes.length);
+                    out.write(bytes, offset, numRead);
+                    offset += numRead;
+                } else {
+                    numRead = in.read();
+                    if (numRead != -1) {
+                        out.write(numRead);
+                        offset++;
+                    }
+                }
+            } while (numRead != -1);
+        } else {
+            // read the file content byte-to-byte
+            int c;
+            while ((c = in.read()) != -1) {
+                out.write(c);
+            }
+        }
+        in.close();
+        out.close();
+        return out.toByteArray();
+    }
+
+    /**
+     * Reads the specified number of bytes from the given input stream and returns the result in an array.<p> 
+     * 
+     * @param in the input stream to read the bytes from
+     * @param size the number of bytes to read 
+     *  
+     * @return the byte content read from the input stream
+     * 
+     * @throws IOException in case of errors in the underlying java.io methods used
+     */
+    public static byte[] readFully(InputStream in, int size) throws IOException {
+
+        // create the byte array to hold the data
+        byte[] bytes = new byte[size];
+
+        // read in the bytes
+        int offset = 0;
+        int numRead = 0;
+        while (offset < bytes.length && (numRead = in.read(bytes, offset, bytes.length - offset)) >= 0) {
+            offset += numRead;
+        }
+
+        // close the input stream and return bytes
+        in.close();
+
+        // ensure all the bytes have been read in
+        if (offset < bytes.length) {
+            throw new IOException("Could not read requested " + size + " bytes from input stream");
+        }
+
+        return bytes;
     }
 
     /** 

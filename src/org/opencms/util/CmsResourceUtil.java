@@ -58,6 +58,10 @@ import java.util.List;
  */
 public final class CmsResourceUtil {
 
+    // TODO: Remove this class, maybe refactor to org.opencms.workplace.list package
+    // TODO: Check if CmsResouce should be extended by this class
+    private int todo = 0;  
+    
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
 
@@ -639,5 +643,4 @@ public final class CmsResourceUtil {
         m_lock = null;
         m_resourceType = null;
     }
-
 }

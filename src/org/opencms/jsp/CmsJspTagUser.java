@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.jsp;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsUser;
 import org.opencms.flex.CmsFlexController;
@@ -52,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,10 +120,10 @@ public class CmsJspTagUser extends TagSupport {
                 result = user.getAddress();
                 break;
             case 5: // zip
-                result = (String)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE);
+                result = user.getZipcode();
                 break;
             case 6: // city
-                result = (String)user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
+                result = user.getCity();
                 break;
             case 7: // description
                 result = user.getDescription();

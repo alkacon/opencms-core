@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsUsersList.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsUser;
 import org.opencms.i18n.CmsMessageContainer;
@@ -72,7 +71,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -195,8 +194,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     CmsListItem listItem = (CmsListItem)itItems.next();
                     String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = readUser(usrName);
-                    if (user.getDisabled()) {
-                        user.setEnabled();
+                    if (!user.isEnabled()) {
+                        user.setEnabled(true);
                         getCms().writeUser(user);
                     }
                 }
@@ -212,8 +211,8 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     CmsListItem listItem = (CmsListItem)itItems.next();
                     String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = readUser(usrName);
-                    if (!user.getDisabled()) {
-                        user.setDisabled();
+                    if (user.isEnabled()) {
+                        user.setEnabled(false);
                         getCms().writeUser(user);
                     }
                 }
@@ -255,7 +254,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             // execute the activate action
             try {
                 CmsUser user = readUser(userName);
-                user.setEnabled();
+                user.setEnabled(true);
                 getCms().writeUser(user);
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTIVATE_USER_1, userName), e);
@@ -264,7 +263,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
             // execute the activate action
             try {
                 CmsUser user = readUser(userName);
-                user.setDisabled();
+                user.setEnabled(false);
                 getCms().writeUser(user);
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DEACTIVATE_USER_1, userName), e);
@@ -292,17 +291,17 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                     CmsUser user = readUser(userName);
                     // address
                     html.append(user.getAddress());
-                    if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN) != null) {
+                    if (user.getCity() != null) {
                         html.append("<br>");
-                        if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE) != null) {
-                            html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_ZIPCODE));
+                        if (user.getZipcode() != null) {
+                            html.append(user.getZipcode());
                             html.append(" ");
                         }
-                        html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN));
+                        html.append(user.getCity());
                     }
-                    if (user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY) != null) {
+                    if (user.getCountry() != null) {
                         html.append("<br>");
-                        html.append(user.getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_COUNTRY));
+                        html.append(user.getCountry());
                     }
                 } else if (detailId.equals(LIST_DETAIL_GROUPS)) {
                     // groups
@@ -437,7 +436,7 @@ public abstract class A_CmsUsersList extends A_CmsListDialog {
                 if (getItem() != null) {
                     String usrId = getItem().getId();
                     try {
-                        return getCms().readUser(new CmsUUID(usrId)).getDisabled();
+                        return !getCms().readUser(new CmsUUID(usrId)).isEnabled();
                     } catch (CmsException e) {
                         return false;
                     }

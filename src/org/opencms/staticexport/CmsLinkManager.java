@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/01/04 16:28:38 $
- * Version: $Revision: 1.56.2.4 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.56.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.4 $ 
+ * @version $Revision: 1.56.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -487,9 +487,18 @@ public class CmsLinkManager {
                         // read the linked resource 
                         linkType = cms.readResource(link).getTypeId();
                     } catch (CmsException e) {
-                        // there are no access rights on the resource
+                        // the resource could not be read
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(Messages.LOG_NO_ACCESS_RIGHTS_1, link), e);
+                            String message = Messages.get().key(
+                                Messages.LOG_RESOURCE_ACESS_ERROR_3,
+                                link,
+                                cms.getRequestContext().currentUser().getName(),
+                                cms.getRequestContext().getSiteRoot());
+                            if (LOG.isDebugEnabled()) {
+                                LOG.debug(message, e);
+                            } else {
+                                LOG.info(message);
+                            }
                         }
                     }
 

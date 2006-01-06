@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/Messages.java,v $
- * Date   : $Date: 2005/07/18 12:27:48 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,8 +193,8 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String LOG_MALFORMED_URI_1 = "LOG_MALFORMED_URI_1";
 
     /** Message constant for key in the resource bundle. */
-    public static final String LOG_NO_ACCESS_RIGHTS_1 = "LOG_NO_ACCESS_RIGHTS_1";
-
+    public static final String LOG_RESOURCE_ACESS_ERROR_3 = "LOG_RESOURCE_ACESS_ERROR_3";
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_NUM_EXPORT_1 = "LOG_NUM_EXPORT_1";
 

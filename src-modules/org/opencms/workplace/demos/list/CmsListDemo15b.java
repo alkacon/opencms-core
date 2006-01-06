@@ -178,8 +178,8 @@ public class CmsListDemo15b extends A_CmsListDialog {
                     CmsListItem listItem = (CmsListItem)itItems.next();
                     String usrName = listItem.get(LIST_COLUMN_LOGIN).toString();
                     CmsUser user = getCms().readUser(usrName);
-                    if (user.getDisabled()) {
-                        user.setEnabled();
+                    if (!user.isEnabled()) {
+                        user.setEnabled(true);
                         //getCms().writeUser(user);
                     }
                 }
@@ -217,7 +217,7 @@ public class CmsListDemo15b extends A_CmsListDialog {
             // execute the activate action
             try {
                 CmsUser user = getCms().readUser(userId);
-                user.setEnabled();
+                user.setEnabled(true);
                 // do not really activate the user in the demo
                 //getCms().writeUser(user);
             } catch (CmsException e) {
@@ -227,7 +227,7 @@ public class CmsListDemo15b extends A_CmsListDialog {
             // execute the activate action
             try {
                 CmsUser user = getCms().readUser(userId);
-                user.setDisabled();
+                user.setEnabled(false);
                 // do not really deactivate the user in the demo
                 //getCms().writeUser(user);
             } catch (CmsException e) {
@@ -327,7 +327,7 @@ public class CmsListDemo15b extends A_CmsListDialog {
 
                 String usrId = getItem().getId();
                 try {
-                    return getCms().readUser(new CmsUUID(usrId)).getDisabled();
+                    return !getCms().readUser(new CmsUUID(usrId)).isEnabled();
                 } catch (CmsException e) {
                     return super.isVisible();
                 }

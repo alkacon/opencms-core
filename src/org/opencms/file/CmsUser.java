@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2005/10/19 09:39:23 $
- * Version: $Revision: 1.29.2.2 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.29.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.db.CmsDbUtil;
 import org.opencms.db.CmsUserSettings;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
@@ -46,7 +47,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A user in the OpenCms permission system.<p>
+ * A user principal in the OpenCms permission system.<p>
  *
  * A user in OpenCms is uniquely definded by its user named returned by
  * <code>{@link #getName()}</code>.<p>
@@ -70,40 +71,31 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.2.2 $
+ * @version $Revision: 1.29.2.3 $
  * 
  * @since 6.0.0
  * 
  * @see CmsGroup 
  */
-public class CmsUser implements I_CmsPrincipal, Cloneable {
+public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
-    /** A user-type system user. */
+    /** Identifies the system user type. */
     public static final int USER_TYPE_SYSTEMUSER = 0;
 
-    /** A user-type web user. */
+    /** Identifies the web user type. */
     public static final int USER_TYPE_WEBUSER = 2;
 
-    /** A storage for additional user information. */
+    /** Storage for additional user information. */
     private Map m_additionalInfo;
 
     /** The address of this user. */
     private String m_address;
-
-    /** The description of the user. */
-    private String m_description;
 
     /**  The email of the user. */
     private String m_email;
 
     /** The first name of this user. */
     private String m_firstname;
-
-    /** The flags of the user. */
-    private int m_flags;
-
-    /** The id of this user. */
-    private CmsUUID m_id;
 
     /** Boolean flag whether the last-login timestamp of this user was modified. */
     private boolean m_isTouched;
@@ -114,69 +106,60 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     /** The last name of this user. */
     private String m_lastname;
 
-    /** The unique user name of this user. */
-    private String m_name;
-
     /** The password of this user. */
     private String m_password;
 
     /**
-     * Defines if the user is a webuser or a systemuser.<p>
+     * Defines if the user is of type "syetem user" or a "web user".<p>
      * 
-     * USER_TYPE_SYSTEMUSER for systemuser (incl. guest).
-     * USER_TYPE_WEBUSER for webuser.
+     * Use {@link #USER_TYPE_SYSTEMUSER} for system users, or 
+     * {@link USER_TYPE_WEBUSER} for web usera.
      */
     private int m_type;
 
     /**
-     * Creates a new empty CmsUser object.<p>
+     * Creates a new, empty OpenCms user principal.<p>
      *
-     * Only intented to be used with the org.opencms.workplace.tools.users.CmsEditUserDialog.<p>
+     * Mostly intented to be used with the {@link org.opencms.workplace.tools.accounts.A_CmsEditUserDialog}.<p>
      */
     public CmsUser() {
 
-        m_name = "";
-        m_description = "";
-        m_additionalInfo = new HashMap();
-        m_address = "";
-        m_email = "";
-        m_firstname = "";
-        m_flags = I_CmsPrincipal.FLAG_ENABLED;
-        m_lastlogin = CmsDbUtil.UNKNOWN_ID;
-        m_lastname = "";
-        m_password = "";
-        m_type = CmsDbUtil.UNKNOWN_ID;
-        m_isTouched = false;
+        this(null, "", "");
+        setAdditionalInfo(new HashMap());
+
+        int todo = 0;
+        // check different semantic between empty user / group constructors (variable initialization yes/no)
     }
 
     /**
-     * Creates a new Cms user object.<p>
+     * Creates a new OpenCms user principal.<p>
      *
-     * @param id the id of the new user
-     * @param name the name of the new user
+     * @param id the unique id of the new user
+     * @param name the unique name of the new user
      * @param description the description of the new user
      */
     public CmsUser(CmsUUID id, String name, String description) {
 
-        m_id = id;
-        m_name = name;
-        m_description = description;
-        m_additionalInfo = null;
-        m_address = "";
-        m_email = "";
-        m_firstname = "";
-        m_flags = I_CmsPrincipal.FLAG_ENABLED;
-        m_lastlogin = CmsDbUtil.UNKNOWN_ID;
-        m_lastname = "";
-        m_password = "";
-        m_type = CmsDbUtil.UNKNOWN_ID;
-        m_isTouched = false;
+        this(
+            id,
+            name,
+            "",
+            description,
+            "",
+            "",
+            "",
+            CmsDbUtil.UNKNOWN_ID,
+            I_CmsPrincipal.FLAG_ENABLED,
+            null,
+            "",
+            CmsDbUtil.UNKNOWN_ID);
     }
 
     /**
-     * Creates a new CmsUser object.<p>
-     * @param id the id of the new user
-     * @param name the name of the new user
+     * Creates a new OpenCms user principal.<p>
+     * 
+     * @param id the unique id of the new user
+     * @param name the unique name of the new user
      * @param password the password of the user
      * @param description the description of the new user
      * @param firstname the first name
@@ -234,20 +217,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Validates a login.<p>
-     * 
-     * That means, the parameter should only be composed by digits and standard english letters, points, minus and underscores.<p>
-     * 
-     * @param login the login to validate
-     */
-    public static void checkLogin(String login) {
-
-        if (!CmsStringUtil.validateRegex(login, "[\\w\\.\\-~_]*", false)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, login));
-        }
-    }
-
-    /**
      * Validates a zip code.<p>
      * 
      * That means, the parameter should only be composed by digits and standard english letters.<p>
@@ -262,11 +231,84 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the "full" name the given user in the format "{firstname} {lastname} ({username})",
-     * or the empty String "" if the user is null.<p>
+     * Filters out all users with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * @param users the list of <code>{@link CmsUser}</code>
+     * 
+     * @return the same filtered list
+     */
+    public static List filterCore(List users) {
+
+        // TODO: should this method really be here?
+        // TODO: unify with group based on new Principal class
+        int todo = 0;
+
+        Iterator it = users.iterator();
+        while (it.hasNext()) {
+            CmsUser user = (CmsUser)it.next();
+            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
+                it.remove();
+            }
+        }
+        return users;
+    }
+
+    /**
+     * Filters out all users that does not have the given flag set,
+     * but leaving all users with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * @param users the list of <code>{@link CmsUser}</code>
+     * @param flag the flag for filtering
+     * 
+     * @return the same filtered list
+     */
+    public static List filterCoreFlag(List users, int flag) {
+
+        // TODO: should this method really be here?
+        // TODO: unify with group based on new Principal class
+        int todo = 0;
+
+        Iterator it = users.iterator();
+        while (it.hasNext()) {
+            CmsUser user = (CmsUser)it.next();
+            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (user.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return users;
+    }
+
+    /**
+     * Filters out all users that does not have the given flag set.<p>
+     * 
+     * @param users the list of <code>{@link CmsUser}</code>
+     * @param flag the flag for filtering
+     * 
+     * @return the same filtered list
+     */
+    public static List filterFlag(List users, int flag) {
+
+        // TODO: should this method really be here?
+        // TODO: unify with group based on new Principal class
+        int todo = 0;
+
+        Iterator it = users.iterator();
+        while (it.hasNext()) {
+            CmsUser user = (CmsUser)it.next();
+            if ((user.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return users;
+    }
+
+    /**
+     * Returns the "full" name of the given user in the format <code>"{firstname} {lastname} ({username})"</code>,
+     * or the empty String <code>""</code> if the user is null.<p>
      * 
      * @param user the user to get the full name from
      * @return the "full" name the user
+     * 
      * @see #getFullName() 
      */
     public static String getFullName(CmsUser user) {
@@ -279,10 +321,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if the provided user type indicates a system user type.<p>
+     * Returns <code>true</code> if the provided user type indicates a system user.<p>
      * 
-     * @param type the user type
-     * @return true if the provided user type indicates a system user type
+     * @param type the user type to check
+     * 
+     * @return true if the provided user type indicates a system user
      */
     public static boolean isSystemUser(int type) {
 
@@ -290,10 +333,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if the provided user type indicates a web user type.<p>
+     * Returns <code>true</code> if the provided user type indicates a web user.<p>
      * 
-     * @param type the user type
-     * @return true if the provided user type indicates a web user type
+     * @param type the user type to check
+     * 
+     * @return true if the provided user type indicates a web user
      */
     public static boolean isWebUser(int type) {
 
@@ -301,33 +345,47 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns a clone of this Objects instance.<p>
+     * Checks if the provided user name is valid and can be used as an argument value 
+     * for {@link #setName(String)}.<p> 
      * 
-     * @return a clone of this instance
+     * A user name can only be composed of digits, standard ASCII letters, points, minus and underscore.
+     * More formally, it must match the regular expression <code>[\\w\\.\\-~_]*</code>.<p>
+     * 
+     * @param name the user name to check
      */
-    public Object clone() {
+    public void checkName(String name) {
 
-        CmsUser user = new CmsUser(
-            m_id,
-            new String(m_name),
-            new String(m_password),
-            new String(m_description),
-            new String(m_firstname),
-            new String(m_lastname),
-            new String(m_email),
-            m_lastlogin,
-            m_flags,
-            getAdditionalInfo(),
-            new String(m_address),
-            m_type);
-        return user;
+        if (!CmsStringUtil.validateRegex(name, "[\\w\\.\\-~_]*", false)) {
+            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_LOGIN_VALIDATION_1, name));
+        }
     }
 
     /**
-     * Delete additional information about the user. <p>
-     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+
+        return new CmsUser(
+            m_id,
+            m_name,
+            m_password,
+            m_description,
+            m_firstname,
+            m_lastname,
+            m_email,
+            m_lastlogin,
+            m_flags,
+            m_additionalInfo != null ? new HashMap(m_additionalInfo) : null,
+            m_address,
+            m_type);
+    }
+
+    /**
+     * Deletes a value from this users "additional information" storage map.<p>
      *
-     * @param key The key of the additional information to delete
+     * @param key the additional user information to delete
+     * 
+     * @see #getAdditionalInfo()
      */
     public void deleteAdditionalInfo(String key) {
 
@@ -335,27 +393,14 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * @see java.lang.Object#equals(java.lang.Object)
-     */
-    public boolean equals(Object obj) {
-
-        if (obj == this) {
-            return true;
-        }
-        if (obj instanceof CmsUser) {
-            return (((CmsUser)obj).m_id.equals(m_id));
-        }
-        return false;
-    }
-
-    /**
-     * Returns the complete Hashtable with additional information about the user.<p>
-     * Additional infos are for example emailadress, adress or surname...
+     * Returns this users complete "additional information" storage map.<p>
      *
-     * The additional infos must be requested via the CmsObject.
-     *
-     * @return additional information about the user
-     *
+     * The "additional information" storage map is a simple {@link java.util#Map}
+     * that can be used to store any key / value pairs for the user.
+     * Some information parts of the users address are stored in this map
+     * by default. The map is serialized when the user is stored in the database.<p>
+     * 
+     * @return this users complete "additional information" storage map
      */
     public Map getAdditionalInfo() {
 
@@ -363,12 +408,14 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns additional information about the user which are usually set 
-     * in the users preferences.<p>
-     *
-     * @param key the key to the additional information
-     * @return additional information Object about the user, if the additional info
-     * does not exists, it returns <code>null</code>
+     * Returns a value from this users "additional information" storage map,
+     * or <code>null</code> if no value for the given key is available.<p>
+     * 
+     * @param key selects the value to return from the "additional information" storage map
+     * 
+     * @return the selected value from this users "additional information" storage map
+     * 
+     * @see #getAdditionalInfo()
      */
     public Object getAdditionalInfo(String key) {
 
@@ -376,9 +423,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the address.<p>
+     * Returns the address line of this user.<p>
      *
-     * @return the USER_ADDRESS, or null
+     * @return the address line of this user
      */
     public String getAddress() {
 
@@ -386,19 +433,25 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the city of the address of the user.<p>
+     * Returns the city information of this user.<p>
      * 
-     * @return the city
+     * This informaion is stored in the "additional information" storage map
+     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_CITY}</code>.<p>
+     * 
+     * @return the city information of this user
      */
     public String getCity() {
 
-        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN);
+        return (String)getAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CITY);
     }
 
     /**
-     * Returns the country of the address of the user.<p>
-     * 
-     * @return the country
+     * Returns the country information of this user.<p>
+     *
+     * This informaion is stored in the "additional information" storage map
+     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_COUNTRY}</code>.<p>
+     *
+     * @return the country information of this user
      */
     public String getCountry() {
 
@@ -406,23 +459,15 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the description of this user.<p>
+     * Returns <code>true</code> if this user is disabled.<p>
      *
-     * @return the description of this user
-     */
-    public String getDescription() {
-
-        return m_description;
-    }
-
-    /**
-     * Decides if this user is disabled.<p>
-     *
-     * @return USER_FLAGS == FLAG_DISABLED
+     * @return <code>true</code> if this user is disabled
+     * 
+     * @deprecated use {@link CmsPrincipal#isEnabled()} instead
      */
     public boolean getDisabled() {
 
-        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == I_CmsPrincipal.FLAG_DISABLED;
+        return !isEnabled();
     }
 
     /**
@@ -446,19 +491,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the flags of this user.<p>
-     *
-     * @return the flags of this user
-     */
-    public int getFlags() {
-
-        return m_flags;
-    }
-
-    /**
-     * Returns the "full" name this user in the format "{firstname} {lastname} ({username})".<p>
+     * Returns the "full" name of the this user in the format <code>"{firstname} {lastname} ({username})"</code>.<p>
      * 
-     * @return the "full" name this user 
+     * @return the "full" name this user
      */
     public String getFullName() {
 
@@ -477,16 +512,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
         buf.append(getName());
         buf.append(")");
         return buf.toString();
-    }
-
-    /**
-     * Returns the id of this user.<p>
-     *
-     * @return the id of this user
-     */
-    public CmsUUID getId() {
-
-        return m_id;
     }
 
     /**
@@ -510,16 +535,6 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the (login) name of this user.<p>
-     *
-     * @return the (login) name of this user
-     */
-    public String getName() {
-
-        return m_name;
-    }
-
-    /**
      * Returns the encrypted user password.<p>
      *
      * @return the encrypted user password
@@ -530,13 +545,13 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the type of the user.<p>
+     * Returns the type of this user.<p>
      * 
      * Possible options are
-     * <code>{@link #USER_TYPE_SYSTEMUSER}</code> for a system user (incliding the "Guest" user),
-     * or <code>{@link #USER_TYPE_WEBUSER}</code> for a webuser.<p>
+     * <code>{@link #USER_TYPE_SYSTEMUSER}</code> for a "system user",
+     * or <code>{@link #USER_TYPE_WEBUSER}</code> for a "web user".<p>
      *
-     * @return the type
+     * @return the type of this user
      */
     public int getType() {
 
@@ -544,9 +559,12 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns the zip code of the address of the user.<p>
+     * Returns the zip code information of this user.<p>
      * 
-     * @return the zip code 
+     * This informaion is stored in the "additional information" storage map
+     * using the key <code>{@link CmsUserSettings#ADDITIONAL_INFO_ZIPCODE}</code>.<p>
+     *
+     * @return the zip code information of this user 
      */
     public String getZipcode() {
 
@@ -554,26 +572,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * @see java.lang.Object#hashCode()
+     * @see org.opencms.security.I_CmsPrincipal#isGroup()
      */
-    public int hashCode() {
+    public boolean isGroup() {
 
-        if (m_id != null) {
-            return m_id.hashCode();
-        }
-        return CmsUUID.getNullUUID().hashCode();
-    }
-
-    /**
-     * Returns the enabled flag.<p>
-     * 
-     * It should replace the <code>{@link #getDisabled()}</code> method.<p> 
-     * 
-     * @return the enabled flag
-     */
-    public boolean isEnabled() {
-
-        return (getFlags() & I_CmsPrincipal.FLAG_DISABLED) == 0;
+        return false;
     }
 
     /**
@@ -587,9 +590,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is a system user.<p>
+     * Returns <code>true</code> if this user is a "system user".<p>
      * 
-     * @return true if this user is a system user
+     * @return true if this user is a "system user"
      */
     public boolean isSystemUser() {
 
@@ -597,9 +600,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns true if this user was touched, e.g. the last-login timestamp was changed.<p>
+     * Returns <code>true</code> if this user was touched.<p>
      * 
-     * @return boolean true if this resource was touched
+     * @return boolean true if this user was touched
      */
     public boolean isTouched() {
 
@@ -607,9 +610,17 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Returns <code>true</code> if this user is a web user.<p>
+     * @see org.opencms.security.I_CmsPrincipal#isUser()
+     */
+    public boolean isUser() {
+
+        return true;
+    }
+
+    /**
+     * Returns <code>true</code> if this user is a "web user".<p>
      * 
-     * @return true if this user is a web user
+     * @return true if this user is a "web user"
      */
     public boolean isWebUser() {
 
@@ -617,15 +628,11 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the  complete Hashtable with additional information about the user. <p>
-     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
-     *
-     * This method has package-visibility for security-reasons.
-     * It is required to because of the use of two seprate databases for user data and
-     * additional user data.
+     * Sets this users complete "additional information" storage map to the given value.<p>
      * 
-     * @param additionalInfo user-related additional information
-     *
+     * @param additionalInfo the complete "additional information" map to set
+     * 
+     * @see #getAdditionalInfo()
      */
     public void setAdditionalInfo(Map additionalInfo) {
 
@@ -633,43 +640,42 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets additional information about the user. <p>
-     * Additional infos are for example emailadress, adress or surname...<BR/><BR/>
-     *
-     *
-     * @param key The key to the additional information
-     * @param obj The additinoal information value
-     *
-     */
-    public void setAdditionalInfo(String key, Object obj) {
-
-        m_additionalInfo.put(key, obj);
-    }
-
-    /**
-     * Sets the address.<p>
-     *
-     * @param value The user adress
-     */
-    public void setAddress(String value) {
-
-        m_address = value;
-    }
-
-    /**
-     * Sets the city of the address of the user.<p>
+     * Stores a value in this users "additional information" storage map with the gicen access key.<p>
      * 
-     * @param city the city
+     * @param key the key to store the value under
+     * @param value the value to store in the users "additional information" storage map
+     * 
+     * @see #getAdditionalInfo()
+     */
+    public void setAdditionalInfo(String key, Object value) {
+
+        m_additionalInfo.put(key, value);
+    }
+
+    /**
+     * Sets the address line of this user.<p>
+     *
+     * @param address the address line to set
+     */
+    public void setAddress(String address) {
+
+        m_address = address;
+    }
+
+    /**
+     * Sets the city information of this user.<p>
+     * 
+     * @param city the city information to set
      */
     public void setCity(String city) {
 
-        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_TOWN, city);
+        setAdditionalInfo(CmsUserSettings.ADDITIONAL_INFO_CITY, city);
     }
 
     /**
-     * Sets the country of the address of the user.<p>
+     * Sets the country information of this user.<p>
      * 
-     * @param country the country
+     * @param country the city information to set
      */
     public void setCountry(String country) {
 
@@ -677,67 +683,40 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the description of this user.<p>
-     *
-     * @param value the description of this user
-     */
-    public void setDescription(String value) {
-
-        m_description = value;
-    }
-
-    /**
-     * Disables the user flags by setting them to FLAG_DISABLED.<p>
+     * Disables this user.<p>
+     * 
+     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
      */
     public void setDisabled() {
 
-        if (isEnabled()) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
-        }
+        setEnabled(false);
     }
 
     /**
-     * Sets the email.<p>
+     * Sets the email address of this user.<p>
      *
-     * @param value The new email adress
+     * @param email the email address to set
      */
-    public void setEmail(String value) {
+    public void setEmail(String email) {
 
-        checkEmail(value);
-        m_email = value;
+        checkEmail(email);
+        m_email = email;
     }
 
     /**
-     * Enables the user flags by setting them to FLAG_ENABLED.<p>
+     * Enables this user.<p>
+     * 
+     * @deprecated use {@link CmsPrincipal#setEnabled(boolean)} instead
      */
     public void setEnabled() {
 
-        if (getDisabled()) {
-            setFlags(getFlags() ^ I_CmsPrincipal.FLAG_DISABLED);
-        }
+        setEnabled(true);
     }
 
     /**
-     * Sets the enabled flag.<p>
-     * 
-     * It should replace the <code>{@link #setDisabled()}</code> and 
-     * the <code>{@link #setEnabled()}</code> methods.<p> 
-     * 
-     * @param enabled the enabled flag
-     */
-    public void setEnabled(boolean enabled) {
-
-        if (enabled) {
-            setEnabled();
-        } else {
-            setDisabled();
-        }
-    }
-
-    /**
-     * Sets the firstname.<p>
+     * Sets the first name of this user.<p>
      *
-     * @param firstname the USER_FIRSTNAME
+     * @param firstname the name to set
      */
     public void setFirstname(String firstname) {
 
@@ -748,19 +727,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the flags.<p>
+     * Sets the last login timestamp of this user.<p>
      *
-     * @param value The new user flags
-     */
-    public void setFlags(int value) {
-
-        m_flags = value;
-    }
-
-    /**
-     * Sets the lastlogin.<p>
-     *
-     * @param value The new user section
+     * @param value the last login timestamp to set
      */
     public void setLastlogin(long value) {
 
@@ -769,9 +738,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Gets the lastname.<p>
+     * Sets the last name of this user.<p>
      *
-     * @param lastname the last name of the user
+     * @param lastname the name to set
      */
     public void setLastname(String lastname) {
 
@@ -782,20 +751,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the name (login).<p>
+     * Sets the password of this user.<p>
      *
-     * @param name the name (login) to set
-     */
-    public void setName(String name) {
-
-        checkLogin(name);
-        m_name = name;
-    }
-
-    /**
-     * Sets the password.<p>
-     *
-     * @param value The new password
+     * @param value the password to set
      */
     public void setPassword(String value) {
 
@@ -808,9 +766,9 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the zip code of the address of the user.<p>
+     * Sets the zip code information of this user.<p>
      * 
-     * @param zipcode the zip code 
+     * @param zipcode the zip code information to set
      */
     public void setZipcode(String zipcode) {
 
@@ -840,7 +798,7 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the "touched" status of this user to <code>"true"</code>.<p>
+     * Sets the "touched" status of this user to <code>true</code>.<p>
      */
     public void touch() {
 
@@ -848,72 +806,16 @@ public class CmsUser implements I_CmsPrincipal, Cloneable {
     }
 
     /**
-     * Sets the typ of this user.<p>
-     *
-     * @param value the type of this user
+     * Sets the type of this user.<p>
+     * 
+     * Possible options are
+     * <code>{@link #USER_TYPE_SYSTEMUSER}</code> for a "system user",
+     * or <code>{@link #USER_TYPE_WEBUSER}</code> for a "web user".<p>
+     * 
+     * @param value the type to set
      */
-    /*package*/void setType(int value) {
+    protected void setType(int value) {
 
         m_type = value;
-    }
-
-    /**
-     * Filters out all users with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
-     * 
-     * @param users the list of <code>{@link CmsUser}</code>
-     * 
-     * @return the same filtered list
-     */
-    public static List filterCore(List users) {
-    
-        Iterator it = users.iterator();
-        while (it.hasNext()) {
-            CmsUser user = (CmsUser)it.next();
-            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
-                it.remove();
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Filters out all users that does not have the given flag set.<p>
-     * 
-     * @param users the list of <code>{@link CmsUser}</code>
-     * @param flag the flag for filtering
-     * 
-     * @return the same filtered list
-     */
-    public static List filterFlag(List users, int flag) {
-    
-        Iterator it = users.iterator();
-        while (it.hasNext()) {
-            CmsUser user = (CmsUser)it.next();
-            if ((user.getFlags() & flag) != flag) {
-                it.remove();
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Filters out all users that does not have the given flag set,
-     * but leaving all users with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
-     * 
-     * @param users the list of <code>{@link CmsUser}</code>
-     * @param flag the flag for filtering
-     * 
-     * @return the same filtered list
-     */
-    public static List filterCoreFlag(List users, int flag) {
-    
-        Iterator it = users.iterator();
-        while (it.hasNext()) {
-            CmsUser user = (CmsUser)it.next();
-            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (user.getFlags() & flag) != flag) {
-                it.remove();
-            }
-        }
-        return users;
     }
 }

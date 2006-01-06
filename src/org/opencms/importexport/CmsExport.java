@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/10/26 08:45:35 $
- * Version: $Revision: 1.80.2.5 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.80.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,6 @@ import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsRole;
 import org.opencms.security.CmsRoleViolationException;
-import org.opencms.security.I_CmsPrincipal;
 import org.opencms.util.CmsDateUtil;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsUUID;
@@ -92,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.5 $ 
+ * @version $Revision: 1.80.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -931,12 +930,10 @@ public class CmsExport {
                 CmsUUID acePrincipal = ace.getPrincipal();
                 if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_GROUP) > 0) {
                     // the principal is a group
-                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_GROUP
-                        + '.'
-                        + getCms().readGroup(acePrincipal).getName();
+                    acePrincipalName = getCms().readGroup(acePrincipal).getPrefixedName();
                 } else {
                     // the principal is a user
-                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER + '.' + getCms().readUser(acePrincipal).getName();
+                    acePrincipalName = getCms().readUser(acePrincipal).getPrefixedName();
                 }
 
                 a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(acePrincipalName);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/A_CmsGroupsList.java,v $
- * Date   : $Date: 2005/09/16 13:11:12 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/06 15:37:27 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.ServletException;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,8 +175,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     CmsListItem listItem = (CmsListItem)itItems.next();
                     String groupName = listItem.get(LIST_COLUMN_NAME).toString();
                     CmsGroup group = getCms().readGroup(groupName);
-                    if (group.getDisabled()) {
-                        group.setEnabled();
+                    if (!group.isEnabled()) {
+                        group.setEnabled(true);
                         getCms().writeGroup(group);
                     }
                 }
@@ -192,8 +192,8 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                     CmsListItem listItem = (CmsListItem)itItems.next();
                     String groupName = listItem.get(LIST_COLUMN_NAME).toString();
                     CmsGroup group = getCms().readGroup(groupName);
-                    if (!group.getDisabled()) {
-                        group.setDisabled();
+                    if (group.isEnabled()) {
+                        group.setEnabled(false);
                         getCms().writeGroup(group);
                     }
                 }
@@ -233,7 +233,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             // execute the activate action
             try {
                 CmsGroup group = getCms().readGroup(groupName);
-                group.setEnabled();
+                group.setEnabled(true);
                 getCms().writeGroup(group);
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_ACTIVATE_GROUP_1, groupName), e);
@@ -242,7 +242,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
             // execute the activate action
             try {
                 CmsGroup group = getCms().readGroup(groupName);
-                group.setDisabled();
+                group.setEnabled(false);
                 getCms().writeGroup(group);
             } catch (CmsException e) {
                 throw new CmsRuntimeException(Messages.get().container(Messages.ERR_DEACTIVATE_GROUP_1, groupName), e);
@@ -395,7 +395,7 @@ public abstract class A_CmsGroupsList extends A_CmsListDialog {
                 if (getItem() != null) {
                     String groupId = getItem().getId();
                     try {
-                        return getCms().readGroup(new CmsUUID(groupId)).getDisabled();
+                        return !getCms().readGroup(new CmsUUID(groupId)).isEnabled();
                     } catch (CmsException e) {
                         return false;
                     }
