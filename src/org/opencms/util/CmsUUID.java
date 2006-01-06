@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2005/09/06 15:25:20 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/01/06 15:33:17 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,9 +37,9 @@ import org.opencms.main.CmsRuntimeException;
 
 import java.io.Serializable;
 
-import org.doomdark.uuid.EthernetAddress;
-import org.doomdark.uuid.UUID;
-import org.doomdark.uuid.UUIDGenerator;
+import org.safehaus.uuid.EthernetAddress;
+import org.safehaus.uuid.UUID;
+import org.safehaus.uuid.UUIDGenerator;
 
 /**
  * Generates a UUID using spatial and temporal uniqueness.<p> 
@@ -59,14 +59,11 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {
-
-    /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 1726324354709298575L;
 
     /** Ethernet addess of the server machine. */
     private static EthernetAddress m_ethernetAddress;
@@ -81,6 +78,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
 
     /** Constant for the null UUID. */
     private static final CmsUUID NULL_UUID = new CmsUUID(UUID.getNullUUID());
+
+    /** Serial version UID required for safe serialization. */
+    private static final long serialVersionUID = 1726324354709298575L;
 
     /** Internal UUID implementation. */
     private UUID m_uuid;
@@ -214,6 +214,23 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
                 ethernetAddress));
         }
         m_isNotInitialized = false;
+    }
+
+    /**
+     * Returns <code>true</code> if the given UUID is valid.<p>
+     * 
+     * @param uuid the UUID to check
+     * 
+     * @return <code>true</code> if the given UUID is valid
+     */
+    public static boolean isValidUUID(String uuid) {
+
+        try {
+            return (null != uuid) && (null != UUID.valueOf(uuid));
+        } catch (NumberFormatException e) {
+            // return false
+        }
+        return false;
     }
 
     /**
