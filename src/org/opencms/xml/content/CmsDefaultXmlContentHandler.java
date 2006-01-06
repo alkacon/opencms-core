@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2005/10/25 09:09:12 $
- * Version: $Revision: 1.43.2.5 $
+ * Date   : $Date: 2006/01/06 15:35:02 $
+ * Version: $Revision: 1.43.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,14 +31,18 @@
 
 package org.opencms.xml.content;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsMacroResolver;
 import org.opencms.util.CmsStringUtil;
@@ -57,6 +61,8 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.regex.Pattern;
 
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
 /**
@@ -65,11 +71,14 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.5 $ 
+ * @version $Revision: 1.43.2.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
+
+    /** Constant for the "appinfo" element name itself. */
+    public static final String APPINFO_APPINFO = "appinfo";
 
     /** Constant for the "configuration" appinfo attribute name. */
     public static final String APPINFO_ATTR_CONFIGURATION = "configuration";
@@ -131,6 +140,13 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     /** Constant for the "rule" appinfo element name. */
     public static final String APPINFO_RULE = "rule";
 
+    /** The file where the appinfo schema is located. */
+    public static final String APPINFO_SCHEMA_FILE = "org/opencms/xml/content/DefaultAppinfo.xsd";
+
+    /** The XML system is for the appinfo schema. */
+    public static final String APPINFO_SCHEMA_SYSTEM_ID = CmsConfigurationManager.DEFAULT_DTD_PREFIX
+        + APPINFO_SCHEMA_FILE;
+
     /** Constant for the "validationrules" appinfo element name. */
     public static final String APPINFO_VALIDATIONRULES = "validationrules";
 
@@ -181,6 +197,23 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     public CmsDefaultXmlContentHandler() {
 
         init();
+    }
+
+    /**
+     * Static initializer for caching the default appinfo validation schema.<p>
+     */
+    static {
+
+        // the schema definition is located in a separate file for easier editing
+        byte[] appinfoSchema;
+        try {
+            appinfoSchema = CmsFileUtil.readFile(APPINFO_SCHEMA_FILE);
+        } catch (Exception e) {
+            throw new CmsRuntimeException(Messages.get().container(
+                org.opencms.xml.types.Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1,
+                APPINFO_SCHEMA_FILE), e);
+        }
+        CmsXmlEntityResolver.cacheSystemId(APPINFO_SCHEMA_SYSTEM_ID, appinfoSchema);
     }
 
     /**
@@ -284,9 +317,12 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
     throws CmsXmlException {
 
         if (appInfoElement == null) {
-            // no appinfo provided, so no mapping is required
+            // no appinfo provided, so no initialization is required
             return;
         }
+
+        // validate the appinfo element XML content with the default appinfo handler schema
+        validateAppinfoElement(appInfoElement);
 
         // re-initialize the local variables
         init();
@@ -750,7 +786,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
      * attribute.<p> 
      * 
      * @param root the "defaults" element from the appinfo node of the XML content definition
-     * @param contentDefinition the content definition the validation rules belong to
+     * @param contentDefinition the content definition the default values belong to
      * @throws CmsXmlException if something goes wrong
      */
     protected void initDefaultValues(Element root, CmsXmlContentDefinition contentDefinition) throws CmsXmlException {
@@ -762,7 +798,7 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
             String elementName = element.attributeValue(APPINFO_ATTR_ELEMENT);
             String defaultValue = element.attributeValue(APPINFO_ATTR_VALUE);
             if ((elementName != null) && (defaultValue != null)) {
-                // add a widget mapping for the element
+                // add a default value mapping for the element
                 addDefault(contentDefinition, elementName, defaultValue);
             }
         }
@@ -1005,6 +1041,28 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
                 }
             }
         }
+    }
+
+    /**
+     * Validates if the given <code>appinfo</code> element node from the XML content definition schema
+     * is valid according the the capabilities of this content handler.<p> 
+     * 
+     * @param appinfoElement the <code>appinfo</code> element node to validate
+     *  
+     * @throws CmsXmlException in case the element validation fails
+     */
+    protected void validateAppinfoElement(Element appinfoElement) throws CmsXmlException {
+
+        // create a document to validate
+        Document doc = DocumentHelper.createDocument();
+        Element root = doc.addElement(APPINFO_APPINFO);
+        // attach the default appinfo schema
+        root.add(I_CmsXmlSchemaType.XSI_NAMESPACE);
+        root.addAttribute(I_CmsXmlSchemaType.XSI_NAMESPACE_ATTRIBUTE_NO_SCHEMA_LOCATION, APPINFO_SCHEMA_SYSTEM_ID);
+        // append the content from the appinfo node in the content definition 
+        root.appendContent(appinfoElement);
+        // now validate the document with the default appinfo schema
+        CmsXmlUtils.validateXmlStructure(doc, CmsEncoder.ENCODING_UTF_8, new CmsXmlEntityResolver(null));
     }
 
     /**

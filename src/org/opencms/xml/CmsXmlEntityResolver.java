@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2005/10/01 12:56:53 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2006/01/06 15:35:02 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,10 +39,10 @@ import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.page.CmsXmlPage;
 
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.HashMap;
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,11 +268,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
             // XML page XSD reference
             try {
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_XSD_LOCATION);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
-                for (int b = stream.read(); b > -1; b = stream.read()) {
-                    bytes.write(b);
-                }
-                content = bytes.toByteArray();
+                content = CmsFileUtil.readFully(stream);
                 // cache the XML page DTD
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
@@ -283,14 +279,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
 
             // XML page DTD reference
-            try {
+            try {                
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_OLD_DTD_LOCATION);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
-                for (int b = stream.read(); b > -1; b = stream.read()) {
-                    bytes.write(b);
-                }
-                content = bytes.toByteArray();
                 // cache the XML page DTD
+                content = CmsFileUtil.readFully(stream);
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
@@ -332,13 +324,9 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 String dtdFilename = systemId.substring(systemId.lastIndexOf("/") + 1);
                 location = CmsConfigurationManager.DEFAULT_DTD_LOCATION + dtdFilename;
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
-                ByteArrayOutputStream bytes = new ByteArrayOutputStream(1024);
-                for (int b = stream.read(); b > -1; b = stream.read()) {
-                    bytes.write(b);
-                }
-                content = bytes.toByteArray();
+                content = CmsFileUtil.readFully(stream);
                 // cache the DTD
-                m_cachePermanent.put(systemId, content);
+                m_cachePermanent.put(systemId, content);                
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
                 LOG.error(Messages.get().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
