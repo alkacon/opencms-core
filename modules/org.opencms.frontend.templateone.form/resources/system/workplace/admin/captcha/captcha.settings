@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FormCaptchas xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="opencms://system/modules/org.opencms.frontend.templateone.form/schemas/optionalformcaptcha.xsd">
+  <FormCaptcha language="en">
+    <FieldLabel><![CDATA[This field is not used as a default setting for form captcha fields. It has to be defined for every captcha field in a form.]]></FieldLabel>
+    <ImageWidth><![CDATA[400]]></ImageWidth>
+    <ImageHeight><![CDATA[100]]></ImageHeight>
+    <MinPhraseLength><![CDATA[6]]></MinPhraseLength>
+    <MaxPhraseLength><![CDATA[10]]></MaxPhraseLength>
+    <MinFontSize><![CDATA[10]]></MinFontSize>
+    <MaxFontSize><![CDATA[50]]></MaxFontSize>
+    <FontColor>#000000</FontColor>
+    <HolesPerGlyph><![CDATA[0]]></HolesPerGlyph>
+    <FilterAmplitude><![CDATA[7]]></FilterAmplitude>
+    <FilterWaveLength><![CDATA[60]]></FilterWaveLength>
+  </FormCaptcha>
+</FormCaptchas>

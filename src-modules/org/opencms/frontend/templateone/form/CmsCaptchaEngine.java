@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaEngine.java,v $
- * Date   : $Date: 2005/12/12 19:26:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/06 10:20:52 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,14 @@
 
 package org.opencms.frontend.templateone.form;
 
+import org.opencms.main.OpenCms;
+
 import java.awt.image.ImageFilter;
 import java.util.Locale;
 
 import com.jhlabs.image.WaterFilter;
 import com.octo.captcha.component.image.backgroundgenerator.BackgroundGenerator;
+import com.octo.captcha.component.image.backgroundgenerator.FileReaderRandomBackgroundGenerator;
 import com.octo.captcha.component.image.backgroundgenerator.UniColorBackgroundGenerator;
 import com.octo.captcha.component.image.deformation.ImageDeformation;
 import com.octo.captcha.component.image.deformation.ImageDeformationByFilters;
@@ -45,8 +48,7 @@ import com.octo.captcha.component.image.textpaster.BaffleRandomTextPaster;
 import com.octo.captcha.component.image.textpaster.TextPaster;
 import com.octo.captcha.component.image.wordtoimage.DeformedComposedWordToImage;
 import com.octo.captcha.component.image.wordtoimage.WordToImage;
-import com.octo.captcha.component.wordgenerator.ComposeDictionaryWordGenerator;
-import com.octo.captcha.component.wordgenerator.FileDictionnary;
+import com.octo.captcha.component.wordgenerator.RandomWordGenerator;
 import com.octo.captcha.component.wordgenerator.WordGenerator;
 import com.octo.captcha.engine.image.ImageCaptchaEngine;
 import com.octo.captcha.image.ImageCaptcha;
@@ -54,28 +56,33 @@ import com.octo.captcha.image.ImageCaptchaFactory;
 import com.octo.captcha.image.gimpy.GimpyFactory;
 
 /**
- * A captcha engine using a Gimpy factory to create captchas.<p>
+ * A captcha engine using a Gimpy factory to create captchas.
+ * <p>
  * 
- * @author Thomas Weckert 
+ * @author Thomas Weckert
  * 
- * @author Achim Westermann 
+ * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class CmsCaptchaEngine extends ImageCaptchaEngine {
 
+    /** The configured image captcha factory. */
     private ImageCaptchaFactory m_factory;
+
+    /** The settings for this captcha engine. */
     private CmsCaptchaSettings m_settings;
 
     /**
-     * Creates a new Captcha engine.<p>
+     * Creates a new Captcha engine.
+     * <p>
      * 
      * @param captchaSettings the settings to render captcha images
      */
     public CmsCaptchaEngine(CmsCaptchaSettings captchaSettings) {
 
         super();
-        
+
         m_settings = captchaSettings;
         initGimpyFactory();
     }
@@ -97,19 +104,20 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
     }
 
     /**
-     * Sets the settings.<p>
-     *
+     * Sets the settings.
+     * <p>
+     * 
      * @param settings the settings to set
      */
     public void setSettings(CmsCaptchaSettings settings) {
-    
+
         m_settings = settings;
         initGimpyFactory();
     }
 
-    
     /**
-     * Initializes a Gimpy captcha factory.<p>
+     * Initializes a Gimpy captcha factory.
+     * <p>
      */
     protected void initGimpyFactory() {
 
@@ -123,17 +131,32 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
         ImageDeformation textDeformation = new ImageDeformationByFilters(new ImageFilter[] {});
         ImageDeformation postDeformation = new ImageDeformationByFilters(new ImageFilter[] {water});
 
-        WordGenerator dictionary = new ComposeDictionaryWordGenerator(new FileDictionnary("toddlist"));
+        // FileDictionnary will be renamed correctly in next release! The argument denotes a
+        // java.util.ResourceBundle properies file: toddlist.properties e.g. in root of jcaptcha jar
+        // WordGenerator dictionary = new ComposeDictionaryWordGenerator(new
+        // FileDictionnary("toddlist"));
+        WordGenerator randomWords = new RandomWordGenerator(m_settings.getCharacterPool());
 
-        TextPaster paster = new BaffleRandomTextPaster(new Integer(m_settings.getMinPhraseLength()), new Integer(
-            m_settings.getMaxPhraseLength()), m_settings.getFontColor(), m_settings.getHolesPerGlyph(), m_settings.getBackgroundColor());
-
-        BackgroundGenerator background = new UniColorBackgroundGenerator(
-            new Integer(m_settings.getImageWidth()),
-            new Integer(m_settings.getImageHeight()),
+        TextPaster paster = new BaffleRandomTextPaster(
+            new Integer(m_settings.getMinPhraseLength()),
+            new Integer(m_settings.getMaxPhraseLength()),
+            m_settings.getFontColor(),
+            m_settings.getHolesPerGlyph(),
             m_settings.getBackgroundColor());
 
-        FontGenerator font = new RandomFontGenerator(new Integer(m_settings.getMinFontSize()), new Integer(m_settings.getMaxFontSize()));
+        BackgroundGenerator background;
+        if (m_settings.isUseBackgroundImage()) {
+            background = new FileReaderRandomBackgroundGenerator(new Integer(m_settings.getImageWidth()), new Integer(
+                m_settings.getImageHeight()), OpenCms.getSystemInfo().getAbsoluteRfsPathRelativeToWebApplication(
+                "resources/captchabackgrounds/"));
+
+        } else {
+            background = new UniColorBackgroundGenerator(new Integer(m_settings.getImageWidth()), new Integer(
+                m_settings.getImageHeight()), m_settings.getBackgroundColor());
+        }
+
+        FontGenerator font = new RandomFontGenerator(new Integer(m_settings.getMinFontSize()), new Integer(
+            m_settings.getMaxFontSize()));
 
         WordToImage wordToImage = new DeformedComposedWordToImage(
             font,
@@ -143,7 +166,7 @@ public class CmsCaptchaEngine extends ImageCaptchaEngine {
             textDeformation,
             postDeformation);
 
-        m_factory = new GimpyFactory(dictionary, wordToImage);
+        m_factory = new GimpyFactory(randomWords, wordToImage);
     }
 
 }

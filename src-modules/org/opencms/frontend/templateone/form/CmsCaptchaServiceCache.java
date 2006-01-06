@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaServiceCache.java,v $
- * Date   : $Date: 2005/12/12 19:26:55 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2006/01/06 10:20:52 $
+ * Version: $Revision: 1.2.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import com.octo.captcha.service.image.ImageCaptchaService;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.2.2.1 $
+ * @version $Revision: 1.2.2.2 $
  */
 public final class CmsCaptchaServiceCache implements I_CmsEventListener {
 
@@ -139,15 +139,6 @@ public final class CmsCaptchaServiceCache implements I_CmsEventListener {
             // install the parameters to the internal engine
             // captchaService.setSettings(captchaSettings);
         }
-
-        /**
-         * Due to a bug in EhcacheManageableCaptchaService it is not possible to create more than
-         * one instance of EhcacheManageableCaptchaService with with JCaptcha RC 2.0.1. Thus we
-         * cache here a single instance of DefaultManageableImageCaptchaService which is
-         * non-configurable, until a new JCaptcha RC is released where this bug has been fixed.
-         * Remove the lines below then, and uncomment the lines above again. see also:
-         * http://luminal.gotdns.com/jira/browse/FWK-2
-         */
 
         return captchaService;
     }

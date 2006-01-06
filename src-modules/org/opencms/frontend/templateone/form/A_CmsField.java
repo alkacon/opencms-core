@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/01/06 10:20:52 $
+ * Version: $Revision: 1.3.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,8 +46,9 @@ import org.apache.commons.logging.Log;
  * Abstract base class for all input fields.<p>
  * 
  * @author Andreas Zahner 
- * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $ 
+ * @author Thomas Weckert
+ * @author Jan Baudisch
+ * @version $Revision: 1.3.2.1 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
@@ -322,4 +323,35 @@ public abstract class A_CmsField implements I_CmsField {
         return m_errorMessage;
     }
 
+    /**
+     * Returns the field value as a String.<p>
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        
+        String result;
+        if (needsItems()) {
+            // check which item has been selected
+            StringBuffer fieldValue = new StringBuffer(8);
+            Iterator k = getItems().iterator();
+            boolean isSelected = false;
+            while (k.hasNext()) {
+                CmsFieldItem currentItem = (CmsFieldItem)k.next();
+                if (currentItem.isSelected()) {
+                    if (isSelected) {
+                        fieldValue.append(", ");
+                    }
+                    fieldValue.append(currentItem.getLabel());
+                    isSelected = true;
+                }
+            }
+            result = fieldValue.toString();
+        } else {
+            // for other field types, append value
+            result = getValue();
+        }
+        
+        return result;
+    }
 }

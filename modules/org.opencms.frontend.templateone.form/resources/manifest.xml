@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0.2</opencms_version>
-		<createdate>Mon, 12 Dec 2005 19:04:54 GMT</createdate>
+		<opencms_version>6.0.3</opencms_version>
+		<createdate>Thu, 05 Jan 2006 08:32:16 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.1.1</version>
+		<version>1.2.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -26,11 +26,12 @@
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/classes/" destination="WEB-INF/classes/"/>
 			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/lib/" destination="WEB-INF/lib/"/>
-			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/" destination="WEB-INF/gimpybackgrounds/"/>
+			<exportpoint uri="/system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/" destination="resources/captchabackgrounds/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.frontend.templateone.form/"/>
 			<resource uri="/system/workplace/resources/filetypes/emailform.gif"/>
+			<resource uri="/system/workplace/admin/captcha/"/>
 		</resources>
 		<parameters>
 			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.form/;/system/workplace/resources/filetypes/emailform.gif</param>
@@ -45,10 +46,21 @@
 				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
 			</type>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="captchapreset" id="300">
+				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/captchapreset.xsd</param>
+			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+			<explorertype name="captchapreset" key="fileicon.captchapreset" icon="emailform.gif" reference="xmlcontent">
+				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=captchapreset" order="0"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -101,6 +113,161 @@
 				<property>
 					<name>export</name>
 					<value><![CDATA[false]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 17:54:41 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background1.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background1.jpg</destination>
+			<type>image</type>
+			<uuidresource>78cf1942-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[background1]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background2.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background2.jpg</destination>
+			<type>image</type>
+			<uuidresource>78db4e46-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[background2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background3.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background3.jpg</destination>
+			<type>image</type>
+			<uuidresource>78dcd4ea-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[background3]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background4.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background4.jpg</destination>
+			<type>image</type>
+			<uuidresource>78dfe22e-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[background4]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background5.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background5.jpg</destination>
+			<type>image</type>
+			<uuidresource>78e2ef72-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[background5]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background6.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background6.jpg</destination>
+			<type>image</type>
+			<uuidresource>78e47616-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[f0]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background7.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background7.jpg</destination>
+			<type>image</type>
+			<uuidresource>78e909fa-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[f2]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background8.jpg</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/captchabackgrounds/background8.jpg</destination>
+			<type>image</type>
+			<uuidresource>78ed9dde-7bbb-11da-8976-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:30:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 18:13:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[fractal-raindrop-small]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -176,12 +343,17 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 12 Dec 2005 19:02:07 GMT</datelastmodified>
+			<datelastmodified>Tue, 03 Jan 2006 10:15:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -189,24 +361,34 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_de.properties</destination>
 			<type>plain</type>
 			<uuidresource>ef61baa7-695b-11d9-8aac-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 12 Dec 2005 19:01:55 GMT</datelastmodified>
+			<datelastmodified>Tue, 03 Jan 2006 10:16:23 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_en.properties</destination>
 			<type>plain</type>
 			<uuidresource>9175ff70-6316-11d9-8f91-f55bb5376c24</uuidresource>
-			<datelastmodified>Mon, 12 Dec 2005 19:02:07 GMT</datelastmodified>
+			<datelastmodified>Tue, 03 Jan 2006 10:15:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -214,12 +396,17 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_fr.properties</destination>
 			<type>plain</type>
 			<uuidresource>9bef44b1-1f73-11da-9ddd-8f106d5078a1</uuidresource>
-			<datelastmodified>Mon, 12 Dec 2005 18:40:45 GMT</datelastmodified>
+			<datelastmodified>Tue, 03 Jan 2006 08:48:11 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -227,12 +414,17 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/classes/org/opencms/frontend/templateone/form/workplace_it.properties</destination>
 			<type>plain</type>
 			<uuidresource>a918b6d4-1f73-11da-9ddd-8f106d5078a1</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<datelastmodified>Tue, 03 Jan 2006 08:48:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -282,53 +474,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Form confirmation end page]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<destination>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.gif</source>
-			<destination>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.gif</destination>
-			<type>image</type>
-			<uuidresource>874c0953-290a-11da-90bf-8f106d5078a1</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[corner]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.jpg</source>
-			<destination>system/modules/org.opencms.frontend.templateone.form/gimpybackgrounds/gimpybackground.jpg</destination>
-			<type>image</type>
-			<uuidresource>875cd237-290a-11da-90bf-8f106d5078a1</uuidresource>
-			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[corner]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -386,7 +531,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/pages/captcha</destination>
 			<type>jsp</type>
 			<uuidresource>0cad6a0a-f90e-11d9-b740-c7beef112ba5</uuidresource>
-			<datelastmodified>Sat, 10 Dec 2005 19:31:46 GMT</datelastmodified>
+			<datelastmodified>Thu, 15 Dec 2005 10:02:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -449,11 +594,29 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/modules/org.opencms.frontend.templateone.form/schemas/captchapreset.xsd</source>
+			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/captchapreset.xsd</destination>
+			<type>plain</type>
+			<uuidresource>adcf466c-6e67-11da-8234-5b510a4bd4de</uuidresource>
+			<datelastmodified>Tue, 03 Jan 2006 09:00:04 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 16 Dec 2005 19:10:53 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for optional captcha images]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</source>
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</destination>
 			<type>plain</type>
 			<uuidresource>a58c4c68-630d-11d9-ba58-f55bb5376c24</uuidresource>
-			<datelastmodified>Sat, 10 Dec 2005 18:47:35 GMT</datelastmodified>
+			<datelastmodified>Thu, 05 Jan 2006 08:12:07 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -525,7 +688,7 @@
 			<destination>system/modules/org.opencms.frontend.templateone.form/schemas/optionalformcaptcha.xsd</destination>
 			<type>plain</type>
 			<uuidresource>8175f1c2-f851-11d9-9e77-c7beef112ba5</uuidresource>
-			<datelastmodified>Mon, 12 Dec 2005 18:55:39 GMT</datelastmodified>
+			<datelastmodified>Thu, 05 Jan 2006 08:10:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -572,6 +735,156 @@
 			</accesscontrol>
 		</file>
 		<file>
+			<destination>system/workplace/admin</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[bypass]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Administration View]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/admin/captcha</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 04 Jan 2006 10:36:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 15 Dec 2005 07:57:21 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>locales-available</name>
+					<value><![CDATA[en]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Configuration for captcha fields of module org.opencms.frontend.templateone.form]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/captcha/light.captchapreset</source>
+			<destination>system/workplace/admin/captcha/light.captchapreset</destination>
+			<type>captchapreset</type>
+			<uuidresource>a66111ce-7b8f-11da-9858-5b510a4bd4de</uuidresource>
+			<datelastmodified>Wed, 04 Jan 2006 08:30:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 12:59:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[2]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Light]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/captcha/medium.captchapreset</source>
+			<destination>system/workplace/admin/captcha/medium.captchapreset</destination>
+			<type>captchapreset</type>
+			<uuidresource>0d3c8d5d-7b90-11da-9858-5b510a4bd4de</uuidresource>
+			<datelastmodified>Tue, 03 Jan 2006 10:08:22 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 13:02:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[3]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Medium]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/captcha/strong.captchapreset</source>
+			<destination>system/workplace/admin/captcha/strong.captchapreset</destination>
+			<type>captchapreset</type>
+			<uuidresource>e4a16369-7b90-11da-9858-5b510a4bd4de</uuidresource>
+			<datelastmodified>Tue, 03 Jan 2006 10:12:54 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 13:08:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Strong]]></value>
+				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[4]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/captcha/ultralight.captchapreset</source>
+			<destination>system/workplace/admin/captcha/ultralight.captchapreset</destination>
+			<type>captchapreset</type>
+			<uuidresource>dacd504e-706f-11da-80d4-5b510a4bd4de</uuidresource>
+			<datelastmodified>Tue, 03 Jan 2006 10:08:40 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 19 Dec 2005 09:14:27 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Ultralight]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/captcha/ultrastrong.captchapreset</source>
+			<destination>system/workplace/admin/captcha/ultrastrong.captchapreset</destination>
+			<type>captchapreset</type>
+			<uuidresource>1658b72b-7b94-11da-bc40-5b510a4bd4de</uuidresource>
+			<datelastmodified>Thu, 05 Jan 2006 08:26:01 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 02 Jan 2006 13:31:32 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Ultra strong]]></value>
+				</property>
+				<property>
+					<name>collector.priority</name>
+					<value><![CDATA[6]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
@@ -585,7 +898,7 @@
 		<file>
 			<destination>system/workplace/resources/filetypes</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 10 Oct 2005 08:10:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 10 Oct 2005 08:10:10 GMT</datecreated>
 			<usercreated>Admin</usercreated>

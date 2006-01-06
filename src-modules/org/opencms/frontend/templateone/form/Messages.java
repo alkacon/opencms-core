@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/Messages.java,v $
- * Date   : $Date: 2005/09/06 09:26:15 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/01/06 10:20:52 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,14 +39,55 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
 
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_2 = "ERR_SELECTWIDGET_CONFIGURATION_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_FIND_2 = "ERR_SELECTWIDGET_CONFIGURATION_FIND_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2 = "ERR_SELECTWIDGET_CONFIGURATION_KEY_DUPLICATE_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3 = "ERR_SELECTWIDGET_CONFIGURATION_KEY_MISSING_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2 = "ERR_SELECTWIDGET_CONFIGURATION_KEY_UNKNOWN_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_KEYVALUE_LENGTH_1 = "ERR_SELECTWIDGET_CONFIGURATION_KEYVALUE_LENGTH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_READ_1 = "ERR_SELECTWIDGET_CONFIGURATION_READ_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_INVALID_2 = "ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_INVALID_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2 = "ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2 = "ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2";
+
+ /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3 = "LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_SELECTWIDGET_XPATH_INVALID_4 = "LOG_ERR_SELECTWIDGET_XPATH_INVALID_4";
+   /** Message constant for key in the resource bundle. */
+    
     /** Message constant for key in the resource bundle. */
     public static final String ERR_INIT_INPUT_FIELD_MISSING_ITEM_2 = "ERR_INIT_INPUT_FIELD_MISSING_ITEM_2";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2 = "LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ERR_PATTERN_SYNTAX_0 = "LOG_ERR_PATTERN_SYNTAX_0";

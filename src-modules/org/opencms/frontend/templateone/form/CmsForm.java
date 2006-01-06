@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2005/12/12 19:26:55 $
- * Version: $Revision: 1.22.2.2 $
+ * Date   : $Date: 2006/01/06 10:20:52 $
+ * Version: $Revision: 1.22.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,10 +58,10 @@ import javax.servlet.http.HttpServletRequest;
  * Provides the necessary information to create an input form, email messages and confirmation outputs.<p>
  * 
  * @author Andreas Zahner 
- * 
  * @author Thomas Weckert 
+ * @author Jan Baudisch
  * 
- * @version $Revision: 1.22.2.2 $ 
+ * @version $Revision: 1.22.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -75,40 +75,6 @@ public class CmsForm {
     
     /** Configuration node name for the optional captcha. */
     public static final String NODE_CAPTCHA = "FormCaptcha";
-
-    /** Configuration node name for the optional captcha background color. */
-    public static final String NODE_CAPTCHA_BACKGROUNDCOLOR = "BackgroundColor";
-    
-    /** Configuration node name for the field value node. */
-    public static final String NODE_CAPTCHA_FILTER_AMPLITUDE = "FilterAmplitude";
-    
-    /** Configuration node name for the optional captcha image holes per glyph. */
-    public static final String NODE_CAPTCHA_FILTER_WAVELENGTH = "FilterWaveLength";
-    
-    /** Configuration node name for the optional captcha font color. */
-    public static final String NODE_CAPTCHA_FONTCOLOR = "FontColor";
-    
-    /** Configuration node name for the optional captcha image holes per glyph. */
-    public static final String NODE_CAPTCHA_HOLESPERGLYPH = "HolesPerGlyph";
-    
-    /** Configuration node name for the optional captcha image height. */
-    public static final String NODE_CAPTCHA_IMAGEHEIGHT = "ImageHeight";
-    
-    /** Configuration node name for the optional captcha image width. */
-    public static final String NODE_CAPTCHA_IMAGEWIDTH = "ImageWidth";   
-
-    /** Configuration node name for the optional captcha max. font size. */
-    public static final String NODE_CAPTCHA_MAX_FONT_SIZE = "MaxFontSize";   
-
-    /** Configuration node name for the optional captcha max. phrase length. */
-    public static final String NODE_CAPTCHA_MAX_PHRASE_LENGTH = "MaxPhraseLength";
-    
-    /** Configuration node name for the optional captcha min. font size. */
-    public static final String NODE_CAPTCHA_MIN_FONT_SIZE = "MinFontSize";
-    
-    
-    /** Configuration node name for the optional captcha min. phrase length. */
-    public static final String NODE_CAPTCHA_MIN_PHRASE_LENGTH = "MinPhraseLength";
 
     /** Configuration node name for the confirmation mail checkbox label text. */
     public static final String NODE_CONFIRMATIONMAILCHECKBOXLABEL = "ConfirmationCheckboxLabel";
@@ -257,6 +223,12 @@ public class CmsForm {
     
     private boolean m_showCheck;
     private  String m_targetUri;
+
+    /** Configuration node name for the optional captcha. */
+    public static final String NODE_CAPTCHA_PRESET = "Preset";
+
+    /** Configuration node name for the optional captcha. */
+    public static final String NODE_CAPTCHA_CHARACTERS = "Characters";
 
     /**
      * Default constructor which parses the configuration file.<p>
@@ -752,20 +724,23 @@ public class CmsForm {
             if (values != null) {
                 for (int i = 0; i < values.length; i++) {
                     if (value.equals(values[i])) {
-                        return CmsStringUtil.TRUE;
+                        return Boolean.toString(true);
                     }
                 }
             }
-        } else {
+        } else if (CmsSelectionField.class.isAssignableFrom(field.getClass()) || CmsRadioButtonField.class.isAssignableFrom(field.getClass())) {
             // select box or radio button
             String fieldValue = request.getParameter(field.getName());
             if (CmsStringUtil.isNotEmpty(fieldValue) && fieldValue.equals(value) && !"".equals(value)) {
                 // mark this as selected
-                result = CmsStringUtil.TRUE;
+                result = Boolean.toString(true);
             } else {
                 // do not mark it as selected
                 result = "";
             }
+        } else {
+            // always display fields value arrays
+            result = Boolean.toString(true);
         }
         return result;
     }
@@ -1055,7 +1030,7 @@ public class CmsForm {
             isChecked = true;
         }
         // create item for field
-        CmsFieldItem item = new CmsFieldItem(CmsStringUtil.TRUE, getConfirmationMailCheckboxLabel(), isChecked);
+        CmsFieldItem item = new CmsFieldItem(Boolean.toString(true), getConfirmationMailCheckboxLabel(), isChecked);
         List items = new ArrayList(1);
         items.add(item);
         field.setItems(items);
@@ -1091,6 +1066,7 @@ public class CmsForm {
         boolean displayCheckPage = captchaFieldIsOnCheckPage() && isInputFormSubmitted();
         boolean submittedCheckPage = captchaFieldIsOnCheckPage() && isCheckPageSubmitted();
 
+        // Todo: read the captcha settings here, don't provide xmlcontent with form!!!
         if (captchaFieldIsOnInputPage || displayCheckPage || submittedCheckPage) {
 
             CmsObject cms = jsp.getCmsObject();
@@ -1113,7 +1089,8 @@ public class CmsForm {
                 }
 
                 // get the image settings from the XML content
-                CmsCaptchaSettings captchaSettings = new CmsCaptchaSettings(cms, xmlContent, locale);
+                CmsCaptchaSettings captchaSettings = CmsCaptchaSettings.getInstance(jsp);
+                captchaSettings.init(cms, xmlContent, locale);
                 m_captchaField = new CmsCaptchaField(captchaSettings, fieldLabel, fieldValue);
             }
         }
@@ -1302,12 +1279,15 @@ public class CmsForm {
             } else {
                 // get field value from request for standard fields
                 if (!CmsCheckboxField.class.isAssignableFrom(field.getClass())) {
-                    String fieldValue = jsp.getRequest().getParameter(field.getName());
-                    if (fieldValue == null) {
-                        // set empty String as value for non present request parameters
-                        fieldValue = "";
+                    String[] parameterValues = jsp.getRequest().getParameterValues(field.getName());
+                    StringBuffer value = new StringBuffer();
+                    for (int j = 0; j < parameterValues.length; j++) {
+                        if (j != 0) {
+                            value.append(", ");
+                        }
+                        value.append(parameterValues[j]);
                     }
-                    field.setValue(fieldValue);
+                    field.setValue(value.toString());
                 }
             }
 
@@ -1364,7 +1344,7 @@ public class CmsForm {
                             if (initial) {
                                 // only fill in values from configuration file if called initially
                                 if (isPreselected) {
-                                    selected = CmsStringUtil.TRUE;
+                                    selected = Boolean.toString(true);
                                 }
                             } else {
                                 // get selected flag from request for current item

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsCaptchaField.java,v $
- * Date   : $Date: 2005/12/12 19:26:55 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/01/06 10:20:52 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,45 +47,49 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.logging.Log;
 
+import com.octo.captcha.CaptchaException;
 import com.octo.captcha.service.image.ImageCaptchaService;
 import com.sun.image.codec.jpeg.JPEGCodec;
 import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 /**
- * Creates captcha images and validates the pharses submitted by a request parameter.<p>
+ * Creates captcha images and validates the pharses submitted by a request parameter.
+ * <p>
  * 
  * @author Thomas Weckert
  * 
- * @author Achim Westermann 
+ * @author Achim Westermann
  * 
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.6.2.2 $
  */
 public class CmsCaptchaField extends A_CmsField {
-    
+
     /** Request parameter name of the captcha phrase. */
     public static final String C_PARAM_CAPTCHA_PHRASE = "captchaphrase";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsCaptchaField.class);
-    
+
     /** HTML field type: captcha image. */
     private static final String TYPE = "captcha";
 
     /** The settings to render captcha images. */
     private CmsCaptchaSettings m_captchaSettings;
-    
+
     /**
-     * Creates a new captcha field.<p>
+     * Creates a new captcha field.
+     * <p>
+     * 
      * @param captchaSettings the settings to render captcha images
      * @param fieldLabel the localized label of this field
      * @param fieldValue the submitted value of this field
      */
     public CmsCaptchaField(CmsCaptchaSettings captchaSettings, String fieldLabel, String fieldValue) {
-        
+
         super();
-        
+
         m_captchaSettings = captchaSettings;
-        
+
         setName(C_PARAM_CAPTCHA_PHRASE);
         setValue(fieldValue);
         setLabel(fieldLabel);
@@ -93,29 +97,31 @@ public class CmsCaptchaField extends A_CmsField {
     }
 
     /**
-     * Returns the type of the input field, e.g. "text" or "select".<p>
+     * Returns the type of the input field, e.g. "text" or "select".
+     * <p>
      * 
      * @return the type of the input field
      */
     public static String getStaticType() {
-        
+
         return TYPE;
     }
-    
+
     /**
-     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler, org.opencms.i18n.CmsMessages, String)
+     * @see org.opencms.frontend.templateone.form.I_CmsField#buildHtml(CmsFormHandler,
+     *      org.opencms.i18n.CmsMessages, String)
      */
     public String buildHtml(CmsFormHandler formHandler, CmsMessages messages, String errorKey) {
-        
+
         StringBuffer buf = new StringBuffer();
         String fieldLabel = getLabel();
         String errorMessage = "";
         String mandatory = "";
-        
+
         CmsCaptchaSettings captchaSettings = getCaptchaSettings();
-        
+
         if (CmsStringUtil.isNotEmpty(errorKey)) {
-            
+
             if (CmsFormHandler.ERROR_MANDATORY.equals(errorKey)) {
                 errorMessage = messages.key("form.error.mandatory");
             } else if (CmsStringUtil.isNotEmpty(getErrorMessage())) {
@@ -123,57 +129,56 @@ public class CmsCaptchaField extends A_CmsField {
             } else {
                 errorMessage = messages.key("form.error.validation");
             }
-            
+
             errorMessage = messages.key("form.html.error.start") + errorMessage + messages.key("form.html.error.end");
-            fieldLabel = messages.key("form.html.label.error.start") + fieldLabel + messages.key("form.html.label.error.end");
+            fieldLabel = messages.key("form.html.label.error.start")
+                + fieldLabel
+                + messages.key("form.html.label.error.end");
         }
-        
+
         if (isMandatory()) {
             mandatory = messages.key("form.html.mandatory");
         }
-        
+
         // line #1
         buf.append(messages.key("form.html.row.start")).append("\n");
-        
+
         // line #2
-        buf.append(messages.key("form.html.label.start"))
-            .append(fieldLabel)
-            .append(mandatory)
-            .append(messages.key("form.html.label.end")).append("\n");
-        
+        buf.append(messages.key("form.html.label.start")).append(fieldLabel).append(mandatory).append(
+            messages.key("form.html.label.end")).append("\n");
+
         // line #3
         buf.append(messages.key("form.html.field.start")).append("\n");
-        
+
         // line #4
-        buf.append("<img src=\"")
-            .append(formHandler.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?" + captchaSettings.toRequestParams(formHandler.getCmsObject())))
-            .append("\" width=\"").append(captchaSettings.getImageWidth())
-            .append("\" height=\"").append(captchaSettings.getImageHeight())
-            .append("\" alt=\"\">").append("\n"); 
-        
+        buf.append("<img src=\"").append(
+            formHandler.link("/system/modules/org.opencms.frontend.templateone.form/pages/captcha?"
+                + captchaSettings.toRequestParams(formHandler.getCmsObject()))).append("\" width=\"").append(
+            captchaSettings.getImageWidth()).append("\" height=\"").append(captchaSettings.getImageHeight()).append(
+            "\" alt=\"\">").append("\n");
+
         // line #5
         buf.append("<br>\n");
-        
+
         // line #6
-        buf.append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append("\"")
-            .append(formHandler.getFormConfiguration().getFormFieldAttributes())
-            .append(">")
-            .append(errorMessage)
-            .append(messages.key("form.html.field.end")).append("\n");
-        
+        buf.append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append(
+            "\"").append(formHandler.getFormConfiguration().getFormFieldAttributes()).append(">").append(errorMessage).append(
+            messages.key("form.html.field.end")).append("\n");
+
         // line #7
         buf.append(messages.key("form.html.row.end")).append("\n");
-        
+
         return buf.toString();
     }
-    
+
     /**
-     * Returns the captcha settings of this field.<p>
+     * Returns the captcha settings of this field.
+     * <p>
      * 
      * @return the captcha settings of this field
      */
     public CmsCaptchaSettings getCaptchaSettings() {
-        
+
         return m_captchaSettings;
     }
 
@@ -184,32 +189,36 @@ public class CmsCaptchaField extends A_CmsField {
 
         return TYPE;
     }
-    
+
     /**
-     * Validates the captcha phrase entered by the user.<p>
+     * Validates the captcha phrase entered by the user.
+     * <p>
      * 
      * @param jsp the Cms JSP
      * @param captchaPhrase the captcha phrase to be validate
      * @return true, if the captcha phrase entered by the user is correct, false otherwise
      */
     public boolean validateCaptchaPhrase(CmsJspActionElement jsp, String captchaPhrase) {
-        
+
         boolean result = false;
-        String sessionId = jsp.getRequest().getSession().getId();  
-        
+        String sessionId = jsp.getRequest().getSession().getId();
+
         if (CmsStringUtil.isNotEmpty(captchaPhrase)) {
-            
-            ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings, jsp.getCmsObject());
+
+            ImageCaptchaService captchaService = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(
+                m_captchaSettings,
+                jsp.getCmsObject());
             if (captchaService != null) {
                 result = captchaService.validateResponseForID(sessionId, captchaPhrase).booleanValue();
             }
         }
-        
+
         return result;
     }
-    
+
     /**
-     * Writes a Captcha JPEG image to the servlet response output stream.<p>
+     * Writes a Captcha JPEG image to the servlet response output stream.
+     * <p>
      * 
      * @param cms an initialized Cms JSP action element
      * @throws IOException if something goes wrong
@@ -217,36 +226,55 @@ public class CmsCaptchaField extends A_CmsField {
     public void writeCaptchaImage(CmsJspActionElement cms) throws IOException {
 
         ByteArrayOutputStream captchaImageOutput = new ByteArrayOutputStream();
-        ServletOutputStream out = null;     
-        
+        ServletOutputStream out = null;
+        BufferedImage captchaImage = null;
+        int maxTries = 10;
+        do {
+            try {
+
+                maxTries--;
+                String sessionId = cms.getRequest().getSession().getId();
+                Locale locale = cms.getRequestContext().getLocale();
+
+                captchaImage = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(
+                    m_captchaSettings,
+                    cms.getCmsObject()).getImageChallengeForID(sessionId, locale);
+            } catch (CaptchaException cex) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(cex);
+                    LOG.error(Messages.get().key(
+                        Messages.LOG_ERR_CAPTCHA_CONFIG_IMAGE_SIZE_2,
+                        new Object[] {m_captchaSettings.getPresetPath(), new Integer(maxTries)}));
+                }
+                m_captchaSettings.setImageHeight(m_captchaSettings.getImageHeight() + 40);
+                m_captchaSettings.setImageWidth(m_captchaSettings.getImageWidth() + 80);
+            }
+        } while (captchaImage == null && maxTries > 0);
         try {
-            
-            String sessionId = cms.getRequest().getSession().getId();
-            Locale locale = cms.getRequestContext().getLocale();
-            
-            BufferedImage captchaImage = CmsCaptchaServiceCache.getSharedInstance().getCaptchaService(m_captchaSettings, cms.getCmsObject()).getImageChallengeForID(sessionId, locale);
+
             JPEGImageEncoder jpegEncoder = JPEGCodec.createJPEGEncoder(captchaImageOutput);
             jpegEncoder.encode(captchaImage);
-            
+
             CmsFlexController controller = CmsFlexController.getController(cms.getRequest());
             HttpServletResponse response = controller.getTopResponse();
             response.setHeader("Cache-Control", "no-store");
             response.setHeader("Pragma", "no-cache");
             response.setDateHeader("Expires", 0);
             response.setContentType("image/jpeg");
-            
+
             out = cms.getResponse().getOutputStream();
             out.write(captchaImageOutput.toByteArray());
             out.flush();
+
         } catch (Exception e) {
-            
+
             if (LOG.isErrorEnabled()) {
-                LOG.error(e.getLocalizedMessage());
+                LOG.error(e);
             }
-            
+
             cms.getResponse().sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         } finally {
-            
+
             try {
                 if (out != null) {
                     out.close();
