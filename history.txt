@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/01/06 14:07:12 $
- * Version: $Revision: 1.682.2.62 $
+ * Date   : $Date: 2006/01/06 15:38:14 $
+ * Version: $Revision: 1.682.2.63 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,8 @@ OpenCms 6.1.7 - ???
 - Some improvements in decorator
 ! New explorer list in Projects and Content Check Tools
 * More improvements to Simapi and image scaler regarding Thumbnail generation quality
+* Added automated checking of XML content schema <appinfo> node validiy
+- Refactored CmsUser and CmsGroup to descend from a common CmsPrincipal object
 
 OpenCms 6.1.6 - December 13, 2005
 * Fixed issue in locale handler if non-existant resource has been requested
