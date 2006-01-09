@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2006/01/09 11:51:20 $
- * Version: $Revision: 1.21.2.6 $
+ * Date   : $Date: 2006/01/09 16:11:37 $
+ * Version: $Revision: 1.21.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.6 $ 
+ * @version $Revision: 1.21.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -594,12 +594,14 @@ public class CmsNewResource extends CmsDialog {
      * Appends a ".html" suffix to the given resource name if no suffix is present and the append suffix option is checked.<p>
      * 
      * @param resourceName the resource name to check
+     * @param forceSuffix if true, the suffix is appended overriding the append suffix option
      * @return the reource name with ".html" suffix if no suffix was present and the append suffix option is checked
      */
-    protected String appendSuffixHtml(String resourceName) {
+    protected String appendSuffixHtml(String resourceName, boolean forceSuffix) {
 
         // append ".html" suffix to new file if not present
-        if (Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue() && resourceName.indexOf('.') < 0) {
+        if ((forceSuffix || Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue())
+            && resourceName.indexOf('.') < 0) {
             resourceName += ".html";
         }
         return resourceName;

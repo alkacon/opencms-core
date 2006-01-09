@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2006/01/09 11:51:20 $
- * Version: $Revision: 1.22.2.3 $
+ * Date   : $Date: 2006/01/09 16:11:37 $
+ * Version: $Revision: 1.22.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.2.3 $ 
+ * @version $Revision: 1.22.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,6 +84,9 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     /** Request parameter name for the selected body. */
     public static final String PARAM_BODYFILE = "bodyfile";
 
+    /** Request parameter name for the suffix check. */
+    public static final String PARAM_SUFFIXCHECK = "suffixcheck";
+
     /** Request parameter name for the selected template. */
     public static final String PARAM_TEMPLATE = "template";
 
@@ -91,7 +94,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     private static final Log LOG = CmsLog.getLog(CmsNewResourceXmlPage.class);
     private String m_paramBodyFile;
     private String m_paramDialogMode;
-
+    private String m_paramSuffixCheck;
     private String m_paramTemplate;
 
     /**
@@ -305,7 +308,12 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             String fullResourceName = computeFullResourceName();
 
             // eventually append ".html" suffix to new file if not present
-            fullResourceName = appendSuffixHtml(fullResourceName);
+            boolean forceSuffix = false;
+            if (CmsStringUtil.isEmpty(getParamSuffixCheck())) {
+                // backward compatibility: append suffix every time
+                forceSuffix = true;
+            }
+            fullResourceName = appendSuffixHtml(fullResourceName, forceSuffix);
 
             // get the body file content
             byte[] bodyFileBytes = null;
@@ -471,6 +479,16 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     }
 
     /**
+     * Returns the request parameter flag inidicating if the suffix field is present or not.<p>
+     * 
+     * @return the request parameter flag inidicating if the suffix field is present or not
+     */
+    public String getParamSuffixCheck() {
+
+        return m_paramSuffixCheck;
+    }
+
+    /**
      * Returns the template parameter value.<p>
      * 
      * @return the template parameter value
@@ -524,6 +542,16 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
     public void setParamDialogmode(String value) {
 
         m_paramDialogMode = value;
+    }
+
+    /**
+     * Sets the request parameter flag inidicating if the suffix field is present or not.<p>
+     * 
+     * @param paramSuffixCheck he request parameter flag inidicating if the suffix field is present or not
+     */
+    public void setParamSuffixCheck(String paramSuffixCheck) {
+
+        m_paramSuffixCheck = paramSuffixCheck;
     }
 
     /**
