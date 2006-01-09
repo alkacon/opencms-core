@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementChangeLocaleDialog.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/09 11:51:20 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.1 
  */
@@ -180,7 +180,7 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
         TreeMap templates = null;
         try {
             // get all available templates
-            templates = CmsNewResourceXmlPage.getTemplates(getCms());
+            templates = CmsNewResourceXmlPage.getTemplates(getCms(), null);
         } catch (CmsException e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {

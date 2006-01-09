@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/01/09 11:51:20 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,8 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             String title = computeNewTitleProperty();
             // create the full resource name
             String fullResourceName = computeFullResourceName();
+            // eventually append ".html" suffix to new file if not present
+            fullResourceName = appendSuffixHtml(fullResourceName);
             // create the Title and Navigation properties if configured
             I_CmsResourceType resType = OpenCms.getResourceManager().getResourceType(getParamNewResourceType());
             List properties = createResourceProperties(fullResourceName, resType.getTypeName(), title);

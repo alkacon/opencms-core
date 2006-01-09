@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2005/11/26 01:18:02 $
- * Version: $Revision: 1.21.2.5 $
+ * Date   : $Date: 2006/01/09 11:51:20 $
+ * Version: $Revision: 1.21.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.security.CmsRole;
 import org.opencms.util.CmsRequestUtil;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUriSplitter;
@@ -56,6 +57,7 @@ import org.opencms.workplace.commons.CmsPropertyAdvanced;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.5 $ 
+ * @version $Revision: 1.21.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,6 +100,12 @@ public class CmsNewResource extends CmsDialog {
     /** Constant for the "Next" button in the build button methods. */
     public static final int BUTTON_NEXT = 20;
 
+    /** Delimiter for property values, e.g. for available resource types or template sites. */
+    public static final char DELIM_PROPERTYVALUES = ',';
+
+    /** The name for the advanced resource form action. */
+    public static final String DIALOG_ADVANCED = "advanced";
+
     /** The name for the resource form action. */
     public static final String DIALOG_NEWFORM = "newform";
 
@@ -106,6 +114,9 @@ public class CmsNewResource extends CmsDialog {
 
     /** The dialog type. */
     public static final String DIALOG_TYPE = "newresource";
+
+    /** Request parameter name for the append html suffix checkbox. */
+    public static final String PARAM_APPENDSUFFIXHTML = "appendsuffixhtml";
 
     /** Request parameter name for the current folder name. */
     public static final String PARAM_CURRENTFOLDER = "currentfolder";
@@ -119,10 +130,17 @@ public class CmsNewResource extends CmsDialog {
     /** Request parameter name for the new resource uri. */
     public static final String PARAM_NEWRESOURCEURI = "newresourceuri";
 
+    /** The property value for available resource to reset behaviour to default dialog. */
+    public static final String VALUE_DEFAULT = "default";
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsNewResource.class);
 
+    private String m_availableResTypes;
+    private boolean m_limitedRestypes;
     private String m_page;
+
+    private String m_paramAppendSuffixHtml;
     private String m_paramCurrentFolder;
     private String m_paramNewResourceEditProps;
     private String m_paramNewResourceType;
@@ -296,19 +314,43 @@ public class CmsNewResource extends CmsDialog {
     public String buildNewList(String attributes) {
 
         StringBuffer result = new StringBuffer(1024);
-        Iterator i = OpenCms.getWorkplaceManager().getExplorerTypeSettings().iterator();
         result.append("<table border=\"0\" cellpadding=\"2\" cellspacing=\"0\">");
+
+        Iterator i;
+        if (m_limitedRestypes) {
+            // available resource types limited, create list iterator of given limited types
+            List newResTypes = CmsStringUtil.splitAsList(m_availableResTypes, DELIM_PROPERTYVALUES);
+            Iterator k = newResTypes.iterator();
+            List settings = new ArrayList(newResTypes.size());
+            while (k.hasNext()) {
+                String resType = (String)k.next();
+                // get settings for resource type
+                CmsExplorerTypeSettings set = OpenCms.getWorkplaceManager().getExplorerTypeSetting(resType);
+                if (set != null) {
+                    // add found setting to available resource types
+                    settings.add(set);
+                }
+            }
+            // sort explorer type settings by their order
+            Collections.sort(settings);
+            i = settings.iterator();
+        } else {
+            // create list iterator from all configured resource types
+            i = OpenCms.getWorkplaceManager().getExplorerTypeSettings().iterator();
+        }
 
         while (i.hasNext()) {
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
 
-            // check for the "new resource" page
-            if (m_page == null) {
-                if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
+            if (!m_limitedRestypes) {
+                // check for the "new resource" page
+                if (m_page == null) {
+                    if (CmsStringUtil.isNotEmpty(settings.getNewResourcePage())) {
+                        continue;
+                    }
+                } else if (!m_page.equals(settings.getNewResourcePage())) {
                     continue;
                 }
-            } else if (!m_page.equals(settings.getNewResourcePage())) {
-                continue;
             }
 
             if (CmsStringUtil.isEmpty(settings.getNewResourceUri())) {
@@ -371,7 +413,27 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
-     * Builds a button row with an "next" and a "cancel" button.<p>
+     * Builds a button row with an optional "advanced", "next" and a "cancel" button.<p>
+     * 
+     * @param advancedAttrs optional attributes for the advanced button
+     * @param nextAttrs optional attributes for the next button
+     * @param cancelAttrs optional attributes for the cancel button
+     * @return the button row 
+     */
+    public String dialogButtonsAdvancedNextCancel(String advancedAttrs, String nextAttrs, String cancelAttrs) {
+
+        if (m_limitedRestypes && getCms().hasRole(CmsRole.VFS_MANAGER)) {
+            return dialogButtons(new int[] {BUTTON_ADVANCED, BUTTON_NEXT, BUTTON_CANCEL}, new String[] {
+                advancedAttrs,
+                nextAttrs,
+                cancelAttrs});
+        } else {
+            return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
+        }
+    }
+
+    /**
+     * Builds a button row with a "next" and a "cancel" button.<p>
      * 
      * @param nextAttrs optional attributes for the next button
      * @param cancelAttrs optional attributes for the cancel button
@@ -380,6 +442,16 @@ public class CmsNewResource extends CmsDialog {
     public String dialogButtonsNextCancel(String nextAttrs, String cancelAttrs) {
 
         return dialogButtons(new int[] {BUTTON_NEXT, BUTTON_CANCEL}, new String[] {nextAttrs, cancelAttrs});
+    }
+
+    /**
+     * Returns the parameter to check if a ".html" suffix should be added to the new resource name.<p>
+     * 
+     * @return the parameter to check if a ".html" suffix should be added to the new resource name
+     */
+    public String getParamAppendSuffixHtml() {
+
+        return m_paramAppendSuffixHtml;
     }
 
     /**
@@ -449,6 +521,16 @@ public class CmsNewResource extends CmsDialog {
     }
 
     /**
+     * Sets the parameter to check if a ".html" suffix should be added to the new resource name.<p>
+     * 
+     * @param paramAppendSuffixHtml the parameter to check if a ".html" suffix should be added to the new resource name
+     */
+    public void setParamAppendSuffixHtml(String paramAppendSuffixHtml) {
+
+        m_paramAppendSuffixHtml = paramAppendSuffixHtml;
+    }
+
+    /**
      * Sets the current folder.<p>
      *
      * @param paramCurrentFolder the current folder to set
@@ -506,6 +588,21 @@ public class CmsNewResource extends CmsDialog {
     public void setResourceCreated(boolean successfullyCreated) {
 
         m_resourceCreated = successfullyCreated;
+    }
+
+    /**
+     * Appends a ".html" suffix to the given resource name if no suffix is present and the append suffix option is checked.<p>
+     * 
+     * @param resourceName the resource name to check
+     * @return the reource name with ".html" suffix if no suffix was present and the append suffix option is checked
+     */
+    protected String appendSuffixHtml(String resourceName) {
+
+        // append ".html" suffix to new file if not present
+        if (Boolean.valueOf(getParamAppendSuffixHtml()).booleanValue() && resourceName.indexOf('.') < 0) {
+            resourceName += ".html";
+        }
+        return resourceName;
     }
 
     /**
@@ -658,6 +755,23 @@ public class CmsNewResource extends CmsDialog {
             setAction(ACTION_DEFAULT);
             // build title for new resource dialog     
             setParamTitle(key(Messages.GUI_NEWRESOURCE_0));
+
+            if (!DIALOG_ADVANCED.equals(getParamAction()) && CmsStringUtil.isEmpty(m_page)) {
+                // check for presence of property limiting the new resource types to create
+                String newResTypesProperty = "";
+                try {
+                    newResTypesProperty = getCms().readPropertyObject(
+                        getParamCurrentFolder(),
+                        CmsPropertyDefinition.PROPERTY_RESTYPES_AVAILABLE,
+                        true).getValue();
+                } catch (CmsException e) {
+                    // ignore this exception, this is a minor issue
+                }
+                if (CmsStringUtil.isNotEmpty(newResTypesProperty) && !newResTypesProperty.equals(VALUE_DEFAULT)) {
+                    m_limitedRestypes = true;
+                    m_availableResTypes = newResTypesProperty;
+                }
+            }
         }
     }
 }

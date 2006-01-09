@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2006/01/09 11:51:20 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.2.1 $ 
+ * @version $Revision: 1.8.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -169,7 +169,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
                 CmsPropertyDefinition.PROPERTY_TEMPLATE,
                 true).getValue();
             // get all available templates
-            templates = CmsNewResourceXmlPage.getTemplates(getCms());
+            templates = CmsNewResourceXmlPage.getTemplates(getCms(), getParamResource());
         } catch (CmsException e) {
             // ignore this exception
             if (LOG.isInfoEnabled()) {

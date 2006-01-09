@@ -119,6 +119,11 @@ default:
 			theButton.disabled = false;
 		}
 	}
+
+	function submitAdvanced() {
+		document.forms["main"].action.value = "<%= wp.DIALOG_ADVANCED %>";
+		document.forms["main"].submit();
+	}
 //-->
 </script>
 <%= wp.bodyStart("dialog") %>
@@ -139,7 +144,7 @@ default:
 
 <%= wp.dialogContentEnd() %>
 
-<%= wp.dialogButtonsNextCancel("id=\"nextButton\" disabled=\"disabled\"", null) %>
+<%= wp.dialogButtonsAdvancedNextCancel(" onclick=\"submitAdvanced();\"", "id=\"nextButton\" disabled=\"disabled\"", null) %>
 
 </form>
 

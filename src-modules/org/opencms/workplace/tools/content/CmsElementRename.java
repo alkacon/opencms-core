@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/01/09 11:51:20 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -306,7 +306,7 @@ public class CmsElementRename extends CmsReport {
         int selectedIndex = -1;
         try {
             // get all available templates
-            templates = CmsNewResourceXmlPage.getTemplates(getCms());
+            templates = CmsNewResourceXmlPage.getTemplates(getCms(), null);
         } catch (CmsException e) {
             // can usually be ignored
             if (LOG.isInfoEnabled()) {
@@ -601,7 +601,7 @@ public class CmsElementRename extends CmsReport {
         List resourcesWithTemplate = new ArrayList();
         TreeMap templates = null;
         try {
-            templates = CmsNewResourceXmlPage.getTemplates(getCms());
+            templates = CmsNewResourceXmlPage.getTemplates(getCms(), null);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(e);

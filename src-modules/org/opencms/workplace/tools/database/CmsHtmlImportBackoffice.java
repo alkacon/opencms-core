@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/Attic/CmsHtmlImportBackoffice.java,v $
- * Date   : $Date: 2005/07/06 11:40:29 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/01/09 11:51:20 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.TreeMap;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -109,7 +109,7 @@ public final class CmsHtmlImportBackoffice {
         TreeMap templates = null;
 
         try {
-            templates = CmsNewResourceXmlPage.getTemplates(cms);
+            templates = CmsNewResourceXmlPage.getTemplates(cms, null);
 
             // generate the HTML code for the selectbox
             output.append("<select name=\"template\" width=\"80\" size=\"1\">");

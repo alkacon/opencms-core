@@ -82,6 +82,10 @@ case CmsNewResource.ACTION_DEFAULT:
 	<td>&nbsp;</td>
 	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_NEWRESOURCEEDITPROPS %>" id="newresedit" type="checkbox" value="true" checked="checked" onclick="toggleButtonLabel();">&nbsp;<%= wp.key(Messages.GUI_NEWFILE_EDITPROPERTIES_0) %></td>    
 </tr>
+<tr>
+	<td>&nbsp;</td>
+	<td style="white-space: nowrap;" unselectable="on" class="maxwidth"><input name="<%= wp.PARAM_APPENDSUFFIXHTML %>" id="<%= wp.PARAM_APPENDSUFFIXHTML %>" type="checkbox" value="true" checked="checked">&nbsp;<%= wp.key(Messages.GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0) %></td>    
+</tr>
 </table>
 
 <%= wp.dialogSpacer() %>
