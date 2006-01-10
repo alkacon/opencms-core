@@ -59,7 +59,7 @@
 					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
 				</accesscontrol>
 			</explorertype>
-			<explorertype name="captchapreset" key="fileicon.captchapreset" icon="captchapreset.gif" reference="xmlcontent">
+			<explorertype name="captchapreset" key="fileicon.captchapreset" icon="article.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="" order="0"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
