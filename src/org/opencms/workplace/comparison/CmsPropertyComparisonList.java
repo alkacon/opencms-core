@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/01/11 09:05:17 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/01/11 11:34:50 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -451,6 +451,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
             LOG.error(e.getStackTrace(), e);
         }
+        m_resourceType = m_file1.getTypeId();
     }
 
     /**
