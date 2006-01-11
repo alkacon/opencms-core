@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsHtmlParser.java,v $
- * Date   : $Date: 2005/11/14 15:26:15 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/01/11 09:40:47 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.visitors.NodeVisitor;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.2.0
  */
@@ -94,6 +94,9 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
 
     /** The buffer to write the out to. */
     protected StringBuffer m_result;
+
+    /** The providable configuration - never null by contract of interface. */
+    private String m_configuration = "";
 
     /**
      * Creates a new instance of the html converter with echo mode set to <code>false</code>.
@@ -143,6 +146,14 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     }
 
     /**
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#getConfiguration()
+     */
+    public String getConfiguration() {
+
+        return m_configuration;
+    }
+
+    /**
      * @see org.opencms.util.I_CmsHtmlNodeVisitor#getResult()
      */
     public String getResult() {
@@ -173,6 +184,18 @@ public class CmsHtmlParser extends NodeVisitor implements I_CmsHtmlNodeVisitor {
     public String process(String html, String encoding) throws ParserException {
 
         return process(html, encoding, this);
+    }
+
+    /**
+     * 
+     * @see org.opencms.util.I_CmsHtmlNodeVisitor#setConfiguration(java.lang.String)
+     */
+    public void setConfiguration(String configuration) {
+
+        if (CmsStringUtil.isNotEmpty(configuration)) {
+            m_configuration = configuration;
+        }
+
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/I_CmsHtmlNodeVisitor.java,v $
- * Date   : $Date: 2005/11/14 15:26:15 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/11 09:40:47 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,12 +46,24 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.3
  * 
  */
 public interface I_CmsHtmlNodeVisitor {
+
+    /**
+     * Returns the configuartion String of this visitor or the empty String if was not provided
+     * before.
+     * <p>
+     * 
+     * @return the configuartion String of this visitor - by this contract never null but an empty
+     *         String if not provided.
+     * 
+     * @see #setConfiguration(String)
+     */
+    String getConfiguration();
 
     /**
      * Returns the text extraction result.
@@ -73,6 +85,17 @@ public interface I_CmsHtmlNodeVisitor {
      * @throws ParserException if something goes wrong
      */
     String process(String html, String encoding) throws ParserException;
+
+    /**
+     * Set a configuartion String for this visitor.
+     * <p>
+     * 
+     * This will most likely be done with data from an xsd, custom jsp tag, ...
+     * <p>
+     * 
+     * @param configuration the configuration of this visitor to set.
+     */
+    void setConfiguration(String configuration);
 
     /**
      * Visitor method (callback) invoked when a closing Tag is encountered.
@@ -114,4 +137,5 @@ public interface I_CmsHtmlNodeVisitor {
      * @see org.htmlparser.visitors.NodeVisitor#visitTag(org.htmlparser.Tag)
      */
     void visitTag(Tag tag);
+
 }
