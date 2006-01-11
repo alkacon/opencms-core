@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2005/12/14 16:20:31 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/01/11 09:05:17 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -374,28 +374,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List result = new ArrayList();
-        CmsFile resource1;
-        CmsFile resource2;
-        try {
-            getCms().getRequestContext().saveSiteRoot();
-            getCms().getRequestContext().setSiteRoot("/");
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-                resource1 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath1()));
-            } else {
-                resource1 = getCms().readBackupFile(
-                    getCms().getRequestContext().removeSiteRoot(getParamPath1()),
-                    Integer.parseInt(getParamTagId1()));
-            }
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-                resource2 = getCms().readFile(getCms().getRequestContext().removeSiteRoot(getParamPath2()));
-            } else {
-                resource2 = getCms().readBackupFile(
-                    getCms().getRequestContext().removeSiteRoot(getParamPath2()),
-                    Integer.parseInt(getParamTagId2()));
-            }
-        } finally {
-            getCms().getRequestContext().restoreSiteRoot();
-        }
+        CmsFile resource1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
+            getParamVersion1(), Integer.parseInt(getParamTagId1()));
+        CmsFile resource2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
+            getParamVersion2(), Integer.parseInt(getParamTagId2()));
         Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
         while (diffs.hasNext()) {
             CmsElementComparison comparison = (CmsElementComparison)diffs.next();
@@ -416,7 +398,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                 item.set(LIST_COLUMN_STATUS, key(Messages.GUI_COMPARE_CHANGED_0));
             } else {
                 if (!m_showAll) {
-                    //if ("false".equals(getParamShowAll())) {
                     // do not display entry
                     continue;
                 } else {

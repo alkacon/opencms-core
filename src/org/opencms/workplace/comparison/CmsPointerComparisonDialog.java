@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsImageComparisonDialog.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPointerComparisonDialog.java,v $
  * Date   : $Date: 2006/01/11 09:05:17 $
- * Version: $Revision: 1.1.2.3 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -28,9 +28,9 @@
 
 package org.opencms.workplace.comparison;
 
+import org.opencms.file.CmsFile;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
-import org.opencms.workplace.commons.CmsHistoryList;
 
 import javax.servlet.jsp.JspWriter;
 
@@ -39,11 +39,11 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsImageComparisonDialog extends CmsDialog {
+public class CmsPointerComparisonDialog extends CmsDialog {
 
     private String m_paramPath1;
 
@@ -62,7 +62,7 @@ public class CmsImageComparisonDialog extends CmsDialog {
      * 
      * @param jsp an initialized JSP action element
      */
-    public CmsImageComparisonDialog(CmsJspActionElement jsp) {
+    public CmsPointerComparisonDialog(CmsJspActionElement jsp) {
 
         super(jsp);
     }
@@ -77,20 +77,12 @@ public class CmsImageComparisonDialog extends CmsDialog {
         if (getAction() == ACTION_CANCEL) {
             actionCloseDialog();
         }
-        String link1 = "";
-        String link2 = "";
-        if ("-1".equals(m_paramTagId1)) {
-            // offline version
-            link1 = getParamResource();
-        } else {
-            link1 = CmsHistoryList.getBackupLink(m_paramPath1, m_paramTagId1);
-        }
-        if ("-1".equals(m_paramTagId2)) {
-            // offline version
-            link2 = getParamResource();
-        } else {
-            link2 = CmsHistoryList.getBackupLink(m_paramPath2, m_paramTagId2);
-        }
+        CmsFile resource1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
+            getParamVersion1(), Integer.parseInt(getParamTagId1()));
+        CmsFile resource2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
+            getParamVersion2(), Integer.parseInt(getParamTagId2()));
+        String linkTarget1 = new String(resource1.getContents());
+        String linkTarget2 = new String(resource2.getContents());
         JspWriter out = getJsp().getJspContext().getOut();
         out.println(dialogBlockStart(key(Messages.GUI_COMPARE_CONTENT_0)));
         out.println(dialogContentStart(null));
@@ -99,20 +91,18 @@ public class CmsImageComparisonDialog extends CmsDialog {
         out.println("</th><th>");
         out.println(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion2}));
         out.println("</th></tr>");
-        out.println("<tr><td>&nbsp;</td><td>&nbsp;</td></tr>");
-        out.println("\t<tr align='center'>\n");
-        out.println("\t\t<td width='50%'><img src='");
-        out.print(getJsp().link(link1));
-        out.print("' alt='");
-        out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion1}));
-        out.print("'/></td>\n");
-        out.println("\t\t<td width='50%'><img src='");
-        out.print(getJsp().link(link2));
-        out.print("' alt='");
-        out.print(key(Messages.GUI_COMPARE_VERSION_1, new String[] {m_paramVersion2}));
-        out.print("'/></td>\n");
-        out.println("\t</tr>");
-        out.println("</table>");
+        out.print("<tr><td><a href=\"");
+        out.print(linkTarget1);
+        out.print("\">");
+        out.print(linkTarget1);
+        out.print("</a>");
+        out.print("</td><td width='50%'>\n");
+        out.print("<a href=\"");
+        out.print(linkTarget2);
+        out.print("\">");
+        out.print(linkTarget2);
+        out.print("</a>");
+        out.println("</td></td></table>");
         out.println(dialogBlockEnd());
         out.println(dialogContentEnd());
         out.println(dialogEnd());

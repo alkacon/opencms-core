@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2005/12/14 16:12:40 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/01/11 09:05:17 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.file.types.CmsResourceTypePointer;
 import org.opencms.file.types.CmsResourceTypeXmlContent;
 import org.opencms.file.types.CmsResourceTypeXmlPage;
 import org.opencms.file.types.I_CmsResourceType;
@@ -79,7 +80,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -193,6 +194,21 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             twoLists.displayDialog();
             CmsImageComparisonDialog images = new CmsImageComparisonDialog(getJsp());
             images.displayDialog();
+
+        } else if (resourceType instanceof CmsResourceTypePointer) {
+
+            lists.add(propertyDiff);
+            CmsMultiListDialog twoLists = new CmsMultiListDialog(lists) {
+
+                public String defaultActionHtmlEnd() {
+
+                    return "";
+                }
+            };
+            twoLists.displayDialog(true);
+            twoLists.displayDialog();
+            CmsPointerComparisonDialog pointers = new CmsPointerComparisonDialog(getJsp());
+            pointers.displayDialog();
 
         } else {
 
@@ -493,23 +509,10 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
         super.initWorkplaceRequestValues(settings, request);
         try {
-            getCms().getRequestContext().saveSiteRoot();
-            getCms().getRequestContext().setSiteRoot("/");
-            
-            CmsFile file1;
-            CmsFile file2;
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-                file1 = getCms().readFile(getParamPath1());
-            } else {
-                file1 = getCms().readBackupFile(getParamPath1(),
-                    Integer.parseInt(getParamTagId1()));
-            }
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-                file2 = getCms().readFile(getParamPath2());
-            } else {
-                file2 = getCms().readBackupFile(getParamPath2(),
-                    Integer.parseInt(getParamTagId2()));
-            }
+            CmsFile file1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
+                getParamVersion1(), Integer.parseInt(getParamTagId1()));
+            CmsFile file2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
+                getParamVersion2(), Integer.parseInt(getParamTagId2()));
             // if certain element is compared, use html difference dialog
             if (CmsStringUtil.isNotEmpty(getParamElement())) {
                 m_differenceDialog = new CmsHtmlDifferenceDialog(getJsp());
@@ -537,8 +540,6 @@ public class CmsResourceComparisonDialog extends CmsDialog {
         } catch (UnsupportedEncodingException e) {
 
             LOG.error(e.getMessage(), e);
-        } finally {
-            getCms().getRequestContext().restoreSiteRoot();
         }
     }
 
@@ -639,5 +640,33 @@ public class CmsResourceComparisonDialog extends CmsDialog {
             m_differenceDialog.setOriginalSource(new String(file1.getContents(), cms.getRequestContext().getEncoding()));
             m_differenceDialog.setCopySource(new String(file2.getContents(), cms.getRequestContext().getEncoding()));
         }
+    }
+
+    /**
+     * Returns either the backup file or the offline file, depending on the version number.<p>
+     * 
+     * @param cms the CmsObject to use
+     * @param path the path of the file
+     * @param version the backup version
+     * @param tagId the tag id of the file
+     * 
+     * @return either the backup file or the offline file, depending on the version number
+     * 
+     * @throws CmsException if something goes wrong
+     */
+    protected static CmsFile readFile(CmsObject cms, String path, String version, int tagId) throws CmsException {
+    
+        try {
+            cms.getRequestContext().saveSiteRoot();
+            cms.getRequestContext().setSiteRoot("/");
+            if (CmsHistoryList.OFFLINE_PROJECT.equals(version)) {
+                return cms.readFile(cms.getRequestContext().removeSiteRoot(path));
+            } else {
+                return cms.readBackupFile(
+                    cms.getRequestContext().removeSiteRoot(path), tagId);
+            }
+        } finally {
+            cms.getRequestContext().restoreSiteRoot();
+        }   
     }
 }

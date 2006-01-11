@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2005/12/14 16:12:40 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/01/11 09:05:17 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -442,29 +442,14 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
-        
         try {
-            getCms().getRequestContext().saveSiteRoot();
-            getCms().getRequestContext().setSiteRoot("/");
-            
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion1())) {
-                m_file1 = getCms().readFile(getParamPath1());
-            } else {
-                m_file1 = getCms().readBackupFile(getParamPath1(),
-                    Integer.parseInt(getParamTagId1()));
-            }
-            if (CmsHistoryList.OFFLINE_PROJECT.equals(getParamVersion2())) {
-                m_file2 = getCms().readFile(getParamPath2());
-            } else {
-                m_file2 = getCms().readBackupFile(getParamPath2(),
-                    Integer.parseInt(getParamTagId2()));
-            }
-            m_resourceType = m_file1.getTypeId();
+            m_file1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
+                getParamVersion1(), Integer.parseInt(getParamTagId1()));
+            m_file2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
+                getParamVersion2(), Integer.parseInt(getParamTagId2()));
         } catch (CmsException e) {
 
             LOG.error(e.getStackTrace(), e);
-        } finally {
-            getCms().getRequestContext().restoreSiteRoot();
         }
     }
 
