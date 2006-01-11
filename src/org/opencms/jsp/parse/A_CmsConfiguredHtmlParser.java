@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/parse/A_CmsConfiguredHtmlParser.java,v $
- * Date   : $Date: 2006/01/11 09:44:05 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/11 13:37:59 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,17 +38,20 @@ import org.opencms.util.I_CmsHtmlNodeVisitor;
 import org.htmlparser.util.ParserException;
 
 /**
+ * Base class for all classes that are specified for the &lt;cms:parse parserClass="name"
+ * param="config" /&gt; tag in the parserClass Attribute.
+ * <p>
  * 
- * Entry point for the &lt;cms:parse&gt; tag that allows the tag implementation to provide a valid
- * {@link org.opencms.file.CmsObject} and it's configuration parameter String to an internal (and
- * unknown) {@link org.opencms.util.I_CmsHtmlNodeVisitor} implementation along with the entry point
- * for parsing.
+ * Entry point for the tag implementation ({@link org.opencms.jsp.CmsJspTagParse}). It will
+ * provide a valid {@link org.opencms.file.CmsObject} and it's configuration parameter String to an
+ * internal (and unknown) {@link org.opencms.util.I_CmsHtmlNodeVisitor} implementation along with
+ * the entry point {@link #doParse(String, String)} for parsing.
  * <p>
  * 
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.7
  * 
