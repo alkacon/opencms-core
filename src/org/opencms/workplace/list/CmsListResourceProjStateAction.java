@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceProjStateAction.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/11 17:07:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,8 +90,8 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
                     getCms().getRequestContext().currentProject().getName());
             } else {
                 return Messages.get().container(
-                    Messages.GUI_EXPLORER_LIST_ACTION_OUTPROJECT_NAME_1,
-                    getCms().getRequestContext().currentProject().getName());
+                    Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,
+                    getResourceUtil().getLockedInProjectName());
             }
         }
         return super.getName();

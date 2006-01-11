@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2006/01/11 17:07:03 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,15 +31,21 @@
 
 package org.opencms.workplace.tools.projects;
 
-import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.workplace.CmsDialog;
+import org.opencms.workplace.CmsWorkplaceSettings;
+import org.opencms.workplace.explorer.CmsExplorer;
 import org.opencms.workplace.list.A_CmsListExplorerDialog;
 import org.opencms.workplace.list.CmsListIndependentAction;
 import org.opencms.workplace.list.CmsListMetadata;
+import org.opencms.workplace.list.CmsListResourcesCollector;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -59,8 +65,14 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     /** list id constant. */
     public static final String LIST_ID = "lpr";
 
+    /** Request parameter name for the show explorer flag. */
+    public static final String PARAM_SHOW_EXPLORER = "showexplorer";
+
     /** Stores the value of the request parameter for the project id. */
     private String m_paramProjectid;
+
+    /** Stores the value of the request parameter for the show explorer flag. */
+    private String m_paramShowexplorer;
 
     /**
      * Public constructor with JSP action element.<p>
@@ -90,7 +102,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public void executeListIndepActions() {
 
         if (getParamListAction().equals(CmsListIndependentAction.ACTION_EXPLORER_SWITCH_ID)) {
-            getSettings().setProject(Integer.parseInt(getParamProjectid()));
+            getSettings().setExplorerProjectId(Integer.parseInt(getParamProjectid()));
         }
         super.executeListIndepActions();
     }
@@ -122,6 +134,16 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
+     * Returns the Show explorer parameter value.<p>
+     *
+     * @return the Show explorer parameter value
+     */
+    public String getParamShowexplorer() {
+
+        return m_paramShowexplorer;
+    }
+
+    /**
      * Sets the project id parameter value.<p>
      * 
      * @param projectId the project id parameter value
@@ -129,6 +151,16 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     public void setParamProjectid(String projectId) {
 
         m_paramProjectid = projectId;
+    }
+
+    /**
+     * Sets the Show explorer parameter value.<p>
+     *
+     * @param showExplorer the Show explorer parameter value to set
+     */
+    public void setParamShowexplorer(String showExplorer) {
+
+        m_paramShowexplorer = showExplorer;
     }
 
     /**
@@ -146,13 +178,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
         int projectId = new Integer(getParamProjectid()).intValue();
         List resources = getCms().readProjectView(projectId, CmsResource.STATE_KEEP);
-        CmsProject oldProject = getCms().getRequestContext().currentProject();
-        try {
-            getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
-            return getListItemsFromResources(resources);
-        } finally {
-            getCms().getRequestContext().setCurrentProject(oldProject);
-        }
+        return getListItemsFromResources(resources);
     }
 
     /**
@@ -167,22 +193,50 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
     }
 
     /**
+     * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
+     */
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
+        super.initWorkplaceRequestValues(settings, request);
+
+        if (Boolean.valueOf(getParamShowexplorer()).booleanValue()) {
+            int projectId = Integer.parseInt(getParamProjectid());
+            getSettings().setExplorerProjectId(projectId);
+            List resources;
+            try {
+                resources = getCms().readProjectView(projectId, CmsResource.STATE_KEEP);
+            } catch (CmsException e) {
+                resources = new ArrayList();
+            }
+            Map params = new HashMap();
+            // set action parameter to initial dialog call
+            params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
+            params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
+
+            if (resources.size() <= getSettings().getUserSettings().getExplorerFileEntries()) {
+                getSettings().setCollector(new CmsListResourcesCollector(resources));
+            } else {
+                getSettings().setCollector(
+                    new CmsListResourcesCollector(resources.subList(
+                        0,
+                        getSettings().getUserSettings().getExplorerFileEntries())));
+            }
+            getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
+            try {
+                getToolManager().jspForwardPage(this, PATH_DIALOGS + "list-explorer.html", params);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
      */
     protected void setColumns(CmsListMetadata metadata) {
 
-        int projectId = new Integer(getParamProjectid()).intValue();
-        CmsProject oldProject = getCms().getRequestContext().currentProject();
-        try {
-            getCms().getRequestContext().setCurrentProject(getCms().readProject(projectId));
-            setColumnVisibilities();
-            addExplorerColumns(metadata);
-        } catch (CmsException e) {
-            setColumnVisibilities();
-            addExplorerColumns(metadata);
-        } finally {
-            getCms().getRequestContext().setCurrentProject(oldProject);
-        }
+        setColumnVisibilities();
+        addExplorerColumns(metadata);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/11 17:07:03 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,7 +175,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             params.putAll(getToolManager().getCurrentTool(this).getHandler().getParameters(this));
 
             getSettings().setCollector(new CmsListResourcesCollector(getResources()));
-            getSettings().setProject(getSettings().getExplorerProjectId());
             getSettings().setExplorerMode(CmsExplorer.VIEW_LIST);
             try {
                 getToolManager().jspForwardPage(this, PATH_EXPLORER_LIST, params);

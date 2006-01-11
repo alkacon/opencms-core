@@ -50,6 +50,9 @@ import java.util.List;
 /**
  * Provides {@link CmsResource} utility functions.<p>
  * 
+ * This class provides in java all resource information used by the explorer view,
+ * mostly generated in javascript (see explorer.js)<p>
+ * 
  * @author Michael Moossen
  * 
  * @version $Revision$ 
@@ -59,9 +62,9 @@ import java.util.List;
 public final class CmsResourceUtil {
 
     // TODO: Remove this class, maybe refactor to org.opencms.workplace.list package
-    // TODO: Check if CmsResouce should be extended by this class
-    private int todo = 0;  
-    
+    // TODO: Check if CmsResource should be extended by this class
+    private int todo = 0;
+
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
 
@@ -162,7 +165,7 @@ public final class CmsResourceUtil {
 
         int lockId = getLockTypeId();
         String iconPath = null;
-        if (lockId != CmsLock.TYPE_UNLOCKED && m_request != null) {
+        if (lockId != CmsLock.TYPE_UNLOCKED && m_request != null && isInsideCurrentProject()) {
             if (getLockedById().equals(m_request.currentUser().getId())
                 && getLockedInProjectId() == m_request.currentProject().getId()) {
                 if (lockId == CmsLock.TYPE_SHARED_EXCLUSIVE || lockId == CmsLock.TYPE_SHARED_INHERITED) {
@@ -331,15 +334,19 @@ public final class CmsResourceUtil {
      * 
      * <ul>
      *   <li>null: unchanged.</li>
-     *   <li>true: in current project.</li>
-     *   <li>false: not in current project.</li>
+     *   <li>true: locked in current project.</li>
+     *   <li>false: not locked in current project.</li>
      * </ul>
      * 
      * @return the project state of the given resource
      */
     public Boolean getProjectState() {
 
-        return m_resource.getState() == CmsResource.STATE_UNCHANGED ? null : new Boolean(isInsideCurrentProject());
+        if (m_resource.getState() == CmsResource.STATE_UNCHANGED || !isInsideCurrentProject()) {
+            return null;
+        } else {
+            return new Boolean(getLockedInProjectId() == m_request.currentProject().getId());
+        }
     }
 
     /**

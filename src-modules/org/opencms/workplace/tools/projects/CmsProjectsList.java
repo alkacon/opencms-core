@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectsList.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.13.2.5 $
+ * Date   : $Date: 2006/01/11 17:07:03 $
+ * Version: $Revision: 1.13.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.13.2.5 $ 
+ * @version $Revision: 1.13.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,8 +247,8 @@ public class CmsProjectsList extends A_CmsListDialog {
         params.put(CmsDialog.PARAM_ACTION, CmsDialog.DIALOG_INITIAL);
 
         if (getParamListAction().equals(LIST_DEFACTION_FILES)) {
-            // forward to the edit user screen
-            getSettings().setCollector(new CmsProjectFilesCollector());
+            // forward to the project files dialog
+            params.put(CmsProjectFilesDialog.PARAM_SHOW_EXPLORER, Boolean.TRUE.toString());
             getToolManager().jspForwardTool(this, "/projects/files", params);
         } else if (getParamListAction().equals(LIST_ACTION_EDIT)) {
             getToolManager().jspForwardTool(this, "/projects/edit", params);
