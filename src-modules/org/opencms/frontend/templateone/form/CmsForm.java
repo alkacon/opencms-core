@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsForm.java,v $
- * Date   : $Date: 2006/01/06 10:20:52 $
- * Version: $Revision: 1.22.2.3 $
+ * Date   : $Date: 2006/01/11 13:57:46 $
+ * Version: $Revision: 1.22.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Thomas Weckert 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.22.2.3 $ 
+ * @version $Revision: 1.22.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1281,11 +1281,13 @@ public class CmsForm {
                 if (!CmsCheckboxField.class.isAssignableFrom(field.getClass())) {
                     String[] parameterValues = jsp.getRequest().getParameterValues(field.getName());
                     StringBuffer value = new StringBuffer();
-                    for (int j = 0; j < parameterValues.length; j++) {
-                        if (j != 0) {
-                            value.append(", ");
+                    if (parameterValues != null) {
+                        for (int j = 0; j < parameterValues.length; j++) {
+                            if (j != 0) {
+                                value.append(", ");
+                            }
+                            value.append(parameterValues[j]);
                         }
-                        value.append(parameterValues[j]);
                     }
                     field.setValue(value.toString());
                 }
