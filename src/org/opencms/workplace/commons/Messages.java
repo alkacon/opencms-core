@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2005/12/02 16:22:41 $
- * Version: $Revision: 1.13.2.8 $
+ * Date   : $Date: 2006/01/11 09:07:31 $
+ * Version: $Revision: 1.13.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,11 +39,14 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.8 $ 
+ * @version $Revision: 1.13.2.9 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_AVAILABILITY_BAD_TIMEWINDOW_0 = "ERR_AVAILABILITY_BAD_TIMEWINDOW_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_MULTI_0 = "ERR_AVAILABILITY_MULTI_0";
@@ -313,9 +316,6 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_GROUPSELECTION_INTRO_TITLE_0 = "GUI_GROUPSELECTION_INTRO_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_GROUPSELECTION_USER_TITLE_1 = "GUI_GROUPSELECTION_USER_TITLE_1";
-
-    /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPSELECTION_LIST_ACTION_SELECT_HELP_0 = "GUI_GROUPSELECTION_LIST_ACTION_SELECT_HELP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -338,6 +338,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_GROUPSELECTION_LIST_NAME_0 = "GUI_GROUPSELECTION_LIST_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_GROUPSELECTION_USER_TITLE_1 = "GUI_GROUPSELECTION_USER_TITLE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_HISTORY_0 = "GUI_HISTORY_0";

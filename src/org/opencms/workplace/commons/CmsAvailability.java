@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2005/10/31 09:20:15 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/01/11 09:07:30 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsAccessControlEntry;
@@ -77,7 +78,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -824,6 +825,11 @@ public class CmsAvailability extends CmsMultiDialog {
             String resourcePath = getCms().getRequestContext().removeSiteRoot(resource.getRootPath());
             // lock resource if autolock is enabled
             checkLock(resourcePath);
+            if (!leaveRelease && !leaveExpire) {
+                if (expireDate < releaseDate) {
+                    throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_AVAILABILITY_BAD_TIMEWINDOW_0)); 
+                }
+            }
             // modify release and expire date of the resource if desired
             if (! leaveRelease) {
                 getCms().setDateReleased(resourcePath, releaseDate, modifyRecursive);
