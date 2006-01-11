@@ -89,7 +89,24 @@
             <name>locale</name>
         </attribute> 
     </tag>       
-
+   <tag>
+        <name>parse</name>
+        <tag-class>org.opencms.jsp.CmsJspTagParse</tag-class>
+        <body-content>JSP</body-content>
+        <description>
+            This tag is used to decorate HTML with custom A_CmsConfiguredHtmlParser implementations given in the parserClass attribute.
+        </description>
+        <attribute>
+            <name>parserClass</name>
+            <required>true</required>
+            <rtexprvalue>false</rtexprvalue>
+        </attribute>  
+        <attribute>
+            <name>param</name>
+            <required>false</required>
+            <rtexprvalue>true</rtexprvalue>
+        </attribute> 
+    </tag>       
     <tag>
         <name>template</name>
         <tag-class>org.opencms.jsp.CmsJspTagTemplate</tag-class>

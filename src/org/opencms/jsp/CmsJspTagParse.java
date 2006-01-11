@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParse.java,v $
- * Date   : $Date: 2005/12/14 10:20:41 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/11 09:44:05 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,11 +31,16 @@
 
 package org.opencms.jsp;
 
+import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.flex.CmsFlexController;
+import org.opencms.jsp.parse.A_CmsConfiguredHtmlParser;
+import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
-import org.opencms.util.I_CmsHtmlNodeVisitor;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 import javax.servlet.ServletRequest;
 import javax.servlet.jsp.JspException;
@@ -53,14 +58,17 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.3
  */
 public class CmsJspTagParse extends BodyTagSupport {
 
-    /** The name of the mandatory Tag attribute for the visitor class an instance of will be guided throught the body content. */
-    public static final String ATT_VISITOR_CLASS = "visitorClass";
+    /**
+     * The name of the mandatory Tag attribute for the visitor class an instance of will be guided
+     * throught the body content.
+     */
+    public static final String ATT_VISITOR_CLASS = "parserClass";
 
     /** Tag name constant for log output. */
     public static final String TAG_NAME = "parse";
@@ -71,11 +79,11 @@ public class CmsJspTagParse extends BodyTagSupport {
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = -6541745426202242240L;
 
-    /** The attribute value of the param attribute - currently unused. */
-    private String m_param;
-
     /** The visitor / parser classname to use. */
-    private String m_visitorClassname;
+    private String m_configuredParserClassname;
+
+    /** The attribute value of the param attribute. */
+    private String m_param = "";
 
     /**
      * Internal action method.
@@ -88,17 +96,17 @@ public class CmsJspTagParse extends BodyTagSupport {
      * 
      * @param context needed for getting the encoding / the locale.
      * 
-     * @param visitor the visitor / parser to use.
+     * @param parser the visitor / parser to use.
      * 
      * @return the transformed content.
      * 
      */
-    public static String parseTagAction(String content, PageContext context, I_CmsHtmlNodeVisitor visitor) {
+    public static String parseTagAction(String content, PageContext context, A_CmsConfiguredHtmlParser parser) {
 
         String result = null;
         CmsRequestContext cmsContext = CmsFlexController.getCmsObject(context.getRequest()).getRequestContext();
 
-        if (visitor == null) {
+        if (parser == null) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(
                     cmsContext.getLocale(),
@@ -110,17 +118,35 @@ public class CmsJspTagParse extends BodyTagSupport {
 
             String encoding = cmsContext.getEncoding();
             try {
-                visitor.process(content, encoding);
-                result = visitor.getResult();
+                result = parser.doParse(content, encoding);
 
-            } catch (ParserException e) {
+            } catch (ParserException pex) {
 
                 if (LOG.isErrorEnabled()) {
                     LOG.error(Messages.get().key(
                         cmsContext.getLocale(),
                         Messages.ERR_PROCESS_TAG_1,
-                        new Object[] {TAG_NAME}), e);
+                        new Object[] {TAG_NAME}), pex);
                 }
+                StringWriter stackTrace = new StringWriter();
+                PrintWriter writer = new PrintWriter(new StringWriter());
+                StringBuffer msg = new StringBuffer("<!--\n").append(pex.getLocalizedMessage()).append("\n");
+                pex.printStackTrace(writer);
+                msg.append(stackTrace.toString()).append("\n-->");
+                result = msg.toString();
+            } catch (CmsException cmex) {
+                if (LOG.isErrorEnabled()) {
+                    LOG.error(Messages.get().key(
+                        cmsContext.getLocale(),
+                        Messages.ERR_PROCESS_TAG_1,
+                        new Object[] {TAG_NAME}), cmex);
+                }
+                StringWriter stackTrace = new StringWriter();
+                PrintWriter writer = new PrintWriter(new StringWriter());
+                StringBuffer msg = new StringBuffer("<!--\n").append(cmex.getLocalizedMessage()).append("\n");
+                cmex.printStackTrace(writer);
+                msg.append(stackTrace.toString()).append("\n-->");
+                result = msg.toString();
             }
 
         }
@@ -135,13 +161,13 @@ public class CmsJspTagParse extends BodyTagSupport {
     public int doEndTag() throws JspException {
 
         ServletRequest req = pageContext.getRequest();
-        I_CmsHtmlNodeVisitor visitor;
+        A_CmsConfiguredHtmlParser parser;
 
         // This will always be true if the page is called through OpenCms
         if (CmsFlexController.isCmsRequest(req)) {
             String content = "";
             try {
-                if (CmsStringUtil.isEmpty(m_visitorClassname)) {
+                if (CmsStringUtil.isEmpty(m_configuredParserClassname)) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(
                             Messages.GUI_ERR_TAG_ATTRIBUTE_MISSING_2,
@@ -153,23 +179,25 @@ public class CmsJspTagParse extends BodyTagSupport {
                 // thrown
                 try {
                     // load
-                    Class cl = Class.forName(m_visitorClassname);
+                    Class cl = Class.forName(m_configuredParserClassname);
                     // instanciate
                     Object instance = cl.newInstance();
                     // cast
-                    visitor = (I_CmsHtmlNodeVisitor)instance;
-                    content = parseTagAction(getBodyContent().getString(), pageContext, visitor);
+                    parser = (A_CmsConfiguredHtmlParser)instance;
+                    parser.setParam(m_param);
+                    // cms object:
+                    CmsFlexController controller = CmsFlexController.getController(req);
+                    CmsObject cms = controller.getCmsObject();
+                    parser.setCmsObject(cms);
+                    content = parseTagAction(getBodyContent().getString(), pageContext, parser);
 
                 } catch (Exception e) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(
                             Messages.GUI_ERR_TAG_ATTRIBUTE_INVALID_3,
-                            new Object[] {TAG_NAME, ATT_VISITOR_CLASS, I_CmsHtmlNodeVisitor.class.getName()}));
-
+                            new Object[] {TAG_NAME, ATT_VISITOR_CLASS, A_CmsConfiguredHtmlParser.class.getName()}), e);
                     }
-                    if (LOG.isDebugEnabled()) {
-                        LOG.debug(e);
-                    }
+                    e.printStackTrace(System.err);
                 }
 
             } finally {
@@ -177,7 +205,8 @@ public class CmsJspTagParse extends BodyTagSupport {
                     getBodyContent().clear();
                     getBodyContent().print(content);
                     getBodyContent().writeOut(pageContext.getOut());
-                    // need to release manually, JSP container may not call release as required (happens with Tomcat)
+                    // need to release manually, JSP container may not call release as required
+                    // (happens with Tomcat)
                     release();
 
                 } catch (Exception ex) {
@@ -207,14 +236,15 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
-     * Returns the visitorClass.
+     * Returns the fully qualified class name of the {@link A_CmsConfiguredHtmlParser} class to use
+     * for parsing.
      * <p>
      * 
-     * @return the visitorClass
+     * @return the parserrClass
      */
-    public String getVisitorClass() {
+    public String getParserClass() {
 
-        return m_visitorClassname;
+        return m_configuredParserClassname;
     }
 
     /**
@@ -222,7 +252,7 @@ public class CmsJspTagParse extends BodyTagSupport {
      */
     public void release() {
 
-        m_visitorClassname = null;
+        m_configuredParserClassname = null;
         m_param = null;
         super.release();
     }
@@ -239,14 +269,16 @@ public class CmsJspTagParse extends BodyTagSupport {
     }
 
     /**
-     * Sets the visitorClass.
+     * Sets the fully qualified class name of the {@link A_CmsConfiguredHtmlParser} class to use for
+     * parsing.
      * <p>
      * 
-     * @param visitorClass the visitorClass to set
+     * @param parserClass the fully qualified class name of the {@link A_CmsConfiguredHtmlParser}
+     *            class to use for parsing.
      */
-    public void setVisitorClass(String visitorClass) {
+    public void setParserClass(String parserClass) {
 
-        m_visitorClassname = visitorClass;
+        m_configuredParserClassname = parserClass;
     }
 
 }
