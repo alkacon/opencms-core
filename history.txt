@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/01/06 15:38:14 $
- * Version: $Revision: 1.682.2.63 $
+ * Date   : $Date: 2006/01/12 11:45:37 $
+ * Version: $Revision: 1.682.2.64 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.1.7 - ???
+* Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
 ! Extended content comparison for images, plain text, pdf, rtf, doc, xls and ppt files
 * Fixed issue with removing temporary flag after editing content
 * Fixed issue with linebreaks in HTML-Converter
