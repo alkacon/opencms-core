@@ -1,4 +1,4 @@
-<%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*" %><%--
+<%@ page session="false" buffer="none" import="java.util.*,org.opencms.frontend.templateone.*,org.opencms.util.*" %><%--
 
 --%><jsp:useBean id="cms2" class="org.opencms.frontend.templateone.CmsTemplateFormLetter" scope="request"><%--
 --%><jsp:setProperty name="cms2" property="*"/><%--
@@ -20,13 +20,13 @@ cms2.includePopup("popuphead", cms2.key("recommend.title"));
 			<%= cms2.key("letter.form.concern.title") %>
 			<%= cms2.key("letter.form.concern." + cms2.getConcern()) %><%
 				if ("other".equals(cms2.getConcern())) {
-					out.print(": "+cms2.getConcernDetail());
+					out.print(": "+CmsStringUtil.escapeHtml(cms2.getConcernDetail()));
 				}				
 			%>
 		</p>
 		<p>
 			<%= cms2.key("letter.form.message") %><br />
-			<%= cms2.getMessage() %>
+			<%= CmsStringUtil.escapeHtml(cms2.getMessage()) %>
 		</p>
 		<%= cms2.getFormText("confirm_foot", false) %>
 	</div>
