@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFormHandler.java,v $
- * Date   : $Date: 2006/01/06 10:20:52 $
- * Version: $Revision: 1.20.2.2 $
+ * Date   : $Date: 2006/01/12 10:09:35 $
+ * Version: $Revision: 1.20.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.20.2.2 $ 
+ * @version $Revision: 1.20.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -179,7 +179,7 @@ public class CmsFormHandler extends CmsJspActionElement {
 
         if ("html".equalsIgnoreCase(outputType)) {
             // output should be html, add line break tags and characters
-            value = CmsStringUtil.substitute(value, "\n", "<br>");
+            value = CmsStringUtil.escapeHtml(value);
         } else {
             // output should be plain, remove html line break tags and characters
             value = CmsStringUtil.substitute(value, "<br>", "\n");
