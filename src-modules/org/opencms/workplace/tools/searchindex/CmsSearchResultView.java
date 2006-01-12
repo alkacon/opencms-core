@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchResultView.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/12 16:59:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -105,7 +105,7 @@ public class CmsSearchResultView {
     public CmsSearchResultView(CmsJspActionElement action) {
 
         m_jsp = action;
-        this.m_formCache = new TreeMap();
+        m_formCache = new TreeMap();
         try {
             m_onlineProject = m_jsp.getCmsObject().readProject(CmsProject.ONLINE_PROJECT_ID);
             m_offlineProject = m_jsp.getRequestContext().currentProject();
@@ -304,7 +304,7 @@ public class CmsSearchResultView {
      */
     public void setExportLinks(boolean exportLinks) {
 
-        this.m_exportLinks = exportLinks;
+        m_exportLinks = exportLinks;
     }
 
     /**
@@ -319,7 +319,7 @@ public class CmsSearchResultView {
      */
     public void setSearchRessourceUrl(String uri) {
 
-        this.m_searchRessourceUrl = uri;
+        m_searchRessourceUrl = uri;
     }
 
     /**

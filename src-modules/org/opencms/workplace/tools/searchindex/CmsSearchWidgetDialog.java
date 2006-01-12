@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2005/09/26 16:21:37 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/12 16:59:57 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.0.0
  */
@@ -305,7 +305,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     protected void initUserObject() {
 
         super.initUserObject();
-        Object o = this.getDialogObject();
+        Object o = getDialogObject();
         if (o == null) {
             m_searchParams = new CmsSearchParameters();
             // implant a hook upon modifications of the list
@@ -334,7 +334,7 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         super.initWorkplaceRequestValues(settings, request);
-        Map dialogMap = (Map)this.getDialogObject();
+        Map dialogMap = (Map)getDialogObject();
         if (dialogMap != null) {
             dialogMap.put(PARAM_SEARCH_PARAMS, m_searchParams);
             dialogMap.put(PARAM_SEARCH_OBJECT, m_search);

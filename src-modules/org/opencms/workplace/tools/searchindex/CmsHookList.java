@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsHookList.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/12 16:59:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import java.util.LinkedList;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -104,7 +104,7 @@ public abstract class CmsHookList extends LinkedList {
     public void add(int index, Object element) {
 
         super.add(index, element);
-        this.onAdded(m_peer, index, element);
+        onAdded(m_peer, index, element);
 
     }
 

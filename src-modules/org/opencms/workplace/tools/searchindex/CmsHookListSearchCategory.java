@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsHookListSearchCategory.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/12 16:59:57 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import java.util.List;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -158,7 +158,7 @@ public class CmsHookListSearchCategory extends CmsHookList {
     protected void onGetCall(Object peer, int index) {
 
         // zero categories are all (first condition)
-        if ((m_backupCategories.size() == 0 && this.size() != 0) || !(this.containsAll(m_backupCategories))) {
+        if ((m_backupCategories.size() == 0 && size() != 0) || !(containsAll(m_backupCategories))) {
             ((CmsSearchParameters)peer).setSearchPage(1);
         }
     }

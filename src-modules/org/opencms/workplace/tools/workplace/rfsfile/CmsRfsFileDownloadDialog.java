@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileDownloadDialog.java,v $
- * Date   : $Date: 2005/06/29 14:41:40 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/01/12 16:59:57 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,7 +227,7 @@ public class CmsRfsFileDownloadDialog extends CmsDialog {
 
         // triggered by the super-constructor so cannot be 
         // placed in the constructor here or nullpointer exception occurs.
-        this.m_downloadFile = getDownloadFileInternal();
+        m_downloadFile = getDownloadFileInternal();
 
         // fill the parameter values in the get/set methods
         fillParamValues(request);
