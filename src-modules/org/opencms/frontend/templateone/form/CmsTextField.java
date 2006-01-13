@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsTextField.java,v $
- * Date   : $Date: 2005/09/09 10:31:59 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/01/13 11:47:06 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  * Represents a text input field.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.3 $
+ * @version $Revision: 1.4 $
  */
 public class CmsTextField extends A_CmsField {
 
@@ -102,7 +102,7 @@ public class CmsTextField extends A_CmsField {
         
         // line #3
         buf.append(messages.key("form.html.field.start"))
-            .append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(getValue()).append("\"")
+            .append("<input type=\"text\" name=\"").append(getName()).append("\" value=\"").append(CmsStringUtil.escapeHtml(getValue())).append("\"")
             .append(formHandler.getFormConfiguration().getFormFieldAttributes())
             .append(">")
             .append(errorMessage)
