@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/01/13 09:04:21 $
- * Version: $Revision: 1.708 $
+ * Date   : $Date: 2006/01/13 10:50:29 $
+ * Version: $Revision: 1.709 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,7 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.0.4 - January 16, 2005
-* Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
+* Remove vulnerability for cross site scripting in TemplateOne forms (Search, Contact)
 * Fixed static export 'after publish'
 
 OpenCms 6.0.3 - November 15, 2005
