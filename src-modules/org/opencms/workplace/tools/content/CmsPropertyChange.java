@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/01/13 10:39:40 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.content;
 
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
@@ -66,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12 $ 
+ * @version $Revision: 1.12.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -497,9 +498,8 @@ public class CmsPropertyChange extends CmsDialog {
         
         // check new property value
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewValue())) {
-            allOk = false;
-            validationErrors.append(
-                Messages.get().key(locale,  Messages.GUI_PROP_CHANGE_VALIDATE_NEW_PROP_VALUE_0, null));
+              // if no new value was given, set it to the delete value
+              setParamNewValue(CmsProperty.DELETE_VALUE);
         }
         
         setErrorMessage(validationErrors.toString());
