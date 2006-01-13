@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckProperty.java,v $
- * Date   : $Date: 2005/12/23 14:09:16 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/01/13 15:57:54 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.1.2
  */
@@ -121,7 +121,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
     /** List of all configured warning checks. */
     private List m_configuredWarningChecks = null;
 
-    /** Locale to be used to extrace xml content. */
+    /** Locale to be used to extract xml content. */
     private Locale m_locale;
 
     /**
@@ -241,7 +241,7 @@ public class CmsContentCheckProperty extends A_CmsContentCheck implements I_CmsC
     public void init(CmsObject cms) {
 
         m_cms = cms;
-        m_locale = m_cms.getRequestContext().getLocale();
+        m_locale = new Locale("en");
     }
 
     /**
