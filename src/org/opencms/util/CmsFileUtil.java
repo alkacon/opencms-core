@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.21.2.7 $
+ * Date   : $Date: 2006/01/15 10:29:22 $
+ * Version: $Revision: 1.21.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.util;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -48,6 +49,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStreamWriter;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.util.ArrayList;
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.7 $ 
+ * @version $Revision: 1.21.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -366,11 +368,14 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path,
-     * the path separator char is {@link File#separatorChar}.<p>
+     * Normalizes a file path that might contain <code>'../'</code> or <code>'./'</code> or <code>'//'</code> 
+     * elements to a normal absolute path, the path separator char used is {@link File#separatorChar}.<p>
      * 
      * @param path the path to normalize
+     * 
      * @return the normalized path
+     * 
+     * @see #normalizePath(String, char)
      */
     public static String normalizePath(String path) {
 
@@ -378,13 +383,15 @@ public final class CmsFileUtil {
     }
 
     /**
-     * Normalizes a file path that might contain '../' or './' or '//' elements to a normal absolute path.<p>
+     * Normalizes a file path that might contain <code>'../'</code> or <code>'./'</code> or <code>'//'</code> 
+     * elements to a normal absolute path.<p>
      * 
      * Can also handle Windows like path information containing a drive letter, 
      * like <code>C:\path\..\</code>.<p>
      * 
      * @param path the path to normalize
      * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
+     * 
      * @return the normalized path
      */
     public static String normalizePath(String path, char separatorChar) {
@@ -416,6 +423,44 @@ public final class CmsFileUtil {
             }
         }
         return path;
+    }
+
+    /**
+     * Returns the normalized file path created from the given URL.<p>
+     * 
+     * The path part {@link URL#getPath()} is used, unescaped and 
+     * normalized using {@link #normalizePath(String, char)} using {@link File#separatorChar}.<p>
+     * 
+     * @param url the URL to extract the path information from
+     * 
+     * @return the normalized file path created from the given URL using {@link File#separatorChar}
+     * 
+     * @see #normalizePath(URL, char)
+     */
+    public static String normalizePath(URL url) {
+
+        return normalizePath(url, File.separatorChar);
+    }
+
+    /**
+     * Returns the normalized file path created from the given URL.<p>
+     * 
+     * The path part {@link URL#getPath()} is used, unescaped and 
+     * normalized using {@link #normalizePath(String, char)}.<p>
+     * 
+     * @param url the URL to extract the path information from
+     * @param separatorChar the file separator char to use, for example {@link File#separatorChar}
+     * 
+     * @return the normalized file path created from the given URL
+     */
+    public static String normalizePath(URL url, char separatorChar) {
+
+        // get the path part from the URL
+        String path = new File(url.getPath()).getAbsolutePath();
+        // trick to get the OS default encoding, taken from the official Java i18n FAQ
+        String systemEncoding = (new OutputStreamWriter(new ByteArrayOutputStream())).getEncoding();
+        // decode url in order to remove spaces and escaped chars from path
+        return CmsFileUtil.normalizePath(CmsEncoder.decode(path, systemEncoding), separatorChar);
     }
 
     /**

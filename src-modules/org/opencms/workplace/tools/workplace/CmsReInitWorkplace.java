@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/CmsReInitWorkplace.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/01/15 10:29:22 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,9 +32,12 @@
 package org.opencms.workplace.tools.workplace;
 
 import org.opencms.jsp.CmsJspActionElement;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.HashMap;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -46,7 +49,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -90,11 +93,14 @@ public class CmsReInitWorkplace extends CmsDialog {
             case ACTION_CONFIRMED:
             default:
                 try {
+                    // re-initialize the workplace
                     OpenCms.getWorkplaceManager().initialize(getCms());
+                    // fire "clear caches" event to reload all cached resource bundles
+                    OpenCms.fireCmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, new HashMap());
                     actionCloseDialog();
-                } catch (Throwable e) {
+                } catch (Throwable t) {
                     // create a new Exception with custom message
-                    includeErrorpage(this, e);
+                    includeErrorpage(this, t);
                 }
                 break;
         }

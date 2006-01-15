@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/01/13 10:39:40 $
- * Version: $Revision: 1.682.2.65 $
+ * Date   : $Date: 2006/01/15 10:29:22 $
+ * Version: $Revision: 1.682.2.66 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@ OpenCms 6.1.7 - ???
 * Added automated checking of XML content schema <appinfo> node validiy
 - Refactored CmsUser and CmsGroup to descend from a common CmsPrincipal object
 ! The content tool "Change Property Values" can now delete property values
+! Localized ResourceBundles are now reloaded after "CLEAR CACHE" event
+! Added "CLEAR CACHE" event to Workplace re-initialize tool (to reload ResourceBundles)
 
 OpenCms 6.1.6 - December 13, 2005
 * Fixed issue in locale handler if non-existant resource has been requested

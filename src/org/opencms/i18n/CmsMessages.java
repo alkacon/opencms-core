@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2005/07/28 15:18:32 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/01/15 10:29:22 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,7 +84,7 @@ public class CmsMessages {
         try {
             m_locale = locale;
             m_baseName = baseName;
-            m_resourceBundle = ResourceBundle.getBundle(baseName, m_locale);
+            m_resourceBundle = CmsResourceBundleLoader.getBundle(baseName, m_locale);
         } catch (MissingResourceException e) {
             m_resourceBundle = null;
         }

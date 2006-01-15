@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2005/11/22 13:21:38 $
- * Version: $Revision: 1.72.2.7 $
+ * Date   : $Date: 2006/01/15 10:29:22 $
+ * Version: $Revision: 1.72.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,8 +49,10 @@ import org.opencms.i18n.CmsLocaleComparator;
 import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.i18n.CmsMessages;
 import org.opencms.i18n.I_CmsLocaleHandler;
+import org.opencms.main.CmsEvent;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleManager;
@@ -93,11 +95,11 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.7 $ 
+ * @version $Revision: 1.72.2.8 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
+public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEventListener {
 
     /** The default encoding for the workplace (UTF-8). */
     public static final String DEFAULT_WORKPLACE_ENCODING = CmsEncoder.ENCODING_UTF_8;
@@ -360,6 +362,25 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     public boolean autoLockResources() {
 
         return m_autoLockResources;
+    }
+
+    /**
+     * Implements the event listener of this class.<p>
+     * 
+     * @see org.opencms.main.I_CmsEventListener#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void cmsEvent(CmsEvent event) {
+
+        switch (event.getType()) {
+            case I_CmsEventListener.EVENT_CLEAR_CACHES:
+                // clear the cached message objects
+                m_messages = new HashMap();
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
+                }
+                break;
+            default: // no operation
+        }
     }
 
     /**
@@ -806,13 +827,15 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
             getToolManager().configure(cms);
 
             // throw away all cached message objects
-            m_messages.clear();
+            m_messages = new HashMap();
+
+            // register this object as event listener
+            OpenCms.addCmsEventListener(this, new int[] {I_CmsEventListener.EVENT_CLEAR_CACHES});
+
         } catch (CmsException e) {
             throw new CmsException(Messages.get().container(Messages.ERR_INITIALIZE_WORKPLACE_0));
         }
     }
-    
-    
 
     /**
      * Returns the default property editing mode on resources.<p>
@@ -1060,6 +1083,16 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
     }
 
     /**
+     * Sets the tool Manager object.<p>
+     *
+     * @param toolManager the tool Manager object to set
+     */
+    public void setToolManager(CmsToolManager toolManager) {
+
+        m_toolManager = toolManager;
+    }
+
+    /**
      * Controls if the user/group icon in the administration view should be shown.<p>
      * 
      * @param value <code>"true"</code> if the user/group icon in the administration view should be shown, otherwise false
@@ -1245,15 +1278,5 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler {
         // sort the views by their order number
         Collections.sort(m_views);
         return m_views;
-    }
-   
-    /**
-     * Sets the tool Manager object.<p>
-     *
-     * @param toolManager the tool Manager object to set
-     */
-    public void setToolManager(CmsToolManager toolManager) {
-    
-        m_toolManager = toolManager;
     }
 }

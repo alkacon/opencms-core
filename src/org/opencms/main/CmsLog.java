@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2005/11/09 10:34:57 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2006/01/15 10:29:22 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,12 +32,9 @@
 package org.opencms.main;
 
 import org.opencms.file.CmsResource;
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.util.CmsFileUtil;
 
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.OutputStreamWriter;
 import java.net.URL;
 
 import org.apache.commons.collections.ExtendedProperties;
@@ -62,17 +59,14 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.24.2.1 $ 
+ * @version $Revision: 1.24.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsLog {
 
-    /** Initialization messages. */
-    private static final String CHANNEL_INIT = "org.opencms.init";
-
     /** Log for initialization messages. */
-    public static final Log INIT = LogFactory.getLog(CHANNEL_INIT);
+    public static final Log INIT = LogFactory.getLog("org.opencms.init");
 
     /** The  abolute path to the OpenCms log file (in the "real" file system). */
     private static String m_logFileRfsPath;
@@ -94,11 +88,7 @@ public final class CmsLog {
             URL url = Loader.getResource("log4j.properties");
             if (url != null) {
                 // found some log4j properties, let's see if these are the ones used by OpenCms
-                String path = new File(url.getPath()).getAbsolutePath();
-                // trick to get the OS default encoding, taken from the official Java i18n FAQ
-                String systemEncoding = (new OutputStreamWriter(new ByteArrayOutputStream())).getEncoding();
-                // decode url in order to remove spaces from path
-                path = CmsFileUtil.normalizePath(CmsEncoder.decode(path, systemEncoding), '/');
+                String path = CmsFileUtil.normalizePath(url, '/');
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
                 String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(path));
                 // check for the OpenCms configuration file

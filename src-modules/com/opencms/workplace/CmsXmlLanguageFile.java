@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2005/07/28 15:18:31 $
-* Version: $Revision: 1.10 $
+* Date   : $Date: 2006/01/15 10:29:22 $
+* Version: $Revision: 1.10.2.1 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $ $Date: 2005/07/28 15:18:31 $
+ * @version $Revision: 1.10.2.1 $ $Date: 2006/01/15 10:29:22 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -43,6 +43,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.i18n.CmsMessageException;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.i18n.CmsResourceBundleLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
@@ -170,7 +171,7 @@ public class CmsXmlLanguageFile {
                 String bundleName = ((String)i.next()) + ".workplace";
                 // this should result in a name like "my.module.name.workplace"
                 try {
-                    ResourceBundle bundle = ResourceBundle.getBundle(bundleName, new Locale(locale));
+                    ResourceBundle bundle = CmsResourceBundleLoader.getBundle(bundleName, new Locale(locale));
                     bundles.add(bundle);
                 } catch (MissingResourceException e) {
                     // can be ignored
