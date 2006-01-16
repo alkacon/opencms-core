@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2006/01/13 14:33:30 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2006/01/16 13:41:50 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,10 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
 import org.opencms.main.CmsRuntimeException;
 
+import java.io.Externalizable;
+import java.io.IOException;
+import java.io.ObjectInput;
+import java.io.ObjectOutput;
 import java.io.Serializable;
 
 import org.doomdark.uuid.EthernetAddress;
@@ -59,11 +63,11 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
-public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable {
+public final class CmsUUID extends Object implements Serializable, Cloneable, Comparable, Externalizable {
 
     /** Ethernet addess of the server machine. */
     private static EthernetAddress m_ethernetAddress;
@@ -80,7 +84,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     private static final CmsUUID NULL_UUID = new CmsUUID(UUID.getNullUUID());
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = 1726324354709298575L;
+    private static final long serialVersionUID = 1736324454709298676L;
 
     /** Internal UUID implementation. */
     private UUID m_uuid;
@@ -309,4 +313,25 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
         return m_uuid.toString();
     }
 
+    /**
+     * @see java.io.Externalizable#readExternal(java.io.ObjectInput)
+     */
+    public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+
+        if (in.readLong() == serialVersionUID) {
+            m_uuid = new UUID((String)in.readObject());
+        } else {
+            throw new IOException("Cannot read externalized UUID because of a version mismatch.");
+        }
+    }
+
+    /**
+     * 
+     * @see java.io.Externalizable#writeExternal(java.io.ObjectOutput)
+     */
+    public void writeExternal(ObjectOutput out) throws IOException {
+
+        out.writeLong(serialVersionUID);
+        out.writeObject(m_uuid.toString());
+    }
 }
