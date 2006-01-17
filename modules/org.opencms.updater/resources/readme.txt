@@ -1,5 +1,5 @@
             
-            Instructions for updating OpenCms 6.0.0 to OpenCms 6.0.3
+            Instructions for updating OpenCms 6.0.0 to OpenCms 6.0.4
 
 
                                     WARNING:
@@ -17,7 +17,7 @@ IMPORTANT: Before using this upgrade wizard, make sure you have a full backup
 of your OpenCms installation and database.
 
 
-Follow the following steps to update from OpenCms 6.0.0 to OpenCms 6.0.3:
+Follow the following steps to update from OpenCms 6.0.0 to OpenCms 6.0.4:
 
 
 1. Shutdown your OpenCms servlet container
@@ -27,7 +27,7 @@ Broadcast message tool in the 'Administration' view to inform users before the
 server is shut down.
 
 
-2. Extract the OpenCms upgrade file 'opencms_upgrade_6.0.0_to_6.0.3.zip' to 
+2. Extract the OpenCms upgrade file 'opencms_upgrade_6.0.0_to_6.0.4.zip' to 
    your web application directory
 
 If you extracted the file to an external directory, copy the folders 'update'
