@@ -50,13 +50,13 @@ import org.apache.commons.logging.Log;
  * The configuration String has to be of the following form: <br>
  * 
  * <pre>
- *                            &quot;folder=&lt;vfspath&gt;|displayOptionMacro=&lt;macro&gt;|resourcetypeName=&lt;typename&gt;|sortMacro=&lt;macro&gt;[|propertyname=propertyvalue]*
+ *                              &quot;folder=&lt;vfspath&gt;|displayOptionMacro=&lt;macro&gt;|resourcetypeName=&lt;typename&gt;|sortMacro=&lt;macro&gt;[|propertyname=propertyvalue]*
  * </pre>
  * 
  * where
  * 
  * <pre>
- *                            &lt;macro&gt;
+ *                              &lt;macro&gt;
  * </pre>
  * 
  * is a String containing valid OpenCms macros or xpath expression in the form:
@@ -75,19 +75,19 @@ import org.apache.commons.logging.Log;
  * {@link org.opencms.xml.A_CmsXmlDocument#getValue(String, Locale)}
  * 
  * <pre>
- *                                                &lt;vfspath&gt;
+ *                                                  &lt;vfspath&gt;
  * </pre>
  * 
  * is a valid resource path to a folder in the VFS where search is started from,
  * 
  * <pre>
- *                                              &lt;typename&gt;
+ *                                                &lt;typename&gt;
  * </pre>
  * 
  * is a resource type name defined in opencms-modules.xml and
  * 
  * <pre>
- *                                             [|propertyname = propertyvalue]*
+ *                                               [|propertyname = propertyvalue]*
  * </pre>
  * 
  * is a arbitrary number of properties value mappings that have to exist on the resources to show.
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.1.3
  * 
@@ -123,7 +123,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.3 $
+     * @version $Revision: 1.1.2.4 $
      * 
      * @since 6.1.6
      * 
@@ -222,7 +222,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.3 $
+     * @version $Revision: 1.1.2.4 $
      * 
      * @since 6.1.6
      * 
@@ -443,6 +443,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
         if (m_macroResolver == null) {
             m_macroResolver = new CmsMacroResolver();
             m_macroResolver.setCmsObject(m_macroCmsObject);
+            m_macroResolver.setKeepEmptyMacros(true);
         }
 
         List selectOptions = getSelectOptions();
@@ -465,10 +466,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 // collect all subresources of resource folder
                 CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireType(getResourceTypeID());
                 CmsRequestContext context = cms.getRequestContext();
-                context.saveSiteRoot();
+                String oldSiteroot = context.getSiteRoot();
                 context.setSiteRoot("/");
                 resources = cms.readResources(m_resourceFolder.getRootPath(), filter, true);
-                context.restoreSiteRoot();
+                context.setSiteRoot(oldSiteroot);
                 if (resources.size() == 0) {
                     if (LOG.isErrorEnabled()) {
                         LOG.error(Messages.get().key(
@@ -628,6 +629,16 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             }
             key = keyValue[0].trim();
             value = keyValue[1].trim();
+
+            // prepare for macro resolvation of property value against the resource currently
+            // rendered
+            // implant the uri to the special cms object for resolving macros from the
+            // collected xml contents:
+            CmsFile file = ((I_CmsXmlContentValue)param).getDocument().getFile();
+            m_macroCmsObject.getRequestContext().setUri(file.getRootPath());
+            // implant the resource for macro "${opencms.filename}"
+            m_macroResolver.setResourceName(file.getName());
+            value = m_macroResolver.resolveMacros(value);
             // check key
             if (CONFIGURATION_OPTION_DISPLAY_MACRO.equals(key)) {
                 if (displayMacroFound) {
@@ -678,10 +689,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
                 try {
                     CmsRequestContext context = cms.getRequestContext();
-                    context.saveSiteRoot();
+                    String oldSiteRoot = context.getSiteRoot();
                     context.setSiteRoot("/");
                     CmsResource resource = cms.readResource(value);
-                    context.restoreSiteRoot();
+                    context.setSiteRoot(oldSiteRoot);
                     if (resource.isFile()) {
                         throw new CmsIllegalArgumentException(Messages.get().container(
                             Messages.ERR_SELECTWIDGET_CONFIGURATION_RESOURCE_NOFOLDER_2,
@@ -711,16 +722,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                         getClass().getName()), e);
                 }
                 if (propDef != null) {
-                    // a valid property - value combination to filter resources for: prepare for
-                    // macro resolvation of property value against the resource currently rendered
-
-                    // implant the uri to the special cms object for resolving macros from the
-                    // collected xml contents:
-                    CmsFile file = ((I_CmsXmlContentValue)param).getDocument().getFile();
-                    m_macroCmsObject.getRequestContext().setUri(file.getRootPath());
-                    // implant the resource for macro "${opencms.filename}"
-                    m_macroResolver.setResourceName(file.getName());
-                    value = m_macroResolver.resolveMacros(value);
+                    // a valid property - value combination to filter resources for:
                     m_filterProperties.put(key, value);
 
                 } else {
