@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/12/12 09:13:59 $
- * Version: $Revision: 1.39.2.5 $
+ * Date   : $Date: 2006/01/18 14:57:02 $
+ * Version: $Revision: 1.39.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.search;
 import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
+import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.util.CmsStringUtil;
@@ -69,7 +70,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.5 $ 
+ * @version $Revision: 1.39.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,7 +248,7 @@ public class CmsSearch implements Cloneable {
             return links;
         }
         int startIndex, endIndex;
-        String link = m_cms.getRequestContext().getUri() + this.getSearchParameters() + "&searchPage=";
+        String link = m_cms.getRequestContext().getUri() + getSearchParameters() + "&searchPage=";
         if (getDisplayPages() < 1) {
             // number of displayed pages not limited, build a map with all available page links 
             startIndex = 1;
@@ -354,9 +355,9 @@ public class CmsSearch implements Cloneable {
         query = CmsStringUtil.substitute(query, "-", "%2D");
         params.append(CmsEncoder.encode(query, OpenCms.getSystemInfo().getDefaultEncoding()));
         params.append("&matchesPerPage=");
-        params.append(this.getMatchesPerPage());
+        params.append(getMatchesPerPage());
         params.append("&displayPages=");
-        params.append(this.getDisplayPages());
+        params.append(getDisplayPages());
         params.append("&index=");
         params.append(CmsEncoder.encode(m_parameters.getIndex()));
 
@@ -424,11 +425,11 @@ public class CmsSearch implements Cloneable {
             && m_parameters.getIndex() != null
             && CmsStringUtil.isNotEmpty(m_parameters.getQuery())) {
 
-            if ((this.getQueryLength() > 0) && (m_parameters.getQuery().trim().length() < this.getQueryLength())) {
+            if ((getQueryLength() > 0) && (m_parameters.getQuery().trim().length() < getQueryLength())) {
 
                 m_lastException = new CmsSearchException(Messages.get().container(
                     Messages.ERR_QUERY_TOO_SHORT_1,
-                    new Integer(this.getQueryLength())));
+                    new Integer(getQueryLength())));
 
                 return m_result;
             }
@@ -691,13 +692,16 @@ public class CmsSearch implements Cloneable {
      */
     public void setQuery(String query) {
 
-        // do not replace % 
+        // do not replace %
         query = CmsStringUtil.substitute(query, "%", "%25");
-        // do not replace +/- 
+        // do not replace +/-
         query = CmsStringUtil.substitute(query, "+", "%2B");
         query = CmsStringUtil.substitute(query, "-", "%2D");
-
-        m_parameters.setQuery(query);
+        try {
+            m_parameters.setQuery(query);
+        } catch (CmsIllegalArgumentException iae) {
+            m_lastException = iae;
+        }
         resetLastResult();
     }
 
