@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2005/12/12 12:58:40 $
- * Version: $Revision: 1.557.2.20 $
+ * Date   : $Date: 2006/01/19 13:46:37 $
+ * Version: $Revision: 1.557.2.21 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2652,7 +2652,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         if (replacementUser == null) {
             withACEs = false;
             replacementUser = readUser(dbc, OpenCms.getDefaultUsers().getUserDeletedResource());
-        } 
+        }
         Iterator itGroups = getGroupsOfUser(dbc, username).iterator();
         while (itGroups.hasNext()) {
             CmsGroup group = (CmsGroup)itGroups.next();
@@ -2665,7 +2665,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 removeUserFromGroup(dbc, username, group.getName());
             }
         }
-        
+
         // offline
         transferPrincipalResources(dbc, project, user.getId(), replacementUser.getId(), withACEs);
         // online
@@ -2757,9 +2757,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public synchronized CmsPublishList fillPublishList(
-        CmsDbContext dbc,
-        CmsPublishList publishList) throws CmsException {
+    public synchronized CmsPublishList fillPublishList(CmsDbContext dbc, CmsPublishList publishList)
+    throws CmsException {
 
         if (!publishList.isDirectPublish()) {
             // when publishing a project, 
@@ -2822,7 +2821,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                     if (publishList.isPublishSubResources()) {
                         // add all sub resources of the folder
-                        
+
                         List folderList = m_vfsDriver.readResourceTree(
                             dbc,
                             dbc.currentProject().getId(),
@@ -3007,6 +3006,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
     throws CmsException {
 
         return getAccessControlList(dbc, resource, inheritedOnly, resource.isFolder(), 0);
+    }
+
+    /** 
+     * Returns the number of active connections managed by a pool.<p> 
+     * 
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of active connections 
+     * @throws CmsDbException if something goes wrong 
+     */
+    public int getActiveConnections(String dbPoolUrl) throws CmsDbException {
+
+        try {
+            for (Iterator i = m_connectionPools.iterator(); i.hasNext();) {
+                PoolingDriver d = (PoolingDriver)i.next();
+                ObjectPool p = d.getConnectionPool(dbPoolUrl);
+                return p.getNumActive();
+            }
+        } catch (Exception exc) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
+            throw new CmsDbException(message, exc);
+        }
+
+        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
+        throw new CmsDbException(message);
     }
 
     /**
@@ -3269,6 +3292,30 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public CmsXmlDocumentLinkValidator getHtmlLinkValidator() {
 
         return m_htmlLinkValidator;
+    }
+
+    /** 
+     * Returns the number of idle connections managed by a pool.<p> 
+     * 
+     * @param dbPoolUrl the url of a pool 
+     * @return the number of idle connections 
+     * @throws CmsDbException if something goes wrong 
+     */
+    public int getIdleConnections(String dbPoolUrl) throws CmsDbException {
+
+        try {
+            for (Iterator i = m_connectionPools.iterator(); i.hasNext();) {
+                PoolingDriver d = (PoolingDriver)i.next();
+                ObjectPool p = d.getConnectionPool(dbPoolUrl);
+                return p.getNumIdle();
+            }
+        } catch (Exception exc) {
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl);
+            throw new CmsDbException(message, exc);
+        }
+
+        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl);
+        throw new CmsDbException(message);
     }
 
     /**
@@ -4608,10 +4655,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @return the list of <code>{@link CmsProperty}</code> objects that belong the the given backup resource
      * 
      * @throws CmsException if something goes wrong
-     */    
+     */
     public List readBackupPropertyObjects(CmsDbContext dbc, CmsBackupResource resource) throws CmsException {
-        
-        return m_backupDriver.readBackupProperties(dbc, resource);        
+
+        return m_backupDriver.readBackupProperties(dbc, resource);
     }
 
     /**
@@ -5392,7 +5439,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
         return value.cloneAsProperty();
     }
 
-
     /**
      * Reads all property objects mapped to a specified resource from the database.<p>
      * 
@@ -5465,7 +5511,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         return new ArrayList(properties);
     }
-    
+
     /**
      * Reads the resources that were published in a publish task for a given publish history ID.<p>
      * 
@@ -7078,11 +7124,13 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsIllegalArgumentException if the check fails
      */
     public void validPropertyName(String propertyName) throws CmsIllegalArgumentException {
-        
+
         try {
             validFilename(propertyName);
         } catch (CmsIllegalArgumentException e) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_PROPERTYNAME_1, e.getMessageContainer().getArgs()));
+            throw new CmsIllegalArgumentException(Messages.get().container(
+                Messages.ERR_BAD_PROPERTYNAME_1,
+                e.getMessageContainer().getArgs()));
         }
     }
 
@@ -7700,7 +7748,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     }
 
     /**
-     * Checks if characters in a String are allowed for filenames.<p>
+     * Checks if characters in a String are allowed for taskname.<p>
      *
      * @param taskname String to check
      * @throws CmsIllegalArgumentException the taskname is not valid
@@ -7720,6 +7768,12 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 && ((c < 'a') || (c > 'z'))
                 && ((c < '0') || (c > '9'))
                 && ((c < 'A') || (c > 'Z'))
+                && (c != 'ä')
+                && (c != 'ö')
+                && (c != 'ü')
+                && (c != 'Ä')
+                && (c != 'Ö')
+                && (c != 'Ü')
                 && (c != '-')
                 && (c != '.')
                 && (c != '_')
@@ -7732,6 +7786,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 && (c != '\'')
                 && (c != '#')
                 && (c != '&')
+                && (c != ':')
                 && (c != ';')) {
                 throw new CmsIllegalArgumentException(Messages.get().container(
                     Messages.ERR_TASKNAME_ILLEGAL_CHARACTERS_1,
@@ -8304,52 +8359,4 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
         return result;
     }
-    
-    /** 
-     * Returns the number of active connections managed by a pool.<p> 
-     * 
-     * @param dbPoolUrl the url of a pool 
-     * @return the number of active connections 
-     * @throws CmsDbException if something goes wrong 
-     */ 
-    public int getActiveConnections (String dbPoolUrl) throws CmsDbException { 
- 
-        try { 
-            for (Iterator i = m_connectionPools.iterator(); i.hasNext();)  { 
-                PoolingDriver d = (PoolingDriver)i.next(); 
-                ObjectPool p = d.getConnectionPool(dbPoolUrl); 
-                return p.getNumActive(); 
-            } 
-        } catch (Exception exc) {  
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl); 
-            throw new CmsDbException(message, exc); 
-        } 
-  
-        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl); 
-        throw new CmsDbException(message); 
-    } 
- 
-    /** 
-     * Returns the number of idle connections managed by a pool.<p> 
-     * 
-     * @param dbPoolUrl the url of a pool 
-     * @return the number of idle connections 
-     * @throws CmsDbException if something goes wrong 
-     */ 
-    public int getIdleConnections (String dbPoolUrl) throws CmsDbException { 
- 
-        try { 
-            for (Iterator i = m_connectionPools.iterator(); i.hasNext();)  { 
-                PoolingDriver d = (PoolingDriver)i.next(); 
-                ObjectPool p = d.getConnectionPool(dbPoolUrl); 
-                return p.getNumIdle(); 
-            } 
-        } catch (Exception exc) {  
-            CmsMessageContainer message = Messages.get().container(Messages.ERR_ACCESSING_POOL_1, dbPoolUrl); 
-            throw new CmsDbException(message, exc); 
-        } 
-  
-        CmsMessageContainer message = Messages.get().container(Messages.ERR_UNKNOWN_POOL_URL_1, dbPoolUrl); 
-        throw new CmsDbException(message); 
-    } 
 }
