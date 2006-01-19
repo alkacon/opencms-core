@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/01/18 10:30:56 $
- * Version: $Revision: 1.682.2.68 $
+ * Date   : $Date: 2006/01/19 13:52:14 $
+ * Version: $Revision: 1.682.2.69 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,8 @@ Legend:
 - General comment
 
 OpenCms 6.1.8 - ???
+- Some improvements in decorator
+- Different validation rules for task titles
 
 OpenCms 6.1.7 - January 18, 2006
 * Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
