@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
-	<label>FCKeditor WYSIWYG editor</label>
+	<label>editor.title.fckeditor</label>
 	<widgeteditor>org.opencms.editors.fckeditor.CmsFCKEditorWidget</widgeteditor>
 	<resourcetypes>
 		<type>
