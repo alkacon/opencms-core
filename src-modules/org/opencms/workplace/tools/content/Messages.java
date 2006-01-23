@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.13.2.4 $
+ * Date   : $Date: 2006/01/23 10:34:04 $
+ * Version: $Revision: 1.13.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,14 +35,16 @@ import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
 
 /**
- * Convenience class to access the localized messages of this OpenCms package.<p> 
+ * Convenience class to access the localized messages of this OpenCms package.
+ * <p>
  * 
- * @author Achim Westermann 
- * @author Jan Baudisch 
+ * @author Achim Westermann
  * 
- * @version $Revision: 1.13.2.4 $ 
+ * @author Jan Baudisch
  * 
- * @since 6.0.0 
+ * @version $Revision: 1.13.2.5 $
+ * 
+ * @since 6.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
 
@@ -51,6 +53,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_DEL_PROP_RESOURCES_LOCKED_1 = "ERR_DEL_PROP_RESOURCES_LOCKED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAGREPLACE_PARSE_4 = "ERR_TAGREPLACE_PARSE_4";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_TAGREPLACE_REPLACEMENTCONFIG_KEYVALUE_LENGTH_1 = "ERR_TAGREPLACE_REPLACEMENTCONFIG_KEYVALUE_LENGTH_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0 = "GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0";
@@ -113,6 +121,15 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0 = "GUI_ELEM_RENAME_VALIDATE_SELECT_TEMPLATE_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_TAGREPLACE_TAGNAME_INVALID_1 = "GUI_ERR_TAGREPLACE_TAGNAME_INVALID_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_TAGREPLACE_WORKPATH_1 = "GUI_ERR_TAGREPLACE_WORKPATH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_WIDGETVALUE_EMPTY_0 = "GUI_ERR_WIDGETVALUE_EMPTY_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_PAGES_THREAD_NAME_0 = "GUI_MERGE_PAGES_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -144,6 +161,78 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0 = "GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAGREPLACE_DIALOG_BLOCK_SETTINGS_0 = "GUI_TAGREPLACE_DIALOG_BLOCK_SETTINGS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TAGREPLACE_THREAD_NAME_0 = "GUI_TAGREPLACE_THREAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_ELEMENT_2 = "LOG_DEBUG_TAGREPLACE_ELEMENT_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOAD_FILE_1 = "LOG_DEBUG_TAGREPLACE_LOAD_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOAD_FILE_OK_1 = "LOG_DEBUG_TAGREPLACE_LOAD_FILE_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOCALE_1 = "LOG_DEBUG_TAGREPLACE_LOCALE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOCK_READ_1 = "LOG_DEBUG_TAGREPLACE_LOCK_READ_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOCK_READ_OK_1 = "LOG_DEBUG_TAGREPLACE_LOCK_READ_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_1 = "LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_OK_1 = "LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_MARSHAL_1 = "LOG_DEBUG_TAGREPLACE_MARSHAL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_MARSHAL_OK_1 = "LOG_DEBUG_TAGREPLACE_MARSHAL_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_3 = "LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_OK_0 = "LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_RESOURCE_SKIPPED_1 = "LOG_DEBUG_TAGREPLACE_RESOURCE_SKIPPED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_2 = "LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_OK_0 = "LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_OK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_UNMARSHAL_1 = "LOG_DEBUG_TAGREPLACE_UNMARSHAL_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_UNMARSHAL_OK_1 = "LOG_DEBUG_TAGREPLACE_UNMARSHAL_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_WRITE_1 = "LOG_DEBUG_TAGREPLACE_WRITE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_WRITE_OK_1 = "LOG_DEBUG_TAGREPLACE_WRITE_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_ERROR_TAGREPLACE_PROPERTY_WRITE_3 = "LOG_ERROR_TAGREPLACE_PROPERTY_WRITE_3";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_TAGREPLACE_READ_RESOURCES_OK_1 = "LOG_TAGREPLACE_READ_RESOURCES_OK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_WARN_TAGREPLACE_LOCK_RESOURCE_FAILED_1 = "LOG_WARN_TAGREPLACE_LOCK_RESOURCE_FAILED_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_CHANGEELEMENTLOCALE_BEGIN_2 = "RPT_CHANGEELEMENTLOCALE_BEGIN_2";
@@ -254,6 +343,33 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String RPT_SCANNING_RESULTS_0 = "RPT_SCANNING_RESULTS_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_BEGIN_1 = "RPT_TAGREPLACE_BEGIN_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_END_0 = "RPT_TAGREPLACE_END_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_PROCESS_FILE_1 = "RPT_TAGREPLACE_PROCESS_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_READ_RESOURCES_1 = "RPT_TAGREPLACE_READ_RESOURCES_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0 = "RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_SKIP_REASON_LOCKED_0 = "RPT_TAGREPLACE_SKIP_REASON_LOCKED_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_SKIP_REASON_LOCKED_1 = "RPT_TAGREPLACE_SKIP_REASON_LOCKED_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0 = "RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_UNMARSHAL_1 = "RPT_TAGREPLACE_UNMARSHAL_1";
+
+    /** Message constant for key in the resource bundle. */
     public static final String RPT_UNLOCK_1 = "RPT_UNLOCK_1";
 
     /** Message constant for key in the resource bundle. */
@@ -266,7 +382,8 @@ public final class Messages extends A_CmsMessageBundle {
     private static final I_CmsMessageBundle INSTANCE = new Messages();
 
     /**
-     * Hides the public constructor for this utility class.<p>
+     * Hides the public constructor for this utility class.
+     * <p>
      */
     private Messages() {
 
@@ -274,7 +391,8 @@ public final class Messages extends A_CmsMessageBundle {
     }
 
     /**
-     * Returns an instance of this localized message accessor.<p>
+     * Returns an instance of this localized message accessor.
+     * <p>
      * 
      * @return an instance of this localized message accessor
      */
@@ -284,7 +402,8 @@ public final class Messages extends A_CmsMessageBundle {
     }
 
     /**
-     * Returns the bundle name for this OpenCms package.<p>
+     * Returns the bundle name for this OpenCms package.
+     * <p>
      * 
      * @return the bundle name for this OpenCms package
      */

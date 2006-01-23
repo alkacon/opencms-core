@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1"?>
+<?xml version="1.0" encoding="UTF-8"?>
 
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.1.3</opencms_version>
-		<createdate>Mon, 27 Jun 2005 08:00:00 GMT</createdate>
+		<opencms_version>6.1.8</opencms_version>
+		<createdate>Mon, 23 Jan 2006 08:14:16 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -13,12 +13,10 @@
 		<nicename><![CDATA[OpenCms 6.0 Content tools]]></nicename>
 		<group>OpenCms Workplace</group>
 		<class/>
-		<description><![CDATA[
-<p>This module contains the OpenCms administration tools for managing the content of resources.</p>
+		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the content of resources.</p>
 <p>Install this module if you want to modify file properties or content elements.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
-]]></description>
-		<version>1.0.7</version>
+<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.0.9</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -38,6 +36,7 @@
 			<resource uri="/system/workplace/admin/contenttools/renameelement/"/>
 			<resource uri="/system/workplace/admin/contenttools/reports/"/>
 			<resource uri="/system/workplace/admin/contenttools/changeelementlocale.html"/>
+			<resource uri="/system/workplace/admin/contenttools/tagreplace.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/index.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/report.html"/>
 			<resource uri="/system/workplace/admin/contenttools/check/result.html"/>
@@ -57,6 +56,7 @@
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/properties_change_disabled.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/properties_delete.png"/>
 			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/properties_delete_disabled.png"/>
+			<resource uri="/system/workplace/resources/tools/contenttools/icons/big/replace_html_tag.png"/>
 		</resources>
 		<parameters/>
 	</module>
@@ -66,18 +66,27 @@
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 19 Jan 2006 08:56:48 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
-			<accesscontrol/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
 		</file>
 		<file>
 			<destination>system/modules</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 02 Aug 2004 16:00:00 GMT</datelastmodified>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Tue, 25 Feb 2003 23:00:00 GMT</datecreated>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -202,6 +211,10 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
 			</properties>
 			<accesscontrol>
 				<accessentry>
@@ -275,56 +288,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/admin/contenttools/changeelementlocale.html</source>
-			<destination>system/workplace/admin/contenttools/changeelementlocale.html</destination>
-			<type>jsp</type>
-			<uuidresource>cbf4b59f-001b-11da-b47b-6b865d00f841</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.content.CmsElementContentToolHandler]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[5.0]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavImage</name>
-					<value><![CDATA[tools/contenttools/icons/big/change_elementlocale.png]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Change element locale]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[path:/contenttools/changeelementlocale]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/admin/contenttools/change</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -372,7 +335,7 @@
 			<source>system/workplace/admin/contenttools/change/index.html</source>
 			<destination>system/workplace/admin/contenttools/change/index.html</destination>
 			<type>jsp</type>
-
+			<uuidresource>cb68388f-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -430,96 +393,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Content Check]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/contenttools/check/index.html</source>
-			<destination>system/workplace/admin/contenttools/check/index.html</destination>
-			<type>jsp</type>
-			<uuidresource>5ed6f649-3bbb-11da-9820-11c9c0330e35</uuidresource>
-			<datelastmodified>Mon, 17 Oct 2005 07:23:44 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Thu, 13 Oct 2005 07:31:29 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Content Check dialog]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/contenttools/check/report.html</source>
-			<destination>system/workplace/admin/contenttools/check/report.html</destination>
-			<type>jsp</type>
-			<uuidresource>c768a5b6-3ca7-11da-b888-11c9c0330e35</uuidresource>
-			<datelastmodified>Mon, 17 Oct 2005 07:23:36 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Fri, 14 Oct 2005 11:43:46 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Content Check report]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/admin/contenttools/check/result.html</source>
-			<destination>system/workplace/admin/contenttools/check/result.html</destination>
-			<type>jsp</type>
-			<uuidresource>e36b1b1a-3ede-11da-89c6-11c9c0330e35</uuidresource>
-			<datelastmodified>Mon, 17 Oct 2005 14:06:24 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 17 Oct 2005 07:23:17 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
-				</property>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>NavPos</name>
-					<value><![CDATA[1]]></value>
-				</property>
-				<property>
-					<name>NavInfo</name>
-					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_GROUP_0}]]></value>
-				</property>
-				<property>
-					<name>Description</name>
-					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_HELP_0}]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0}]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Content Check result]]></value>
-				</property>
-				<property>
-					<name>admintoolhandler-args</name>
-					<value><![CDATA[params:action=initial|path:/contenttools/check/result]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -595,8 +468,8 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file>		
-				<file>
+		</file>
+		<file>
 			<source>system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml</source>
 			<destination>system/workplace/admin/contenttools/check/plugin/propertycheck/configuration.xml</destination>
 			<type>xmlcontent</type>
@@ -693,7 +566,7 @@
 			<source>system/workplace/admin/contenttools/delete/index.html</source>
 			<destination>system/workplace/admin/contenttools/delete/index.html</destination>
 			<type>jsp</type>
-
+			<uuidresource>cb8843fd-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -759,7 +632,7 @@
 			<source>system/workplace/admin/contenttools/merge/index.html</source>
 			<destination>system/workplace/admin/contenttools/merge/index.html</destination>
 			<type>jsp</type>
-
+			<uuidresource>cb8fe52e-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -821,7 +694,7 @@
 			<source>system/workplace/admin/contenttools/renameelement/index.html</source>
 			<destination>system/workplace/admin/contenttools/renameelement/index.html</destination>
 			<type>jsp</type>
-
+			<uuidresource>cb9626ce-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -874,11 +747,13 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<source>system/workplace/admin/contenttools/reports/tagreplace.html</source>
+			<destination>system/workplace/admin/contenttools/reports/tagreplace.html</destination>
+			<type>jsp</type>
+			<uuidresource>91eaf6f3-88d4-11da-bc09-a3838f1b6e98</uuidresource>
+			<datelastmodified>Thu, 19 Jan 2006 10:16:33 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 19 Jan 2006 10:15:52 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
@@ -886,7 +761,22 @@
 					<name>export</name>
 					<value><![CDATA[false]]></value>
 				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Report for replacing HTML tags]]></value>
+				</property>
 			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -923,6 +813,243 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<destination>system/workplace/resources/tools/contenttools/icons/small</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/contenttools/icons/small/contenttools.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/small/contenttools.png</destination>
+			<type>image</type>
+			<uuidresource>cbd63d66-88c9-11da-9be0-a3838f1b6e98</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/contenttools/icons/small/contenttools_disabled.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/small/contenttools_disabled.png</destination>
+			<type>image</type>
+			<uuidresource>a06e9eef-e626-11d9-9a19-632613cc8395</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:20,h:20]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/changeelementlocale.html</source>
+			<destination>system/workplace/admin/contenttools/changeelementlocale.html</destination>
+			<type>jsp</type>
+			<uuidresource>cbf4b59f-001b-11da-b47b-6b865d00f841</uuidresource>
+			<datelastmodified>Thu, 19 Jan 2006 10:02:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.content.CmsElementContentToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[5.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/contenttools/icons/big/change_elementlocale.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Change element locale]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/contenttools/changeelementlocale]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/index.html</source>
+			<destination>system/workplace/admin/contenttools/check/index.html</destination>
+			<type>jsp</type>
+			<uuidresource>5ed6f649-3bbb-11da-9820-11c9c0330e35</uuidresource>
+			<datelastmodified>Mon, 17 Oct 2005 07:23:44 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 13 Oct 2005 07:31:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check dialog]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/report.html</source>
+			<destination>system/workplace/admin/contenttools/check/report.html</destination>
+			<type>jsp</type>
+			<uuidresource>c768a5b6-3ca7-11da-b888-11c9c0330e35</uuidresource>
+			<datelastmodified>Mon, 17 Oct 2005 07:23:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 14 Oct 2005 11:43:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check report]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/check/result.html</source>
+			<destination>system/workplace/admin/contenttools/check/result.html</destination>
+			<type>jsp</type>
+			<uuidresource>e36b1b1a-3ede-11da-89c6-11c9c0330e35</uuidresource>
+			<datelastmodified>Mon, 17 Oct 2005 14:06:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 17 Oct 2005 07:23:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.CmsInvisibleToolHandler]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[1]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Content Check result]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[params:action=initial|path:/contenttools/check/result]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/admin/contenttools/tagreplace.html</source>
+			<destination>system/workplace/admin/contenttools/tagreplace.html</destination>
+			<type>jsp</type>
+			<uuidresource>fc110625-88d0-11da-ad24-a3838f1b6e98</uuidresource>
+			<datelastmodified>Thu, 19 Jan 2006 10:02:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 19 Jan 2006 09:50:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-class</name>
+					<value><![CDATA[org.opencms.workplace.tools.content.CmsElementContentToolHandler]]></value>
+				</property>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[6.0]]></value>
+				</property>
+				<property>
+					<name>NavInfo</name>
+					<value><![CDATA[${key.GUI_TAGREPLACE_ADMIN_TOOL_GROUP_0}]]></value>
+				</property>
+				<property>
+					<name>Description</name>
+					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_HELP_0}]]></value>
+				</property>
+				<property>
+					<name>NavImage</name>
+					<value><![CDATA[tools/contenttools/icons/big/replace_html_tag.png]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[${key.GUI_TAGREPLACE_ADMIN_TOOL_NAME_0}]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Replace HTML Tags]]></value>
+				</property>
+				<property>
+					<name>admintoolhandler-args</name>
+					<value><![CDATA[path:/contenttools/tagreplace]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
 			<destination>system/workplace/resources/tools/contenttools/icons/big</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -931,6 +1058,24 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/tools/contenttools/icons/big/change_elementlocale.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/change_elementlocale.png</destination>
+			<type>image</type>
+			<uuidresource>60db316a-0042-11da-aff4-6b865d00f841</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -988,29 +1133,21 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/big/change_elementlocale.png</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/big/change_elementlocale.png</destination>
-			<type>image</type>
-			<uuidresource>60db316a-0042-11da-aff4-6b865d00f841</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/resources/tools/contenttools/icons/big/contentmerge.png</source>
 			<destination>system/workplace/resources/tools/contenttools/icons/big/contentmerge.png</destination>
 			<type>image</type>
-
+			<uuidresource>cbb19e37-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1023,19 +1160,30 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/contenttools/icons/big/contenttools.png</source>
 			<destination>system/workplace/resources/tools/contenttools/icons/big/contenttools.png</destination>
 			<type>image</type>
+			<uuidresource>cbb93f60-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1048,20 +1196,30 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/contenttools/icons/big/elements_rename.png</source>
 			<destination>system/workplace/resources/tools/contenttools/icons/big/elements_rename.png</destination>
 			<type>image</type>
-
+			<uuidresource>cbbf59e9-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1074,19 +1232,30 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<source>system/workplace/resources/tools/contenttools/icons/big/properties_change.png</source>
 			<destination>system/workplace/resources/tools/contenttools/icons/big/properties_change.png</destination>
 			<type>image</type>
+			<uuidresource>cbc6fb12-88c9-11da-9be0-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1099,7 +1268,12 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1112,7 +1286,12 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
@@ -1125,43 +1304,30 @@
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/resources/tools/contenttools/icons/small</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/small/contenttools.png</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/small/contenttools.png</destination>
+			<source>system/workplace/resources/tools/contenttools/icons/big/replace_html_tag.png</source>
+			<destination>system/workplace/resources/tools/contenttools/icons/big/replace_html_tag.png</destination>
 			<type>image</type>
+			<uuidresource>89560862-88d1-11da-ad24-a3838f1b6e98</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 19 Jan 2006 09:54:09 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/tools/contenttools/icons/small/contenttools_disabled.png</source>
-			<destination>system/workplace/resources/tools/contenttools/icons/small/contenttools_disabled.png</destination>
-			<type>image</type>
-			<uuidresource>a06e9eef-e626-11d9-9a19-632613cc8395</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 	</files>
