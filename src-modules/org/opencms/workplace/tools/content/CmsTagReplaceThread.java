@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceThread.java,v $
- * Date   : $Date: 2006/01/23 10:34:04 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/23 15:29:28 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.8
  */
@@ -268,6 +268,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                 new Object[] {resource.getRootPath()}));
         }
         try {
+            // checking the lock:
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(
                     getCms().getRequestContext().getLocale(),
@@ -294,6 +295,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                             Messages.LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_1,
                             new Object[] {resource.getRootPath()}));
                     }
+                    // obtaining the lock:
                     getCms().lockResource(
                         getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
                         CmsLock.TYPE_EXCLUSIVE);
@@ -305,6 +307,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                     }
                 }
             } else {
+                // locked by another user:
                 if (LOG.isDebugEnabled()) {
                     LOG.debug(Messages.get().key(
                         getCms().getRequestContext().getLocale(),
@@ -410,7 +413,6 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                 try {
 
                     parser.process(content, xmlcontent.getEncoding());
-
                     value.setStringValue(getCms(), parser.getResult());
                 } catch (ParserException e) {
                     CmsMessageContainer container = Messages.get().container(
@@ -426,66 +428,86 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
             count++;
         }
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
-                Messages.LOG_DEBUG_TAGREPLACE_MARSHAL_1,
-                new Object[] {resource.getRootPath()}));
-        }
-        byte[] content = xmlcontent.marshal();
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
-                Messages.LOG_DEBUG_TAGREPLACE_MARSHAL_OK_1,
-                new Object[] {resource.getRootPath()}));
-        }
-
-        // write back the modified xmlcontent:
-        file.setContents(content);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                Locale.ENGLISH,
-                Messages.LOG_DEBUG_TAGREPLACE_WRITE_1,
-                new Object[] {resource.getRootPath()}));
-        }
-
-        getCms().writeFile(file);
-
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                Locale.ENGLISH,
-                Messages.LOG_DEBUG_TAGREPLACE_WRITE_OK_1,
-                new Object[] {resource.getRootPath()}));
-        }
-
-        try {
-            // set the marker property:
+        if (parser.isChangedContent()) {
 
             if (LOG.isDebugEnabled()) {
                 LOG.debug(Messages.get().key(
-                    Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_3,
+                    getCms().getRequestContext().getLocale(),
+                    Messages.LOG_DEBUG_TAGREPLACE_MARSHAL_1,
+                    new Object[] {resource.getRootPath()}));
+            }
+            byte[] content = xmlcontent.marshal();
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(
+                    getCms().getRequestContext().getLocale(),
+                    Messages.LOG_DEBUG_TAGREPLACE_MARSHAL_OK_1,
+                    new Object[] {resource.getRootPath()}));
+            }
+
+            // write back the modified xmlcontent:
+            file.setContents(content);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(
+                    Locale.ENGLISH,
+                    Messages.LOG_DEBUG_TAGREPLACE_WRITE_1,
+                    new Object[] {resource.getRootPath()}));
+            }
+
+            getCms().writeFile(file);
+
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(
+                    Locale.ENGLISH,
+                    Messages.LOG_DEBUG_TAGREPLACE_WRITE_OK_1,
+                    new Object[] {resource.getRootPath()}));
+            }
+
+            try {
+                // set the marker property:
+
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_3,
+                        new Object[] {
+                            m_markerProperty.getName(),
+                            m_markerProperty.getResourceValue(),
+                            resource.getRootPath()}));
+                }
+                getCms().writePropertyObject(
+                    getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
+                    m_markerProperty);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_OK_0));
+                }
+                report.println(
+                    org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+                    I_CmsReport.FORMAT_OK);
+            } catch (CmsException e) {
+                CmsMessageContainer container = Messages.get().container(
+                    Messages.LOG_ERROR_TAGREPLACE_PROPERTY_WRITE_3,
                     new Object[] {
                         m_markerProperty.getName(),
                         m_markerProperty.getResourceValue(),
-                        resource.getRootPath()}));
+                        resource.getRootPath()});
+                throw new CmsXmlException(container, e);
             }
-            getCms().writePropertyObject(
-                getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
-                m_markerProperty);
+
+        } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_OK_0));
+                LOG.debug(Messages.get().container(Messages.LOG_DEBUG_TAGREPLACE_UNLOCK_FILE_1, resource.getRootPath()));
             }
-            report.println(
-                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
+            getCms().unlockResource(getCms().getRequestContext().removeSiteRoot(resource.getRootPath()));
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().container(Messages.LOG_DEBUG_TAGREPLACE_UNLOCK_FILE_OK_0));
+            }
+            report.print(
+                org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
                 I_CmsReport.FORMAT_OK);
-        } catch (CmsException e) {
-            CmsMessageContainer container = Messages.get().container(
-                Messages.LOG_ERROR_TAGREPLACE_PROPERTY_WRITE_3,
-                new Object[] {m_markerProperty.getName(), m_markerProperty.getResourceValue(), resource.getRootPath()});
-            throw new CmsXmlException(container, e);
+            report.println(
+                Messages.get().container(Messages.RPT_TAGREPLACE_SKIP_REASON_UNMODIFIED_0),
+                I_CmsReport.FORMAT_OK);
+
         }
-
     }
-
 }

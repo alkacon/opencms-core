@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceSettings.java,v $
- * Date   : $Date: 2006/01/23 14:21:18 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/23 15:29:28 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.7
  * 
@@ -289,9 +289,12 @@ public final class CmsTagReplaceSettings {
      * 
      * @param tag the tag to be transformed.
      * 
+     * @return true if the given tag was modified, false else.
+     * 
      */
-    protected void replace(org.htmlparser.Tag tag) {
+    protected boolean replace(org.htmlparser.Tag tag) {
 
+        boolean result = false;
         String tagName = tag.getTagName().trim().toLowerCase();
         String replacementName = (String)m_tags2replacementTags.get(tagName);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(replacementName)) {
@@ -302,6 +305,7 @@ public final class CmsTagReplaceSettings {
                 replacementName = "/" + replacementName;
             }
             tag.setTagName(replacementName);
+            result = true;
             // clear the attributes too:
             List attributes = tag.getAttributesEx();
             Iterator itAttribs = attributes.iterator();
@@ -333,6 +337,7 @@ public final class CmsTagReplaceSettings {
                 }
             }
         }
+        return result;
     }
 
     /**

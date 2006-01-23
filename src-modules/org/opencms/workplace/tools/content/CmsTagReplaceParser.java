@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceParser.java,v $
- * Date   : $Date: 2006/01/23 10:34:04 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/23 15:29:28 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,9 +52,12 @@ import org.htmlparser.util.ParserException;
  * instance.
  * <p>
  * 
+ * Instances are reusable.
+ * <p>
+ * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.7
  * 
@@ -64,6 +67,11 @@ public final class CmsTagReplaceParser extends CmsHtmlParser implements I_CmsHtm
     /** A tag factory that is able to make tags invisible to visitors. */
     private final NodeFactory m_nodeFactory;
 
+    /**
+     * Boolean flag that is set to true if during last call to {@link #process(String, String)}
+     * content was changed.
+     */
+    private boolean m_changedContent;
     /**
      * The settings to use for replacing tags.
      */
@@ -138,8 +146,11 @@ public final class CmsTagReplaceParser extends CmsHtmlParser implements I_CmsHtm
      */
     public String process(String html, String encoding) throws ParserException {
 
-        // initialize a parser with the given charset
+        // clear from potential previous run:
         m_result = new StringBuffer();
+        m_changedContent = false;
+
+        // initialize a parser with the given charset
         Parser parser = new Parser();
         parser.setNodeFactory(m_nodeFactory);
         Lexer lexer = new Lexer();
@@ -157,7 +168,10 @@ public final class CmsTagReplaceParser extends CmsHtmlParser implements I_CmsHtm
      */
     public void visitEndTag(Tag tag) {
 
-        m_settings.replace(tag);
+        boolean change = m_settings.replace(tag);
+        if (change) {
+            m_changedContent = true;
+        }
         super.visitEndTag(tag);
     }
 
@@ -166,8 +180,22 @@ public final class CmsTagReplaceParser extends CmsHtmlParser implements I_CmsHtm
      */
     public void visitTag(Tag tag) {
 
-        m_settings.replace(tag);
+        boolean change = m_settings.replace(tag);
+        if (change) {
+            m_changedContent = true;
+        }
         super.visitTag(tag);
+    }
+
+    /**
+     * Returns the changedContent.
+     * <p>
+     * 
+     * @return the changedContent
+     */
+    public boolean isChangedContent() {
+
+        return m_changedContent;
     }
 
 }

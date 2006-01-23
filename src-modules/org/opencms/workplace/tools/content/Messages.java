@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2006/01/23 13:26:26 $
- * Version: $Revision: 1.13.2.6 $
+ * Date   : $Date: 2006/01/23 15:29:28 $
+ * Version: $Revision: 1.13.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,12 +42,18 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.13.2.6 $
+ * @version $Revision: 1.13.2.7 $
  * 
  * @since 6.0.0
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_UNLOCK_FILE_1 = "LOG_DEBUG_TAGREPLACE_UNLOCK_FILE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_DEBUG_TAGREPLACE_UNLOCK_FILE_OK_0 = "LOG_DEBUG_TAGREPLACE_UNLOCK_FILE_OK_0";
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_CHANGEELEMENTLOCALE_LOCALE_EQUAL_0 = "ERR_CHANGEELEMENTLOCALE_LOCALE_EQUAL_0";
 
@@ -368,6 +374,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0 = "RPT_TAGREPLACE_SKIP_REASON_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_TAGREPLACE_SKIP_REASON_UNMODIFIED_0 = "RPT_TAGREPLACE_SKIP_REASON_UNMODIFIED_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_TAGREPLACE_UNMARSHAL_1 = "RPT_TAGREPLACE_UNMARSHAL_1";
