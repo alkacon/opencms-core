@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.117 $
+ * Date   : $Date: 2006/01/23 14:17:19 $
+ * Version: $Revision: 1.118 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ import org.opencms.file.CmsVfsResourceNotFoundException;
 import org.opencms.file.types.CmsResourceTypeJsp;
 import org.opencms.i18n.CmsAcceptLanguageHeaderParser;
 import org.opencms.i18n.CmsI18nInfo;
+import org.opencms.i18n.CmsLocaleManager;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsContextInfo;
 import org.opencms.main.CmsEvent;
@@ -48,6 +49,7 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.I_CmsEventListener;
 import org.opencms.main.OpenCms;
+import org.opencms.report.CmsLogReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsSecurityException;
 import org.opencms.site.CmsSiteManager;
@@ -82,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.117 $ 
+ * @version $Revision: 1.118 $ 
  * 
  * @since 6.0.0 
  */
@@ -355,6 +357,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                     LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
                 I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
+                if (report == null) {
+                    report = new CmsLogReport(CmsLocaleManager.getDefaultLocale(), getClass());
+                }
                 getHandler().performEventPublishProject(publishHistoryId, report);
 
                 clearCaches(event);
