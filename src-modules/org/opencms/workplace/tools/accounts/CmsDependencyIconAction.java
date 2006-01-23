@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsDependencyIconAction.java,v $
- * Date   : $Date: 2005/10/13 11:06:32 $
- * Version: $Revision: 1.3 $
+ * Date   : $Date: 2006/01/23 14:19:12 $
+ * Version: $Revision: 1.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.opencms.workplace.tools.A_CmsHtmlIconButton;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.3 $ 
+ * @version $Revision: 1.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -73,6 +73,9 @@ public class CmsDependencyIconAction extends CmsListResourceIconAction {
      */
     public String buttonHtml(CmsWorkplace wp) {
 
+        if (!isVisible()) {
+            return "";
+        }
         if (m_type == CmsDependencyIconActionType.RESOURCE) {
             return super.buttonHtml(wp);
         } else {
