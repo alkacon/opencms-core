@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceDialog.java,v $
- * Date   : $Date: 2006/01/23 13:26:26 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/23 16:39:27 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.7
  */
@@ -163,8 +163,7 @@ public class CmsTagReplaceDialog extends CmsWidgetDialog {
 
         // set localized key prefix
         setKeyPrefix(KEY_PREFIX);
-
-        addWidget(new CmsWidgetDialogParameter(m_settings, "replacements", "/", PAGES[0], new CmsInputWidget(""), 1, 1));
+        addWidget(new CmsWidgetDialogParameter(m_settings, "replacements", PAGES[0], new CmsInputWidget()));
         addWidget(new CmsWidgetDialogParameter(m_settings, "workPath", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, 1));

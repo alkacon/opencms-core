@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceSettings.java,v $
- * Date   : $Date: 2006/01/23 15:29:28 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/01/23 16:39:27 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,6 +43,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.TreeSet;
 import java.util.Vector;
@@ -62,7 +63,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.1.7
  * 
@@ -97,7 +98,7 @@ public final class CmsTagReplaceSettings {
      * A map containing lower case tag names of tags to replace as keys and the replacement tag
      * names as their corresponding values.
      */
-    private Map m_tags2replacementTags;
+    private SortedMap m_tags2replacementTags;
 
     /** The root of all content files to process. */
     private String m_workPath;
@@ -144,19 +145,9 @@ public final class CmsTagReplaceSettings {
      * 
      * @return the replacements to perform in form of a comma-separated List of "key=value" tokens.
      */
-    public String getReplacements() {
+    public SortedMap getReplacements() {
 
-        StringBuffer result = new StringBuffer();
-        Map.Entry entry;
-        Iterator itEntries = m_tags2replacementTags.entrySet().iterator();
-        while (itEntries.hasNext()) {
-            entry = (Map.Entry)itEntries.next();
-            result.append(entry.getKey()).append('=').append(entry.getValue());
-            if (itEntries.hasNext()) {
-                result.append(',');
-            }
-        }
-        return result.toString();
+        return m_tags2replacementTags;
     }
 
     /**
@@ -199,46 +190,37 @@ public final class CmsTagReplaceSettings {
      * 
      * @throws CmsIllegalArgumentException if the argument is not valid.
      */
-    public void setReplacements(String replacements) throws CmsIllegalArgumentException {
+    public void setReplacements(SortedMap replacements) throws CmsIllegalArgumentException {
 
-        if (CmsStringUtil.isEmptyOrWhitespaceOnly(replacements)) {
-            throw new CmsIllegalArgumentException(Messages.get().container(Messages.GUI_ERR_WIDGETVALUE_EMPTY_0));
-        }
-        List mappings = CmsStringUtil.splitAsList(replacements, ',');
-        Iterator itMappings = mappings.iterator();
-        String mapping;
-        String[] keyValue;
+        Iterator itMappings = replacements.entrySet().iterator();
+        Map.Entry entry;
+        String key, value;
         while (itMappings.hasNext()) {
-            mapping = (String)itMappings.next();
-            keyValue = CmsStringUtil.splitAsArray(mapping, '=');
-            switch (keyValue.length) {
-                case 1:
-                    // removal
-                    Tag deleteTag;
-                    String tagName = keyValue[0].toLowerCase().trim();
-                    try {
-                        Vector attributeList = new Vector(1);
-                        Attribute tagNameAttribute = new Attribute();
-                        tagNameAttribute.setName(tagName);
-                        attributeList.add(tagNameAttribute);
-                        deleteTag = m_nodeFactory.createTagNode(null, 0, 0, attributeList);
-                        m_deleteTags.add(deleteTag);
-                    } catch (ParserException e) {
-                        CmsMessageContainer container = Messages.get().container(
-                            Messages.GUI_ERR_TAGREPLACE_TAGNAME_INVALID_1,
-                            tagName);
-                        throw new CmsIllegalArgumentException(container, e);
-                    }
-                    break;
-                case 2:
-                    // replacement
-                    m_tags2replacementTags.put(keyValue[0].trim(), keyValue[1].trim());
-                    break;
-                default:
-                    throw new CmsIllegalArgumentException(Messages.get().container(
-                        Messages.ERR_TAGREPLACE_REPLACEMENTCONFIG_KEYVALUE_LENGTH_1,
-                        mapping));
+            entry = (Map.Entry)itMappings.next();
+            key = (String)entry.getKey();
+            value = (String)entry.getValue();
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(value)) {
+                // removal
+                Tag deleteTag;
+                String tagName = (key).toLowerCase().trim();
+                try {
+                    Vector attributeList = new Vector(1);
+                    Attribute tagNameAttribute = new Attribute();
+                    tagNameAttribute.setName(tagName);
+                    attributeList.add(tagNameAttribute);
+                    deleteTag = m_nodeFactory.createTagNode(null, 0, 0, attributeList);
+                    m_deleteTags.add(deleteTag);
+                    itMappings.remove();
+                } catch (ParserException e) {
+                    CmsMessageContainer container = Messages.get().container(
+                        Messages.GUI_ERR_TAGREPLACE_TAGNAME_INVALID_1,
+                        tagName);
+                    throw new CmsIllegalArgumentException(container, e);
+                }
+            } else {
+                // nop
             }
+            m_tags2replacementTags = replacements;
         }
         // if setPropertyValueTagReplaceID has been invoked earlier with empty value
         // due to missing user input:
@@ -358,7 +340,18 @@ public final class CmsTagReplaceSettings {
             return ""; // to know that no replacements were set before and the ID will still have
             // to be computed later
         } else {
-            return getReplacements();
+            StringBuffer result = new StringBuffer();
+            Map.Entry entry;
+            Iterator itEntries = m_tags2replacementTags.entrySet().iterator();
+            while (itEntries.hasNext()) {
+                entry = (Map.Entry)itEntries.next();
+                result.append(entry.getKey()).append('=').append(entry.getValue());
+                if (itEntries.hasNext()) {
+                    result.append(',');
+                }
+            }
+            return result.toString();
+
         }
     }
 }
