@@ -61,9 +61,8 @@ import java.util.List;
  */
 public final class CmsResourceUtil {
 
-    // TODO: Remove this class, maybe refactor to org.opencms.workplace.list package
-    // TODO: Check if CmsResource should be extended by this class
-    private int todo = 0;
+    /** Resource states abbreviations table. */
+    private static final char[] RESOURCE_STATE = new char[] {'U', 'C', 'N', 'D', '_'};
 
     /** The folder size display string constant. */
     private static final String SIZE_DIR = "-";
@@ -82,6 +81,10 @@ public final class CmsResourceUtil {
 
     /** The current resource type. */
     private I_CmsResourceType m_resourceType;
+
+    // TODO: Remove this class, maybe refactor to org.opencms.workplace.list package
+    // TODO: Check if CmsResource should be extended by this class
+    private int todo = 0;
 
     /**
      * Creates a new {@link CmsRequestUtil} object.<p> 
@@ -113,6 +116,22 @@ public final class CmsResourceUtil {
     public CmsResourceUtil(CmsResource resource) {
 
         setResource(resource);
+    }
+
+    /**
+     * Returns resource state abbreviation.<p>
+     * 
+     * @param state the resource state 
+     * 
+     * @return resource state abbreviation
+     */
+    public static char getStateAbbreviation(int state) {
+
+        if (state >= 0 && state <= 3) {
+            return RESOURCE_STATE[state];
+        } else {
+            return RESOURCE_STATE[4];
+        }
     }
 
     /**
@@ -412,6 +431,21 @@ public final class CmsResourceUtil {
     public String getSizeString() {
 
         return m_resource.getLength() == -1 ? SIZE_DIR : "" + m_resource.getLength();
+    }
+
+    /**
+     * Returns resource state abbreviation.<p>
+     * 
+     * @return resource state abbreviation
+     */
+    public char getStateAbbreviation() {
+
+        int state = getResource().getState();
+        if (state >= 0 && state <= 3) {
+            return RESOURCE_STATE[state];
+        } else {
+            return RESOURCE_STATE[4];
+        }
     }
 
     /**
