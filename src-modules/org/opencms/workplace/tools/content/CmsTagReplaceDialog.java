@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceDialog.java,v $
- * Date   : $Date: 2006/01/23 10:34:04 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/23 13:26:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.7
  */
@@ -142,7 +142,8 @@ public class CmsTagReplaceDialog extends CmsWidgetDialog {
 
         // create export file name block
         result.append(createWidgetBlockStart(Messages.get().key(
-            Messages.GUI_CHANGEELEMENTLOCALE_DIALOG_BLOCK_SETTINGS_0)));
+            getLocale(),
+            Messages.GUI_TAGREPLACE_DIALOG_BLOCK_SETTINGS_0)));
         result.append(createDialogRowsHtml(0, 2));
         result.append(createWidgetBlockEnd());
 
