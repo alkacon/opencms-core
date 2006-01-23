@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/01/23 11:25:01 $
- * Version: $Revision: 1.80.2.7 $
+ * Date   : $Date: 2006/01/23 13:28:38 $
+ * Version: $Revision: 1.80.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,16 +91,16 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.7 $ 
+ * @version $Revision: 1.80.2.8 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExport {
 
-    private static final int SUB_LENGTH = 4096;
-
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExport.class);
+
+    private static final int SUB_LENGTH = 4096;
 
     /** The CmsObject to do the operations. */
     private CmsObject m_cms;
@@ -132,6 +132,9 @@ public class CmsExport {
     /** Indicates if the unchanged resources should be included to the export .*/
     private boolean m_includeUnchanged;
 
+    /** Recursive flag, if set the folders are exported recursively. */
+    private boolean m_recursive;
+
     /** The report for the log messages. */
     private I_CmsReport m_report;
 
@@ -143,9 +146,6 @@ public class CmsExport {
 
     /** Cache for previously added super folders. */
     private List m_superFolders;
-
-    /** Recursive flag, if set the folders are exported recursively. */
-    private boolean m_recursive;
 
     /**
      * Constructs a new uninitialized export, required for special subclass data export.<p>
@@ -175,7 +175,48 @@ public class CmsExport {
     throws CmsImportExportException, CmsRoleViolationException {
 
         this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport(
-            cms.getRequestContext().getLocale()), true);
+            cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            contentAge,
+            report,
+            true);
     }
 
     /**
