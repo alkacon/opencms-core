@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2005/10/10 16:11:09 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/01/23 14:19:49 $
+ * Version: $Revision: 1.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,12 +146,12 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
         // create export settings block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0)));
-        result.append(createDialogRowsHtml(1, 4));
+        result.append(createDialogRowsHtml(1, 5));
         result.append(createWidgetBlockEnd());
 
         // create export resource(s) block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0)));
-        result.append(createDialogRowsHtml(5, 5));
+        result.append(createDialogRowsHtml(6, 6));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -189,7 +189,8 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
             new CmsCalendarWidget(),
             0,
             1));
-
+        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "recursive", PAGES[0], new CmsCheckboxWidget()));
+        
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportPaths", "/", PAGES[0], new CmsVfsFileWidget(
             false,
             getCms().getRequestContext().getSiteRoot()), 1, CmsWidgetDialogParameter.MAX_OCCURENCES));

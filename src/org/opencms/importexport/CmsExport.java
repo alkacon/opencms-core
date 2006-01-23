@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2005/10/13 16:26:01 $
- * Version: $Revision: 1.82 $
+ * Date   : $Date: 2006/01/23 14:19:49 $
+ * Version: $Revision: 1.83 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -93,16 +93,16 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.82 $ 
+ * @version $Revision: 1.83 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsExport {
-    
-    private static final int SUB_LENGTH = 4096;
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsExport.class);
+
+    private static final int SUB_LENGTH = 4096;
 
     /** The CmsObject to do the operations. */
     private CmsObject m_cms;
@@ -134,6 +134,9 @@ public class CmsExport {
     /** Indicates if the unchanged resources should be included to the export .*/
     private boolean m_includeUnchanged;
 
+    /** Recursive flag, if set the folders are exported recursively. */
+    private boolean m_recursive;
+
     /** The report for the log messages. */
     private I_CmsReport m_report;
 
@@ -152,6 +155,52 @@ public class CmsExport {
     public CmsExport() {
 
         // empty constructor
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * NOTE: This constructor is just to be compatible with the dev-branch, and ocee.
+     *       Replace after merging.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * @param recursive recursive flag
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report,
+        boolean recursive)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        this(
+            cms,
+            exportFile,
+            listToStringArray(resourcesToExport),
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            contentAge,
+            report,
+            true);
     }
 
     /**
@@ -205,6 +254,49 @@ public class CmsExport {
         I_CmsReport report)
     throws CmsImportExportException, CmsRoleViolationException {
 
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            contentAge,
+            report,
+            true);
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and grou pdata will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * @param recursive recursive flag
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        String[] resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        long contentAge,
+        I_CmsReport report,
+        boolean recursive)
+    throws CmsImportExportException, CmsRoleViolationException {
+
         setCms(cms);
         setReport(report);
         setExportFileName(exportFile);
@@ -217,6 +309,7 @@ public class CmsExport {
         m_exportUserdata = exportUserdata;
         m_contentAge = contentAge;
         m_exportCount = 0;
+        m_recursive = recursive;
 
         // clear all caches
         report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
@@ -343,6 +436,16 @@ public class CmsExport {
     }
 
     /**
+     * Remove after merging dev-branch.<p>
+     */
+    private static String[] listToStringArray(List list) {
+
+        String[] array = new String[list.size()];
+        list.toArray(array);
+        return array;
+    }
+
+    /**
      * Exports the given folder and all child resources.<p>
      *
      * @param folderName to complete path to the resource to export
@@ -362,7 +465,8 @@ public class CmsExport {
             for (int i = 0; i < subFiles.size(); i++) {
                 CmsResource file = (CmsResource)subFiles.get(i);
                 int state = file.getState();
-                long age = file.getDateLastModified();
+                long age = file.getDateLastModified() < file.getDateCreated() ? file.getDateCreated()
+                : file.getDateLastModified();
 
                 if (getCms().getRequestContext().currentProject().isOnlineProject()
                     || (m_includeUnchanged)
@@ -391,9 +495,11 @@ public class CmsExport {
                     String export = getCms().getSitePath(folder);
                     if (checkExportResource(export)) {
 
+                        long age = folder.getDateLastModified() < folder.getDateCreated() ? folder.getDateCreated()
+                        : folder.getDateLastModified();
                         // export this folder only if age is above selected age
                         // default for selected age (if not set by user) is <code>long 0</code> (i.e. 1970)
-                        if (folder.getDateLastModified() >= m_contentAge) {
+                        if (age >= m_contentAge) {
                             // only export folder data to manifest.xml if it has changed
                             appendResourceToManifest(folder, false);
                         }
@@ -505,8 +611,10 @@ public class CmsExport {
             }
         }
 
-        // remove the possible redundancies in the list of resources
-        checkRedundancies(folderNames, fileNames);
+        if (m_recursive) {
+            // remove the possible redundancies in the list of resources
+            checkRedundancies(folderNames, fileNames);
+        }
 
         // init sets required for the body file exports 
         m_exportedResources = new HashSet();
@@ -515,9 +623,40 @@ public class CmsExport {
         // export the folders
         for (int i = 0; i < folderNames.size(); i++) {
             String path = (String)folderNames.get(i);
-            // first add superfolders to the xml-config file
-            addParentFolders(path);
-            addChildResources(path);
+            if (m_recursive) {
+                // first add superfolders to the xml-config file
+                addParentFolders(path);
+                addChildResources(path);
+            } else {
+                CmsFolder folder;
+                try {
+                    folder = getCms().readFolder(path, CmsResourceFilter.IGNORE_EXPIRATION);
+                } catch (CmsException e) {
+                    CmsMessageContainer message = Messages.get().container(
+                        Messages.ERR_IMPORTEXPORT_ERROR_ADDING_PARENT_FOLDERS_1,
+                        path);
+                    if (LOG.isDebugEnabled()) {
+                        LOG.debug(message.key(), e);
+                    }
+                    throw new CmsImportExportException(message, e);
+                }
+                int state = folder.getState();
+                long age = folder.getDateLastModified() < folder.getDateCreated() ? folder.getDateCreated()
+                : folder.getDateLastModified();
+
+                if (getCms().getRequestContext().currentProject().isOnlineProject()
+                    || (m_includeUnchanged)
+                    || state == CmsResource.STATE_NEW
+                    || state == CmsResource.STATE_CHANGED) {
+                    if ((state != CmsResource.STATE_DELETED) && (age >= m_contentAge)) {
+                        // check if this is a system-folder and if it should be included.
+                        String export = getCms().getSitePath(folder);
+                        if (checkExportResource(export)) {
+                            appendResourceToManifest(folder, false);
+                        }
+                    }
+                }
+            }
             m_exportedResources.add(path);
         }
         // export the files
@@ -733,7 +872,9 @@ public class CmsExport {
                     CmsFile file = getCms().readFile(fileName, CmsResourceFilter.IGNORE_EXPIRATION);
                     if ((file.getState() != CmsResource.STATE_DELETED) && (!file.getName().startsWith("~"))) {
                         if (checkExportResource(fileName)) {
-                            addParentFolders(fileName);
+                            if (m_recursive) {
+                                addParentFolders(fileName);
+                            }
                             exportFile(file);
                         }
                     }
@@ -811,7 +952,7 @@ public class CmsExport {
             if (m_superFolders == null) {
                 m_superFolders = new ArrayList();
             }
-            ArrayList superFolders = new ArrayList();
+            List superFolders = new ArrayList();
 
             // Check, if the path is really a folder
             if (resourceName.lastIndexOf("/") != (resourceName.length() - 1)) {
@@ -919,7 +1060,8 @@ public class CmsExport {
             } catch (CmsException e) {
                 userNameLastModified = OpenCms.getDefaultUsers().getUserAdmin();
             }
-            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(CmsEncoder.escapeXml(userNameLastModified));
+            fileElement.addElement(CmsImportExportManager.N_USERLASTMODIFIED).addText(
+                CmsEncoder.escapeXml(userNameLastModified));
             // <datecreated>
             fileElement.addElement(CmsImportExportManager.N_DATECREATED).addText(
                 CmsDateUtil.getHeaderDate(resource.getDateCreated()));
@@ -1002,12 +1144,11 @@ public class CmsExport {
                         + getCms().readGroup(acePrincipal).getName();
                 } else {
                     // the principal is a user
-                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER
-                        + '.'
-                        + getCms().readUser(acePrincipal).getName();
+                    acePrincipalName = I_CmsPrincipal.PRINCIPAL_USER + '.' + getCms().readUser(acePrincipal).getName();
                 }
 
-                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(CmsEncoder.escapeXml(acePrincipalName));
+                a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PRINCIPAL).addText(
+                    CmsEncoder.escapeXml(acePrincipalName));
                 a.addElement(CmsImportExportManager.N_FLAGS).addText(Integer.toString(flags));
 
                 Element b = a.addElement(CmsImportExportManager.N_ACCESSCONTROL_PERMISSIONSET);

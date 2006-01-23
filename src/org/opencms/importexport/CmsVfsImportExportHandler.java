@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsVfsImportExportHandler.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/01/23 14:19:49 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,12 +61,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     /** The description of this import/export handler.<p> */
     private String m_description;
 
-    /** Boolean flag to decide whether VFS resources under /system/ should be exported or not.<p> */
-    private boolean m_includeSystem;
-
-    /** Boolean flag to decide whether unchanged resources should be exported or not.<p> */
-    private boolean m_includeUnchanged;
-
     /** The VFS paths to be exported.<p> */
     private List m_exportPaths;
 
@@ -75,6 +69,15 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
 
     /** The name of the export file in the real file system.<p> */
     private String m_fileName;
+
+    /** Boolean flag to decide whether VFS resources under /system/ should be exported or not.<p> */
+    private boolean m_includeSystem;
+
+    /** Boolean flag to decide whether unchanged resources should be exported or not.<p> */
+    private boolean m_includeUnchanged;
+
+    /** Boolean flag to indicate if the folders are exported recursively or not. */
+    private boolean m_recursive;
 
     /**
      * Creates a new VFS import/export handler.<p>
@@ -87,27 +90,28 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
         m_includeUnchanged = true;
         m_exportUserdata = true;
         m_exportPaths = Collections.EMPTY_LIST;
-    }
-
-    /**
-     * Returns the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
-     * 
-     * @return true, if VFS resources under /system/ should not be exported
-     */
-    public boolean isIncludeSystem() {
-
-        return m_includeSystem;
+        m_recursive = true;
     }
 
     /**
      * @see org.opencms.importexport.I_CmsImportExportHandler#exportData(org.opencms.file.CmsObject, org.opencms.report.I_CmsReport)
      */
-    public void exportData(CmsObject cms, I_CmsReport report) throws CmsImportExportException, CmsRoleViolationException {
-        
+    public void exportData(CmsObject cms, I_CmsReport report)
+    throws CmsImportExportException, CmsRoleViolationException {
+
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         String[] exportPaths = (String[])getExportPaths().toArray(new String[getExportPaths().size()]);
-        new CmsExport(cms, getFileName(), exportPaths, isIncludeSystem(), isIncludeUnchanged(),
-            null, isExportUserdata(), getContentAge(), report);
+        new CmsExport(
+            cms,
+            getFileName(),
+            exportPaths,
+            isIncludeSystem(),
+            isIncludeUnchanged(),
+            null,
+            isExportUserdata(),
+            getContentAge(),
+            report,
+            isRecursive());
         report.println(Messages.get().container(Messages.RPT_EXPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
     }
 
@@ -157,14 +161,30 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     public synchronized void importData(CmsObject cms, String importFile, String importPath, I_CmsReport report)
     throws CmsImportExportException, CmsXmlException, CmsRoleViolationException {
 
-        report.println(
-            Messages.get().container(Messages.RPT_IMPORT_DB_BEGIN_0),
-            I_CmsReport.FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_IMPORT_DB_BEGIN_0), I_CmsReport.FORMAT_HEADLINE);
         CmsImport vfsImport = new CmsImport(cms, importFile, importPath, report);
         vfsImport.importResources();
-        report.println(
-            Messages.get().container(Messages.RPT_IMPORT_DB_END_0),
-            I_CmsReport.FORMAT_HEADLINE);
+        report.println(Messages.get().container(Messages.RPT_IMPORT_DB_END_0), I_CmsReport.FORMAT_HEADLINE);
+    }
+
+    /**
+     * Returns the boolean flag to decide whether user/group data should be exported or not.<p>
+     * 
+     * @return true, if user/group data should be exported
+     */
+    public boolean isExportUserdata() {
+
+        return m_exportUserdata;
+    }
+
+    /**
+     * Returns the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
+     * 
+     * @return true, if VFS resources under /system/ should not be exported
+     */
+    public boolean isIncludeSystem() {
+
+        return m_includeSystem;
     }
 
     /**
@@ -178,13 +198,13 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * Returns the boolean flag to decide whether user/group data should be exported or not.<p>
-     * 
-     * @return true, if user/group data should be exported
+     * Returns the recursive flag.<p>
+     *
+     * @return the recursive flag
      */
-    public boolean isExportUserdata() {
+    public boolean isRecursive() {
 
-        return m_exportUserdata;
+        return m_recursive;
     }
 
     /**
@@ -225,26 +245,6 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
     }
 
     /**
-     * Sets the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
-     * 
-     * @param excludeSystem true, if VFS resources under /system/ should not be exported
-     */
-    public void setIncludeSystem(boolean excludeSystem) {
-
-        m_includeSystem = excludeSystem;
-    }
-
-    /**
-     * Sets the boolean flag to decide whether unchanged resources should be exported or not.<p>
-     * 
-     * @param excludeUnchanged true, if unchanged resources should not be exported
-     */
-    public void setIncludeUnchanged(boolean excludeUnchanged) {
-
-        m_includeUnchanged = excludeUnchanged;
-    }
-
-    /**
      * Sets the list with VFS paths to be exported.<p>
      * 
      * @param exportPaths the list with VFS paths to be exported
@@ -275,6 +275,36 @@ public class CmsVfsImportExportHandler implements I_CmsImportExportHandler {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_BAD_FILE_NAME_1, fileName));
         }
         m_fileName = fileName;
+    }
+
+    /**
+     * Sets the boolean flag to decide whether VFS resources under /system/ should be exported or not.<p>
+     * 
+     * @param excludeSystem true, if VFS resources under /system/ should not be exported
+     */
+    public void setIncludeSystem(boolean excludeSystem) {
+
+        m_includeSystem = excludeSystem;
+    }
+
+    /**
+     * Sets the boolean flag to decide whether unchanged resources should be exported or not.<p>
+     * 
+     * @param excludeUnchanged true, if unchanged resources should not be exported
+     */
+    public void setIncludeUnchanged(boolean excludeUnchanged) {
+
+        m_includeUnchanged = excludeUnchanged;
+    }
+
+    /**
+     * Sets the recursive flag.<p>
+     *
+     * @param recursive the recursive flag to set
+     */
+    public void setRecursive(boolean recursive) {
+
+        m_recursive = recursive;
     }
 
     /**
