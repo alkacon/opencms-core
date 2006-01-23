@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceSettings.java,v $
- * Date   : $Date: 2006/01/23 10:34:04 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/01/23 14:21:18 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.7
  * 
@@ -295,6 +295,12 @@ public final class CmsTagReplaceSettings {
         String tagName = tag.getTagName().trim().toLowerCase();
         String replacementName = (String)m_tags2replacementTags.get(tagName);
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(replacementName)) {
+            // judge this as a bug: getTagName() returns plain name, setter needs leading '/' for
+            // TODO: when updating htmlparser, verify if this has changed / been fixed
+            // closing tags
+            if (tag.isEndTag()) {
+                replacementName = "/" + replacementName;
+            }
             tag.setTagName(replacementName);
             // clear the attributes too:
             List attributes = tag.getAttributesEx();
@@ -318,7 +324,7 @@ public final class CmsTagReplaceSettings {
                             new Object[] {attName, tag.getTagName()}));
 
                     }
-                    tag.removeAttribute(attName);
+                    itAttribs.remove();
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(
                             Locale.ENGLISH,
