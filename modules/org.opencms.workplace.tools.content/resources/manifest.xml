@@ -1028,7 +1028,7 @@
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_HELP_0}]]></value>
+					<value><![CDATA[${key.GUI_TAGREPLACE_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
