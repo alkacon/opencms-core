@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/10/02 08:58:35 $
- * Version: $Revision: 1.56.2.2 $
+ * Date   : $Date: 2006/01/23 11:24:04 $
+ * Version: $Revision: 1.56.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.2 $ 
+ * @version $Revision: 1.56.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -1158,7 +1158,7 @@ public abstract class CmsWidgetDialog extends CmsDialog implements I_CmsWidgetDi
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
-        result.append("<form name=\"EDITOR\" id=\"EDITOR\" method=\"post\" action=\"").append(getDialogUri());
+        result.append("<form name=\"EDITOR\" id=\"EDITOR\" method=\"post\" action=\"").append(getDialogRealUri());
         result.append("\" class=\"nomargin\" onsubmit=\"return submitAction('").append(DIALOG_OK).append(
             "', null, 'EDITOR');\">\n");
         result.append(dialogContentStart(null));
