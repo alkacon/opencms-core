@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.23.2.7 $
+ * Date   : $Date: 2006/01/25 16:56:16 $
+ * Version: $Revision: 1.23.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.2.7 $ 
+ * @version $Revision: 1.23.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -649,12 +649,15 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
                     hasValue = true;
                 }
                 if (!item.equals(delimiter)) {
+
+                    // remove enclosing delimiters
+                    item = removeStringDelimiters(item);
                     
                     // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
                     if (item.startsWith(TAG_START_DELIMITER) && item.endsWith(TAG_END_DELIMITER)) {
-                        xml.append(removeStringDelimiters(item));
+                        xml.append(item);
                     } else {
-                        xml.append(CmsStringUtil.escapeHtml(removeStringDelimiters(item)));
+                        xml.append(CmsStringUtil.escapeHtml(item));
                     }
                 } else {
                     xml.append("</td>\n");
