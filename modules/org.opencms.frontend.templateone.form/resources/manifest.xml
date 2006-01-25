@@ -764,7 +764,7 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>locales-available</name>
+					<name>locale-available</name>
 					<value><![CDATA[en]]></value>
 				</property>
 				<property>
