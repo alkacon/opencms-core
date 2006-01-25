@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2006/01/13 10:39:40 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/01/25 09:27:02 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -251,8 +251,12 @@ public class CmsPropertyChange extends CmsDialog {
      * @return the value of the newvalue parameter
      */
     public String getParamNewValue() {
-
-        return m_paramNewValue;
+        
+        if (m_paramNewValue != null) {
+            return m_paramNewValue;
+        } else {
+            return CmsProperty.DELETE_VALUE;
+        }
     }
 
     /**
