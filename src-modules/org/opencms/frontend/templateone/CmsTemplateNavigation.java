@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2005/10/19 10:00:35 $
- * Version: $Revision: 1.28.2.2 $
+ * Date   : $Date: 2006/01/26 16:48:45 $
+ * Version: $Revision: 1.28.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.2 $ 
+ * @version $Revision: 1.28.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -614,9 +614,14 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                         } else if (level < oldLevel) {
                             // lower level transition, determine delta
                             int delta = oldLevel - level;
+                            boolean itemClosed = false;
                             for (int k = 0; k < delta; k++) {
                                 // close sub list and list item
-                                result.append("</li>\n</ul></li>\n");
+                                if (!itemClosed) {
+                                    result.append("</li>");
+                                    itemClosed = true;
+                                }
+                                result.append("\n</ul></li>\n");
                             }
                         } else {
                             // higher level transition, create new sub list
