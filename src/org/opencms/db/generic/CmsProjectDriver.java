@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2005/10/11 14:45:50 $
- * Version: $Revision: 1.238.2.2 $
+ * Date   : $Date: 2006/01/30 15:22:52 $
+ * Version: $Revision: 1.238.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.238.2.2 $
+ * @version $Revision: 1.238.2.3 $
  * 
  * @since 6.0.0 
  */
@@ -1325,7 +1325,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
                         onlineFolder = m_driverManager.getVfsDriver().readFolder(
                             dbc,
                             onlineProject.getId(),
-                            newFolder.getStructureId());
+                            newFolder.getRootPath());
                         m_driverManager.getVfsDriver().publishResource(
                             dbc,
                             onlineProject,
