@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2005/12/21 16:00:48 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/01/31 15:18:12 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -158,8 +158,8 @@ public class CmsJspTagDecorate extends BodyTagSupport {
      */
     public void setFile(String file) {
 
-        if (file != null) {
-            m_file = file.toLowerCase();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(file)) {
+            m_file = file;
         }
     }
 
