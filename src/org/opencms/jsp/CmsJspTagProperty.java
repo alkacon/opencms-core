@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagProperty.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/01/31 16:37:43 $
+ * Version: $Revision: 1.20 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.util.CmsStringUtil;
 
 import java.util.Arrays;
 import java.util.List;
@@ -93,7 +94,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.20 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,8 +352,8 @@ public class CmsJspTagProperty extends TagSupport {
      */
     public void setFile(String file) {
 
-        if (file != null) {
-            m_propertyFile = file.toLowerCase();
+        if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(file)) {
+            m_propertyFile = file;
         }
     }
 
