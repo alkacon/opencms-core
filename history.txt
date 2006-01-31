@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/01/25 14:46:20 $
- * Version: $Revision: 1.682.2.70 $
+ * Date   : $Date: 2006/01/31 16:13:33 $
+ * Version: $Revision: 1.682.2.71 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 6.1.8 - ???
 - Some improvements in decorator
 - Different validation rules for task titles
 - Some improvements for HTML converter
+* Fixed issue #1021: file parameter of the cms:property and cms:decorate tag is always toLowerCase()
 
 OpenCms 6.1.7 - January 18, 2006
 * Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
