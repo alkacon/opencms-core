@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2005/12/14 10:31:37 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/01/31 16:19:30 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -391,9 +391,16 @@ public class CmsUpdateBean extends CmsSetupBean {
                             Messages.RPT_DELETE_JAR_FILE_FAILED_3,
                             new Integer(i + 1),
                             new Integer(n),
-                            jar.getAbsolutePath()));
+                            jar.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
                     }
+                } else if (jar.exists() && !jar.canWrite()) {
+                    report.println(Messages.get().container(
+                        Messages.RPT_DELETE_JAR_PERMISSIONS_3,
+                        new Integer(i + 1),
+                        new Integer(n),
+                        jar.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
                 } else {
+                    // this is just a warning
                     report.println(Messages.get().container(
                         Messages.RPT_DELETE_JAR_SKIPPED_FILE_3,
                         new Integer(i + 1),
@@ -409,29 +416,38 @@ public class CmsUpdateBean extends CmsSetupBean {
         report.println(Messages.get().container(Messages.RPT_END_DELETE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
         File folder = new File(jarFolder);
         report.println(Messages.get().container(Messages.RPT_BEGIN_UPDATE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
-        if (folder.exists()) {
+        if (folder.exists() && folder.canWrite()) {
             // list all child resources in the given folder
             File[] folderFiles = folder.listFiles();
             if (folderFiles != null) {
                 for (int i = 0; i < folderFiles.length; i++) {
                     File jarFile = folderFiles[i];
                     if (jarFile.isFile() && !(jarFile.getAbsolutePath().toLowerCase().endsWith(".jar"))) {
+                        // just a warning
                         report.println(Messages.get().container(
                             Messages.RPT_UPDATE_JAR_SKIPPED_FILE_3,
                             new Integer(i + 1),
                             new Integer(folderFiles.length),
                             jarFile.getAbsolutePath()));
                     } else {
-                        try {
-                            CmsFileUtil.copy(jarFile.getAbsolutePath(), libFolder + jarFile.getName());
+                        if (jarFile.canWrite()) {
+                            try {
+                                CmsFileUtil.copy(jarFile.getAbsolutePath(), libFolder + jarFile.getName());
+                                report.println(Messages.get().container(
+                                    Messages.RPT_UPDATE_JAR_FILE_3,
+                                    new Integer(i + 1),
+                                    new Integer(folderFiles.length),
+                                    jarFile.getAbsolutePath()));
+                            } catch (Exception e) {
+                                report.println(Messages.get().container(
+                                    Messages.RPT_UPDATE_JAR_FILE_FAILED_3,
+                                    new Integer(i + 1),
+                                    new Integer(folderFiles.length),
+                                    jarFile.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
+                            }
+                        } else {
                             report.println(Messages.get().container(
-                                Messages.RPT_UPDATE_JAR_FILE_3,
-                                new Integer(i + 1),
-                                new Integer(folderFiles.length),
-                                jarFile.getAbsolutePath()));
-                        } catch (Exception e) {
-                            report.println(Messages.get().container(
-                                Messages.RPT_UPDATE_JAR_FILE_FAILED_3,
+                                Messages.RPT_UPDATE_JAR_PERMISSIONS_3,
                                 new Integer(i + 1),
                                 new Integer(folderFiles.length),
                                 jarFile.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
@@ -443,6 +459,10 @@ public class CmsUpdateBean extends CmsSetupBean {
                     Messages.get().container(Messages.RPT_UPDATE_JARS_FAILED_1, folder.getAbsolutePath()),
                     I_CmsReport.FORMAT_ERROR);
             }
+        } else if (folder.exists() && !folder.canWrite()) {
+            report.println(
+                Messages.get().container(Messages.RPT_UPDATE_JARS_PERMISSIONS_1, folder.getAbsolutePath()),
+                I_CmsReport.FORMAT_ERROR);
         } else {
             report.println(
                 Messages.get().container(Messages.RPT_UPDATE_JARS_FAILED_1, folder.getAbsolutePath()),
