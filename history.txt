@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/02/02 10:13:38 $
- * Version: $Revision: 1.682.2.72 $
+ * Date   : $Date: 2006/02/02 14:34:19 $
+ * Version: $Revision: 1.682.2.73 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,8 @@ OpenCms 6.1.8 - ???
 - Some improvements for HTML converter
 * Fixed issue #1021: file parameter of the cms:property and cms:decorate tag is always toLowerCase()
 * Fixed issue #1006: it now possible to use 3 letter locales (like "ast")
+! MySQL 5.0 Support
+! Oracle 10g Support
 
 OpenCms 6.1.7 - January 18, 2006
 * Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
