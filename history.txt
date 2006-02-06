@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/02/02 14:34:19 $
- * Version: $Revision: 1.682.2.73 $
+ * Date   : $Date: 2006/02/06 15:48:10 $
+ * Version: $Revision: 1.682.2.74 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -27,6 +27,7 @@ OpenCms 6.1.8 - ???
 * Fixed issue #1006: it now possible to use 3 letter locales (like "ast")
 ! MySQL 5.0 Support
 ! Oracle 10g Support
+* Fixed issue #1018: new export webuser data option in the db export tool
 
 OpenCms 6.1.7 - January 18, 2006
 * Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
