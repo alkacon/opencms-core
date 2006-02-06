@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/01/23 13:28:38 $
- * Version: $Revision: 1.80.2.8 $
+ * Date   : $Date: 2006/02/06 15:46:31 $
+ * Version: $Revision: 1.80.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.8 $ 
+ * @version $Revision: 1.80.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,6 +122,9 @@ public class CmsExport {
 
     /** Indicates if the user data and group data should be included to the export. */
     private boolean m_exportUserdata;
+
+    /** Indicates if the webuser data should be included to the export. */
+    private boolean m_exportWebusers;
 
     /** The export ZIP stream to write resources to. */
     private ZipOutputStream m_exportZipStream;
@@ -176,6 +179,107 @@ public class CmsExport {
 
         this(cms, exportFile, resourcesToExport, includeSystem, includeUnchanged, null, false, 0, new CmsShellReport(
             cms.getRequestContext().getLocale()));
+    }
+
+    /**
+     * Constructs a new export.<p>
+     *
+     * @param cms the cmsObject to work with
+     * @param exportFile the file or folder to export to
+     * @param resourcesToExport the paths of folders and files to export
+     * @param includeSystem if true, the system folder is included
+     * @param includeUnchanged <code>true</code>, if unchanged files should be included
+     * @param moduleElement module informations in a Node for module export
+     * @param exportUserdata if true, the user and group data will also be exported
+     * @param exportWebusers if true, the webuser data will also be exported
+     * @param contentAge export contents changed after this date/time
+     * @param report to handle the log messages
+     * @param recursive recursive flag
+     * 
+     * @throws CmsImportExportException if something goes wrong
+     * @throws CmsRoleViolationException if the current user has not the required role
+     */
+    public CmsExport(
+        CmsObject cms,
+        String exportFile,
+        List resourcesToExport,
+        boolean includeSystem,
+        boolean includeUnchanged,
+        Element moduleElement,
+        boolean exportUserdata,
+        boolean exportWebusers,
+        long contentAge,
+        I_CmsReport report,
+        boolean recursive)
+    throws CmsImportExportException, CmsRoleViolationException {
+
+        setCms(cms);
+        setReport(report);
+        setExportFileName(exportFile);
+
+        // check if the user has the required permissions
+        cms.checkRole(CmsRole.EXPORT_DATABASE);
+
+        m_includeSystem = includeSystem;
+        m_includeUnchanged = includeUnchanged;
+        m_exportUserdata = exportUserdata;
+        m_exportWebusers = exportWebusers;
+        m_contentAge = contentAge;
+        m_exportCount = 0;
+        m_recursive = recursive;
+
+        // clear all caches
+        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
+        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
+
+        try {
+            Element exportNode = openExportFile();
+
+            if (moduleElement != null) {
+                // add the module element
+                exportNode.add(moduleElement);
+                // write the XML
+                digestElement(exportNode, moduleElement);
+            }
+
+            exportAllResources(exportNode, resourcesToExport);
+
+            // export userdata and groupdata if selected
+            if (m_exportUserdata || m_exportWebusers) {
+                Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
+                getSaxWriter().writeOpen(userGroupData);
+
+                exportGroups(userGroupData);
+                exportUsers(userGroupData);
+
+                getSaxWriter().writeClose(userGroupData);
+                exportNode.remove(userGroupData);
+            }
+
+            closeExportFile(exportNode);
+        } catch (SAXException se) {
+            getReport().println(se);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message.key(), se);
+            }
+
+            throw new CmsImportExportException(message, se);
+        } catch (IOException ioe) {
+            getReport().println(ioe);
+
+            CmsMessageContainer message = Messages.get().container(
+                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
+                getExportFileName());
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(message.key(), ioe);
+            }
+
+            throw new CmsImportExportException(message, ioe);
+        }
     }
 
     /**
@@ -249,72 +353,18 @@ public class CmsExport {
         boolean recursive)
     throws CmsImportExportException, CmsRoleViolationException {
 
-        setCms(cms);
-        setReport(report);
-        setExportFileName(exportFile);
-
-        // check if the user has the required permissions
-        cms.checkRole(CmsRole.EXPORT_DATABASE);
-
-        m_includeSystem = includeSystem;
-        m_includeUnchanged = includeUnchanged;
-        m_exportUserdata = exportUserdata;
-        m_contentAge = contentAge;
-        m_exportCount = 0;
-        m_recursive = recursive;
-
-        // clear all caches
-        report.println(Messages.get().container(Messages.RPT_CLEARCACHE_0), I_CmsReport.FORMAT_NOTE);
-        OpenCms.fireCmsEvent(new CmsEvent(I_CmsEventListener.EVENT_CLEAR_CACHES, Collections.EMPTY_MAP));
-
-        try {
-            Element exportNode = openExportFile();
-
-            if (moduleElement != null) {
-                // add the module element
-                exportNode.add(moduleElement);
-                // write the XML
-                digestElement(exportNode, moduleElement);
-            }
-
-            exportAllResources(exportNode, resourcesToExport);
-
-            // export userdata and groupdata if selected
-            if (m_exportUserdata) {
-                Element userGroupData = exportNode.addElement(CmsImportExportManager.N_USERGROUPDATA);
-                getSaxWriter().writeOpen(userGroupData);
-
-                exportGroups(userGroupData);
-                exportUsers(userGroupData);
-
-                getSaxWriter().writeClose(userGroupData);
-                exportNode.remove(userGroupData);
-            }
-
-            closeExportFile(exportNode);
-        } catch (SAXException se) {
-            getReport().println(se);
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
-                getExportFileName());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), se);
-            }
-
-            throw new CmsImportExportException(message, se);
-        } catch (IOException ioe) {
-            getReport().println(ioe);
-
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_TO_FILE_1,
-                getExportFileName());
-            if (LOG.isDebugEnabled()) {
-                LOG.debug(message.key(), ioe);
-            }
-
-            throw new CmsImportExportException(message, ioe);
-        }
+        this(
+            cms,
+            exportFile,
+            resourcesToExport,
+            includeSystem,
+            includeUnchanged,
+            moduleElement,
+            exportUserdata,
+            false,
+            contentAge,
+            report,
+            recursive);
     }
 
     /**
@@ -1281,7 +1331,15 @@ public class CmsExport {
 
         try {
             I_CmsReport report = getReport();
-            List allUsers = getCms().getUsers();
+            List allUsers = new ArrayList();
+            if (m_exportUserdata) {
+                // add system users
+                allUsers.addAll(getCms().getUsers());
+            } 
+            if (m_exportWebusers) {
+                // add webusers
+                allUsers.addAll(getCms().getUsers(CmsUser.USER_TYPE_WEBUSER));
+            }
             for (int i = 0, l = allUsers.size(); i < l; i++) {
                 CmsUser user = (CmsUser)allUsers.get(i);
                 report.print(org.opencms.report.Messages.get().container(

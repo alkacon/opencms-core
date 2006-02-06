@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsDatabaseExportDialog.java,v $
- * Date   : $Date: 2006/01/23 11:25:01 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2006/02/06 15:46:31 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.2 $ 
+ * @version $Revision: 1.12.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,12 +146,12 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
         // create export settings block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_SETTINGS_BLOCK_0)));
-        result.append(createDialogRowsHtml(1, 5));
+        result.append(createDialogRowsHtml(1, 6));
         result.append(createWidgetBlockEnd());
 
         // create export resource(s) block
         result.append(createWidgetBlockStart(key(Messages.GUI_DATABASE_EXPORT_RESOURCES_BLOCK_0)));
-        result.append(createDialogRowsHtml(6, 6));
+        result.append(createDialogRowsHtml(7, 7));
         result.append(createWidgetBlockEnd());
 
         // close table
@@ -180,6 +180,7 @@ public class CmsDatabaseExportDialog extends CmsWidgetDialog {
 
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeUnchanged", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportUserdata", PAGES[0], new CmsCheckboxWidget()));
+        addWidget(new CmsWidgetDialogParameter(m_exportHandler, "exportWebusers", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(m_exportHandler, "includeSystem", PAGES[0], new CmsCheckboxWidget()));
         addWidget(new CmsWidgetDialogParameter(
             m_exportHandler,
