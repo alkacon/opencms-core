@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2005/11/01 23:35:15 $
- * Version: $Revision: 1.44.2.6 $
+ * Date   : $Date: 2006/02/07 12:05:14 $
+ * Version: $Revision: 1.44.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -92,7 +92,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Carsten Weinholz 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.44.2.6 $ 
+ * @version $Revision: 1.44.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,6 +351,19 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         // don't use File.separatorChar here, result must be a valid URL with "/" path delimiters
         String configUri = FOLDER_DATABASE + key + File.separatorChar + "step_4_database_setup.jsp";
         return configUri.replace(File.separatorChar, '/');
+    }
+
+    /**
+     * Returns a list of needed jar filenames for a database server setup specified by a database key (e.g. "mysql", "generic" or "oracle").<p>
+     * 
+     * @param databaseKey a database key (e.g. "mysql", "generic" or "oracle")
+     * 
+     * @return a list of needed jar filenames
+     */
+    public List getDatabaseLibs(String databaseKey) {
+
+        return CmsStringUtil.splitAsList((String)((Map)getDatabaseProperties().get(databaseKey)).get(databaseKey
+            + ".libs"), ',', true);
     }
 
     /**
@@ -667,6 +680,16 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         } else {
             return CmsStringUtil.substitute(value, "$replace$", replaceString);
         }
+    }
+
+    /**
+     * Returns the path to the /WEB-INF/lib folder.<p>
+     * 
+     * @return the path to the /WEB-INF/lib folder
+     */
+    public String getLibFolder() {
+        
+        return getWebAppRfsPath() + FOLDER_WEBINF + FOLDER_LIB;
     }
 
     /**
@@ -1654,6 +1677,26 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         return ret;
     }
 
+    /**
+     * Checks the jdbc driver.<p>
+     * 
+     * @return <code>true</code> if the recommended driver is found
+     */
+    public boolean validateJdbc() {
+
+        String libFolder = getLibFolder();
+        Iterator it = getDatabaseLibs(getDatabase()).iterator();
+        while (it.hasNext()) {
+            String libName = (String)it.next();
+            File libFile = new File(libFolder, libName);
+            if (!libFile.exists()) {
+                return false;
+            }
+        }
+        
+        return true;
+    }
+
     /** 
      * Returns the value for a given key from the extended properties.
      * 
@@ -1666,7 +1709,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
         return ((value = m_extProperties.get(key)) != null) ? value.toString() : "";
     }
-
+    
     /**
      * Imports a module (zipfile) from the default module directory, 
      * creating a temporary project for this.<p>
