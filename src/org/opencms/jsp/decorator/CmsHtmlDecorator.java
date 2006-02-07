@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2006/01/06 14:05:20 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/02/07 13:21:01 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.1.3 
  */
@@ -77,7 +77,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
         "\n"};
 
     /** Delimiters for second level string seperation. */
-    private static final String[] DELIMITERS_SECOND_LEVEL = {"-", "@", "/", "."};
+    private static final String[] DELIMITERS_SECOND_LEVEL = {"-", "@", "/", ".", ",", " "};
 
     /** Steps for forward lookup in workd list. */
     private static final int FORWARD_LOOKUP = 5;
