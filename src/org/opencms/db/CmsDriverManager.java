@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/01/19 13:46:37 $
- * Version: $Revision: 1.557.2.21 $
+ * Date   : $Date: 2006/02/07 16:54:14 $
+ * Version: $Revision: 1.557.2.22 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1600,7 +1600,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 structureId = currentResource.getStructureId();
                 resourceId = currentResource.getResourceId();
             } else {
-                // new resoruce always get a new structure id
+                // new resource always gets a new structure id
                 structureId = new CmsUUID();
                 if (!resource.getResourceId().isNullUUID()) {
                     // re-use existing resource id 
@@ -1611,7 +1611,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 }
             }
 
-            // now create a resource object will all informations
+            // now create a resource object with all informations
             newResource = new CmsResource(
                 structureId,
                 resourceId,
@@ -2556,8 +2556,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 } else {
                     // the resource exists online => mark the resource as deleted
-                    // strcuture record is removed during next publish
-
+                    // structure record is removed during next publish
                     // if one (or more) siblings are not removed, the ACE can not be removed
                     removeAce = false;
 
@@ -6717,14 +6716,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 onlineFolder.getDateReleased(),
                 onlineFolder.getDateExpired());
 
-            // write the file in the offline project
-            // this sets a flag so that the file date is not set to the current time
+            // write the folder in the offline project
+            // this sets a flag so that the folder date is not set to the current time
             restoredFolder.setDateLastModified(onlineFolder.getDateLastModified());
 
             // write the folder
             m_vfsDriver.writeResource(dbc, dbc.currentProject(), restoredFolder, NOTHING_CHANGED);
 
-            // restore the properties form the online project
+            // restore the properties from the online project
             m_vfsDriver.deletePropertyObjects(
                 dbc,
                 dbc.currentProject().getId(),
@@ -6734,7 +6733,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List propertyInfos = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFolder);
             m_vfsDriver.writePropertyObjects(dbc, dbc.currentProject(), restoredFolder, propertyInfos);
 
-            // restore the access control entries form the online project
+            // restore the access control entries from the online project
             m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
             ListIterator aceList = m_userDriver.readAccessControlEntries(
                 dbc,
@@ -6785,8 +6784,16 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // this sets a flag so that the file date is not set to the current time
             restoredFile.setDateLastModified(onlineFile.getDateLastModified());
 
-            // collect the properties
+            // collect the old properties
             List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFile);
+            
+            // bugfix 1020: delete all properties (included shared), 
+            // shared properties will be recreated by the next call of #createResource(...)
+            m_vfsDriver.deletePropertyObjects(
+                dbc,
+                dbc.currentProject().getId(),
+                resource,
+                CmsProperty.DELETE_OPTION_DELETE_STRUCTURE_AND_RESOURCE_VALUES);
 
             // implementation notes: 
             // undo changes can become complex e.g. if a resource was deleted, and then 
@@ -6796,6 +6803,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // note that this does NOT apply to folders, since a folder cannot be replaced
             // like a resource anyway
             deleteResource(dbc, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
+            
             CmsResource res = createResource(
                 dbc,
                 restoredFile.getRootPath(),
@@ -6803,8 +6811,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 restoredFile.getContents(),
                 properties,
                 false);
+            
 
-            // copy the access control entries form the online project
+            // copy the access control entries from the online project
             m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
             ListIterator aceList = m_userDriver.readAccessControlEntries(
                 dbc,
@@ -6824,7 +6833,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     ace.getFlags());
             }
 
-            // rest the state to unchanged 
+            // restore the state to unchanged 
             res.setState(CmsResource.STATE_UNCHANGED);
             m_vfsDriver.writeResourceState(dbc, dbc.currentProject(), res, UPDATE_ALL);
         }
