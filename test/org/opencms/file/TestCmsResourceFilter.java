@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/Attic/TestCmsResourceFilter.java,v $
- * Date   : $Date: 2006/02/02 11:09:49 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/02/07 12:03:31 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,8 +40,6 @@ import org.opencms.test.OpenCmsTestProperties;
 import java.util.Iterator;
 import java.util.List;
 
-import com.mysql.jdbc.AssertionFailedException;
-
 import junit.extensions.TestSetup;
 import junit.framework.Test;
 import junit.framework.TestSuite;
@@ -52,7 +50,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  */
 public class TestCmsResourceFilter extends OpenCmsTestCase {
 
@@ -104,12 +102,10 @@ public class TestCmsResourceFilter extends OpenCmsTestCase {
      * 
      * @param folderFilter the filter that is excpected to only let through folders.
      * 
-     * @throws AssertionFailedException if sth. different than a folder is read.
-     * 
      * @throws CmsException if access to test resources from VFS fails.
      * 
      */
-    public void assertFilterFolderOnly(CmsResourceFilter folderFilter) throws AssertionFailedException, CmsException {
+    public void assertFilterFolderOnly(CmsResourceFilter folderFilter) throws CmsException {
 
         CmsObject cms = getCmsObject();
         List folders = cms.readResources("/", folderFilter);
@@ -147,6 +143,5 @@ public class TestCmsResourceFilter extends OpenCmsTestCase {
 
         echo("Testing if only folders pass the resource filter CmsResourceFilter.ALL.addRequireFolder().addExcludeState(CmsResource.STATE_DELETED)");
         assertFilterFolderOnly(filterFolder);
-
     }
 }
