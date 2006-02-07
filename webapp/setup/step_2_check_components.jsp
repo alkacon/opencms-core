@@ -91,7 +91,7 @@ OpenCms Setup Wizard - Component tests
 			<tr>
 				<td style="text-align: left; white-space: nowrap;"><%= testResult.getName() %>:</td>
 				<td style="text-align: left; font-weight:bold; width: 100%;"><%= testResult.getResult() %></td>
-				<td style="text-align: right; width: 40px; height: 16px;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.png" border="0"></td>
+				<td style="text-align: right; width: 40px; height: 16px; white-space: nowrap;"><%= helpIcon %>&nbsp;<img src="resources/<%= resultIcon %>.png" border="0"></td>
 			</tr>
 <%
 		}	

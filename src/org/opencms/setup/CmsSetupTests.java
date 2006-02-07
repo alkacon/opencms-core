@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.21 $
+ * Date   : $Date: 2006/02/07 14:15:45 $
+ * Version: $Revision: 1.21.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.setup;
 
 import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -56,7 +57,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21 $ 
+ * @version $Revision: 1.21.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -97,36 +98,6 @@ public class CmsSetupTests {
 
         return m_testResults;
     }
-
-    //    /**
-    //     * Tests the selected OpenCms encoding.<p>
-    //     */    
-    //    public void testEncoding() {
-    //        CmsSetupTestResult testResult = new CmsSetupTestResult();
-    //
-    //        try {
-    //            testResult.setName("Default encoding");
-    //            String setEncoding = m_setupBean.getDefaultContentEncoding();
-    //            String encoding = CmsEncoder.lookupEncoding(setEncoding, null);
-    //            
-    //            if (encoding != null) {
-    //                testResult.setGreen();
-    //                testResult.setResult(encoding);
-    //            } else {
-    //                testResult.setRed();
-    //                testResult.setInfo("The your configured default encoding for OpenCms is not supported by your Java VM!"
-    //                                 + "Please ensure a supported encoding (e.g. 'UTF-8') is set in the cofiguration.");
-    //                testResult.setHelp(testResult.getInfo());
-    //                testResult.setResult("Invalid encoding set");
-    //            }
-    //        } catch (Exception e) {
-    //            testResult.setRed();
-    //            testResult.setResult("Unable to test the charset encoding!");
-    //            testResult.setInfo(e.toString());
-    //        } finally {
-    //            m_testResults.add(testResult);
-    //        }         
-    //    }
 
     /**
      * Returns true, if the conditions in all testes were fulfilled.<p>
@@ -252,6 +223,62 @@ public class CmsSetupTests {
             m_pageContext.getServletConfig().getServletContext().getServerInfo(),
             System.getProperty("java.version"),
             m_pageContext.getServletConfig().getServletContext().getRealPath("/"));
+    }
+
+    /**
+     * Tests the permission on the target installation folders.<p>
+     */
+    public void testFolderPermissions() {
+
+        CmsSetupTestResult testResult = new CmsSetupTestResult();
+
+        try {
+            testResult.setName("Enough folder permissions");
+
+            String basePath = m_pageContext.getServletConfig().getServletContext().getRealPath("/");
+            if (!basePath.endsWith(File.separator)) {
+                basePath += File.separator;
+            }
+            File file1;
+            do {
+                file1 = new File(basePath + "test" + (int)(Math.random() * 1000));
+            } while (file1.exists());
+            boolean success = false;
+            try {
+                file1.createNewFile();
+                FileWriter fw = new FileWriter(file1);
+                fw.append('a').append('A').append('1');
+                fw.close();
+                success = true;
+                FileReader fr = new FileReader(file1);
+                success = success && (fr.read() == 'a');
+                success = success && (fr.read() == 'A');
+                success = success && (fr.read() == '1');
+                success = success && (fr.read() == -1);
+                fr.close();
+                success = file1.delete();
+                success = !file1.exists();
+            } catch (Exception e) {
+                success = false;
+            }
+            if (!success) {
+                testResult.setRed();
+                testResult.setInfo("OpenCms cannot be installed without read and write privileges for path "
+                    + basePath
+                    + "! Please check you are running your servlet container with the right user and privileges.");
+                testResult.setHelp(testResult.getInfo());
+                testResult.setResult("Not enough privileges for " + basePath);
+            } else {
+                testResult.setGreen();
+                testResult.setResult("yes");
+            }
+        } catch (Exception e) {
+            testResult.setRed();
+            testResult.setResult("Unable to test folder permissions!");
+            testResult.setInfo(e.toString());
+        } finally {
+            m_testResults.add(testResult);
+        }
     }
 
     /**
