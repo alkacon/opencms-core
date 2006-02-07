@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/02/06 15:48:10 $
- * Version: $Revision: 1.682.2.74 $
+ * Date   : $Date: 2006/02/07 14:19:04 $
+ * Version: $Revision: 1.682.2.75 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,8 @@ OpenCms 6.1.8 - ???
 ! MySQL 5.0 Support
 ! Oracle 10g Support
 * Fixed issue #1018: new export webuser data option in the db export tool
+* Fixed issue #1027: new folder permissions test added to setup wizard
+* Fixed issue #514 & #937: new 'Database Connection Validation' dialog added to setup wizard
 
 OpenCms 6.1.7 - January 18, 2006
 * Remove vulnarability for cross site scripting in TemplateOne forms (Search, Contact)
