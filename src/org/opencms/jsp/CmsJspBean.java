@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2005/06/29 13:06:54 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/02/08 13:33:13 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -260,7 +260,8 @@ public class CmsJspBean {
         }
         if (!(m_isSupressingExceptions || getRequestContext().currentProject().isOnlineProject())) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1, this.getClass().getName()), t);
+                // no stack trace needed since it was already logged with the "error" log message above  
+                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1, getClass().getName()));
             }
             String uri = null;
             Throwable u = getController().getThrowable();
@@ -271,7 +272,7 @@ public class CmsJspBean {
             }
             throw new CmsRuntimeException(Messages.get().container(
                 Messages.ERR_RUNTIME_1,
-                (uri != null) ? uri : this.getClass().getName()), t);
+                (uri != null) ? uri : getClass().getName()), t);
         }
     }
 
