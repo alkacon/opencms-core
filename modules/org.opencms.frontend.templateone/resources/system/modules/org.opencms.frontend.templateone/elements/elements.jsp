@@ -34,6 +34,8 @@ if (cms.getLayout().equals("common")) {
 	} else if (cms.template("element_end")) {
 		%></div><div style="display: none;"><br clear="all" /></div>
 		<%
+	} else {
+		%> <%
 	}
 }
 %>
