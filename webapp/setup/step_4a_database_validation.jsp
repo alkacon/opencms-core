@@ -13,24 +13,16 @@
 	List conErrors = null;
 
 	if (Bean.isInitialized()) {
-	    // checking jdbc connection
 		db = new CmsSetupDb(Bean.getWebAppRfsPath());
 		db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
-		boolean dbExists = db.noErrors();
-		if(dbExists)	{
-			db.closeConnection();
-		}
-		else	{
+		if (!db.noErrors()) {
 			db.clearErrors();
-		}
-		if( !dbExists)	{
 			db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 		}
 		conErrors = new ArrayList(db.getErrors());
 		db.clearErrors();
 		enableContinue = conErrors.isEmpty();
 		chkVars = db.checkVariables(Bean.getDatabase());
-		db.closeConnection();
 		if (enableContinue && db.noErrors() && chkVars == null && Bean.validateJdbc()) {
 			response.sendRedirect(nextPage);
 			return;
@@ -105,9 +97,10 @@ OpenCms Setup Wizard - Validate database connection
 						if (db.noErrors() || chkVars != null)	{ %>
 							<%= Bean.getHtmlPart("C_BLOCK_START", "Validating Database Server Configuration") %>
 							<table border="0" cellpadding="0" cellspacing="0"><%
-							if (chkVars != null) {%>
+							if (chkVars != null) {
+								enableContinue = false; %>
 								<tr>
-									<td><img src="resources/warning.png" border="0"></td>
+									<td><img src="resources/error.png" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
 									<td><%=chkVars%></td>
 								</tr><%

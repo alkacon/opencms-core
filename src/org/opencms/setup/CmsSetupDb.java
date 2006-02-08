@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2006/02/07 12:05:14 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2006/02/08 08:32:47 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24.2.1 $ 
+ * @version $Revision: 1.24.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -68,7 +68,7 @@ public class CmsSetupDb extends Object {
 
     /** The folder where the setup wizard is located. */
     public static final String SETUP_FOLDER = "setup/";
-    
+
     private String m_basePath;
     private Connection m_con;
     private boolean m_errorLogging;
@@ -273,7 +273,7 @@ public class CmsSetupDb extends Object {
             m_errors.addElement(CmsException.getStackTraceAsString(e));
         }
     }
-    
+
     /**
      * Returns an optional warning message if needed, <code>null</code> if not.<p> 
      * 
@@ -282,7 +282,7 @@ public class CmsSetupDb extends Object {
      * @return html warning, or <code>null</code> if no warning
      */
     public String checkVariables(String db) {
-        
+
         StringBuffer html = new StringBuffer(512);
         if (db.startsWith("mysql") && !db.startsWith("mysql_41")) {
             String statement = "SELECT @@max_allowed_packet;";
@@ -320,7 +320,7 @@ public class CmsSetupDb extends Object {
             }
             html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
             if (map < 16 * 1024 * 1024) {
-                html.append("<b>The recommended value for running OpenCms is 16Mb, please check your <code>mi.ini</code> or <code>my.cnf</code> file.</b>\n");
+                html.append("<b>The recommended value for running OpenCms is 16Mb, please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
             }
         }
         if (html.length() == 0) {
