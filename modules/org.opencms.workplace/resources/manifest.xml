@@ -201,7 +201,7 @@
 		<file>
 			<destination>system/handler</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Feb 2006 15:35:03 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -213,7 +213,7 @@
 				</property>
 				<property>
 					<name>template</name>
-					<value><![CDATA[/system/modules/org.opencms.welcome/templates/welcome]]></value>
+					<value><![CDATA[/system/handler/template/handlertemplate]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -223,7 +223,7 @@
 			<destination>system/handler/handle404.html</destination>
 			<type>jsp</type>
 			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Feb 2006 15:55:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -244,7 +244,7 @@
 			<destination>system/handler/handle500.html</destination>
 			<type>jsp</type>
 			<uuidresource>2ec39dda-a50d-11d9-b4c9-b7aef4fd014d</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Wed, 08 Feb 2006 15:55:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
@@ -309,6 +309,83 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/handler/template</destination>
+			<type>folder</type>
+			<datelastmodified>Wed, 08 Feb 2006 15:31:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 15:31:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/template/handlertemplate</source>
+			<destination>system/handler/template/handlertemplate</destination>
+			<type>jsp</type>
+			<uuidresource>0d30d7bb-98b8-11da-972c-9152ffc73fe6</uuidresource>
+			<datelastmodified>Wed, 08 Feb 2006 16:00:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 15:32:02 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri;element]]></value>
+				</property>
+				<property>
+					<name>template-elements</name>
+					<value><![CDATA[foot*|Foot,head*|Head]]></value>
+				</property>
+				<property>
+					<name>template</name>
+					<value><![CDATA[/system/handler/template/style.css]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Template for error handlers]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/template/style.css</source>
+			<destination>system/handler/template/style.css</destination>
+			<type>plain</type>
+			<uuidresource>242b4cce-98b9-11da-972c-9152ffc73fe6</uuidresource>
+			<datelastmodified>Wed, 08 Feb 2006 16:16:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 15:39:50 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS for error handler template]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/handler/template/warning.png</source>
+			<destination>system/handler/template/warning.png</destination>
+			<type>image</type>
+			<uuidresource>074b26e8-98bc-11da-972c-9152ffc73fe6</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Feb 2006 16:00:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:32,h:32]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
