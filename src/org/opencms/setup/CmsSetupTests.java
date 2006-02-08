@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2006/02/07 14:15:45 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2006/02/08 11:21:16 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -247,7 +247,7 @@ public class CmsSetupTests {
             try {
                 file1.createNewFile();
                 FileWriter fw = new FileWriter(file1);
-                fw.append('a').append('A').append('1');
+                fw.write("aA1");
                 fw.close();
                 success = true;
                 FileReader fr = new FileReader(file1);
