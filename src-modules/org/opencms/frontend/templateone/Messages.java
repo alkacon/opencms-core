@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/Messages.java,v $
- * Date   : $Date: 2005/10/31 15:17:11 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/02/08 13:32:54 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -77,6 +77,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_MICROSITE_READ_START_FOLDER_0 = "LOG_MICROSITE_READ_START_FOLDER_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String LOG_NAVIGATION_CONFIG_ERR_2 = "LOG_NAVIGATION_CONFIG_ERR_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SEND_MAIL_CONTACT_1 = "LOG_SEND_MAIL_CONTACT_1";

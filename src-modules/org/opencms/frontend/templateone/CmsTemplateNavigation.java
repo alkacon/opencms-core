@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/01/26 16:48:45 $
- * Version: $Revision: 1.28.2.3 $
+ * Date   : $Date: 2006/02/08 13:32:54 $
+ * Version: $Revision: 1.28.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.3 $ 
+ * @version $Revision: 1.28.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -358,10 +358,15 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             if (link.startsWith("/")) {
                 link = link(link);
             }
-            showItemProperty = property(
-                PROPERTY_HEADNAV_USE,
-                nav.getResourceName(),
-                getHeadNavItemDefaultStringValue());
+            showItemProperty = getHeadNavItemDefaultStringValue();
+            if (getCmsObject().existsResource(nav.getResourceName())) {
+                showItemProperty = property(
+                    PROPERTY_HEADNAV_USE,
+                    nav.getResourceName(),
+                    getHeadNavItemDefaultStringValue());
+            }  else if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, nav.getResourceName(), getRequestContext().getUri()));
+            }
             boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
             if (manualHeadConfig || (nav.isFolderLink() && showItem)) {
                 // create an entry for every folder
@@ -514,10 +519,15 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             String showItemProperty;
             for (int i = 0; i < navElements.size(); i++) {
                 CmsJspNavElement foldernav = (CmsJspNavElement)navElements.get(i);
-                showItemProperty = property(
-                    PROPERTY_HEADNAV_USE,
-                    foldernav.getResourceName(),
-                    getHeadNavItemDefaultStringValue());
+                showItemProperty = getHeadNavItemDefaultStringValue();
+                if (getCmsObject().existsResource(foldernav.getResourceName())) {
+                    showItemProperty = property(
+                        PROPERTY_HEADNAV_USE,
+                        foldernav.getResourceName(),
+                        getHeadNavItemDefaultStringValue());
+                }  else if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, foldernav.getResourceName(), getRequestContext().getUri()));
+                }
                 boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
                 if (manualHeadConfig || (foldernav.isFolderLink() && showItem)) {
                     // create a menu entry for every found folder
@@ -879,7 +889,12 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                 if (link.startsWith("/")) {
                     link = link(link);
                 }
-                showItemProperty = property(PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
+                showItemProperty = getHeadNavItemDefaultStringValue();
+                if (getCmsObject().existsResource(resName)) {
+                    showItemProperty = property(PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
+                }  else if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, resName, getRequestContext().getUri()));
+                }
                 boolean showEntry = manualConfig || Boolean.valueOf(showItemProperty).booleanValue();
                 if (showEntry) {
                     entryPresent = true;
@@ -1160,10 +1175,15 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         for (int i = navEntries.size() - 1; i >= 0; i--) {
             CmsJspNavElement nav = (CmsJspNavElement)navEntries.get(i);
-            String showItemProperty = property(
-                PROPERTY_HEADNAV_USE,
-                nav.getResourceName(),
-                getHeadNavItemDefaultStringValue());
+            String showItemProperty = getHeadNavItemDefaultStringValue();
+            if (getCmsObject().existsResource(nav.getResourceName())) {
+                showItemProperty = property(
+                    PROPERTY_HEADNAV_USE,
+                    nav.getResourceName(),
+                    getHeadNavItemDefaultStringValue());
+            } else if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, nav.getResourceName(), getRequestContext().getUri()));
+            }
             if (Boolean.valueOf(showItemProperty).booleanValue()) {
                 return true;
             }
