@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/file/AllTests.java,v $
- * Date   : $Date: 2005/09/16 08:27:32 $
- * Version: $Revision: 1.39.2.1 $
+ * Date   : $Date: 2006/02/08 16:00:34 $
+ * Version: $Revision: 1.39.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import junit.framework.TestSuite;
  * Main test suite for the package <code>{@link org.opencms.file}</code>.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.39.2.1 $
+ * @version $Revision: 1.39.2.2 $
  * 
  * @since 6.0
  */
@@ -67,6 +67,7 @@ public final class AllTests {
         suite.addTest(TestChacc.suite());
         suite.addTest(TestCopy.suite());
         suite.addTest(TestChtype.suite());
+        suite.addTest(TestCmsResourceFilter.suite());
         suite.addTest(TestCreateWriteResource.suite());
         suite.addTest(TestDefaultResourceCollectors.suite());
         suite.addTest(TestDeletion.suite());
