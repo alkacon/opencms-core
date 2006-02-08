@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2005/10/12 14:38:21 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2006/02/08 13:20:00 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
                 CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().container(
+                LOG.error(org.opencms.db.Messages.get().key(
                     org.opencms.db.Messages.ERR_READ_RESOURCE_1,
                     cms.getSitePath(resource)), e);
             }
