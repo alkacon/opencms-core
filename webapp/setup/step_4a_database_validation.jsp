@@ -98,9 +98,10 @@ OpenCms Setup Wizard - Validate database connection
 							<%= Bean.getHtmlPart("C_BLOCK_START", "Validating Database Server Configuration") %>
 							<table border="0" cellpadding="0" cellspacing="0"><%
 							if (chkVars != null) {
-								enableContinue = false; %>
+							    boolean isError = (chkVars.indexOf("16Mb")>-1);
+								enableContinue = enableContinue && !isError; %>
 								<tr>
-									<td><img src="resources/error.png" border="0"></td>
+									<td><img src="resources/<%=isError?"error":"warning"%>.png" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
 									<td><%=chkVars%></td>
 								</tr><%
