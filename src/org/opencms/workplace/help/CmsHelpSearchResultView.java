@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2005/10/19 09:59:15 $
- * Version: $Revision: 1.5.2.2 $
+ * Date   : $Date: 2006/02/09 16:56:21 $
+ * Version: $Revision: 1.5.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5.2.2 $
+ * @version $Revision: 1.5.2.3 $
  * 
  * @since 6.0.0
  */
@@ -188,7 +188,7 @@ public class CmsHelpSearchResultView {
             result.append("</p>\n");
         } else if (action != null && searchResult.size() > 0) {
             result.append("<p>\n");
-            result.append(Messages.get().key(locale, org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0, null));
+            result.append(org.opencms.search.Messages.get().key(locale, org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0));
             result.append("\n");
             result.append("</p>\n<p>\n");
 
