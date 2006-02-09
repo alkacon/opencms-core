@@ -27,6 +27,7 @@
 		<dependencies>
 			<dependency name="org.opencms.frontend.templateone" version="1.0.0"/>
 			<dependency name="org.opencms.frontend.templateone.form" version="1.0.0"/>
+			<dependency name="org.opencms.frontend.photoalbum" version="1.0.0"/>
 		</dependencies>
 		<exportpoints/>
 		<resources>
@@ -200,6 +201,36 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Contact form]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum.html</source>
+			<destination>demopages/photoalbum.html</destination>
+			<type>photoalbum</type>
+			<uuidresource>8ed6acc1-995e-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 12:02:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:23:56 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>NavPos</name>
+					<value><![CDATA[12.0]]></value>
+				</property>
+				<property type="shared">
+					<name>template-elements</name>
+					<value><![CDATA[/system/modules/org.opencms.frontend.photoalbum/pages/album.html]]></value>
+				</property>
+				<property>
+					<name>NavText</name>
+					<value><![CDATA[Demo Photo album]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo Photo album]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -539,6 +570,418 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[English page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>demopages/photoalbum</destination>
+			<type>imagegallery</type>
+			<datelastmodified>Thu, 09 Feb 2006 11:25:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:25:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Demo images photoalbum]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_001.jpg</source>
+			<destination>demopages/photoalbum/img_001.jpg</destination>
+			<type>image</type>
+			<uuidresource>78b746d5-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:06 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Terschelling 1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_002.jpg</source>
+			<destination>demopages/photoalbum/img_002.jpg</destination>
+			<type>image</type>
+			<uuidresource>7976511a-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Terschelling 2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_003.jpg</source>
+			<destination>demopages/photoalbum/img_003.jpg</destination>
+			<type>image</type>
+			<uuidresource>7a0daf1f-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:08 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:08 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Terschelling 3]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_004.jpg</source>
+			<destination>demopages/photoalbum/img_004.jpg</destination>
+			<type>image</type>
+			<uuidresource>7a619b84-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:09 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:09 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Lago di Garda 1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_005.jpg</source>
+			<destination>demopages/photoalbum/img_005.jpg</destination>
+			<type>image</type>
+			<uuidresource>7aecc489-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Lago di Garda 2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_006.jpg</source>
+			<destination>demopages/photoalbum/img_006.jpg</destination>
+			<type>image</type>
+			<uuidresource>7b763fde-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Lago di Garda 3]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_007.jpg</source>
+			<destination>demopages/photoalbum/img_007.jpg</destination>
+			<type>image</type>
+			<uuidresource>7bffbb33-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Lago di Garda 4]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_008.jpg</source>
+			<destination>demopages/photoalbum/img_008.jpg</destination>
+			<type>image</type>
+			<uuidresource>7c5e7d08-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:12 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:12 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tenerife 1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_009.jpg</source>
+			<destination>demopages/photoalbum/img_009.jpg</destination>
+			<type>image</type>
+			<uuidresource>7cd8b61d-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:13 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:13 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tenerife 2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_010.jpg</source>
+			<destination>demopages/photoalbum/img_010.jpg</destination>
+			<type>image</type>
+			<uuidresource>7d4e5b52-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:14 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:14 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tenerife 3]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_011.jpg</source>
+			<destination>demopages/photoalbum/img_011.jpg</destination>
+			<type>image</type>
+			<uuidresource>7e33b247-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tenerife 4]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_012.jpg</source>
+			<destination>demopages/photoalbum/img_012.jpg</destination>
+			<type>image</type>
+			<uuidresource>7eb0f89c-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Tenerife 5]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_013.jpg</source>
+			<destination>demopages/photoalbum/img_013.jpg</destination>
+			<type>image</type>
+			<uuidresource>7ed103c1-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Fiji 1]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_014.jpg</source>
+			<destination>demopages/photoalbum/img_014.jpg</destination>
+			<type>image</type>
+			<uuidresource>7ee4d9e6-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Fiji 2]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_015.jpg</source>
+			<destination>demopages/photoalbum/img_015.jpg</destination>
+			<type>image</type>
+			<uuidresource>7efbe45b-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Fiji 3]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_016.jpg</source>
+			<destination>demopages/photoalbum/img_016.jpg</destination>
+			<type>image</type>
+			<uuidresource>7f15d500-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Fiji 4]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_017.jpg</source>
+			<destination>demopages/photoalbum/img_017.jpg</destination>
+			<type>image</type>
+			<uuidresource>7f35e025-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Fiji 5]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/photoalbum/img_018.jpg</source>
+			<destination>demopages/photoalbum/img_018.jpg</destination>
+			<type>image</type>
+			<uuidresource>7f5464aa-9963-11da-8477-95fe2e6ae6eb</uuidresource>
+			<datelastmodified>Thu, 09 Feb 2006 11:59:17 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 09 Feb 2006 11:59:17 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Fiji 6]]></value>
+				</property>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:800,h:600]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
