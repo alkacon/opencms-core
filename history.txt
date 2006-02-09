@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/02/07 16:55:23 $
- * Version: $Revision: 1.682.2.76 $
+ * Date   : $Date: 2006/02/09 17:39:50 $
+ * Version: $Revision: 1.682.2.77 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.8 - ???
+OpenCms 6.1.8 (aka 6.2 beta) - February 9, 2006 
 - Some improvements in decorator
 - Different validation rules for task titles
 - Some improvements for HTML converter
