@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/02/09 10:14:12 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,8 +176,8 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
             String diff = Diff.diffAsHtml(originalSource, copySource, conf);
             if (CmsStringUtil.isNotEmpty(diff)) {
                 out.println(diff);
-            } else if (getMode() == CmsDiffViewMode.ALL) {
-                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.escapeHtml(getOriginalSource()))); // print original source, if there are no differences
+            } else if (getMode() == CmsDiffViewMode.ALL) {  
+                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(CmsStringUtil.escapeHtml(getOriginalSource()), "<br/>", ""))); // print original source, if there are no differences
             }
         } catch (Exception e) {
             out.print(e);
