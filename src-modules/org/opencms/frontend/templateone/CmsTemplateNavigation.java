@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/02/08 13:32:54 $
- * Version: $Revision: 1.28.2.4 $
+ * Date   : $Date: 2006/02/09 09:16:05 $
+ * Version: $Revision: 1.28.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.4 $ 
+ * @version $Revision: 1.28.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1048,7 +1048,11 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         m_headNavManual = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MANUAL)).booleanValue();
         m_headNavMarkCurrent = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MARKCURRENT)).booleanValue();
         m_headNavMenuClick = Boolean.valueOf(req.getParameter(PARAM_HEADNAV_MENUCLICK)).booleanValue();
-        m_menuDepth = Integer.parseInt(req.getParameter(PARAM_HEADNAV_MENUDEPTH));
+        try {
+            m_menuDepth = Integer.parseInt(req.getParameter(PARAM_HEADNAV_MENUDEPTH));
+        } catch (Exception e) {
+            m_menuDepth = 2;
+        }
         m_navLeftElementUri = req.getParameter(PARAM_NAVLEFT_ELEMENTURI);
         m_navLeftShowSelected = Boolean.valueOf(req.getParameter(PARAM_NAVLEFT_SHOWSELECTED)).booleanValue();
         m_navLeftShowTree = Boolean.valueOf(req.getParameter(PARAM_NAVLEFT_SHOWTREE)).booleanValue();
