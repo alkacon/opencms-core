@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2005/10/19 09:59:15 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2006/02/09 16:52:25 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -438,7 +438,7 @@ public class CmsHelpTemplateBean extends CmsDialog {
             result.append("  <input type=\"hidden\" name=\"action\" value=\"search\" />\n");
             result.append("  <input type=\"hidden\" name=\"query\" value=\"\" />\n");
             result.append("  <input type=\"hidden\" name=\"index\" value=\"" + index + "\" />\n");
-            result.append("  <input type=\"hidden\" name=\"page\" value=\"1\" />\n");
+            result.append("  <input type=\"hidden\" name=\"searchPage\" value=\"1\" />\n");
 
             result.append("<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">\n");
             result.append("<tr>\n");
