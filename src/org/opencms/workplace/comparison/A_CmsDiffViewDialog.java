@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2006/02/09 10:14:12 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/02/09 10:39:48 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspWriter;
  * @author Michael Moossen  
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -269,6 +269,9 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         StringBuffer result = new StringBuffer();
         BufferedReader br = new BufferedReader(new StringReader(diff));
         while ((line = br.readLine()) != null) {
+            if ("".equals(line.trim())) {
+                line = "&nbsp;";
+            }
             result.append("<div class=\"df-unc\"><span class=\"df-unc\">").append(line).append("</span></div>\n");
         }
         return result.toString();
