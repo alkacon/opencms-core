@@ -50,13 +50,13 @@ import org.apache.commons.logging.Log;
  * The configuration String has to be of the following form: <br>
  * 
  * <pre>
- *                              &quot;folder=&lt;vfspath&gt;|displayOptionMacro=&lt;macro&gt;|resourcetypeName=&lt;typename&gt;|sortMacro=&lt;macro&gt;[|propertyname=propertyvalue]*
+ *    &quot;folder=&lt;vfspath&gt;|displayOptionMacro=&lt;macro&gt;|resourcetypeName=&lt;typename&gt;|sortMacro=&lt;macro&gt;[|propertyname=propertyvalue]*
  * </pre>
  * 
  * where
  * 
  * <pre>
- *                              &lt;macro&gt;
+ *    &lt;macro&gt;
  * </pre>
  * 
  * is a String containing valid OpenCms macros or xpath expression in the form:
@@ -75,19 +75,19 @@ import org.apache.commons.logging.Log;
  * {@link org.opencms.xml.A_CmsXmlDocument#getValue(String, Locale)}
  * 
  * <pre>
- *                                                  &lt;vfspath&gt;
+ *    &lt;vfspath&gt;
  * </pre>
  * 
  * is a valid resource path to a folder in the VFS where search is started from,
  * 
  * <pre>
- *                                                &lt;typename&gt;
+ *    &lt;typename&gt;
  * </pre>
  * 
  * is a resource type name defined in opencms-modules.xml and
  * 
  * <pre>
- *                                               [|propertyname = propertyvalue]*
+ *    [|propertyname = propertyvalue]*
  * </pre>
  * 
  * is a arbitrary number of properties value mappings that have to exist on the resources to show.
@@ -109,7 +109,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.1.3
  * 
@@ -123,7 +123,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.4 $
+     * @version $Revision: 1.1.2.5 $
      * 
      * @since 6.1.6
      * 
@@ -222,7 +222,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.4 $
+     * @version $Revision: 1.1.2.5 $
      * 
      * @since 6.1.6
      * 
@@ -612,6 +612,12 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      */
     private void parseConfigurationInternal(String configuration, CmsObject cms, I_CmsWidgetParameter param) {
 
+        // prepare for macro resolvation of property value against the resource currently
+        // rendered
+        // implant the uri to the special cms object for resolving macros from the
+        // collected xml contents:
+        CmsFile file = ((I_CmsXmlContentValue)param).getDocument().getFile();
+        m_macroCmsObject.getRequestContext().setUri(file.getRootPath());
         List mappings = CmsStringUtil.splitAsList(configuration, '|');
         Iterator itMappings = mappings.iterator();
         String mapping;
@@ -630,15 +636,8 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             key = keyValue[0].trim();
             value = keyValue[1].trim();
 
-            // prepare for macro resolvation of property value against the resource currently
-            // rendered
-            // implant the uri to the special cms object for resolving macros from the
-            // collected xml contents:
-            CmsFile file = ((I_CmsXmlContentValue)param).getDocument().getFile();
-            m_macroCmsObject.getRequestContext().setUri(file.getRootPath());
             // implant the resource for macro "${opencms.filename}"
             m_macroResolver.setResourceName(file.getName());
-            value = m_macroResolver.resolveMacros(value);
             // check key
             if (CONFIGURATION_OPTION_DISPLAY_MACRO.equals(key)) {
                 if (displayMacroFound) {
@@ -657,7 +656,6 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                         key,
                         configuration));
                 }
-
                 m_sortMacro = value;
                 sortMacroFound = true;
 
@@ -686,6 +684,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                         key,
                         configuration));
                 }
+
+                // allow collector path to contain macros relative to the current resource:
+                value = m_macroResolver.resolveMacros(value);
 
                 try {
                     CmsRequestContext context = cms.getRequestContext();
