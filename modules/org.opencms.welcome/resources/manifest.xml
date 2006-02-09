@@ -263,7 +263,7 @@ It will also remove the "default" template.</p>
 			<properties>
 				<property>
 					<name>NavPos</name>
-					<value><![CDATA[0.002]]></value>
+					<value><![CDATA[0.0010]]></value>
 				</property>
 				<property>
 					<name>NavText</name>
