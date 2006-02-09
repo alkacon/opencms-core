@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2005/12/14 16:19:13 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/02/09 11:53:11 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.0.2 
  */
@@ -352,6 +352,8 @@ public class CmsHistoryList extends A_CmsListDialog {
             item.set(LIST_COLUMN_RESOURCE_PATH, offlineFile.getRootPath());
             result.add(item);
         }
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL1).setVisible(result.size() > 1);
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_SEL2).setVisible(result.size() > 1);
         return result;
     }
 

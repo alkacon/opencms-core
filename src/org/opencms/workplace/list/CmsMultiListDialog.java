@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsMultiListDialog.java,v $
- * Date   : $Date: 2005/12/14 09:51:43 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/02/09 11:53:11 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,13 +39,12 @@ import javax.servlet.ServletException;
 import javax.servlet.jsp.JspException;
 import javax.servlet.jsp.JspWriter;
 
-
 /**
  * Helper class for managing three lists on the same dialog.<p>
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -53,7 +52,7 @@ public class CmsMultiListDialog {
 
     /** the workplace instance for the active list. */
     private A_CmsListDialog m_activeWp;
-    
+
     /** the workplace instances for the lists. */
     private List m_wps;
 
@@ -64,17 +63,17 @@ public class CmsMultiListDialog {
      */
     public CmsMultiListDialog(List wps) {
 
-            m_wps = wps;
-            Iterator i = m_wps.iterator();
-            while (i.hasNext()) {
-                A_CmsListDialog wp = (A_CmsListDialog)i.next();
-                if (wp.isActive()) {
-                    m_activeWp = wp;
-                }
+        m_wps = wps;
+        Iterator i = m_wps.iterator();
+        while (i.hasNext()) {
+            A_CmsListDialog wp = (A_CmsListDialog)i.next();
+            if (wp.isActive()) {
+                m_activeWp = wp;
             }
-            if (m_activeWp == null) {
-                m_activeWp = (A_CmsListDialog)m_wps.get(0);
-            }
+        }
+        if (m_activeWp == null) {
+            m_activeWp = (A_CmsListDialog)m_wps.get(0);
+        }
     }
 
     /**
@@ -112,28 +111,46 @@ public class CmsMultiListDialog {
             A_CmsListDialog wp = (A_CmsListDialog)i.next();
             wp.refreshList();
         }
-        
+
         if (writeLater) {
             return;
         }
-        JspWriter out = m_activeWp.getJsp().getJspContext().getOut();
-        out.print(defaultActionHtml());
+        writeDialog();
     }
-    
+
+    /**
+     * Returns the activeWp.<p>
+     *
+     * @return the activeWp
+     */
+    public A_CmsListDialog getActiveWp() {
+
+        return m_activeWp;
+    }
+
+    /**
+     * Returns <code>true</code> if one of the lists has been forwarded.<p>
+     * 
+     * @return <code>true</code> if one of the lists has been forwarded
+     */
+    public boolean isForwarded() {
+
+        Iterator i = m_wps.iterator();
+        while (i.hasNext()) {
+            A_CmsListDialog wp = (A_CmsListDialog)i.next();
+            if (wp.isForwarded()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Writes the dialog html code, only if the <code>{@link org.opencms.workplace.CmsDialog#ACTION_DEFAULT}</code> is set.<p>
      * 
      * @throws IOException if writing to the JSP out fails, or in case of errros forwarding to the required result page
      */
     public void writeDialog() throws IOException {
-
-        Iterator i = m_wps.iterator();
-        while (i.hasNext()) {
-            A_CmsListDialog wp = (A_CmsListDialog)i.next();
-            if (wp.isForwarded()) {
-                return;
-            }
-        }
 
         JspWriter out = m_activeWp.getJsp().getJspContext().getOut();
         out.print(defaultActionHtml());
@@ -161,7 +178,7 @@ public class CmsMultiListDialog {
     protected String defaultActionHtmlContent() {
 
         StringBuffer result = new StringBuffer(2048);
-        result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n"); 
+        result.append("<table id='twolists' cellpadding='0' cellspacing='0' align='center' width='100%'>\n");
         Iterator i = m_wps.iterator();
         while (i.hasNext()) {
             A_CmsListDialog wp = (A_CmsListDialog)i.next();
@@ -192,18 +209,8 @@ public class CmsMultiListDialog {
      * @return html code
      */
     protected String defaultActionHtmlStart() {
-        return m_activeWp.getList().listJs(getActiveWp().getLocale())
-        + m_activeWp.dialogContentStart(getActiveWp().getParamTitle());
-    }
 
-    
-    /**
-     * Returns the activeWp.<p>
-     *
-     * @return the activeWp
-     */
-    public A_CmsListDialog getActiveWp() {
-    
-        return m_activeWp;
+        return m_activeWp.getList().listJs(getActiveWp().getLocale())
+            + m_activeWp.dialogContentStart(getActiveWp().getParamTitle());
     }
 }

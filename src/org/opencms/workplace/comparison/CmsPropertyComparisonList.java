@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/01/11 11:34:50 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/02/09 11:53:11 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,9 +115,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsPropertyComparisonList.class);
-
-    /** flag indicating to show all files or just the files with differences. */
-    private static boolean m_showAllProperties = false;
 
     private CmsFile m_file1;
 
@@ -195,16 +192,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             LIST_COLUMN_PROPERTY_NAME,
             CmsListOrderEnum.ORDER_ASCENDING,
             null);
-    }
-
-    /**
-     * 
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
-     */
-    public void executeListIndepActions() {
-
-        m_showAllProperties = !m_showAllProperties;
-        refreshList();
     }
 
     /**
@@ -412,7 +399,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_CHANGED_0));
             } else {
-                if (!m_showAllProperties) {
+                if (!getList().getMetadata().getItemDetailDefinition(LIST_IACTION_SHOW).isVisible()) {
                     // do not display entry
                     continue;
                 } else {
@@ -459,7 +446,6 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      */
     protected void setColumns(CmsListMetadata metadata) {
 
-        metadata.setVolatile(true);
         // create column for icon
         CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
         iconCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_ICON_0));
@@ -470,6 +456,9 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction addedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_ADDED) {
 
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
+             */
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -484,6 +473,9 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction removedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_REMOVED) {
 
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
+             */
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -498,6 +490,9 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction changedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_CHANGED) {
 
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
+             */
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -512,6 +507,9 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
         // add state error action
         CmsListDirectAction unchangedAction = new CmsListDirectAction(CmsResourceComparison.TYPE_UNCHANGED) {
 
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#isVisible()
+             */
             public boolean isVisible() {
 
                 String type = getItem().get(LIST_COLUMN_TYPE).toString();
@@ -569,11 +567,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
 
         // add event details
         CmsListItemDetails eventDetails = new CmsListItemDetails(LIST_IACTION_SHOW);
-        if (!m_showAllProperties) {
-            eventDetails.setVisible(true);
-        } else {
-            eventDetails.setVisible(false);
-        }
+        eventDetails.setVisible(false);
         eventDetails.setShowActionName(Messages.get().container(Messages.GUI_COMPARE_SHOW_ALL_PROPERTIES_0));
         eventDetails.setHideActionName(Messages.get().container(Messages.GUI_COMPARE_HIDE_IDENTICAL_PROPERTIES_0));
         metadata.addItemDetails(eventDetails);

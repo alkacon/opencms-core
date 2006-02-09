@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2005/12/14 16:20:31 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/02/09 11:53:11 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.comparison;
 
 import org.opencms.file.CmsBackupResourceHandler;
+import org.opencms.file.types.CmsResourceTypePlain;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -61,16 +62,14 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
     /** List id constant. */
-    public static final String LIST_ID = "hiacl";
-
-    private static boolean m_showAllAttributes = false;
+    public static final String AC_LIST_ID = "hiacl";
 
     /**
      * Public constructor.<p>
@@ -79,7 +78,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
      */
     public CmsAttributeComparisonList(CmsJspActionElement jsp) {
 
-        this(LIST_ID, jsp);
+        this(AC_LIST_ID, jsp);
     }
 
     /**
@@ -112,16 +111,6 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     }
 
     /**
-     * 
-     * @see org.opencms.workplace.list.A_CmsListDialog#executeListIndepActions()
-     */
-    public void executeListIndepActions() {
-
-        m_showAllAttributes = !m_showAllAttributes;
-        refreshList();
-    }
-
-    /**
      * @see org.opencms.workplace.list.A_CmsListDialog#executeListSingleActions()
      */
     public void executeListSingleActions() throws IOException, ServletException {
@@ -143,7 +132,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
     /**
      * @see org.opencms.workplace.list.A_CmsListDialog#getListItems()
      */
-    protected List getListItems() throws CmsException {
+    protected List getListItems() {
 
         List ret = new ArrayList();
         Iterator diffs = CmsResourceComparison.compareAttributes(getCms(), getFile1(), getFile2()).iterator();
@@ -160,7 +149,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_TYPE, key(Messages.GUI_COMPARE_CHANGED_0));
             } else {
-                if (!m_showAllAttributes) {
+                if (!getList().getMetadata().getItemDetailDefinition(LIST_IACTION_SHOW).isVisible()) {
                     // do not display entry
                     continue;
                 } else {
@@ -182,14 +171,14 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
      */
     protected String getViewVersionButtonHtml(String path, String tagId, String version) {
 
-        String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, version).key(
-            getLocale());
+        String label = Messages.get().container(Messages.GUI_COMPARE_VIEW_VERSION_1, version).key(getLocale());
         String iconPath = null;
         try {
             String typeName = OpenCms.getResourceManager().getResourceType(getFile1().getTypeId()).getTypeName();
             iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting(typeName).getIcon();
         } catch (CmsException e) {
-            iconPath = "filetypes/" + OpenCms.getWorkplaceManager().getExplorerTypeSetting("plain").getIcon();
+            iconPath = "filetypes/"
+                + OpenCms.getWorkplaceManager().getExplorerTypeSetting(CmsResourceTypePlain.getStaticTypeName()).getIcon();
         }
         StringBuffer result = new StringBuffer(1024);
         result.append("<span class='link' onClick=\"");
@@ -241,6 +230,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         // add the view version action
         CmsListIndependentAction viewVersion1 = new CmsListIndependentAction(LIST_ACTION_VIEW1) {
 
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
+             */
             public String buttonHtml(CmsWorkplace wp) {
 
                 return getViewVersionButtonHtml(getParamPath1(), getParamTagId1(), getParamVersion1());
@@ -250,6 +242,9 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
         // add the view version action
         CmsListIndependentAction viewVersion2 = new CmsListIndependentAction(LIST_ACTION_VIEW2) {
 
+            /**
+             * @see org.opencms.workplace.tools.I_CmsHtmlIconButton#buttonHtml(org.opencms.workplace.CmsWorkplace)
+             */
             public String buttonHtml(CmsWorkplace wp) {
 
                 return getViewVersionButtonHtml(getParamPath2(), getParamTagId2(), getParamVersion2());
@@ -259,11 +254,7 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
 
         // add event details
         CmsListItemDetails eventDetails = new CmsListItemDetails(LIST_IACTION_SHOW);
-        if (m_showAllAttributes) {
-            eventDetails.setVisible(true);
-        } else {
-            eventDetails.setVisible(false);
-        }
+        eventDetails.setVisible(false);
         eventDetails.setShowActionName(Messages.get().container(Messages.GUI_COMPARE_SHOW_ALL_ATTRIBUTES_0));
         eventDetails.setHideActionName(Messages.get().container(Messages.GUI_COMPARE_HIDE_IDENTICAL_ATTRIBUTES_0));
         metadata.addItemDetails(eventDetails);
