@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.65.2.3 $
+ * Date   : $Date: 2006/02/10 13:33:31 $
+ * Version: $Revision: 1.65.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.3 $ 
+ * @version $Revision: 1.65.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -1067,7 +1067,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
     }
 
     /**
-     * Recursivion that generates the HTML form for the XML content editor.<p>
+     * Generates the HTML form for the XML content editor.<p>
      * 
      * This is a recursive method because nested schemas are possible,
      * do not call this method directly.<p>
@@ -1084,6 +1084,8 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         boolean showHelpBubble) {
 
         StringBuffer result = new StringBuffer(1024);
+        // only show errors if editor is not opened initially
+        boolean showErrors = (getAction() != ACTION_NEW) && (getAction() != ACTION_DEFAULT);
 
         try {
             // check if we are in a nested content definition
@@ -1098,7 +1100,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             result.append("\">\n");
 
             // show error header once if there were validation errors
-            if (!nested && getErrorHandler().hasErrors(getElementLocale())) {
+            if (!nested && showErrors && getErrorHandler().hasErrors(getElementLocale())) {
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
@@ -1208,7 +1210,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
                     // show errors and/or warnings               
                     String key = value.getPath();
-                    if (getErrorHandler().hasErrors(getElementLocale())
+                    if (showErrors && getErrorHandler().hasErrors(getElementLocale())
                         && getErrorHandler().getErrors(getElementLocale()).containsKey(key)) {
                         // show error message
                         result.append("<tr><td></td><td><img src=\"");
@@ -1219,7 +1221,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("</td><td></td></tr>\n");
                     }
                     // warnings can be additional to errors
-                    if (getErrorHandler().hasWarnings(getElementLocale())
+                    if (showErrors && getErrorHandler().hasWarnings(getElementLocale())
                         && getErrorHandler().getWarnings(getElementLocale()).containsKey(key)) {
                         // show warning message
                         result.append("<tr><td></td><td><img src=\"");
