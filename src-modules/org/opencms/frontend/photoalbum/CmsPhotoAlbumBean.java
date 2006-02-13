@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumBean.java,v $
- * Date   : $Date: 2005/11/22 10:38:03 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/02/13 16:32:17 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,6 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.jsp.CmsJspActionElement;
-import org.opencms.loader.CmsImageScaler;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
@@ -58,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.3 
  */
@@ -624,10 +623,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
         result.append("<img src=\"");
         StringBuffer link = new StringBuffer(256);
         link.append(resourceName);
-        link.append("?");
-        link.append(CmsImageScaler.PARAM_SCALE);
-        link.append("=");
-        link.append(getConfiguration().getDetailImageScaler().toString());
+        link.append(getConfiguration().getDetailImageScaler().toRequestParam());
         result.append(link(link.toString()));
         result.append("\" border=\"0\" width=\"");
         result.append(getConfiguration().getDetailImageScaler().getWidth());
@@ -747,10 +743,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                     result.append("<img src=\"");
                     link = new StringBuffer(256);
                     link.append(resourceName);
-                    link.append("?");
-                    link.append(CmsImageScaler.PARAM_SCALE);
-                    link.append("=");
-                    link.append(getConfiguration().getThumbNailScaler().toString());
+                    link.append(getConfiguration().getThumbNailScaler().toRequestParam());
                     result.append(link(link.toString()));
                     result.append("\" border=\"0\" width=\"");
                     result.append(getConfiguration().getThumbNailScaler().getWidth());

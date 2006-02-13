@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2005/12/21 07:33:24 $
- * Version: $Revision: 1.13.2.5 $
+ * Date   : $Date: 2006/02/13 16:32:17 $
+ * Version: $Revision: 1.13.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.5 $ 
+ * @version $Revision: 1.13.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,10 +310,7 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append("\">");
             result.append("<img src=\"");
             result.append(getJsp().link(resPath));
-            result.append('?');
-            result.append(CmsImageScaler.PARAM_SCALE);
-            result.append('=');
-            result.append(m_defaultScaleParams.toString());
+            result.append(m_defaultScaleParams.toRequestParam());
             result.append("\" border=\"0\" width=\"");
             result.append(m_defaultScaleParams.getWidth());
             result.append("\" height=\"");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCommentImages.java,v $
- * Date   : $Date: 2005/12/21 07:33:24 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/02/13 16:32:17 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3
  */
@@ -166,8 +166,7 @@ public class CmsCommentImages extends CmsDialog {
             result.append("<img src=\"");
             StringBuffer link = new StringBuffer(256);
             link.append(getCms().getSitePath(res));
-            link.append("?").append(CmsImageScaler.PARAM_SCALE).append("=");
-            link.append(getImageScaler().toString());
+            link.append(getImageScaler().toRequestParam());
             result.append(getJsp().link(link.toString()));
             result.append("\" border=\"0\" alt=\"\" width=\"");
             result.append(getImageScaler().getWidth());

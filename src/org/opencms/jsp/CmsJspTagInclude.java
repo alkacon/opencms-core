@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagInclude.java,v $
- * Date   : $Date: 2005/11/02 13:42:01 $
- * Version: $Revision: 1.35.2.3 $
+ * Date   : $Date: 2006/02/13 16:32:17 $
+ * Version: $Revision: 1.35.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import javax.servlet.jsp.tagext.BodyTagSupport;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.35.2.3 $ 
+ * @version $Revision: 1.35.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -86,7 +86,7 @@ public class CmsJspTagInclude extends BodyTagSupport implements I_CmsJspTagParam
     private String m_element;
 
     /** Hashmap to save parameters to the include in. */
-    private HashMap m_parameterMap;
+    private Map m_parameterMap;
 
     /** The value of the "property" attribute. */
     private String m_property;

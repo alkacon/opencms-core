@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.2.0
  */
@@ -240,6 +240,24 @@ public class CmsImageScaler {
     }
 
     /**
+     * @see java.lang.Object#clone()
+     */
+    public Object clone() {
+
+        CmsImageScaler clone = new CmsImageScaler();
+        clone.m_width = m_width;
+        clone.m_height = m_height;
+        clone.m_color = m_color;
+        clone.m_filters = new ArrayList(m_filters);
+        clone.m_maxBlurSize = m_maxBlurSize;
+        clone.m_position = m_position;
+        clone.m_quality = m_quality;
+        clone.m_renderMode = m_renderMode;
+        clone.m_type = m_type;
+        return clone;
+    }
+
+    /**
      * Returns the color.<p>
      *
      * @return the color
@@ -247,6 +265,33 @@ public class CmsImageScaler {
     public Color getColor() {
 
         return m_color;
+    }
+
+    /**
+     * Returns the color as a String.<p>
+     *
+     * @return the color as a String
+     */
+    public String getColorString() {
+
+        StringBuffer result = new StringBuffer();
+        if (m_color == Simapi.COLOR_TRANSPARENT) {
+            result.append(COLOR_TRANSPARENT);
+        } else {
+            if (m_color.getRed() < 16) {
+                result.append('0');
+            }
+            result.append(Integer.toString(m_color.getRed(), 16));
+            if (m_color.getGreen() < 16) {
+                result.append('0');
+            }
+            result.append(Integer.toString(m_color.getGreen(), 16));
+            if (m_color.getBlue() < 16) {
+                result.append('0');
+            }
+            result.append(Integer.toString(m_color.getBlue(), 16));
+        }
+        return result.toString();
     }
 
     /** 
@@ -257,6 +302,25 @@ public class CmsImageScaler {
     public List getFilters() {
 
         return m_filters;
+    }
+
+    /** 
+     * Returns the list of image filter names (Strings) to be applied to the image as a String.<p> 
+     * 
+     * @return the list of image filter names (Strings) to be applied to the image as a String
+     */
+    public String getFiltersString() {
+
+        StringBuffer result = new StringBuffer();
+        Iterator i = m_filters.iterator();
+        while (i.hasNext()) {
+            String filter = (String)i.next();
+            result.append(filter);
+            if (i.hasNext()) {
+                result.append(':');
+            }
+        }
+        return result.toString();
     }
 
     /**
@@ -409,6 +473,35 @@ public class CmsImageScaler {
     }
 
     /**
+     * Rescales this image scaler based on the given image scaler.<p> 
+     * 
+     * @param scaler the image scaler to be used for rescaling this image scaler
+     * 
+     * @return the rescaled image scaler
+     */
+    public CmsImageScaler rescale(CmsImageScaler scaler) {
+
+        int height = scaler.getHeight();
+        int width = scaler.getWidth();
+        if ((width > 0) && (m_width > 0)) {
+            // width is known, calculate height
+            float scale = (float)width / (float)m_width;
+            height = Math.round(m_height * scale);
+        } else if ((height > 0) && (m_height > 0)) {
+            // height is known, claculate width
+            float scale = (float)height / (float)m_height;
+            width = Math.round(m_width * scale);
+        } else if ((width <= 0) && (height <= 0)) {
+            width = m_width;
+            height = m_height;
+        }
+        CmsImageScaler result = (CmsImageScaler)scaler.clone();
+        result.setWidth(width);
+        result.setHeight(height);
+        return result;
+    }
+
+    /**
      * Returns a scaled version of the given image file according this image scalers parameters.<p>
      *  
      * @param file the image file to scale
@@ -534,6 +627,44 @@ public class CmsImageScaler {
     }
 
     /**
+     * Sets the color as a String.<p>
+     *
+     * @param value the color to set
+     */
+    public void setColor(String value) {
+
+        if (COLOR_TRANSPARENT.indexOf(value) == 0) {
+            m_color = Simapi.COLOR_TRANSPARENT;
+        }
+        m_color = CmsStringUtil.getColorValue(value, Color.WHITE, SCALE_PARAM_COLOR);
+    }
+
+    /**
+     * Sets the list of filters as a String.<p>
+     * 
+     * @param value the list of filters to set
+     */
+    public void setFilters(String value) {
+
+        m_filters = new ArrayList();
+        List filters = CmsStringUtil.splitAsList(value, ':');
+        Iterator i = filters.iterator();
+        while (i.hasNext()) {
+            String filter = (String)i.next();
+            filter = filter.trim().toLowerCase();
+            Iterator j = FILTERS.iterator();
+            while (j.hasNext()) {
+                String candidate = (String)j.next();
+                if (candidate.startsWith(filter)) {
+                    // found a matching filter
+                    addFilter(candidate);
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
      * Sets the height.<p>
      *
      * @param height the height to set
@@ -550,7 +681,21 @@ public class CmsImageScaler {
      */
     public void setPosition(int position) {
 
-        m_position = position;
+        switch (position) {
+            case Simapi.POS_DOWN_LEFT:
+            case Simapi.POS_DOWN_RIGHT:
+            case Simapi.POS_STRAIGHT_DOWN:
+            case Simapi.POS_STRAIGHT_LEFT:
+            case Simapi.POS_STRAIGHT_RIGHT:
+            case Simapi.POS_STRAIGHT_UP:
+            case Simapi.POS_UP_LEFT:
+            case Simapi.POS_UP_RIGHT:
+                // pos is fine
+                m_position = position;
+                break;
+            default:
+                m_position = Simapi.POS_CENTER;
+        }
     }
 
     /**
@@ -593,7 +738,12 @@ public class CmsImageScaler {
      */
     public void setType(int type) {
 
-        m_type = type;
+        if ((type < 0) || (type > 4)) {
+            // invalid type, use 0
+            m_type = 0;
+        } else {
+            m_type = type;
+        }
     }
 
     /**
@@ -604,6 +754,25 @@ public class CmsImageScaler {
     public void setWidth(int width) {
 
         m_width = width;
+    }
+
+    /**
+     * Creates a request parameter configured with the values from this image scaler, also
+     * appends a <code>'?'</code> char as a prefix so that this may be direclty appended to an image URL.<p>
+     * 
+     * This can be appended to an image request in order to apply image scaling parameters.<p>
+     * 
+     * @return a request parameter configured with the values from this image scaler
+     */
+    public String toRequestParam() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append('?');
+        result.append(PARAM_SCALE);
+        result.append('=');
+        result.append(toString());
+
+        return result.toString();
     }
 
     /**
@@ -639,22 +808,7 @@ public class CmsImageScaler {
             result.append(',');
             result.append(CmsImageScaler.SCALE_PARAM_COLOR);
             result.append(':');
-            if (m_color == Simapi.COLOR_TRANSPARENT) {
-                result.append(COLOR_TRANSPARENT);
-            } else {
-                if (m_color.getRed() < 16) {
-                    result.append('0');
-                }
-                result.append(Integer.toString(m_color.getRed(), 16));
-                if (m_color.getGreen() < 16) {
-                    result.append('0');
-                }
-                result.append(Integer.toString(m_color.getGreen(), 16));
-                if (m_color.getBlue() < 16) {
-                    result.append('0');
-                }
-                result.append(Integer.toString(m_color.getBlue(), 16));
-            }
+            result.append(getColorString());
         }
         if (m_quality > 0) {
             result.append(',');
@@ -672,68 +826,10 @@ public class CmsImageScaler {
             result.append(',');
             result.append(CmsImageScaler.SCALE_PARAM_FILTER);
             result.append(':');
-            Iterator i = m_filters.iterator();
-            while (i.hasNext()) {
-                String filter = (String)i.next();
-                result.append(filter);
-                if (i.hasNext()) {
-                    result.append(':');
-                }
-            }
+            result.append(getFiltersString());
         }
         m_scaleParameters = result.toString();
         return m_scaleParameters;
-    }
-
-    /**
-     * Returns a valid value for the "p" (position) parameter.<p> 
-     * 
-     * @param value the value to parse as position
-     * 
-     * @return a valid value for the "p" (position) parameter
-     */
-    private int getParamPosition(String value) {
-
-        int pos = CmsStringUtil.getIntValue(value, -1, CmsImageScaler.SCALE_PARAM_POS);
-        switch (pos) {
-            case Simapi.POS_DOWN_LEFT:
-            case Simapi.POS_DOWN_RIGHT:
-            case Simapi.POS_STRAIGHT_DOWN:
-            case Simapi.POS_STRAIGHT_LEFT:
-            case Simapi.POS_STRAIGHT_RIGHT:
-            case Simapi.POS_STRAIGHT_UP:
-            case Simapi.POS_UP_LEFT:
-            case Simapi.POS_UP_RIGHT:
-                // pos is fine
-                break;
-            default:
-                pos = Simapi.POS_CENTER;
-        }
-        return pos;
-    }
-
-    /**
-     * Returns a valid value for the "t" (type) parameter.<p> 
-     * 
-     * Possible values are:<ul>
-     * <li>0: scale to exact size best fit [default] (req. position, color)</li>
-     * <li>1: scale to exact size crop (req. position)</li>
-     * <li>2: scale to best fit, size not fixed, keep aspect ratio</li>
-     * <li>3: scale to exact fit, don't keep aspect ratio</li>
-     * <li>4: crop only (req. position)</li>
-     * </ul>
-     * 
-     * @param value the value to parse as type
-     * 
-     * @return a valid value for the "t" (type) parameter
-     */
-    private int getParamType(String value) {
-
-        int type = CmsStringUtil.getIntValue(value, -1, CmsImageScaler.SCALE_PARAM_TYPE);
-        if ((type < 0) || (type > 4)) {
-            type = 0;
-        }
-        return type;
     }
 
     /**
@@ -791,17 +887,13 @@ public class CmsImageScaler {
                     m_width = CmsStringUtil.getIntValue(v, Integer.MIN_VALUE, k);
                 } else if (SCALE_PARAM_TYPE.equals(k)) {
                     // scaling type
-                    m_type = getParamType(v);
+                    setType(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_TYPE));
                 } else if (SCALE_PARAM_COLOR.equals(k)) {
                     // image background color
-                    if (COLOR_TRANSPARENT.indexOf(v) == 0) {
-                        m_color = Simapi.COLOR_TRANSPARENT;
-                    } else {
-                        m_color = CmsStringUtil.getColorValue(v, Color.WHITE, k);
-                    }
+                    setColor(v);
                 } else if (SCALE_PARAM_POS.equals(k)) {
                     // image position (depends on scale type)
-                    m_position = getParamPosition(v);
+                    setPosition(CmsStringUtil.getIntValue(v, -1, CmsImageScaler.SCALE_PARAM_POS));
                 } else if (SCALE_PARAM_QUALITY.equals(k)) {
                     // image position (depends on scale type)
                     setQuality(CmsStringUtil.getIntValue(v, 0, k));
@@ -810,21 +902,7 @@ public class CmsImageScaler {
                     setRenderMode(CmsStringUtil.getIntValue(v, 0, k));
                 } else if (SCALE_PARAM_FILTER.equals(k)) {
                     // image filters to apply
-                    List filters = CmsStringUtil.splitAsList(v, ':');
-                    Iterator i = filters.iterator();
-                    while (i.hasNext()) {
-                        String filter = (String)i.next();
-                        filter = filter.trim().toLowerCase();
-                        Iterator j = FILTERS.iterator();
-                        while (j.hasNext()) {
-                            String candidate = (String)j.next();
-                            if (candidate.startsWith(filter)) {
-                                // found a matching filter
-                                addFilter(candidate);
-                                break;
-                            }
-                        }
-                    }
+                    setFilters(v);
                 } else {
                     if (LOG.isDebugEnabled()) {
                         LOG.debug(Messages.get().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));

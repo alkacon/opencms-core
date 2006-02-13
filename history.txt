@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/02/09 17:39:50 $
- * Version: $Revision: 1.682.2.77 $
+ * Date   : $Date: 2006/02/13 16:32:17 $
+ * Version: $Revision: 1.682.2.78 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.1.9 - March xxxxxxxx, 2006
+! Added cms:img tag that automatically generates HTML for scaled images
 
 OpenCms 6.1.8 (aka 6.2 beta) - February 9, 2006 
 - Some improvements in decorator
