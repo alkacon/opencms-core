@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/02/13 16:32:17 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/02/14 09:43:17 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -136,7 +136,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
      * @param src the image source
      * @param scaler the image scaleing parameters 
      * @param attributes the additional image HTML attributes
-     * @param partialTag controls if the created HTML image tag is a full or partial tag
+     * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
      * @param req the current request
      * 
      * @return the created &lt;img src&gt; tag content
@@ -157,8 +157,10 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         // calculate target scale dimensions (if required)  
         if ((scaler.getHeight() <= 0) || (scaler.getWidth() <= 0)) {
             // read the image properties for the selected resource
-            CmsImageScaler originalSize = new CmsImageScaler(cms, imageRes);
-            scaler = originalSize.rescale(scaler);
+            CmsImageScaler original = new CmsImageScaler(cms, imageRes);
+            if (original.isValid()) {
+                scaler = new CmsImageScaler(original, scaler);
+            }
         }
 
         StringBuffer result = new StringBuffer(128);
@@ -170,17 +172,21 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
         // append the image source              
         result.append(" src=\"");
         result.append(OpenCms.getLinkManager().substituteLink(cms, cms.getSitePath(imageRes)));
-        // now append the scaler parameters
-        result.append(scaler.toRequestParam());
+        if (scaler.isValid()) {
+            // now append the scaler parameters
+            result.append(scaler.toRequestParam());
+        }
         result.append("\"");
 
-        // append image width and height
-        result.append(" width=\"");
-        result.append(scaler.getWidth());
-        result.append("\"");
-        result.append(" height=\"");
-        result.append(scaler.getHeight());
-        result.append("\"");
+        if (scaler.isValid()) {
+            // append image width and height
+            result.append(" width=\"");
+            result.append(scaler.getWidth());
+            result.append("\"");
+            result.append(" height=\"");
+            result.append(scaler.getHeight());
+            result.append("\"");
+        }
 
         if (attributes != null) {
             // append the HTML attributes

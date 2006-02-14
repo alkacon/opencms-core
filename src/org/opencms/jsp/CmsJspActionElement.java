@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspActionElement.java,v $
- * Date   : $Date: 2005/11/01 23:34:19 $
- * Version: $Revision: 1.24.2.2 $
+ * Date   : $Date: 2006/02/14 09:43:17 $
+ * Version: $Revision: 1.24.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.flex.CmsFlexController;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.i18n.CmsMessages;
+import org.opencms.loader.CmsImageScaler;
 import org.opencms.loader.I_CmsResourceLoader;
 import org.opencms.main.CmsException;
 import org.opencms.main.OpenCms;
@@ -78,7 +79,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.24.2.2 $ 
+ * @version $Revision: 1.24.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -282,6 +283,44 @@ public class CmsJspActionElement extends CmsJspBean {
             m_navigation = new CmsJspNavBuilder(getController().getCmsObject());
         }
         return m_navigation;
+    }
+
+    /**
+     * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS
+     * @param scaler the image scaler to use for scaling the image
+     * @param attributes a map of additional HTML attributes that are added to the output
+     * 
+     * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
+     */
+    public String img(String target, CmsImageScaler scaler, Map attributes) {
+
+        return img(target, scaler, attributes, false);
+    }
+
+    /**
+     * Returns the HTML for an <code>&lt;img src="..." /&gt;</code> tag that includes the given image scaling parameters.<p>
+     * 
+     * @param target the target uri of the file in the OpenCms VFS
+     * @param scaler the image scaler to use for scaling the image
+     * @param attributes a map of additional HTML attributes that are added to the output
+     * @param partialTag if <code>true</code>, the opening <code>&lt;img</code> and closing <code> /&gt;</code> is omitted
+     * 
+     * @return the HTML for an <code>&lt;img src&gt;</code> tag that includes the given image scaling parameters
+     */
+    public String img(String target, CmsImageScaler scaler, Map attributes, boolean partialTag) {
+
+        try {
+            return CmsJspTagImage.imageTagAction(target, scaler, attributes, partialTag, getRequest());
+        } catch (Throwable t) {
+            handleException(t);
+        }
+        CmsMessageContainer msgContainer = Messages.get().container(
+            Messages.GUI_ERR_IMG_SCALE_2,
+            target,
+            scaler == null ? "null" : scaler.toString());
+        return getMessage(msgContainer);
     }
 
     /**

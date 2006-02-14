@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2005/11/23 08:24:00 $
- * Version: $Revision: 1.20.2.4 $
+ * Date   : $Date: 2006/02/14 09:43:17 $
+ * Version: $Revision: 1.20.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.20.2.4 $
+ * @version $Revision: 1.20.2.5 $
  * 
  * @since 6.0.0
  */
@@ -116,6 +116,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_GEN_LINK_1 = "GUI_ERR_GEN_LINK_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_ERR_IMG_SCALE_2 = "GUI_ERR_IMG_SCALE_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_ERR_INFO_PROP_READ_1 = "GUI_ERR_INFO_PROP_READ_1";
@@ -289,5 +292,4 @@ public final class Messages extends A_CmsMessageBundle {
 
         return BUNDLE_NAME;
     }
-
 }

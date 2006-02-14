@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.2.0
  */
@@ -158,6 +158,48 @@ public class CmsImageScaler {
     }
 
     /**
+     * Creates a new image scaler that is a recale from the original size to the given scaler.<p> 
+     * 
+     * @param original the scaler that holds the original image dimensions
+     * @param scaler the image scaler to be used for rescaling this image scaler
+     */
+    public CmsImageScaler(CmsImageScaler original, CmsImageScaler scaler) {
+
+        int height = scaler.getHeight();
+        int width = scaler.getWidth();
+
+        if ((width > 0) && (original.getWidth() > 0)) {
+            // width is known, calculate height
+            float scale = (float)width / (float)original.getWidth();
+            height = Math.round(original.getHeight() * scale);
+        } else if ((height > 0) && (original.getHeight() > 0)) {
+            // height is known, claculate width
+            float scale = (float)height / (float)original.getHeight();
+            width = Math.round(original.getWidth() * scale);
+        } else if (original.isValid() && !scaler.isValid()) {
+            // scaler is not valid but original is, so use original size of image
+            width = original.getWidth();
+            height = original.getHeight();
+        }
+
+        if ((scaler.getType() == 1) && (!scaler.isValid())) {
+            // "no upscale" has been requested, only one target dimension was given
+            if ((scaler.getWidth() > 0) && (original.getWidth() < width)) {
+                // target width was given, target image should have this width 
+                height = original.getHeight();
+            } else if ((scaler.getHeight() > 0) && (original.getHeight() < height)) {
+                // target height was given, target image should have this height
+                width = original.getWidth();
+            }
+        }
+
+        // now initialize the values of this scaler
+        initValuesFrom(scaler);
+        setWidth(width);
+        setHeight(height);
+    }
+
+    /**
      * Creates a new image scaler by reading the property <code>{@link CmsPropertyDefinition#PROPERTY_IMAGE_SIZE}</code>
      * from the given resource.<p>
      * 
@@ -245,15 +287,7 @@ public class CmsImageScaler {
     public Object clone() {
 
         CmsImageScaler clone = new CmsImageScaler();
-        clone.m_width = m_width;
-        clone.m_height = m_height;
-        clone.m_color = m_color;
-        clone.m_filters = new ArrayList(m_filters);
-        clone.m_maxBlurSize = m_maxBlurSize;
-        clone.m_position = m_position;
-        clone.m_quality = m_quality;
-        clone.m_renderMode = m_renderMode;
-        clone.m_type = m_type;
+        clone.initValuesFrom(this);
         return clone;
     }
 
@@ -470,35 +504,6 @@ public class CmsImageScaler {
     public boolean isValid() {
 
         return (m_width > 0) && (m_height > 0);
-    }
-
-    /**
-     * Rescales this image scaler based on the given image scaler.<p> 
-     * 
-     * @param scaler the image scaler to be used for rescaling this image scaler
-     * 
-     * @return the rescaled image scaler
-     */
-    public CmsImageScaler rescale(CmsImageScaler scaler) {
-
-        int height = scaler.getHeight();
-        int width = scaler.getWidth();
-        if ((width > 0) && (m_width > 0)) {
-            // width is known, calculate height
-            float scale = (float)width / (float)m_width;
-            height = Math.round(m_height * scale);
-        } else if ((height > 0) && (m_height > 0)) {
-            // height is known, claculate width
-            float scale = (float)height / (float)m_height;
-            width = Math.round(m_width * scale);
-        } else if ((width <= 0) && (height <= 0)) {
-            width = m_width;
-            height = m_height;
-        }
-        CmsImageScaler result = (CmsImageScaler)scaler.clone();
-        result.setWidth(width);
-        result.setHeight(height);
-        return result;
     }
 
     /**
@@ -846,6 +851,24 @@ public class CmsImageScaler {
         m_color = Color.WHITE;
         m_filters = new ArrayList();
         m_maxBlurSize = SCALE_DEFAULT_MAX_BLUR_SIZE;
+    }
+
+    /**
+     * Copys all values from the given scaler into this scaler.<p>
+     * 
+     * @param source the source scaler
+     */
+    private void initValuesFrom(CmsImageScaler source) {
+
+        m_width = source.m_width;
+        m_height = source.m_height;
+        m_type = source.m_type;
+        m_position = source.m_position;
+        m_renderMode = source.m_renderMode;
+        m_quality = source.m_quality;
+        m_color = source.m_color;
+        m_filters = new ArrayList(source.m_filters);
+        m_maxBlurSize = source.m_maxBlurSize;
     }
 
     /**
