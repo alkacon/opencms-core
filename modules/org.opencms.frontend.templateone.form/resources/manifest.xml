@@ -3,8 +3,8 @@
 <export>
 	<info>
 		<creator>Admin</creator>
-		<opencms_version>6.0.3</opencms_version>
-		<createdate>Thu, 05 Jan 2006 08:32:16 GMT</createdate>
+		<opencms_version>6.1.8</opencms_version>
+		<createdate>Tue, 14 Feb 2006 11:27:16 GMT</createdate>
 		<project>Offline</project>
 		<export_version>4</export_version>
 	</info>
@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.1</version>
+		<version>1.2.2</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -46,21 +46,10 @@
 				</properties>
 				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/form.xsd</param>
 			</type>
-			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="captchapreset" id="300">
-				<param name="schema">/system/modules/org.opencms.frontend.templateone.form/schemas/captchapreset.xsd</param>
-			</type>
 		</resourcetypes>
 		<explorertypes>
 			<explorertype name="emailform" key="fileicon.emailform" icon="emailform.gif" reference="xmlcontent">
 				<newresource page="structurecontent" uri="newresource_xmlcontent.jsp?newresourcetype=emailform" order="60"/>
-				<accesscontrol>
-					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
-					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
-				</accesscontrol>
-			</explorertype>
-			<explorertype name="captchapreset" key="fileicon.captchapreset" icon="article.gif" reference="xmlcontent">
-				<newresource page="structurecontent" uri="" order="0"/>
 				<accesscontrol>
 					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
 					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
@@ -777,7 +766,7 @@
 		<file>
 			<source>system/workplace/admin/captcha/light.captchapreset</source>
 			<destination>system/workplace/admin/captcha/light.captchapreset</destination>
-			<type>captchapreset</type>
+			<type>xmlcontent</type>
 			<uuidresource>a66111ce-7b8f-11da-9858-5b510a4bd4de</uuidresource>
 			<datelastmodified>Wed, 04 Jan 2006 08:30:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -799,7 +788,7 @@
 		<file>
 			<source>system/workplace/admin/captcha/medium.captchapreset</source>
 			<destination>system/workplace/admin/captcha/medium.captchapreset</destination>
-			<type>captchapreset</type>
+			<type>xmlcontent</type>
 			<uuidresource>0d3c8d5d-7b90-11da-9858-5b510a4bd4de</uuidresource>
 			<datelastmodified>Tue, 03 Jan 2006 10:08:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -821,7 +810,7 @@
 		<file>
 			<source>system/workplace/admin/captcha/strong.captchapreset</source>
 			<destination>system/workplace/admin/captcha/strong.captchapreset</destination>
-			<type>captchapreset</type>
+			<type>xmlcontent</type>
 			<uuidresource>e4a16369-7b90-11da-9858-5b510a4bd4de</uuidresource>
 			<datelastmodified>Tue, 03 Jan 2006 10:12:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -843,7 +832,7 @@
 		<file>
 			<source>system/workplace/admin/captcha/ultralight.captchapreset</source>
 			<destination>system/workplace/admin/captcha/ultralight.captchapreset</destination>
-			<type>captchapreset</type>
+			<type>xmlcontent</type>
 			<uuidresource>dacd504e-706f-11da-80d4-5b510a4bd4de</uuidresource>
 			<datelastmodified>Tue, 03 Jan 2006 10:08:40 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
@@ -865,7 +854,7 @@
 		<file>
 			<source>system/workplace/admin/captcha/ultrastrong.captchapreset</source>
 			<destination>system/workplace/admin/captcha/ultrastrong.captchapreset</destination>
-			<type>captchapreset</type>
+			<type>xmlcontent</type>
 			<uuidresource>1658b72b-7b94-11da-bc40-5b510a4bd4de</uuidresource>
 			<datelastmodified>Thu, 05 Jan 2006 08:26:01 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
