@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.15.2.5 $
+ * Date   : $Date: 2006/02/20 08:50:38 $
+ * Version: $Revision: 1.15.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.util;
 
 import org.opencms.flex.CmsFlexRequest;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 
@@ -45,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -59,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.5 $ 
+ * @version $Revision: 1.15.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -430,6 +432,25 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Returns the value of the cookie with the given name.<p/>
+     * 
+     * @param jsp the CmsJspActionElement to use
+     * @param name the name of the cookie
+     * 
+     * @return the value of the cookie with the given name or null, if no cookie exists with the name
+     */
+    public static String getCookieValue(CmsJspActionElement jsp, String name) {
+
+        Cookie[] cookies = jsp.getRequest().getCookies();
+        for (int i = 0; cookies != null && i < cookies.length; i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                return cookies[i].getValue();
+            }
+        }
+        return null;
+    }
+
+    /**
      * Reads value from the request parameters,
      * will return <code>null</code> if the value is not available or only white space.<p>
      * 
@@ -532,6 +553,27 @@ public final class CmsRequestUtil {
             }
         }
         return parameterMap;
+    }
+
+    /** 
+     * Sets the value of a specific cookie.<p>
+     * If no cookie exists with the value, a new cookie will be created.
+     * 
+     * @param jsp the CmsJspActionElement to use
+     * @param name the name of the cookie
+     * @param value the value of the cookie
+     */
+    public static void setCookieValue(CmsJspActionElement jsp, String name, String value) {
+
+        Cookie[] cookies = jsp.getRequest().getCookies();
+        for (int i = 0; cookies != null && i < cookies.length; i++) {
+            if (name.equalsIgnoreCase(cookies[i].getName())) {
+                cookies[i].setValue(value);
+                return;
+            }
+        }
+        Cookie cookie = new Cookie(name, value);
+        jsp.getResponse().addCookie(cookie);
     }
 
     /**
