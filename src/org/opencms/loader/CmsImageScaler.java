@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.2.0
  */
@@ -173,7 +173,7 @@ public class CmsImageScaler {
             float scale = (float)width / (float)original.getWidth();
             height = Math.round(original.getHeight() * scale);
         } else if ((height > 0) && (original.getHeight() > 0)) {
-            // height is known, claculate width
+            // height is known, calculate width
             float scale = (float)height / (float)original.getHeight();
             width = Math.round(original.getWidth() * scale);
         } else if (original.isValid() && !scaler.isValid()) {
