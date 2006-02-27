@@ -171,7 +171,11 @@ function buttonClick(event, menuId) {
 		if (! isMouseOver) {
 	%>
 			// AZ: open link when pressing top menu button again
-			document.location.href = activeButton.href;
+			if (activeButton.tagName == "IMG" || activeButton.tagName == "img") {
+				document.location.href = activeButton.parentNode.href;
+			} else {
+				document.location.href = activeButton.href;
+			}
 			// /AZ
 	<% 
 		} 

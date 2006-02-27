@@ -1,0 +1,22 @@
+<%@ page import="org.opencms.file.*, org.opencms.frontend.layoutpage.*" %><%--
+--%><%@ taglib prefix="cms" uri="http://www.opencms.org/taglib/cms" %><%
+
+CmsLayoutPageBean cms = new CmsLayoutPageBean(pageContext, request, response);
+
+// Fill the default layout patterns to the Map of possible layouts.
+// To add your own predefined layout, use 'cms.addLayoutPattern(String patternName, int imageWidth);'.
+cms.createDefaultLayoutPatterns();
+
+// If using other layout patterns, uncomment the line below and set the VFS path to the folder containing your layout patterns.
+// Be also sure to import the styles of the file "resources/style.css" of this module in your template CSS style sheet.
+// cms.setPathLayoutElements("/system/modules/org.opencms.frontend.layoutpage/layouts/");
+
+String template = cms.property(CmsPropertyDefinition.PROPERTY_TEMPLATE, "search", "/system/modules/org.opencms.frontend.templateone/templates/main");
+
+cms.include(template, "head");
+
+%><cms:contentload collector="singleFile" param="${opencms.filename}" editable="true"><%= cms.buildHtmlParagraphs() %></cms:contentload><%
+
+cms.include(template, "foot");
+
+%>

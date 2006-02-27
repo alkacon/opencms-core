@@ -66,8 +66,9 @@ String formButtonBorder = cms.getConfigValue("form.button.border", headLinksBord
 String formButtonBg = cms.getConfigValue("form.button.bg", headLinksBg);
 String formButtonFont = cms.getConfigValue("form.button.font", footLinksFont);
 
-// optional additional CSS file
+// optional additional CSS files
 String cssUri = cms.getConfigValue("css.optional.uri", null);
+String layoutPageCss = "/system/modules/org.opencms.frontend.layoutpage/resources/style.css";
 
 %>
 
@@ -424,7 +425,14 @@ textarea.onlineform { height: 80px; }
 /* default styles */
 .nowrap { white-space: nowrap; }
 .bold { font-weight: bold; }
-<% if (cssUri != null && cms.getCmsObject().existsResource(cssUri)) { %>
+<% 
+
+if (cms.getCmsObject().existsResource(layoutPageCss)) {
+	String layoutStyles = cms.getContent(layoutPageCss);
+	out.print(layoutStyles);
+}
+
+if (cssUri != null && cms.getCmsObject().existsResource(cssUri)) { %>
 /* optional additional styles */
 <% 
 	String additionalStyles = null;

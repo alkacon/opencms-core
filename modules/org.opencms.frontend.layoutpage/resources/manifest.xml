@@ -1,0 +1,533 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<export>
+	<info>
+		<creator>Admin</creator>
+		<opencms_version>6.1.9</opencms_version>
+		<createdate>Mon, 27 Feb 2006 10:10:46 GMT</createdate>
+		<project>Offline</project>
+		<export_version>4</export_version>
+	</info>
+	<module>
+		<name>org.opencms.frontend.layoutpage</name>
+		<nicename><![CDATA[OpenCms frontend Layoutpage]]></nicename>
+		<group>OpenCms frontend</group>
+		<class/>
+		<description><![CDATA[<p>Contains the resource type "layoutpage" that helps creating pages following a set of predefined layout patterns.</p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>1.0.0</version>
+		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
+		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
+		<datecreated/>
+		<userinstalled/>
+		<dateinstalled/>
+		<dependencies/>
+		<exportpoints>
+			<exportpoint uri="/system/modules/org.opencms.frontend.layoutpage/classes/" destination="WEB-INF/classes/"/>
+		</exportpoints>
+		<resources>
+			<resource uri="/system/modules/org.opencms.frontend.layoutpage/"/>
+			<resource uri="/system/workplace/resources/filetypes/layoutpage.gif"/>
+		</resources>
+		<parameters/>
+		<resourcetypes>
+			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="layoutpage" id="56">
+				<properties>
+					<property>
+						<name>content-conversion</name>
+						<value type="shared"><![CDATA[cleanup;xhtml]]></value>
+					</property>
+					<property>
+						<name>template-elements</name>
+						<value type="shared"><![CDATA[/system/modules/org.opencms.frontend.layoutpage/pages/detail-layoutpage.html]]></value>
+					</property>
+				</properties>
+				<param name="schema">/system/modules/org.opencms.frontend.layoutpage/schemas/layoutpage.xsd</param>
+			</type>
+		</resourcetypes>
+		<explorertypes>
+			<explorertype name="layoutpage" key="fileicon.layoutpage" icon="layoutpage.gif" reference="xmlcontent">
+				<newresource uri="newresource_xmlcontent.jsp?newresourcetype=layoutpage" order="19" autosetnavigation="false" autosettitle="false"/>
+				<accesscontrol>
+					<accessentry principal="GROUP.Administrators" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Projectmanagers" permissions="+r+v+w+c"/>
+					<accessentry principal="GROUP.Users" permissions="+r+v+w+c"/>
+				</accesscontrol>
+			</explorertype>
+		</explorertypes>
+	</module>
+	<files>
+		<file>
+			<destination>system</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Feb 2006 14:33:10 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Users</uuidprincipal>
+					<flags>34</flags>
+					<permissionset>
+						<allowed>1</allowed>
+						<denied>0</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/modules</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 14:05:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 14:05:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 14:05:57 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:05:57 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 14:05:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:05:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 14:05:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:05:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 14:05:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:05:58 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace.properties</destination>
+			<type>plain</type>
+			<uuidresource>21668fd9-a225-11da-856e-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 10:25:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 15:25:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace_de.properties</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>5f48760f-a489-11da-a1a2-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 10:25:32 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Feb 2006 16:28:07 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/classes/org/opencms/frontend/layoutpage/workplace_en.properties</destination>
+			<type>plain</type>
+			<uuidresource>21668fd9-a225-11da-856e-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 10:25:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 15:25:31 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 21 Feb 2006 11:32:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:32:30 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imagebottom</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imagebottom</destination>
+			<type>plain</type>
+			<uuidresource>43f52f38-a2d0-11da-b7ca-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 13:19:30 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:50:33 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for image bottom below text]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft</destination>
+			<type>plain</type>
+			<uuidresource>431090f4-a2cf-11da-b7ca-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 13:20:33 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:43:22 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for image upper left]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft_textright</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageleft_textright</destination>
+			<type>plain</type>
+			<uuidresource>3321048e-a2d0-11da-b7ca-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 13:34:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:50:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for image left, text right]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageright</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageright</destination>
+			<type>plain</type>
+			<uuidresource>46df9a59-a2cf-11da-b7ca-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 14:03:11 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:43:29 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for image upper right]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imageright_textleft</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imageright_textleft</destination>
+			<type>plain</type>
+			<uuidresource>ac515013-a51f-11da-933a-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 13:34:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Feb 2006 10:24:01 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for image right, text left]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/imagetop</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/imagetop</destination>
+			<type>plain</type>
+			<uuidresource>3fdce7d3-a2d0-11da-b7ca-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 10:18:52 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:50:26 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for image top above text]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/layouts/textonly</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/layouts/textonly</destination>
+			<type>plain</type>
+			<uuidresource>d6fd2373-a2cd-11da-9451-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 13:19:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Feb 2006 11:33:11 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Layout for text only paragraph]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/pages</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 15:03:27 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 15:02:38 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/pages/detail-layoutpage.html</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/pages/detail-layoutpage.html</destination>
+			<type>jsp</type>
+			<uuidresource>23035718-a222-11da-8f55-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 16:38:55 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 15:04:06 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>cache</name>
+					<value><![CDATA[uri]]></value>
+				</property>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Detail view for layout page]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Fri, 24 Feb 2006 11:27:35 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Feb 2006 11:27:35 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/resources/style.css</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/resources/style.css</destination>
+			<type>plain</type>
+			<uuidresource>9364ea3d-a528-11da-9d7b-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 14:44:28 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Fri, 24 Feb 2006 11:27:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[CSS Stylesheet for layout elements]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/modules/org.opencms.frontend.layoutpage/schemas</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 20 Feb 2006 15:03:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:06:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/schemas/layoutimage.xsd</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/schemas/layoutimage.xsd</destination>
+			<type>plain</type>
+			<uuidresource>8d7eaeaf-a21a-11da-8f55-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 10:26:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:09:48 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for images]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/schemas/layoutpage.xsd</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/schemas/layoutpage.xsd</destination>
+			<type>plain</type>
+			<uuidresource>882e838a-a21a-11da-8f55-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 16:05:49 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:09:39 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[XSD for layout pages]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/modules/org.opencms.frontend.layoutpage/schemas/layoutparagraph.xsd</source>
+			<destination>system/modules/org.opencms.frontend.layoutpage/schemas/layoutparagraph.xsd</destination>
+			<type>plain</type>
+			<uuidresource>5f70de2c-a21b-11da-8f55-c93f3446e280</uuidresource>
+			<datelastmodified>Fri, 24 Feb 2006 10:21:48 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 14:15:40 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Nested XSD for layout paragraphs]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[UTF-8]]></value>
+				</property>
+				<property>
+					<name>export</name>
+					<value><![CDATA[false]]></value>
+				</property>
+				<property>
+					<name>login-form</name>
+					<value><![CDATA[/system/login/index.html]]></value>
+				</property>
+			</properties>
+			<accesscontrol>
+				<accessentry>
+					<uuidprincipal>GROUP.Guests</uuidprincipal>
+					<flags>38</flags>
+					<permissionset>
+						<allowed>0</allowed>
+						<denied>30</denied>
+					</permissionset>
+				</accessentry>
+			</accesscontrol>
+		</file>
+		<file>
+			<destination>system/workplace/resources</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/resources/filetypes</destination>
+			<type>folder</type>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/filetypes/layoutpage.gif</source>
+			<destination>system/workplace/resources/filetypes/layoutpage.gif</destination>
+			<type>image</type>
+			<uuidresource>1ca28fef-a22b-11da-b9bc-c93f3446e280</uuidresource>
+			<datelastmodified>Thu, 23 Feb 2006 16:49:36 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 20 Feb 2006 16:08:20 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:16,h:16]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+	</files>
+</export>
