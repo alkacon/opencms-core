@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.216.2.5 $
+ * Date   : $Date: 2006/03/02 11:14:13 $
+ * Version: $Revision: 1.216.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216.2.5 $ 
+ * @version $Revision: 1.216.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -393,6 +393,16 @@ public final class OpenCmsCore {
     }
 
     /**
+     * Returns the initialized OpenCms configuration manager.<p>
+     * 
+     * @return the initialized OpenCms configuration manager
+     */
+    protected CmsConfigurationManager getConfigurationManager() {
+
+        return m_configurationManager;
+    }
+
+    /**
      * Returns the configured list of default directory file names.<p>
      *  
      * Caution: This list can not be modified.<p>
@@ -586,16 +596,6 @@ public final class OpenCmsCore {
     }
 
     /**
-     * Returns the initialized OpenCms configuration manager.<p>
-     * 
-     * @return the initialized OpenCms configuration manager
-     */
-    protected CmsConfigurationManager getConfigurationManager() {
-
-        return m_configurationManager;
-    }
-
-    /**
      * Returns the session manager.<p>
      * 
      * @return the session manager
@@ -706,7 +706,7 @@ public final class OpenCmsCore {
         CmsContextInfo contextInfo = new CmsContextInfo(cms.getRequestContext());
         return initCmsObject(contextInfo);
     }
-    
+
     /**
      * Returns an initialized CmsObject with the user and context initialized as provided.<p>
      * 
@@ -877,7 +877,7 @@ public final class OpenCmsCore {
         getSystemInfo().setMailSettings(systemConfiguration.getMailSettings());
         // set HTTP authentication settings
         getSystemInfo().setHttpAuthenticationSettings(systemConfiguration.getHttpAuthenticationSettings());
-        
+
         // set content notification settings
         getSystemInfo().setNotificationTime(systemConfiguration.getNotificationTime());
         getSystemInfo().setNotificationProject(systemConfiguration.getNotificationProject());
@@ -1024,7 +1024,7 @@ public final class OpenCmsCore {
 
             // initialize the search manager
             m_searchManager.initialize(initCmsObject(adminCms));
-            
+
             // initialize the workplace manager
             m_workplaceManager.initialize(initCmsObject(adminCms));
         } catch (CmsException e) {
@@ -1726,15 +1726,61 @@ public final class OpenCmsCore {
      */
     private void fireCmsEventHandler(List listeners, CmsEvent event) {
 
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_1, event.toString()));
+        }
+
         if ((listeners != null) && (listeners.size() > 0)) {
             // handle all event listeners that listen only to this event type
             I_CmsEventListener[] list;
             synchronized (listeners) {
                 list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
             }
-            for (int i = 0; i < list.length; i++) {
-                list[i].cmsEvent(event);
+            if (LOG.isDebugEnabled()) {
+                if (event.getData() != null) {
+                    Iterator i = event.getData().keySet().iterator();
+                    while (i.hasNext()) {
+                        String key = (String)i.next();
+                        Object value = event.getData().get(key);
+                        LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_VALUE_3, key, value, event.toString()));
+                    }
+                } else {
+                    LOG.debug(Messages.get().key(Messages.LOG_DEBUG_NO_EVENT_VALUE_1, event.toString()));
+                }
+                for (int j = 0; j < list.length; j++) {
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DEBUG_EVENT_LISTENERS_3,
+                        list[j],
+                        new Integer(j),
+                        event.toString()));
+                }
             }
+
+            for (int i = 0; i < list.length; i++) {
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
+                        list[i],
+                        new Integer(i),
+                        event.toString()));
+                }
+                list[i].cmsEvent(event);
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(Messages.get().key(
+                        Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
+                        list[i],
+                        new Integer(i),
+                        event.toString()));
+                }
+            }
+        } else {
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_NO_LISTENER_1, event.toString()));
+            }
+        }
+
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_COMPLETE_1, event.toString()));
         }
     }
 

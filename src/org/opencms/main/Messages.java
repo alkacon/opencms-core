@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/Messages.java,v $
- * Date   : $Date: 2005/10/26 11:14:14 $
- * Version: $Revision: 1.25.2.2 $
+ * Date   : $Date: 2006/03/02 11:14:13 $
+ * Version: $Revision: 1.25.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.25.2.2 $ 
+ * @version $Revision: 1.25.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -310,6 +310,30 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_CONSOLE_TOTAL_RUNTIME_1 = "LOG_CONSOLE_TOTAL_RUNTIME_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_1 = "LOG_DEBUG_EVENT_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_COMPLETE_1 = "LOG_DEBUG_EVENT_COMPLETE_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_END_LISTENER_3 = "LOG_DEBUG_EVENT_END_LISTENER_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_LISTENERS_3 = "LOG_DEBUG_EVENT_LISTENERS_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_NO_LISTENER_1 = "LOG_DEBUG_EVENT_NO_LISTENER_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_START_LISTENER_3 = "LOG_DEBUG_EVENT_START_LISTENER_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_EVENT_VALUE_3 = "LOG_DEBUG_EVENT_VALUE_3";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_DEBUG_NO_EVENT_VALUE_1 = "LOG_DEBUG_NO_EVENT_VALUE_1";
 
     /** Message contant for key in the resource bundle. */
     public static final String LOG_DUPLICATE_REQUEST_HANDLER_1 = "LOG_DUPLICATE_REQUEST_HANDLER_1";
