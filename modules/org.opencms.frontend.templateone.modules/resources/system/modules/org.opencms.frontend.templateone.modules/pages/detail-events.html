@@ -45,20 +45,29 @@ pageContext.setAttribute("locale", locale);
 %>
 <tr>
 	<td class="nowrap">
-		<fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><fmt:message key="eventarticle.eventtime" />
+		<c:set var="showTime" value="true"/>
+		<c:set var="dateType" value="both"/>
+		<cms:contentcheck ifexists="EventDates/ShowTime">
+			<c:set var="showTime"><cms:contentshow element="EventDates/ShowTime" /></c:set>
+			<c:if test="${showTime == 'false' || showTime == ''}">
+				<c:set var="dateType" value="date"/>
+			</c:if>
+		</cms:contentcheck>
+		<fmt:message key="eventarticle.eventdate" />:&nbsp;</td><td style="width: 100%;"><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="${dateType}" /><c:if test="${dateType == 'both'}"><fmt:message key="eventarticle.eventtime" /></c:if>
 		<cms:contentcheck ifexists="EventDates/EventEndDate">
 		<c:set var="enddateString">
 			<cms:contentshow element="EventDates/EventEndDate" />
 		</c:set>
 		<fmt:message key="eventarticle.eventend" /> 
 		<%
+			boolean showTime = Boolean.valueOf((String)pageContext.getAttribute("showTime")).booleanValue();
 			cms.setDate("enddateString");
-			if (cms.isSameDate("startdateString", "enddateString")) {
+			if (showTime && cms.isSameDate("startdateString", "enddateString")) {
 				%><fmt:formatDate value="${date}" timeStyle="short" type="time" /><%
 			} else {
-				%><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="both" /><%
+				%><fmt:formatDate value="${date}" dateStyle="long" timeStyle="short" type="${dateType}" /><%
 			}
-		%><fmt:message key="eventarticle.eventtime" />
+		%><c:if test="${dateType == 'both'}"><fmt:message key="eventarticle.eventtime" /></c:if>
 		</cms:contentcheck>
 	</td>
 </tr>
@@ -276,5 +285,3 @@ pageContext.setAttribute("locale", locale);
 
 <cms:include property="template" element="foot" /><%--
 --%></fmt:bundle>
-
-
