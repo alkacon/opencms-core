@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.58 $
+ * Date   : $Date: 2006/03/03 16:58:43 $
+ * Version: $Revision: 1.59 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.58 $ 
+ * @version $Revision: 1.59 $ 
  * 
  * @since 6.0.0 
  */
@@ -477,19 +477,19 @@ public class CmsLinkManager {
 
             // read only properties, if the current site and the target site both do have a secure server
             if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
-                if (!link.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
 
                     int linkType = -1;
                     // check the secure property of the link
-                    boolean secureLink = exportManager.isSecureLink(cms, link, targetSite.getSiteRoot());
+                    boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
                     boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                     try {
                         // read the linked resource 
-                        linkType = cms.readResource(link).getTypeId();
+                        linkType = cms.readResource(vfsName).getTypeId();
                     } catch (CmsException e) {
                         // there are no access rights on the resource
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(Messages.LOG_NO_ACCESS_RIGHTS_1, link), e);
+                            LOG.info(Messages.get().key(Messages.LOG_NO_ACCESS_RIGHTS_1, vfsName), e);
                         }
                     }
 
