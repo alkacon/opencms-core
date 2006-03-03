@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/01/23 14:17:19 $
- * Version: $Revision: 1.118 $
+ * Date   : $Date: 2006/03/03 13:41:02 $
+ * Version: $Revision: 1.119 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.118 $ 
+ * @version $Revision: 1.119 $ 
  * 
  * @since 6.0.0 
  */
@@ -1031,6 +1031,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         resourceName = CmsResource.getParentFolder(resourceName);
                     }
                 } while (cont);
+                // TODO: check how to have a corrent folder and file name
                 rfsName = exportname + rfsName.substring(resourceName.length());
             }
 
@@ -1438,19 +1439,26 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         if (!cms.getRequestContext().currentProject().isOnlineProject()) {
             return false;
         }
+        
+        int p = vfsName.indexOf("?");
+        String resourcePath = vfsName;
+        if (p >= 0) {
+            resourcePath = vfsName.substring(0, p);
+        }
+        
         Boolean secureResource = (Boolean)m_cacheSecureLinks.get(getCacheKey(
             cms.getRequestContext().getSiteRoot(),
-            vfsName));
+            resourcePath));
         if (secureResource == null) {
             try {
-                String secureProp = cms.readPropertyObject(vfsName, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
+                String secureProp = cms.readPropertyObject(resourcePath, CmsPropertyDefinition.PROPERTY_SECURE, true).getValue();
                 secureResource = Boolean.valueOf(secureProp);
                 // only cache result if read was successfull
-                m_cacheSecureLinks.put(getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName), secureResource);
+                m_cacheSecureLinks.put(getCacheKey(cms.getRequestContext().getSiteRoot(), resourcePath), secureResource);
             } catch (CmsVfsResourceNotFoundException e) {
                 secureResource = Boolean.FALSE;
                 // resource does not exist, no secure link will be required for any user
-                m_cacheSecureLinks.put(getCacheKey(cms.getRequestContext().getSiteRoot(), vfsName), secureResource);
+                m_cacheSecureLinks.put(getCacheKey(cms.getRequestContext().getSiteRoot(), resourcePath), secureResource);
             } catch (Exception e) {
                 // no secure link required (probably security issues, e.g. no access for current user)
                 // however other users may be allowed to read the resource, so the result can't be cached
