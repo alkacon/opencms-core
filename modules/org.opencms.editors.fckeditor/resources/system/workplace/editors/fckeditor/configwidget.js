@@ -11,10 +11,7 @@
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsDialog wp = new CmsDialog(cms);
 
-String site = OpenCms.getSiteManager().getCurrentSite(cms.getCmsObject()).getUrl();
-if (CmsStringUtil.isEmpty(cms.getRequestContext().getSiteRoot())) {
-	site = OpenCms.getSiteManager().getWorkplaceServer();
-}
+String site = OpenCms.getSiteManager().getWorkplaceServer();
 
 String configuration = request.getParameter(CmsFCKEditorWidget.PARAM_CONFIGURATION);
 if (CmsStringUtil.isEmpty(configuration)) {

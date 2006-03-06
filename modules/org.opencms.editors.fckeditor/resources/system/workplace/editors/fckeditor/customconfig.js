@@ -32,10 +32,7 @@ if (CmsStringUtil.isNotEmpty(cssPath)) {
 
 String resource = extConf.getResourcePath();
 
-String site = OpenCms.getSiteManager().getCurrentSite(cms.getCmsObject()).getUrl();
-if (CmsStringUtil.isEmpty(cms.getRequestContext().getSiteRoot())) {
-	site = OpenCms.getSiteManager().getWorkplaceServer();
-}
+String site = OpenCms.getSiteManager().getWorkplaceServer();
 
 %>
 FCKConfig.AutoDetectLanguage = false;
