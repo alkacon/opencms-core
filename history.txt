@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/06 13:35:46 $
- * Version: $Revision: 1.682.2.79 $
+ * Date   : $Date: 2006/03/06 15:05:28 $
+ * Version: $Revision: 1.682.2.80 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,6 +23,7 @@ OpenCms 6.1.9 - March xxxxxxxx, 2006
 ! Added cms:img tag that automatically generates HTML for scaled images
 * Fixed issue #1035: Long project names do not make preferences and exit buttons disappear anymore
 * Fixed issue #1001: added confirmation to lock dialog if a folder contains already locked resources
+* Fixed issue #1004: editor preview button is now working even if the file expired 
 
 OpenCms 6.1.8 (aka 6.2 beta) - February 9, 2006 
 - Some improvements in decorator
