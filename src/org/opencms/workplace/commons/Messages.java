@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/01/11 09:07:31 $
- * Version: $Revision: 1.13.2.9 $
+ * Date   : $Date: 2006/03/06 13:20:07 $
+ * Version: $Revision: 1.13.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,12 +39,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.9 $ 
+ * @version $Revision: 1.13.2.10 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String ERR_AVAILABILITY_BAD_TIMEWINDOW_0 = "ERR_AVAILABILITY_BAD_TIMEWINDOW_0";
 
@@ -511,6 +511,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_LOCK_CONFIRMATION_0 = "GUI_LOCK_CONFIRMATION_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0 = "GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LOCK_MULTI_INFO_LOCKEDSUBRESOURCES_0 = "GUI_LOCK_MULTI_INFO_LOCKEDSUBRESOURCES_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOCK_MULTI_LOCK_2 = "GUI_LOCK_MULTI_LOCK_2";
 
     /** Message constant for key in the resource bundle. */
@@ -860,7 +866,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_PROJECT_0 = "GUI_PUBLISH_PROJECT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_PUBLISH_PROJECT_CONFIRMATION_1 = "GUI_PUBLISH_PROJECT_CONFIRMATION_1";
 

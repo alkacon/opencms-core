@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsLock.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2006/03/06 13:20:07 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,6 +94,9 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     public static final String URI_LOCKCHANGE_DIALOG = PATH_DIALOGS + "lockchange_standard.jsp";
     /** The unlock dialog URI. */
     public static final String URI_UNLOCK_DIALOG = PATH_DIALOGS + "unlock_standard.jsp";
+
+    /** Flag indicating if the selected resources to lockes contain locked subresources.*/
+    private boolean m_hasLockedSubResources;
 
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -183,10 +186,18 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
 
         switch (getDialogAction(getCms())) {
             case TYPE_LOCK:
-                if (isMultiOperation()) {
-                    return key(Messages.GUI_LOCK_MULTI_LOCK_CONFIRMATION_0);
+                if (hasLockedSubResources()) {
+                    if (isMultiOperation()) {
+                        return key(Messages.GUI_LOCK_MULTI_INFO_LOCKEDSUBRESOURCES_0);
+                    } else {
+                        return key(Messages.GUI_LOCK_INFO_LOCKEDSUBRESOURCES_0);
+                    }
                 } else {
-                    return key(Messages.GUI_LOCK_CONFIRMATION_0);
+                    if (isMultiOperation()) {
+                        return key(Messages.GUI_LOCK_MULTI_LOCK_CONFIRMATION_0);
+                    } else {
+                        return key(Messages.GUI_LOCK_CONFIRMATION_0);
+                    }
                 }
             case TYPE_LOCKCHANGE:
                 return key(Messages.GUI_LOCK_CHANGE_CONFIRMATION_0);
@@ -225,13 +236,53 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
     }
 
     /**
-     * Determines whether to show the lock dialog depending on the users settings.<p>
+     * Returns true if the resources to lock have locked subresources.<p>
+     * 
+     * @return true if the resources to lock have locked subresources
+     */
+    public boolean hasLockedSubResources() {
+
+        return m_hasLockedSubResources;
+    }
+
+    /**
+     * Sets if the resources to lock have locked subresources.<p>
+     * 
+     * @param hasLockedSubResources if the resources to lock have locked subresources
+     */
+    public void setHasLockedSubResources(boolean hasLockedSubResources) {
+
+        m_hasLockedSubResources = hasLockedSubResources;
+    }
+
+    /**
+     * Determines whether to show the lock dialog depending on the users settings and the dilaog type.<p>
+     * 
+     * In case of locking a folder, a confirmation dialog is needed if any sub resources are already locked.<p>
      * 
      * @return true if dialogs should be shown, otherwise false
      */
     public boolean showConfirmation() {
 
-        return getSettings().getUserSettings().getDialogShowLock();
+        boolean showConfirmation = getSettings().getUserSettings().getDialogShowLock();
+        if (DIALOG_TYPE_LOCK.equals(getParamDialogtype())) {
+            // in case of locking resources, check if there are locked sub resources in the selected folder(s)
+            Iterator i = getResourceList().iterator();
+            while (i.hasNext()) {
+                String resName = (String)i.next();
+                try {
+                    CmsResource res = getCms().readResource(resName);
+                    if (res.isFolder() && getCms().countLockedResources(resName) > 0) {
+                        // found folder with locked subresources, set flag to show confirmation dialog
+                        setHasLockedSubResources(true);
+                        return true;
+                    }
+                } catch (CmsException e) {
+                    // error reading a resource, should usually never happen
+                }
+            }
+        }
+        return showConfirmation;
     }
 
     /**
@@ -315,7 +366,7 @@ public class CmsLock extends CmsMultiDialog implements I_CmsDialogHandler {
             message = Messages.ERR_UNLOCK_MULTI_0;
         }
         checkMultiOperationException(Messages.get(), message);
-        
+
         return true;
     }
 
