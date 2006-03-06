@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2006/02/09 14:30:45 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/03/06 11:36:13 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -138,7 +138,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.6 $
+ * @version $Revision: 1.1.2.7 $
  * 
  * @since 6.1.3
  * 
@@ -152,7 +152,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.6 $
+     * @version $Revision: 1.1.2.7 $
      * 
      * @since 6.1.6
      * 
@@ -251,7 +251,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.6 $
+     * @version $Revision: 1.1.2.7 $
      * 
      * @since 6.1.6
      * 
@@ -753,6 +753,9 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 }
                 if (propDef != null) {
                     // a valid property - value combination to filter resources for:
+                    // value is potentially a macro that will be compared to the current xml content
+                    // resource!
+                    value = m_macroResolver.resolveMacros(value);
                     m_filterProperties.put(key, value);
 
                 } else {
