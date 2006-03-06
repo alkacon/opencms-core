@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2005/10/19 10:00:35 $
- * Version: $Revision: 1.40.2.2 $
+ * Date   : $Date: 2006/03/06 13:19:03 $
+ * Version: $Revision: 1.40.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.40.2.2 $ 
+ * @version $Revision: 1.40.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -303,6 +303,8 @@ public class CmsTemplateBean extends CmsTemplateBase {
                     getProperties().put(
                         CmsTemplateNavigation.PARAM_SHOWMENUS,
                         getConfigurationValue("headnav.menus", CmsStringUtil.TRUE));
+                    getProperties().put(CmsTemplateNavigation.PARAM_HEADNAV_MANUAL, 
+                        getConfigurationValue("headnav.manual", CmsStringUtil.FALSE));
                 }
                 include(FOLDER_ELEMENTS + "nav_head_menus.jsp", null, m_properties);
             }
