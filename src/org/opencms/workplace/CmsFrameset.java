@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2005/11/23 13:25:27 $
- * Version: $Revision: 1.84.2.3 $
+ * Date   : $Date: 2006/03/06 10:33:46 $
+ * Version: $Revision: 1.84.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.84.2.3 $ 
+ * @version $Revision: 1.84.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,7 +200,7 @@ public class CmsFrameset extends CmsWorkplace {
      * Returns a html select box filled with the current users accessible projects.<p>
      * 
      * @param htmlAttributes attributes that will be inserted into the generated html 
-     * @param htmlWidth additional "width" html attributes
+     * @param htmlWidth additional style attributes containing width information
      * @return a html select box filled with the current users accessible projects
      */
     public String getProjectSelect(String htmlAttributes, String htmlWidth) {
@@ -220,7 +220,6 @@ public class CmsFrameset extends CmsWorkplace {
         List options = new ArrayList();
         List values = new ArrayList();
         int selectedIndex = 0;
-        int maxNameLength = 0;
 
         // now loop through all projects and fill the result vectors
         for (int i = 0, n = allProjects.size(); i < n; i++) {
@@ -236,10 +235,9 @@ public class CmsFrameset extends CmsWorkplace {
                 selectedIndex = i;
             }
             // check the length of the project name, to optionallly adjust the size of the selector
-            maxNameLength = Math.max(loopProjectName.length(), maxNameLength);
         }
-        if (maxNameLength <= 20) {
-            StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 5);
+        if (CmsStringUtil.isNotEmpty(htmlWidth)) {
+            StringBuffer buf = new StringBuffer(htmlAttributes.length() + htmlWidth.length() + 2);
             buf.append(htmlAttributes);
             buf.append(" ");
             buf.append(htmlWidth);
