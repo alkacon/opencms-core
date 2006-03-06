@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/06 16:28:44 $
- * Version: $Revision: 1.682.2.81 $
+ * Date   : $Date: 2006/03/06 16:49:43 $
+ * Version: $Revision: 1.682.2.82 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ OpenCms 6.1.9 - March xxxxxxxx, 2006
 * Fixed issue #1001: added confirmation to lock dialog if a folder contains already locked resources
 * Fixed issue #1004: editor preview button is now working even if the edited file is expired
 * Fixed issue #1015: Simultaneous creation of new XML content resources with frontend direct edit button now is possible
+* Fixed issue #1052: FCKeditor now shows new unpublished images in WYSIWYG view
 
 OpenCms 6.1.8 (aka 6.2 beta) - February 9, 2006 
 - Some improvements in decorator
