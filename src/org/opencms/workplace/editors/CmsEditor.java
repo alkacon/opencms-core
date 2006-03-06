@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2005/12/14 10:49:36 $
- * Version: $Revision: 1.31.2.5 $
+ * Date   : $Date: 2006/03/06 15:00:18 $
+ * Version: $Revision: 1.31.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31.2.5 $ 
+ * @version $Revision: 1.31.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -662,7 +662,7 @@ public abstract class CmsEditor extends CmsDialog {
             getCms().copyResource(getParamTempfile(), getParamResource(), CmsResource.COPY_AS_NEW);
         }
         // remove the temporary file flag
-        int flags = getCms().readResource(getParamResource()).getFlags();
+        int flags = getCms().readResource(getParamResource(), CmsResourceFilter.ALL).getFlags();
         if ((flags & CmsResource.FLAG_TEMPFILE) == CmsResource.FLAG_TEMPFILE) {
             flags ^= CmsResource.FLAG_TEMPFILE;
         }
@@ -714,6 +714,8 @@ public abstract class CmsEditor extends CmsDialog {
                 flags += CmsResource.FLAG_TEMPFILE;
             }
             getCms().chflags(temporaryFilename, flags);
+            // remove eventual expiration date from temporary file to make preview in editor work
+            getCms().setDateExpired(temporaryFilename, CmsResource.DATE_EXPIRED_DEFAULT, false);
         } catch (CmsException e) {
             switchToCurrentProject();
             throw e;
