@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/07 10:46:59 $
- * Version: $Revision: 1.682.2.83 $
+ * Date   : $Date: 2006/03/07 11:38:19 $
+ * Version: $Revision: 1.682.2.84 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 6.1.9 - March xxxxxxxx, 2006
 - Updated workplace DHTML calendar component to newest version 1.0
 ! Added frontend module containing the new resource type "layout pattern page" that allows editors
   to easily select from predefined paragraph layouts
+ * Fixed localization issue in synchronisation JSP dialog
 
 OpenCms 6.1.8 (aka 6.2 beta) - February 9, 2006 
 - Some improvements in decorator

@@ -54,7 +54,7 @@ function init() {
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key(Messages.GUI_SYNCHRONIZATION_INFO_0) %>
+<%= wp.key(org.opencms.workplace.commons.Messages.GUI_SYNCHRONIZATION_INFO_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
