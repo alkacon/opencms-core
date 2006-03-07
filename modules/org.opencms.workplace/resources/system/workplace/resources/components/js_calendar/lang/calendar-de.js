@@ -1,7 +1,7 @@
 // ** I18N
 
 // Calendar DE language
-// Author: Jack (tR), <jack@jtr.de>
+// Author: Andreas Zahner, <a.zahner@alkacon.com>
 // Encoding: any
 // Distributed under the same terms as the calendar itself.
 
@@ -43,6 +43,10 @@ Calendar._SDN = new Array
  "Sa",
  "So");
 
+// First day of the week. "0" means display Sunday first, "1" means display
+// Monday first, etc.
+Calendar._FD = 1;
+
 // full month names
 Calendar._MN = new Array
 ("Januar",
@@ -64,7 +68,7 @@ Calendar._SMN = new Array
  "Feb",
  "M\u00e4r",
  "Apr",
- "Mai",
+ "May",
  "Jun",
  "Jul",
  "Aug",
@@ -75,12 +79,12 @@ Calendar._SMN = new Array
 
 // tooltips
 Calendar._TT = {};
-Calendar._TT["INFO"] = "\u00DCber dieses Kalendermodul";
+Calendar._TT["INFO"] = "\u00DCber dieses Kalendarmodul";
 
 Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
-"(c) dynarch.com 2002-2003\n" + // don't translate this ;-)
-"For latest version visit: http://dynarch.com/mishoo/calendar.epl\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this ;-)
+"For latest version visit: http://www.dynarch.com/projects/calendar/\n" +
 "Distributed under GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
 "\n\n" +
 "Datum ausw\u00e4hlen:\n" +
@@ -93,12 +97,11 @@ Calendar._TT["ABOUT_TIME"] = "\n\n" +
 "- oder klicken Sie mit festgehaltener Shift-Taste um diese zu verringern\n" +
 "- oder klicken und festhalten f\u00fcr Schnellauswahl.";
 
-Calendar._TT["TOGGLE"] = "Ersten Tag der Woche w\u00e4hlen";
-Calendar._TT["PREV_YEAR"] = "Jahr zur\u00fcck (Halten: Auswahl)";
-Calendar._TT["PREV_MONTH"] = "Monat zur\u00fcck (Halten: Auswahl)";
-Calendar._TT["GO_TODAY"] = "Heute w\u00e4hlen";
-Calendar._TT["NEXT_MONTH"] = "Monat vor (Halten: Auswahl)";
-Calendar._TT["NEXT_YEAR"] = "Jahr vor (Halten: Auswahl)";
+Calendar._TT["PREV_YEAR"] = "Jahr zur\u00fcck (halten: Auswahl)";
+Calendar._TT["PREV_MONTH"] = "Monat zur\u00fcck (halten: Auswahl)";
+Calendar._TT["GO_TODAY"] = "Heute ausw\u00e4hlen";
+Calendar._TT["NEXT_MONTH"] = "Monat vor (halten: Auswahl)";
+Calendar._TT["NEXT_YEAR"] = "Jahr vor (halten: Auswahl)";
 Calendar._TT["SEL_DATE"] = "Datum ausw\u00e4hlen";
 Calendar._TT["DRAG_TO_MOVE"] = "Zum Bewegen festhalten";
 Calendar._TT["PART_TODAY"] = " (Heute)";
@@ -114,11 +117,11 @@ Calendar._TT["WEEKEND"] = "0,6";
 
 Calendar._TT["CLOSE"] = "Schlie\u00dfen";
 Calendar._TT["TODAY"] = "Heute";
-Calendar._TT["TIME_PART"] = "Klicken/Ziehen z. \u00c4ndern";
+Calendar._TT["TIME_PART"] = "(Shift-)Klicken/Ziehen z. \u00c4ndern";
 
 // date formats
 Calendar._TT["DEF_DATE_FORMAT"] = "%d.%m.%Y";
-Calendar._TT["TT_DATE_FORMAT"] = "%a, %e. %b ";
+Calendar._TT["TT_DATE_FORMAT"] = "%a, %b %e";
 
 Calendar._TT["WK"] = "KW";
 Calendar._TT["TIME"] = "Zeit:";

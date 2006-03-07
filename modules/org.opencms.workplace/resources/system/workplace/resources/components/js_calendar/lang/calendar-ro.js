@@ -30,8 +30,8 @@ Calendar._TT["INFO"] = "Despre calendar";
 
 Calendar._TT["ABOUT"] =
 "DHTML Date/Time Selector\n" +
-"(c) dynarch.com 2002-2003\n" + // don't translate this this ;-)
-"Pentru ultima versiune vizitaţi: http://dynarch.com/mishoo/calendar.epl\n" +
+"(c) dynarch.com 2002-2005 / Author: Mihai Bazon\n" + // don't translate this this ;-)
+"Pentru ultima versiune vizitaţi: http://www.dynarch.com/projects/calendar/\n" +
 "Distribuit sub GNU LGPL.  See http://gnu.org/licenses/lgpl.html for details." +
 "\n\n" +
 "Selecţia datei:\n" +
@@ -52,8 +52,8 @@ Calendar._TT["NEXT_YEAR"] = "Anul următor (lung pt menu)";
 Calendar._TT["SEL_DATE"] = "Selectează data";
 Calendar._TT["DRAG_TO_MOVE"] = "Trage pentru a mişca";
 Calendar._TT["PART_TODAY"] = " (astăzi)";
-Calendar._TT["MON_FIRST"] = "Prima zi -> Luni";
-Calendar._TT["SUN_FIRST"] = "Prima zi -> Duminică";
+Calendar._TT["DAY_FIRST"] = "Afişează %s prima zi";
+Calendar._TT["WEEKEND"] = "0,6";
 Calendar._TT["CLOSE"] = "Închide";
 Calendar._TT["TODAY"] = "Astăzi";
 Calendar._TT["TIME_PART"] = "(Shift-)Click sau drag pentru a selecta";
@@ -63,3 +63,4 @@ Calendar._TT["DEF_DATE_FORMAT"] = "%d-%m-%Y";
 Calendar._TT["TT_DATE_FORMAT"] = "%A, %d %B";
 
 Calendar._TT["WK"] = "spt";
+Calendar._TT["TIME"] = "Ora:";

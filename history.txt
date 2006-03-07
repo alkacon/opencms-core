@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/06 16:49:43 $
- * Version: $Revision: 1.682.2.82 $
+ * Date   : $Date: 2006/03/07 10:46:59 $
+ * Version: $Revision: 1.682.2.83 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -21,11 +21,14 @@ Legend:
 
 OpenCms 6.1.9 - March xxxxxxxx, 2006
 ! Added cms:img tag that automatically generates HTML for scaled images
-* Fixed issue #1035: Long project names do not make preferences and exit buttons disappear anymore
+* Fixed issue #1035: long project names do not make preferences and exit buttons disappear anymore
 * Fixed issue #1001: added confirmation to lock dialog if a folder contains already locked resources
 * Fixed issue #1004: editor preview button is now working even if the edited file is expired
-* Fixed issue #1015: Simultaneous creation of new XML content resources with frontend direct edit button now is possible
+* Fixed issue #1015: simultaneous creation of new XML content resources with frontend direct edit button is now possible
 * Fixed issue #1052: FCKeditor now shows new unpublished images in WYSIWYG view
+- Updated workplace DHTML calendar component to newest version 1.0
+! Added frontend module containing the new resource type "layout pattern page" that allows editors
+  to easily select from predefined paragraph layouts
 
 OpenCms 6.1.8 (aka 6.2 beta) - February 9, 2006 
 - Some improvements in decorator

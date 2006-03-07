@@ -1749,10 +1749,10 @@
 			<source>system/workplace/resources/components/js_calendar/calendar-opencms.css</source>
 			<destination>system/workplace/resources/components/js_calendar/calendar-opencms.css</destination>
 			<type>plain</type>
-			<uuidresource>4d3da532-f038-11d8-bd02-ddc4b68c493a</uuidresource>
+			<uuidresource>82682549-adb5-11da-9937-71161b30b4f0</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:36:44 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1762,10 +1762,10 @@
 			<source>system/workplace/resources/components/js_calendar/calendar-setup.js</source>
 			<destination>system/workplace/resources/components/js_calendar/calendar-setup.js</destination>
 			<type>plain</type>
-			<uuidresource>4d471b16-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>256749a4-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:26 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1775,10 +1775,10 @@
 			<source>system/workplace/resources/components/js_calendar/calendar-system.css</source>
 			<destination>system/workplace/resources/components/js_calendar/calendar-system.css</destination>
 			<type>plain</type>
-			<uuidresource>4d4e470a-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>24297266-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1788,10 +1788,10 @@
 			<source>system/workplace/resources/components/js_calendar/calendar.js</source>
 			<destination>system/workplace/resources/components/js_calendar/calendar.js</destination>
 			<type>plain</type>
-			<uuidresource>4d57e3fe-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>2424de82-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:35 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1801,21 +1801,44 @@
 			<source>system/workplace/resources/components/js_calendar/menuarrow.gif</source>
 			<destination>system/workplace/resources/components/js_calendar/menuarrow.gif</destination>
 			<type>image</type>
-			<uuidresource>4d6159e2-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>2553737a-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:39 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:7,h:5]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/menuarrow2.gif</source>
+			<destination>system/workplace/resources/components/js_calendar/menuarrow2.gif</destination>
+			<type>image</type>
+			<uuidresource>25643c5f-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:43 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:18 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:7,h:5]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 		<file>
 			<destination>system/workplace/resources/components/js_calendar/lang</destination>
 			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:14 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1825,10 +1848,62 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-af.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-af.js</destination>
 			<type>plain</type>
-			<uuidresource>4c40f642-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>237082f6-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:52 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-al.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-al.js</destination>
+			<type>plain</type>
+			<uuidresource>23814bda-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:41:56 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-bg.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-bg.js</destination>
+			<type>plain</type>
+			<uuidresource>2384591e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:02 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-big5-utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-big5-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>238a73a2-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:07 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-big5.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-big5.js</destination>
+			<type>plain</type>
+			<uuidresource>238d80e6-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:16 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1838,10 +1913,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-br.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-br.js</destination>
 			<type>plain</type>
-			<uuidresource>4c482236-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>239214ca-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1851,10 +1926,23 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-ca.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ca.js</destination>
 			<type>plain</type>
-			<uuidresource>4c51981a-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>2395220e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:42 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-cs-utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-cs-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>239b3c92-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:47 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1864,10 +1952,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-cs-win.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-cs-win.js</destination>
 			<type>plain</type>
-			<uuidresource>4c5b350e-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>239e70e6-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:51 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1877,10 +1965,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-da.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-da.js</destination>
 			<type>plain</type>
-			<uuidresource>4c6239f2-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23a304ca-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:56 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1890,10 +1978,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-de.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-de.js</destination>
 			<type>plain</type>
-			<uuidresource>4c6bd6e6-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23a6120e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 09:50:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1903,10 +1991,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-du.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-du.js</destination>
 			<type>plain</type>
-			<uuidresource>4c754cca-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23aaa5f2-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:05 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1916,10 +2004,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-el.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-el.js</destination>
 			<type>plain</type>
-			<uuidresource>4c7ee9be-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23adb336-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:10 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1929,10 +2017,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-en.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-en.js</destination>
 			<type>plain</type>
-			<uuidresource>4c885fa2-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23af39da-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:49:22 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1942,10 +2030,23 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-es.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-es.js</destination>
 			<type>plain</type>
-			<uuidresource>4c8f8b96-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23b3cdbe-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:20 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-fi.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-fi.js</destination>
+			<type>plain</type>
+			<uuidresource>23b6db02-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:25 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1955,10 +2056,23 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-fr.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-fr.js</destination>
 			<type>plain</type>
-			<uuidresource>4c99288a-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23b9e846-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-he-utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-he-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>23bcf58a-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1968,10 +2082,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-hr-utf8.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-hr-utf8.js</destination>
 			<type>plain</type>
-			<uuidresource>4ca29e6e-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23c3100e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:38 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1981,10 +2095,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-hr.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-hr.js</destination>
 			<type>plain</type>
-			<uuidresource>4ca9c962-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23c61c52-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:44 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -1994,10 +2108,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-hu.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-hu.js</destination>
 			<type>plain</type>
-			<uuidresource>4cb36656-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23c92996-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:50 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2007,10 +2121,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-it.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-it.js</destination>
 			<type>plain</type>
-			<uuidresource>4cbcdc3a-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23cc36da-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:44:54 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2020,10 +2134,75 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-jp.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-jp.js</destination>
 			<type>plain</type>
-			<uuidresource>4cc6792e-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23cf441e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-ko-utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ko-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>23d3d802-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:05 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-ko.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ko.js</destination>
+			<type>plain</type>
+			<uuidresource>23d6e546-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:10 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-lt-utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-lt-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>23d86bea-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:15 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-lt.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-lt.js</destination>
+			<type>plain</type>
+			<uuidresource>23db792e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:20 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-lv.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-lv.js</destination>
+			<type>plain</type>
+			<uuidresource>23de8672-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:24 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2033,10 +2212,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-nl.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-nl.js</destination>
 			<type>plain</type>
-			<uuidresource>4ccfef12-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23e00d16-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:45:30 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2046,10 +2225,23 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-no.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-no.js</destination>
 			<type>plain</type>
-			<uuidresource>4cd98c06-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23e31a5a-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-pl-utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-pl-utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>23e6279e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:26 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2059,10 +2251,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-pl.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-pl.js</destination>
 			<type>plain</type>
-			<uuidresource>4ce572ea-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23e7ae42-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:21 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2072,10 +2264,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-pt.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-pt.js</destination>
 			<type>plain</type>
-			<uuidresource>4cec9ede-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23eabb86-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:14 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2085,10 +2277,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-ro.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ro.js</destination>
 			<type>plain</type>
-			<uuidresource>4cf614c2-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23edc8ca-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:09 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2098,10 +2290,36 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-ru.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ru.js</destination>
 			<type>plain</type>
-			<uuidresource>4d01fba6-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23f0d60e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:43:04 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-ru_win_.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-ru_win_.js</destination>
+			<type>plain</type>
+			<uuidresource>23f3e352-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:58 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/calendar-si.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/calendar-si.js</destination>
+			<type>plain</type>
+			<uuidresource>23f6f096-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:53 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2111,10 +2329,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-sk.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-sk.js</destination>
 			<type>plain</type>
-			<uuidresource>4d0b989a-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>23f8773a-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:48 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:15 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2124,10 +2342,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-sp.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-sp.js</destination>
 			<type>plain</type>
-			<uuidresource>4d150e7e-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>240c746e-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:43 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2137,23 +2355,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-sv.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-sv.js</destination>
 			<type>plain</type>
-			<uuidresource>4d1eab72-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>240dfb12-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:37 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/resources/components/js_calendar/lang/calendar-sw.js</source>
-			<destination>system/workplace/resources/components/js_calendar/lang/calendar-sw.js</destination>
-			<type>plain</type>
-			<uuidresource>4d25d766-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2163,10 +2368,10 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-tr.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-tr.js</destination>
 			<type>plain</type>
-			<uuidresource>4d2d035a-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>24110856-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:32 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
@@ -2176,10 +2381,23 @@
 			<source>system/workplace/resources/components/js_calendar/lang/calendar-zh.js</source>
 			<destination>system/workplace/resources/components/js_calendar/lang/calendar-zh.js</destination>
 			<type>plain</type>
-			<uuidresource>4d36793e-f038-11d8-bd02-ddc4b68c493a</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>241722da-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:28 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/components/js_calendar/lang/cn_utf8.js</source>
+			<destination>system/workplace/resources/components/js_calendar/lang/cn_utf8.js</destination>
+			<type>plain</type>
+			<uuidresource>242357de-adb6-11da-9937-71161b30b4f0</uuidresource>
+			<datelastmodified>Tue, 07 Mar 2006 08:42:23 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 07 Mar 2006 08:41:16 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>

@@ -82,6 +82,13 @@
   text-align: right;
   padding: 2px 4px 2px 2px;
 }
+.calendar tbody .day.othermonth {
+  font-size: 80%;
+  color: #aaa;
+}
+.calendar tbody .day.othermonth.oweekend {
+  color: #faa;
+}
 
 .calendar table .wn {
   padding: 2px 3px 2px 2px;
@@ -170,7 +177,7 @@
 
 /* Combo boxes (menus that display months/years for direct selection) */
 
-.combo {
+.calendar .combo {
   position: absolute;
   display: none;
   width: 4em;
@@ -181,26 +188,27 @@
   border-color: ButtonHighlight ButtonShadow ButtonShadow ButtonHighlight;
   background: Menu;
   color: MenuText;
-  font-size: smaller;
+  font-size: 90%;
   padding: 1px;
+  z-index: 100;
 }
 
-.combo .label,
-.combo .label-IEfix {
+.calendar .combo .label,
+.calendar .combo .label-IEfix {
   text-align: center;
   padding: 1px;
 }
 
-.combo .label-IEfix {
+.calendar .combo .label-IEfix {
   width: 4em;
 }
 
-.combo .active {
+.calendar .combo .active {
   padding: 0px;
   border: 1px solid #000;
 }
 
-.combo .hilite {
+.calendar .combo .hilite {
   background: Highlight;
   color: HighlightText;
 }
