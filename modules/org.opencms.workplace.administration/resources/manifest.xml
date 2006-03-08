@@ -18,7 +18,7 @@
 <p>Its allows you to install and/or develop administration tools for OpenCms 6.</p>
 <p><i>(c) 2004-2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.3</version>
+		<version>1.0.4</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -508,6 +508,19 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/list/leftarrow_disabled.png</source>
+			<destination>system/workplace/resources/list/leftarrow_disabled.png</destination>
+			<type>image</type>
+			<uuidresource>1688b652-aeb6-11da-a781-57930b21733f</uuidresource>
+			<datelastmodified>Wed, 08 Mar 2006 15:13:29 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Wed, 08 Mar 2006 15:13:24 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/list/list.png</source>
 			<destination>system/workplace/resources/list/list.png</destination>
 			<type>image</type>
@@ -603,6 +616,19 @@
 			<destination>system/workplace/resources/list/print.png</destination>
 			<type>image</type>
 			<uuidresource>c4734fed-d427-4ed9-8431-b920ebfd9bc1</uuidresource>
+			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/list/rightarrow.png</source>
+			<destination>system/workplace/resources/list/rightarrow.png</destination>
+			<type>image</type>
+			<uuidresource>7b2fab0c-d0e5-11d9-ac67-b920ebfd9bc1</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
