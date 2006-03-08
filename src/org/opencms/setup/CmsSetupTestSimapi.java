@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestSimapi.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/08 16:17:05 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.imageio.ImageIO;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -114,17 +114,18 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
             if (ex != null) {
                 testResult.setResult(RESULT_FAILED);
                 testResult.setHelp(ex.toString());
-                testResult.setInfo("May be missing XServer? or java.awt.headless parameter forgotten?<br>"
-                    + "<b>You may continue, but image processing will be disabled.</b>");
+                testResult.setInfo("<p><code>-Djava.awt.headless=true</code> JVM parameter or X-Server may be missing.<br>"
+                    + "<b>You can continue the setup, but image processing will be disabled.</b></p>");
             } else {
                 testResult.setResult(RESULT_WARNING);
-                testResult.setHelp("Capable but result does not exactly match.");
+                testResult.setHelp("Image processing works but result does not exactly match.");
                 StringBuffer info = new StringBuffer();
-                info.append("You may continue, but be aware of the 'not exact match':<br>");
+                info.append("<p>Please check the following images for visible differences:</p>");
                 info.append("<table width='100%'>");
                 info.append("<tr><th>Expected</th><th>Result</th></tr>");
                 info.append("<tr><td align='center' width='50%'><img src='resources/test2.png'></td>");
                 info.append("<td align='center' width='50%'><img src='resources/test3.png'></td></table>");
+                info.append("<p><b>You can continue the setup, but image processing may not always work as expected.</b></p>");
                 testResult.setInfo(info.toString());
             }
         }
