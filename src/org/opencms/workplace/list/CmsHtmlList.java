@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.32.2.7 $
+ * Date   : $Date: 2006/03/08 16:40:04 $
+ * Version: $Revision: 1.32.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.7 $ 
+ * @version $Revision: 1.32.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -794,9 +794,11 @@ public class CmsHtmlList {
             // reset content if filter is empty
             m_filteredItems = null;
             m_searchFilter = "";
+            getMetadata().getSearchAction().getShowAllAction().setVisible(false);
         } else {
             m_filteredItems = getMetadata().getSearchAction().filter(getAllContent(), searchFilter);
             m_searchFilter = searchFilter;
+            getMetadata().getSearchAction().getShowAllAction().setVisible(true);
         }
         String sCol = m_sortedColumn;
         m_sortedColumn = "";
