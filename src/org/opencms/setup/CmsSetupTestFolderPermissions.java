@@ -1,0 +1,106 @@
+/*
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestFolderPermissions.java,v $
+ * Date   : $Date: 2006/03/08 15:05:50 $
+ * Version: $Revision: 1.1.2.1 $
+ *
+ * This library is part of OpenCms -
+ * the Open Source Content Mananagement System
+ *
+ * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
+ * Lesser General Public License for more details.
+ *
+ * For further information about Alkacon Software GmbH, please see the
+ * company website: http://www.alkacon.com
+ *
+ * For further information about OpenCms, please see the
+ * project website: http://www.opencms.org
+ * 
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ */
+
+package org.opencms.setup;
+
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
+
+/**
+ * Tests the permission on the target installation folders.<p>
+ * 
+ * @author Michael Moossen
+ * 
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.1.8 
+ */
+public class CmsSetupTestFolderPermissions implements I_CmsSetupTest {
+
+    /** The test name. */
+    public static final String TEST_NAME = "Folder Permissions";
+
+    /**
+     * @see org.opencms.setup.I_CmsSetupTest#getName()
+     */
+    public String getName() {
+
+        return TEST_NAME;
+    }
+
+    /**
+     * @see org.opencms.setup.I_CmsSetupTest#run(org.opencms.setup.CmsSetupBean)
+     */
+    public CmsSetupTestResult run(CmsSetupBean setupBean) {
+
+        CmsSetupTestResult testResult = new CmsSetupTestResult(this);
+
+        String basePath = setupBean.getWebAppRfsPath();
+        if (!basePath.endsWith(File.separator)) {
+            basePath += File.separator;
+        }
+        File file1;
+        do {
+            file1 = new File(basePath + "test" + (int)(Math.random() * 1000));
+        } while (file1.exists());
+        boolean success = false;
+        try {
+            file1.createNewFile();
+            FileWriter fw = new FileWriter(file1);
+            fw.write("aA1");
+            fw.close();
+            success = true;
+            FileReader fr = new FileReader(file1);
+            success = success && (fr.read() == 'a');
+            success = success && (fr.read() == 'A');
+            success = success && (fr.read() == '1');
+            success = success && (fr.read() == -1);
+            fr.close();
+            success = file1.delete();
+            success = !file1.exists();
+        } catch (Exception e) {
+            success = false;
+        }
+        if (!success) {
+            testResult.setRed();
+            testResult.setInfo("OpenCms cannot be installed without read and write privileges for path "
+                + basePath
+                + "! Please check you are running your servlet container with the right user and privileges.");
+            testResult.setHelp("Not enough permissions to create/read/write a file");
+            testResult.setResult(RESULT_FAILED);
+        } else {
+            testResult.setGreen();
+            testResult.setResult(RESULT_PASSED);
+        }
+        return testResult;
+    }
+}

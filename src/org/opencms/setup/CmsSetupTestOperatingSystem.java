@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/AllTests.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestOperatingSystem.java,v $
  * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.12.2.1 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,43 +31,44 @@
 
 package org.opencms.setup;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 /**
- * Main test suite for the package <code>{@link org.opencms.setup}</code>.<p>
+ * Tests the operating system.<p>
  * 
- * @author Alexander Kandzior 
- * @version $Revision: 1.12.2.1 $
+ * @author Michael Moossen
  * 
- * @since 6.0
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.1.8 
  */
-public final class AllTests {
+public class CmsSetupTestOperatingSystem implements I_CmsSetupTest {
+
+    /** The test name. */
+    public static final String TEST_NAME = "Operating System";
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
+     * @see org.opencms.setup.I_CmsSetupTest#getName()
      */
-    private AllTests() {
+    public String getName() {
 
-        // empty
+        return TEST_NAME;
     }
 
     /**
-     * Returns the JUnit test suite for this package.<p>
-     * 
-     * @return the JUnit test suite for this package
+     * @see org.opencms.setup.I_CmsSetupTest#run(org.opencms.setup.CmsSetupBean)
      */
-    public static Test suite() {
+    public CmsSetupTestResult run(CmsSetupBean setupBean) {
 
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsSetupBean.class));
-        suite.addTest(TestCmsSetupDb.suite());
-        suite.addTest(new TestSuite(TestCmsSetupXmlHelper.class));
-        //$JUnit-END$
-        return suite;
+        CmsSetupTestResult testResult = new CmsSetupTestResult(this);
+
+        String osName = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
+
+        testResult.setResult(osName + " " + osVersion);
+        testResult.setHelp("Your operating system version");
+
+        // there is still no handling to test the operating system
+        testResult.setGreen();
+
+        return testResult;
     }
 }

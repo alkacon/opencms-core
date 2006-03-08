@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/02/07 12:05:14 $
- * Version: $Revision: 1.44.2.7 $
+ * Date   : $Date: 2006/03/08 15:05:50 $
+ * Version: $Revision: 1.44.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsPropertyUtils;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -70,6 +71,7 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.Vector;
 
+import javax.servlet.ServletConfig;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.jsp.JspWriter;
 import javax.servlet.jsp.PageContext;
@@ -90,9 +92,10 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
- * @author  Alexander Kandzior 
+ * @author Alexander Kandzior
+ * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.7 $ 
+ * @version $Revision: 1.44.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -218,12 +221,59 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /** The workplace import thread. */
     private CmsSetupWorkplaceImportThread m_workplaceImportThread;
 
+    /** Xml read/write helper object. */
+    private CmsSetupXmlHelper m_xmlHelper;
+
+    /** The initial servlet configuration. */
+    private ServletConfig m_servletConfig;
+
     /** 
      * Default constructor.<p>
      */
     public CmsSetupBean() {
 
         initHtmlParts();
+    }
+
+    /**
+     * Sets the given value in the given xpath of the given xml file.<p>
+     * 
+     * for more xpath info see: 
+     * http://www.zvon.org/xxl/XPathTutorial/General/examples.html
+     * 
+     *  
+     * @param xmlFilename the xml config file name (could be relative to WEB-INF/config/)
+     * @param xPath the xpath to set (should select a single node or attribute)
+     * @param value the value to set
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public void setXmlValue(String xmlFilename, String xPath, String value) throws CmsXmlException {
+
+        if (m_xmlHelper == null) {
+            // lazzy initialization
+            m_xmlHelper = new CmsSetupXmlHelper(getConfigRfsPath());
+        }
+        m_xmlHelper.setValue(xmlFilename, xPath, value);
+    }
+
+    /**
+     * Returns the value in the given xpath of the given xml file.<p>
+     * 
+     * @param xmlFilename the xml config file (could be relative to WEB-INF/config/)
+     * @param xPath the xpath to read (should select a single node or attribute)
+     * 
+     * @return the value in the given xpath of the given xml file
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public String getXmlValue(String xmlFilename, String xPath) throws CmsXmlException {
+
+        if (m_xmlHelper == null) {
+            // lazzy initialization
+            m_xmlHelper = new CmsSetupXmlHelper(getConfigRfsPath());
+        }
+        return m_xmlHelper.getValue(xmlFilename, xPath);
     }
 
     /**
@@ -688,7 +738,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      * @return the path to the /WEB-INF/lib folder
      */
     public String getLibFolder() {
-        
+
         return getWebAppRfsPath() + FOLDER_WEBINF + FOLDER_LIB;
     }
 
@@ -976,6 +1026,8 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         String defaultWebApplication = pageContext.getServletContext().getInitParameter(
             OpenCmsServlet.SERVLET_PARAM_DEFAULT_WEB_APPLICATION);
 
+        m_servletConfig = pageContext.getServletConfig();
+
         init(webAppRfsPath, servletMapping, defaultWebApplication);
     }
 
@@ -1181,8 +1233,10 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      * Prepares step 8 of the setup wizard.<p>
      * 
      * @return true if the workplace should be imported
+     * 
+     * @throws CmsXmlException if something goes wrong
      */
-    public boolean prepareStep8() {
+    public boolean prepareStep8() throws CmsXmlException {
 
         if (isInitialized()) {
             checkEthernetAddress();
@@ -1196,6 +1250,16 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             backupConfiguration("opencms.xml", "opencms.xml.ori");
             // save Properties to file "opencms.properties" 
             saveProperties(getProperties(), "opencms.properties", true);
+
+            CmsSetupTestResult testResult = new CmsSetupTestSimapi().run(this);
+            if (testResult.getResult().equals(I_CmsSetupTest.RESULT_FAILED)) {
+                setXmlValue(
+                    "opencms-vfs.xml",
+                    "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']/param[@name='image.scaling.enabled']",
+                    "false");
+            }
+            setXmlValue("opencms-system.xml", "/opencms/system/sites/workplace-server", getWorkplaceSite());
+            m_xmlHelper.writeAll();
         }
         return true;
     }
@@ -1693,7 +1757,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                 return false;
             }
         }
-        
+
         return true;
     }
 
@@ -1709,7 +1773,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
         return ((value = m_extProperties.get(key)) != null) ? value.toString() : "";
     }
-    
+
     /**
      * Imports a module (zipfile) from the default module directory, 
      * creating a temporary project for this.<p>
@@ -1944,5 +2008,15 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             m_webAppRfsPath += File.separator;
         }
         m_configRfsPath = m_webAppRfsPath + FOLDER_WEBINF + FOLDER_CONFIG;
+    }
+
+    /**
+     * Returns the initial servlet configuration.<p>
+     * 
+     * @return the initial servlet configuration
+     */
+    public ServletConfig getServletConfig() {
+
+        return m_servletConfig;
     }
 }

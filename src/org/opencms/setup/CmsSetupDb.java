@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupDb.java,v $
- * Date   : $Date: 2006/02/08 08:32:47 $
- * Version: $Revision: 1.24.2.2 $
+ * Date   : $Date: 2006/03/08 15:05:50 $
+ * Version: $Revision: 1.24.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Vector;
  * @author Thomas Weckert  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.24.2.2 $ 
+ * @version $Revision: 1.24.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -319,7 +319,7 @@ public class CmsSetupDb extends Object {
                 html.append("<i>OpenCms was not able to detect the value of your <code>'max_allowed_packet'</code> variable.</i><p>\n");
             }
             html.append("Please, note that it will not be possible for OpenCms to handle files bigger than this value.<p>\n");
-            if (map < 16 * 1024 * 1024) {
+            if (map < 15 * 1024 * 1024) {
                 html.append("<b>The recommended value for running OpenCms is 16Mb, please change your MySQL configuration (in your <code>mi.ini</code> or <code>my.cnf</code> file).</b>\n");
             }
         }

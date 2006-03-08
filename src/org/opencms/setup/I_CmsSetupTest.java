@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/AllTests.java,v $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/I_CmsSetupTest.java,v $
  * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.12.2.1 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,43 +31,41 @@
 
 package org.opencms.setup;
 
-import org.opencms.test.OpenCmsTestProperties;
-
-import junit.framework.Test;
-import junit.framework.TestSuite;
-
 /**
- * Main test suite for the package <code>{@link org.opencms.setup}</code>.<p>
+ * Represent a test to give users infos about whether their system is compatible to OpenCms.<p>
  * 
- * @author Alexander Kandzior 
- * @version $Revision: 1.12.2.1 $
+ * @author Michael Moossen
  * 
- * @since 6.0
+ * @version $Revision: 1.1.2.1 $ 
+ * 
+ * @since 6.1.8 
  */
-public final class AllTests {
+public interface I_CmsSetupTest {
+
+    /** Test failed display text. */
+    public static final String RESULT_FAILED = "failed!";
+
+    /** Test passed display text. */
+    public static final String RESULT_PASSED = "passed";
+
+    /** Test warning display text. */
+    public static final String RESULT_WARNING = "warning!";
 
     /**
-     * Hide constructor to prevent generation of class instances.<p>
-     */
-    private AllTests() {
-
-        // empty
-    }
-
-    /**
-     * Returns the JUnit test suite for this package.<p>
+     * Returns the nice name for the test.<p>
      * 
-     * @return the JUnit test suite for this package
+     * @return the nice name
      */
-    public static Test suite() {
+    public String getName();
 
-        TestSuite suite = new TestSuite("Tests for package " + AllTests.class.getPackage().getName());
-        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
-        //$JUnit-BEGIN$
-        suite.addTest(new TestSuite(TestCmsSetupBean.class));
-        suite.addTest(TestCmsSetupDb.suite());
-        suite.addTest(new TestSuite(TestCmsSetupXmlHelper.class));
-        //$JUnit-END$
-        return suite;
-    }
+    /**
+     * Returns the test results.<p>
+     * 
+     * @param setupBean the setup bean
+     * 
+     * @return the test results
+     * 
+     * @throws Exception if something goes wrong 
+     */
+    public CmsSetupTestResult run(CmsSetupBean setupBean) throws Exception;
 }

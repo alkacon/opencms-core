@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestResult.java,v $
- * Date   : $Date: 2005/07/03 09:41:53 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/08 15:05:50 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,12 +37,13 @@ package org.opencms.setup;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.9 $ 
+ * @version $Revision: 1.9.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSetupTestResult extends Object implements Cloneable {
 
+    /** Test passed flag. */
     private boolean m_green;
 
     /** A string offering some help in case a test failed.<p> */
@@ -54,21 +55,26 @@ public class CmsSetupTestResult extends Object implements Cloneable {
     /** The clear text name of the test.<p> */
     private String m_name;
 
+    /** Test failed flag. */
     private boolean m_red;
 
     /** A string describing the result of the test.<p> */
     private String m_result;
+    
+    /** Test warning flag. */
     private boolean m_yellow;
 
     /**
      * Creates a new setup test result.<p>
+     * 
+     * @param test the test to keep track of 
      */
-    public CmsSetupTestResult() {
+    public CmsSetupTestResult(I_CmsSetupTest test) {
 
         super();
 
         setGreen();
-        setName("");
+        setName(test.getName());
         setInfo("");
         setResult("");
         setHelp("");

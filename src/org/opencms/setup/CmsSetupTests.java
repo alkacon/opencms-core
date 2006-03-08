@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTests.java,v $
- * Date   : $Date: 2006/02/08 11:21:16 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2006/03/08 15:05:50 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,43 +31,29 @@
 
 package org.opencms.setup;
 
-import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
-
-import javax.servlet.ServletConfig;
-import javax.servlet.jsp.PageContext;
-
-import org.apache.xerces.impl.Version;
-import org.apache.xerces.parsers.DOMParser;
-
-import org.w3c.dom.Document;
-import org.xml.sax.InputSource;
 
 /**
  * Runs various tests to give users infos about whether their system is compatible to OpenCms.<p>
  * 
  * @author Thomas Weckert  
+ * @author Michael Moossen
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSetupTests {
 
     private boolean m_green;
-    private transient PageContext m_pageContext;
     private boolean m_red;
-
-    private transient CmsSetupBean m_setupBean;
     private List m_testResults;
     private boolean m_yellow;
 
@@ -80,13 +66,21 @@ public class CmsSetupTests {
     }
 
     /**
-     * Returns the CmsSetup bean of the setup wizard.<p>
+     * Returns a list of all available tests.<p>
      * 
-     * @return the CmsSetup bean of the setup wizard
+     * @return a list of all available tests
      */
-    public CmsSetupBean getSetupBean() {
+    public List getAllTests() {
 
-        return m_setupBean;
+        List tests = new ArrayList();
+        tests.add(new CmsSetupTestFolderPermissions());
+        tests.add(new CmsSetupTestJdkVersion());
+        tests.add(new CmsSetupTestOperatingSystem());
+        tests.add(new CmsSetupTestServletEngine());
+        tests.add(new CmsSetupTestSimapi());
+        tests.add(new CmsSetupTestWarFileUnpacked());
+        tests.add(new CmsSetupTestXercesVersion());
+        return tests;
     }
 
     /**
@@ -134,69 +128,32 @@ public class CmsSetupTests {
     /**
      * Runs all tests.<p>
      * 
-     * @param pageContext the page context of the JSP page
      * @param setupBean the CmsSetup bean of the setup wizard
      */
-    public void runTests(PageContext pageContext, CmsSetupBean setupBean) {
+    public void runTests(CmsSetupBean setupBean) {
 
-        Method method = null;
-        String methodName = null;
         boolean hasRed = false;
         boolean hasYellow = false;
 
         // reset everything back to an initial state
-        m_pageContext = pageContext;
-        m_setupBean = setupBean;
         m_testResults = new ArrayList();
         setGreen();
 
-        try {
-            // execute all available tests
-            Method[] methods = getClass().getMethods();
-            for (int i = 0; i < methods.length; i++) {
-                method = methods[i];
-                methodName = method.getName();
-                if (method != null && methodName.startsWith("test")) {
-                    method.invoke(this, new Object[0]);
+        Iterator it = getAllTests().iterator();
+        while (it.hasNext()) {
+            I_CmsSetupTest test = (I_CmsSetupTest)it.next();
+            CmsSetupTestResult testResult = null;
+            try {
+                testResult = test.run(setupBean);
+                m_testResults.add(testResult);
+            } catch (Throwable e) {
+                if (testResult != null) {
+                    testResult.setRed();
+                    testResult.setResult(I_CmsSetupTest.RESULT_FAILED);
+                    testResult.setHelp("Unable to test " + test.getName());
+                    testResult.setInfo(e.toString());
                 }
             }
-        } catch (IllegalAccessException e) {
-            System.out.println("["
-                + getClass().getName()
-                + "] error executing test method: "
-                + methodName
-                + ". Method object enforces Java language access control and the underlying method is inaccessible.");
-        } catch (IllegalArgumentException e) {
-            System.out.println("["
-                + getClass().getName()
-                + "] error executing test method: "
-                + methodName
-                + ". The method is an instance method and the specified object argument is not an instance of the class or interface declaring the underlying method (or of a subclass or implementor thereof); if the number of actual and formal parameters differ; if an unwrapping conversion for primitive arguments fails; or if, after possible unwrapping, a parameter value cannot be converted to the corresponding formal parameter type by a method invocation conversion.");
-        } catch (InvocationTargetException e) {
-            System.out.println("["
-                + getClass().getName()
-                + "] error executing test method: "
-                + methodName
-                + ". The underlying method throws an exception.");
-        } catch (NullPointerException e) {
-            System.out.println("["
-                + getClass().getName()
-                + "] error executing test method: "
-                + methodName
-                + ". The specified object is null and the method is an instance method.");
-        } catch (ExceptionInInitializerError e) {
-            System.out.println("["
-                + getClass().getName()
-                + "] error executing test method: "
-                + methodName
-                + ". The initialization provoked by this method fails.");
-        } catch (Exception e) {
-            System.out.println("["
-                + getClass().getName()
-                + "] error executing test method: "
-                + methodName
-                + ". "
-                + e.toString());
         }
 
         // check whether a test found violated or questionable conditions
@@ -220,312 +177,9 @@ public class CmsSetupTests {
 
         // save the detected software component versions in a text file
         writeVersionInfo(
-            m_pageContext.getServletConfig().getServletContext().getServerInfo(),
+            setupBean.getServletConfig().getServletContext().getServerInfo(),
             System.getProperty("java.version"),
-            m_pageContext.getServletConfig().getServletContext().getRealPath("/"));
-    }
-
-    /**
-     * Tests the permission on the target installation folders.<p>
-     */
-    public void testFolderPermissions() {
-
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-
-        try {
-            testResult.setName("Enough folder permissions");
-
-            String basePath = m_pageContext.getServletConfig().getServletContext().getRealPath("/");
-            if (!basePath.endsWith(File.separator)) {
-                basePath += File.separator;
-            }
-            File file1;
-            do {
-                file1 = new File(basePath + "test" + (int)(Math.random() * 1000));
-            } while (file1.exists());
-            boolean success = false;
-            try {
-                file1.createNewFile();
-                FileWriter fw = new FileWriter(file1);
-                fw.write("aA1");
-                fw.close();
-                success = true;
-                FileReader fr = new FileReader(file1);
-                success = success && (fr.read() == 'a');
-                success = success && (fr.read() == 'A');
-                success = success && (fr.read() == '1');
-                success = success && (fr.read() == -1);
-                fr.close();
-                success = file1.delete();
-                success = !file1.exists();
-            } catch (Exception e) {
-                success = false;
-            }
-            if (!success) {
-                testResult.setRed();
-                testResult.setInfo("OpenCms cannot be installed without read and write privileges for path "
-                    + basePath
-                    + "! Please check you are running your servlet container with the right user and privileges.");
-                testResult.setHelp(testResult.getInfo());
-                testResult.setResult("Not enough privileges for " + basePath);
-            } else {
-                testResult.setGreen();
-                testResult.setResult("yes");
-            }
-        } catch (Exception e) {
-            testResult.setRed();
-            testResult.setResult("Unable to test folder permissions!");
-            testResult.setInfo(e.toString());
-        } finally {
-            m_testResults.add(testResult);
-        }
-    }
-
-    /**
-     * Tests the version of the JDK.<p>
-     */
-    public void testJdkVersion() {
-
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-
-        try {
-            String requiredJDK = "1.4.0";
-            String JDKVersion = System.getProperty("java.version");
-
-            testResult.setName("JDK version");
-            testResult.setResult(JDKVersion);
-
-            boolean supportedJDK = compareJDKVersions(JDKVersion, requiredJDK);
-
-            if (!supportedJDK) {
-                testResult.setRed();
-                testResult.setHelp("OpenCms requires at least Java version "
-                    + requiredJDK
-                    + " to run. Please update your JDK");
-            } else {
-                testResult.setGreen();
-            }
-        } catch (Exception e) {
-            testResult.setRed();
-            testResult.setResult("Unable to test JDK version!");
-            testResult.setInfo(e.toString());
-        } finally {
-            m_testResults.add(testResult);
-        }
-    }
-
-    /**
-     * Tests the operating system.<p>
-     */
-    public void testOperatingSystem() {
-
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-
-        try {
-            String osName = System.getProperty("os.name");
-            String osVersion = System.getProperty("os.version");
-
-            testResult.setName("Operating system");
-            testResult.setResult(osName + " " + osVersion);
-            testResult.setHelp("No help available.");
-
-            // there is still no handling to test the operating system
-            testResult.setGreen();
-        } catch (Exception e) {
-            testResult.setRed();
-            testResult.setResult("Unable to test the operating system!");
-            testResult.setInfo(e.toString());
-        } finally {
-            m_testResults.add(testResult);
-        }
-    }
-
-    /**
-     * Tests the servlet engine.<p>
-     */
-    public void testServletEngine() {
-
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-
-        try {
-            String[] supportedEngines = {
-                "Apache Tomcat/4.1",
-                "Apache Tomcat/4.0",
-                "Apache Tomcat/5.0",
-                "Apache Tomcat/5.5"};
-
-            String[] unsupportedEngines = {"Tomcat Web Server/3.2", "Tomcat Web Server/3.3", "Resin/2.0.b2"};
-
-            String[] unsupportedServletEngineInfo = {
-                "Tomcat 3.2 is no longer supported. Please use Tomcat 4.x instead.",
-                "Tomcat 3.3 is no longer supported. Please use Tomcat 4.x instead.",
-                "The OpenCms JSP integration does currently not work with Resin. Please use Tomcat 4.x instead."};
-
-            ServletConfig config = m_pageContext.getServletConfig();
-            String servletEngine = config.getServletContext().getServerInfo();
-            boolean supportedServletEngine = hasSupportedServletEngine(servletEngine, supportedEngines);
-            int unsupportedServletEngine = unsupportedServletEngine(servletEngine, unsupportedEngines);
-
-            testResult.setName("Servlet engine");
-            testResult.setResult(servletEngine);
-
-            if (unsupportedServletEngine > -1) {
-                testResult.setRed();
-                testResult.setInfo(unsupportedServletEngineInfo[unsupportedServletEngine]);
-                testResult.setHelp("This servlet engine does not work with OpenCms. Even though OpenCms is fully standards compliant, "
-                    + "the standard leaves some 'grey' (i.e. undefined) areas. "
-                    + "Please consider using another, supported engine.");
-            } else if (!supportedServletEngine) {
-                testResult.setYellow();
-                testResult.setHelp("This servlet engine has not been tested with OpenCms. Please consider using another, supported engine.");
-            } else {
-                testResult.setGreen();
-            }
-        } catch (Exception e) {
-            testResult.setRed();
-            testResult.setResult("Unable to test servlet engine!");
-            testResult.setInfo(e.toString());
-        } finally {
-            m_testResults.add(testResult);
-        }
-    }
-
-    /**
-     * Tests if the OpenCms WAR file is unpacked.<p>
-     */
-    public void testWarFileUnpacked() {
-
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-
-        try {
-            testResult.setName("Unpacked WAR file");
-
-            String basePath = m_pageContext.getServletConfig().getServletContext().getRealPath("/");
-            if (!basePath.endsWith(File.separator)) {
-                basePath += File.separator;
-            }
-            File file = new File(basePath
-                + "WEB-INF"
-                + File.separator
-                + "config"
-                + File.separator
-                + "opencms.properties");
-            if (file.exists() && file.canRead() && file.canWrite()) {
-                testResult.setGreen();
-                testResult.setResult("yes");
-            } else {
-                testResult.setRed();
-                testResult.setInfo("OpenCms cannot be installed unless the OpenCms WAR file is unpacked! "
-                    + "Please check the settings of your servlet container or unpack the WAR file manually.");
-                testResult.setHelp(testResult.getInfo());
-                testResult.setResult("WAR file NOT unpacked");
-            }
-        } catch (Exception e) {
-            testResult.setRed();
-            testResult.setResult("Unable to test if the OpenCms WAR file is unpacked!");
-            testResult.setInfo(e.toString());
-        } finally {
-            m_testResults.add(testResult);
-        }
-    }
-
-    /**
-     * Test for the Xerces version.<p>
-     */
-    public void testXercesVersion() {
-
-        CmsSetupTestResult testResult = new CmsSetupTestResult();
-        testResult.setName("XML Parser");
-
-        try {
-            DOMParser parser = new DOMParser();
-            String document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<test>test</test>\n";
-            parser.parse(new InputSource(new ByteArrayInputStream(document.getBytes("UTF-8"))));
-            Document doc = parser.getDocument();
-
-            // Xerces 1 and 2 APIs are different, let's see what we have...
-            String versionStr = null;
-            int xercesVersion = 0;
-
-            try {
-                doc.getClass().getMethod("getXmlEncoding", new Class[] {}).invoke(doc, new Object[] {});
-                versionStr = Version.getVersion();
-                xercesVersion = 2;
-            } catch (Throwable t) {
-                // noop
-            }
-            if (versionStr == null) {
-                try {
-                    doc.getClass().getMethod("getEncoding", new Class[] {}).invoke(doc, new Object[] {});
-                    versionStr = "Xerces version 1";
-                    xercesVersion = 1;
-                } catch (Throwable t) {
-                    // noop
-                }
-            }
-
-            switch (xercesVersion) {
-                case 2:
-                    testResult.setResult(versionStr);
-                    testResult.setHelp("OpenCms 6.0 requires Xerces version 2 to run. Usually this should be available as part of the servlet environment.");
-                    testResult.setGreen();
-                    break;
-                case 1:
-                    testResult.setResult(versionStr);
-                    testResult.setRed();
-                    testResult.setInfo("OpenCms 6.0 requires Xerces version 2 to run, your Xerces version is 1. "
-                        + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
-                    testResult.setHelp(testResult.getInfo());
-                    break;
-                default:
-                    if (versionStr == null) {
-                        versionStr = "Unknown version";
-                    }
-                    testResult.setResult(versionStr);
-                    testResult.setRed();
-                    testResult.setInfo("OpenCms 6.0 requires Xerces version 2 to run. "
-                        + "Usually Xerces 2 should be installed by default as part of the servlet environment.");
-                    testResult.setHelp(testResult.getInfo());
-            }
-        } catch (Exception e) {
-            testResult.setResult("Unable to test the XML parser!");
-            testResult.setInfo(e.toString());
-            testResult.setRed();
-        } finally {
-            m_testResults.add(testResult);
-        }
-    }
-
-    /**
-     * Checks if the used JDK is a higher version than the required JDK.<p>
-     * 
-     * @param usedJDK The JDK version in use
-     * @param requiredJDK The required JDK version
-     * @return true if used JDK version is equal or higher than required JDK version, false otherwise
-     */
-    protected boolean compareJDKVersions(String usedJDK, String requiredJDK) {
-
-        int compare = usedJDK.compareTo(requiredJDK);
-        return (!(compare < 0));
-    }
-
-    /** 
-     * Checks if the used servlet engine is part of the servlet engines OpenCms supports.<p>
-     * 
-     * @param thisEngine The servlet engine in use
-     * @param supportedEngines All known servlet engines OpenCms supports
-     * @return true if this engine is supported, false if it was not found in the list
-     */
-    protected boolean hasSupportedServletEngine(String thisEngine, String[] supportedEngines) {
-
-        boolean supported = false;
-        engineCheck: for (int i = 0; i < supportedEngines.length; i++) {
-            if (thisEngine.indexOf(supportedEngines[i]) >= 0) {
-                supported = true;
-                break engineCheck;
-            }
-        }
-        return supported;
+            setupBean.getWebAppRfsPath());
     }
 
     /**
@@ -556,24 +210,6 @@ public class CmsSetupTests {
         m_green = false;
         m_red = false;
         m_yellow = true;
-    }
-
-    /** 
-     * Checks if the used servlet engine is part of the servlet engines OpenCms
-     * does NOT support.<p>
-     * 
-     * @param thisEngine the servlet engine in use
-     * @param unsupportedEngines all known servlet engines OpenCms does NOT support
-     * @return the engine id or -1 if the engine is not supported
-     */
-    protected int unsupportedServletEngine(String thisEngine, String[] unsupportedEngines) {
-
-        for (int i = 0; i < unsupportedEngines.length; i++) {
-            if (thisEngine.indexOf(unsupportedEngines[i]) >= 0) {
-                return i;
-            }
-        }
-        return -1;
     }
 
     /**

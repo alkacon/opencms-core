@@ -22,7 +22,7 @@
 	if (Bean.isInitialized()) {
 		if(!isSubmitted) {
 			setupTests = new CmsSetupTests();
-			setupTests.runTests(pageContext, Bean);
+			setupTests.runTests(Bean);
 		} else {
 			response.sendRedirect(nextPage);
 		}
