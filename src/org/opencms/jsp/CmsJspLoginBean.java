@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.18 $
+ * Date   : $Date: 2006/03/10 11:48:00 $
+ * Version: $Revision: 1.18.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18 $ 
+ * @version $Revision: 1.18.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -324,7 +324,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
 
     /**
      * Logs a user out, i.e. destroys the current users session,
-     * after that the current page will be redirected it itself one time to ensure
+     * after that the current page will be redirected to itself one time to ensure that
      * the users session is truly destroyed.<p>
      * 
      * @throws IOException if redirect after logout fails
