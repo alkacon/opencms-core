@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/02/20 08:50:38 $
- * Version: $Revision: 1.15.2.6 $
+ * Date   : $Date: 2006/03/10 08:27:04 $
+ * Version: $Revision: 1.15.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,6 +49,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.fileupload.DiskFileUpload;
 import org.apache.commons.fileupload.FileItem;
@@ -61,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.6 $ 
+ * @version $Revision: 1.15.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -490,6 +491,22 @@ public final class CmsRequestUtil {
     }
 
     /**
+     * Reads an object from  the current user session.<p>
+     * Will return <code>null</code> if no corresponding object is found in the session.
+     * 
+     * @param request the request to get the session from
+     * @param key the key of the object to be read from the session
+     * @return the object received form the session or null
+     */
+    public static Object getSessionValue(HttpServletRequest request, String key) {
+
+        HttpSession session = request.getSession(true);
+        Object o = null;
+        o = session.getAttribute(key);
+        return o;
+    }
+
+    /**
      * Parses a request of the form <code>multipart/form-data</code>.
      * 
      * The result list will contain items of type <code>{@link FileItem}</code>.
@@ -556,6 +573,18 @@ public final class CmsRequestUtil {
     }
 
     /** 
+     * Removes an object from the current user session.<p>
+     * 
+     * @param request the request to get the session from
+     * @param key the key of the object to be removed from the session
+     */
+    public static void removeSessionValue(HttpServletRequest request, String key) {
+
+        HttpSession session = request.getSession(true);
+        session.removeAttribute(key);
+    }
+
+    /** 
      * Sets the value of a specific cookie.<p>
      * If no cookie exists with the value, a new cookie will be created.
      * 
@@ -593,5 +622,18 @@ public final class CmsRequestUtil {
         res.setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MAX_AGE + "0");
         res.addHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, CmsRequestUtil.HEADER_VALUE_MUST_REVALIDATE);
         res.setHeader(CmsRequestUtil.HEADER_PRAGMA, CmsRequestUtil.HEADER_VALUE_NO_CACHE);
+    }
+
+    /**
+     * Adds an object to the current user session.<p>
+     * 
+     * @param request the request to get the session from
+     * @param key the key of the object to be stored in the session
+     * @param value the object to be stored in the session
+     */
+    public static void setSessionValue(HttpServletRequest request, String key, Object value) {
+
+        HttpSession session = request.getSession(true);
+        session.setAttribute(key, value);
     }
 }
