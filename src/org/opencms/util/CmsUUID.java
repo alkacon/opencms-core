@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2006/01/16 13:41:50 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2006/03/13 10:02:23 $
+ * Version: $Revision: 1.19.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.util;
 
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsInitException;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 
 import java.io.Externalizable;
@@ -40,6 +41,8 @@ import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
 import java.io.Serializable;
+
+import org.apache.commons.logging.Log;
 
 import org.doomdark.uuid.EthernetAddress;
 import org.doomdark.uuid.UUID;
@@ -63,7 +66,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.19.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +86,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     /** Constant for the null UUID. */
     private static final CmsUUID NULL_UUID = new CmsUUID(UUID.getNullUUID());
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUUID.class);
+    
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 1736324454709298676L;
 
@@ -318,12 +324,28 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
 
-        if (in.readLong() == serialVersionUID) {
-            m_uuid = new UUID((String)in.readObject());
+        Object o = in.readObject();
+        if (o instanceof String) {
+            // this UUID has been serialized using the new method
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_READ_UUID_1, o));
+            }
+            m_uuid = new UUID((String)o);
+        } else if (o instanceof UUID) {
+            // this UUID has been serialized using the old method
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_READ_UUID_OLD_1, o));
+            }
+            m_uuid = (UUID)o;
         } else {
-            throw new IOException("Cannot read externalized UUID because of a version mismatch.");
+            // UUID cannot be deserialized
+            if (LOG.isDebugEnabled()) {
+                LOG.debug(Messages.get().key(Messages.LOG_ERR_READ_UUID_0));
+            }            
+            throw new IOException("Cannot read externalized UUID.");
         }
     }
+    
 
     /**
      * 
@@ -331,7 +353,9 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public void writeExternal(ObjectOutput out) throws IOException {
 
-        out.writeLong(serialVersionUID);
+        if (LOG.isDebugEnabled()) {
+            LOG.debug(Messages.get().key(Messages.LOG_WRITE_UUID_1, m_uuid.toString()));
+        }
         out.writeObject(m_uuid.toString());
     }
 }
