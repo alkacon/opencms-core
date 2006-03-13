@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/03/13 10:05:41 $
- * Version: $Revision: 1.28.2.6 $
+ * Date   : $Date: 2006/03/13 10:07:30 $
+ * Version: $Revision: 1.28.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.6 $ 
+ * @version $Revision: 1.28.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -468,7 +468,6 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
      */
     public String buildNavigationHeadMenus(String styleClass) {
 
-        CmsTemplateParts parts = null;
         boolean cacheNavEnabled = !getRequestContext().currentProject().isOnlineProject();
         String cacheKey = null;
         if (cacheNavEnabled) {
@@ -554,7 +553,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
             if (cacheNavEnabled) {
                 // cache the generated navigation submenu output
-                parts.addPart(cacheKey, result.toString());
+                CmsTemplateParts.getInstance().addPart(cacheKey, result.toString());
             }
         }
         return result.toString();
