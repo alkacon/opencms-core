@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/02/09 09:16:05 $
- * Version: $Revision: 1.28.2.5 $
+ * Date   : $Date: 2006/03/13 10:05:41 $
+ * Version: $Revision: 1.28.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,12 +79,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.5 $ 
+ * @version $Revision: 1.28.2.6 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsTemplateNavigation extends CmsTemplateBase {
-    
+
     /** Configuration file name for the optional manual head navigation configuration. */
     public static final String FILE_CONFIG_HEADNAV = "headnav";
 
@@ -96,7 +96,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
     /** Request parameter name for the head navigation flag to mark the current top level folder. */
     public static final String PARAM_HEADNAV_MARKCURRENT = "headnavmarkcurrent";
-    
+
     /** Request parameter name for the head navigation flag to manually configure the head navigation. */
     public static final String PARAM_HEADNAV_MANUAL = "headnavmanual";
 
@@ -129,13 +129,13 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
     /** Name of the property key to determine if the current element is shown in headnav. */
     public static final String PROPERTY_HEADNAV_USE = "style_head_nav_showitem";
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsTemplateBean.class);
-    
+
     /** Stores the global website area configuration. */
     private CmsXmlContent m_globalConfiguration;
-    
+
     /** Stores the optional head navigation configuration. */
     private CmsXmlContent m_headNavConfiguration;
 
@@ -144,7 +144,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
     /** The default behaviour to include items in head navigation menu if property <code>style_head_nav_showitem</code> is not set. */
     private boolean m_headNavItemDefaultValue;
-    
+
     /** Determines if the head navigation menu should be created from a manual configuration file. */
     private boolean m_headNavManual;
 
@@ -301,20 +301,21 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         result.append(styleLink);
         result.append("\">\n");
         result.append("\t<!-- Start Topnavigation -->\n");
-        
+
         boolean showHomeLink = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.show", CmsStringUtil.TRUE)).booleanValue();
         if (showHomeLink && !showHeadNavImages()) {
             // create the "home" link at first position
-            boolean onlyIndex = Boolean.valueOf(getConfigurationValue("headnav.homelink/link.onlyindex", CmsStringUtil.FALSE)).booleanValue();
+            boolean onlyIndex = Boolean.valueOf(
+                getConfigurationValue("headnav.homelink/link.onlyindex", CmsStringUtil.FALSE)).booleanValue();
             String url = getStartFolder();
             String target = "_self";
-            if ((onlyIndex && isDefaultFile(getStartFolder(), getRequestContext().getUri())) || (! onlyIndex)) {
+            if ((onlyIndex && isDefaultFile(getStartFolder(), getRequestContext().getUri())) || (!onlyIndex)) {
                 // settings only valid for start page of microsite or for all subpages
                 url = getConfigurationValue("headnav.homelink/link.url", getStartFolder());
                 homeLabel = getConfigurationValue("headnav.homelink/link.text", homeLabel);
                 target = getConfigurationValue("headnav.homelink/link.target", "_self");
             }
-            
+
             if (url.startsWith("/")) {
                 // internal link
                 url = link(url);
@@ -340,10 +341,10 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         int count = -1;
         String showItemProperty;
-        
+
         // check if head navigation has to be created manually from config file
         boolean manualHeadConfig = isHeadNavManual();
-        
+
         List navElements = new ArrayList();
         if (manualHeadConfig) {
             // manual configuration, get List of nav items from config file
@@ -364,8 +365,11 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     PROPERTY_HEADNAV_USE,
                     nav.getResourceName(),
                     getHeadNavItemDefaultStringValue());
-            }  else if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, nav.getResourceName(), getRequestContext().getUri()));
+            } else if (LOG.isWarnEnabled()) {
+                LOG.warn(Messages.get().key(
+                    Messages.LOG_NAVIGATION_CONFIG_ERR_2,
+                    nav.getResourceName(),
+                    getRequestContext().getUri()));
             }
             boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
             if (manualHeadConfig || (nav.isFolderLink() && showItem)) {
@@ -468,8 +472,6 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         boolean cacheNavEnabled = !getRequestContext().currentProject().isOnlineProject();
         String cacheKey = null;
         if (cacheNavEnabled) {
-            // cache naviagtion in offline project to avoid performance issues
-            parts = CmsTemplateParts.getInstance(this);
             // create unique cache key with: site, head nav folder, area folder, menu depth, show submenus flag
             StringBuffer key = new StringBuffer(8);
             key.append(getRequestContext().getSiteRoot());
@@ -491,7 +493,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                 key.append(getConfigPath().hashCode());
             }
             cacheKey = key.toString();
-            String cachedNav = (String)parts.getPart(cacheKey);
+            String cachedNav = CmsTemplateParts.getInstance().getPart(cacheKey);
             if (CmsStringUtil.isNotEmpty(cachedNav)) {
                 // found previously cached navigation menu structure, return it
                 return cachedNav;
@@ -502,10 +504,10 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         if (showMenus()) {
             // only create navigation if the template is configured to show it
-            
+
             // check if head navigation has to be created manually from config file
             boolean manualHeadConfig = isHeadNavManual();
-            
+
             List navElements = new ArrayList();
             if (manualHeadConfig) {
                 // manual configuration, get List of nav items from config file
@@ -525,15 +527,18 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                         PROPERTY_HEADNAV_USE,
                         foldernav.getResourceName(),
                         getHeadNavItemDefaultStringValue());
-                }  else if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, foldernav.getResourceName(), getRequestContext().getUri()));
+                } else if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_NAVIGATION_CONFIG_ERR_2,
+                        foldernav.getResourceName(),
+                        getRequestContext().getUri()));
                 }
                 boolean showItem = Boolean.valueOf(showItemProperty).booleanValue();
                 if (manualHeadConfig || (foldernav.isFolderLink() && showItem)) {
                     // create a menu entry for every found folder
                     count++;
                     String subfolder = foldernav.getResourceName();
-                    
+
                     List subNav = new ArrayList();
                     String menuIndexes = null;
                     if (manualHeadConfig) {
@@ -549,7 +554,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
             if (cacheNavEnabled) {
                 // cache the generated navigation submenu output
-                parts.setPart(cacheKey, result.toString());
+                parts.addPart(cacheKey, result.toString());
             }
         }
         return result.toString();
@@ -684,7 +689,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             out.print("&nbsp;");
         }
     }
-    
+
     /**
      * Returns the template configuration path in the OpenCms VFS.<p>
      * 
@@ -694,7 +699,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         return property(CmsTemplateBean.PROPERTY_CONFIGPATH, "search", "/");
     }
-    
+
     /**
      * Returns the common configuration properties for the current web site area.<p>
      * 
@@ -703,11 +708,12 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
     public CmsXmlContent getConfiguration() {
 
         if (m_globalConfiguration == null) {
-            m_globalConfiguration = CmsTemplateBean.getConfigurationFile(getConfigPath() + CmsTemplateBean.FILE_CONFIG_COMMON, getCmsObject());
+            m_globalConfiguration = CmsTemplateBean.getConfigurationFile(getConfigPath()
+                + CmsTemplateBean.FILE_CONFIG_COMMON, getCmsObject());
         }
         return m_globalConfiguration;
     }
-    
+
     /**
      * Returns the value for the specified property key name from the configuration.<p>
      * 
@@ -743,7 +749,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         return m_headNavFolder;
     }
-    
+
     /**
      * Creates a List of {@link org.opencms.jsp.CmsJspNavElement} objects from a manual XML content configuration file.<p>
      * 
@@ -763,7 +769,9 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         if (m_headNavConfiguration == null) {
             // get the XML configuration file
-            m_headNavConfiguration = CmsTemplateBean.getConfigurationFile(getConfigPath() + FILE_CONFIG_HEADNAV, getCmsObject());
+            m_headNavConfiguration = CmsTemplateBean.getConfigurationFile(
+                getConfigPath() + FILE_CONFIG_HEADNAV,
+                getCmsObject());
         }
         Locale locale = getRequestContext().getLocale();
         List navEntries = new ArrayList();
@@ -774,13 +782,13 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             // create the xpath to the menu items and get the list of values fot the desired menu
             StringBuffer xPath = new StringBuffer(8);
             xPath.append("link");
-            for (int i=0; i<menuLevel; i++) {
+            for (int i = 0; i < menuLevel; i++) {
                 // get the index of the current menu entry from the indexes String
                 int menuIndex = Integer.parseInt(String.valueOf(menuIndexes.charAt(i)));
                 xPath.append("[");
                 xPath.append(menuIndex + 1);
                 xPath.append("]/menu");
-                
+
             }
             navEntries = m_headNavConfiguration.getValues(xPath.toString(), locale);
         }
@@ -815,7 +823,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             result.add(nav);
         }
         return result;
-       
+
     }
 
     /**
@@ -869,7 +877,12 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
      * @param menuIndexes String representing the menu indexes in the manual XML configuration, if null, no manual configuration is used
      * @return the HTML to generate menu entries
      */
-    public StringBuffer getMenuNavigation(List curNav, String styleClass, String prefix, int currentDepth, String menuIndexes) {
+    public StringBuffer getMenuNavigation(
+        List curNav,
+        String styleClass,
+        String prefix,
+        int currentDepth,
+        String menuIndexes) {
 
         StringBuffer result = new StringBuffer(64);
         String showItemProperty;
@@ -892,8 +905,11 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                 showItemProperty = getHeadNavItemDefaultStringValue();
                 if (getCmsObject().existsResource(resName)) {
                     showItemProperty = property(PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
-                }  else if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, resName, getRequestContext().getUri()));
+                } else if (LOG.isWarnEnabled()) {
+                    LOG.warn(Messages.get().key(
+                        Messages.LOG_NAVIGATION_CONFIG_ERR_2,
+                        resName,
+                        getRequestContext().getUri()));
                 }
                 boolean showEntry = manualConfig || Boolean.valueOf(showItemProperty).booleanValue();
                 if (showEntry) {
@@ -908,9 +924,9 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                             // entry is folder, get sub navigation
                             navEntries = getNavigation().getNavigationForFolder(resName);
                         }
-                        
+
                     }
-                    
+
                     String target = ne.getInfo();
                     if (CmsStringUtil.isEmpty(target)) {
                         target = "_self";
@@ -950,9 +966,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
             StringBuffer openTag = new StringBuffer(8);
             if ("menu0".equals(prefix) && showAccessibleVersion()) {
                 // create div that is displayed for accessible version
-                CmsMessages messages = new CmsMessages(
-                    CmsTemplateBean.MESSAGE_BUNDLE,
-                    getRequestContext().getLocale());
+                CmsMessages messages = new CmsMessages(CmsTemplateBean.MESSAGE_BUNDLE, getRequestContext().getLocale());
                 openTag.append("<div style=\"visibility: hidden; display:none;\">");
                 openTag.append("<h3>").append(messages.key("headline.accessible.nav.headline")).append("</h3>");
                 openTag.append("<p>").append(messages.key("headline.accessible.nav.text")).append("</p>");
@@ -1186,7 +1200,10 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     nav.getResourceName(),
                     getHeadNavItemDefaultStringValue());
             } else if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_NAVIGATION_CONFIG_ERR_2, nav.getResourceName(), getRequestContext().getUri()));
+                LOG.warn(Messages.get().key(
+                    Messages.LOG_NAVIGATION_CONFIG_ERR_2,
+                    nav.getResourceName(),
+                    getRequestContext().getUri()));
             }
             if (Boolean.valueOf(showItemProperty).booleanValue()) {
                 return true;
@@ -1234,7 +1251,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
         // current uri does not match
         return false;
     }
-    
+
     /**
      * Returns true if the head navigation is built manually using a XML content configuration file, otherwise false.<p>
      * 
@@ -1244,5 +1261,4 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
 
         return m_headNavManual;
     }
-
 }
