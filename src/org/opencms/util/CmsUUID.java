@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2006/03/13 10:02:23 $
- * Version: $Revision: 1.19.2.4 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.19.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.4 $ 
+ * @version $Revision: 1.19.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -103,12 +103,10 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
      */
     public CmsUUID() {
 
-        synchronized (this) {
-            if (m_isNotInitialized) {
-                throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_0));
-            }
-            m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
+        if (m_isNotInitialized) {
+            throw new CmsRuntimeException(Messages.get().container(Messages.ERR_INVALID_ETHERNET_ADDRESS_0));
         }
+        m_uuid = UUIDGenerator.getInstance().generateTimeBasedUUID(m_ethernetAddress);
     }
 
     /**

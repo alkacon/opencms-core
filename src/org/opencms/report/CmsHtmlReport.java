@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/CmsHtmlReport.java,v $
- * Date   : $Date: 2005/12/05 14:30:38 $
- * Version: $Revision: 1.30.2.2 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.30.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.StringTokenizer;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.30.2.2 $ 
+ * @version $Revision: 1.30.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,9 +234,9 @@ public class CmsHtmlReport extends A_CmsReport {
     /**
      * @see org.opencms.report.I_CmsReport#println()
      */
-    public synchronized void println() {
+    public void println() {
 
-        this.print(getLineBreak());
+        print(getLineBreak());
     }
 
     /**
@@ -299,7 +299,7 @@ public class CmsHtmlReport extends A_CmsReport {
                 buf.append("<span class='throw'>");
                 buf.append(Messages.get().key(getLocale(), Messages.RPT_EXCEPTION_0, null));
                 String exception = CmsEncoder.escapeXml(CmsException.getStackTraceAsString(throwable));
-				exception = CmsStringUtil.escapeJavaScript(exception);
+                exception = CmsStringUtil.escapeJavaScript(exception);
                 StringTokenizer tok = new StringTokenizer(exception, "\r\n");
                 while (tok.hasMoreTokens()) {
                     buf.append(tok.nextToken());
@@ -317,5 +317,4 @@ public class CmsHtmlReport extends A_CmsReport {
 
         return buf;
     }
-
 }

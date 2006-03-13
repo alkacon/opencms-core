@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheEntry.java,v $
- * Date   : $Date: 2005/06/27 23:22:07 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.apache.commons.logging.Log;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -415,7 +415,7 @@ public class CmsFlexCacheEntry extends Object implements I_CmsLruCacheObject, I_
      *
      * @param timeout the timeout value to be set
      */
-    public synchronized void setDateExpiresToNextTimeout(long timeout) {
+    public void setDateExpiresToNextTimeout(long timeout) {
 
         if (timeout < 0 || !m_completed) {
             return;

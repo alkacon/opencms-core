@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/02/07 16:54:14 $
- * Version: $Revision: 1.557.2.22 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.557.2.23 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -2756,7 +2756,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public synchronized CmsPublishList fillPublishList(CmsDbContext dbc, CmsPublishList publishList)
+    public CmsPublishList fillPublishList(CmsDbContext dbc, CmsPublishList publishList)
     throws CmsException {
 
         if (!publishList.isDirectPublish()) {
@@ -3726,52 +3726,52 @@ public final class CmsDriverManager implements I_CmsEventListener {
         m_keyGenerator = (I_CmsCacheKey)Class.forName(settings.getCacheKeyGenerator()).newInstance();
 
         // initalize the caches
-        LRUMap hashMap = new LRUMap(settings.getUserCacheSize());
-        m_userCache = Collections.synchronizedMap(hashMap);
+        LRUMap lruMap = new LRUMap(settings.getUserCacheSize());
+        m_userCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getGroupCacheSize());
-        m_groupCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getGroupCacheSize());
+        m_groupCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_groupCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_groupCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getUserGroupsCacheSize());
-        m_userGroupsCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getUserGroupsCacheSize());
+        m_userGroupsCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userGroupsCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_userGroupsCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getProjectCacheSize());
-        m_projectCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getProjectCacheSize());
+        m_projectCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_projectCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_projectCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getResourceCacheSize());
-        m_resourceCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getResourceCacheSize());
+        m_resourceCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getResourcelistCacheSize());
-        m_resourceListCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getResourcelistCacheSize());
+        m_resourceListCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceListCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceListCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getPropertyCacheSize());
-        m_propertyCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getPropertyCacheSize());
+        m_propertyCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_propertyCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_propertyCache", lruMap);
         }
 
-        hashMap = new LRUMap(settings.getAclCacheSize());
-        m_accessControlListCache = Collections.synchronizedMap(hashMap);
+        lruMap = new LRUMap(settings.getAclCacheSize());
+        m_accessControlListCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_accessControlListCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_accessControlListCache", lruMap);
         }
 
         getProjectDriver().fillDefaults(new CmsDbContext());
@@ -4402,11 +4402,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * @throws CmsException if something goes wrong
      * @see #fillPublishList(CmsDbContext, CmsPublishList)
      */
-    public synchronized void publishProject(
-        CmsObject cms,
-        CmsDbContext dbc,
-        CmsPublishList publishList,
-        I_CmsReport report) throws CmsException {
+    public void publishProject(CmsObject cms, CmsDbContext dbc, CmsPublishList publishList, I_CmsReport report)
+    throws CmsException {
 
         int publishProjectId = dbc.currentProject().getId();
         boolean temporaryProject = (dbc.currentProject().getType() == CmsProject.PROJECT_TYPE_TEMPORARY);
@@ -4414,100 +4411,104 @@ public final class CmsDriverManager implements I_CmsEventListener {
         boolean directPublish = publishList.isDirectPublish();
         int backupTagId = 0;
 
-        try {
-            if (backupEnabled) {
-                backupTagId = getBackupTagId(dbc);
-            } else {
-                backupTagId = 0;
+        if (backupEnabled) {
+            backupTagId = getBackupTagId(dbc);
+        } else {
+            backupTagId = 0;
+        }
+
+        int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+
+        // if we direct publish a file, check if all parent folders are already published
+        if (directPublish) {
+            // first get the names of all parent folders
+            Iterator it = publishList.getDirectPublishResources().iterator();
+            List parentFolderNames = new ArrayList();
+            while (it.hasNext()) {
+                CmsResource res = (CmsResource)it.next();
+                String parentFolderName = CmsResource.getParentFolder(res.getRootPath());
+                if (parentFolderName != null) {
+                    parentFolderNames.add(parentFolderName);
+                }
             }
+            // remove duplicate parent folder names
+            parentFolderNames = CmsFileUtil.removeRedundancies(parentFolderNames);
+            String parentFolderName = null;
+            try {
+                // now check all folders if they exist in the online project
+                Iterator parentIt = parentFolderNames.iterator();
+                while (parentIt.hasNext()) {
+                    parentFolderName = (String)parentIt.next();
+                    getVfsDriver().readFolder(dbc, CmsProject.ONLINE_PROJECT_ID, parentFolderName);
+                }
+            } catch (CmsException e) {
+                report.println(
+                    Messages.get().container(Messages.RPT_PARENT_FOLDER_NOT_PUBLISHED_1, parentFolderName),
+                    I_CmsReport.FORMAT_ERROR);
+                return;
+            }
+        }
 
-            int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
+        synchronized (this) {
+            // only one publish cycle is allowed at a time
+            try {
 
-            // if we direct publish a file, check if all parent folders are already published
-            if (directPublish) {
-                // first get the names of all parent folders
-                Iterator it = publishList.getDirectPublishResources().iterator();
-                List parentFolderNames = new ArrayList();
-                while (it.hasNext()) {
-                    CmsResource res = (CmsResource)it.next();
-                    String parentFolderName = CmsResource.getParentFolder(res.getRootPath());
-                    if (parentFolderName != null) {
-                        parentFolderNames.add(parentFolderName);
+                // fire an event that a project is to be published
+                Map eventData = new HashMap();
+                eventData.put(I_CmsEventListener.KEY_REPORT, report);
+                eventData.put(I_CmsEventListener.KEY_PUBLISHLIST, publishList);
+                eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
+                eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+                CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
+                OpenCms.fireCmsEvent(beforePublishEvent);
+
+                // clear the cache
+                clearcache();
+
+                m_projectDriver.publishProject(
+                    dbc,
+                    report,
+                    readProject(dbc, CmsProject.ONLINE_PROJECT_ID),
+                    publishList,
+                    OpenCms.getSystemInfo().isVersionHistoryEnabled(),
+                    backupTagId,
+                    maxVersions);
+
+                // iterate the initialized module action instances
+                Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
+                while (i.hasNext()) {
+                    CmsModule module = OpenCms.getModuleManager().getModule(i.next().toString());
+                    if (module != null && module.getActionInstance() != null) {
+                        module.getActionInstance().publishProject(cms, publishList, backupTagId, report);
                     }
                 }
-                // remove duplicate parent folder names
-                parentFolderNames = CmsFileUtil.removeRedundancies(parentFolderNames);
-                String parentFolderName = null;
-                try {
-                    // now check all folders if they exist in the online project
-                    Iterator parentIt = parentFolderNames.iterator();
-                    while (parentIt.hasNext()) {
-                        parentFolderName = (String)parentIt.next();
-                        getVfsDriver().readFolder(dbc, CmsProject.ONLINE_PROJECT_ID, parentFolderName);
+
+                // the project was stored in the backuptables for history
+                // it will be deleted if the project_flag is PROJECT_TYPE_TEMPORARY
+                if ((temporaryProject) && (!directPublish)) {
+                    try {
+                        m_projectDriver.deleteProject(dbc, dbc.currentProject());
+                    } catch (CmsException e) {
+                        LOG.error(Messages.get().key(
+                            Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1,
+                            new Integer(publishProjectId)));
                     }
-                } catch (CmsException e) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_PARENT_FOLDER_NOT_PUBLISHED_1,
-                        parentFolderName), I_CmsReport.FORMAT_ERROR);
-                    return;
+                    // if project was temporary set context to online project
+                    cms.getRequestContext().setCurrentProject(readProject(dbc, CmsProject.ONLINE_PROJECT_ID));
                 }
+            } finally {
+                // clear the cache again
+                clearcache();
+
+                // fire an event that a project has been published
+                Map eventData = new HashMap();
+                eventData.put(I_CmsEventListener.KEY_REPORT, report);
+                eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
+                eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
+                eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
+                CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
+                OpenCms.fireCmsEvent(afterPublishEvent);
             }
-
-            // fire an event that a project is to be published
-            Map eventData = new HashMap();
-            eventData.put(I_CmsEventListener.KEY_REPORT, report);
-            eventData.put(I_CmsEventListener.KEY_PUBLISHLIST, publishList);
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
-            eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
-            CmsEvent beforePublishEvent = new CmsEvent(I_CmsEventListener.EVENT_BEFORE_PUBLISH_PROJECT, eventData);
-            OpenCms.fireCmsEvent(beforePublishEvent);
-
-            // clear the cache
-            clearcache();
-
-            m_projectDriver.publishProject(
-                dbc,
-                report,
-                readProject(dbc, CmsProject.ONLINE_PROJECT_ID),
-                publishList,
-                OpenCms.getSystemInfo().isVersionHistoryEnabled(),
-                backupTagId,
-                maxVersions);
-
-            // iterate the initialized module action instances
-            Iterator i = OpenCms.getModuleManager().getModuleNames().iterator();
-            while (i.hasNext()) {
-                CmsModule module = OpenCms.getModuleManager().getModule(i.next().toString());
-                if (module != null && module.getActionInstance() != null) {
-                    module.getActionInstance().publishProject(cms, publishList, backupTagId, report);
-                }
-            }
-
-            // the project was stored in the backuptables for history
-            // it will be deleted if the project_flag is PROJECT_TYPE_TEMPORARY
-            if ((temporaryProject) && (!directPublish)) {
-                try {
-                    m_projectDriver.deleteProject(dbc, dbc.currentProject());
-                } catch (CmsException e) {
-                    LOG.error(Messages.get().key(
-                        Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1,
-                        new Integer(publishProjectId)));
-                }
-                // if project was temporary set context to online project
-                cms.getRequestContext().setCurrentProject(readProject(dbc, CmsProject.ONLINE_PROJECT_ID));
-            }
-
-        } finally {
-            clearcache();
-
-            // fire an event that a project has been published
-            Map eventData = new HashMap();
-            eventData.put(I_CmsEventListener.KEY_REPORT, report);
-            eventData.put(I_CmsEventListener.KEY_PUBLISHID, publishList.getPublishHistoryId().toString());
-            eventData.put(I_CmsEventListener.KEY_PROJECTID, new Integer(publishProjectId));
-            eventData.put(I_CmsEventListener.KEY_DBCONTEXT, dbc);
-            CmsEvent afterPublishEvent = new CmsEvent(I_CmsEventListener.EVENT_PUBLISH_PROJECT, eventData);
-            OpenCms.fireCmsEvent(afterPublishEvent);
         }
     }
 
@@ -5117,7 +5118,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         String cp = currentPath.toString();
         cacheKey = getCacheKey(null, false, projectId, cp);
-        if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
+        currentResource = (CmsResource)m_resourceCache.get(cacheKey);
+        if (currentResource == null) {
             currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
             m_resourceCache.put(cacheKey, currentResource);
         }
@@ -5139,7 +5141,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // read the folder
             cp = currentPath.toString();
             cacheKey = getCacheKey(null, false, projectId, cp);
-            if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
+            currentResource = (CmsResource)m_resourceCache.get(cacheKey);
+            if (currentResource == null) {
                 currentResource = m_vfsDriver.readFolder(dbc, projectId, cp);
                 m_resourceCache.put(cacheKey, currentResource);
             }
@@ -5163,7 +5166,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // read the file
             cp = currentPath.toString();
             cacheKey = getCacheKey(null, false, projectId, cp);
-            if ((currentResource = (CmsResource)m_resourceCache.get(cacheKey)) == null) {
+            currentResource = (CmsResource)m_resourceCache.get(cacheKey);
+            if (currentResource == null) {
                 currentResource = m_vfsDriver.readResource(dbc, projectId, cp, filter.includeDeleted());
                 m_resourceCache.put(cacheKey, currentResource);
             }
@@ -5700,11 +5704,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
      */
     public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition) throws CmsException {
 
-        List extractedResources = null;
-
         String cacheKey = getCacheKey(new String[] {path, propertyDefinition}, dbc.currentProject());
-
-        if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
+        List extractedResources = (List)m_resourceListCache.get(cacheKey);
+        if (extractedResources == null) {
 
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
@@ -5741,12 +5743,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public List readResourcesWithProperty(CmsDbContext dbc, String path, String propertyDefinition, String value)
     throws CmsException {
 
-        List extractedResources = null;
-
         String cacheKey = getCacheKey(new String[] {path, propertyDefinition, value}, dbc.currentProject());
-
-        if ((extractedResources = (List)m_resourceListCache.get(cacheKey)) == null) {
-
+        List extractedResources = (List)m_resourceListCache.get(cacheKey);
+        if (extractedResources == null) {
             // first read the property definition
             CmsPropertyDefinition propDef = readPropertyDefinition(dbc, propertyDefinition);
 

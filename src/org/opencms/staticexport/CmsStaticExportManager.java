@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2005/12/01 09:50:49 $
- * Version: $Revision: 1.116.2.4 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.116.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.116.2.4 $ 
+ * @version $Revision: 1.116.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -1745,7 +1745,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
      * 
      * @see #getRfsPrefix(String)
      */
-    /*package*/String getRfsPrefixForRfsName(String rfsName) {
+    protected String getRfsPrefixForRfsName(String rfsName) {
 
         String retVal = "";
         // default case

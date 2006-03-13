@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.31.2.4 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.31.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.4 $ 
+ * @version $Revision: 1.31.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,10 +121,10 @@ public class CmsExplorer extends CmsWorkplace {
     private static final String PARAMETER_SHOWLINKS = "showlinks";
 
     /** The "explorerview" view selection. */
-    private static final String VIEW_EXPLORER = "explorerview";
+    public static final String VIEW_EXPLORER = "explorerview";
 
     /** The "galleryview" view selection. */
-    private static final String VIEW_GALLERY = "galleryview";
+    public static final String VIEW_GALLERY = "galleryview";
 
     /**
      * Public constructor.<p>
@@ -627,7 +627,7 @@ public class CmsExplorer extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         String currentResource = request.getParameter(PARAMETER_RESOURCE);
         String mode = request.getParameter(PARAMETER_MODE);

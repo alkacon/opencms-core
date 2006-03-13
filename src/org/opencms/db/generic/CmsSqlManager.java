@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsSqlManager.java,v $
- * Date   : $Date: 2005/07/07 10:08:28 $
- * Version: $Revision: 1.64 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.64.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.64 $
+ * @version $Revision: 1.64.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -334,7 +334,7 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      * @return int the new primary key
      * @throws CmsDataAccessException if an error occurs
      */
-    public synchronized int nextId(String tableName) throws CmsDataAccessException {
+    public int nextId(String tableName) throws CmsDataAccessException {
 
         return org.opencms.db.CmsDbUtil.nextId(m_poolUrl, tableName);
     }
@@ -412,8 +412,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
      */
     public String readQuery(String queryKey) {
 
-        String value;
-        if ((value = (String)m_queries.get(queryKey)) == null) {
+        String value = (String)m_queries.get(queryKey);
+        if (value == null) {
             if (LOG.isErrorEnabled()) {
                 LOG.error(Messages.get().key(Messages.LOG_QUERY_NOT_FOUND_1, queryKey));
             }
@@ -550,8 +550,8 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
             lastIndex = 0;
 
             while ((startIndex = currentValue.indexOf("${", lastIndex)) != -1) {
-                if ((endIndex = currentValue.indexOf('}', startIndex)) != -1
-                    && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
+                endIndex = currentValue.indexOf('}', startIndex);
+                if (endIndex != -1 && !currentValue.startsWith(QUERY_PROJECT_SEARCH_PATTERN, startIndex - 1)) {
 
                     String replaceKey = currentValue.substring(startIndex + 2, endIndex);
                     String searchPattern = currentValue.substring(startIndex, endIndex + 1);
@@ -564,7 +564,6 @@ public class CmsSqlManager extends org.opencms.db.CmsSqlManager implements Seria
 
                 lastIndex = endIndex + 2;
             }
-
             m_queries.put(currentKey, currentValue);
         }
     }

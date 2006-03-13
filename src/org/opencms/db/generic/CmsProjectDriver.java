@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsProjectDriver.java,v $
- * Date   : $Date: 2006/01/30 15:22:52 $
- * Version: $Revision: 1.238.2.3 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.238.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.238.2.3 $
+ * @version $Revision: 1.238.2.4 $
  * 
  * @since 6.0.0 
  */
@@ -1487,7 +1487,7 @@ public class CmsProjectDriver implements I_CmsDriver, I_CmsProjectDriver {
     /**
      * @see org.opencms.db.I_CmsProjectDriver#publishProject(org.opencms.db.CmsDbContext, org.opencms.report.I_CmsReport, org.opencms.file.CmsProject, org.opencms.db.CmsPublishList, boolean, int, int)
      */
-    public synchronized void publishProject(
+    public void publishProject(
         CmsDbContext dbc,
         I_CmsReport report,
         CmsProject onlineProject,

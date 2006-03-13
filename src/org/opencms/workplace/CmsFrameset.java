@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/03/06 10:33:46 $
- * Version: $Revision: 1.84.2.4 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.84.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.84.2.4 $ 
+ * @version $Revision: 1.84.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -426,7 +426,7 @@ public class CmsFrameset extends CmsWorkplace {
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
-    protected synchronized void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+    protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
         // check if a startup page has been set
         String frame = CmsRequestUtil.getNotEmptyDecodedParameter(request, CmsFrameset.PARAM_WP_FRAME);

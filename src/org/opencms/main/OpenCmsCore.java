@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/03/02 11:14:13 $
- * Version: $Revision: 1.216.2.6 $
+ * Date   : $Date: 2006/03/13 15:45:25 $
+ * Version: $Revision: 1.216.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216.2.6 $ 
+ * @version $Revision: 1.216.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,7 +255,7 @@ public final class OpenCmsCore {
             setRunLevel(OpenCms.RUNLEVEL_1_CORE_OBJECT);
         }
     }
-
+    
     /**
      * Returns the initialized OpenCms singleton instance.<p>
      * 
@@ -270,7 +270,7 @@ public final class OpenCmsCore {
         if (m_instance == null) {
             try {
                 // create a new core object with runlevel 1
-                new OpenCmsCore();
+                m_instance = new OpenCmsCore();
             } catch (CmsInitException e) {
                 // already initialized, this is all we need
             }
@@ -1726,17 +1726,25 @@ public final class OpenCmsCore {
      */
     private void fireCmsEventHandler(List listeners, CmsEvent event) {
 
-        if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_1, event.toString()));
-        }
-
-        if ((listeners != null) && (listeners.size() > 0)) {
-            // handle all event listeners that listen only to this event type
-            I_CmsEventListener[] list;
-            synchronized (listeners) {
-                list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+        if (! LOG.isDebugEnabled()) {
+            // no logging required            
+            if ((listeners != null) && (listeners.size() > 0)) {
+                // handle all event listeners that listen to this event type
+                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+                // loop through all registered event listeners
+                for (int i = 0; i < list.length; i++) {
+                    // fire the event
+                    list[i].cmsEvent(event);
+                }
             }
-            if (LOG.isDebugEnabled()) {
+        } else {
+            // add lots of event debug output (this should usually be disabled)
+            // repeat event handling code to avoid multiple "is log enabled" checks in normal operation
+            LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_1, event.toString()));
+            if ((listeners != null) && (listeners.size() > 0)) {
+                // handle all event listeners that listen to this event type
+                I_CmsEventListener[] list = (I_CmsEventListener[])listeners.toArray(EVENT_LIST);
+                // log the event data
                 if (event.getData() != null) {
                     Iterator i = event.getData().keySet().iterator();
                     while (i.hasNext()) {
@@ -1747,6 +1755,7 @@ public final class OpenCmsCore {
                 } else {
                     LOG.debug(Messages.get().key(Messages.LOG_DEBUG_NO_EVENT_VALUE_1, event.toString()));
                 }
+                // log all the registered event listeners
                 for (int j = 0; j < list.length; j++) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEBUG_EVENT_LISTENERS_3,
@@ -1754,32 +1763,24 @@ public final class OpenCmsCore {
                         new Integer(j),
                         event.toString()));
                 }
-            }
-
-            for (int i = 0; i < list.length; i++) {
-                if (LOG.isDebugEnabled()) {
+                // loop through all registered event listeners
+                for (int i = 0; i < list.length; i++) {
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEBUG_EVENT_START_LISTENER_3,
                         list[i],
                         new Integer(i),
                         event.toString()));
-                }
-                list[i].cmsEvent(event);
-                if (LOG.isDebugEnabled()) {
+                    // fire the event
+                    list[i].cmsEvent(event);
                     LOG.debug(Messages.get().key(
                         Messages.LOG_DEBUG_EVENT_END_LISTENER_3,
                         list[i],
                         new Integer(i),
                         event.toString()));
                 }
-            }
-        } else {
-            if (LOG.isDebugEnabled()) {
+            } else {
                 LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_NO_LISTENER_1, event.toString()));
             }
-        }
-
-        if (LOG.isDebugEnabled()) {
             LOG.debug(Messages.get().key(Messages.LOG_DEBUG_EVENT_COMPLETE_1, event.toString()));
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2005/10/10 16:17:40 $
- * Version: $Revision: 1.97.2.3 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.97.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.97.2.3 $ 
+ * @version $Revision: 1.97.2.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -980,7 +980,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      * @throws IOException might be thrown in the process of including the JSP 
      * @throws CmsLoaderException if the resource type can not be read
      */
-    private synchronized String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
+    private String updateJsp(CmsResource resource, CmsFlexController controller, Set updates)
     throws IOException, ServletException, CmsLoaderException {
 
         String jspVfsName = resource.getRootPath();
@@ -1067,9 +1067,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 // parse the JSP and modify OpenCms critical directives
                 contents = parseJsp(contents, encoding, controller, updates, isHardInclude);
                 // write the parsed JSP content to the real FS
-                FileOutputStream fs = new FileOutputStream(f);
-                fs.write(contents);
-                fs.close();
+                synchronized (this) {
+                    // this must be done only one file at a time
+                    FileOutputStream fs = new FileOutputStream(f);
+                    fs.write(contents);
+                    fs.close();
+                }
                 contents = null;
 
                 if (LOG.isInfoEnabled()) {

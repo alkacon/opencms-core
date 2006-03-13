@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChnav.java,v $
- * Date   : $Date: 2005/10/19 09:55:34 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.22.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.22.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -336,9 +336,7 @@ public class CmsChnav extends CmsDialog {
      */
     public String buildNavPosSelector() {
 
-        synchronized (this) {
-            return buildNavPosSelector(getCms(), getParamResource(), null, getMessages());
-        }
+        return buildNavPosSelector(getCms(), getParamResource(), null, getMessages());
     }
 
     /**

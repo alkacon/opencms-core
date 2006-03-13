@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsObject.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.143.2.7 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.143.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import java.util.Set;
  * @author Andreas Zahner 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.143.2.7 $
+ * @version $Revision: 1.143.2.8 $
  * 
  * @since 6.0.0 
  */
@@ -1972,9 +1972,7 @@ public final class CmsObject {
      */
     public CmsUUID publishProject(I_CmsReport report, CmsPublishList publishList) throws CmsException {
 
-        synchronized (m_securityManager) {
-            return m_securityManager.publishProject(this, publishList, report);
-        }
+        return m_securityManager.publishProject(this, publishList, report);
     }
 
     /**

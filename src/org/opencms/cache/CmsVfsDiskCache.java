@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsDiskCache.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import java.io.IOException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
@@ -66,6 +66,32 @@ public class CmsVfsDiskCache {
     }
 
     /**
+     * Saves the given file content to a RFS file of the given name (full path).<p> 
+     * 
+     * If the required pared folders do not exists, they are also created.<p>
+     * 
+     * @param rfsName the RFS name of the file to save the content in
+     * @param content the content of the file to save
+     * 
+     * @return a reference to the File that was saved
+     * @throws IOException in case of disk access errors
+     */
+    protected static File saveFile(String rfsName, byte[] content) throws IOException {
+
+        File f = new File(rfsName);
+        File p = f.getParentFile();
+        if (!p.exists()) {
+            // create parent folders
+            p.mkdirs();
+        }
+        // write file contents
+        FileOutputStream fs = new FileOutputStream(f);
+        fs.write(content);
+        fs.close();
+        return f;
+    }
+
+    /**
      * Returns the content of the requested file in the disk cache, or <code>null</code> if the
      * file is not found in the cache, or is found but outdated.<p>
      * 
@@ -82,9 +108,7 @@ public class CmsVfsDiskCache {
             if (f.exists()) {
                 if (f.lastModified() != dateLastModified) {
                     // last modification time different, remove cached file in RFS
-                    synchronized (this) {
-                        f.delete();
-                    }
+                    f.delete();
                 } else {
                     return CmsFileUtil.readFile(f);
                 }
@@ -138,20 +162,9 @@ public class CmsVfsDiskCache {
     public void saveCacheFile(String rfsName, byte[] content, long dateLastModified) throws IOException {
 
         dateLastModified = simplifyDateLastModified(dateLastModified);
-        File f = new File(rfsName);
-        File p = f.getParentFile();
-        synchronized (this) {
-            if (!p.exists()) {
-                // create parent folders
-                p.mkdirs();
-            }
-            // write file contents
-            FileOutputStream fs = new FileOutputStream(f);
-            fs.write(content);
-            fs.close();
-            // set last modification date
-            f.setLastModified(dateLastModified);
-        }
+        File f = saveFile(rfsName, content);
+        // set last modification date
+        f.setLastModified(dateLastModified);
     }
 
     /**

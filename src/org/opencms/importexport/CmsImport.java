@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImport.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.41.2.2 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.41.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -72,7 +72,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.41.2.2 $ 
+ * @version $Revision: 1.41.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -307,7 +307,7 @@ public class CmsImport {
      * @throws CmsImportExportException if something goes wrong
      * @throws CmsXmlException if the manifest of the import file could not be unmarshalled
      */
-    public synchronized void importResources() throws CmsImportExportException, CmsXmlException {
+    public void importResources() throws CmsImportExportException, CmsXmlException {
 
         // initialize the import
         boolean run = false;

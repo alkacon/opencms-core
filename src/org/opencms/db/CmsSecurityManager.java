@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2005/12/23 14:08:17 $
- * Version: $Revision: 1.93.2.9 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.93.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1682,7 +1682,7 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public synchronized CmsPublishList fillPublishList(CmsRequestContext context, CmsPublishList publishList)
+    public CmsPublishList fillPublishList(CmsRequestContext context, CmsPublishList publishList)
     throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -2674,10 +2674,10 @@ public final class CmsSecurityManager {
                 className));
         }
 
-        LRUMap hashMap = new LRUMap(settings.getPermissionCacheSize());
-        m_permissionCache = Collections.synchronizedMap(hashMap);
+        LRUMap lruMap = new LRUMap(settings.getPermissionCacheSize());
+        m_permissionCache = Collections.synchronizedMap(lruMap);
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_permissionCache", hashMap);
+            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_permissionCache", lruMap);
         }
 
         m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory);
@@ -2882,7 +2882,7 @@ public final class CmsSecurityManager {
      * 
      * @see #fillPublishList(CmsRequestContext, CmsPublishList)
      */
-    public synchronized CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
+    public CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
     throws CmsException {
 
         CmsRequestContext context = cms.getRequestContext();
@@ -4784,22 +4784,6 @@ public final class CmsSecurityManager {
             dbc.clear();
         }
     }
-
-    /**
-     * Changes the "release" date of a resource.<p>
-     * 
-     * @param context the current request context
-     * @param resource the resource to touch
-     * @param dateLastModified timestamp the new timestamp of the changed resource
-     * @param dateReleased the new release date of the changed resource
-     * @param dateExpired the new expire date of the changed resource
-     * 
-     * @throws CmsException if something goes wrong
-     * @throws CmsSecurityException if the user has insufficient permission for the given resource (write access permission is required).
-     * 
-     * @see CmsObject#touch(String, long, long, long, boolean)
-     * @see org.opencms.file.types.I_CmsResourceType#touch(CmsObject, CmsSecurityManager, CmsResource, long, long, long, boolean)
-     */
 
     /**
      * Set priority of a task.<p>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlContentDefinition.java,v $
- * Date   : $Date: 2005/10/08 08:30:32 $
- * Version: $Revision: 1.33.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.33.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.InputSource;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33.2.1 $ 
+ * @version $Revision: 1.33.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -826,7 +826,7 @@ public class CmsXmlContentDefinition implements Cloneable {
      * 
      * This is required to prevent modification of a cached content definition.<p>
      */
-    public synchronized void freeze() {
+    public void freeze() {
 
         m_types = Collections.unmodifiableMap(m_types);
         m_typeSequence = Collections.unmodifiableList(m_typeSequence);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsResourceBundleLoader.java,v $
- * Date   : $Date: 2006/01/15 10:29:22 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -191,49 +191,17 @@ public final class CmsResourceBundleLoader {
      * <code>getBundle</code> tries to instantiate the resource bundle:</p>
      *
      * <ul>
-     * <li>First, an attempt is made to load a class in the specified classloader
-     * which is a subclass of ResourceBundle, and which has a public constructor
-     * with no arguments, via reflection.</li>
-     * <li>Next, a search is made for a property resource file, by replacing
+     * <li>This implementation only resolves property based resource bundles.
+     * Class based resource bundles are nor found.</li>
+     * <li>A search is made for a property resource file, by replacing
      * '.' with '/' and appending ".properties", and using
      * ClassLoader.getResource(). If a file is found, then a
      * PropertyResourceBundle is created from the file's contents.</li>
      * </ul>
-     * If no resource bundle was found, a MissingResourceException is thrown.
-     *
-     * <p>Next, the parent chain is implemented. The remaining candidate names
-     * in the above sequence are tested in a similar manner, and if any results
-     * in a resource bundle, it is assigned as the parent of the first bundle
-     * using the <code>setParent</code> method (unless the first bundle already
-     * has a parent).</p>
-     *
-     * <p>For example, suppose the following class and property files are
-     * provided: MyResources.class, MyResources_fr_CH.properties,
-     * MyResources_fr_CH.class, MyResources_fr.properties,
-     * MyResources_en.properties, and MyResources_es_ES.class. The contents of
-     * all files are valid (that is, public non-abstract subclasses of
-     * ResourceBundle with public nullary constructors for the ".class" files,
-     * syntactically correct ".properties" files). The default locale is
-     * Locale("en", "UK").</p>
-     *
-     * <p>Calling getBundle with the shown locale argument values instantiates
-     * resource bundles from the following sources:</p>
-     *
-     * <ul>
-     * <li>Locale("fr", "CH"): result MyResources_fr_CH.class, parent
-     *   MyResources_fr.properties, parent MyResources.class</li>
-     * <li>Locale("fr", "FR"): result MyResources_fr.properties, parent
-     *   MyResources.class</li>
-     * <li>Locale("de", "DE"): result MyResources_en.properties, parent
-     *   MyResources.class</li>
-     * <li>Locale("en", "US"): result MyResources_en.properties, parent
-     *   MyResources.class</li>
-     * <li>Locale("es", "ES"): result MyResources_es_ES.class, parent
-     *   MyResources.class</li>
-     * </ul>
      * 
-     * <p>The file MyResources_fr_CH.properties is never used because it is hidden
-     * by MyResources_fr_CH.class.</p>
+     * <p>If no resource bundle was found, the default resource bundle loader
+     * is used to look for the resource bundle. Class based resource bundles
+     * will be found now.<p>
      *
      * @param baseName the name of the ResourceBundle
      * @param locale A locale

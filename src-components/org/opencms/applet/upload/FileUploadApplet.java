@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,14 +62,14 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.16.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class FileUploadApplet extends JApplet implements Runnable {
 
     /** Serial version UID required for safe serialization. */
-    private static final long serialVersionUID = -3710093915699772777L;
+    private static final long serialVersionUID = -3710093915699772778L;
 
     /** Applet thread. */
     Thread m_runner;
@@ -88,9 +88,6 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
     /** The URL to return to after an error. */
     private String m_errorUrl = "";
-
-    /** The name of the temporary zip file. */
-    private String m_zipfile = "_tmpupload.zip";
 
     /** The name of the folder to upload to. */
     private String m_uploadFolder = "";
@@ -478,7 +475,16 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_action = m_actionOutputCreate;
         try {
             // create a new zipStream
-            ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(m_zipfile));
+            String zipFileName = ".opencms_upload.zip";                
+            String userHome = System.getProperty("user.home");
+            // create file in user home directory where write permissions should exist
+            if (userHome != null) {
+                if (! userHome.endsWith(File.separator)) {
+                    userHome = userHome + File.separator;
+                }
+                zipFileName = userHome + zipFileName;
+            }
+            ZipOutputStream zipStream = new ZipOutputStream(new FileOutputStream(zipFileName));
             // loop through all files
             for (int i = 0; i < files.length; i++) {
 
@@ -494,7 +500,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             }
             zipStream.close();
             // get the zipfile
-            targetFile = new File(m_zipfile);
+            targetFile = new File(zipFileName);
         } catch (Exception e) {
             System.err.println("Error creating zipfile " + e);
         }
@@ -693,6 +699,4 @@ public class FileUploadApplet extends JApplet implements Runnable {
         }
         return col;
     }
-
 }
-

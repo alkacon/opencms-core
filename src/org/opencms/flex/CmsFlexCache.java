@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2005/07/03 09:41:52 $
- * Version: $Revision: 1.51 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.51.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,6 +45,7 @@ import java.io.File;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
@@ -88,12 +89,14 @@ import org.apache.commons.logging.Log;
  * For every entry a key is saved which contains the resource name and the variation.
  * </ul>
  *
- * The whole cache is flushed if something is published.<p>
+ * Cache clearing is handled using events.
+ * The cache is fully flushed if an event {@link I_CmsEventListener#EVENT_PUBLISH_PROJECT} 
+ * or {@link I_CmsEventListener#EVENT_CLEAR_CACHES} is caught.<p>
  *
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51 $ 
+ * @version $Revision: 1.51.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -125,7 +128,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         public CmsFlexCacheVariation(CmsFlexCacheKey theKey) {
 
             m_key = theKey;
-            m_map = Collections.synchronizedMap(new HashMap(CmsFlexCache.INITIAL_CAPACITY_VARIATIONS));
+            m_map = new Hashtable(INITIAL_CAPACITY_VARIATIONS);
         }
     }
 
@@ -152,8 +155,6 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         /**
          * Ensures that all variations that referenced by this key are released
          * if the key is released.<p>
-         * 
-         * @see org.apache.commons.collections.map.LRUMap#removeLRU(org.apache.commons.collections.map.AbstractLinkedMap.LinkEntry)
          */
         protected boolean removeLRU(LinkEntry entry) {
 
@@ -248,18 +249,18 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         int maxEntryBytes = configuration.getMaxEntryBytes();
         int maxKeys = configuration.getMaxKeys();
 
-        this.m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
+        m_variationCache = new CmsLruCache(maxCacheBytes, avgCacheBytes, maxEntryBytes);
 
         if (OpenCms.getMemoryMonitor().enabled()) {
-            OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_entryLruCache", m_variationCache);
+            OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_entryLruCache", m_variationCache);
         }
 
         if (m_enabled) {
-            CmsFlexKeyMap hashMap = new CmsFlexKeyMap(maxKeys);
-            this.m_keyCache = Collections.synchronizedMap(hashMap);
+            CmsFlexKeyMap flexKeyMap = new CmsFlexKeyMap(maxKeys);
+            m_keyCache = Collections.synchronizedMap(flexKeyMap);
 
             if (OpenCms.getMemoryMonitor().enabled()) {
-                OpenCms.getMemoryMonitor().register(this.getClass().getName() + ".m_resourceMap", hashMap);
+                OpenCms.getMemoryMonitor().register(getClass().getName() + ".m_resourceMap", flexKeyMap);
             }
 
             OpenCms.addCmsEventListener(this, new int[] {
@@ -436,7 +437,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public CmsLruCache getEntryLruCache() {
 
-        return this.m_variationCache;
+        return m_variationCache;
     }
 
     /**
@@ -470,7 +471,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
      */
     public int size() {
 
-        return this.m_variationCache.size();
+        return m_variationCache.size();
     }
 
     /**
@@ -480,9 +481,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
     protected void finalize() throws Throwable {
 
         try {
-            this.clear();
-            this.m_variationCache = null;
-            this.m_keyCache = null;
+            clear();
+            m_variationCache = null;
+            m_keyCache = null;
         } catch (Throwable t) {
             // ignore
         }
@@ -522,7 +523,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             }
             if (entry.getDateExpires() < System.currentTimeMillis()) {
                 // cache entry avaiable but expired, remove entry
-                this.m_variationCache.remove(entry);
+                m_variationCache.remove(entry);
                 return null;
             }
             // return the found cache entry
@@ -651,7 +652,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             //Object old = ((HashMap)o).remove(key.Variation);
             Object old = ((HashMap)o).get(key.getVariation());
             if (old != null) {
-                this.getEntryLruCache().remove((I_CmsLruCacheObject)old);
+                getEntryLruCache().remove((I_CmsLruCacheObject)old);
             }
         }
     }
@@ -667,7 +668,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         m_keyCache.clear();
         m_size = 0;
 
-        this.m_variationCache.clear();
+        m_variationCache.clear();
 
         if (LOG.isInfoEnabled()) {
             LOG.info(Messages.get().key(Messages.LOG_FLEXCACHE_CLEAR_0));
@@ -701,9 +702,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     while (allEntries.hasNext()) {
                         I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                         allEntries.remove();
-                        this.m_variationCache.remove(nextObject);
+                        m_variationCache.remove(nextObject);
                     }
-                    v.m_map = Collections.synchronizedMap(new HashMap(INITIAL_CAPACITY_VARIATIONS));
+                    v.m_map = new Hashtable(INITIAL_CAPACITY_VARIATIONS);
                 } else {
                     // Clear key and entry
                     m_size -= v.m_map.size();
@@ -711,7 +712,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
                     while (allEntries.hasNext()) {
                         I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                         allEntries.remove();
-                        this.m_variationCache.remove(nextObject);
+                        m_variationCache.remove(nextObject);
                     }
 
                     v.m_map = null;
@@ -750,9 +751,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             while (allEntries.hasNext()) {
                 I_CmsLruCacheObject nextObject = (I_CmsLruCacheObject)allEntries.next();
                 allEntries.remove();
-                this.m_variationCache.remove(nextObject);
+                m_variationCache.remove(nextObject);
             }
-            v.m_map = Collections.synchronizedMap(new HashMap(INITIAL_CAPACITY_VARIATIONS));
+            v.m_map = new Hashtable(INITIAL_CAPACITY_VARIATIONS);
         }
         m_size = 0;
     }
@@ -881,9 +882,9 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             Map m = ((CmsFlexCacheVariation)o).m_map;
             boolean wasAdded = true;
             if (!m.containsKey(key.getVariation())) {
-                wasAdded = this.m_variationCache.add(theCacheEntry);
+                wasAdded = m_variationCache.add(theCacheEntry);
             } else {
-                wasAdded = this.m_variationCache.touch(theCacheEntry);
+                wasAdded = m_variationCache.touch(theCacheEntry);
             }
 
             if (wasAdded) {
@@ -894,7 +895,7 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
             // No variation map for this resource yet, so create one
             CmsFlexCacheVariation list = new CmsFlexCacheVariation(key);
 
-            boolean wasAdded = this.m_variationCache.add(theCacheEntry);
+            boolean wasAdded = m_variationCache.add(theCacheEntry);
 
             if (wasAdded) {
                 theCacheEntry.setVariationData(key.getVariation(), list.m_map);

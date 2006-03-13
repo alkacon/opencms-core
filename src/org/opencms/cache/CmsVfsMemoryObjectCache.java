@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2005/11/15 14:15:50 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,11 +52,11 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.1.3
  */
-public class CmsVfsMemoryObjectCache implements I_CmsEventListener {
+public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsVfsMemoryObjectCache.class);
@@ -70,12 +70,15 @@ public class CmsVfsMemoryObjectCache implements I_CmsEventListener {
     /**
      * Constructor, creates a new CmsVfsMemoryObjectCache.<p>
      */
-    public CmsVfsMemoryObjectCache() {
+    private CmsVfsMemoryObjectCache() {
 
         m_cache = new HashMap();
+        // register the cache in the memory monitor
+        OpenCms.getMemoryMonitor().register(CmsVfsMemoryObjectCache.class.getName() + ".m_cache", m_cache);
+        // register the event listeners
         registerEventListener();
     }
-
+    
     /**
      * Returns the VFS memory Object cache.<p>
      * 
@@ -83,18 +86,10 @@ public class CmsVfsMemoryObjectCache implements I_CmsEventListener {
      */
     public static CmsVfsMemoryObjectCache getVfsMemoryObjectCache() {
 
-        initCache();
-        return m_vfsMemoryObjectCache;
-    }
-
-    /**
-     * Initializes the internal caches for permanent and temporary system IDs.<p>
-     */
-    private static void initCache() {
-
         if (m_vfsMemoryObjectCache == null) {
             m_vfsMemoryObjectCache = new CmsVfsMemoryObjectCache();
         }
+        return m_vfsMemoryObjectCache;
     }
 
     /**

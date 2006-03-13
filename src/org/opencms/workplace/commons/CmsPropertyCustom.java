@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.19.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.19.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,10 +329,8 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
 
         // create NavPos select box row
         result.append(buildTableRowStart(key(Messages.GUI_CHNAV_INSERT_AFTER_0)));
-        synchronized (this) {
-            result.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled
-                + " id=\"navpos\" class=\"maxwidth noborder\"", getMessages()));
-        }
+        result.append(CmsChnav.buildNavPosSelector(getCms(), getParamResource(), disabled
+            + " id=\"navpos\" class=\"maxwidth noborder\"", getMessages()));
         // get the old NavPos value and store it in hidden field
         String navPos = null;
         try {

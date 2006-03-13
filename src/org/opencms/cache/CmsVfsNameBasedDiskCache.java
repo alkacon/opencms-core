@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsNameBasedDiskCache.java,v $
- * Date   : $Date: 2005/11/12 08:51:34 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,6 @@ import org.opencms.file.CmsResource;
 import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 
 /**
@@ -46,7 +45,7 @@ import java.io.IOException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
@@ -80,8 +79,9 @@ public class CmsVfsNameBasedDiskCache {
         try {
             File f = new File(rfsName);
             if (f.exists()) {
-                synchronized (this) {
-                    // thouch the file with the current date
+                long age = f.lastModified();
+                if ((System.currentTimeMillis() - age) > 3600000) {
+                    // file has not been touched for 1 hour, touch the file with the current date
                     f.setLastModified(System.currentTimeMillis());
                 }
                 return CmsFileUtil.readFile(f);
@@ -154,17 +154,6 @@ public class CmsVfsNameBasedDiskCache {
      */
     public void saveCacheFile(String rfsName, byte[] content) throws IOException {
 
-        File f = new File(rfsName);
-        File p = f.getParentFile();
-        synchronized (this) {
-            if (!p.exists()) {
-                // create parent folders
-                p.mkdirs();
-            }
-            // write file contents
-            FileOutputStream fs = new FileOutputStream(f);
-            fs.write(content);
-            fs.close();
-        }
+        CmsVfsDiskCache.saveFile(rfsName, content);
     }
 }

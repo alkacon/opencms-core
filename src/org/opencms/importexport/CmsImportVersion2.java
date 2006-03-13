@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2005/10/19 09:41:10 $
- * Version: $Revision: 1.110.2.2 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.110.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.110.2.2 $ 
+ * @version $Revision: 1.110.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -160,7 +160,7 @@ public class CmsImportVersion2 extends A_CmsImport {
     /**
      * @see org.opencms.importexport.I_CmsImport#importResources(org.opencms.file.CmsObject, java.lang.String, org.opencms.report.I_CmsReport, java.io.File, java.util.zip.ZipFile, org.dom4j.Document)
      */
-    public synchronized void importResources(
+    public void importResources(
         CmsObject cms,
         String importPath,
         I_CmsReport report,

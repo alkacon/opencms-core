@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsLocaleManager.java,v $
- * Date   : $Date: 2006/01/15 10:29:22 $
- * Version: $Revision: 1.45.2.4 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.45.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.45.2.4 $ 
+ * @version $Revision: 1.45.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,7 +138,7 @@ public class CmsLocaleManager implements I_CmsEventListener {
         m_availableLocales = new ArrayList();
         m_defaultLocales = new ArrayList();
         m_localeHandler = new CmsDefaultLocaleHandler();
-        m_localeCache = Collections.synchronizedMap(new LRUMap());
+        m_localeCache = Collections.synchronizedMap(new LRUMap(256));
 
         m_defaultLocale = defaultLocale;
         m_defaultLocales.add(defaultLocale);
@@ -183,22 +183,20 @@ public class CmsLocaleManager implements I_CmsEventListener {
             return getDefaultLocale();
         }
         Locale locale;
-        synchronized (m_localeCache) {
-            locale = (Locale)m_localeCache.get(localeName);
-            if (locale == null) {
-                try {
-                    String[] localeNames = CmsStringUtil.splitAsArray(localeName, '_');
-                    locale = new Locale(
-                        localeNames[0],
-                        (localeNames.length > 1) ? localeNames[1] : "",
-                        (localeNames.length > 2) ? localeNames[2] : "");
-                } catch (Throwable t) {
-                    LOG.debug(Messages.get().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName), t);
-                    // map this error to the default locale
-                    locale = getDefaultLocale();
-                }
-                m_localeCache.put(localeName, locale);
+        locale = (Locale)m_localeCache.get(localeName);
+        if (locale == null) {
+            try {
+                String[] localeNames = CmsStringUtil.splitAsArray(localeName, '_');
+                locale = new Locale(
+                    localeNames[0],
+                    (localeNames.length > 1) ? localeNames[1] : "",
+                    (localeNames.length > 2) ? localeNames[2] : "");
+            } catch (Throwable t) {
+                LOG.debug(Messages.get().key(Messages.LOG_CREATE_LOCALE_FAILED_1, localeName), t);
+                // map this error to the default locale
+                locale = getDefaultLocale();
             }
+            m_localeCache.put(localeName, locale);
         }
         return locale;
     }
@@ -371,14 +369,13 @@ public class CmsLocaleManager implements I_CmsEventListener {
      *
      * @param event CmsEvent that has occurred
      */
-    public synchronized void cmsEvent(CmsEvent event) {
+    public void cmsEvent(CmsEvent event) {
 
         switch (event.getType()) {
             case I_CmsEventListener.EVENT_CLEAR_CACHES:
                 clearCaches();
                 break;
-            default:
-        // no operation
+            default: // no operation
         }
     }
 
@@ -641,9 +638,9 @@ public class CmsLocaleManager implements I_CmsEventListener {
         Locale locale = null;
         String encoding = null;
         if (req != null) {
-            String localeParam;
+            String localeParam = req.getParameter(CmsLocaleManager.PARAMETER_LOCALE);
             // check request for parameters
-            if ((localeParam = req.getParameter(CmsLocaleManager.PARAMETER_LOCALE)) != null) {
+            if (localeParam != null) {
                 // "__locale" parameter found in request
                 locale = CmsLocaleManager.getLocale(localeParam);
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/13 11:43:44 $
- * Version: $Revision: 1.682.2.85 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.682.2.86 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,10 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.1.10 - March xxxx, 2006
+* Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
+* Added new error handling servlet to support containers that don't allow "error handling loops"
 
 OpenCms 6.1.9 - March 13, 2006
 ! Added cms:img tag that automatically generates HTML for scaled images

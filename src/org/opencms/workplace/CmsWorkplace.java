@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.146.2.5 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.146.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.5 $ 
+ * @version $Revision: 1.146.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -569,7 +569,7 @@ public abstract class CmsWorkplace {
      * @param session the session to store the settings in
      * @param settings the settings
      */
-    static synchronized void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
+    static void storeSettings(HttpSession session, CmsWorkplaceSettings settings) {
 
         // save the workplace settings in the session
         session.setAttribute(CmsWorkplaceManager.SESSION_WORKPLACE_SETTINGS, settings);

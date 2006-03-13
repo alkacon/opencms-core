@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2005/09/30 15:09:30 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +123,7 @@ public class CmsEditorDisplayOptions {
      * @param jsp the JSP action element to access the VFS and current user information
      * @return the display options to use for the current user or null if no display options were found
      */
-    public synchronized Properties getDisplayOptions(CmsJspActionElement jsp) {
+    public Properties getDisplayOptions(CmsJspActionElement jsp) {
 
         return getDisplayOptions(jsp.getCmsObject());
     }
@@ -140,11 +140,11 @@ public class CmsEditorDisplayOptions {
      * @param cms the CmsObject to access the VFS and current user information
      * @return the display options to use for the current user or null if no display options were found
      */
-    public synchronized Properties getDisplayOptions(CmsObject cms) {
+    public Properties getDisplayOptions(CmsObject cms) {
 
         // get the configuration file name for the current user
         String mappedConfigFile = (String)m_userMappings.get(cms.getRequestContext().currentUser().getName());
-        Properties displayOptions = null;
+        Properties displayOptions;
         if (mappedConfigFile == null) {
             // no configuration file name stored for user, get the navigation items of the configuration folder
             List items = CmsJspNavBuilder.getNavigationForFolder(cms, FOLDER_EDITORCONFIGURATION);
@@ -152,40 +152,43 @@ public class CmsEditorDisplayOptions {
                 // get first found configuration file
                 CmsJspNavElement nav = (CmsJspNavElement)items.get(0);
                 mappedConfigFile = nav.getFileName();
-                displayOptions = (Properties)m_loadedConfigurations.get(nav.getFileName());
-                if (displayOptions == null) {
-                    // configuration file has not yet been loaded, load it
-                    try {
-                        // read configuration file
-                        CmsFile optionFile = cms.readFile(
-                            nav.getResourceName(),
-                            CmsResourceFilter.IGNORE_EXPIRATION);
-                        InputStream in = new ByteArrayInputStream(optionFile.getContents());
-                        displayOptions = new Properties();
-                        displayOptions.load(in);
-                        // store loaded options
-                        m_loadedConfigurations.put(nav.getFileName(), displayOptions);
-                    } catch (CmsException e) {
-                        // set configuration to not available
-                        if (LOG.isInfoEnabled()) {
-                            LOG.info(e);
+                synchronized (m_loadedConfigurations) {
+                    // must sync read/write access to shared map
+                    displayOptions = (Properties)m_loadedConfigurations.get(nav.getFileName());
+                    if (displayOptions == null) {
+                        // configuration file has not yet been loaded, load it
+                        try {
+                            // read configuration file
+                            CmsFile optionFile = cms.readFile(
+                                nav.getResourceName(),
+                                CmsResourceFilter.IGNORE_EXPIRATION);
+                            InputStream in = new ByteArrayInputStream(optionFile.getContents());
+                            displayOptions = new Properties();
+                            displayOptions.load(in);
+                            // store loaded options
+                            m_loadedConfigurations.put(nav.getFileName(), displayOptions);
+                        } catch (CmsException e) {
+                            // set configuration to not available
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(e);
+                            }
+                            mappedConfigFile = NO_MAPPING_FOR_USER;
+                            displayOptions = null;
+                        } catch (IOException e) {
+                            // set configuration to not available
+                            if (LOG.isInfoEnabled()) {
+                                LOG.info(e);
+                            }
+                            mappedConfigFile = NO_MAPPING_FOR_USER;
+                            displayOptions = null;
                         }
-                        mappedConfigFile = NO_MAPPING_FOR_USER;
-                    } catch (IOException e) {
-                        // set configuration to not available
-                        if (LOG.isInfoEnabled()) {
-                            LOG.info(e);
-                        }
-                        mappedConfigFile = NO_MAPPING_FOR_USER;
-                        displayOptions = null;
                     }
                 }
             } else {
                 // no configuration available for current user, store this in mapping
                 mappedConfigFile = NO_MAPPING_FOR_USER;
+                displayOptions = null;
             }
-            // store the file name of the configuration file for the current user
-            m_userMappings.put(cms.getRequestContext().currentUser().getName(), mappedConfigFile);
             if (LOG.isDebugEnabled()) {
                 // check which mapping has been stored
                 LOG.debug(Messages.get().key(
@@ -193,6 +196,8 @@ public class CmsEditorDisplayOptions {
                     mappedConfigFile,
                     cms.getRequestContext().currentUser().getName()));
             }
+            // store the file name of the configuration file for the current user
+            m_userMappings.put(cms.getRequestContext().currentUser().getName(), mappedConfigFile);
         } else {
             // configuration file for current user is known, get options from loaded configurations
             displayOptions = (Properties)m_loadedConfigurations.get(mappedConfigFile);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.38 $
+ * Date   : $Date: 2006/03/13 15:45:26 $
+ * Version: $Revision: 1.38.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.38 $ 
+ * @version $Revision: 1.38.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -89,7 +89,7 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
      * 
      * @return an initialized set of module messages
      */
-    private static synchronized List collectModuleMessages(Locale locale) {
+    private static List collectModuleMessages(Locale locale) {
 
         // create a new list and add the base bundle
         ArrayList result = new ArrayList();
