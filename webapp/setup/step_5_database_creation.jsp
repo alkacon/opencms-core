@@ -38,7 +38,7 @@
 
 			/* check if database exists */
 			if(!dropDb)	{
-				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 				dbExists = db.noErrors();
 				if(dbExists)	{
 					db.closeConnection();
