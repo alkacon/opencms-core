@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.682.2.86 $
+ * Date   : $Date: 2006/03/14 12:25:33 $
+ * Version: $Revision: 1.682.2.87 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,7 +19,7 @@ Legend:
 * Bug fixed
 - General comment
 
-OpenCms 6.1.10 - March xxxx, 2006
+OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
 * Added new error handling servlet to support containers that don't allow "error handling loops"
 
