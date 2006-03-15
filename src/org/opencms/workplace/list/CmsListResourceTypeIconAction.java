@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceTypeIconAction.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/15 10:19:55 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsStringUtil;
@@ -44,7 +43,7 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,12 +53,11 @@ public class CmsListResourceTypeIconAction extends CmsListExplorerDirectAction {
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param cms the current cms context
      * @param wp the current workplace context
      */
-    public CmsListResourceTypeIconAction(String id, CmsObject cms, A_CmsListExplorerDialog wp) {
+    public CmsListResourceTypeIconAction(String id, A_CmsListExplorerDialog wp) {
 
-        super(id, cms, wp);
+        super(id, wp);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListResourceProjStateAction.java,v $
- * Date   : $Date: 2006/01/11 17:07:03 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/15 10:19:55 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.file.CmsObject;
 import org.opencms.i18n.CmsMessageContainer;
 
 /**
@@ -39,7 +38,7 @@ import org.opencms.i18n.CmsMessageContainer;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -49,12 +48,11 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param cms the cms context
      * @param wp the workplace context
      */
-    public CmsListResourceProjStateAction(String id, CmsObject cms, A_CmsListExplorerDialog wp) {
+    public CmsListResourceProjStateAction(String id, A_CmsListExplorerDialog wp) {
 
-        super(id, cms, wp);
+        super(id, wp);
     }
 
     /**
@@ -87,7 +85,7 @@ public class CmsListResourceProjStateAction extends CmsListExplorerDirectAction 
             } else if (getResourceUtil().getProjectState().booleanValue()) {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,
-                    getCms().getRequestContext().currentProject().getName());
+                    getResourceUtil().getReferenceProject().getName());
             } else {
                 return Messages.get().container(
                     Messages.GUI_EXPLORER_LIST_ACTION_INPROJECT_NAME_1,

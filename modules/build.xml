@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <project name="OpenCms Common Modules" default="war" basedir=".">
+	<property name="app.name" 							value="opencms" />
  	<property name="opencms.input" 						location="${basedir}/.." />
     <property name="opencms.output"						location="${opencms.input}/.." />
  	<property name="opencms.setup.input" 				location="${opencms.input}/webapp/setup" />

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListDialog.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.32.2.4 $
+ * Date   : $Date: 2006/03/15 10:19:55 $
+ * Version: $Revision: 1.32.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import javax.servlet.jsp.JspWriter;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.32.2.4 $ 
+ * @version $Revision: 1.32.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,7 +188,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
 
     /** The column to search the list. */
     private String m_searchColId;
-    
+
     /**
      * Public constructor.<p>
      * @param jsp an initialized JSP action element
@@ -812,6 +812,26 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected abstract void fillDetails(String detailId);
 
     /**
+     * Calls the <code>{@link #getListItems}</code> method and catches any exception.<p>
+     */
+    protected void fillList() {
+
+        try {
+            getList().addAllItems(getListItems());
+            // initialize detail columns
+            Iterator itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
+            while (itDetails.hasNext()) {
+                initializeDetail(((CmsListItemDetails)itDetails.next()).getId());
+            }
+        } catch (Exception e) {
+            throw new CmsRuntimeException(Messages.get().container(
+                Messages.ERR_LIST_FILL_1,
+                getList().getName().key(getLocale()),
+                null), e);
+        }
+    }
+
+    /**
      * Should generate a list with the list items to be displayed.<p>
      * 
      * @return a list of <code>{@link CmsListItem}</code>s
@@ -952,7 +972,7 @@ public abstract class A_CmsListDialog extends CmsDialog {
      */
     protected void setSearchAction(CmsListMetadata metadata, String columnId) {
 
-        CmsListColumnDefinition col = metadata.getColumnDefinition(columnId); 
+        CmsListColumnDefinition col = metadata.getColumnDefinition(columnId);
         if (columnId != null && col != null) {
             if (metadata.getSearchAction() == null) {
                 // makes the list searchable
@@ -989,26 +1009,6 @@ public abstract class A_CmsListDialog extends CmsDialog {
     protected void validateParamaters() throws Exception {
 
         // valid by default
-    }
-
-    /**
-     * Calls the <code>{@link getListItems}</code> method and catches any exception.<p>
-     */
-    private void fillList() {
-
-        try {
-            getList().addAllItems(getListItems());
-            // initialize detail columns
-            Iterator itDetails = getList().getMetadata().getItemDetailDefinitions().iterator();
-            while (itDetails.hasNext()) {
-                initializeDetail(((CmsListItemDetails)itDetails.next()).getId());
-            }
-        } catch (Exception e) {
-            throw new CmsRuntimeException(Messages.get().container(
-                Messages.ERR_LIST_FILL_1,
-                getList().getName().key(getLocale()),
-                null), e);
-        }
     }
 
     /**

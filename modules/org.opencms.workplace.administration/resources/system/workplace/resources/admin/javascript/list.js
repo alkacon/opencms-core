@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/list.js,v $
- * Date   : $Date: 2005/11/16 12:06:51 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,21 +42,21 @@ function listAction(listId, action, confirmation, listItem) {
 	
 	// use the param content as default
 	var confText = confirmation;
-	try {
-	    // try to user the param as an id of a div tag, and use its content
-		confText = document.getElementById(confirmation).firstChild.nodeValue;
-	} catch (e) {
-	    // ignore
+        var confEl = document.getElementById(confirmation);
+	if (confEl) {
+	   // try to user the param as an id of a div tag, and use its content
+	   confText = confEl.firstChild.nodeValue;
 	}
-	if (confText!='null' && confText!='') {
-		if (!confirm(confText)) {
-			return false;
-		}
+	if (confText != 'null' && confText != '') {
+	  if (!confirm(confText)) {
+	    return false;
+	  }
 	}
 	form.action.value='listsingleaction';
 	form.listaction.value=action;
 	form.selitems.value=listItem;
 	submitForm(form);
+        return true;
 }
 
 /**
@@ -76,6 +76,7 @@ function listIndepAction(listId, action, confirmation) {
 	form.action.value='listindependentaction';
 	form.listaction.value=action;
 	submitForm(form);
+        return true;
 }
 
 /**
@@ -85,7 +86,7 @@ function listIndepAction(listId, action, confirmation) {
  */
 function listSelect(listId) {
 	var form = document.forms[listId + '-form'];
-	for (i = 0 ; i < form.elements.length; i++) {
+	for (var i = 0 ; i < form.elements.length; i++) {
 		if ((form.elements[i].type == 'checkbox') && (form.elements[i].name == 'listMultiAction')) {
 			if (!(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {
 				form.elements[i].checked = form.listSelectAll.checked;
@@ -107,7 +108,7 @@ function listMAction(listId, action, confirmation, noselectionhelp) {
 	var form = document.forms[listId + '-form'];
 	var count = 0;
 	var listItems = '';
-	for (i = 0 ; i < form.elements.length; i++) {
+	for (var i = 0 ; i < form.elements.length; i++) {
 		if ((form.elements[i].type == 'checkbox') && (form.elements[i].name == 'listMultiAction')) {
 			if (form.elements[i].checked && !(form.elements[i].value == 'DISABLED' || form.elements[i].disabled)) {
 				count++;
@@ -131,6 +132,7 @@ function listMAction(listId, action, confirmation, noselectionhelp) {
 	form.listaction.value=action;
 	form.selitems.value=listItems;
 	submitForm(form);
+        return true;
 }
 
 /**
@@ -154,7 +156,7 @@ function listSearchAction(listId, action, confirmation) {
 		form.searchfilter.value = form.listSearchFilter.value;
 	}
 	submitForm(form);
-	return;
+	return true;
 }
 
 /**
@@ -227,4 +229,5 @@ function listRSelMAction(listId, action, confirmation, noselectionhelp, relatedA
 	form.listaction.value=action;
 	form.selitems.value=listItems;
 	submitForm(form);
+        return true;
 }

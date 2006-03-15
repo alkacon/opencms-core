@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerColumn.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/15 10:19:55 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.workplace.CmsWorkplace;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -64,9 +64,7 @@ public class CmsListExplorerColumn extends CmsListColumnDefinition {
         if (isPrintable) {
             return super.htmlCell(item, wp, isPrintable);
         }
-        CmsResourceUtil resUtil = new CmsResourceUtil(
-            wp.getCms(),
-            ((A_CmsListExplorerDialog)wp).getResource(item.getId()));
+        CmsResourceUtil resUtil = ((A_CmsListExplorerDialog)wp).getResourceUtil(item);
         StringBuffer html = new StringBuffer(128);
         html.append("<table cellpadding='0' cellspacing='0' border='0'><tr><td class='");
         html.append(resUtil.getStyleClassName());

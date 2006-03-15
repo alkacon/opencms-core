@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.explorer/resources/system/workplace/resources/commons/explorer.js,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.10.2.11 $
+ * Date   : $Date: 2006/03/15 10:19:55 $
+ * Version: $Revision: 1.10.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -870,7 +870,6 @@ function printList(wo) {
 			vi_text = vi.resource[vi.liste[i].type].text;
 		}
 
-
 		ssclass = "class=\"";
 
 		if (!vi.liste[i].isInsideCurrentProject || noaccess) {
@@ -962,41 +961,43 @@ function printList(wo) {
 
 		if (vi.check_name) {
 			wo.write("<td nowrap unselectable=\"on\" id=\"td3_" + i + "\" " + ssclass + ">&nbsp;");
-			if (vi.liste[i].isFolder) {
-				if ((mode == "listview") || (mode == "galleryview") || showlinks) {
-					wo.write(vi.liste[i].path);
-				} else if (vi.liste[i].state == 3) {
-					wo.write(vi.liste[i].name);
-				} else {
-					wo.write("<a onclick=\"top." + openfolderMethod + "('" + vi.liste[i].name + "')\"");
-					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
-					wo.write(" id=\"a" + i + "\" " + ssclass + ">");
-					wo.write(vi.liste[i].name);
-					wo.write("</a>");
-				}
+			if (mode == "listview") {
+				wo.write("<a onclick=\"top.openwinfull('");
+				wo.write(vi.liste[i].path);
+				wo.write("');\"")
+				wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+				wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
 			} else {
-				if ((mode == "galleryview") || showlinks) {
-					wo.writeln(vi.liste[i].path);
-				} else if (mode == "listview" ) {
-					wo.write("<a onclick=\"top.openwinfull('");
-					wo.write(vi.liste[i].path);
-					wo.write("');\"")
-					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
-					wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].path + "</a>");
-				} else if (vi.liste[i].state == 3) {
-					wo.write(vi.liste[i].name);
-				} else if (flaturl != "") {
-					wo.write("<a onclick=\"top.openwinfull('");
-					wo.write(vr.actDirectory + vi.liste[i].name);
-					wo.write("');\"");
-					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
-					wo.writeln("id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
+				if (vi.liste[i].isFolder) {
+					if (mode == "galleryview" || showlinks) {
+						wo.write(vi.liste[i].path);
+					} else if (vi.liste[i].state == 3) {
+						wo.write(vi.liste[i].name);
+					} else {
+						wo.write("<a onclick=\"top." + openfolderMethod + "('" + vi.liste[i].name + "')\"");
+						wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+						wo.write(" id=\"a" + i + "\" " + ssclass + ">");
+						wo.write(vi.liste[i].name);
+						wo.write("</a>");
+					}
 				} else {
-					wo.write("<a onclick=\"top.openwinfull('");
-					wo.write(vr.actDirectory + vi.liste[i].name);
-					wo.write("');\"");
-					wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
-					wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
+					if ((mode == "galleryview") || showlinks) {
+						wo.writeln(vi.liste[i].path);
+					} else if (vi.liste[i].state == 3) {
+						wo.write(vi.liste[i].name);
+					} else if (flaturl != "") {
+						wo.write("<a onclick=\"top.openwinfull('");
+						wo.write(vr.actDirectory + vi.liste[i].name);
+						wo.write("');\"");
+						wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+						wo.writeln("id=\"a" + i + "\" " + ssclass + ">&" + vi.liste[i].name + "</a>");
+					} else {
+						wo.write("<a onclick=\"top.openwinfull('");
+						wo.write(vr.actDirectory + vi.liste[i].name);
+						wo.write("');\"");
+						wo.write(" onmouseover=\"top.linkOver(this, " + i + ")\" onmouseout=\"top.linkOut(this)\"");
+						wo.writeln(" id=\"a" + i + "\" " + ssclass + ">" + vi.liste[i].name + "</a>");
+					}
 				}
 			}
 			wo.writeln("</td>");

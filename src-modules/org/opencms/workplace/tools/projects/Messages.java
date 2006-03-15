@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/Messages.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.7.2.1 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.7.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.7.2.1 $ 
+ * @version $Revision: 1.7.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -347,6 +347,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
     public static final String GUI_SETTINGS_EDITOR_LABEL_PROJECTFILES_BLOCK_0 = "GUI_SETTINGS_EDITOR_LABEL_PROJECTFILES_BLOCK_0";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_READ_PROJECT_VIEW_END_1 = "LOG_READ_PROJECT_VIEW_END_1";
+
+    /** Message contant for key in the resource bundle. */
+    public static final String LOG_READ_PROJECT_VIEW_START_0 = "LOG_READ_PROJECT_VIEW_START_0";
 
     /** Name of the used resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.tools.projects.messages";

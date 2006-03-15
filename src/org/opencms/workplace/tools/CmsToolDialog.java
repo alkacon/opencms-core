@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.30.2.5 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.30.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30.2.5 $ 
+ * @version $Revision: 1.30.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -424,18 +424,14 @@ public class CmsToolDialog extends CmsWorkplace {
         html.append("editors/xmlcontent/help.js'></script>\n\n");
         html.append("<script type='text/javascript'>\n");
         html.append("\tfunction bodyLoad() {\n");
-        html.append("\t\t\tsetContext(\"");
+        html.append("\t\tsetContext(\"");
         html.append(CmsStringUtil.escapeJavaScript(resolveMacros(getAdminTool().getHandler().getHelpText())));
         html.append("\");\n");
-        html.append("\t\t\tsetActiveItemByName(\"");
+        html.append("\t\tsetActiveItemByName(\"");
         html.append(getCurrentToolPath());
         html.append("\");\n");
-        html.append("\t\t\tloadingOff();\n");
-        html.append("\t\ttry {\n");
-        html.append("\t\t\tdocument.getElementById('loaderContainerH').height = document.getElementById('screenH').offsetHeight;\n");
-        html.append("\t\t} catch(e) {\n");
-        html.append("\t\t\t// ignore\n");
-        html.append("\t\t}\n");
+        html.append("\t\tloadingOff();\n");
+        html.append("\t\tdocument.getElementById('loaderContainerH').height = wHeight();\n");
         html.append("\t}\n");
         html.append("\tfunction bodyUnload() {\n");
         html.append("\t\tloadingOn();\n");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorer.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.31.2.5 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.31.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.31.2.5 $ 
+ * @version $Revision: 1.31.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,12 +92,6 @@ public class CmsExplorer extends CmsWorkplace {
 
     /** The "mode" parameter. */
     public static final String PARAMETER_MODE = "mode";
-
-    /** The "projectfilter" parameter. */
-    public static final String PARAMETER_PROJECTFILTER = "projectfilter";
-
-    /** The "projectid" parameter. */
-    public static final String PARAMETER_PROJECTID = "projectid";
 
     /** The "list" view selection. */
     public static final String VIEW_LIST = "listview";
@@ -214,14 +208,18 @@ public class CmsExplorer extends CmsWorkplace {
         content.append("top.head.helpUrl='explorer/index.html';\n");
         // the project
         content.append("top.setProject(");
-        content.append(getSettings().getProject());
+        if (!listView) {
+            content.append(getSettings().getProject());
+        } else {
+            content.append(getSettings().getExplorerProjectId());
+        }
         content.append(");\n");
         // the onlineProject
         content.append("top.setOnlineProject(");
         content.append(CmsProject.ONLINE_PROJECT_ID);
         content.append(");\n");
         // set the writeAccess for the current Folder       
-        boolean writeAccess = "explorerview".equals(getSettings().getExplorerMode());
+        boolean writeAccess = VIEW_EXPLORER.equals(getSettings().getExplorerMode());
         if (writeAccess && (!showVfsLinks)) {
             writeAccess = getCms().isInsideCurrentProject(currentFolder);
         }
@@ -278,7 +276,7 @@ public class CmsExplorer extends CmsWorkplace {
         int numberOfPages = 0;
         int maxEntrys = getSettings().getUserSettings().getExplorerFileEntries();
 
-        if (!(galleryView || showVfsLinks || listView)) {
+        if (!(galleryView || showVfsLinks)) {
             selectedPage = getSettings().getExplorerPage();
             if (stopat > maxEntrys) {
                 // we have to split
@@ -296,7 +294,11 @@ public class CmsExplorer extends CmsWorkplace {
         // set the right project
         CmsProject project;
         try {
-            project = getCms().readProject(getSettings().getProject());
+            if (!listView) {
+                project = getCms().readProject(getSettings().getProject());
+            } else {
+                project = getCms().readProject(getSettings().getExplorerProjectId());
+            }
         } catch (CmsException ex) {
             project = getCms().getRequestContext().currentProject();
         }
@@ -352,13 +354,21 @@ public class CmsExplorer extends CmsWorkplace {
                         CmsPropertyDefinition.PROPERTY_TITLE,
                         false).getValue();
                 } catch (CmsException e) {
-                    // should usually never happen
-                    if (LOG.isInfoEnabled()) {
-                        LOG.info(e);
+                    getCms().getRequestContext().saveSiteRoot();
+                    try {
+                        getCms().getRequestContext().setSiteRoot("/");
+                        title = getCms().readPropertyObject(
+                            res.getRootPath(),
+                            CmsPropertyDefinition.PROPERTY_TITLE,
+                            false).getValue();
+                    } catch (Exception e1) {
+                        // should usually never happen
+                        if (LOG.isInfoEnabled()) {
+                            LOG.info(e);
+                        }
+                    } finally {
+                        getCms().getRequestContext().restoreSiteRoot();
                     }
-                }
-                if (title == null) {
-                    title = "";
                 }
                 content.append("\"");
                 if (title != null) {
@@ -501,7 +511,15 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     content.append(getCms().getPermissions(getCms().getSitePath(res)).getPermissionString());
                 } catch (CmsException e) {
-                    content.append(e.getMessage());
+                    getCms().getRequestContext().saveSiteRoot();
+                    try {
+                        getCms().getRequestContext().setSiteRoot("/");
+                        content.append(getCms().getPermissions(res.getRootPath()).getPermissionString());
+                    } catch (Exception e1) {
+                        content.append(CmsStringUtil.escapeJavaScript(e1.getMessage()));
+                    } finally {
+                        getCms().getRequestContext().restoreSiteRoot();
+                    }
                 }
                 content.append("\",");
             } else {
@@ -516,7 +534,7 @@ public class CmsExplorer extends CmsWorkplace {
                 try {
                     content.append(getCms().readUser(lock.getUserId()).getName());
                 } catch (CmsException e) {
-                    content.append(e.getMessage());
+                    content.append(CmsStringUtil.escapeJavaScript(e.getMessage()));
                 }
                 content.append("\",");
             }
@@ -640,22 +658,6 @@ public class CmsExplorer extends CmsWorkplace {
             }
         }
 
-        // get filter parameter for project view
-        String filter = request.getParameter(PARAMETER_PROJECTFILTER);
-        if (CmsStringUtil.isEmpty(filter)) {
-            settings.setExplorerProjectFilter("all");
-        } else {
-            settings.setExplorerProjectFilter(filter);
-        }
-
-        // get project id parameter for project view
-        String projectIdString = request.getParameter(PARAMETER_PROJECTID);
-        int projectId = getCms().getRequestContext().currentProject().getId();
-        if (CmsStringUtil.isNotEmpty(projectIdString)) {
-            projectId = Integer.parseInt(projectIdString);
-        }
-        settings.setExplorerProjectId(projectId);
-
         boolean showLinks = Boolean.valueOf(request.getParameter(PARAMETER_SHOWLINKS)).booleanValue();
 
         if (showLinks) {
@@ -749,16 +751,11 @@ public class CmsExplorer extends CmsWorkplace {
             }
         } else if (VIEW_LIST.equals(getSettings().getExplorerMode())) {
 
-            // select status to be shown
-            String criteria = getSettings().getExplorerProjectFilter();
-            criteria += "|" + getSettings().getExplorerProjectId();
-
-            // check if the list must show the project view or the check content view
+            // check if the list must show the list view or the check content view
             I_CmsResourceCollector collector = getSettings().getCollector();
             if (collector != null) {
-                // is this the collector for the check content
+                // is this the collector for the list view
                 try {
-                    collector.setDefaultCollectorParam(criteria);
                     return collector.getResults(getCms());
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {

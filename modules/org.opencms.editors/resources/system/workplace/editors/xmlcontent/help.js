@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2005/12/21 09:42:32 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,16 +73,20 @@ function showHelp(id) {
 
 function hideHelp(id) {
     var text = document.getElementById("help" + id);
-    text.style.visibility = "hidden";
-    text.style.left = "0px";
-    text.style.top =  "0px";
+    if (text) {
+      text.style.visibility = "hidden";
+      text.style.left = "0px";
+      text.style.top =  "0px";
+    }
     showSelectBoxes();
 }
 
 function showHelpX(id, helpId) { 
 
     var text = document.getElementById("help" + helpId);
-    
+    if (undefined == text) {
+      return;
+    }
     if (text.style.visibility == "visible") {
         return;
     }
@@ -95,9 +99,11 @@ function showHelpX(id, helpId) {
     	icon = document.getElementById(id);
     	xOffset = 50;
     }
-    
-    x = findPosX(icon) + xOffset;
-    y = findPosY(icon) + 8;
+    if (undefined == icon) {
+      return;
+    }
+    var x = findPosX(icon) + xOffset;
+    var y = findPosY(icon) + 8;
     var textHeight = text.scrollHeight;
     var textWidth = text.scrollWidth;
     var scrollSize = 20; 
@@ -143,7 +149,7 @@ function showHelpX(id, helpId) {
 
 // hide select boxes which are in help or combo area to avoid display issues
 function hideSelectBoxes(elem, y) {
-	if (browser.isIE) {
+    if (browser.isIE) {
     	if (selectBoxes == null) {
     		selectBoxes = document.getElementsByTagName("select");
     	}
@@ -160,8 +166,8 @@ function hideSelectBoxes(elem, y) {
 
 // show select boxes which were hidden
 function showSelectBoxes() {
-	if (browser.isIE) {
-		if (selectBoxes == null) {
+    if (browser.isIE) {
+	if (selectBoxes == null) {
     		selectBoxes = document.getElementsByTagName("select");
     	}
     	for (var i=0; i<selectBoxes.length; i++) {

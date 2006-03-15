@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerDirectAction.java,v $
- * Date   : $Date: 2005/12/14 10:36:37 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/15 10:19:55 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.list;
 
-import org.opencms.file.CmsObject;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsResourceUtil;
 import org.opencms.util.CmsStringUtil;
@@ -44,32 +43,27 @@ import java.io.File;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsListExplorerDirectAction extends CmsListDirectAction {
 
-    /** The current cms context. */
-    private final CmsObject m_cms;
-
     /** The current resource util object. */
     private CmsResourceUtil m_resourceUtil;
 
     /** The current workplace context. */
-    private final A_CmsListExplorerDialog m_wp;
+    private A_CmsListExplorerDialog m_wp;
 
     /**
      * Default Constructor.<p>
      * 
      * @param id the unique id
-     * @param cms the current cms context
      * @param wp the current workplace context
      */
-    public CmsListExplorerDirectAction(String id, CmsObject cms, A_CmsListExplorerDialog wp) {
+    public CmsListExplorerDirectAction(String id, A_CmsListExplorerDialog wp) {
 
         super(id);
-        m_cms = cms;
         m_wp = wp;
     }
 
@@ -95,23 +89,13 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
     }
 
     /**
-     * Returns the cms context.<p>
-     *
-     * @return the cms context
+     * Returns used the dialog.<p>
+     * 
+     * @return the used dialog
      */
-    public CmsObject getCms() {
+    public A_CmsListExplorerDialog getWp() {
 
-        return m_cms;
-    }
-
-    /**
-     * Returns the current result Util.<p>
-     *
-     * @return the current result Util
-     */
-    protected CmsResourceUtil getResourceUtil() {
-
-        return m_resourceUtil;
+        return m_wp;
     }
 
     /**
@@ -119,8 +103,18 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
      */
     public void setItem(CmsListItem item) {
 
-        m_resourceUtil = new CmsResourceUtil(m_cms, m_wp.getResource(item.getId()));
+        m_resourceUtil = m_wp.getResourceUtil(item);
         super.setItem(item);
+    }
+
+    /**
+     * Sets the workplace dialog.<p>
+     * 
+     * @param wp the workplace dialog
+     */
+    public void setWp(A_CmsListExplorerDialog wp) {
+
+        m_wp = wp;
     }
 
     /**
@@ -244,5 +238,15 @@ public class CmsListExplorerDirectAction extends CmsListDirectAction {
             html.append("</div>\n");
         }
         return html.toString();
+    }
+
+    /**
+     * Returns the current result Util.<p>
+     *
+     * @return the current result Util
+     */
+    protected CmsResourceUtil getResourceUtil() {
+
+        return m_resourceUtil;
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheckFilesDialog.java,v $
- * Date   : $Date: 2005/12/23 14:09:16 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.1.2 
  */
@@ -118,8 +118,7 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
         Iterator i = resourceNames.iterator();
         while (i.hasNext()) {
             CmsListItem item = (CmsListItem)i.next();
-            String id = item.getId();
-            CmsResource res = getResource(id);
+            CmsResource res = getResource(item);
             // check if errors are enabled
             StringBuffer html = new StringBuffer();
             // error detail is enabled
@@ -178,15 +177,6 @@ public class CmsContentCheckFilesDialog extends A_CmsListExplorerDialog {
         addMessages(org.opencms.workplace.tools.content.Messages.get().getBundleName());
         addMessages(Messages.get().getBundleName());
         super.initMessages();
-    }
-
-    /**
-     * @see org.opencms.workplace.list.A_CmsListDialog#setColumns(org.opencms.workplace.list.CmsListMetadata)
-     */
-    protected void setColumns(CmsListMetadata metadata) {
-
-        setColumnVisibilities();
-        addExplorerColumns(metadata);
     }
 
     /**

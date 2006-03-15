@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/14 12:25:33 $
- * Version: $Revision: 1.682.2.87 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.682.2.88 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -19,9 +19,16 @@ Legend:
 * Bug fixed
 - General comment
 
+OpenCms 6.1.11 - March ???, 2006
+* Fixed issue #1051: admin menu width is now adjusted during refresh
+* Fixed issue #1030: Detail issues fixed in the 'admin view' list
+* Detail issues fixed in the 'admin view' explorer list
+* Removed strict Javascript warnings in the admin view 
+
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
 * Added new error handling servlet to support containers that don't allow "error handling loops"
+* Fixed issue #1054: setup connection used to check existing db
 
 OpenCms 6.1.9 - March 13, 2006
 ! Added cms:img tag that automatically generates HTML for scaled images
@@ -30,6 +37,7 @@ OpenCms 6.1.9 - March 13, 2006
 * Fixed issue #1004: editor preview button is now working even if the edited file is expired
 * Fixed issue #1015: simultaneous creation of new XML content resources with frontend direct edit button is now possible
 * Fixed issue #1052: FCKeditor now shows new unpublished images in WYSIWYG view
+* Fixed issues #1033 & #1034: new image processing capability test added
 - Updated workplace DHTML calendar component to newest version 1.0
 ! Added frontend module containing the new resource type "layout pattern page" that allows content editors
   to easily create new web pages from from predefined paragraph layouts

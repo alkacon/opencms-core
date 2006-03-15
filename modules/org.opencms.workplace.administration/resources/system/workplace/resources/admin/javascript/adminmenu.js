@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.workplace.administration/resources/system/workplace/resources/admin/javascript/adminmenu.js,v $
- * Date   : $Date: 2005/06/23 13:46:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/15 10:19:56 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -30,31 +30,14 @@
  */
 
 /*
- * Explicitely sets the scroll bar if needed.
- */
-function setScrollInIE() {
-    try {
-        var navL = document.getElementById ('navArea');
-        document.body.scroll = (navL.clientHeight > document.documentElement.clientHeight || navL.clientWidth > document.documentElement.clientWidth) ? 'yes' : 'no';
-    } catch (e) {
-        return false;
-    }
-}
-
-/*
  * Opens a previously closed group in the menu.
  */
 function openGroup(group) {
-    if (document.getElementById) {
-        var element = document.getElementById (group);
-        if (element && element.className) {
-            element.className = (element.className == 'navOpened') ? 'navClosed' : 'navOpened';
-        }
-    }
-    if (navigator.appName == 'Microsoft Internet Explorer' && document.documentElement && navigator.userAgent.indexOf ('Opera') == -1) {
-        setScrollInIE();
-    }
-    return false;
+
+   var element = document.getElementById(group);
+   if (element && element.className) {
+     element.className = (element.className == 'navOpened') ? 'navClosed' : 'navOpened';
+   }
 }
 
 /*
@@ -65,16 +48,19 @@ function setActiveItem(id) {
         // if already active
         return false;
     }
-    // try to desactivate the previous active one
-    try {
-        var cur = document.getElementById(activeItem);
-        cur.className = 'node';
-    }
-    catch (e) { }
 
+    // try to desactivate the previous active one
+    var cur = document.getElementById(activeItem);
+    if (cur) {
+      cur.className = 'node';
+    }
     // sets the new active item
     activeItem = id;
-    document.getElementById(id).className='nodeActive';    
+    if (document.getElementById(id)) {
+      document.getElementById(id).className='nodeActive';    
+    }
+
+    return true;
 }
 
 /*
@@ -82,7 +68,9 @@ function setActiveItem(id) {
  */
 function openView(id, url, frame) {
     setActiveItem(id);
-    parent.frames[frame].location.href = url;
+    if (parent && parent.frames && parent.frames[frame]) {
+      parent.frames[frame].location.href = url;
+    }
     return false;
 }
 
@@ -110,7 +98,7 @@ function setInternalContextHelp(contextHelp) {
     var container = document.getElementById('contexthelp_text');
     // clear it
     while (container.firstChild) {
-          container.removeChild(container.firstChild);
+      container.removeChild(container.firstChild);
     }
     // set the new text
     container.insertBefore(document.createTextNode(contextHelp), null);
