@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2005/11/24 09:37:53 $
- * Version: $Revision: 1.20.2.6 $
+ * Date   : $Date: 2006/03/16 11:54:55 $
+ * Version: $Revision: 1.20.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20.2.6 $ 
+ * @version $Revision: 1.20.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -434,12 +434,16 @@ public class CmsListMetadata {
             I_CmsListAction detailAction = ((CmsListItemDetails)itDetails.next()).getAction();
             html.append("\t\t");
             html.append(detailAction.buttonHtml(wp));
+            if (itDetails.hasNext()) {
+                html.append("&nbsp;&nbsp;");
+            }
             html.append("\n");
         }
         Iterator itActions = m_indepActions.elementList().iterator();
         while (itActions.hasNext()) {
             I_CmsListAction indepAction = (I_CmsListAction)itActions.next();
             html.append("\t\t");
+            html.append("&nbsp;&nbsp;");
             html.append(indepAction.buttonHtml(wp));
             html.append("\n");
         }
@@ -618,7 +622,11 @@ public class CmsListMetadata {
         Iterator itActions = m_multiActions.elementList().iterator();
         while (itActions.hasNext()) {
             CmsListMultiAction multiAction = (CmsListMultiAction)itActions.next();
+            html.append("\t\t");
             html.append(multiAction.buttonHtml(wp));
+            if (itActions.hasNext()) {
+                html.append("&nbsp;&nbsp;");
+            }
             html.append("\n");
         }
         html.append("\t</div>\n");
@@ -645,6 +653,7 @@ public class CmsListMetadata {
         html.append(m_searchAction.buttonHtml(wp));
         I_CmsListAction showAllAction = m_searchAction.getShowAllAction();
         if (showAllAction != null) {
+            html.append("&nbsp;&nbsp;");
             html.append(showAllAction.buttonHtml(wp));
         }
         html.append("\t</div>\n");
