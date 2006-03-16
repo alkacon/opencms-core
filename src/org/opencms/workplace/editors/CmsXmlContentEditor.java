@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/02/10 13:33:31 $
- * Version: $Revision: 1.65.2.4 $
+ * Date   : $Date: 2006/03/16 09:32:02 $
+ * Version: $Revision: 1.65.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.4 $ 
+ * @version $Revision: 1.65.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -343,6 +343,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // save content of the editor only to the temporary file
             setEditorValues(getElementLocale());
             writeContent();
+            // remove eventual release & expiration date from temporary file to make preview work
+            getCms().setDateReleased(getParamTempfile(), CmsResource.DATE_RELEASED_DEFAULT, false);
+            getCms().setDateExpired(getParamTempfile(), CmsResource.DATE_EXPIRED_DEFAULT, false);
         } catch (CmsException e) {
             // show error page
             showErrorPage(this, e);
