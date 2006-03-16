@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlPage.java,v $
- * Date   : $Date: 2006/01/09 16:11:37 $
- * Version: $Revision: 1.22.2.4 $
+ * Date   : $Date: 2006/03/16 10:02:52 $
+ * Version: $Revision: 1.22.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.22.2.4 $ 
+ * @version $Revision: 1.22.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -206,7 +206,7 @@ public class CmsNewResourceXmlPage extends CmsNewResource {
             } catch (CmsException e) {
                 // folder not available, list will be empty
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(e);
+                    LOG.debug(e.getMessage(), e);
                 }
             }
             for (int j = 0; j < moduleTemplateFiles.size(); j++) {

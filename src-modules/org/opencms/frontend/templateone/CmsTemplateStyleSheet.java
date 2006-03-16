@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateStyleSheet.java,v $
- * Date   : $Date: 2005/10/19 10:00:35 $
- * Version: $Revision: 1.18.2.2 $
+ * Date   : $Date: 2006/03/16 10:02:52 $
+ * Version: $Revision: 1.18.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.18.2.2 $ 
+ * @version $Revision: 1.18.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -146,7 +146,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
         } catch (Exception e) {
             // log error in debug mode
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getMessage(), e);
             }
         }
         if (CmsStringUtil.isEmpty(value)) {
@@ -284,7 +284,7 @@ public class CmsTemplateStyleSheet extends CmsTemplateBase {
         } catch (Exception e) {
             // problem getting properties, log error
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getMessage(), e);
             }
         }
     }

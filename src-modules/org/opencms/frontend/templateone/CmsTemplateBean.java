@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2006/03/13 10:05:41 $
- * Version: $Revision: 1.40.2.4 $
+ * Date   : $Date: 2006/03/16 10:02:52 $
+ * Version: $Revision: 1.40.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.40.2.4 $ 
+ * @version $Revision: 1.40.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -384,7 +384,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
         } catch (Exception e) {
             // log error in debug mode
             if (LOG.isDebugEnabled()) {
-                LOG.debug(e);
+                LOG.debug(e.getMessage(), e);
             }
         }
         if (CmsStringUtil.isEmpty(value)) {
@@ -503,7 +503,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
                 } catch (Exception e) {
                     // log error in debug mode
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(e);
+                        LOG.debug(e.getMessage(), e);
                     }
                 }
                 if (i == 10) {

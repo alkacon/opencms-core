@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/03/15 10:19:56 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2006/03/16 10:02:52 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15.2.3 $ 
+ * @version $Revision: 1.15.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -234,7 +234,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
                 }
             } catch (CmsException e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(e);
+                    LOG.debug(e.getMessage(), e);
                 }
                 resources = new ArrayList();
             }

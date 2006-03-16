@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2006/03/03 14:45:31 $
- * Version: $Revision: 1.24.2.4 $
+ * Date   : $Date: 2006/03/16 10:02:52 $
+ * Version: $Revision: 1.24.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.24.2.4 $ 
+ * @version $Revision: 1.24.2.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -407,7 +407,7 @@ public class CmsScheduleManager implements Job {
                 m_scheduler.scheduleJob(jobDetail, trigger);
             } catch (Exception e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(e);
+                    LOG.debug(e.getMessage(), e);
                 }
                 if (idCreated) {
                     jobInfo.setId(null);
@@ -425,7 +425,7 @@ public class CmsScheduleManager implements Job {
                         m_jobs.add(oldJob);
                     } catch (SchedulerException e2) {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(e2);
+                            LOG.debug(e2.getMessage(), e2);
                         }
                         // unable to re-schedule original job - not much we can do about this...
                         message = Messages.get().container(
