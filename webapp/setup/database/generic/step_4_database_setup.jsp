@@ -10,7 +10,7 @@
     boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.GENERIC_PROVIDER);
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -47,7 +47,7 @@ OpenCms Setup Wizard
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
 <% if (Bean.isInitialized()) { %>
-OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
+Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <form method="POST" onSubmit="return checkSubmit()" class="nomargin">
 
@@ -164,7 +164,7 @@ This user information is not stored after the setup is finished.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "2") %>
-The <b>OpenCms Connection</b> is used when running OpenCms after the installation.<br>&nbsp;<br>
+The <b>OpenCms Connection</b> is used when running Alkacon OpenCms after the installation.<br>&nbsp;<br>
 For security reasons, the specified user should <i>not</i> have database administration permissions.
 This user information is stored in the <code>opencms.properties</code> file after the setup.
 <%= Bean.getHtmlPart("C_HELP_END") %>
@@ -178,13 +178,13 @@ Enter the JDBC <b>Connection String</b> to your database.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "5") %>
-The setup wizard <b>creates</b> the database and the tables for OpenCms.<br>&nbsp;<br>
+The setup wizard <b>creates</b> the database and the tables for Alkacon OpenCms.<br>&nbsp;<br>
 <b>Attention</b>: Existing databases will be overwritten!<br>&nbsp;<br>
 Uncheck this option if an already existing database should be used.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <% } else { %>
-OpenCms Setup Wizard - Database setup
+Alkacon OpenCms Setup Wizard - Database setup
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% request.setAttribute("pathPrefix", "../../"); %>

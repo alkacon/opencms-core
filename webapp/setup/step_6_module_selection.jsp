@@ -15,7 +15,7 @@
 	
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -150,7 +150,7 @@ function getAvailableModules() {
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Module selection
+Alkacon OpenCms Setup Wizard - Module selection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>

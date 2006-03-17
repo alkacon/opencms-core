@@ -30,12 +30,12 @@
 	}
 
 %><%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Validate database connection
+Alkacon OpenCms Setup Wizard - Validate database connection
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
@@ -51,7 +51,7 @@ OpenCms Setup Wizard - Validate database connection
 								<td><img src="resources/error.png" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
 								<td>It was not possible to create a database connection with the given parameters.<br>
-									Please check the Exception below, and be aware that OpenCms recommends to use the
+									Please check the Exception below, and be aware that Alkacon recommends to use the
 									following JDBC drivers for <%=Bean.getDatabaseName(Bean.getDatabase())%>:<br>
 									<code><%=Bean.getDatabaseLibs(Bean.getDatabase()).toString()%></code><p>
 									<b>Check that the Jdbc drivers are included in your class path.</b>
@@ -81,7 +81,7 @@ OpenCms Setup Wizard - Validate database connection
 								<tr>
 									<td><img src="resources/warning.png" border="0"></td>
 									<td>&nbsp;&nbsp;</td>
-									<td>Be aware that OpenCms recommends to use the
+									<td>Be aware that Alkacon recommends to use the
 										following JDBC drivers for <%=Bean.getDatabaseName(Bean.getDatabase())%>:<br>
 										<code><%=Bean.getDatabaseLibs(Bean.getDatabase()).toString()%></code><p>
 										<b>But these drivers are not located in folder <code><%=Bean.getLibFolder()%></code></b><p>

@@ -29,7 +29,7 @@
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Component tests
+Alkacon OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -45,7 +45,7 @@ function toggleContinueButton() {
 //-->
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Component tests
+Alkacon OpenCms Setup Wizard - Component tests
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin" name="components">
@@ -55,7 +55,7 @@ OpenCms Setup Wizard - Component tests
 <%  
 	if (isSubmitted) {
 		if (hasSystemInfo && !hasUserAccepted) {
-			out.print("<b>To continue the OpenCms setup you have to recognize that your system may not work with OpenCms!");
+			out.print("<b>To continue the Alkacon OpenCms setup you have to recognize that your system may not work with OpenCms!");
 		}
 	} else { 	
 %>	
@@ -119,13 +119,13 @@ OpenCms Setup Wizard - Component tests
 			<td colspan="2" valign="middle">
 			<%
 				if (setupTests.isRed()) {
-					out.println("<p>Your system does not have the necessary components to use OpenCms. It is assumed that OpenCms will not run on your system.</p>");
+					out.println("<p>Your system does not have the necessary components to use Alkacon OpenCms. It is assumed that OpenCms will not run on your system.</p>");
 					out.println(violatedConditions);
 				} else if (setupTests.isYellow()) {
-					out.print("Your system uses components which have not been tested to work with OpenCms. It is possible that OpenCms will not run on your system.");
+					out.print("Your system uses components which have not been tested to work with Alkacon OpenCms. It is possible that OpenCms will not run on your system.");
 					out.println(questionableConditions);
 				} else {
-					out.print("<b>Your system uses components which have been tested to work properly with OpenCms.</b>");
+					out.print("<b>Your system uses components which have been tested to work properly with Alkacon OpenCms.</b>");
 				}
 			%></td>
 			</tr>
@@ -139,7 +139,7 @@ OpenCms Setup Wizard - Component tests
 				<tr><td>
 				<table border="0"><tr>
 					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true" onClick="toggleContinueButton()"> </td>
-					<td style="padding-top: 5px;">I have noticed that my system may not have the necessary components to use OpenCms. Continue anyway.</td>
+					<td style="padding-top: 5px;">I have noticed that my system may not have the necessary components to use Alkacon OpenCms. Continue anyway.</td>
 				</tr></table>
 				</td></tr>
 			<% } %>

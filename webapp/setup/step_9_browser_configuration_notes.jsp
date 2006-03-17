@@ -9,7 +9,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -19,7 +19,7 @@ OpenCms Setup Wizard
 	}
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Browser configuration
+Alkacon OpenCms Setup Wizard - Browser configuration
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if(Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">

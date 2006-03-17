@@ -11,7 +11,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Import modules
+Alkacon OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 
 <% if (importWp) { %>
@@ -25,7 +25,7 @@ OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Import modules
+Alkacon OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized()) { %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
@@ -40,7 +40,7 @@ OpenCms Setup Wizard - Import modules
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">
 					You have not imported the modules.<br>
-					OpenCms will not work without the virtual file system!
+					Alkacon OpenCms will not work without the virtual file system!
 				</td>
 			</tr>
 		</table>

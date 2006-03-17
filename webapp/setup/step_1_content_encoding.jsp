@@ -22,12 +22,12 @@ if (Bean.isInitialized()) {
 %><%--
 
 --%><%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Wrong content encoding!
+Alkacon OpenCms Setup Wizard - Wrong content encoding!
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized()) { %>
 <table border="0" cellpadding="0" cellspacing="0" style="height: 100%;">

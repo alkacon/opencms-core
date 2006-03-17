@@ -65,12 +65,12 @@
 	}
 
 %><%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Create database &amp; tables
+Alkacon OpenCms Setup Wizard - Create database &amp; tables
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin">
@@ -86,7 +86,7 @@ OpenCms Setup Wizard - Create database &amp; tables
 							<tr>
 								<td><img src="resources/warning.png" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
-								<td>You have not created the OpenCms database.<br>
+								<td>You have not created the Alkacon OpenCms database.<br>
 									You cannot import the modules successfully without the database and tables!
 								</td>
 							</tr>

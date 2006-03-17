@@ -16,7 +16,7 @@ if (pathPrefix == null) {
 				<td><img src="<%= pathPrefix %>resources/error.png" border="0"></td>
 				<td>&nbsp;&nbsp;</td>
 				<td style="width: 100%;">
-					The OpenCms setup wizard has not been started correctly!<br>
+					The Alkacon OpenCms setup wizard has not been started correctly!<br>
 					Please click <a href="<%= pathPrefix %>index.jsp">here</a> to restart the wizard.
 				</td>
 			</tr>

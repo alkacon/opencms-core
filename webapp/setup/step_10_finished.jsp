@@ -9,7 +9,7 @@
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -23,7 +23,7 @@ openWin();
 <% } %>
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Finished
+Alkacon OpenCms Setup Wizard - Finished
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized()) { %>
 
@@ -31,7 +31,7 @@ OpenCms Setup Wizard - Finished
 <tr>
 	<td style="vertical-align: bottom;">
 	
-		<%= Bean.getHtmlPart("C_BLOCK_START", "OpenCms setup finished") %>
+		<%= Bean.getHtmlPart("C_BLOCK_START", "Alkacon OpenCms setup finished") %>
 		<table border="0" cellpadding="0" cellspacing="0" style="width: 100%;">
 			<tr>
 				<td><img src="resources/ok.png" border="0"></td>
@@ -57,7 +57,7 @@ OpenCms Setup Wizard - Finished
 					This setup wizard has now been locked.<br>
 					To use the wizard again reset the flag in the "opencms.properties".
 					For security reasons, you should remove the "/setup" folder later when
-					you have your OpenCms installation running.
+					you have your Alkacon OpenCms installation running.
 				</td>
 			</tr>
 		</table>

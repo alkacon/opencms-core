@@ -14,7 +14,7 @@
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard
+Alkacon OpenCms Setup Wizard
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
@@ -38,7 +38,7 @@ OpenCms Setup Wizard
 	}
 </script>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Settings
+Alkacon OpenCms Setup Wizard - Settings
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 <% if (Bean.isInitialized())	{ %>
 <form action="<%= nextPage %>" method="post" class="nomargin" onsubmit="return checkSubmit();">
@@ -58,14 +58,14 @@ OpenCms Setup Wizard - Settings
 		<td><%= Bean.getHtmlHelpIcon("1", "") %></td>
 	</tr>
 		<tr>
-		<td>Enter the URL of your OpenCms site</td>		
+		<td>Enter the URL of your Alkacon OpenCms site</td>		
 		<td>
 			<input type="text" name="workplaceSite" value="<%= serverUrl %>" style="width: 150px;">
 		</td>
 		<td><%= Bean.getHtmlHelpIcon("3", "") %></td>
 	</tr>
 	<tr>
-		<td>Enter a name for your OpenCms server</td>		
+		<td>Enter a name for your Alkacon OpenCms server</td>		
 		<td>
 			<input type="text" name="serverName" value="<%= Bean.getServerName() %>" style="width: 150px;">
 		</td>
@@ -87,7 +87,7 @@ OpenCms Setup Wizard - Settings
 
 <%= Bean.getHtmlPart("C_HELP_START", "1") %>
 <b>Why the ethernet address is needed:</b><br>&nbsp;<br>
-OpenCms generates unique keys for all resources based on a 
+Alkacon OpenCms generates unique keys for all resources based on a 
 128-bit UUID (Universally Unique IDentifier, aka GUID in the Windows world) algorithm.
 To initialize this algorithm, the ethernet address of the server is required.
 However, Java has no way of accessing this information from the server hardware 
@@ -106,7 +106,7 @@ This can be handy if you have to compare logfiles from a couple of different ser
 
 <%= Bean.getHtmlPart("C_HELP_START", "3") %>
 <b>The OpenCms site URL:</b><br>&nbsp;<br>
-OpenCms is capable of managing multiple sites.
+Alkacon OpenCms is capable of managing multiple sites.
 However, the OpenCms Workplace must always be accessed through one specific URL.<br>&nbsp;<br>
 The site URL you enter here will be used <i>both</i> as URL to access the Workplace,
 and as URL for the default site. In case you want to add other sites, or if you want to use different URLs

@@ -9,7 +9,7 @@
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
-OpenCms Setup Wizard - Import modules
+Alkacon OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 	<script type="text/javascript">
 
@@ -82,7 +82,7 @@ OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_STYLES") %>
 <%= Bean.getHtmlPart("C_STYLES_SETUP") %>
 <%= Bean.getHtmlPart("C_HEAD_END") %>
-OpenCms Setup Wizard - Import modules
+Alkacon OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_CONTENT_SETUP_START") %>
 
 <% if (Bean.isInitialized()) { %>
