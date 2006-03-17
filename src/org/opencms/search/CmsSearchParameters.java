@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2006/03/17 16:47:43 $
- * Version: $Revision: 1.5.2.5 $
+ * Date   : $Date: 2006/03/17 16:48:24 $
+ * Version: $Revision: 1.5.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.search;
 
-import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
@@ -56,11 +55,11 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.5.2.5 $
+ * @version $Revision: 1.5.2.6 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.5 $ 
+ * @version $Revision: 1.5.2.6 $ 
  * 
  * @since 6.0.0 
  */
