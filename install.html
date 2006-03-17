@@ -16,7 +16,7 @@ system, see the documentation that comes with them. You must
 install the Java <i>SDK</i>, not the <i>JRE</i> (Java Runtime
 Environment) that is also available from SUN. The JRE is <i>not</i>
 sufficient to run OpenCms!</p>
-<p><EM><b>Important</b>:</EM>  This OpenCms 6 was tested with Java
+<p><EM><b>Important</b>:</EM> OpenCms 6 was tested with Java
 1.4 and 1.5 only. Some features regarding file encoding where used
 that are not available with Java releases before 1.4.</p>
   <P><STRONG><EM>Please note: </EM></STRONG>FreeBSD users may need to setup new 
@@ -27,12 +27,12 @@ that are not available with Java releases before 1.4.</p>
 </blockquote>
 <p><strong>2. Install Tomcat</strong></p>
 <blockquote dir="ltr">
-<p>OpenCms 6.0 requires a Servlet 2.3 / JSP 1.2 standards compliant
+<p>OpenCms 6 requires a Servlet 2.3 / JSP 1.2 standards compliant
 container. Tomcat 4 is the reference implementation of this
 Standard. This release was tested with Tomcat 4.1.x, Tomcat 5.0.x
 and Tomcat 5.5.x. Older versions of Tomcat (3.x and earlier) do not
 support this newer standard and are thus not usable for OpenCms
-6.0. Tomcat 4.0.x was not tested, but may work.<br>
+6. Tomcat 4.0.x was not tested, but may work.<br>
 </p>
 <p>Install Tomcat from <code><a target="extern" href="http://jakarta.apache.org/tomcat/index.html">http://jakarta.apache.org/tomcat/index.html</a></code>
 into a folder of your choice. This is the
@@ -66,8 +66,8 @@ required with OpenCms 6.</p>
 ). On Windows-based systems MySQL has to be installed on the
 <code>C:\</code> drive and should be registered as service using
 <code>%MYSQL_HOME%/bin/mysqld -install</code>.</p>
-<p>OpenCms can be used with MySQL 3.2, 4.0 and 4.1. For performance
-reasons we recommend MySQL 4.1, or at last 4.0.</p>
+<p>OpenCms can be used with MySQL 3.2, 4.0, 4.1 and 5.0. For performance
+reasons we recommend MySQL 5.0 or 4.1, at least 4.0.</p>
 <p>Start the MySQL server by running the service (WIN32) or
 executing <code>%MYSQL_HOME%/bin/mysqld</code> (UNIX).</p>
 <p>Check that MySQL is running before you continue by starting the
@@ -105,8 +105,8 @@ warning and not allow you to continue if you did not unpack the
 <p><strong>5. Install OpenCms using the Setup-Wizard</strong></p>
 <blockquote dir="ltr">
 <p>Start the Setup-Wizard by pointing your webbrowser to <code><a
- href="http://www.default.opencmstest.com/setup" 
- >http://localhost:8080/opencms/setup</a></code>.
+ href="#" 
+ >http://localhost:8080/opencms/setup/</a></code>.
 Depending on your configuration, you have to replace
 <code>localhost</code> with your servername. The port 8080 is only
 used if you start Tomcat in standalone mode.</p>
@@ -125,7 +125,7 @@ Workplace.</p>
 <p>Now your system is ready to use. You can login with username:
 <code>Admin</code> and password: <code>admin</code>. Please change
 this password as soon as possible. The login URL of OpenCms in a
-default configuration is: <code><A href="/system/login/">http://localhost:8080/opencms/opencms/system/login/</A></code></p>
+default configuration is: <code><A href="#">http://localhost:8080/opencms/opencms/system/login/</A></code></p>
 </blockquote>
 <p><strong>7. Security issues</strong></p>
 <blockquote dir="ltr">
