@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/01/12 16:59:57 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/17 16:47:43 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.1.2.3 $
+ * @version $Revision: 1.1.2.4 $
  * 
  * @since 6.0.0
  */
@@ -513,9 +513,6 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
         result.append("  function validateQuery() {\n");
         result.append("    var searchform = document.forms['EDITOR'];\n");
         result.append("    var query = searchform.elements['query.0'].value;\n");
-        //        result.append("    alert('query: '+query);\n");
-        result.append("    query = encodeURI(query);\n");
-        //        result.append("    alert('encoded query: '+query);\n");
         result.append("    searchform.elements['query.0'].value = query;\n");
         result.append("    return true;\n");
         result.append("  }\n");

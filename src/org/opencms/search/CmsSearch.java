@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2006/01/18 14:57:02 $
- * Version: $Revision: 1.39.2.6 $
+ * Date   : $Date: 2006/03/17 16:47:43 $
+ * Version: $Revision: 1.39.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.6 $ 
+ * @version $Revision: 1.39.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,9 +351,8 @@ public class CmsSearch implements Cloneable {
         // if (m_searchParameters == null) {
         StringBuffer params = new StringBuffer(128);
         params.append("?action=search&query=");
-        String query = CmsStringUtil.substitute(m_parameters.getQuery(), "+", "%2B");
-        query = CmsStringUtil.substitute(query, "-", "%2D");
-        params.append(CmsEncoder.encode(query, OpenCms.getSystemInfo().getDefaultEncoding()));
+        params.append(CmsEncoder.encode(m_parameters.getQuery()));
+
         params.append("&matchesPerPage=");
         params.append(getMatchesPerPage());
         params.append("&displayPages=");
@@ -692,11 +691,6 @@ public class CmsSearch implements Cloneable {
      */
     public void setQuery(String query) {
 
-        // do not replace %
-        query = CmsStringUtil.substitute(query, "%", "%25");
-        // do not replace +/-
-        query = CmsStringUtil.substitute(query, "+", "%2B");
-        query = CmsStringUtil.substitute(query, "-", "%2D");
         try {
             m_parameters.setQuery(query);
         } catch (CmsIllegalArgumentException iae) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2005/12/21 11:55:01 $
- * Version: $Revision: 1.5.2.4 $
+ * Date   : $Date: 2006/03/17 16:47:43 $
+ * Version: $Revision: 1.5.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,11 +56,11 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.5.2.4 $
+ * @version $Revision: 1.5.2.5 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.4 $ 
+ * @version $Revision: 1.5.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -573,7 +573,7 @@ public class CmsSearchParameters {
      */
     public void setQuery(String query) {
 
-        query = CmsEncoder.decode(query);
+        // query = CmsEncoder.decode(query);
 
         // for widget use the exception is thrown here to enforce the errmsg next to widget
         if (query.trim().length() < getQueryLength()) {
