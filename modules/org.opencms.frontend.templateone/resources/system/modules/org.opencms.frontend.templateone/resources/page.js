@@ -6,8 +6,6 @@ function parseSearchQuery(theForm, message) {
 		alert(message);
 		return (false);
 	}
-	queryValue = queryValue.replace(/\+/g, "%2b");
-	queryValue = queryValue.replace(/\-/g, "%2d");
 	theForm.elements["query"].value = queryValue;
 	return (true);
 }

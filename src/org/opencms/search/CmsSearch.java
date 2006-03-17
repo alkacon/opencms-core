@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2005/08/02 08:17:07 $
- * Version: $Revision: 1.39 $
+ * Date   : $Date: 2006/03/17 15:26:40 $
+ * Version: $Revision: 1.40 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.lucene.search.SortField;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39 $ 
+ * @version $Revision: 1.40 $ 
  * 
  * @since 6.0.0 
  */
@@ -391,7 +391,7 @@ public class CmsSearch implements Cloneable {
 
         return m_queryLength;
     }
-
+    
     /**
      * Creates a String with the necessary search parameters for page links.<p>
      * 
@@ -399,12 +399,10 @@ public class CmsSearch implements Cloneable {
      */
     public String getSearchParameters() {
 
-        // if (m_searchParameters == null) {
         StringBuffer params = new StringBuffer(128);
         params.append("?action=search&query=");
-        String query = CmsStringUtil.substitute(m_query, "+", "%2B");
-        query = CmsStringUtil.substitute(query, "-", "%2D");
-        params.append(CmsEncoder.encode(query, OpenCms.getSystemInfo().getDefaultEncoding()));
+        params.append(CmsEncoder.encode(m_query));
+        
         params.append("&matchesPerPage=");
         params.append(this.getMatchesPerPage());
         params.append("&displayPages=");
@@ -740,13 +738,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setQuery(String query) {
 
-        // do not replace % 
-        query = CmsStringUtil.substitute(query, "%", "%25");
-        // do not replace +/- 
-        query = CmsStringUtil.substitute(query, "+", "%2B");
-        query = CmsStringUtil.substitute(query, "-", "%2D");
-
-        m_query = CmsEncoder.decode(query, OpenCms.getSystemInfo().getDefaultEncoding());
+        m_query = query;
         resetLastResult();
     }
 
