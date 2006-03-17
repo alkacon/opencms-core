@@ -500,19 +500,6 @@ It will also remove the "default" template.</p>
 			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
-			<properties/>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/modules/org.opencms.welcome/resources/logo_opencms_large.gif</source>
-			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_large.gif</destination>
-			<type>image</type>
-			<uuidresource>16d4f765-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
 			<properties>
 				<property>
 					<name>export</name>
@@ -522,16 +509,20 @@ It will also remove the "default" template.</p>
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/modules/org.opencms.welcome/resources/logo_opencms_power.gif</source>
-			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_power.gif</destination>
+			<source>system/modules/org.opencms.welcome/resources/logo_opencms_large.png</source>
+			<destination>system/modules/org.opencms.welcome/resources/logo_opencms_large.png</destination>
 			<type>image</type>
-			<uuidresource>16dc235b-c102-11d7-a1e4-9b02dffa6399</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<uuidresource>bce5e6c4-b026-11da-8587-d7e64aecbbea</uuidresource>
+			<datelastmodified>Fri, 10 Mar 2006 11:12:25 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Fri, 10 Mar 2006 11:12:18 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
+				<property type="shared">
+					<name>image.size</name>
+					<value><![CDATA[w:250,h:63]]></value>
+				</property>
 				<property>
 					<name>export</name>
 					<value><![CDATA[true]]></value>

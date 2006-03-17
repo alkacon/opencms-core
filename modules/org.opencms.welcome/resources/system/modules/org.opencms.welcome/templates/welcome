@@ -24,7 +24,7 @@
 
 </head>
 <body>
-<img src="<cms:link>../resources/logo_opencms_large.gif</cms:link>" alt="OpenCms Logo" width="250" height="68" border="0" align="right">
+<img src="<cms:link>../resources/logo_opencms_large.png</cms:link>" alt="OpenCms Logo" title="OpenCms Logo" width="250" height="63" border="0" align="right">
 
 <!-- Navigation starts here -->
 <cms:include file="../elements/welcome_nav.jsp" />
