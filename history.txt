@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/17 08:40:37 $
- * Version: $Revision: 1.682.2.89 $
+ * Date   : $Date: 2006/03/17 10:19:32 $
+ * Version: $Revision: 1.682.2.90 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -25,6 +25,7 @@ OpenCms 6.1.11 - March ???, 2006
 * Detail issues fixed in the 'admin view' explorer list
 * Removed strict Javascript warnings in the admin view 
 * Fixed issues with PostgreSQL driver thanks to Ivan Codarin
+- Introducing the new OpenCms logo
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
