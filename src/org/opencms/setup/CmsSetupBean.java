@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.44.2.8 $
+ * Date   : $Date: 2006/03/17 15:24:26 $
+ * Version: $Revision: 1.44.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.8 $ 
+ * @version $Revision: 1.44.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -212,6 +212,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /** A map with tokens ${...} to be replaced in SQL scripts. */
     private Map m_replacer;
 
+    /** The initial servlet configuration. */
+    private ServletConfig m_servletConfig;
+
     /** The servlet mapping (in web.xml). */
     private String m_servletMapping;
 
@@ -224,56 +227,12 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /** Xml read/write helper object. */
     private CmsSetupXmlHelper m_xmlHelper;
 
-    /** The initial servlet configuration. */
-    private ServletConfig m_servletConfig;
-
     /** 
      * Default constructor.<p>
      */
     public CmsSetupBean() {
 
         initHtmlParts();
-    }
-
-    /**
-     * Sets the given value in the given xpath of the given xml file.<p>
-     * 
-     * for more xpath info see: 
-     * http://www.zvon.org/xxl/XPathTutorial/General/examples.html
-     * 
-     *  
-     * @param xmlFilename the xml config file name (could be relative to WEB-INF/config/)
-     * @param xPath the xpath to set (should select a single node or attribute)
-     * @param value the value to set
-     * 
-     * @throws CmsXmlException if something goes wrong
-     */
-    public void setXmlValue(String xmlFilename, String xPath, String value) throws CmsXmlException {
-
-        if (m_xmlHelper == null) {
-            // lazzy initialization
-            m_xmlHelper = new CmsSetupXmlHelper(getConfigRfsPath());
-        }
-        m_xmlHelper.setValue(xmlFilename, xPath, value);
-    }
-
-    /**
-     * Returns the value in the given xpath of the given xml file.<p>
-     * 
-     * @param xmlFilename the xml config file (could be relative to WEB-INF/config/)
-     * @param xPath the xpath to read (should select a single node or attribute)
-     * 
-     * @return the value in the given xpath of the given xml file
-     * 
-     * @throws CmsXmlException if something goes wrong 
-     */
-    public String getXmlValue(String xmlFilename, String xPath) throws CmsXmlException {
-
-        if (m_xmlHelper == null) {
-            // lazzy initialization
-            m_xmlHelper = new CmsSetupXmlHelper(getConfigRfsPath());
-        }
-        return m_xmlHelper.getValue(xmlFilename, xPath);
     }
 
     /**
@@ -620,7 +579,11 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public String getDbWorkUser() {
 
-        return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".user");
+        String user = getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".user");
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(user)) {
+            return getDbCreateUser();
+        }
+        return user;
     }
 
     /** 
@@ -834,6 +797,16 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     }
 
     /**
+     * Returns the initial servlet configuration.<p>
+     * 
+     * @return the initial servlet configuration
+     */
+    public ServletConfig getServletConfig() {
+
+        return m_servletConfig;
+    }
+
+    /**
      * Returns the OpenCms servlet mapping, configured in <code>web.xml</code>.<p>
      * 
      * By default this is <code>"/opencms/*"</code>.<p>
@@ -918,6 +891,25 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     public String getWorkplaceSite() {
 
         return getExtProperty("site.workplace");
+    }
+
+    /**
+     * Returns the value in the given xpath of the given xml file.<p>
+     * 
+     * @param xmlFilename the xml config file (could be relative to WEB-INF/config/)
+     * @param xPath the xpath to read (should select a single node or attribute)
+     * 
+     * @return the value in the given xpath of the given xml file
+     * 
+     * @throws CmsXmlException if something goes wrong 
+     */
+    public String getXmlValue(String xmlFilename, String xPath) throws CmsXmlException {
+
+        if (m_xmlHelper == null) {
+            // lazzy initialization
+            m_xmlHelper = new CmsSetupXmlHelper(getConfigRfsPath());
+        }
+        return m_xmlHelper.getValue(xmlFilename, xPath);
     }
 
     /**
@@ -1687,6 +1679,28 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     }
 
     /**
+     * Sets the given value in the given xpath of the given xml file.<p>
+     * 
+     * for more xpath info see: 
+     * http://www.zvon.org/xxl/XPathTutorial/General/examples.html
+     * 
+     *  
+     * @param xmlFilename the xml config file name (could be relative to WEB-INF/config/)
+     * @param xPath the xpath to set (should select a single node or attribute)
+     * @param value the value to set
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public void setXmlValue(String xmlFilename, String xPath, String value) throws CmsXmlException {
+
+        if (m_xmlHelper == null) {
+            // lazzy initialization
+            m_xmlHelper = new CmsSetupXmlHelper(getConfigRfsPath());
+        }
+        m_xmlHelper.setValue(xmlFilename, xPath, value);
+    }
+
+    /**
      * @see org.opencms.main.I_CmsShellCommands#shellExit()
      */
     public void shellExit() {
@@ -2008,15 +2022,5 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
             m_webAppRfsPath += File.separator;
         }
         m_configRfsPath = m_webAppRfsPath + FOLDER_WEBINF + FOLDER_CONFIG;
-    }
-
-    /**
-     * Returns the initial servlet configuration.<p>
-     * 
-     * @return the initial servlet configuration
-     */
-    public ServletConfig getServletConfig() {
-
-        return m_servletConfig;
     }
 }
