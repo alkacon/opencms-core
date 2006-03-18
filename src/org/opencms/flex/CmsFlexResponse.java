@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2005/11/01 23:33:56 $
- * Version: $Revision: 1.40.2.3 $
+ * Date   : $Date: 2006/03/18 08:40:32 $
+ * Version: $Revision: 1.40.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40.2.3 $ 
+ * @version $Revision: 1.40.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -611,7 +611,11 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                         location));
                 }
             }
-            m_controller.getTopResponse().sendRedirect(location);
+            // use top response for redirect
+            HttpServletResponse topRes = m_controller.getTopResponse();
+            // add all headers found to make sure cookies can be set before redirect
+            processHeaders(getHeaders(), topRes);
+            topRes.sendRedirect(location);
         }
 
         m_controller.suspendFlexResponse();
@@ -767,44 +771,44 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     CmsFlexCacheEntry processCacheEntry() throws IOException {
 
         if (isSuspended() && (m_bufferRedirect == null)) {
-            // An included element redirected this response, no cache entry must be produced
+            // an included element redirected this response, no cache entry must be produced
             return null;
         }
         if (m_cachingRequired) {
-            // Cache entry must only be calculated if it's actually needed (always true if we write only to buffer)
+            // cache entry must only be calculated if it's actually needed (always true if we write only to buffer)
             m_cachedEntry = new CmsFlexCacheEntry();
             if (m_bufferRedirect != null) {
-                // Only set et cached redirect target
+                // only set et cached redirect target
                 m_cachedEntry.setRedirect(m_bufferRedirect);
             } else {
-                // Add cached headers
+                // add cached headers
                 m_cachedEntry.addHeaders(m_bufferHeaders);
-                // Add cached output 
+                // add cached output 
                 if (m_includeList != null) {
-                    // Probably JSP: We must analyze out stream for includes calls
-                    // Also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
+                    // probably JSP: we must analyze out stream for includes calls
+                    // also, m_writeOnlyToBuffer must be "true" or m_includeList can not be != null
                     processIncludeList();
                 } else {
-                    // Output is delivered directly, no include call parsing required
+                    // output is delivered directly, no include call parsing required
                     m_cachedEntry.add(getWriterBytes());
                 }
             }
             // update the "last modified" date for the cache entry
             m_cachedEntry.complete();
         }
-        // In case the output was only bufferd we have to re-write it to the "right" stream       
+        // in case the output was only bufferd we have to re-write it to the "right" stream       
         if (m_writeOnlyToBuffer) {
 
-            // Since we are processing a cache entry caching is not required
+            // since we are processing a cache entry caching is not required
             m_cachingRequired = false;
 
             if (m_bufferRedirect != null) {
-                // Send buffered redirect, will trigger redirect of top response
+                // send buffered redirect, will trigger redirect of top response
                 sendRedirect(m_bufferRedirect);
             } else {
-                // Process the output               
+                // process the output               
                 if (m_parentWritesOnlyToBuffer) {
-                    // Write results back to own stream, headers are already in buffer
+                    // write results back to own stream, headers are already in buffer
                     if (m_out != null) {
                         try {
                             m_out.clear();
@@ -822,7 +826,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                     }
                     writeCachedResultToStream(this);
                 } else {
-                    // We can use the parent stream
+                    // we can use the parent stream
                     processHeaders(m_headers, m_res);
                     writeCachedResultToStream(m_res);
                 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/17 10:19:32 $
- * Version: $Revision: 1.682.2.90 $
+ * Date   : $Date: 2006/03/18 08:40:32 $
+ * Version: $Revision: 1.682.2.91 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -26,6 +26,8 @@ OpenCms 6.1.11 - March ???, 2006
 * Removed strict Javascript warnings in the admin view 
 * Fixed issues with PostgreSQL driver thanks to Ivan Codarin
 - Introducing the new OpenCms logo
+* Fixed issue #999: addCookie() and sendRedirect() can now be used on a JSP page
+* Fixed issue #990: it's now possible to set the status code in a JSP using the CmsJspBean
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load

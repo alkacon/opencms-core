@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/17 15:24:26 $
- * Version: $Revision: 1.44.2.9 $
+ * Date   : $Date: 2006/03/18 08:40:32 $
+ * Version: $Revision: 1.44.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.9 $ 
+ * @version $Revision: 1.44.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -532,13 +532,12 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public String getDbProperty(String key) {
 
-        Object value = null;
-
         // extract the database key out of the entire key
         String databaseKey = key.substring(0, key.indexOf('.'));
         Map databaseProperties = (Map)getDatabaseProperties().get(databaseKey);
 
-        return ((value = databaseProperties.get(key)) != null) ? (String)value : "";
+        Object value = databaseProperties.get(key);
+        return (value != null) ? (String)value : "";
     }
 
     /** 
@@ -1306,11 +1305,11 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
         if (isInitialized()) {
             out.print("send();");
             if (threadFinished && allWritten) {
-                out.println("setTimeout('top.display.finish()', 500);");
+                out.println("setTimeout('top.display.finish()', 1000);");
             } else {
                 int timeout = 5000;
                 if (getWorkplaceImportThread().getLoggingThread().getMessages().size() < 20) {
-                    timeout = 1000;
+                    timeout = 2000;
                 }
                 out.println("setTimeout('location.reload()', " + timeout + ");");
             }
@@ -1783,9 +1782,8 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     protected String getExtProperty(String key) {
 
-        Object value = null;
-
-        return ((value = m_extProperties.get(key)) != null) ? value.toString() : "";
+        Object value = m_extProperties.get(key);
+        return (value != null) ? value.toString() : "";
     }
 
     /**
