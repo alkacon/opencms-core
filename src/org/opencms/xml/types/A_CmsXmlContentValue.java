@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/10/08 08:30:32 $
- * Version: $Revision: 1.32.2.2 $
+ * Date   : $Date: 2006/03/19 21:54:32 $
+ * Version: $Revision: 1.32.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.xml.CmsXmlContentDefinition;
 import org.opencms.xml.CmsXmlUtils;
 import org.opencms.xml.I_CmsXmlDocument;
 
+import java.util.List;
 import java.util.Locale;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.2.2 $ 
+ * @version $Revision: 1.32.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -314,6 +315,14 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#getMaxIndex()
+     */
+    public int getMaxIndex() {
+
+        return m_element.getParent().elements(m_element.getQName()).size();
+    }
+
+    /**
      * Returns the maximum occurences of this type.<p>
      *
      * @return the maximum occurences of this type
@@ -391,6 +400,33 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#moveDown()
+     */
+    public void moveDown() {
+
+        int index = getIndex();
+        if (index > 0) {
+            // only move down if this element is not already at the first index position
+            moveValue(false);
+            getDocument().initDocument();
+        }
+    }
+
+    /**
+     * @see org.opencms.xml.types.I_CmsXmlContentValue#moveUp()
+     */
+    public void moveUp() {
+
+        int index = getIndex();
+        int maxIndex = getMaxIndex();
+        if (index < (maxIndex - 1)) {
+            // only move up if this element is not already at the last index position
+            moveValue(true);
+            getDocument().initDocument();
+        }
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#setContentDefinition(org.opencms.xml.CmsXmlContentDefinition)
      */
     public void setContentDefinition(CmsXmlContentDefinition contentDefinition) {
@@ -417,11 +453,54 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
     }
 
     /**
+     * @see java.lang.Object#toString()
+     */
+    public String toString() {
+
+        StringBuffer result = new StringBuffer(128);
+        result.append(getClass().getName());
+        result.append(": name=");
+        result.append(getName());
+        result.append(", type=");
+        result.append(getTypeName());
+        result.append(", path=");
+        result.append(getPath());
+        String value;
+        try {
+            value = "'" + getStringValue(null) + "'";
+        } catch (Exception e) {
+            value = "(CmsObject required to generate)";
+        }
+        result.append(", value=");
+        result.append(value);
+
+        return result.toString();
+    }
+
+    /**
      * @see org.opencms.xml.types.I_CmsXmlSchemaType#validateValue(java.lang.String)
      */
     public boolean validateValue(String value) {
 
         return true;
+    }
+
+    /**
+     * Moves this XML content element up or down in the XML document.<p> 
+     * 
+     * Please note: No check is performed if the move violates the XML document schema!<p>
+     * 
+     * @param moveUp if true, move up, otherwise move down
+     */
+    protected void moveValue(boolean moveUp) {
+
+        Element e = getElement();
+        Element parent = e.getParent();
+        List siblings = parent.elements();
+        int idx = siblings.indexOf(e);
+        int newIdx = moveUp ? idx + 1 : idx - 1;
+        siblings.remove(idx);
+        siblings.add(newIdx, e);
     }
 
     /**
@@ -443,30 +522,5 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
             throw new CmsRuntimeException(Messages.get().container(Messages.ERR_XMLCONTENT_LOAD_SCHEMA_1, schemaUri), e);
         }
         return schemaDefinition;
-    }
-
-    /**
-     * @see java.lang.Object#toString()
-     */
-    public String toString() {
-    
-        StringBuffer result = new StringBuffer(128);
-        result.append(getClass().getName());
-        result.append(": name=");
-        result.append(getName());
-        result.append(", type=");
-        result.append(getTypeName());
-        result.append(", path=");
-        result.append(getPath());
-        String value;
-        try {
-            value = "'" + getStringValue(null) + "'";            
-        } catch (Exception e) {
-            value = "(CmsObject required to generate)";
-        }        
-        result.append(", value=");
-        result.append(value);
-        
-        return result.toString();
     }
 }

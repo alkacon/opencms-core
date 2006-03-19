@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/xml/content/TestCmsXmlContent.java,v $
- * Date   : $Date: 2005/06/27 23:22:09 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/19 21:54:32 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import org.opencms.xml.types.CmsXmlDateTimeValue;
 import org.opencms.xml.types.CmsXmlHtmlValue;
 import org.opencms.xml.types.CmsXmlLocaleValue;
 import org.opencms.xml.types.CmsXmlStringValue;
+import org.opencms.xml.types.I_CmsXmlContentValue;
 
 import java.util.Locale;
 
@@ -48,7 +49,7 @@ import junit.framework.TestCase;
  * Tests for generating an XML content.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  */
 public class TestCmsXmlContent extends TestCase {
 
@@ -64,7 +65,7 @@ public class TestCmsXmlContent extends TestCase {
     }
     
     /**
-     * Test unmarshalling an XML page from a String.<p>
+     * Test unmarshalling an XML content from a String.<p>
      * 
      * @throws Exception in case something goes wrong
      */
@@ -72,8 +73,7 @@ public class TestCmsXmlContent extends TestCase {
         
         CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
         
-        String content;        
-                
+        String content;                        
         // unmarshal content definition
         content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
         CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
@@ -99,5 +99,73 @@ public class TestCmsXmlContent extends TestCase {
         assertEquals("-58254180000", dateTimeValue.getStringValue(null));
         assertEquals("<p>This is some Html</p>", htmlValue.getStringValue(null));
         assertEquals("en_EN", localeValue.getStringValue(null));
+    }
+    
+    /**
+     * Tests moving elements up and down in the XML content.<p>
+     * 
+     * @throws Exception
+     */
+    public void testMoveUpDown() throws Exception {
+        
+        CmsXmlEntityResolver resolver = new CmsXmlEntityResolver(null);
+        
+        String content;                        
+        // unmarshal content definition
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-definition-1.xsd", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlContentDefinition definition = CmsXmlContentDefinition.unmarshal(content, SCHEMA_SYSTEM_ID_1, resolver);
+        // store content definition in entitiy resolver
+        content = CmsFileUtil.readFile("org/opencms/xml/content/xmlcontent-1.xml", CmsEncoder.ENCODING_UTF_8);
+        CmsXmlEntityResolver.cacheSystemId(SCHEMA_SYSTEM_ID_1, definition.getSchema().asXML().getBytes(CmsEncoder.ENCODING_UTF_8));
+        // now create the XML content
+        CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(content, CmsEncoder.ENCODING_UTF_8, resolver); 
+
+        // this content comes from the file that has been read
+        String nn = "String";
+        CmsXmlStringValue stringValue = (CmsXmlStringValue)xmlcontent.getValue(nn, Locale.ENGLISH, 0);
+        assertEquals("Multitest 1", stringValue.getStringValue(null));
+        
+        // add some more nodes to the content
+        I_CmsXmlContentValue value = xmlcontent.addValue(null, nn, Locale.ENGLISH, 1);
+        value.setStringValue(null, "Node 2");
+        value = xmlcontent.addValue(null, nn, Locale.ENGLISH, 2);
+        value.setStringValue(null, "Node 3");
+        value = xmlcontent.addValue(null, nn, Locale.ENGLISH, 3);
+        String node4 = "Node 4";
+        value.setStringValue(null, node4);
+
+        // we must have 4 "String" nodes now
+        int maxIndex = xmlcontent.getValue(nn, Locale.ENGLISH).getMaxIndex();
+        assertEquals(4, maxIndex);
+        
+        // now we have 4 nodes, check the last node
+        I_CmsXmlContentValue checkValue = xmlcontent.getValue(nn, Locale.ENGLISH, maxIndex - 1);
+        assertEquals(node4, checkValue.getStringValue(null));
+        
+        // move the node down 3 times, then it must be at the first position
+        value.moveDown();
+        value.moveDown();
+        value.moveDown();        
+        System.out.println(xmlcontent.toString());
+        checkValue = xmlcontent.getValue(nn, Locale.ENGLISH, 0);
+        assertEquals(node4, checkValue.getStringValue(null));
+        
+        // one more move down should have no effect
+        value.moveDown();        
+        checkValue = xmlcontent.getValue(nn, Locale.ENGLISH, 0);
+        assertEquals(node4, checkValue.getStringValue(null));
+
+        // now move the node up again
+        value.moveUp();
+        value.moveUp();
+        value.moveUp();
+        System.out.println(xmlcontent.toString());
+        checkValue = xmlcontent.getValue(nn, Locale.ENGLISH, maxIndex - 1);
+        assertEquals(node4, checkValue.getStringValue(null));
+        
+        // one more move up should have no effect
+        value.moveUp();        
+        checkValue = xmlcontent.getValue(nn, Locale.ENGLISH, maxIndex - 1);
+        assertEquals(node4, checkValue.getStringValue(null));
     }
 }

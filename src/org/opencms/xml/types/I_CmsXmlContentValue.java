@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/I_CmsXmlContentValue.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/19 21:54:32 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -82,6 +82,13 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
     Locale getLocale();
 
     /**
+     * Returns the total number of XML elements of this type that currently exist in the source document.<p>
+     * 
+     * @return the total number of XML elements of this type that currently exist in the source document
+     */
+    int getMaxIndex();
+
+    /**
      * Returns the path of this XML content value in the source document.<p>
      * 
      * @return the path of this XML content value in the source document
@@ -110,6 +117,20 @@ public interface I_CmsXmlContentValue extends I_CmsXmlSchemaType {
      * @return the value of this XML content node as a String
      */
     String getStringValue(CmsObject cms);
+
+    /**
+     * Moves this XML content value one position down in the source document, if possible.<p> 
+     * 
+     * If the XML content value is already the first in it's sequence, it is not moved.<p>
+     */
+    void moveDown();
+
+    /**
+     * Moves this XML content value one position up in the source document, if possible.<p>
+     * 
+     * If the XML content value is already the last in it's sequence, it is not moved.<p>
+     */
+    void moveUp();
 
     /**
      * Sets the provided String as value of this XML content node.<p>  

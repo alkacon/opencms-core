@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/A_CmsXmlDocument.java,v $
- * Date   : $Date: 2005/07/29 10:13:57 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/19 21:54:32 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.xml.sax.EntityResolver;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $ 
+ * @version $Revision: 1.29.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -388,6 +388,14 @@ public abstract class A_CmsXmlDocument implements I_CmsXmlDocument {
     public boolean hasValue(String name, Locale locale, int index) {
 
         return null != getBookmark(CmsXmlUtils.createXpath(name, index + 1), locale);
+    }
+
+    /**
+     * @see org.opencms.xml.I_CmsXmlDocument#initDocument()
+     */
+    public void initDocument() {
+
+        initDocument(m_document, m_encoding, m_contentDefinition);
     }
 
     /**
