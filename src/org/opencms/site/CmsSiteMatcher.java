@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteMatcher.java,v $
- * Date   : $Date: 2005/10/19 09:46:05 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2006/03/19 21:48:29 $
+ * Version: $Revision: 1.18.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import org.opencms.util.CmsStringUtil;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.18.2.1 $ 
+ * @version $Revision: 1.18.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -294,13 +294,15 @@ public final class CmsSiteMatcher implements Cloneable {
      */
     protected void setServerProtocol(String serverProtocol) {
 
-        int pos;
         if (CmsStringUtil.isEmpty(serverProtocol) || (WILDCARD.equals(serverProtocol))) {
             m_serverProtocol = WILDCARD;
-        } else if ((pos = serverProtocol.indexOf("/")) > 0) {
-            m_serverProtocol = serverProtocol.substring(0, pos).toLowerCase();
         } else {
-            m_serverProtocol = serverProtocol.toLowerCase().trim();
+            int pos = serverProtocol.indexOf("/");
+            if (pos > 0) {
+                m_serverProtocol = serverProtocol.substring(0, pos).toLowerCase();
+            } else {
+                m_serverProtocol = serverProtocol.toLowerCase().trim();
+            }
         }
     }
 

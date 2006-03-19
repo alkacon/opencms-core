@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/I_CmsSetupTest.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/19 21:48:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,27 +36,27 @@ package org.opencms.setup;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
 public interface I_CmsSetupTest {
 
     /** Test failed display text. */
-    public static final String RESULT_FAILED = "failed!";
+    String RESULT_FAILED = "failed!";
 
     /** Test passed display text. */
-    public static final String RESULT_PASSED = "passed";
+    String RESULT_PASSED = "passed";
 
     /** Test warning display text. */
-    public static final String RESULT_WARNING = "warning!";
+    String RESULT_WARNING = "warning!";
 
     /**
      * Returns the nice name for the test.<p>
      * 
      * @return the nice name
      */
-    public String getName();
+    String getName();
 
     /**
      * Returns the test results.<p>
@@ -67,5 +67,5 @@ public interface I_CmsSetupTest {
      * 
      * @throws Exception if something goes wrong 
      */
-    public CmsSetupTestResult run(CmsSetupBean setupBean) throws Exception;
+    CmsSetupTestResult run(CmsSetupBean setupBean) throws Exception;
 }

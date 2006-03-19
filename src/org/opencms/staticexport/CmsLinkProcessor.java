@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkProcessor.java,v $
- * Date   : $Date: 2005/11/14 15:04:06 $
- * Version: $Revision: 1.43.2.4 $
+ * Date   : $Date: 2006/03/19 21:48:29 $
+ * Version: $Revision: 1.43.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.4 $ 
+ * @version $Revision: 1.43.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -147,7 +147,8 @@ public class CmsLinkProcessor extends CmsHtmlParser {
             switch (ch) {
                 case '&':
                     // don't escape already escaped &amps;
-                    if ((terminatorIndex = source.indexOf(";", i)) > 0) {
+                    terminatorIndex = source.indexOf(';', i);
+                    if (terminatorIndex > 0) {
                         String substr = source.substring(i + 1, terminatorIndex);
                         if ("amp".equals(substr)) {
                             result.append(ch);

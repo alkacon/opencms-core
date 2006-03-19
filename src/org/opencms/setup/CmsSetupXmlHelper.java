@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupXmlHelper.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/19 21:48:29 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,6 @@ import java.util.Iterator;
 import java.util.Map;
 
 import org.dom4j.Document;
-import org.dom4j.DocumentException;
 import org.dom4j.Node;
 import org.xml.sax.EntityResolver;
 import org.xml.sax.InputSource;
@@ -66,7 +65,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */

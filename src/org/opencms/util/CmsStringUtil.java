@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2005/11/21 15:33:14 $
- * Version: $Revision: 1.34.2.10 $
+ * Date   : $Date: 2006/03/19 21:49:59 $
+ * Version: $Revision: 1.34.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.10 $ 
+ * @version $Revision: 1.34.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -165,7 +165,7 @@ public final class CmsStringUtil {
         source = CmsStringUtil.substitute(source, "\n", "<br/>\n");
         return source;
     }
-    
+
     /**
      * Escapes a String so it may be used in JavaScript String definitions.<p>
      * 
@@ -373,34 +373,34 @@ public final class CmsStringUtil {
      * @return the formatted resource name
      */
     public static String formatResourceName(String name, int maxLength) {
-        
+
         if (name == null) {
             return null;
         }
         if (name.length() <= maxLength) {
             return name;
         }
-        
+
         String result = CmsResource.getName(name);
         name = CmsResource.getParentFolder(name);
         while (name != null) {
             String part = CmsResource.getName(name);
-            
+
             if ((part.length() + result.length()) <= maxLength) {
                 result = part + result;
             } else {
                 result = "/" + result;
-                if (! part.equals("/")) {
+                if (!part.equals("/")) {
                     result = "/..." + result;
                 }
                 break;
             }
             name = CmsResource.getParentFolder(name);
         }
-        
+
         return result;
     }
-    
+
     /**
      * Formats a runtime in the format hh:mm:ss, to be used e.g. in reports.<p>
      * 
@@ -753,7 +753,7 @@ public final class CmsStringUtil {
      * @see #substitute(String, String, String)
      */
     public static String substitute(String source, Map substitions) {
-        
+
         String result = source;
         Iterator it = substitions.keySet().iterator();
         while (it.hasNext()) {
@@ -762,7 +762,7 @@ public final class CmsStringUtil {
         }
         return result;
     }
-    
+
     /**
      * Substitutes <code>searchString</code> in the given source String with <code>replaceString</code>.<p>
      * 
@@ -778,12 +778,11 @@ public final class CmsStringUtil {
      */
     public static String substitute(String source, String searchString, String replaceString) {
 
-        int sl;
         if (source == null) {
             return null;
         }
 
-        if (searchString == null || (sl = searchString.length()) == 0) {
+        if (isEmpty(searchString)) {
             return source;
         }
 
@@ -791,6 +790,7 @@ public final class CmsStringUtil {
             replaceString = "";
         }
         int len = source.length();
+        int sl = searchString.length();
         int rl = replaceString.length();
         int length;
         if (sl == rl) {
@@ -905,7 +905,7 @@ public final class CmsStringUtil {
      * @return a substring of string source, which is at most length characters long
      */
     public static String trimToSize(String source, int length) {
-        
+
         int end = 0;
         int newend;
         while (true) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.17.2.2 $
+ * Date   : $Date: 2006/03/19 21:49:59 $
+ * Version: $Revision: 1.17.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17.2.2 $ 
+ * @version $Revision: 1.17.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,8 +252,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
      */
     public static String resolveMacros(final String input, I_CmsMacroResolver resolver) {
 
-        int len;
-        if ((input == null) || ((len = input.length()) < 3)) {
+        if ((input == null) || (input.length() < 3)) {
             // macro must have at last 3 chars "${}"
             return input;
         }
@@ -264,7 +263,8 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
             return input;
         }
 
-        StringBuffer result = new StringBuffer(input.length() * 2);
+        int len = input.length();
+        StringBuffer result = new StringBuffer(len << 1);
         int np, pp1, pp2, e;
         String macro, value;
         boolean keep = resolver.isKeepEmptyMacros();
