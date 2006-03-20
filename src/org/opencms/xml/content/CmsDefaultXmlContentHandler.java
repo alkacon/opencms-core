@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/01/06 15:35:02 $
- * Version: $Revision: 1.43.2.6 $
+ * Date   : $Date: 2006/03/20 18:26:01 $
+ * Version: $Revision: 1.43.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.6 $ 
+ * @version $Revision: 1.43.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -358,6 +358,10 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
         content.validateXmlStructure(new CmsXmlEntityResolver(cms));
         // read the content-conversion property
         String contentConversion = CmsHtmlConverter.getConversionSettings(cms, file);
+        if (CmsStringUtil.isEmptyOrWhitespaceOnly(contentConversion)) {
+            // enable pretty printing and XHTML conversion of XML content html fields by default
+            contentConversion = CmsHtmlConverter.PARAM_XHTML;
+        }
         content.setConversion(contentConversion);
         // correct the HTML structure 
         file = content.correctXmlStructure(cms);

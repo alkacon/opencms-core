@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2005/12/16 15:15:57 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/20 18:26:01 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.editors.fckeditor;
 
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.OpenCms;
+import org.opencms.util.CmsHtmlConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.editors.CmsEditorDisplayOptions;
@@ -69,12 +70,12 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.7
  */
 public class CmsFCKEditor extends CmsSimplePageEditor {
-
+    
     /** Suffix for the style XML file that is added to the used template CSS style sheet file name. */
     public static final String SUFFIX_STYLESXML = "_style.xml";
 
@@ -178,4 +179,22 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
         }
     }
 
+    /**
+     * @see org.opencms.workplace.editors.CmsSimplePageEditor#prepareContent(boolean)
+     */
+    protected String prepareContent(boolean save) {
+
+        if (save) {
+            String conversionSetting = CmsHtmlConverter.getConversionSettings(getCms(), m_file);
+            if (CmsStringUtil.isEmptyOrWhitespaceOnly(conversionSetting)) {
+                // by default we want to pretty-print and Xhtml format when saving the content in FCKeditor
+                String content = getParamContent();
+                CmsHtmlConverter converter = new CmsHtmlConverter(getEncoding(), CmsHtmlConverter.PARAM_XHTML);
+                content = converter.convertToStringSilent(content);
+                setParamContent(content);
+            }
+        }
+        // do further processing with super class
+        return super.prepareContent(true);
+    }
 }

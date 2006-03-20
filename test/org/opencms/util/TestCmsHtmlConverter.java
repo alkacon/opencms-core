@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlConverter.java,v $
- * Date   : $Date: 2006/01/06 15:33:17 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2006/03/20 18:26:01 $
+ * Version: $Revision: 1.8.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,22 +31,24 @@
  
 package org.opencms.util;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
 
 /** 
  * @author Michael Emmerich 
- * @version $Revision: 1.8.2.2 $
+ * @version $Revision: 1.8.2.3 $
  */
 public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     
-   // some test Strings    
+    // some test Strings    
     private static final String STRING_1 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;";     
     private static final String STRING_2 = "Test: &#228;&#246;&#252;&#196;&#214;&#220;&#223;&#8364;";
     private static final String STRING_1_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df";     
     private static final String STRING_2_UTF8_RESULT = "Test: \u00e4\u00f6\u00fc\u00c4\u00d6\u00dc\u00df\u20ac";
   
+    private static final String SIMPLE_HTML = "<h1>Test</h1><div><p>This is a test<p>some content<p>last line</div><pre>Some pre<br>\r\n   More pre\r\n</pre>Final line.";
     
     /**
      * Default JUnit constructor.<p>
@@ -58,58 +60,71 @@ public class TestCmsHtmlConverter extends OpenCmsTestCase  {
     }
 
     /** 
-     * Tests converstion of ISO-encoded entities.<p>     *
+     * Tests converstion of ISO-encoded entities.<p>
+     * 
+     * @throws Exception in case the test fails
      */
-    public void testISO() {
+    public void testISO() throws Exception {
         System.out.println("Testing US-ASCII conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("US-ASCII", CmsHtmlConverter.PARAM_WORD);        
-        String convertedHtml1 = converter.convertToStringSilent(STRING_1);
-        String convertedHtml2 = converter.convertToStringSilent(STRING_2);
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_US_ASCII, CmsHtmlConverter.PARAM_WORD);        
+        String convertedHtml1 = converter.convertToString(STRING_1);
+        String convertedHtml2 = converter.convertToString(STRING_2);
                 
         assertEquals(STRING_1 , convertedHtml1);
         assertEquals(STRING_2 , convertedHtml2);  
     }
 
     /** 
-     * Tests converstion of UTF8-encoded entities.<p>     *
+     * Tests converstion of UTF8-encoded entities.<p> 
+     * 
+     * @throws Exception in case the test fails
      */
-    public void testUTF8() {
+    public void testUTF8() throws Exception {
         System.out.println("Testing UTF-8 conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.PARAM_WORD);        
-        String convertedHtml1 = converter.convertToStringSilent(STRING_1);
-        String convertedHtml2 = converter.convertToStringSilent(STRING_2);
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_UTF_8, CmsHtmlConverter.PARAM_WORD);        
+        String convertedHtml1 = converter.convertToString(STRING_1);
+        String convertedHtml2 = converter.convertToString(STRING_2);
              
         assertEquals(STRING_1_UTF8_RESULT , convertedHtml1);
         assertEquals(STRING_2_UTF8_RESULT , convertedHtml2);  
     }
+        
+    /**
+     * Tests if simple pretty printing works.<p>
+     * 
+     * @throws Exception in case the test fails
+     */
+    public void testPrettyPrint() throws Exception {
+        
+        System.out.println("Testing HTML pretty printing");
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_ISO_8859_1, CmsHtmlConverter.PARAM_ENABLED);
+        String result = converter.convertToString(SIMPLE_HTML);
+        
+        System.out.println("----------------");               
+        System.out.println(result);       
+        System.out.println("----------------");            
+    }
     
     /**
      * Tests if all word tags are removed.<p>
+     * 
+     * @throws Exception in case the test fails
      */
-    public void testremoveWordTags() {
-        System.out.println("Testing Word conversion");
-        CmsHtmlConverter converter = new CmsHtmlConverter("UTF-8", CmsHtmlConverter.PARAM_XHTML);        
-        
-        // read a file and convert it
-        File inputfile = new File (getTestDataPath("test2.html"));
-        try {
-            byte[] htmlInput = CmsFileUtil.readFile(inputfile);
-            String inputContent = new String(htmlInput, converter.m_encoding);
-            inputContent = converter.adjustHtml(inputContent);            
-            byte[] htmlOutput = converter.convertToByte(inputContent);          
-            String outputContent = new String(htmlOutput, converter.m_encoding);
-            System.out.println(outputContent);
-            // now check if all word specific tags are removed
-            assertContainsNot(outputContent, "<o:p>");
-            assertContainsNot(outputContent, "<o:smarttagtype");
-            assertContainsNot(outputContent, "<?xml:namespace ");
-                       
-        } catch (Exception e) {
-            System.out.println(e);
-        }
-    }
-    
-    
-    
-}
+    public void testRemoveWordTags() throws Exception {
 
+        System.out.println("Testing Word conversion");
+        CmsHtmlConverter converter = new CmsHtmlConverter(CmsEncoder.ENCODING_ISO_8859_1, CmsHtmlConverter.PARAM_WORD
+            + ";"
+            + CmsHtmlConverter.PARAM_XHTML);
+
+        // read a file and convert it
+        File inputfile = new File(getTestDataPath("test2.html"));
+        byte[] htmlInput = CmsFileUtil.readFile(inputfile);
+        String outputContent = converter.convertToString(htmlInput);
+        System.out.println(outputContent);
+        // now check if all word specific tags are removed
+        assertContainsNot(outputContent, "<o:p>");
+        assertContainsNot(outputContent, "<o:smarttagtype");
+        assertContainsNot(outputContent, "<?xml:namespace ");
+    }
+}
