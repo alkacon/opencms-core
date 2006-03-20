@@ -19,7 +19,7 @@
     if (params.length()>0) {
        params = "?" + params;
     }
-    boolean sb = Boolean.parseBoolean(request.getParameter("scroll"));
+    boolean sb = Boolean.valueOf(request.getParameter("scroll")).booleanValue();
 %>
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">
 
