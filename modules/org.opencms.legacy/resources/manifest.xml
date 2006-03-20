@@ -11929,16 +11929,8 @@
 			<flags>0</flags>
 			<properties>
 				<property>
-					<name>NavPos</name>
-					<value><![CDATA[40]]></value>
-				</property>
-				<property>
 					<name>default-file</name>
 					<value><![CDATA[/system/workplace/action/administration.html]]></value>
-				</property>
-				<property>
-					<name>NavText</name>
-					<value><![CDATA[${key.select.legacyadmin}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
