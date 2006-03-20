@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/20 11:05:40 $
- * Version: $Revision: 1.682.2.92 $
+ * Date   : $Date: 2006/03/20 13:35:24 $
+ * Version: $Revision: 1.682.2.93 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,6 +29,7 @@ OpenCms 6.1.11 - March ???, 2006
 * Fixed issue #999: addCookie() and sendRedirect() can now be used on a JSP page
 * Fixed issue #990: it's now possible to set the status code in a JSP using the CmsJspBean
 * Fixed issue #1032: needless module sub-directories are skipped during setup
+* Fixed issue #1049: Multi copy & move operations now work with relative paths
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load

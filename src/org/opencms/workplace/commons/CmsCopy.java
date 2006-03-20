@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsCopy.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2006/03/20 13:35:24 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,14 +128,16 @@ public class CmsCopy extends CmsMultiDialog {
         CmsResource resource = null;
         try {
             boolean isFolder = false;
+            String source = (String)getResourceList().get(0);
+            String target = CmsLinkManager.getAbsoluteUri(getParamTarget(), CmsResource.getParentFolder(source));
             if (! isMultiOperation()) {
-                resource = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
+                resource = getCms().readResource(source, CmsResourceFilter.ALL);
                 isFolder = resource.isFolder();
             } else {
-                resource = getCms().readResource(getParamTarget(), CmsResourceFilter.ALL);
+                resource = getCms().readResource(target, CmsResourceFilter.ALL);
                 if (! resource.isFolder()) {
                     // no folder selected for multi operation, throw exception
-                    throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, getParamTarget()));
+                    throw new CmsVfsException(Messages.get().container(Messages.ERR_COPY_MULTI_TARGET_NOFOLDER_1, target));
                 }
             }
             if (performDialogOperation()) {
@@ -143,8 +145,8 @@ public class CmsCopy extends CmsMultiDialog {
                 if (isMultiOperation() || isFolder) {
                     // set request attribute to reload the explorer tree view
                     List folderList = new ArrayList(1);
-                    String target = CmsResource.getParentFolder(getParamTarget());
-                    folderList.add(target);
+                    String targetParent = CmsResource.getParentFolder(target);
+                    folderList.add(targetParent);
                     getJsp().getRequest().setAttribute(REQUEST_ATTRIBUTE_RELOADTREE, folderList);
                 }
                 actionCloseDialog();
