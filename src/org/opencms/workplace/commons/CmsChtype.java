@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2005/11/26 01:18:03 $
- * Version: $Revision: 1.19.2.2 $
+ * Date   : $Date: 2006/03/20 08:51:30 $
+ * Version: $Revision: 1.19.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,6 +41,7 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
+import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
@@ -65,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.2 $ 
+ * @version $Revision: 1.19.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -142,6 +143,11 @@ public class CmsChtype extends CmsDialog {
                 }
 
                 if (isResourceType) {
+                    if (CmsStringUtil.isEmpty(settings.getNewResourceUri())) {
+                        // skip resource types without valid "new" resource URI
+                        continue;
+                    }
+                    
                     int resTypeId = OpenCms.getResourceManager().getResourceType(settings.getName()).getTypeId();
                     // determine if this resTypeId is changeable by currentResTypeId
 
@@ -160,6 +166,7 @@ public class CmsChtype extends CmsDialog {
                             // skip resource types without required write or create permissions
                             continue;
                         }
+
                         // create table row with input radio button
                         result.append("<tr><td>");
                         result.append("<input type=\"radio\" name=\"");
