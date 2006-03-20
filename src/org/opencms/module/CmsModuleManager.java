@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2005/12/13 17:11:49 $
- * Version: $Revision: 1.32.2.3 $
+ * Date   : $Date: 2006/03/20 11:01:58 $
+ * Version: $Revision: 1.32.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.db.CmsExportPoint;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.file.CmsResource;
+import org.opencms.importexport.CmsImportExportManager;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsIllegalStateException;
@@ -68,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.2.3 $ 
+ * @version $Revision: 1.32.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -255,6 +256,13 @@ public class CmsModuleManager {
                     if (moduleFile.isFile() && !(moduleFile.getAbsolutePath().toLowerCase().endsWith(".zip"))) {
                         // skip non-ZIP files
                         continue;
+                    }
+                    if (moduleFile.isDirectory()) {
+                        File manifest = new File(moduleFile, CmsImportExportManager.EXPORT_MANIFEST);
+                        if (!manifest.exists() || !manifest.canRead()) {
+                            // skip unused directories
+                            continue;
+                        }
                     }
                     modules.put(
                         CmsModuleImportExportHandler.readModuleFromImport(moduleFile.getAbsolutePath()),
