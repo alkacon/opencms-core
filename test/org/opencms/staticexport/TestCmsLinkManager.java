@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/20 16:57:30 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,25 @@
 
 package org.opencms.staticexport;
 
+import org.opencms.file.CmsObject;
+import org.opencms.main.OpenCms;
+import org.opencms.staticexport.CmsLinkManager;
+import org.opencms.test.OpenCmsTestCase;
+import org.opencms.test.OpenCmsTestProperties;
+
+import junit.extensions.TestSetup;
+import junit.framework.Test;
 import junit.framework.TestCase;
+import junit.framework.TestSuite;
 
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7 $
+ * @version $Revision: 1.7.2.1 $
  * 
  * @since 6.0.0
  */
-public class TestCmsLinkManager extends TestCase {
+public class TestCmsLinkManager extends OpenCmsTestCase {
 
     /**
      * Default JUnit constructor.<p>
@@ -52,6 +61,38 @@ public class TestCmsLinkManager extends TestCase {
         super(arg0);
     }
 
+    /**
+     * Test suite for this test class.<p>
+     * 
+     * @return the test suite
+     */
+    public static Test suite() {
+
+        OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
+
+        TestSuite suite = new TestSuite();
+        suite.setName(TestCmsStaticExportManager.class.getName());
+
+        suite.addTest(new TestCmsLinkManager("testToAbsolute"));
+        suite.addTest(new TestCmsLinkManager("testLinkSubstitution"));
+
+        TestSetup wrapper = new TestSetup(suite) {
+
+            protected void setUp() {
+
+                setupOpenCms("simpletest", "/sites/default/");
+            }
+
+            protected void tearDown() {
+
+                removeOpenCms();
+            }
+
+        };
+
+        return wrapper;
+    }
+    
     /**
      * Tests the method getAbsoluteUri.<p>
      */
@@ -79,5 +120,21 @@ public class TestCmsLinkManager extends TestCase {
         System.out.println(test);
         assertEquals(test, "/dirA/index.html");
     }
-
+    
+    /**
+     * Tests the link substitution.<p>
+     * @throws Exception
+     */
+    public void testLinkSubstitution() throws Exception {
+        
+        String test;
+        CmsObject cms = getCmsObject();
+        echo("Testing link substitution");
+        
+        cms.getRequestContext().setCurrentProject(cms.readProject("Online"));
+        CmsLinkManager linkManager = OpenCms.getLinkManager();
+        test = linkManager.substituteLink(cms, "/folder1/index.html?additionalParam", "/sites/default");
+        System.out.println(test);
+        assertEquals("/data/opencms/folder1/index.html?additionalParam", test);
+    }
 }
