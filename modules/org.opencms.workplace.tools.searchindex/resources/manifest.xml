@@ -153,7 +153,7 @@
 			<properties>
 				<property>
 					<name>admintoolhandler-class</name>
-					<value><![CDATA[org.opencms.workplace.tools.CmsDefaultToolHandler]]></value>
+					<value><![CDATA[org.opencms.workplace.tools.searchindex.CmsSearchToolHandler]]></value>
 				</property>
 				<property>
 					<name>NavPos</name>
