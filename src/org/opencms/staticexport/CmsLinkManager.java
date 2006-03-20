@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.56.2.5 $
+ * Date   : $Date: 2006/03/20 16:54:37 $
+ * Version: $Revision: 1.56.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.5 $ 
+ * @version $Revision: 1.56.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -477,21 +477,21 @@ public class CmsLinkManager {
 
             // read only properties, if the current site and the target site both do have a secure server
             if (targetSite.hasSecureServer() || CmsSiteManager.getCurrentSite(cms).hasSecureServer()) {
-                if (!link.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
+                if (!vfsName.startsWith(CmsWorkplace.VFS_PATH_SYSTEM)) {
 
                     int linkType = -1;
                     // check the secure property of the link
-                    boolean secureLink = exportManager.isSecureLink(cms, link, targetSite.getSiteRoot());
+                    boolean secureLink = exportManager.isSecureLink(cms, vfsName, targetSite.getSiteRoot());
                     boolean secureRequest = exportManager.isSecureLink(cms, cms.getRequestContext().getUri());
                     try {
                         // read the linked resource 
-                        linkType = cms.readResource(link).getTypeId();
+                        linkType = cms.readResource(vfsName).getTypeId();
                     } catch (CmsException e) {
                         // the resource could not be read
                         if (LOG.isInfoEnabled()) {
                             String message = Messages.get().key(
                                 Messages.LOG_RESOURCE_ACESS_ERROR_3,
-                                link,
+                                vfsName,
                                 cms.getRequestContext().currentUser().getName(),
                                 cms.getRequestContext().getSiteRoot());
                             if (LOG.isDebugEnabled()) {
