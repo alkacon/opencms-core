@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.16.2.2 $
+ * Date   : $Date: 2006/03/20 13:10:07 $
+ * Version: $Revision: 1.16.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16.2.2 $ 
+ * @version $Revision: 1.16.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,10 +168,10 @@ public class FileUploadApplet extends JApplet implements Runnable {
         m_colors = extractColors(getParameter("colors"));
 
         // setup the applet output
-        m_font = new java.awt.Font("Verdana", Font.BOLD, 12);
+        m_font = new java.awt.Font(null, Font.BOLD, 12);
         m_metrics = getFontMetrics(m_font);
         m_source = getImage(getCodeBase(), "org/opencms/applet/upload/folder_open.gif");
-        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/ocms.gif");
+        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/folder_ocms.gif");
         m_floater = getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
 
         // get the output massages in the correct language
@@ -245,7 +245,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (ok) {
                 ok = true;
                 
-                //System.out.println("Version 1.60");
+                //System.out.println("Version 1.61");
                                 
                 m_message = "";
                 m_resources = 0;
@@ -442,9 +442,9 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
         // show nonsense during upload
         if (m_outputMode == 3) {
-            m_offgraphics.drawImage(m_source, 50, 59, this);
+            m_offgraphics.drawImage(m_source, 50, 52, this);
             m_offgraphics.drawImage(m_target, 440, 52, this);
-            m_offgraphics.drawImage(m_floater, m_floaterPos, 59, this);
+            m_offgraphics.drawImage(m_floater, m_floaterPos, 57, this);
         }
 
         // copy the offcreen graphics to the applet
