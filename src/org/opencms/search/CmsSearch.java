@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2006/03/17 16:47:43 $
- * Version: $Revision: 1.39.2.7 $
+ * Date   : $Date: 2006/03/20 16:54:09 $
+ * Version: $Revision: 1.39.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.7 $ 
+ * @version $Revision: 1.39.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -351,14 +351,14 @@ public class CmsSearch implements Cloneable {
         // if (m_searchParameters == null) {
         StringBuffer params = new StringBuffer(128);
         params.append("?action=search&query=");
-        params.append(CmsEncoder.encode(m_parameters.getQuery()));
+        params.append(CmsEncoder.encodeParameter(m_parameters.getQuery()));
 
         params.append("&matchesPerPage=");
         params.append(getMatchesPerPage());
         params.append("&displayPages=");
         params.append(getDisplayPages());
         params.append("&index=");
-        params.append(CmsEncoder.encode(m_parameters.getIndex()));
+        params.append(CmsEncoder.encodeParameter(m_parameters.getIndex()));
 
         Sort sort = m_parameters.getSort();
         if (sort != CmsSearchParameters.SORT_DEFAULT) {
@@ -692,7 +692,7 @@ public class CmsSearch implements Cloneable {
     public void setQuery(String query) {
 
         try {
-            m_parameters.setQuery(query);
+            m_parameters.setQuery(CmsEncoder.decodeParameter(query));
         } catch (CmsIllegalArgumentException iae) {
             m_lastException = iae;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2005/09/20 15:39:08 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2006/03/20 16:56:50 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.i18n;
 
+import org.opencms.util.CmsStringUtil;
+
 import java.io.ByteArrayOutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
@@ -42,7 +44,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.10.2.1 $
+ * @version $Revision: 1.10.2.2 $
  * 
  * @since 6.0.0
  */
@@ -137,6 +139,19 @@ public class TestCmsEncoder extends TestCase {
             String result = CmsEncoder.encodeHtmlEntities(source, encoding);
             assertEquals(result, dest);
         }
+    }
+    
+    /**
+     * Tests the encoding of a single parameter.<p>
+     */
+    public void testParamEncoding() {
+        
+        String term = "Test ‰ˆ¸ƒ÷‹ﬂÄ +-";
+        String encoded = CmsEncoder.encodeParameter(term);
+        String result = CmsEncoder.decodeParameter(encoded);
+        
+        System.out.print(encoded);
+        assertEquals(term, result);     
     }
 
     /**

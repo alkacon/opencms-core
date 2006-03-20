@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2005/10/20 08:33:20 $
- * Version: $Revision: 1.15.2.4 $
+ * Date   : $Date: 2006/03/20 16:53:51 $
+ * Version: $Revision: 1.15.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.4 $ 
+ * @version $Revision: 1.15.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -83,6 +83,15 @@ public final class CmsEncoder {
     /** The regex pattern to match HTML entities. */
     private static final Pattern ENTITIY_PATTERN = Pattern.compile("\\&#\\d+;");
 
+    /** The prefix for HTML entities. */
+    private static final String ENTITY_PREFIX = "&#";
+    
+    /** The replacement for HTML entity prefix in parameters. */
+    private static final String ENTITY_REPLACEMENT = "$$";
+    
+    /** The plus entity. */
+    private static final String PLUS_ENTITY = "&#043;";
+    
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsEncoder.class);
 
@@ -260,6 +269,19 @@ public final class CmsEncoder {
     }
 
     /**
+     * Decodes a string used as parameter in an uri in a way independent of other encodings/decodings applied before.<p>
+     * 
+     * @param input the encoded parameter string
+     * @return the decoded parameter string
+     * @see #encodeParameter(String)
+     */
+    public static String decodeParameter(String input) {
+        
+        String result = CmsStringUtil.substitute(input, ENTITY_REPLACEMENT, ENTITY_PREFIX);
+        return CmsEncoder.decodeHtmlEntities(result, OpenCms.getSystemInfo().getDefaultEncoding());     
+    }
+    
+    /**
      * Encodes a String using UTF-8 encoding, which is the standard for http data transmission
      * with GET ant POST requests.<p>
      * 
@@ -345,6 +367,24 @@ public final class CmsEncoder {
         return result.toString();
     }
 
+    /**
+     * Encodes a string used as parameter in an uri in a way independent of other encodings/decodings applied later.<p>
+     * Used to ensure that GET parameters are not wrecked by wrong or incompatible configuration settings.
+     * In order to ensure this, the String is first encoded with html entities for any character that cannot encoded
+     * in US-ASCII; additionally, the plus sign is also encoded to avoid problems with the white-space replacer.
+     * Finally, the entity prefix is replaced with characters not used as delimiters in urls. 
+     * 
+     * @param input the parameter string
+     * @return the encoded parameter string
+     */
+    public static String encodeParameter(String input) {
+        
+        String result = CmsEncoder.encodeHtmlEntities(input, CmsEncoder.ENCODING_US_ASCII);
+        
+        result = CmsStringUtil.substitute(result, "+", PLUS_ENTITY);
+        return CmsStringUtil.substitute(result, ENTITY_PREFIX, ENTITY_REPLACEMENT);     
+    }
+    
     /**
      * Encodes a String in a way that is compatible with the JavaScript escape function.
      * 
