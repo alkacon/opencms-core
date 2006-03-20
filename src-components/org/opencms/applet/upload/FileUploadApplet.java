@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/applet/upload/FileUploadApplet.java,v $
- * Date   : $Date: 2006/03/20 13:10:07 $
- * Version: $Revision: 1.16.2.3 $
+ * Date   : $Date: 2006/03/20 16:41:43 $
+ * Version: $Revision: 1.16.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.httpclient.methods.MultipartPostMethod;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.16.2.3 $ 
+ * @version $Revision: 1.16.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -122,7 +122,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
     private Image m_floater;
 
     /** Image position for the floater during upload. */
-    private int m_floaterPos = 80;
+    private int m_floaterPos = 50;
 
     /** Defintion of output strings.*/
     private String m_actionOutputSelect = "Seleting files for upload....";
@@ -170,8 +170,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
         // setup the applet output
         m_font = new java.awt.Font(null, Font.BOLD, 12);
         m_metrics = getFontMetrics(m_font);
-        m_source = getImage(getCodeBase(), "org/opencms/applet/upload/folder_open.gif");
-        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/folder_ocms.gif");
+        m_source = getImage(getCodeBase(), "org/opencms/applet/upload/applet_source.png");
+        m_target = getImage(getCodeBase(), "org/opencms/applet/upload/applet_target.png");
         m_floater = getImage(getCodeBase(), "org/opencms/applet/upload/floater.gif");
 
         // get the output massages in the correct language
@@ -245,7 +245,7 @@ public class FileUploadApplet extends JApplet implements Runnable {
             while (ok) {
                 ok = true;
                 
-                //System.out.println("Version 1.61");
+                //System.out.println("Version 1.62");
                                 
                 m_message = "";
                 m_resources = 0;
@@ -442,9 +442,10 @@ public class FileUploadApplet extends JApplet implements Runnable {
 
         // show nonsense during upload
         if (m_outputMode == 3) {
-            m_offgraphics.drawImage(m_source, 50, 52, this);
-            m_offgraphics.drawImage(m_target, 440, 52, this);
             m_offgraphics.drawImage(m_floater, m_floaterPos, 57, this);
+            m_offgraphics.drawImage(m_source, 30, 47, this);
+            m_offgraphics.drawImage(m_target, 440, 47, this);
+            
         }
 
         // copy the offcreen graphics to the applet
@@ -457,8 +458,8 @@ public class FileUploadApplet extends JApplet implements Runnable {
     public void moveFloater() {
 
         m_floaterPos += 10;
-        if ((m_floaterPos) > 410) {
-            m_floaterPos = 80;
+        if ((m_floaterPos) > 430) {
+            m_floaterPos = 50;
         }
         repaint();
     }
