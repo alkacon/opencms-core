@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2005/12/12 09:27:57 $
- * Version: $Revision: 1.25.2.5 $
+ * Date   : $Date: 2006/03/21 17:08:30 $
+ * Version: $Revision: 1.25.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.5 $ 
+ * @version $Revision: 1.25.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -313,7 +313,10 @@ public class CmsPreferences extends CmsTabDialog {
         // save initialized instance of this class in request attribute for included sub-elements
         request.setAttribute(SESSION_WORKPLACE_CLASS, this);
 
-        // special case: set the preferred editor settings the user settings object      
+        // special case: set the preferred editor settings in the user settings object  
+        CmsUserSettings userSettings = new CmsUserSettings(getCms(), getSettings().getUser());
+        // first set the old preferred editors
+        m_userSettings.setEditorSettings(userSettings.getEditorSettings());
         Enumeration en = request.getParameterNames();
         while (en.hasMoreElements()) {
             // search all request parameters for the presence of the preferred editor parameters
@@ -321,10 +324,12 @@ public class CmsPreferences extends CmsTabDialog {
             if (paramName.startsWith(PARAM_PREFERREDEDITOR_PREFIX)) {
                 String paramValue = request.getParameter(paramName);
                 if (paramValue != null && !INPUT_DEFAULT.equals(paramValue.trim())) {
+                    // set selected editor for this resource type
                     m_userSettings.setPreferredEditor(
                         paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()),
-                        paramValue);
+                        CmsEncoder.decode(paramValue));
                 } else {
+                    // reset preferred editor for this resource type
                     m_userSettings.setPreferredEditor(paramName.substring(PARAM_PREFERREDEDITOR_PREFIX.length()), null);
                 }
             }
