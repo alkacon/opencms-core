@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsResourceComparisonDialog.java,v $
- * Date   : $Date: 2006/02/09 11:53:11 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/03/21 15:10:37 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,6 +51,7 @@ import org.opencms.search.extractors.CmsExtractorPdf;
 import org.opencms.search.extractors.CmsExtractorRtf;
 import org.opencms.search.extractors.I_CmsTextExtractor;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.widgets.I_CmsWidget;
 import org.opencms.widgets.I_CmsWidgetParameter;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -58,7 +59,9 @@ import org.opencms.workplace.commons.CmsHistoryList;
 import org.opencms.workplace.list.CmsMultiListDialog;
 import org.opencms.xml.CmsXmlException;
 import org.opencms.xml.I_CmsXmlDocument;
+import org.opencms.xml.content.CmsXmlContent;
 import org.opencms.xml.content.CmsXmlContentFactory;
+import org.opencms.xml.content.I_CmsXmlContentValueVisitor;
 import org.opencms.xml.page.CmsXmlPage;
 import org.opencms.xml.page.CmsXmlPageFactory;
 import org.opencms.xml.types.I_CmsXmlContentValue;
@@ -80,7 +83,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -93,7 +96,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     /** Constant indicating that the properties are compared.<p> */
     public static final String COMPARE_PROPERTIES = "properties";
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsResourceComparisonDialog.class);
+    static final Log LOG = CmsLog.getLog(CmsResourceComparisonDialog.class);
 
     private CmsDifferenceDialog m_differenceDialog;
 
@@ -119,6 +122,53 @@ public class CmsResourceComparisonDialog extends CmsDialog {
 
     private String m_paramVersion2;
 
+    /**
+     * Visitor that collects the xpath expressions of xml contents.<p>
+     */
+    class CmsXmlContentTextExtractor implements I_CmsXmlContentValueVisitor {
+
+        private StringBuffer m_buffer;
+
+        private List m_locales;
+        
+        /**
+         * Creates a new CmsXmlContentTextExtractor.<p>
+         * 
+         * @param stringBuffer the StringBuffer to append the element text to
+         */
+        CmsXmlContentTextExtractor(StringBuffer stringBuffer) {
+
+            m_buffer = stringBuffer;
+            m_locales = new ArrayList();
+        }
+
+        /**
+         * 
+         * @see org.opencms.xml.content.I_CmsXmlContentValueVisitor#visit(org.opencms.xml.types.I_CmsXmlContentValue)
+         */
+        public void visit(I_CmsXmlContentValue value) {
+
+            // only add simple types
+            if (value.isSimpleType()) {
+                String locale = value.getLocale().toString();
+                if (!m_locales.contains(locale)) {
+                    m_buffer.append("\n\n[").append(locale).append(']');
+                    m_locales.add(locale);
+                }
+                m_buffer.append("\n\n[").append(value.getPath()).append("]\n\n");
+                try {
+                    I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(value);
+                    m_buffer.append(widget.getWidgetStringValue(
+                        getCms(),
+                        new CmsFileInfoDialog(getJsp()),
+                        (I_CmsWidgetParameter)value));
+                } catch (CmsXmlException e) {
+                    LOG.error(e.getMessage(), e);
+                }
+            }
+        }
+    }
+    
     /**
      * Public constructor with JSP action element.<p>
      * 
@@ -551,7 +601,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        super.initWorkplaceRequestValues(settings, request);
+        super.initWorkplaceRequestValues(settings, request);     
         try {
             CmsFile file1 = CmsResourceComparisonDialog.readFile(
                 getCms(),
@@ -602,6 +652,7 @@ public class CmsResourceComparisonDialog extends CmsDialog {
     private String extractElements(I_CmsXmlDocument xmlDoc) {
 
         StringBuffer result = new StringBuffer();
+        if (xmlDoc instanceof CmsXmlPage) {
         List locales = xmlDoc.getLocales();
         Iterator i = locales.iterator();
         boolean firstIter = true;
@@ -610,31 +661,32 @@ public class CmsResourceComparisonDialog extends CmsDialog {
                 result.append("\n\n-----");
             }
             Locale locale = (Locale)i.next();
-            result.append("\n\n[");
-            result.append(locale.toString()).append(']');
+            result.append("\n\n[").append(locale.toString()).append(']');
             List elements = xmlDoc.getValues(locale);
             Iterator j = elements.iterator();
             while (j.hasNext()) {
-                I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
-                result.append("\n\n[");
-                if (xmlDoc instanceof CmsXmlPage) {
+                    I_CmsXmlContentValue value = (I_CmsXmlContentValue)j.next();
+                    result.append("\n\n[");
                     // output value of name attribute
                     result.append(value.getElement().attribute(0).getValue());
-                } else {
-                    // for xml content, output name of node
-                    result.append(value.getName());
+                    result.append("]\n\n");
+                    try {
+                        I_CmsWidget widget = value.getDocument().getContentDefinition().getContentHandler().getWidget(
+                            value);
+                        result.append(widget.getWidgetStringValue(
+                            getCms(),
+                            new CmsFileInfoDialog(getJsp()),
+                            (I_CmsWidgetParameter)value));
+                    } catch (CmsXmlException e) {
+                        LOG.error(e.getMessage(), e);
+                    }
                 }
-                result.append("]\n\n");
-                try {
-                    result.append(value.getDocument().getContentDefinition().getContentHandler().getWidget(value).getWidgetStringValue(
-                        getCms(),
-                        new CmsFileInfoDialog(getJsp()),
-                        (I_CmsWidgetParameter)value));
-                } catch (CmsXmlException e) {
-                    LOG.error(e.getMessage(), e);
-                }
-            }
             firstIter = false;
+        }
+        } else if (xmlDoc instanceof CmsXmlContent) {
+            CmsXmlContentTextExtractor visitor = new CmsXmlContentTextExtractor(result);
+            ((CmsXmlContent)xmlDoc).visitAllValuesWith(visitor);
+            
         }
         return result.toString();
     }
