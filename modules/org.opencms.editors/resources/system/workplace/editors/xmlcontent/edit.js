@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2005/10/25 09:08:58 $
- * Version: $Revision: 1.3.2.2 $
+ * Date   : $Date: 2006/03/21 14:13:08 $
+ * Version: $Revision: 1.3.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,30 +23,37 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
 //------------------------------------------------------//
-// Script for xml content editor 
+// Script for xml content editor
 //------------------------------------------------------//
 
 // stores the opened window object
 var treewin = null;
+// stores id prefix of opened element operation buttons
+var oldEditorButtons = null;
+// helper for the timeout on button row
+var buttonTimer = null;
+// mouse up & resize event closes open element operation buttons
+document.onmouseup = hideElementButtons;
+window.onresize = hideElementButtons;
 
 // function action on button click
-function buttonAction(para) {	
+function buttonAction(para) {
 	var _form = document.EDITOR;
 	_form.target = "_self";
 	submit(_form);
 
 	switch (para) {
-	case 1: 
+	case 1:
 		// exit editor without saving
 		_form.action.value = actionExit;
-		_form.target = "_top";		
+		_form.target = "_top";
 		_form.submit();
 		break;
 	case 2:
@@ -75,12 +82,12 @@ function buttonAction(para) {
 		_form.submit();
 		break;
 	case 7:
-		// preview	
+		// preview
 		_form.action.value = actionPreview;
 		_form.target = "PREVIEW";
 		openWindow = window.open("about:blank", "PREVIEW", "width=950,height=700,left=10,top=10,resizable=yes,scrollbars=yes,location=yes,menubar=yes,toolbar=yes,dependent=yes");
 		_form.submit();
-		break;	
+		break;
 	case 8:
 		// check elements before performing customized action
 		_form.action.value = actionCheck;
@@ -92,13 +99,23 @@ function buttonAction(para) {
 		_form.target = "_top";
 		_form.submit();
 		break;
+	case 10:
+		// move element down
+		_form.action.value = actionMoveElementDown;
+		_form.submit();
+		break;
+	case 11:
+		// move element up
+		_form.action.value = actionMoveElementUp;
+		_form.submit();
+		break;
 	default:
 		alert("No action defined for this button!");
 		break;
 	}
 }
 
-function submit(form) {	
+function submit(form) {
 	try {
 		// submit html editing areas if present
 		submitHtml(form);
@@ -118,36 +135,47 @@ function opensmallwin(url, name, w, h) {
 
 // add an optional element to the currently edited content
 function addElement(elemName, insertAfter) {
-	try {
-		if (browser.isIE) {
-			top.edit.buttonbar.lastPosY = document.body.scrollTop;	
-		} else {
-			top.edit.buttonbar.lastPosY = window.pageYOffset;
-		}	
-	} catch (e) {
-		// ignore
-	}
+	setLastPosition();
 	var _form = document.EDITOR;
 	_form.elementname.value = elemName;
 	_form.elementindex.value = insertAfter;
 	buttonAction(5);
 }
 
+// move an element in currently edited content
+function moveElement(elemName, index, direction) {
+	setLastPosition();
+	var _form = document.EDITOR;
+	_form.elementname.value = elemName;
+	_form.elementindex.value = index;
+	if (direction == "down") {
+		buttonAction(10);
+	} else {
+		buttonAction(11);
+	}
+
+}
+
 // remove an optional element from currently edited content
 function removeElement(elemName, index) {
+	setLastPosition();
+	var _form = document.EDITOR;
+	_form.elementname.value = elemName;
+	_form.elementindex.value = index;
+	buttonAction(6);
+}
+
+// sets the last scroll position to return to
+function setLastPosition() {
 	try {
 		if (browser.isIE) {
-			top.edit.buttonbar.lastPosY = document.body.scrollTop;	
+			top.edit.buttonbar.lastPosY = document.body.scrollTop;
 		} else {
 			top.edit.buttonbar.lastPosY = window.pageYOffset;
 		}
 	} catch (e) {
 		// ignore
-	}	
-	var _form = document.EDITOR;
-	_form.elementname.value = elemName;
-	_form.elementindex.value = index;
-	buttonAction(6);
+	}
 }
 
 // checks and adjusts the language selector in case an error is found in the edited content
@@ -213,4 +241,123 @@ function closeTreeWin() {
 		treeField = null;
 		treeDoc = null;
 	}
+}
+
+// shows the element operation buttons
+function showElementButtons(id) {
+	var elem = document.getElementById("bt." + id);
+	var icon = document.getElementById("btimg." + id);
+	if (oldEditorButtons != null && oldEditorButtons != id) {
+		// close eventually open element buttons
+		document.getElementById("bt." + oldEditorButtons).style.visibility = "hidden";
+	}
+	showEditorElement(elem, icon, 10, 20, true);
+	oldEditorButtons = id;
+}
+
+// hides the element operation buttons
+function hideElementButtons() {
+	if (oldEditorButtons != null) {
+		document.getElementById("bt." + oldEditorButtons).style.visibility = "hidden";
+		oldEditorButtons = null;
+		return false;
+	}
+	return true;
+}
+
+// checks presence of element buttons and hides row after a timeout
+function checkElementButtons(resetTimer) {
+	if (resetTimer) {
+		// reset the timer because cursor is over buttons
+		if (buttonTimer != null) {
+			clearTimeout(buttonTimer);
+		}
+	} else {
+		// set timeout for button row (mouseout)
+		buttonTimer = setTimeout("hideElementButtons()", 1500);
+	}
+}
+
+// shows the specified element belonging to the given icon (for help & element buttons
+function showEditorElement(elem, icon, xOffset, yOffset, alignToLeft) {
+
+    if (elem.style.visibility == "visible") {
+        return;
+    }
+
+    x = findPosX(icon) + xOffset;
+    y = findPosY(icon) + yOffset;
+    var textHeight = elem.scrollHeight;
+    var textWidth = elem.scrollWidth;
+    var scrollSize = 20;
+    var scrollTop = 0;
+    var scrollLeft = 0;
+    var clientHeight = 0;
+    var clientWidth = 0;
+    if (document.documentElement && (document.documentElement.scrollTop || document.documentElement.clientHeight)) {
+        scrollTop = document.documentElement.scrollTop;
+        scrollLeft = document.documentElement.scrollLeft;
+        clientHeight = document.documentElement.clientHeight;
+        clientWidth = document.documentElement.clientWidth;
+    } else if (document.body) {
+        scrollTop = document.body.scrollTop;
+        scrollLeft = document.body.scrollLeft;
+        clientHeight = document.body.clientHeight;
+        clientWidth = document.body.clientWidth;
+    }
+    if ((y + textHeight) > (clientHeight + scrollTop)) {
+        y = y - textHeight;
+    }
+    if (y < scrollTop) {
+        y = (clientHeight + scrollTop) - (textHeight + scrollSize);
+    }
+    if (y < scrollTop) {
+        y = scrollTop;
+    }
+    if ((x + textWidth) > (clientWidth + scrollLeft) || alignToLeft) {
+        x = x - textWidth;
+    }
+    if (x < scrollLeft) {
+        x = (clientWidth + scrollLeft) - (textWidth + scrollSize);
+    }
+    if (x < scrollLeft) {
+        x = scrollLeft;
+    }
+
+    if (alignToLeft) {
+    	x += xOffset;
+    }
+
+    elem.style.left = x + "px";
+    elem.style.top =  y + "px";
+    elem.style.visibility = "visible";
+    return y;
+}
+
+// finds the x position of an element
+function findPosX(obj) {
+    var curleft = 0;
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curleft += obj.offsetLeft - obj.scrollLeft;
+            obj = obj.offsetParent;
+        }
+    } else if (obj.x) {
+        curleft += obj.x;
+    }
+    return curleft;
+}
+
+// finds the y position of an element
+function findPosY(obj) {
+    var curtop = 0;
+    if (obj.offsetParent) {
+        while (obj.offsetParent) {
+            curtop += obj.offsetTop - obj.scrollTop;
+            obj = obj.offsetParent;
+        }
+    } else if (obj.y) {
+        curtop += obj.y;
+    }
+    return curtop;
 }

@@ -139,6 +139,8 @@ var actionRemoveElement = "<%= wp.EDITOR_ACTION_ELEMENT_REMOVE %>";
 var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
 var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= wp.EDITOR_SAVE %>";
+var actionMoveElementDown = "<%= wp.EDITOR_ACTION_ELEMENT_MOVE_DOWN %>";
+var actionMoveElementUp = "<%= wp.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
 
 // the currently edited element language
 var editedElementLanguage = "<%= wp.getParamElementlanguage() %>";

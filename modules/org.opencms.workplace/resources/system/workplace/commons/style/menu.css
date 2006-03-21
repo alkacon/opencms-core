@@ -1076,6 +1076,22 @@ body.dialogadmin {
 	padding: 0;<% } %>
 }
 
+.xmlButtons {
+	color: WindowText; 
+	position: absolute; 
+	top: 0px; 
+	left: 0px; 
+	width: 90px; 
+	border-top: 1px solid ThreeDHighlight;
+	border-left: 1px solid ThreeDHighlight;
+	border-right: 1px solid ThreeDShadow;
+	border-bottom: 1px solid ThreeDShadow;
+	padding: 2px;
+	background-color: ThreeDFace; 
+	visibility: hidden; 
+	font-size: 8pt;
+}
+
 .textInput {<%
 	if (style != NEW_ADMIN) { %>
 	width: 100%;

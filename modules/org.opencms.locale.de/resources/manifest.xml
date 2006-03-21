@@ -671,7 +671,31 @@
 				</property>
 			</properties>
 			<accesscontrol/>
-		</file>		
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/editors</destination>
+			<type>folder</type>
+			<datelastmodified>Tue, 21 Mar 2006 13:14:03 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:14:03 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/workplace/editors/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/workplace/editors/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>9d45e447-b8dc-11da-ba34-77b5492396c1</uuidresource>
+			<datelastmodified>Tue, 21 Mar 2006 13:15:18 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:14:23 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>	
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workplace/explorer</destination>
 			<type>folder</type>

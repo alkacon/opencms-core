@@ -51,7 +51,12 @@
 			<resource uri="/system/workplace/resources/buttons/imagegallery.png"/>
 			<resource uri="/system/workplace/resources/buttons/linkgallery.png"/>
 			<resource uri="/system/workplace/resources/buttons/logout.png"/>
+			<resource uri="/system/workplace/resources/buttons/move_down.png"/>
+			<resource uri="/system/workplace/resources/buttons/move_down_in.png"/>
+			<resource uri="/system/workplace/resources/buttons/move_up.png"/>
+			<resource uri="/system/workplace/resources/buttons/move_up_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/new.png"/>
+			<resource uri="/system/workplace/resources/buttons/new_in.png"/>
 			<resource uri="/system/workplace/resources/buttons/preferences.png"/>
 			<resource uri="/system/workplace/resources/buttons/preview.png"/>
 			<resource uri="/system/workplace/resources/buttons/publish.png"/>
@@ -1474,6 +1479,58 @@
 			<accesscontrol/>
 		</file>
 		<file>
+			<source>system/workplace/resources/buttons/move_down.png</source>
+			<destination>system/workplace/resources/buttons/move_down.png</destination>
+			<type>image</type>
+			<uuidresource>f2442980-b8dc-11da-ba34-77b5492396c1</uuidresource>
+			<datelastmodified>Tue, 21 Mar 2006 13:16:45 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:16:45 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/move_down_in.png</source>
+			<destination>system/workplace/resources/buttons/move_down_in.png</destination>
+			<type>image</type>
+			<uuidresource>f265bb45-b8dc-11da-ba34-77b5492396c1</uuidresource>
+			<datelastmodified>Tue, 21 Mar 2006 13:16:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:16:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/move_up.png</source>
+			<destination>system/workplace/resources/buttons/move_up.png</destination>
+			<type>image</type>
+			<uuidresource>f26bd5ca-b8dc-11da-ba34-77b5492396c1</uuidresource>
+			<datelastmodified>Tue, 21 Mar 2006 13:16:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:16:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/resources/buttons/move_up_in.png</source>
+			<destination>system/workplace/resources/buttons/move_up_in.png</destination>
+			<type>image</type>
+			<uuidresource>f276ab3f-b8dc-11da-ba34-77b5492396c1</uuidresource>
+			<datelastmodified>Tue, 21 Mar 2006 13:16:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:16:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
 			<source>system/workplace/resources/buttons/new.png</source>
 			<destination>system/workplace/resources/buttons/new.png</destination>
 			<type>image</type>
@@ -1486,6 +1543,20 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
+		<file>
+			<source>system/workplace/resources/buttons/new_in.png</source>
+			<destination>system/workplace/resources/buttons/new_in.png</destination>
+			<type>image</type>
+			<uuidresource>f27fd304-b8dc-11da-ba34-77b5492396c1</uuidresource>
+			<datelastmodified>Tue, 21 Mar 2006 13:16:46 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Tue, 21 Mar 2006 13:16:46 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+
 		<file>
 			<source>system/workplace/resources/buttons/preferences.png</source>
 			<destination>system/workplace/resources/buttons/preferences.png</destination>

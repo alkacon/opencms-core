@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/20 18:26:01 $
- * Version: $Revision: 1.682.2.94 $
+ * Date   : $Date: 2006/03/21 14:14:06 $
+ * Version: $Revision: 1.682.2.95 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@ OpenCms 6.1.11 - March ???, 2006
 * Fixed issue #1032: needless module sub-directories are skipped during setup
 * Fixed issue #1049: Multi copy & move operations now work with relative paths
 * Fixed issue #1043: Html from FCKeditor and XML contents is now re-formatted while saving, so that "diff" can be used
+! Added "move content up and down" function to XML content editor
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
