@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2005/09/20 15:39:07 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2006/03/21 15:42:34 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,7 +252,8 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
 
         float boost = 1.0f;
         // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"
-        if ((value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, true).getValue()) != null) {
+        value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_SEARCH_PRIORITY, true).getValue();
+        if (value != null) {
             value = value.trim().toLowerCase();
             if (value.equals(I_CmsDocumentFactory.SEARCH_PRIORITY_MAX_VALUE)) {
                 boost = 2.0f;

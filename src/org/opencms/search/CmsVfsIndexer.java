@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2005/08/31 16:20:24 $
- * Version: $Revision: 1.33 $
+ * Date   : $Date: 2006/03/21 15:42:34 $
+ * Version: $Revision: 1.33.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33 $ 
+ * @version $Revision: 1.33.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,10 +120,11 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      */
     public A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException {
 
-        Field f;
+
         A_CmsIndexResource result = null;
 
-        if ((f = doc.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
+        Field f = doc.getField(I_CmsDocumentFactory.DOC_PATH);
+        if (f != null) {
 
             String path = cms.getRequestContext().removeSiteRoot(f.stringValue());
             CmsResource resource = cms.readResource(path);

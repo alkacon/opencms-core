@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2005/06/23 11:11:28 $
- * Version: $Revision: 1.19 $
+ * Date   : $Date: 2006/03/21 15:42:34 $
+ * Version: $Revision: 1.19.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.lucene.document.Field;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19 $ 
+ * @version $Revision: 1.19.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -85,47 +85,52 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
      */
     protected CmsSearchResult(int score, Document luceneDocument, String excerpt) {
 
-        Field f = null;
+        Field f;
 
         m_score = score;
         m_excerpt = excerpt;
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DESCRIPTION)) != null) {
+        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DESCRIPTION);
+        if (f != null) {
             m_description = f.stringValue();
         } else {
             m_description = null;
         }
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_KEYWORDS)) != null) {
+        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_KEYWORDS);
+        if (f != null) {
             m_keyWords = f.stringValue();
         } else {
             m_keyWords = null;
         }
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_TITLE_KEY)) != null) {
+        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_TITLE_KEY);
+        if (f != null) {
             m_title = f.stringValue();
         } else {
             m_title = null;
         }
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_PATH)) != null) {
+        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_PATH);
+        if (f != null) {
             m_path = f.stringValue();
         } else {
             m_path = null;
         }
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_CREATED)) != null) {
+        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_CREATED);
+        if (f != null) {
             m_dateCreated = DateField.stringToDate(f.stringValue());
         } else {
             m_dateCreated = null;
         }
 
-        if ((f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED)) != null) {
+        f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED);
+        if (f != null) {
             m_dateLastModified = DateField.stringToDate(f.stringValue());
         } else {
             m_dateLastModified = null;
         }
-
     }
 
     /**
