@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsAttributeComparisonList.java,v $
- * Date   : $Date: 2006/02/09 11:53:11 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/03/21 15:09:12 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -158,6 +158,10 @@ public class CmsAttributeComparisonList extends CmsPropertyComparisonList {
             }
             ret.add(item);
         }
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
+            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
+            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
         return ret;
     }
 

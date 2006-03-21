@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/01/11 09:05:17 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/03/21 15:09:34 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -205,9 +205,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                 LOG.debug(e.getMessage(), e);
             }
 
-        } else if (getParamListAction().equals(LIST_IACTION_SHOW)) {
-            m_showAll = !m_showAll;
-            refreshList();
         }
         super.executeListIndepActions();
     }
@@ -374,16 +371,26 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     protected List getListItems() throws CmsException {
 
         List result = new ArrayList();
-        CmsFile resource1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
-            getParamVersion1(), Integer.parseInt(getParamTagId1()));
-        CmsFile resource2 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath2(), 
-            getParamVersion2(), Integer.parseInt(getParamTagId2()));
+        CmsFile resource1 = CmsResourceComparisonDialog.readFile(
+            getCms(),
+            getParamPath1(),
+            getParamVersion1(),
+            Integer.parseInt(getParamTagId1()));
+        CmsFile resource2 = CmsResourceComparisonDialog.readFile(
+            getCms(),
+            getParamPath2(),
+            getParamVersion2(),
+            Integer.parseInt(getParamTagId2()));
         Iterator diffs = new CmsXmlDocumentComparison(getCms(), resource1, resource2).getElements().iterator();
         while (diffs.hasNext()) {
             CmsElementComparison comparison = (CmsElementComparison)diffs.next();
             String locale = comparison.getLocale();
             String attribute = comparison.getName();
             CmsListItem item = getList().newItem(locale + attribute);
+            if (!getList().getMetadata().getItemDetailDefinition(LIST_IACTION_SHOW).isVisible()) {
+                // do not display entry
+                continue;
+            }
             item.set(LIST_COLUMN_LOCALE, locale);
             item.set(LIST_COLUMN_ATTRIBUTE, attribute);
             if (comparison instanceof CmsXmlContentElementComparison) {
@@ -397,7 +404,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             } else if (CmsResourceComparison.TYPE_CHANGED.equals(comparison.getStatus())) {
                 item.set(LIST_COLUMN_STATUS, key(Messages.GUI_COMPARE_CHANGED_0));
             } else {
-                if (!m_showAll) {
+                if (!getList().getMetadata().getItemDetailDefinition(LIST_IACTION_SHOW).isVisible()) {
                     // do not display entry
                     continue;
                 } else {
@@ -412,6 +419,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
                 CmsPropertyComparisonList.TRIM_AT_LENGTH), "\n", "")));
             result.add(item);
         }
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
+            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
+            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
         return result;
     }
 
@@ -431,7 +442,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
      */
     protected void setColumns(CmsListMetadata metadata) {
 
-        metadata.setVolatile(true);
         // create column for icon
         CmsListColumnDefinition iconCol = new CmsListColumnDefinition(LIST_COLUMN_ICON);
         iconCol.setName(Messages.get().container(Messages.GUI_COMPARE_COLS_ICON_0));
@@ -561,11 +571,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
         // add event details
         CmsListItemDetails eventDetails = new CmsListItemDetails(LIST_IACTION_SHOW);
-        if (m_showAll) {
-            eventDetails.setVisible(true);
-        } else {
-            eventDetails.setVisible(false);
-        }
         eventDetails.setVisible(false);
         eventDetails.setShowActionName(Messages.get().container(Messages.GUI_COMPARE_SHOW_ALL_ELEMENTS_0));
         eventDetails.setHideActionName(Messages.get().container(Messages.GUI_COMPARE_HIDE_IDENTICAL_ELEMENTS_0));

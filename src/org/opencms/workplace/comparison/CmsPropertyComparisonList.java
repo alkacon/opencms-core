@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsPropertyComparisonList.java,v $
- * Date   : $Date: 2006/02/09 11:53:11 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2006/03/21 15:09:45 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -408,6 +408,10 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
             }
             ret.add(item);
         }
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_1).setName(
+            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion1()));
+        getList().getMetadata().getColumnDefinition(LIST_COLUMN_VERSION_2).setName(
+            Messages.get().container(Messages.GUI_COMPARE_VERSION_1, getParamVersion2()));
         return ret;
     }
 
@@ -428,7 +432,7 @@ public class CmsPropertyComparisonList extends A_CmsListDialog {
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
 
-        super.initWorkplaceRequestValues(settings, request);
+        super.initWorkplaceRequestValues(settings, request);     
         try {
             m_file1 = CmsResourceComparisonDialog.readFile(getCms(), getParamPath1(), 
                 getParamVersion1(), Integer.parseInt(getParamTagId1()));
