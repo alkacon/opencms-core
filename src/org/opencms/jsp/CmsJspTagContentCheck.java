@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagContentCheck.java,v $
- * Date   : $Date: 2005/10/10 16:11:03 $
- * Version: $Revision: 1.16 $
+ * Date   : $Date: 2006/03/21 16:33:31 $
+ * Version: $Revision: 1.17 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.jsp.tagext.TagSupport;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.16 $ 
+ * @version $Revision: 1.17 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,11 +133,14 @@ public class CmsJspTagContentCheck extends TagSupport {
         // get loaded content from parent <contentload> tag
         A_CmsXmlDocument xmlContent = contentContainer.getXmlDocument();
 
-        if (m_locale == null) {
-            m_locale = contentContainer.getXmlDocumentLocale();
+        // determine the locale to display
+        Locale locale = m_locale;
+        if (locale == null) {
+            // no locale was set, use default from parent tag (usually "contentload")
+            locale = contentContainer.getXmlDocumentLocale();
         }
 
-        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, m_locale)) {
+        if (contentCheckTagAction(m_elementList, prefix, m_checkall, m_checknone, xmlContent, locale)) {
             return EVAL_BODY_INCLUDE;
         } else {
             return SKIP_BODY;
