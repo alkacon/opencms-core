@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsHistoryList.java,v $
- * Date   : $Date: 2006/02/09 11:53:11 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/03/21 15:08:22 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch  
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.2 
  */
@@ -85,7 +85,7 @@ public class CmsHistoryList extends A_CmsListDialog {
     /** 
      * Wrapper class for the version which is either an integer or the string "offline".<p>
      */
-    public class VersionWrapper implements Comparable {
+    public static class CmsVersionWrapper implements Comparable {
         
         private Object m_version;
         
@@ -93,7 +93,7 @@ public class CmsHistoryList extends A_CmsListDialog {
          * Constructs a new version wrapper.<p>
          * @param version the version of the file
          */
-        public VersionWrapper(Object version) {
+        public CmsVersionWrapper(Object version) {
             
             m_version = version;
         }
@@ -104,7 +104,7 @@ public class CmsHistoryList extends A_CmsListDialog {
          */
         public int compareTo(Object o) {
             
-            VersionWrapper version = (VersionWrapper)o;
+            CmsVersionWrapper version = (CmsVersionWrapper)o;
             if (String.class.equals(version.getVersion().getClass()) && Integer.class.equals(getVersion().getClass())) {
                 return -1;
             } else if (Integer.class.equals(version.getVersion().getClass()) && String.class.equals(getVersion().getClass())) {
@@ -247,12 +247,21 @@ public class CmsHistoryList extends A_CmsListDialog {
             CmsListItem item1 = (CmsListItem)getSelectedItems().get(0);
             CmsListItem item2 = (CmsListItem)getSelectedItems().get(1);
             Map params = new HashMap();
-            params.put(PARAM_TAGID_1, item1.getId());
-            params.put(PARAM_TAGID_2, item2.getId());
-            params.put(PARAM_VERSION_1, item1.get(LIST_COLUMN_VERSION));
-            params.put(PARAM_VERSION_2, item2.get(LIST_COLUMN_VERSION));
-            params.put(PARAM_PATH_1, item1.get(LIST_COLUMN_RESOURCE_PATH));
-            params.put(PARAM_PATH_2, item2.get(LIST_COLUMN_RESOURCE_PATH));
+            if (((Comparable)item2.get(LIST_COLUMN_VERSION)).compareTo(item1.get(LIST_COLUMN_VERSION)) > 0) {
+                params.put(PARAM_TAGID_1, item1.getId());
+                params.put(PARAM_TAGID_2, item2.getId());
+                params.put(PARAM_VERSION_1, item1.get(LIST_COLUMN_VERSION));
+                params.put(PARAM_VERSION_2, item2.get(LIST_COLUMN_VERSION));
+                params.put(PARAM_PATH_1, item1.get(LIST_COLUMN_RESOURCE_PATH));
+                params.put(PARAM_PATH_2, item2.get(LIST_COLUMN_RESOURCE_PATH));                
+            } else {
+                params.put(PARAM_TAGID_1, item2.getId());
+                params.put(PARAM_TAGID_2, item1.getId());
+                params.put(PARAM_VERSION_1, item2.get(LIST_COLUMN_VERSION));
+                params.put(PARAM_VERSION_2, item1.get(LIST_COLUMN_VERSION));
+                params.put(PARAM_PATH_1, item2.get(LIST_COLUMN_RESOURCE_PATH));
+                params.put(PARAM_PATH_2, item1.get(LIST_COLUMN_RESOURCE_PATH));    
+            }
             params.put(PARAM_ACTION, DIALOG_INITIAL);
             params.put(PARAM_STYLE, CmsToolDialog.STYLE_NEW);
             params.put(PARAM_RESOURCE, getParamResource());
@@ -316,7 +325,7 @@ public class CmsHistoryList extends A_CmsListDialog {
             String datePublished = getMessages().getDateTime(project.getPublishingDate());
             CmsListItem item = getList().newItem(versionId);
             //version
-            item.set(LIST_COLUMN_VERSION, new VersionWrapper(new Integer(file.getVersionId())));
+            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(new Integer(file.getVersionId())));
             // filename
             item.set(LIST_COLUMN_DATE_PUBLISHED, datePublished);
             // nicename
@@ -337,7 +346,7 @@ public class CmsHistoryList extends A_CmsListDialog {
         if (offlineFile.getState() != CmsResource.STATE_UNCHANGED) {
             CmsListItem item = getList().newItem("-1");
             //version
-            item.set(LIST_COLUMN_VERSION, new VersionWrapper(OFFLINE_PROJECT));
+            item.set(LIST_COLUMN_VERSION, new CmsVersionWrapper(OFFLINE_PROJECT));
             // filename
             item.set(LIST_COLUMN_DATE_PUBLISHED, "-");
             // nicename
