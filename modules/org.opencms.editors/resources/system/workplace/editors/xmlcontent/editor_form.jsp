@@ -121,9 +121,12 @@ var initialized = false;
 
 // the OpenCms context path
 var contextPath = "<%= wp.getOpenCmsContext() %>";
-
 // the OpenCms workplace path
-var workplacePath="<%= cms.link("/system/workplace/") %>";    
+var workplacePath="<%= cms.link("/system/workplace/") %>";
+// skin URI needed in included javascript files 
+var skinUri = "<%= wp.getSkinUri() %>";
+// style of the buttons
+var buttonStyle = <%= buttonStyle %>;
 
 // needed when strings are filled in delayed
 var stringsPresent = false;
@@ -141,6 +144,12 @@ var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
 var actionSave = "<%= wp.EDITOR_SAVE %>";
 var actionMoveElementDown = "<%= wp.EDITOR_ACTION_ELEMENT_MOVE_DOWN %>";
 var actionMoveElementUp = "<%= wp.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
+
+// Localized button labels
+var LANG_BT_DELETE = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";
+var LANG_BT_ADD = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_ADDNEW_0) %>";
+var LANG_BT_MOVE_UP = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_MOVE_UP_0) %>";
+var LANG_BT_MOVE_DOWN = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_MOVE_DOWN_0) %>";
 
 // the currently edited element language
 var editedElementLanguage = "<%= wp.getParamElementlanguage() %>";

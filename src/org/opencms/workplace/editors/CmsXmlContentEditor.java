@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.65.2.7 $
+ * Date   : $Date: 2006/03/22 13:19:18 $
+ * Version: $Revision: 1.65.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.7 $ 
+ * @version $Revision: 1.65.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,9 +138,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
     /** The content object to edit. */
     private CmsXmlContent m_content;
-
-    /** Stores the HTML for the element button layers. */
-    private StringBuffer m_elementButtons;
 
     /** The element locale. */
     private Locale m_elementLocale;
@@ -642,8 +639,6 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // set "editor mode" attribute (required for link replacement in the root site) 
         getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
-        // create element button buffer
-        m_elementButtons = new StringBuffer(16384);
         return getXmlEditorForm(m_content.getContentDefinition(), "", true).toString();
     }
 
@@ -672,10 +667,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
             }
 
-            // add stored element button layers
-            if (m_elementButtons != null) {
-                result.append(m_elementButtons);
-            }
+            // add empty element button layer
+            result.append("<div class=\"xmlButtons\" id=\"xmlElementButtons\" ");
+            result.append("onmouseover=\"checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\"></div>\n");
 
             // return the HTML
             return result.toString();
@@ -1080,101 +1074,74 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     private String buildElementButtons(String elementName, int index, boolean addElement, boolean removeElement) {
 
-        StringBuffer buttons = new StringBuffer(1024);
+        StringBuffer jsCall = new StringBuffer(512);
 
         // indicates if at least one button is active
         boolean buttonPresent = false;
+        
+        jsCall.append("showElementButtons('");
+        jsCall.append(elementName);
+        jsCall.append("', ");
+        jsCall.append(index);
+        jsCall.append(", ");
 
         // build the remove element button if required
         if (removeElement) {
-            StringBuffer href = new StringBuffer(64);
-            href.append("javascript:removeElement('");
-            href.append(elementName);
-            href.append("', ");
-            href.append(index);
-            href.append(");");
-            buttons.append(button(href.toString(), null, "deletecontent.png", Messages.GUI_BUTTON_DELETE_0, 0));
+            jsCall.append(Boolean.TRUE);
             buttonPresent = true;
         } else {
-            buttons.append(button(null, null, "deletecontent_in.png", Messages.GUI_BUTTON_DELETE_0, 0));
+            jsCall.append(Boolean.FALSE);
         }
-
+        jsCall.append(", ");
+        
         // build the move down button (move down in API is move up for content editor)
         if (index > 0) {
             // build active move down button
-            StringBuffer href = new StringBuffer(64);
-            href.append("javascript:moveElement('");
-            href.append(elementName);
-            href.append("', ");
-            href.append(index);
-            href.append(", 'down');");
-            buttons.append(button(href.toString(), null, "move_up.png", Messages.GUI_EDITOR_XMLCONTENT_MOVE_UP_0, 0));
+            jsCall.append(Boolean.TRUE);
             buttonPresent = true;
         } else {
-            // build inactive move down button
-            buttons.append(button(null, null, "move_up_in.png", Messages.GUI_EDITOR_XMLCONTENT_MOVE_UP_0, 0));
+            jsCall.append(Boolean.FALSE);
         }
+        jsCall.append(", ");
 
         // build the move up button (move up in API is move down for content editor)
         int indexCount = m_content.getIndexCount(elementName, getElementLocale());
         if (index < (indexCount - 1)) {
             // build active move up button
-            StringBuffer href = new StringBuffer(64);
-            href.append("javascript:moveElement('");
-            href.append(elementName);
-            href.append("', ");
-            href.append(index);
-            href.append(", 'up');");
-            buttons.append(button(href.toString(), null, "move_down.png", Messages.GUI_EDITOR_XMLCONTENT_MOVE_DOWN_0, 0));
+            jsCall.append(Boolean.TRUE);
             buttonPresent = true;
         } else {
-            // build inactive move up button
-            buttons.append(button(null, null, "move_down_in.png", Messages.GUI_EDITOR_XMLCONTENT_MOVE_DOWN_0, 0));
+            jsCall.append(Boolean.FALSE);
         }
+        jsCall.append(", ");
 
         // build the add element button if required
         if (addElement) {
-            StringBuffer href = new StringBuffer(64);
-            href.append("javascript:addElement('");
-            href.append(elementName);
-            href.append("', ");
-            href.append(index);
-            href.append(");");
-            buttons.append(button(href.toString(), null, "new.png", Messages.GUI_BUTTON_ADDNEW_0, 0));
+            jsCall.append(Boolean.TRUE);
             buttonPresent = true;
         } else {
-            buttons.append(button(null, null, "new_in.png", Messages.GUI_BUTTON_ADDNEW_0, 0));
+            jsCall.append(Boolean.FALSE);
         }
+        jsCall.append(");");
 
-        StringBuffer result = new StringBuffer(512);
+        StringBuffer result = new StringBuffer(1024);
         if (buttonPresent) {
             // at least one button active, create mouseover button
-            StringBuffer elemId = new StringBuffer(32);
-            // build button id
-            elemId.append(elementName).append(".").append(index);
-
-            StringBuffer href = new StringBuffer(256);
-            href.append("javascript:showElementButtons('");
-            href.append(elemId);
-            href.append("');\" onmouseover=\"showElementButtons('");
-            href.append(elemId);
-            href.append("');checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\" id=\"btimg.");
-            href.append(elemId);
-
+            StringBuffer href = new StringBuffer(512);
+            href.append("javascript:");
+            href.append(jsCall);
+            href.append("\" onmouseover=\"");
+            href.append(jsCall);
+            href.append("checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\" id=\"btimg.");
+            href.append(elementName).append(".").append(index);
             result.append(button(
                 href.toString(),
                 null,
                 "directedit_op.png",
                 Messages.GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0,
                 0));
-
-            // append the button row to the stored buttons
-            m_elementButtons.append("<div class=\"xmlButtons\" id=\"bt.");
-            m_elementButtons.append(elemId);
-            m_elementButtons.append("\" onmouseover=\"checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\"><table border=\"0\" cellpadding=\"0\" cellspacing=\"0\"><tr>\n\t");
-            m_elementButtons.append(buttons);
-            m_elementButtons.append("</tr></table></div>\n");
         } else {
+            // no active button, create a spacer
             result.append(buttonBarSpacer(1));
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/edit.js,v $
- * Date   : $Date: 2006/03/21 14:13:08 $
- * Version: $Revision: 1.3.2.3 $
+ * Date   : $Date: 2006/03/22 13:19:18 $
+ * Version: $Revision: 1.3.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -244,21 +244,60 @@ function closeTreeWin() {
 }
 
 // shows the element operation buttons
-function showElementButtons(id) {
-	var elem = document.getElementById("bt." + id);
-	var icon = document.getElementById("btimg." + id);
-	if (oldEditorButtons != null && oldEditorButtons != id) {
+function showElementButtons(elementName, elementIndex, showRemove, showUp, showDown, showAdd) {
+	var elemId = elementName + "." + elementIndex;
+	if (oldEditorButtons != null && oldEditorButtons != elemId) {
 		// close eventually open element buttons
-		document.getElementById("bt." + oldEditorButtons).style.visibility = "hidden";
+		document.getElementById("xmlElementButtons").style.visibility = "hidden";
 	}
+	// get button element
+	var elem = document.getElementById("xmlElementButtons");
+
+	// create the button row HTML
+	var buttons = "<table border=\"0\" cellpadding=\"0\" cellspacing=\"0\">";
+
+	// remove element button
+	if (showRemove) {
+		buttons += button("javascript:removeElement('" + elementName + "', " + elementIndex + ")", null, "deletecontent", LANG_BT_DELETE, buttonStyle);
+	} else {
+		buttons += button(null, null, "deletecontent_in", LANG_BT_DELETE, buttonStyle);
+	}
+
+	// move up element button
+	if (showUp) {
+		buttons += button("javascript:moveElement('" + elementName + "', " + elementIndex + ", 'down')", null, "move_up", LANG_BT_MOVE_UP, buttonStyle);
+	} else {
+		buttons += button(null, null, "move_up_in", LANG_BT_MOVE_UP, buttonStyle);
+	}
+
+	// move down element button
+	if (showDown) {
+		buttons += button("javascript:moveElement('" + elementName + "', " + elementIndex + ", 'up')", null, "move_down", LANG_BT_MOVE_DOWN, buttonStyle);
+	} else {
+		buttons += button(null, null, "move_down_in", LANG_BT_MOVE_DOWN, buttonStyle);
+	}
+
+	// add element button
+	if (showAdd) {
+		buttons += button("javascript:addElement('" + elementName + "', " + elementIndex + ")", null, "new", LANG_BT_ADD, buttonStyle);
+	} else {
+		buttons += button(null, null, "new_in", LANG_BT_ADD, buttonStyle);
+	}
+
+	buttons += "</table>";
+
+	// set the created HTML
+	elem.innerHTML = buttons;
+	// get the icon
+	var icon = document.getElementById("btimg." + elemId);
 	showEditorElement(elem, icon, 10, 20, true);
-	oldEditorButtons = id;
+	oldEditorButtons = elemId;
 }
 
 // hides the element operation buttons
 function hideElementButtons() {
 	if (oldEditorButtons != null) {
-		document.getElementById("bt." + oldEditorButtons).style.visibility = "hidden";
+		document.getElementById("xmlElementButtons").style.visibility = "hidden";
 		oldEditorButtons = null;
 		return false;
 	}
@@ -360,4 +399,106 @@ function findPosY(obj) {
         curtop += obj.y;
     }
     return curtop;
+}
+
+// formats a button in one of 3 styles (type 0..2)
+function button(href, target, image, label, type) {
+
+	if (image != null && image.indexOf('.') == -1) {
+        // append default suffix for images
+        image += ".png";
+    }
+
+	var result = "<td>";
+	switch (type) {
+		case 1:
+		// image and text
+		if (href != null) {
+			result += "<a href=\"";
+			result += href;
+			result += "\" class=\"button\"";
+			if (target != null) {
+				result += " target=\"";
+				result += target;
+				result += "\"";
+			}
+			result += ">";
+		}
+		result += "<span unselectable=\"on\"";
+		if (href != null) {
+			result += " class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"";
+		} else {
+			result += " class=\"disabled\"";
+		}
+		result += "><span unselectable=\"on\" class=\"combobutton\" ";
+		result += "style=\"background-image: url('";
+		result += skinUri;
+		result += "buttons/";
+		result += image;
+		result += "');\">";
+		result += label;
+		result += "</span></span>";
+		if (href != null) {
+			result += "</a>";
+		}
+		break;
+
+		case 2:
+		// text only
+		if (href != null) {
+			result += "<a href=\"";
+			result += href;
+			result += "\" class=\"button\"";
+			if (target != null) {
+				result += " target=\"";
+				result += target;
+				result += "\"";
+			}
+			result += ">";
+		}
+		result += "<span unselectable=\"on\"";
+		if (href != null) {
+			result += " class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"";
+		} else {
+			result += " class=\"disabled\"";
+		}
+		result += "><span unselectable=\"on\" class=\"txtbutton\">";
+		result += label;
+		result += "</span></span>";
+		if (href != null) {
+			result += "</a>";
+		}
+		break;
+
+		default:
+		// only image
+		if (href != null) {
+			result += "<a href=\"";
+			result += href;
+			result += "\" class=\"button\"";
+			if (target != null) {
+				result += " target=\"";
+				result += target;
+				result += "\"";
+			}
+			result += " title=\"";
+			result += label;
+			result += "\">";
+		}
+		result += "<span unselectable=\"on\"";
+		if (href != null) {
+			result += " class=\"norm\" onmouseover=\"className='over'\" onmouseout=\"className='norm'\" onmousedown=\"className='push'\" onmouseup=\"className='over'\"";
+		} else {
+			result += " class=\"disabled\"";
+		}
+		result += "><img class=\"button\" src=\"";
+		result += skinUri;
+		result += "buttons/";
+		result += image;
+		result += "\">";
+		result += "</span>";
+		break;
+	}
+	result += "</td>\n";
+	return result;
 }
