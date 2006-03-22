@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsElementComparisonList.java,v $
- * Date   : $Date: 2006/03/21 15:09:34 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/03/22 16:14:14 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -107,10 +107,10 @@ public class CmsElementComparisonList extends A_CmsListDialog {
     public static final String LIST_DETAIL_TYPE = "dt";
 
     /** list independent action id constant. */
-    public static final String LIST_IACTION_COMARE_ALL = "ava";
+    public static final String LIST_IACTION_COMPARE_ALL = "ava";
 
     /** list independent action id constant. */
-    public static final String LIST_IACTION_SHOW = "is";
+    public static final String LIST_IACTION_SHOW = "isy";
 
     /** List id constant. */
     public static final String LIST_ID = "hiecl";
@@ -123,9 +123,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsElementComparisonList.class);
-
-    /** flag indicating to show all files or just the files with differences. */
-    private static boolean m_showAll = false;
 
     private String m_paramPath1;
 
@@ -187,7 +184,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
      */
     public void executeListIndepActions() {
 
-        if (getParamListAction().equals(LIST_IACTION_COMARE_ALL)) {
+        if (getParamListAction().equals(LIST_IACTION_COMPARE_ALL)) {
             // called if all elements are to be compared
             Map params = new HashMap();
             params.put(CmsHistoryList.PARAM_TAGID_1, getParamTagId1());
@@ -387,10 +384,6 @@ public class CmsElementComparisonList extends A_CmsListDialog {
             String locale = comparison.getLocale();
             String attribute = comparison.getName();
             CmsListItem item = getList().newItem(locale + attribute);
-            if (!getList().getMetadata().getItemDetailDefinition(LIST_IACTION_SHOW).isVisible()) {
-                // do not display entry
-                continue;
-            }
             item.set(LIST_COLUMN_LOCALE, locale);
             item.set(LIST_COLUMN_ATTRIBUTE, attribute);
             if (comparison instanceof CmsXmlContentElementComparison) {
@@ -563,7 +556,7 @@ public class CmsElementComparisonList extends A_CmsListDialog {
      */
     protected void setIndependentActions(CmsListMetadata metadata) {
 
-        CmsListIndependentAction compare = new CmsListIndependentAction(LIST_IACTION_COMARE_ALL);
+        CmsListIndependentAction compare = new CmsListIndependentAction(LIST_IACTION_COMPARE_ALL);
         compare.setName(Messages.get().container(Messages.GUI_COMPARE_COMPARE_ALL_0));
         compare.setIconPath("tools/history/buttons/compare.png");
         compare.setEnabled(true);
