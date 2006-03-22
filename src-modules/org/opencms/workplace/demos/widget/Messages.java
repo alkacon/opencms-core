@@ -44,6 +44,9 @@ import org.opencms.i18n.I_CmsMessageBundle;
 public final class Messages extends A_CmsMessageBundle {
 
     /** Message contant for key in the resource bundle. */
+    public static final String GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0 = "GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0";
+
+    /** Message contant for key in the resource bundle. */
     public static final String GUI_WIDGETDEMO_1_HELP_0 = "GUI_WIDGETDEMO_1_HELP_0";
 
     /** Message contant for key in the resource bundle. */
