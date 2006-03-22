@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
-	<label>editor.title.simpletext</label>
+	<label>GUI_EDITOR_TITLE_SIMPLEHTML_0</label>
 	<resourcetypes>
 		<class>
 			<name>org.opencms.workplace.editors.CmsXmlContentEditorTypeMatcher</name>

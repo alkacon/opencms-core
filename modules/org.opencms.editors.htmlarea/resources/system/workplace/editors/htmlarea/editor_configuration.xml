@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
-	<label>editor.title.htmlarea</label>
+	<label>GUI_EDITOR_TITLE_HTMLAREA_0</label>
 	<widgeteditor>org.opencms.editors.htmlarea.CmsHtmlAreaWidget</widgeteditor>
 	<resourcetypes>
 		<type>

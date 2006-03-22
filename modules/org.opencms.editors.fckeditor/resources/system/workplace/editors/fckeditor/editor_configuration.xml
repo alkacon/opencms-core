@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <editor>
-	<label>editor.title.fckeditor</label>
+	<label>GUI_EDITOR_TITLE_FCKEDITOR_0</label>
 	<widgeteditor>org.opencms.editors.fckeditor.CmsFCKEditorWidget</widgeteditor>
 	<resourcetypes>
 		<type>
