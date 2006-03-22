@@ -65,7 +65,7 @@
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:buttonAction(6);", null, "editorsearch",org.opencms.workplace.editors.Messages.GUI_BUTTON_SEARCH_0, buttonStyle) %>
 <%= wp.button("javascript:buttonAction(7);", null, "replace",org.opencms.workplace.editors.Messages.GUI_BUTTON_REPLACE_0, buttonStyle) %>
-<%= wp.button("javascript:buttonAction(8);", null, "goto",org.opencms.workplace.editors.Messages.GUI_BUTTON_GOTO_O, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(8);", null, "goto",org.opencms.workplace.editors.Messages.GUI_BUTTON_GOTO_0, buttonStyle) %>
 <%= wp.buttonBarSeparator(5, 5) %>
 <%= wp.button("javascript:buttonAction(9);", null, "cut", org.opencms.workplace.editors.Messages.GUI_BUTTON_CUT_0, buttonStyle) %>
 <%= wp.button("javascript:buttonAction(10);", null, "copy",org.opencms.workplace.editors.Messages.GUI_BUTTON_COPY_0, buttonStyle) %>

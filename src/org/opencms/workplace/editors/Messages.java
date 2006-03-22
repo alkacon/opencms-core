@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Messages.java,v $
- * Date   : $Date: 2006/03/22 14:13:59 $
- * Version: $Revision: 1.10.2.3 $
+ * Date   : $Date: 2006/03/22 16:36:39 $
+ * Version: $Revision: 1.10.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.10.2.3 $ 
+ * @version $Revision: 1.10.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,7 +117,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_BUTTON_FONTCOLOR_0 = "GUI_BUTTON_FONTCOLOR_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_BUTTON_GOTO_O = "GUI_BUTTON_GOTO_O";
+    public static final String GUI_BUTTON_GOTO_0 = "GUI_BUTTON_GOTO_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_BUTTON_HELP_0 = "GUI_BUTTON_HELP_0";

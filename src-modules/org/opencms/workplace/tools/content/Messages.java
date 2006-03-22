@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.13.2.9 $
+ * Date   : $Date: 2006/03/22 16:37:31 $
+ * Version: $Revision: 1.13.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.13.2.9 $
+ * @version $Revision: 1.13.2.10 $
  * 
  * @since 6.0.0
  */
@@ -127,13 +127,13 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_DELETEELEMENT__CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
+    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0 = "GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_DELETEELEMENT__CONTENTTOOLS_ADMIN_TOOL_NAME_0";
+    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/03/22 08:33:22 $
- * Version: $Revision: 1.7.2.3 $
+ * Date   : $Date: 2006/03/22 16:35:58 $
+ * Version: $Revision: 1.7.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7.2.3 $ 
+ * @version $Revision: 1.7.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,6 +155,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_EXPLORER_CONTEXT_OPENGALLERY_0 = "GUI_EXPLORER_CONTEXT_OPENGALLERY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0 = "GUI_EXPLORER_CONTEXT_OVERRIDELOCK_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_PAGEEDIT_0 = "GUI_EXPLORER_CONTEXT_PAGEEDIT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_PROPERTY_0 = "GUI_EXPLORER_CONTEXT_PROPERTY_0";
 
     /** Message constant for key in the resource bundle. */
@@ -187,224 +193,224 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LOCKEDBY_0 = "GUI_EXPLORER_LOCKEDBY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_LOCKEDIN_0 = "GUI_EXPLORER_LOCKEDIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_NAME_0 = "GUI_EXPLORER_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_STATE0_0 = "GUI_EXPLORER_STATE0_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_STATE1_0 = "GUI_EXPLORER_STATE1_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_STATE2_0 = "GUI_EXPLORER_STATE2_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_STATE3_0 = "GUI_EXPLORER_STATE3_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_BINARY_0 = "GUI_FILEICON_BINARY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_DOWNLOADGALLERY_0 = "GUI_FILEICON_DOWNLOADGALLERY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_EXTENDEDFOLDER_0 = "GUI_FILEICON_EXTENDEDFOLDER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_FOLDER_0 = "GUI_FILEICON_FOLDER_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_HTMLGALLERY_0 = "GUI_FILEICON_HTMLGALLERY_0";
-    
+
     /** Message constant for key in the resource bundle. */
 
     public static final String GUI_FILEICON_IMAGE_0 = "GUI_FILEICON_IMAGE_0";
     /** Message constant for key in the resource bundle. */
-    
+
     public static final String GUI_FILEICON_IMAGEGALLERY_0 = "GUI_FILEICON_IMAGEGALLERY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_JSP_0 = "GUI_FILEICON_JSP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_LINK_0 = "GUI_FILEICON_LINK_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_LINKGALLERY_0 = "GUI_FILEICON_LINKGALLERY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_PLAIN_0 = "GUI_FILEICON_PLAIN_0";
-    
+
     /** Message constant for key in the resource bundle. */
 
     public static final String GUI_FILEICON_POINTER_0 = "GUI_FILEICON_POINTER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_STRUCTURECONTENT_0 = "GUI_FILEICON_STRUCTURECONTENT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_TABLEGALLERY_0 = "GUI_FILEICON_TABLEGALLERY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_UPLOAD_0 = "GUI_FILEICON_UPLOAD_0";
-    
+
     /** Message constant for key in the resource bundle. */
 
     public static final String GUI_FILEICON_XMLCONTENT_0 = "GUI_FILEICON_XMLCONTENT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_FILEICON_XMLPAGE_0 = "GUI_FILEICON_XMLPAGE_0";
-    
+
     /** Message constant for key in the resource bundle. */
 
     public static final String GUI_FILEICON_XMLTEMPLATE_0 = "GUI_FILEICON_XMLTEMPLATE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_ADRESS_0 = "GUI_INPUT_ADRESS_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_DATECREATED_0 = "GUI_INPUT_DATECREATED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_DATEEXPIRED_0 = "GUI_INPUT_DATEEXPIRED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_DATELASTMODIFIED_0 = "GUI_INPUT_DATELASTMODIFIED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_DATERELEASED_0 = "GUI_INPUT_DATERELEASED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_LOCKEDBY_0 = "GUI_INPUT_LOCKEDBY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_NAME_0 = "GUI_INPUT_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_PAGE_0 = "GUI_INPUT_PAGE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_PERMISSIONS_0 = "GUI_INPUT_PERMISSIONS_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_SIZE_0 = "GUI_INPUT_SIZE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_STATE_0 = "GUI_INPUT_STATE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_TITLE_0 = "GUI_INPUT_TITLE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_TYPE_0 = "GUI_INPUT_TYPE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_USERCREATED_0 = "GUI_INPUT_USERCREATED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_USERLASTMODIFIED_0 = "GUI_INPUT_USERLASTMODIFIED_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_LOADING_0 = "GUI_LABEL_LOADING_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LABEL_SITE_0 = "GUI_LABEL_SITE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFILE_EDITPROPERTIES_0 = "GUI_NEWFILE_EDITPROPERTIES_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWFOLDER_CREATEINDEX_0 = "GUI_NEWFOLDER_CREATEINDEX_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_0 = "GUI_NEWRESOURCE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0 = "GUI_NEWRESOURCE_APPENDSUFFIX_HTML_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0 = "GUI_NEWRESOURCE_CONVERSION_DELIM_BEST_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_DELIM_COMMA_0 = "GUI_NEWRESOURCE_CONVERSION_DELIM_COMMA_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_DELIM_SEMICOLON_0 = "GUI_NEWRESOURCE_CONVERSION_DELIM_SEMICOLON_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_DELIM_TAB_0 = "GUI_NEWRESOURCE_CONVERSION_DELIM_TAB_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_DELIMITER_0 = "GUI_NEWRESOURCE_CONVERSION_DELIMITER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_NOSTYLE_0 = "GUI_NEWRESOURCE_CONVERSION_NOSTYLE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_SETTINGS_0 = "GUI_NEWRESOURCE_CONVERSION_SETTINGS_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_CONVERSION_XSLTFILE_0 = "GUI_NEWRESOURCE_CONVERSION_XSLTFILE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_FILE_0 = "GUI_NEWRESOURCE_FILE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_FOLDER_0 = "GUI_NEWRESOURCE_FOLDER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_PASTE_CSV_0 = "GUI_NEWRESOURCE_PASTE_CSV_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_PASTE_DATA_0 = "GUI_NEWRESOURCE_PASTE_DATA_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_POINTER_0 = "GUI_NEWRESOURCE_POINTER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_SELECT_FILE_0 = "GUI_NEWRESOURCE_SELECT_FILE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_SELECT_TYPE_0 = "GUI_NEWRESOURCE_SELECT_TYPE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_SIBLING_0 = "GUI_NEWRESOURCE_SIBLING_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_TABLE_0 = "GUI_NEWRESOURCE_TABLE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_UPLOAD_0 = "GUI_NEWRESOURCE_UPLOAD_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_UPLOAD_TYPE_0 = "GUI_NEWRESOURCE_UPLOAD_TYPE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_XMLCONTENT_0 = "GUI_NEWRESOURCE_XMLCONTENT_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWRESOURCE_XMLPAGE_0 = "GUI_NEWRESOURCE_XMLPAGE_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_NEWSIBLING_NAME_0 = "GUI_NEWSIBLING_NAME_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_POINTER_LINKTO_0 = "GUI_POINTER_LINKTO_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_KEEPPROPERTIES_0 = "GUI_RESOURCE_KEEPPROPERTIES_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_RESOURCE_NAME_0 = "GUI_RESOURCE_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_DEFAULTBODY_0 = "GUI_SELECT_DEFAULTBODY_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_SELECT_TEMPLATE_0 = "GUI_SELECT_TEMPLATE_0";
 
@@ -454,13 +460,13 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWPLAIN_0 = "GUI_TITLE_NEWPLAIN_0";
-    
+
     /** Message contant for key in the resource bundle. */
-    public static final String GUI_TITLE_NEWPROPDEFFOR_0 = "GUI_TITLE_NEWPROPDEFFOR_0 ";
-    
+    public static final String GUI_TITLE_NEWPROPDEFFOR_0 = "GUI_TITLE_NEWPROPDEFFOR_0";
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWPROPERTYINFO_0 = "GUI_TITLE_NEWPROPERTYINFO_0";
-    
+
     /** Message contant for key in the resource bundle. */
     public static final String GUI_TITLE_NEWTABLE_0 = "GUI_TITLE_NEWTABLE_0";
 
@@ -496,67 +502,67 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_MESSAGE_ERROR_ZIP_0 = "GUI_UPLOADAPPLET_MESSAGE_ERROR_ZIP_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_MESSAGE_NOPREVIEW_0 = "GUI_UPLOADAPPLET_MESSAGE_NOPREVIEW_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0 = "GUI_UPLOADAPPLET_MESSAGE_UPLOAD_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_ACCESS_ENTRY_2 = "LOG_ADD_ACCESS_ENTRY_2";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_MENU_ENTRY_2 = "LOG_ADD_MENU_ENTRY_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_MENU_SEPARATOR_1 = "LOG_ADD_MENU_SEPARATOR_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_ADD_PROP_1 = "LOG_ADD_PROP_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_CREATE_CONTEXT_MENU_1 = "LOG_CREATE_CONTEXT_MENU_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READ_GROUPS_OF_USER_FAILED_1 = "LOG_READ_GROUPS_OF_USER_FAILED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_REDIRECT_XMLPAGE_FAILED_1 = "LOG_REDIRECT_XMLPAGE_FAILED_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_AUTO_NAV_1 = "LOG_SET_AUTO_NAV_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_AUTO_TITLE_1 = "LOG_SET_AUTO_TITLE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_ICON_1 = "LOG_SET_ICON_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_KEY_1 = "LOG_SET_KEY_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_NAME_1 = "LOG_SET_NAME_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_NEW_RESOURCE_ORDER_1 = "LOG_SET_NEW_RESOURCE_ORDER_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_NEW_RESOURCE_URI_1 = "LOG_SET_NEW_RESOURCE_URI_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_PROP_DEFAULTS_2 = "LOG_SET_PROP_DEFAULTS_2";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_REFERENCE_1 = "LOG_SET_REFERENCE_1";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_MENU_SEP_ORDER_0 = "LOG_WRONG_MENU_SEP_ORDER_0";
-    
+
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WRONG_ORDER_CONTEXT_MENU_1 = "LOG_WRONG_ORDER_CONTEXT_MENU_1";
-    
+
     /** Message constant for key in the resource bundle. */
     private static final String BUNDLE_NAME = "org.opencms.workplace.explorer.messages";
 

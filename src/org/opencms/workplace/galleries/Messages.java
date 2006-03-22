@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Messages.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2006/03/22 16:42:24 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.5.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,7 +91,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_INPUT_LINKTARGETSELF_0 = "GUI_INPUT_LINKTARGETSELF_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_INPUT_LINKTARGETTOP_0 = "GUI_INPUT_LINKTARGETBLANK_0";
+    public static final String GUI_INPUT_LINKTARGETTOP_0 = "GUI_INPUT_LINKTARGETTOP_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_INPUT_LINKTO_0 = "GUI_INPUT_LINKTO_0";
