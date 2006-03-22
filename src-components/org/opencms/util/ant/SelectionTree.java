@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-components/org/opencms/util/ant/SelectionTree.java,v $
- * Date   : $Date: 2005/12/08 13:29:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/22 18:18:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,11 +62,11 @@ import javax.swing.tree.TreeSelectionModel;
  * <li> Subsequent selection on the UI: it appears that all subnodes of a node are selected too</li>
  * <li>{@link javax.swing.tree.TreeSelectionModel#DISCONTIGUOUS_TREE_SELECTION} </li>
  * <li> Custom node UI with checkboxes. </li>
- * </p>
+ * </ul>
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  */
 public class SelectionTree extends JTree {
@@ -78,7 +78,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.1 $
+     * @version $Revision: 1.1.2.2 $
      * 
      * @since 6.1.6
      * 
@@ -118,7 +118,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.1 $
+     * @version $Revision: 1.1.2.2 $
      * 
      * @since 6.1.6
      * 
@@ -145,7 +145,7 @@ public class SelectionTree extends JTree {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.1 $
+     * @version $Revision: 1.1.2.2 $
      * 
      * @since 6.1.6
      * 

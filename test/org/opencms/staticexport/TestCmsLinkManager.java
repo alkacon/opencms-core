@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2006/03/22 13:38:07 $
- * Version: $Revision: 1.7.2.3 $
+ * Date   : $Date: 2006/03/22 18:18:53 $
+ * Version: $Revision: 1.7.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.staticexport;
 
 import org.opencms.file.CmsObject;
 import org.opencms.main.OpenCms;
-import org.opencms.staticexport.CmsLinkManager;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -44,7 +43,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.3 $
+ * @version $Revision: 1.7.2.4 $
  * 
  * @since 6.0.0
  */

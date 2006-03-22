@@ -276,6 +276,12 @@ public class StringBean extends NodeVisitor implements Serializable {
         carriageReturn(false);
     }
 
+    /**
+     * Appends a newline to the buffer if there isn't one there already.
+     * Except if the buffer is empty.
+     * 
+     * @param check a parameter the developer forgot to comment
+     */
     protected void carriageReturn(boolean check) {
 
         int length;

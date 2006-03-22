@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsHtmlExtractor.java,v $
- * Date   : $Date: 2005/11/16 13:32:52 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/22 18:18:53 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.util;
 
+import org.opencms.i18n.CmsEncoder;
+
 import junit.framework.TestCase;
 
 import org.htmlparser.Node;
@@ -44,7 +46,7 @@ import org.htmlparser.nodes.TextNode;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.2.0
  */
@@ -73,6 +75,15 @@ public class TestCmsHtmlExtractor extends TestCase {
         super(arg0);
     }
 
+    /**
+     * Extracts plain text from a String that contains HTML.<p>
+     * 
+     * @param content the HTML content to extract the text from
+     * 
+     * @return the extracted plain text
+     * 
+     * @throws Exception in case something goes wrong
+     */
     public static String extractFromHtml2(String content) throws Exception {
         
         Parser parser = new Parser();
@@ -86,7 +97,16 @@ public class TestCmsHtmlExtractor extends TestCase {
 
         return stringBean.getStrings();
     }
-    
+
+    /**
+     * Extracts plain text from a String that contains HTML.<p>
+     * 
+     * @param content the HTML content to extract the text from
+     * 
+     * @return the extracted plain text
+     * 
+     * @throws Exception in case something goes wrong
+     */
     private String extractFromHtml(String content) throws Exception {
 
         Parser myParser;
@@ -117,11 +137,11 @@ public class TestCmsHtmlExtractor extends TestCase {
 
         String result;
         
-//        result = CmsHtmlExtractor.extractText(HTML_PAGE_1, CmsEncoder.ENCODING_ISO_8859_1);        
-//        System.out.println(result + "\n\n");
-//        
-//        result = extractFromHtml(HTML_PAGE_1);
-//        System.out.println(result + "\n\n");
+        result = CmsHtmlExtractor.extractText(HTML_PAGE_1, CmsEncoder.ENCODING_ISO_8859_1);        
+        System.out.println(result + "\n\n");
+        
+        result = extractFromHtml(HTML_PAGE_1);
+        System.out.println(result + "\n\n");
         
         result = extractFromHtml2(HTML_PAGE_1);
         System.out.println(result + "\n\n");

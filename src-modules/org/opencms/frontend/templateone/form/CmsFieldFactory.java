@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsFieldFactory.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.2.2.1 $
+ * Date   : $Date: 2006/03/22 18:18:53 $
+ * Version: $Revision: 1.2.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.commons.logging.Log;
  * A factory to create form field instances of a specified type.<p>
  * 
  * @author Thomas Weckert (t.weckert@alkacon.com)
- * @version $Revision: 1.2.2.1 $
+ * @version $Revision: 1.2.2.2 $
  */
 public final class CmsFieldFactory {
     
@@ -112,8 +112,8 @@ public final class CmsFieldFactory {
                     for (int j = 0, n = values.length; j < n; j++) {
                         
                         String field = values[j];
-                        int index = -1;
-                        if ((index = field.indexOf(":")) == -1) {
+                        int index = field.indexOf(":");
+                        if (index == -1) {
                             continue;
                         }
                         
