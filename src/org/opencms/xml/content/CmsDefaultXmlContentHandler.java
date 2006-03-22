@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsDefaultXmlContentHandler.java,v $
- * Date   : $Date: 2006/03/20 18:26:01 $
- * Version: $Revision: 1.43.2.7 $
+ * Date   : $Date: 2006/03/22 10:17:50 $
+ * Version: $Revision: 1.43.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -71,7 +71,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.43.2.7 $ 
+ * @version $Revision: 1.43.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,11 +155,11 @@ public class CmsDefaultXmlContentHandler implements I_CmsXmlContentHandler {
 
     /** Default message for validation errors. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_ERROR = "${validation.path}: "
-        + "${key.editor.xmlcontent.validation.error|${validation.value}|[${validation.regex}]}";
+        + "${key.MESSAGES.GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_0|${validation.value}|[${validation.regex}]}";
 
     /** Default message for validation warnings. */
     protected static final String MESSAGE_VALIDATION_DEFAULT_WARNING = "${validation.path}: "
-        + "${key.editor.xmlcontent.validation.warning|${validation.value}|[${validation.regex}]}";
+        + "${key.MESSAGES.GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2|${validation.value}|[${validation.regex}]}";
 
     /** The configuration values for the element widgets (as defined in the annotations). */
     protected Map m_configurationValues;
