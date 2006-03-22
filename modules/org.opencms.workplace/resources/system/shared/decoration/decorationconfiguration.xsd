@@ -3,7 +3,7 @@
 <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
 	
 	<xsd:include schemaLocation="opencms://opencms-xmlcontent.xsd"/>
-	<xsd:include schemaLocation="opencms://system/workplace/admin/decoration/decoration.xsd"/>
+	<xsd:include schemaLocation="opencms://system/shared/decoration/decoration.xsd"/>
 
 	<xsd:element name="DecorationConfigurations" type="OpenCmsDecorationConfigurations"/>
 	
@@ -23,7 +23,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.jsp.decoration.workplace"/>
+			<resourcebundle name="org.opencms.jsp.decorator.messages"/>
 		</xsd:appinfo>
 	</xsd:annotation>  
 	

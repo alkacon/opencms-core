@@ -28,7 +28,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.jsp.decorator.workplace"/>
+			<resourcebundle name="org.opencms.jsp.decorator.messages"/>
 			<layouts/>
 		</xsd:appinfo>
 	</xsd:annotation>  
