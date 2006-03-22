@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsBackupDriver.java,v $
- * Date   : $Date: 2005/10/19 09:37:40 $
- * Version: $Revision: 1.140.2.1 $
+ * Date   : $Date: 2006/03/22 17:38:54 $
+ * Version: $Revision: 1.140.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -77,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Michael Emmerich 
  * @author Carsten Weinholz  
  * 
- * @version $Revision: 1.140.2.1 $
+ * @version $Revision: 1.140.2.2 $
  * 
  * @since 6.0.0 
  */
@@ -716,7 +716,8 @@ public class CmsBackupDriver implements I_CmsDriver, I_CmsBackupDriver {
                 propertyValue = res.getString(2);
                 mappingType = res.getInt(3);
 
-                if ((property = (CmsProperty)propertyMap.get(propertyKey)) != null) {
+                property = (CmsProperty)propertyMap.get(propertyKey);
+                if (property != null) {
                     // there exists already a property for this key in the result
 
                     switch (mappingType) {

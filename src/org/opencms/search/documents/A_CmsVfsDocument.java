@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2006/03/22 13:38:07 $
- * Version: $Revision: 1.13.2.3 $
+ * Date   : $Date: 2006/03/22 17:38:54 $
+ * Version: $Revision: 1.13.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.3 $ 
+ * @version $Revision: 1.13.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,7 +189,11 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
                 field.setBoost(0);
                 document.add(field);
                 // add title again as indexed field for searching
-                document.add(new Field(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value, Field.Store.NO, Field.Index.TOKENIZED));
+                document.add(new Field(
+                    I_CmsDocumentFactory.DOC_TITLE_INDEXED,
+                    value,
+                    Field.Store.NO,
+                    Field.Index.TOKENIZED));
                 meta.append(value);
                 meta.append(" ");
             }
@@ -226,7 +230,11 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             }
         } else {
             // synthetic "unknown" category if no category property defined for resource
-            field = new Field(I_CmsDocumentFactory.DOC_CATEGORY, CmsSearchCategoryCollector.UNKNOWN_CATEGORY, Field.Store.YES, Field.Index.UN_TOKENIZED);
+            field = new Field(
+                I_CmsDocumentFactory.DOC_CATEGORY,
+                CmsSearchCategoryCollector.UNKNOWN_CATEGORY,
+                Field.Store.YES,
+                Field.Index.UN_TOKENIZED);
             document.add(field);
         }
 
@@ -238,13 +246,20 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         document.add(field);
         // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
         // must be indexed as a keyword ONLY to be able to use this when deleting a resource from the index
-        document.add(new Field(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath(), Field.Store.YES, Field.Index.UN_TOKENIZED));
+        document.add(new Field(
+            I_CmsDocumentFactory.DOC_PATH,
+            resource.getRootPath(),
+            Field.Store.YES,
+            Field.Index.UN_TOKENIZED));
 
         // add date of creation and last modification as keywords (for sorting)
-        field = new Field(I_CmsDocumentFactory.DOC_DATE_CREATED, DateTools.dateToString(new Date(res.getDateCreated()), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
+        field = new Field(I_CmsDocumentFactory.DOC_DATE_CREATED, DateTools.dateToString(
+            new Date(res.getDateCreated()),
+            DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
-        field = new Field(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateTools.dateToString(new Date(res.getDateLastModified()),DateTools.Resolution.MILLISECOND) , Field.Store.YES, Field.Index.UN_TOKENIZED);
+        field = new Field(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateTools.dateToString(new Date(
+            res.getDateLastModified()), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
 

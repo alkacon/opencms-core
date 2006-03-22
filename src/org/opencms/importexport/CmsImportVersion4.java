@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.84.2.2 $
+ * Date   : $Date: 2006/03/22 17:38:53 $
+ * Version: $Revision: 1.84.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.2.2 $ 
+ * @version $Revision: 1.84.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -405,9 +405,10 @@ public class CmsImportVersion4 extends A_CmsImport {
                 }
 
                 // <datelastmodified>
-                if ((timestamp = CmsImport.getChildElementTextValue(
+                timestamp = CmsImport.getChildElementTextValue(
                     currentElement,
-                    CmsImportExportManager.N_DATELASTMODIFIED)) != null) {
+                    CmsImportExportManager.N_DATELASTMODIFIED);
+                if (timestamp != null) {
                     datelastmodified = convertTimestamp(timestamp);
                 } else {
                     datelastmodified = System.currentTimeMillis();
@@ -420,9 +421,8 @@ public class CmsImportVersion4 extends A_CmsImport {
                 userlastmodified = OpenCms.getImportExportManager().translateUser(userlastmodified);
 
                 // <datecreated>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATECREATED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATECREATED);
+                if (timestamp != null) {
                     datecreated = convertTimestamp(timestamp);
                 } else {
                     datecreated = System.currentTimeMillis();
@@ -433,18 +433,16 @@ public class CmsImportVersion4 extends A_CmsImport {
                 usercreated = OpenCms.getImportExportManager().translateUser(usercreated);
 
                 // <datereleased>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATERELEASED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATERELEASED);
+                if (timestamp != null) {
                     datereleased = convertTimestamp(timestamp);
                 } else {
                     datereleased = CmsResource.DATE_RELEASED_DEFAULT;
                 }
 
                 // <dateexpired>
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_DATEEXPIRED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_DATEEXPIRED);
+                if (timestamp != null) {
                     dateexpired = convertTimestamp(timestamp);
                 } else {
                     dateexpired = CmsResource.DATE_EXPIRED_DEFAULT;

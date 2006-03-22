@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.81.2.4 $
+ * Date   : $Date: 2006/03/22 17:38:53 $
+ * Version: $Revision: 1.81.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81.2.4 $ 
+ * @version $Revision: 1.81.2.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -108,8 +108,6 @@ public abstract class A_CmsImport implements I_CmsImport {
 
     /** The name of the legacy resource type "newpage". */
     protected static final String RESOURCE_TYPE_NEWPAGE_NAME = "newpage";
-    
-    
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(A_CmsImport.class);
@@ -345,7 +343,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                 // path to file might be relative, too
                 if (entry == null && filename.startsWith("/")) {
                     entry = m_importZip.getEntry(filename.substring(1));
-                } 
+                }
                 if (entry == null) {
                     throw new ZipException(Messages.get().key(
                         Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
@@ -781,19 +779,21 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
 
             // all Cms properties are collected in a map keyed by their property keys
-            if ((property = (CmsProperty)properties.get(key)) == null) {
+            property = (CmsProperty)properties.get(key);
+            if (property == null) {
                 property = new CmsProperty();
                 property.setName(key);
                 property.setAutoCreatePropertyDefinition(true);
                 properties.put(key, property);
             }
 
-            if ((value = CmsImport.getChildElementTextValue(propertyElement, CmsImportExportManager.N_VALUE)) == null) {
+            value = CmsImport.getChildElementTextValue(propertyElement, CmsImportExportManager.N_VALUE);
+            if (value == null) {
                 value = "";
             }
 
-            if ((attrib = propertyElement.attribute(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE)) != null
-                && attrib.getValue().equals(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED)) {
+            attrib = propertyElement.attribute(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE);
+            if ((attrib != null) && attrib.getValue().equals(CmsImportExportManager.N_PROPERTY_ATTRIB_TYPE_SHARED)) {
                 // it is a shared/resource property value
                 property.setResourceValue(value);
             } else {

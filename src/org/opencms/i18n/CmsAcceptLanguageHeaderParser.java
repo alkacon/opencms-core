@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsAcceptLanguageHeaderParser.java,v $
- * Date   : $Date: 2005/10/02 09:03:16 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/03/22 17:38:54 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -108,7 +108,7 @@ import javax.servlet.http.HttpServletRequest;
  * @author Daniel Rall 
  * @author Alexander Kandzior
  *   
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -185,10 +185,12 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
                 int index;
 
                 // Record and cut off any quality value that comes after a semi-colon.
-                if ((index = element.indexOf(QUALITY_SEPARATOR)) != -1) {
+                index = element.indexOf(QUALITY_SEPARATOR);
+                if (index != -1) {
                     String q = element.substring(index);
                     element = element.substring(0, index);
-                    if ((index = q.indexOf('=')) != -1) {
+                    index = q.indexOf('=');
+                    if (index != -1) {
                         try {
                             acceptLang.m_quality = Float.valueOf(q.substring(index + 1));
                         } catch (NumberFormatException useDefault) {
@@ -200,7 +202,8 @@ public class CmsAcceptLanguageHeaderParser implements Iterator {
                 element = element.trim();
 
                 // Create a Locale from the language. A dash may separate the language from the country.
-                if ((index = element.indexOf('-')) == -1) {
+                index = element.indexOf('-');
+                if (index == -1) {
                     // No dash means no country.
                     acceptLang.m_locale = new Locale(element, "");
                 } else {

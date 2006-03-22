@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.110.2.3 $
+ * Date   : $Date: 2006/03/22 17:38:53 $
+ * Version: $Revision: 1.110.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.110.2.3 $ 
+ * @version $Revision: 1.110.2.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -275,7 +275,8 @@ public class CmsImportVersion2 extends A_CmsImport {
         // encoding attribute found, get the value
         if (index != -1) {
             encoding = encoding.substring(index + 10);
-            if ((index = encoding.indexOf("\"")) != -1) {
+            index = encoding.indexOf("\"");
+            if (index != -1) {
                 encoding = encoding.substring(0, index);
                 return encoding.toUpperCase();
             }
@@ -525,9 +526,8 @@ public class CmsImportVersion2 extends A_CmsImport {
                 uuid = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDSTRUCTURE);
                 uuidresource = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_UUIDRESOURCE);
 
-                if ((timestamp = CmsImport.getChildElementTextValue(
-                    currentElement,
-                    CmsImportExportManager.N_LASTMODIFIED)) != null) {
+                timestamp = CmsImport.getChildElementTextValue(currentElement, CmsImportExportManager.N_LASTMODIFIED);
+                if (timestamp != null) {
                     lastmodified = Long.parseLong(timestamp);
                 } else {
                     lastmodified = System.currentTimeMillis();

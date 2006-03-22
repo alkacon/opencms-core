@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2005/10/20 11:04:57 $
- * Version: $Revision: 1.255.2.5 $
+ * Date   : $Date: 2006/03/22 17:38:53 $
+ * Version: $Revision: 1.255.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.255.2.5 $
+ * @version $Revision: 1.255.2.6 $
  * 
  * @since 6.0.0 
  */
@@ -1323,7 +1323,8 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
                 propertyValue = res.getString(2);
                 mappingType = res.getInt(3);
 
-                if ((property = (CmsProperty)propertyMap.get(propertyKey)) == null) {
+                property = (CmsProperty)propertyMap.get(propertyKey);
+                if (property == null) {
                     // there doesn't exist a property object for this key yet
                     property = new CmsProperty();
                     property.setName(propertyKey);
@@ -1647,7 +1648,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         return resources;
     }
-    
+
     /**
      * @see org.opencms.db.I_CmsVfsDriver#readResourceTree(org.opencms.db.CmsDbContext, int, java.lang.String, int, int, long, long, long, long, long, long, int)
      */
@@ -2577,6 +2578,30 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             resource.getRootPath()));
     }
 
+    private void prepareExpiredTimeRangeCondition(
+        int projectId,
+        long startTime,
+        long endTime,
+        StringBuffer conditions,
+        List params) {
+
+        if (startTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match expired date against startTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_AFTER"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(startTime));
+        }
+
+        if (endTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match expired date against endTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_BEFORE"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(endTime));
+        }
+    }
+
     /**
      * Appends the appropriate selection criteria related with the parentPath.<p>
      * 
@@ -2630,6 +2655,30 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_PROJECT_LASTMODIFIED"));
             conditions.append(END_CONDITION);
             params.add(String.valueOf(projectId));
+        }
+    }
+
+    private void prepareReleasedTimeRangeCondition(
+        int projectId,
+        long startTime,
+        long endTime,
+        StringBuffer conditions,
+        List params) {
+
+        if (startTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match released date against startTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_AFTER"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(startTime));
+        }
+
+        if (endTime > 0L) {
+            // READ_IGNORE_TIME: if NOT set, add condition to match released date against endTime
+            conditions.append(BEGIN_INCLUDE_CONDITION);
+            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_BEFORE"));
+            conditions.append(END_CONDITION);
+            params.add(String.valueOf(endTime));
         }
     }
 
@@ -2713,54 +2762,6 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
             // READ_IGNORE_TIME: if NOT set, add condition to match lastmodified date against endTime
             conditions.append(BEGIN_INCLUDE_CONDITION);
             conditions.append(m_sqlManager.readQuery(projectId, "C_RESOURCES_SELECT_BY_DATE_LASTMODIFIED_BEFORE"));
-            conditions.append(END_CONDITION);
-            params.add(String.valueOf(endTime));
-        }
-    }
-    
-    private void prepareReleasedTimeRangeCondition(
-        int projectId,
-        long startTime,
-        long endTime,
-        StringBuffer conditions,
-        List params) {
-
-        if (startTime > 0L) {
-            // READ_IGNORE_TIME: if NOT set, add condition to match released date against startTime
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_AFTER"));
-            conditions.append(END_CONDITION);
-            params.add(String.valueOf(startTime));
-        }
-
-        if (endTime > 0L) {
-            // READ_IGNORE_TIME: if NOT set, add condition to match released date against endTime
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_RELEASED_BEFORE"));
-            conditions.append(END_CONDITION);
-            params.add(String.valueOf(endTime));
-        }
-    }
-    
-    private void prepareExpiredTimeRangeCondition(
-        int projectId,
-        long startTime,
-        long endTime,
-        StringBuffer conditions,
-        List params) {
-
-        if (startTime > 0L) {
-            // READ_IGNORE_TIME: if NOT set, add condition to match expired date against startTime
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_AFTER"));
-            conditions.append(END_CONDITION);
-            params.add(String.valueOf(startTime));
-        }
-
-        if (endTime > 0L) {
-            // READ_IGNORE_TIME: if NOT set, add condition to match expired date against endTime
-            conditions.append(BEGIN_INCLUDE_CONDITION);
-            conditions.append(m_sqlManager.readQuery(projectId, "C_STRUCTURE_SELECT_BY_DATE_EXPIRED_BEFORE"));
             conditions.append(END_CONDITION);
             params.add(String.valueOf(endTime));
         }
