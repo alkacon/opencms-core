@@ -188,7 +188,9 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                     } else {
                         // disabled element, show message for optional element
                         result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                        result.append(key("editor.xmlcontent.optionalelement"));
+                        result.append(Messages.get().key(
+                            this.getLocale(),
+                            Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                         result.append("</td>");
                     }
 
