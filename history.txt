@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/22 16:21:46 $
- * Version: $Revision: 1.682.2.99 $
+ * Date   : $Date: 2006/03/22 16:30:13 $
+ * Version: $Revision: 1.682.2.100 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ OpenCms 6.1.11 - March ???, 2006
 * Fixed issue #1064: Font modifications in upload applet to let it work on systems without the Verdana font
 * Fixed issue #995: Improved scrubbing of static exported files
 - Updated Lucene search engine to version 1.9.1 (this requires rebuilding of the search index files !)
+- Improved XML content editor dynamic HTML generation for element operation buttons and help texts
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load

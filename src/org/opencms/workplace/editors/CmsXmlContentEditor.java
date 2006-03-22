@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/22 13:23:00 $
- * Version: $Revision: 1.65.2.9 $
+ * Date   : $Date: 2006/03/22 16:26:43 $
+ * Version: $Revision: 1.65.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.9 $ 
+ * @version $Revision: 1.65.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -650,7 +650,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
      */
     public String getXmlEditorHtmlEnd() throws JspException {
 
-        StringBuffer result = new StringBuffer(32767);
+        StringBuffer result = new StringBuffer(16384);
         if (m_optionalElementPresent) {
             // disabled optional element(s) present, reset widgets to show help bubbles on optional form entries
             resetWidgetCollector();
@@ -666,6 +666,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append(widget.getDialogHtmlEnd(getCms(), this, (I_CmsWidgetParameter)value));
 
             }
+
+            // add empty help text layer
+            result.append("<div class=\"help\" id=\"helpText\" ");
+            result.append("onmouseover=\"showHelpText();\" onmouseout=\"hideHelpText();\"></div>\n");
 
             // add empty element button layer
             result.append("<div class=\"xmlButtons\" id=\"xmlElementButtons\" ");

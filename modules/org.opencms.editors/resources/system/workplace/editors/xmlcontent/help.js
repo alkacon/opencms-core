@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/xmlcontent/help.js,v $
- * Date   : $Date: 2006/03/21 14:13:08 $
- * Version: $Revision: 1.6.2.3 $
+ * Date   : $Date: 2006/03/22 16:26:43 $
+ * Version: $Revision: 1.6.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -23,14 +23,15 @@
  *
  * For further information about OpenCms, please see the
  * project website: http://www.opencms.org
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
- 
+
 var selectBoxes;
- 
+var selectY;
+
 function Browser() {
 	this.isIE = false;  // Internet Explorer
 	if (navigator.userAgent.indexOf("MSIE") != -1) {
@@ -40,12 +41,28 @@ function Browser() {
 
 var browser = new Browser();
 
-function showHelp(id) { 
+function showHelpText(imgId, textValue) {
+	if (imgId == null || imgId == "") {
+		var elem = document.getElementById("helpText");
+		if (elem.style.visibility == "visible") {
+	        return;
+	    } else {
+	    	elem.style.visibility = "visible";
+	    	hideSelectBoxes(elem, selectY);
+	    }
+	} else {
+		var elem = document.getElementById("helpText");
+		elem.innerHTML = decodeURIComponent(textValue);
+		showHelpX(imgId, "Text");
+	}
+}
+
+function showHelp(id) {
 
     showHelpX(id, id);
 }
 
-function showHelpX(id, helpId) { 
+function showHelpX(id, helpId) {
     var text = document.getElementById("help" + helpId);
     if (undefined == text) {
       return;
@@ -53,18 +70,24 @@ function showHelpX(id, helpId) {
     if (text.style.visibility == "visible") {
         return;
     }
-    
+
     // get the help icon element
     var icon = document.getElementById("img" + id);
     var xOffset = 8;
-    if (icon == null) { 
-    	// no icon found, this is a combo help text  
+    if (icon == null) {
+    	// no icon found, this is a combo help text
     	icon = document.getElementById(id);
     	xOffset = 50;
     }
-    
-    var y = showEditorElement(text, icon, xOffset, 8, false);    
-    hideSelectBoxes(text, y);
+
+    selectY = showEditorElement(text, icon, xOffset, 8, false);
+    hideSelectBoxes(text, selectY);
+}
+
+function hideHelpText() {
+	var text = document.getElementById("helpText");
+    text.style.visibility = "hidden";
+    showSelectBoxes();
 }
 
 function hideHelp(id) {
@@ -103,5 +126,5 @@ function showSelectBoxes() {
     			selectBoxes[i].style.display = "";
     		}
     	}
-    }	
+    }
 }

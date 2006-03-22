@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsWidget.java,v $
- * Date   : $Date: 2005/12/02 16:23:28 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2006/03/22 16:26:43 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.widgets;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 
 import java.util.Map;
@@ -42,7 +43,7 @@ import java.util.Set;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,7 +177,6 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             // there was no help message found for this key, so return a spacer cell
             return widgetDialog.dialogHorizontalSpacer(16);
         } else {
-
             result.append("<td>");
             result.append("<img name=\"img");
             result.append(locKey);
@@ -185,7 +185,15 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             result.append("\" src=\"");
             result.append(OpenCms.getLinkManager().substituteLink(cms, "/system/workplace/resources/commons/help.png"));
             result.append("\" alt=\"\" border=\"0\"");
-            result.append(getJsHelpMouseHandler(widgetDialog, locKey));
+            if (widgetDialog.useNewStyle()) {
+                // static divs are used in admin
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, null));
+            } else {
+                // dynamic help texts in xml content editor
+                result.append(getJsHelpMouseHandler(widgetDialog, locKey, CmsEncoder.escape(
+                    locValue,
+                    cms.getRequestContext().getEncoding())));
+            }
             result.append("></td>");
             return result.toString();
         }
@@ -203,21 +211,28 @@ public abstract class A_CmsWidget implements I_CmsWidget {
             return "";
         }
         helpIdsShown.add(helpId);
-        StringBuffer result = new StringBuffer(128);
+
         // calculate the key        
         String locValue = widgetDialog.getMessages().key(helpId, true);
         if (locValue == null) {
             // there was no help message found for this key, so return an empty string
             return "";
         } else {
-            result.append("<div class=\"help\" id=\"help");
-            result.append(helpId);
-            result.append("\"");
-            result.append(getJsHelpMouseHandler(widgetDialog, helpId));
-            result.append(">");
-            result.append(locValue);
-            result.append("</div>\n");
-            return result.toString();
+            if (widgetDialog.useNewStyle()) {
+                StringBuffer result = new StringBuffer(128);
+                result.append("<div class=\"help\" id=\"help");
+                result.append(helpId);
+                result.append("\"");
+                result.append(getJsHelpMouseHandler(widgetDialog, helpId, helpId));
+                result.append(">");
+                result.append(locValue);
+                result.append("</div>\n");
+                return result.toString();
+            } else {
+                // create no static divs for xml content editor
+                return "";
+            }
+
         }
     }
 
@@ -266,36 +281,44 @@ public abstract class A_CmsWidget implements I_CmsWidget {
     /**
      * Returns the HTML for the JavaScript mouse handlers that show / hide the help text.<p> 
      * 
-     * This is required since the handler differ between the "Dialog" and the "Administration" mode.<p>
+     * This is required since the handler differs between the "Dialog" and the "Administration" mode.<p>
      * 
      * @param widgetDialog the dialog where the widget is displayed on
-     * @param key the key for the help bubble 
+     * @param key the key for the help bubble
+     * @param value the localized help text, has to be an escaped String for JS usage, is only used in XML content editor
      * 
      * @return the HTML for the JavaScript mouse handlers that show / hide the help text
      */
-    protected String getJsHelpMouseHandler(I_CmsWidgetDialog widgetDialog, String key) {
+    protected String getJsHelpMouseHandler(I_CmsWidgetDialog widgetDialog, String key, String value) {
 
         String jsShow;
         String jsHide;
+        String keyHide;
         if (widgetDialog.useNewStyle()) {
             // Administration style
             jsShow = "sMH";
             jsHide = "hMH";
+            keyHide = "'" + key + "'";
         } else {
             // Dialog style
-            jsShow = "showHelp";
-            jsHide = "hideHelp";
+            jsShow = "showHelpText";
+            jsHide = "hideHelpText";
+            keyHide = "";
         }
         StringBuffer result = new StringBuffer(128);
         result.append(" onmouseover=\"");
         result.append(jsShow);
         result.append("('");
         result.append(key);
+        if (!widgetDialog.useNewStyle()) {
+            result.append("', '");
+            result.append(value);
+        }
         result.append("');\" onmouseout=\"");
         result.append(jsHide);
-        result.append("('");
-        result.append(key);
-        result.append("');\"");
+        result.append("(");
+        result.append(keyHide);
+        result.append(");\"");
 
         return result.toString();
     }
