@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/staticexport/TestCmsLinkManager.java,v $
- * Date   : $Date: 2006/03/21 10:16:26 $
- * Version: $Revision: 1.7.2.2 $
+ * Date   : $Date: 2006/03/22 13:38:07 $
+ * Version: $Revision: 1.7.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestSuite;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.7.2.2 $
+ * @version $Revision: 1.7.2.3 $
  * 
  * @since 6.0.0
  */
@@ -70,7 +70,7 @@ public class TestCmsLinkManager extends OpenCmsTestCase {
         OpenCmsTestProperties.initialize(org.opencms.test.AllTests.TEST_PROPERTIES_PATH);
 
         TestSuite suite = new TestSuite();
-        suite.setName(TestCmsStaticExportManager.class.getName());
+        suite.setName(TestCmsLinkManager.class.getName());
 
         suite.addTest(new TestCmsLinkManager("testToAbsolute"));
         suite.addTest(new TestCmsLinkManager("testLinkSubstitution"));

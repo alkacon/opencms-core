@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2006/03/21 15:42:34 $
- * Version: $Revision: 1.33.2.1 $
+ * Date   : $Date: 2006/03/22 13:38:07 $
+ * Version: $Revision: 1.33.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.2.1 $ 
+ * @version $Revision: 1.33.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -102,7 +102,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 Term term = new Term(I_CmsDocumentFactory.DOC_PATH, rootPath);
                 try {
                     // delete all documents with this term from the index
-                    reader.delete(term);
+                    reader.deleteDocuments(term);
                 } catch (IOException e) {
                     if (LOG.isWarnEnabled()) {
                         LOG.warn(Messages.get().key(

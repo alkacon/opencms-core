@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2006/03/21 15:42:34 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2006/03/22 13:38:07 $
+ * Version: $Revision: 1.13.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,6 +53,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
@@ -65,7 +66,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.2 $ 
+ * @version $Revision: 1.13.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,7 +171,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             LOG.error(Messages.get().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
         }
         if (text != null) {
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_CONTENT, text));
+            document.add(new Field(I_CmsDocumentFactory.DOC_CONTENT, text, Field.Store.YES, Field.Index.TOKENIZED));
         }
 
         StringBuffer meta = new StringBuffer(512);
@@ -183,12 +184,12 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             value = value.trim();
             if (value.length() > 0) {
                 // add title as keyword, required for sorting
-                field = Field.Keyword(I_CmsDocumentFactory.DOC_TITLE_KEY, value);
+                field = new Field(I_CmsDocumentFactory.DOC_TITLE_KEY, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
                 // title keyword field should not affect the boost factor
                 field.setBoost(0);
                 document.add(field);
                 // add title again as indexed field for searching
-                document.add(Field.UnStored(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value));
+                document.add(new Field(I_CmsDocumentFactory.DOC_TITLE_INDEXED, value, Field.Store.NO, Field.Index.TOKENIZED));
                 meta.append(value);
                 meta.append(" ");
             }
@@ -196,21 +197,21 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
         // add the keywords from the property
         value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_KEYWORDS, false).getValue();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_KEYWORDS, value));
+            document.add(new Field(I_CmsDocumentFactory.DOC_KEYWORDS, value, Field.Store.YES, Field.Index.TOKENIZED));
             meta.append(value);
             meta.append(" ");
         }
         // add the description from the property
         value = cms.readPropertyObject(path, CmsPropertyDefinition.PROPERTY_DESCRIPTION, false).getValue();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(value)) {
-            document.add(Field.Text(I_CmsDocumentFactory.DOC_DESCRIPTION, value));
+            document.add(new Field(I_CmsDocumentFactory.DOC_DESCRIPTION, value, Field.Store.YES, Field.Index.TOKENIZED));
             meta.append(value);
             meta.append(" ");
         }
         // add the collected meta information
         String metaInf = meta.toString();
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(metaInf)) {
-            document.add(Field.UnStored(I_CmsDocumentFactory.DOC_META, metaInf));
+            document.add(new Field(I_CmsDocumentFactory.DOC_META, metaInf, Field.Store.NO, Field.Index.TOKENIZED));
         }
 
         // add the category of the file (this is searched so the value can also be attached on a folder)
@@ -219,36 +220,36 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             // all categorys are internally stored lower case
             value = value.trim().toLowerCase();
             if (value.length() > 0) {
-                field = Field.Keyword(I_CmsDocumentFactory.DOC_CATEGORY, value);
+                field = new Field(I_CmsDocumentFactory.DOC_CATEGORY, value, Field.Store.YES, Field.Index.UN_TOKENIZED);
                 field.setBoost(0);
                 document.add(field);
             }
         } else {
             // synthetic "unknown" category if no category property defined for resource
-            field = Field.Keyword(I_CmsDocumentFactory.DOC_CATEGORY, CmsSearchCategoryCollector.UNKNOWN_CATEGORY);
+            field = new Field(I_CmsDocumentFactory.DOC_CATEGORY, CmsSearchCategoryCollector.UNKNOWN_CATEGORY, Field.Store.YES, Field.Index.UN_TOKENIZED);
             document.add(field);
         }
 
         // add the document root path, optimized for use with a phrase query
         String rootPath = CmsSearchIndex.rootPathRewrite(resource.getRootPath());
-        field = Field.Text(I_CmsDocumentFactory.DOC_ROOT, rootPath);
+        field = new Field(I_CmsDocumentFactory.DOC_ROOT, rootPath, Field.Store.YES, Field.Index.TOKENIZED);
         // set boost of 0 to root path field, since root path should have no effect on search result score 
         field.setBoost(0);
         document.add(field);
         // root path is stored again in "plain" format, but not for indexing since I_CmsDocumentFactory.DOC_ROOT is used for that
         // must be indexed as a keyword ONLY to be able to use this when deleting a resource from the index
-        document.add(Field.Keyword(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath()));
+        document.add(new Field(I_CmsDocumentFactory.DOC_PATH, resource.getRootPath(), Field.Store.YES, Field.Index.UN_TOKENIZED));
 
         // add date of creation and last modification as keywords (for sorting)
-        field = Field.Keyword(I_CmsDocumentFactory.DOC_DATE_CREATED, new Date(res.getDateCreated()));
+        field = new Field(I_CmsDocumentFactory.DOC_DATE_CREATED, DateTools.dateToString(new Date(res.getDateCreated()), DateTools.Resolution.MILLISECOND), Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
-        field = Field.Keyword(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, new Date(res.getDateLastModified()));
+        field = new Field(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, DateTools.dateToString(new Date(res.getDateLastModified()),DateTools.Resolution.MILLISECOND) , Field.Store.YES, Field.Index.UN_TOKENIZED);
         field.setBoost(0);
         document.add(field);
 
         // special field for VFS documents - add a marker so that the document can be identified as VFS resource
-        document.add(Field.UnIndexed(I_CmsDocumentFactory.DOC_TYPE, VFS_DOCUMENT_KEY_PREFIX));
+        document.add(new Field(I_CmsDocumentFactory.DOC_TYPE, VFS_DOCUMENT_KEY_PREFIX, Field.Store.YES, Field.Index.NO));
 
         float boost = 1.0f;
         // note that the priority property IS searched, so you can easily flag whole folders as "high" or "low"

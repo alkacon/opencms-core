@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2006/03/17 16:48:24 $
- * Version: $Revision: 1.5.2.6 $
+ * Date   : $Date: 2006/03/22 13:38:07 $
+ * Version: $Revision: 1.5.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,24 +55,24 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.5.2.6 $
+ * @version $Revision: 1.5.2.7 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.6 $ 
+ * @version $Revision: 1.5.2.7 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSearchParameters {
 
-    /** Sort result documents by date of last modification, then score. */
+    /** Sort result documents by date of creation, then score. */
     public static final Sort SORT_DATE_CREATED = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, true),
+        new SortField(I_CmsDocumentFactory.DOC_DATE_CREATED, SortField.STRING, true),
         SortField.FIELD_SCORE});
 
     /** Sort result documents by date of last modification, then score. */
     public static final Sort SORT_DATE_LASTMODIFIED = new Sort(new SortField[] {
-        new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, true),
+        new SortField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED, SortField.STRING, true),
         SortField.FIELD_SCORE});
 
     /** Default sort order (by document score - for this <code>null</code> gave best performance). */

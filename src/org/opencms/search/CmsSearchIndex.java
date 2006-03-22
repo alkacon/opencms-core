@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2005/12/15 15:17:51 $
- * Version: $Revision: 1.56.2.7 $
+ * Date   : $Date: 2006/03/22 13:38:07 $
+ * Version: $Revision: 1.56.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,6 +59,7 @@ import org.apache.lucene.document.Field;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.QueryParser;
+import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Hits;
 import org.apache.lucene.search.IndexSearcher;
@@ -73,7 +74,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.7 $ 
+ * @version $Revision: 1.56.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -656,10 +657,10 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     Term term = new Term(I_CmsDocumentFactory.DOC_ROOT, paths[j]);
                     phrase.add(term);
                 }
-                pathQuery.add(phrase, false, false);
+                pathQuery.add(phrase, BooleanClause.Occur.SHOULD);
             }
             // add the calculated phrase query for the root path
-            query.add(pathQuery, true, false);
+            query.add(pathQuery, BooleanClause.Occur.MUST);
 
             if ((params.getCategories() != null) && (params.getCategories().size() > 0)) {
                 // add query categories (if required)
@@ -667,9 +668,9 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 for (int i = 0; i < params.getCategories().size(); i++) {
                     Term term = new Term(I_CmsDocumentFactory.DOC_CATEGORY, (String)params.getCategories().get(i));
                     TermQuery termQuery = new TermQuery(term);
-                    categoryQuery.add(termQuery, false, false);
+                    categoryQuery.add(termQuery, BooleanClause.Occur.SHOULD);
                 }
-                query.add(categoryQuery, true, false);
+                query.add(categoryQuery, BooleanClause.Occur.MUST);
             }
 
             if ((params.getFields() != null) && (params.getFields().size() > 0)) {
@@ -677,19 +678,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 BooleanQuery fieldsQuery = new BooleanQuery();
                 // add one sub-query for each of the selected fields, e.g. "content", "title" etc.
                 for (int i = 0; i < params.getFields().size(); i++) {
-                    fieldsQuery.add(QueryParser.parse(
-                        params.getQuery(),
-                        (String)params.getFields().get(i),
-                        languageAnalyzer), false, false);
+                    QueryParser p = new QueryParser((String)params.getFields().get(i), languageAnalyzer);
+                    fieldsQuery.add(p.parse(params.getQuery()), BooleanClause.Occur.SHOULD);
                 }
                 // finally add the field queries to the main query
-                query.add(fieldsQuery, true, false);
+                query.add(fieldsQuery, BooleanClause.Occur.MUST);
             } else {
                 // if no fields are provided, just use the "content" field by default
-                query.add(
-                    QueryParser.parse(params.getQuery(), I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer),
-                    true,
-                    false);
+                QueryParser p = new QueryParser(I_CmsDocumentFactory.DOC_CONTENT, languageAnalyzer);
+                query.add(p.parse(params.getQuery()), BooleanClause.Occur.MUST);
             }
 
             // create the index searcher

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchResult.java,v $
- * Date   : $Date: 2006/03/21 15:42:34 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2006/03/22 13:38:07 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,9 +35,10 @@ import org.opencms.monitor.CmsMemoryMonitor;
 import org.opencms.monitor.I_CmsMemoryMonitorable;
 import org.opencms.search.documents.I_CmsDocumentFactory;
 
+import java.text.ParseException;
 import java.util.Date;
 
-import org.apache.lucene.document.DateField;
+import org.apache.lucene.document.DateTools;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.document.Field;
 
@@ -46,7 +47,7 @@ import org.apache.lucene.document.Field;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,14 +121,22 @@ public class CmsSearchResult implements I_CmsMemoryMonitorable, Comparable {
 
         f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_CREATED);
         if (f != null) {
-            m_dateCreated = DateField.stringToDate(f.stringValue());
+            try {
+                m_dateCreated = DateTools.stringToDate(f.stringValue());
+            } catch (ParseException exc) {
+                m_dateCreated = null;
+            }
         } else {
             m_dateCreated = null;
         }
 
         f = luceneDocument.getField(I_CmsDocumentFactory.DOC_DATE_LASTMODIFIED);
         if (f != null) {
-            m_dateLastModified = DateField.stringToDate(f.stringValue());
+            try {
+                m_dateLastModified = DateTools.stringToDate(f.stringValue());
+            } catch (ParseException exc) {
+                m_dateLastModified = null;
+            }                
         } else {
             m_dateLastModified = null;
         }
