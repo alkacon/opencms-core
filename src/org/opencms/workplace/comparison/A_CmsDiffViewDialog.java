@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2006/02/09 10:39:48 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/03/22 11:51:35 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspWriter;
  * @author Michael Moossen  
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -96,33 +96,7 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         out.println("</form>");
         // icon is displayed on the right in order that the user needs not scroll to the icon for long lines
         out.println("<p>");
-        String iconPath = null;
-        String onClic = "javascript:document.forms['diff-form'].mode.value = '";
-        if (getMode() == CmsDiffViewMode.ALL) {
-            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
-            onClic += CmsDiffViewMode.DIFF_ONLY;
-
-        } else {
-            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
-            onClic += CmsDiffViewMode.ALL;
-        }
-        onClic += "'; document.forms['diff-form'].submit();";
-        if (changed) {
-            // print show / hide button
-            out.println(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
-                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                "id",
-                getMode().getName().key(getLocale()),
-                null,
-                true,
-                iconPath,
-                null,
-                onClic));
-        } else {
-            // display all text, if there are no differences
-            setMode(CmsDiffViewMode.ALL);
-        }
+        out.println(getDiffOnlyButtonsHtml());
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");
@@ -148,6 +122,64 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         out.println(htmlEnd());
     }
 
+    /**
+     * Returns the html code for the buttons 'show only differences' and 'show everything'.<p>
+     * @return the html code for the buttons 'show only differences' and 'show everything'
+     */
+    String getDiffOnlyButtonsHtml() {
+        StringBuffer result = new StringBuffer();
+        boolean changed = !getOriginalSource().equals(getCopySource());
+        String iconPath = null;
+        String onClic = "javascript:document.forms['diff-form'].mode.value = '";
+        onClic += CmsDiffViewMode.DIFF_ONLY;
+        if (getMode() == CmsDiffViewMode.DIFF_ONLY) {
+            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
+        } else {
+            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
+        }
+        onClic += "'; document.forms['diff-form'].submit();";
+        if (changed) {
+            result.append(A_CmsHtmlIconButton.defaultButtonHtml(
+                getJsp(),
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                "id",
+                CmsDiffViewMode.ALL.getName().key(getLocale()),
+                null,
+                true,
+                iconPath,
+                null,
+                onClic));
+        } else {
+            // display all text, if there are no differences
+            setMode(CmsDiffViewMode.ALL);
+        }
+
+        onClic = "javascript:document.forms['diff-form'].mode.value = '";
+        if (getMode() == CmsDiffViewMode.ALL) {
+            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
+        } else {
+            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
+        }        
+        onClic += CmsDiffViewMode.ALL;
+        onClic += "'; document.forms['diff-form'].submit();";
+        if (changed) {
+            result.append(A_CmsHtmlIconButton.defaultButtonHtml(
+                getJsp(),
+                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+                "id",
+                CmsDiffViewMode.DIFF_ONLY.getName().key(getLocale()),
+                null,
+                true,
+                iconPath,
+                null,
+                onClic));
+        } else {
+            // display all text, if there are no differences
+            setMode(CmsDiffViewMode.ALL);
+        }
+        return result.toString();
+    }
+    
     /**
      * Returns the mode.<p>
      *

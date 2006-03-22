@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/Messages.java,v $
- * Date   : $Date: 2005/12/14 09:52:45 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/22 11:51:35 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -36,12 +36,12 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public final class Messages extends A_CmsMessageBundle {
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_ADDED_0 = "GUI_COMPARE_ADDED_0";
 
@@ -95,6 +95,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_HIDE_IDENTICAL_PROPERTIES_0 = "GUI_COMPARE_HIDE_IDENTICAL_PROPERTIES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0 = "GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_COMPARE_PROPERTIES_0 = "GUI_COMPARE_PROPERTIES_0";

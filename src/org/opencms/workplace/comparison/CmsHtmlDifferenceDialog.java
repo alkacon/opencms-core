@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2006/02/09 10:38:44 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/22 11:51:35 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,6 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
      */
     public void displayDialog() throws Exception {
 
-        boolean changed = !getOriginalSource().equals(getCopySource());
         if (getAction() == ACTION_CANCEL) {
             actionCloseDialog();
         }
@@ -110,45 +109,18 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
         out.println("</form>");
         out.println("<p>");
 
+        out.println(getDiffOnlyButtonsHtml());
+        
+        String onClic = "javascript:document.forms['diff-form'].textmode.value = '";
         String iconPath = null;
-        String onClic = "javascript:document.forms['diff-form'].mode.value = '";
-        if (getMode() == CmsDiffViewMode.ALL) {
-            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
-            onClic += CmsDiffViewMode.DIFF_ONLY;
-
-        } else {
-            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
-            onClic += CmsDiffViewMode.ALL;
-        }
-        onClic += "'; document.forms['diff-form'].submit();";
-        if (changed) {
-            // print show / hide button
-            out.println(A_CmsHtmlIconButton.defaultButtonHtml(
-                getJsp(),
-                CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-                "id",
-                getMode().getName().key(getLocale()),
-                null,
-                true,
-                iconPath,
-                null,
-                onClic));
-        } else {
-            // display all text, if there are no differences
-            setMode(CmsDiffViewMode.ALL);
-        }
-
-        onClic = "javascript:document.forms['diff-form'].textmode.value = '";
         CmsMessageContainer iconName = null;
         if (MODE_HTML.equals(getParamTextmode())) {
             iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
-            onClic += MODE_TEXT;
-            iconName = Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0);
         } else {
             iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
-            onClic += MODE_HTML;
-            iconName = Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0);
-        }
+        }        
+        onClic += MODE_TEXT;        
+        iconName = Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0);
         onClic += "'; document.forms['diff-form'].submit();";
         out.println(A_CmsHtmlIconButton.defaultButtonHtml(
             getJsp(),
@@ -160,6 +132,27 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
             iconPath,
             null,
             onClic));
+
+        onClic = "javascript:document.forms['diff-form'].textmode.value = '";
+        if (MODE_TEXT.equals(getParamTextmode())) {
+            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
+        } else {
+            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
+        } 
+        onClic += MODE_HTML;
+        iconName = Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0);
+        onClic += "'; document.forms['diff-form'].submit();";
+        out.println(A_CmsHtmlIconButton.defaultButtonHtml(
+            getJsp(),
+            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
+            "id",
+            iconName.key(getLocale()),
+            null,
+            true,
+            iconPath,
+            null,
+            onClic));
+        
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");
@@ -176,8 +169,15 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
             String diff = Diff.diffAsHtml(originalSource, copySource, conf);
             if (CmsStringUtil.isNotEmpty(diff)) {
                 out.println(diff);
-            } else if (getMode() == CmsDiffViewMode.ALL) {  
-                out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(CmsStringUtil.escapeHtml(originalSource), "<br/>", ""))); // print original source, if there are no differences
+            } else {
+                String htmlDiff = Diff.diffAsHtml(getOriginalSource(), getCopySource(), conf);
+                if (CmsStringUtil.isNotEmpty(htmlDiff)) {
+                    // extracted text is equal, but html differs
+                    out.println(Messages.get().key(Messages.GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0));
+                } else if (getMode() == CmsDiffViewMode.ALL) { 
+                    // print original source, if there are no differences
+                    out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(CmsStringUtil.escapeHtml(originalSource), "<br/>", ""))); 
+                }
             }
         } catch (Exception e) {
             out.print(e);
