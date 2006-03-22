@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/Messages.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.13.2.11 $
+ * Date   : $Date: 2006/03/22 08:56:28 $
+ * Version: $Revision: 1.13.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,13 +33,14 @@ package org.opencms.workplace.commons;
 
 import org.opencms.i18n.A_CmsMessageBundle;
 import org.opencms.i18n.I_CmsMessageBundle;
+import org.opencms.util.CmsStringUtil;
 
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.13.2.11 $ 
+ * @version $Revision: 1.13.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1127,7 +1128,7 @@ public final class Messages extends A_CmsMessageBundle {
     public static String getTaskKey(String oldTaskKey) {
 
         StringBuffer sb = new StringBuffer(TASK_PREFIX);
-        sb.append(oldTaskKey.replace(".", "_").toUpperCase());
+        sb.append(CmsStringUtil.substitute(oldTaskKey, ".", "_").toUpperCase());
         sb.append(TASK_POSTFIX);
         return sb.toString();
     }
