@@ -38,7 +38,7 @@
 
 			/* check if database exists */
 			if(!dropDb)	{
-				db.setConnection(Bean.getDbDriver(), Bean.getDbCreateConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
+				db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbCreateUser(), Bean.getDbCreatePwd());
 				dbExists = db.noErrors();
 				if(dbExists)	{
 					db.closeConnection();
@@ -228,6 +228,7 @@ Alkacon OpenCms Setup Wizard - Create database &amp; tables
 
 								// reopen the connection in order to display errors
 								db.setConnection(Bean.getDbDriver(), Bean.getDbWorkConStr(), Bean.getDbConStrParams(), Bean.getDbWorkUser(),Bean.getDbWorkPwd());
+				
 								//Create Tables %>
 								
 								<%= Bean.getHtmlPart("C_BLOCK_START", "Creating tables ...") %>

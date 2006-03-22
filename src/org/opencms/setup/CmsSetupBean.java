@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/18 08:40:32 $
- * Version: $Revision: 1.44.2.10 $
+ * Date   : $Date: 2006/03/22 15:10:29 $
+ * Version: $Revision: 1.44.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.10 $ 
+ * @version $Revision: 1.44.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -208,6 +208,9 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
     /** Contains the properties of "opencms.properties". */
     private ExtendedProperties m_extProperties;
+
+    /** The Database Provider used in setup. */
+    private String m_provider;
 
     /** A map with tokens ${...} to be replaced in SQL scripts. */
     private Map m_replacer;
@@ -558,7 +561,11 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
      */
     public String getDbWorkConStr() {
 
-        return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".jdbcUrl");
+        if (m_provider.equals(POSTGRESQL_PROVIDER)) {
+            return getDbProperty(m_databaseKey + ".constr.newDb");
+        } else {
+            return getExtProperty(CmsDbPool.KEY_DATABASE_POOL + '.' + getPool() + ".jdbcUrl");
+        }
     }
 
     /** 
@@ -1455,6 +1462,10 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     public boolean setDbParamaters(HttpServletRequest request, String provider) {
 
         String conStr = request.getParameter("dbCreateConStr");
+
+        // store the DB provider
+        m_provider = provider;
+
         boolean isFormSubmitted = ((request.getParameter("submit") != null) && (conStr != null));
         String database = "";
         if (provider.equals(MYSQL_PROVIDER)) {
@@ -1483,10 +1494,14 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
                     String templateDb = request.getParameter("templateDb");
                     setDbProperty(getDatabase() + ".templateDb", templateDb);
+                    setDbProperty(getDatabase() + ".newDb", database);
+
                     if ((conStr != null) && (!conStr.endsWith("/"))) {
                         conStr += "/";
                     }
                     setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".templateDb"));
+                    setDbProperty(getDatabase() + ".constr.newDb", conStr + getDbProperty(getDatabase() + ".newDb"));
+
                 } else if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
                     if (!conStr.endsWith("/")) {
                         conStr += "/";
@@ -1757,21 +1772,21 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
     /**
      * Checks the jdbc driver.<p>
      * 
-     * @return <code>true</code> if the recommended driver is found
+     * @return <code>true</code> if at least one of the recommended drivers is found
      */
     public boolean validateJdbc() {
 
+        boolean result = false;
         String libFolder = getLibFolder();
         Iterator it = getDatabaseLibs(getDatabase()).iterator();
         while (it.hasNext()) {
             String libName = (String)it.next();
             File libFile = new File(libFolder, libName);
-            if (!libFile.exists()) {
-                return false;
+            if (libFile.exists()) {
+                result = true;
             }
         }
-
-        return true;
+        return result;
     }
 
     /** 

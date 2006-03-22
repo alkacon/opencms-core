@@ -142,7 +142,14 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 						</tr>
 						<tr>
 							<td>Connection String</td>
-							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:280px;" value='<%= Bean.getDbCreateConStr() %>'></td>
+							<%
+								//Fixing the Back Button Bug in the next steps.
+								String cnString=Bean.getDbCreateConStr();
+								if (cnString.indexOf(Bean.getDbProperty(Bean.getDatabase() + ".templateDb"))>0) {
+									cnString=cnString.substring(0,cnString.indexOf(Bean.getDbProperty(Bean.getDatabase() + ".templateDb")));
+								}
+							%>
+							<td colspan="2"><input type="text" name="dbCreateConStr" size="22" style="width:280px;" value='<%= cnString %>'></td>
 							<td><%= Bean.getHtmlHelpIcon("3", "../../") %></td>
 							<td>&nbsp;</td>
 						</tr>
@@ -177,6 +184,10 @@ Alkacon OpenCms Setup Wizard - <%= Bean.getDatabaseName(Bean.getDatabase()) %> d
 The <b>Setup Connection</b> is used <i>only</i> during this setup process.<br>&nbsp;<br>
 The specified user must have database administration permissions in order to create the database and tables.
 This user information is not stored after the setup is finished.
+For Postgresql versions before 8.0 you can use "template1"/"template0" databases.
+For Postgresql 8.0 and newer it is better to use "postgres" database.
+If you discover problems accessing to the templatedb tipcally a "templatedb is being accessed by other users" try to restart your DBMS or change the templatedb you are accessing.
+Some tools (i.e. PgAdmin3) are accessing to template1 by default, so turn off that tools.
 <%= Bean.getHtmlPart("C_HELP_END") %>
 
 <%= Bean.getHtmlPart("C_HELP_START", "2") %>
