@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/22 10:21:16 $
- * Version: $Revision: 1.682.2.97 $
+ * Date   : $Date: 2006/03/22 14:51:57 $
+ * Version: $Revision: 1.682.2.98 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,10 +32,11 @@ OpenCms 6.1.11 - March ???, 2006
 * Fixed issue #1049: Multi copy & move operations now work with relative paths
 * Fixed issue #1043: Html from FCKeditor and XML contents is now re-formatted while saving, so that "diff" can be used
 ! Added "move content up and down" function to XML content editor
-# Fixed issue #1083: Preferences dialog now stores preferred editor settings correctly
+* Fixed issue #1083: Preferences dialog now stores preferred editor settings correctly
 * Fixed issue #1002: Static export does not produce NPEs in BackupHandler anymore
-# Fixed issue #1064: Font modifications in upload applet to let it work on systems without the Verdana font
+* Fixed issue #1064: Font modifications in upload applet to let it work on systems without the Verdana font
 * Fixed issue #995: Improved scrubbing of static exported files
+- Updated Lucene search engine to version 1.9.1 (this requires rebuilding of the search index files !)
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
