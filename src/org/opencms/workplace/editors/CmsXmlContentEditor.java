@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/22 13:19:18 $
- * Version: $Revision: 1.65.2.8 $
+ * Date   : $Date: 2006/03/22 13:23:00 $
+ * Version: $Revision: 1.65.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.8 $ 
+ * @version $Revision: 1.65.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1078,7 +1078,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // indicates if at least one button is active
         boolean buttonPresent = false;
-        
+
         jsCall.append("showElementButtons('");
         jsCall.append(elementName);
         jsCall.append("', ");
@@ -1093,7 +1093,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             jsCall.append(Boolean.FALSE);
         }
         jsCall.append(", ");
-        
+
         // build the move down button (move down in API is move up for content editor)
         if (index > 0) {
             // build active move down button
@@ -1124,7 +1124,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         }
         jsCall.append(");");
 
-        StringBuffer result = new StringBuffer(1024);
+        String result;
         if (buttonPresent) {
             // at least one button active, create mouseover button
             StringBuffer href = new StringBuffer(512);
@@ -1134,18 +1134,18 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append(jsCall);
             href.append("checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\" id=\"btimg.");
             href.append(elementName).append(".").append(index);
-            result.append(button(
+            result = button(
                 href.toString(),
                 null,
                 "directedit_op.png",
                 Messages.GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0,
-                0));
+                0);
         } else {
             // no active button, create a spacer
-            result.append(buttonBarSpacer(1));
+            result = buttonBarSpacer(1);
         }
 
-        return result.toString();
+        return result;
     }
 
     /**
