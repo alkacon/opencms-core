@@ -16,7 +16,7 @@
 		<description><![CDATA[<p>This module contains the OpenCms administration tools for managing the content of resources.</p>
 <p>Install this module if you want to modify file properties or content elements.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.0.10</version>
+		<version>1.0.11</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -266,11 +266,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.view.groups.contenttools}]]></value>
+					<value><![CDATA[${key.GUI_CONTENTTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.contenttools.description}]]></value>
+					<value><![CDATA[${key.GUI_CONTENTTOOLS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -278,7 +278,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.contenttools}]]></value>
+					<value><![CDATA[${key.GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -310,11 +310,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.contenttools.groups.propertychange}]]></value>
+					<value><![CDATA[${key.GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.propertychange.description}]]></value>
+					<value><![CDATA[${key.GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -322,7 +322,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.title.propertychange}]]></value>
+					<value><![CDATA[${key.GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -541,11 +541,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.contenttools.groups.propertydelete}]]></value>
+					<value><![CDATA[${key.GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.propertydelete.description}]]></value>
+					<value><![CDATA[${key.GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -553,7 +553,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.title.propertydelete}]]></value>
+					<value><![CDATA[${key.GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -607,11 +607,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.contenttools.groups.merge}]]></value>
+					<value><![CDATA[${key.GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.merge.description}]]></value>
+					<value><![CDATA[${key.GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -619,7 +619,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.title.mergepages}]]></value>
+					<value><![CDATA[${key.GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -669,11 +669,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.contenttools.groups.renameelement}]]></value>
+					<value><![CDATA[${key.GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.renameelement.description}]]></value>
+					<value><![CDATA[${key.GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -681,7 +681,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.icon.renameelement}]]></value>
+					<value><![CDATA[${key.GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>

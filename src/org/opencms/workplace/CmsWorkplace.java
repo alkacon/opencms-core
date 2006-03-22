@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.146.2.6 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.146.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.6 $ 
+ * @version $Revision: 1.146.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -99,7 +99,7 @@ public abstract class CmsWorkplace {
 
     /** Parameter for the default locale. */
     public static final Locale DEFAULT_LOCALE = Locale.ENGLISH;
-    
+
     /** Parameter for the default language. */
     public static final String DEFAULT_LANGUAGE = DEFAULT_LOCALE.getLanguage();
 
@@ -124,10 +124,10 @@ public abstract class CmsWorkplace {
 
     /** Path to system folder. */
     public static final String VFS_PATH_SYSTEM = "/system/";
-    
+
     /** Path to the workplace. */
     public static final String VFS_PATH_WORKPLACE = VFS_PATH_SYSTEM + "workplace/";
-    
+
     /** Constant for the JSP dialogs path. */
     public static final String PATH_DIALOGS = VFS_PATH_WORKPLACE + "commons/";
 
@@ -1145,7 +1145,7 @@ public abstract class CmsWorkplace {
         result.append(mondayFirst);
         result.append(",\n");
         result.append("\t\tshowsTime      :    " + showTime);
-        if (showTime && key("calendar.timeformat").toLowerCase().indexOf("p") != -1) {
+        if (showTime && key(Messages.GUI_CALENDAR_TIMEFORMAT_0).toLowerCase().indexOf("p") != -1) {
             result.append(",\n\t\ttimeFormat     :    \"12\"");
         }
         if (CmsStringUtil.isNotEmpty(dateStatusFunc)) {

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/Messages.java,v $
- * Date   : $Date: 2006/02/02 14:50:44 $
- * Version: $Revision: 1.13.2.8 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.13.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.13.2.8 $
+ * @version $Revision: 1.13.2.9 $
  * 
  * @since 6.0.0
  */
@@ -59,6 +59,21 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_TAGREPLACE_REPLACEMENTCONFIG_KEYVALUE_LENGTH_1 = "ERR_TAGREPLACE_REPLACEMENTCONFIG_KEYVALUE_LENGTH_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_ALL_0 = "GUI_BUTTON_ALL_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_SEARCH_0 = "GUI_BUTTON_SEARCH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0 = "GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_CHANGEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0 = "GUI_CHANGEELEMENTLOCALE_ADMIN_TOOL_GROUP_0";
@@ -103,6 +118,28 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0 = "GUI_CHECKCONTENT_RESULT_ADMIN_TOOL_NAME_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENTTOOLS_ADMIN_TOOL_HELP_0 = "GUI_CONTENTTOOLS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_DELETEELEMENT__CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0 = "GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_DELETEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_DELETEELEMENT__CONTENTTOOLS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+
+    public static final String GUI_EDITPROPERTYINFO_0 = "GUI_EDITPROPERTYINFO_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0 = "GUI_ELEM_RENAME_VALIDATE_ENTER_NEW_ELEM_0";
 
     /** Message constant for key in the resource bundle. */
@@ -130,6 +167,87 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERR_WIDGETVALUE_EMPTY_0 = "GUI_ERR_WIDGETVALUE_EMPTY_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_LOCKEDBY_0 = "GUI_EXPLORER_LOCKEDBY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_ADRESS_0 = "GUI_INPUT_ADRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_LANG_0 = "GUI_INPUT_LANG_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_INPUT_MERGEPAGES_FOLDER1_0 = "GUI_INPUT_MERGEPAGES_FOLDER1_0";
+
+    /** Name of the used resource bundle. */
+    public static final String GUI_INPUT_MERGEPAGES_FOLDER2_0 = "GUI_INPUT_MERGEPAGES_FOLDER2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_MERGEPAGES_INFO_0 = "GUI_INPUT_MERGEPAGES_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTY_0 = "GUI_INPUT_PROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_INFO_0 = "GUI_INPUT_PROPERTYCHANGE_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_INFO2_0 = "GUI_INPUT_PROPERTYCHANGE_INFO2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_OLDVALUE_0 = "GUI_INPUT_PROPERTYCHANGE_OLDVALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_RECURSIVE_0 = "GUI_INPUT_PROPERTYCHANGE_RECURSIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_RESOURCE_0 = "GUI_INPUT_PROPERTYCHANGE_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_RESULT_0 = "GUI_INPUT_PROPERTYCHANGE_RESULT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYCHANGE_RESULT_NONE_0 = "GUI_INPUT_PROPERTYCHANGE_RESULT_NONE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYDELETE_INFO_0 = "GUI_INPUT_PROPERTYDELETE_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_PROPERTYVALUE_0 = "GUI_INPUT_PROPERTYVALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_RENAMEELEMENT_INFO_0 = "GUI_INPUT_RENAMEELEMENT_INFO_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_RENAMEELEMENT_NEWVALUE_0 = "GUI_INPUT_RENAMEELEMENT_NEWVALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_RENAMEELEMENT_OLDVALUE_0 = "GUI_INPUT_RENAMEELEMENT_OLDVALUE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_RENAMEELEMENT_REMOVEEMPTYELEMENTS_0 = "GUI_INPUT_RENAMEELEMENT_REMOVEEMPTYELEMENTS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_RENAMEELEMENT_VALIDATENEWELEMENT_0 = "GUI_INPUT_RENAMEELEMENT_VALIDATENEWELEMENT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_TEMPLATE_0 = "GUI_INPUT_TEMPLATE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_TITLE_0 = "GUI_INPUT_TITLE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_INPUT_TYPE_0 = "GUI_INPUT_TYPE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_HELP_0 = "GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_MERGE_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_MERGE_PAGES_THREAD_NAME_0 = "GUI_MERGE_PAGES_THREAD_NAME_0";
 
     /** Message constant for key in the resource bundle. */
@@ -148,6 +266,12 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1 = "GUI_MERGE_PAGES_VALIDATE_SECOND_FOLDER_1";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_MESSAGE_DELETEPROPERTY_0 = "GUI_MESSAGE_DELETEPROPERTY_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_PLEASE_SELECT_0 = "GUI_PLEASE_SELECT_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_PROP_CHANGE_VALIDATE_NEW_PROP_VALUE_0 = "GUI_PROP_CHANGE_VALIDATE_NEW_PROP_VALUE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -163,6 +287,22 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0 = "GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0";
 
     /** Message constant for key in the resource bundle. */
+
+    public static final String GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0 = "GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_GROUP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0 = "GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_HELP_0";
+    
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0 = "GUI_RENAMEELEMENT_CONTENTTOOLS_ADMIN_TOOL_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAMEELEMENT_RECURSIVE_0 = "GUI_RENAMEELEMENT_RECURSIVE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_RENAMEELEMENT_RESOURCE_0 = "GUI_RENAMEELEMENT_RESOURCE_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_TAGREPLACE_ADMIN_TOOL_GROUP_0 = "GUI_TAGREPLACE_ADMIN_TOOL_GROUP_0";
 
     /** Message constant for key in the resource bundle. */
@@ -176,6 +316,15 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_TAGREPLACE_THREAD_NAME_0 = "GUI_TAGREPLACE_THREAD_NAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_MERGEPAGES_0 = "GUI_TITLE_MERGEPAGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_PROPERTYCHANGE_0 = "GUI_TITLE_PROPERTYCHANGE_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_TITLE_PROPERTYDELETE_0 = "GUI_TITLE_PROPERTYDELETE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_DEBUG_TAGREPLACE_ELEMENT_2 = "LOG_DEBUG_TAGREPLACE_ELEMENT_2";

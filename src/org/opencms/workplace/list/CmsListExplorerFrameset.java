@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/03/15 10:19:55 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/22 08:33:22 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,6 +44,7 @@ import org.opencms.workplace.tools.CmsToolDialog;
 import org.opencms.workplace.tools.CmsToolMacroResolver;
 import org.opencms.workplace.tools.CmsToolManager;
 
+
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -61,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,8 +116,7 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(
             "\">\n");
         html.append("\t\t<title>\n");
-        html.append("\t\t\t").append(key("label.wptitle")).append(" ").append(getSettings().getUser().getName()).append(
-            "@").append(getJsp().getRequest().getServerName()).append("\n");
+        html.append("\t\t\t").append(org.opencms.workplace.Messages.get().key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, getSettings().getUser().getName(), getJsp().getRequest().getServerName())).append("\n");
         html.append("\t\t</title>\n");
         html.append("\t</head>\n");
         html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");

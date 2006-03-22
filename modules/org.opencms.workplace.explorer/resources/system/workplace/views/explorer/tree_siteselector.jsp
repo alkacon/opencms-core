@@ -11,7 +11,7 @@
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
-<title><%= wp.key("title.explorertree") %></title>
+<title><%= org.opencms.workplace.explorer.Messages.get().key(wp.getLocale(), org.opencms.workplace.explorer.Messages.GUI_TITLE_EXPLORERTREE_0) %></title>
 
 <script type="text/javascript">
 <!--
@@ -26,7 +26,7 @@ function changeSite() {
 
 <%= wp.buttonBar(wp.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 0) %>
-<%= wp.buttonBarLabel("label.site") %>
+<%= wp.buttonBarLabel(org.opencms.workplace.explorer.Messages.GUI_LABEL_SITE_0) %>
 
 <form name="siteselect" method="post" action="tree_fs.jsp" target="_top">
 <td>

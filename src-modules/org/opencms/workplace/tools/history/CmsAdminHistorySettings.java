@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.workplace.tools.history;
 
 import org.opencms.configuration.CmsSystemConfiguration;
@@ -36,6 +37,8 @@ import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
+
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -53,18 +56,18 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsAdminHistorySettings extends CmsDialog {
-    
+
     /** Value for the action: save the settings. */
     public static final int ACTION_SAVE_EDIT = 300;
-    
+
     /** Request parameter value for the action: save the settings. */
     public static final String DIALOG_SAVE_EDIT = "saveedit";
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "historysettings";
 
@@ -74,9 +77,10 @@ public class CmsAdminHistorySettings extends CmsDialog {
      * @param jsp an initialized JSP action element
      */
     public CmsAdminHistorySettings(CmsJspActionElement jsp) {
+
         super(jsp);
     }
-    
+
     /**
      * Public constructor with JSP variables.<p>
      * 
@@ -85,9 +89,10 @@ public class CmsAdminHistorySettings extends CmsDialog {
      * @param res the JSP response
      */
     public CmsAdminHistorySettings(PageContext context, HttpServletRequest req, HttpServletResponse res) {
+
         this(new CmsJspActionElement(context, req, res));
     }
-    
+
     /**
      * Performs the change of the history settings, this method is called by the JSP.<p>
      * 
@@ -95,52 +100,54 @@ public class CmsAdminHistorySettings extends CmsDialog {
      * @throws JspException if something goes wrong
      */
     public void actionEdit(HttpServletRequest request) throws JspException {
+
         // save initialized instance of this class in request attribute for included sub-elements
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, this);
         try {
             performEditOperation(request);
             // set the request parameters before returning to the overview
-            actionCloseDialog();              
+            actionCloseDialog();
         } catch (CmsIllegalArgumentException e) {
             // error setting history values, show error dialog
-            
+
             includeErrorpage(this, e);
         }
     }
-    
+
     /**
      * Builds the HTML for the history settings input form.<p>
      * 
      * @return the HTML code for the history settings input form
      */
     public String buildSettingsForm() {
+
         StringBuffer retValue = new StringBuffer(512);
         boolean histEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
         int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
-        
+        Locale locale= this.getLocale();  
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("<td>" + key("input.histenabled") + "</td>\n");
+        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTENABLED_0) + "</td>\n");
         retValue.append("<td><input type=\"radio\" name=\"enable\" id=\"enabled\" value=\"true\" onclick=\"checkEnabled();\"");
         if (histEnabled) {
             retValue.append(" checked=\"checked\"");
         }
         retValue.append("></td>\n");
-        retValue.append("<td>" + key("input.histenabled.yes") + "</td>\n");
+        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTENABLE_YES_0) + "</td>\n");
         retValue.append("<td>&nbsp;</td>\n");
         retValue.append("<td><input type=\"radio\" name=\"enable\" id=\"disabled\" value=\"false\" onclick=\"checkEnabled();\"");
         if (!histEnabled) {
             retValue.append(" checked=\"checked\"");
         }
         retValue.append("></td>\n");
-        retValue.append("<td>" + key("input.histenabled.no") + "</td>\n");
+        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTENABLE_NO_0) + "</td>\n");
         retValue.append("</tr>\n");
         retValue.append("</table>\n");
 
         retValue.append("<div class=\"hide\" id=\"settings\">\n");
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("<td>" + key("input.histnumber") + "</td>\n");
+        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTNUMBER_0) + "</td>\n");
         retValue.append("<td colspan=\"5\"><input type=\"text\" name=\"versions\" value=\"");
         if (maxVersions != -1) {
             retValue.append(maxVersions);
@@ -149,14 +156,15 @@ public class CmsAdminHistorySettings extends CmsDialog {
         retValue.append("</tr>\n");
         retValue.append("</table>\n");
         retValue.append("</div>\n");
-        
-        return retValue.toString(); 
+
+        return retValue.toString();
     }
-    
+
     /**
      * @see org.opencms.workplace.CmsWorkplace#initWorkplaceRequestValues(org.opencms.workplace.CmsWorkplaceSettings, javax.servlet.http.HttpServletRequest)
      */
     protected void initWorkplaceRequestValues(CmsWorkplaceSettings settings, HttpServletRequest request) {
+
         // fill the parameter values in the get/set methods
         fillParamValues(request);
         // set the dialog type
@@ -164,15 +172,15 @@ public class CmsAdminHistorySettings extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_SAVE_EDIT.equals(getParamAction())) {
             setAction(ACTION_SAVE_EDIT);
-        } else if (DIALOG_CANCEL.equals(getParamAction())) {          
+        } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
-        } else { 
+        } else {
             // set the default action               
-            setAction(ACTION_DEFAULT); 
-            setParamTitle(key("label.admin.history.settings"));
-        }      
-    } 
-    
+            setAction(ACTION_DEFAULT);
+            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0));
+        }
+    }
+
     /**
      * Performs the change of the history settings.<p>
      * 
@@ -181,10 +189,11 @@ public class CmsAdminHistorySettings extends CmsDialog {
      * @throws CmsIllegalArgumentException if the entered number is no positive integer
      */
     private boolean performEditOperation(HttpServletRequest request) throws CmsIllegalArgumentException {
+
         // get the new settings from the request parameters
         String paramEnabled = request.getParameter("enable");
         String paramVersions = request.getParameter("versions");
-        
+
         // check the submitted values
         boolean enabled = Boolean.valueOf(paramEnabled).booleanValue();
         int versions = 0;
@@ -198,7 +207,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
             // version value too low, throw exception
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NO_POSITIVE_INT_0));
         }
-        
+
         OpenCms.getSystemInfo().setVersionHistorySettings(enabled, versions);
         OpenCms.writeConfiguration(CmsSystemConfiguration.class);
 

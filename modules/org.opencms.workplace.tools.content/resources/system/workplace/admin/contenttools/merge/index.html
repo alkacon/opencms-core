@@ -64,7 +64,7 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= wp.key("input.mergepages.info") %><br>
+<%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_INFO_0) %><br>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
@@ -92,14 +92,14 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.mergepages.folder1") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_FOLDER1_0)%></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_FOLDER1 %>" type="text" value="<%=wp.getParamFolder1()==null?"":wp.getParamFolder1()%>" class="maxwidth" style="width: 99%"></td>
-	<td><%=wp.button("javascript:top.openTreeWin('param_folder1', true, 'main', '"+wp.PARAM_FOLDER1+"', document);", null, "folder", "button.search", 0)%></td>
+	<td><%=wp.button("javascript:top.openTreeWin('param_folder1', true, 'main', '"+wp.PARAM_FOLDER1+"', document);", null, "folder", org.opencms.workplace.tools.content.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.mergepages.folder2") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_MERGEPAGES_FOLDER2_0)%></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_FOLDER2 %>" type="text" value="<%=wp.getParamFolder2()==null?"":wp.getParamFolder2()%>" class="maxwidth" style="width: 99%"></td>
-	<td><%=wp.button("javascript:top.openTreeWin('param_folder2', true, 'main', '"+wp.PARAM_FOLDER2+"', document);", null, "folder", "button.search", 0)%></td>
+	<td><%=wp.button("javascript:top.openTreeWin('param_folder2', true, 'main', '"+wp.PARAM_FOLDER2+"', document);", null, "folder", org.opencms.workplace.tools.content.Messages.GUI_BUTTON_SEARCH_0, 0)%></td>
 </tr>
 
 </table>

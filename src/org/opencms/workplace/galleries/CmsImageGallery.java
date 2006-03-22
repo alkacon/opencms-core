@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2006/02/13 16:32:17 $
- * Version: $Revision: 1.13.2.6 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.13.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.6 $ 
+ * @version $Revision: 1.13.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +108,7 @@ public class CmsImageGallery extends A_CmsGallery {
         String height = null;
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, generate disabled button
-            return button(null, null, "apply_in.png", "button.paste", 0);
+            return button(null, null, "apply_in.png", Messages.GUI_BUTTON_PASTE_0, 0);
         } else {
             // in editor or widget mode, generate enabled button
             String uri = getParamResourcePath();
@@ -146,7 +146,7 @@ public class CmsImageGallery extends A_CmsGallery {
                 + width
                 + ","
                 + height
-                + ");", null, "apply.png", "button.paste", 0);
+                + ");", null, "apply.png", Messages.GUI_BUTTON_PASTE_0, 0);
         }
     }
 
@@ -182,16 +182,16 @@ public class CmsImageGallery extends A_CmsGallery {
 
         return CmsResourceTypeImage.getStaticTypeId();
     }
-    
+
     /**
      * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
      * 
      * @return the order of the implemented gallery
      */
     public Integer getOrder() {
-        
+
         return ORDER_GALLERY;
-    }    
+    }
 
     /**
      * @see org.opencms.workplace.galleries.A_CmsGallery#getPreviewBodyStyle()
@@ -260,12 +260,12 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append("*");
             result.append(scaler.getHeight());
             result.append(" ");
-            result.append(key("label.pixels"));
+            result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_PIXELS_0));
             result.append(" / ");
         }
         result.append(res.getLength() / 1024);
         result.append(" ");
-        result.append(key("label.kilobytes"));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_KILOBYTES_0));
         result.append("</td>\n");
 
         return result.toString();
@@ -297,7 +297,7 @@ public class CmsImageGallery extends A_CmsGallery {
 
         if ((m_defaultScaleParams != null) && m_defaultScaleParams.isValid()) {
             String resPath = getCms().getSitePath(res);
-            
+
             result.append("\t<td class=\"");
             result.append(tdClass);
             result.append("\">");
@@ -306,7 +306,7 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append("\" href=\"javascript: preview(\'");
             result.append(resPath);
             result.append("\');\" title=\"");
-            result.append(key("button.preview"));
+            result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_PREVIEW_0));
             result.append("\">");
             result.append("<img src=\"");
             result.append(getJsp().link(resPath));

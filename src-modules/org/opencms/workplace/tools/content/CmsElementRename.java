@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementRename.java,v $
- * Date   : $Date: 2006/01/09 11:51:20 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -83,7 +83,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,28 +91,28 @@ public class CmsElementRename extends CmsReport {
 
     /** A constant representing the select option all templates. */
     public static final String ALL = "ALL";
-    
+
     /** The dialog type. */
     public static final String DIALOG_TYPE = "renameelement";
-    
+
     /** Request parameter name for the locale. */
     public static final String PARAM_LOCALE = "locale";
-    
+
     /** Request parameter name for the new element name. */
     public static final String PARAM_NEW_ELEMENT = "newelement";
-    
+
     /** Request parameter name for the old element name. */
     public static final String PARAM_OLD_ELEMENT = "oldelement";
-    
+
     /** Request parameter name for the recursive search. */
     public static final String PARAM_RECURSIVE = "recursive";
-    
+
     /** Request parameter name for the remove empty elements. */
     public static final String PARAM_REMOVE_EMPTYELEMENTS = "removeemptyelements";
-    
+
     /** Request parameter name for the template. */
     public static final String PARAM_TEMPLATE = "template";
-    
+
     /** Request parameter name for the validate new element. */
     public static final String PARAM_VALIDATE_NEW_ELEMENT = "validatenewelement";
 
@@ -258,6 +258,8 @@ public class CmsElementRename extends CmsReport {
      */
     public String buildSelectLocales(String attributes) {
 
+        Locale curLocale = this.getLocale();
+
         List options = new ArrayList();
         List values = new ArrayList();
         List locales = OpenCms.getLocaleManager().getAvailableLocales();
@@ -267,9 +269,9 @@ public class CmsElementRename extends CmsReport {
             return "";
         } else {
             // locales found, create option and value lists            
-            options.add(key("please.select"));
+            options.add(Messages.get().key(curLocale, Messages.GUI_PLEASE_SELECT_0));
             values.add("");
-            options.add(key("button.all"));
+            options.add(Messages.get().key(curLocale, Messages.GUI_BUTTON_ALL_0));
             values.add(ALL);
             if (ALL.equals(getParamLocale())) {
                 selectedIndex = 1;
@@ -300,6 +302,7 @@ public class CmsElementRename extends CmsReport {
      */
     public String buildSelectTemplates(String attributes) {
 
+        Locale curLocale = this.getLocale();
         List options = new ArrayList();
         List values = new ArrayList();
         TreeMap templates = null;
@@ -318,9 +321,9 @@ public class CmsElementRename extends CmsReport {
             return "";
         } else {
             // templates found, create option and value lists
-            options.add(key("please.select"));
+            options.add(Messages.get().key(curLocale, Messages.GUI_PLEASE_SELECT_0));
             values.add("");
-            options.add(key("button.all"));
+            options.add(Messages.get().key(curLocale, Messages.GUI_BUTTON_ALL_0));
             values.add(ALL);
             if (ALL.equals(getParamTemplate())) {
                 selectedIndex = 1;

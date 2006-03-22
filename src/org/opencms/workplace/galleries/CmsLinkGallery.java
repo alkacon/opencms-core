@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.18.2.4 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.18.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,6 +46,7 @@ import org.opencms.workplace.explorer.CmsNewResourceUpload;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -64,12 +65,12 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18.2.4 $ 
+ * @version $Revision: 1.18.2.5 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsLinkGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "link_fs.jsp";
 
@@ -116,7 +117,7 @@ public class CmsLinkGallery extends A_CmsGallery {
 
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, generate disabled button
-            return button(null, null, "apply_in.png", "button.paste", 0);
+            return button(null, null, "apply_in.png", Messages.GUI_BUTTON_PASTE_0, 0);
         } else {
             String uri = getParamResourcePath();
             if (MODE_WIDGET.equals(getParamDialogMode())) {
@@ -137,7 +138,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                 "javascript:link('" + uri + "',document.form.title.value, document.form.title.value);",
                 null,
                 "apply.png",
-                "button.paste",
+                Messages.GUI_BUTTON_PASTE_0,
                 0);
         }
     }
@@ -148,6 +149,8 @@ public class CmsLinkGallery extends A_CmsGallery {
      * @return the html String for the preview frame
      */
     public String buildGalleryItemPreview() {
+
+        Locale locale = this.getLocale();
 
         StringBuffer html = new StringBuffer(32);
         try {
@@ -168,7 +171,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     html.append("<tr align=\"left\">");
                     html.append("<td width=\"35%\"><b>");
-                    html.append(key("input.linkto"));
+                    html.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTO_0));
                     html.append("</b></td>");
                     html.append("<td width=\"65%\"><a href=\"#\" onclick=\"");
                     html.append("javascript:window.open('");
@@ -178,18 +181,22 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html.append(pointer);
                     html.append("</a></td>");
                     // file name
-                    html.append(previewRow(key("label.name"), res.getName()));
+                    html.append(previewRow(Messages.get().key(locale, Messages.GUI_LABEL_NAME_0), res.getName()));
                     // file title
-                    html.append(previewRow(key("input.title"), title));
+                    html.append(previewRow(Messages.get().key(locale, Messages.GUI_INPUT_TITLE_0), title));
                     // file last modified date
-                    html.append(previewRow(key("input.datelastmodified"), lastmodified));
+                    html.append(previewRow(
+                        Messages.get().key(locale, Messages.GUI_INPUT_DATELASTMODIFIED_0),
+                        lastmodified));
                     // file description if existing
                     if (CmsStringUtil.isNotEmpty(description)) {
-                        html.append(previewRow(key("input.description"), description));
+                        html.append(previewRow(
+                            Messages.get().key(locale, Messages.GUI_INPUT_DESCRIPTION_0),
+                            description));
                     }
                     // file keywords if existing
                     if (CmsStringUtil.isNotEmpty(keywords)) {
-                        html.append(previewRow(key("input.keywords"), keywords));
+                        html.append(previewRow(Messages.get().key(locale, Messages.GUI_INPUT_KEYWORDS_0), keywords));
                     }
                     html.append("</table>");
                 }
@@ -216,14 +223,14 @@ public class CmsLinkGallery extends A_CmsGallery {
 
         return "450";
     }
-    
+
     /**
      * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
      * 
      * @return the order of the implemented gallery
      */
     public Integer getOrder() {
-        
+
         return ORDER_GALLERY;
     }
 
@@ -256,7 +263,7 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     public String wizardButton() {
 
-        return button("javascript:wizard();", null, "upload.png", "title.new", 0);
+        return button("javascript:wizard();", null, "upload.png", Messages.GUI_TITLE_NEW_0, 0);
     }
 
     /**
@@ -285,17 +292,18 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     protected String buildGalleryItemListHeadline() {
 
+        Locale locale = this.getLocale();
         StringBuffer headline = new StringBuffer(16);
         headline.append("<tr>");
         headline.append("<td class=\"headline\">&nbsp;</td>");
         headline.append("<td class=\"headline\" width=\"25%\">");
-        headline.append(key("label.name"));
+        headline.append(Messages.get().key(Messages.GUI_LABEL_NAME_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" width=\"45%\">");
-        headline.append(key("label.title"));
+        headline.append(Messages.get().key(locale, Messages.GUI_LABEL_TITLE_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" width=\"30%\">");
-        headline.append(key("input.linkto"));
+        headline.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTO_0));
         headline.append("</td>");
         headline.append("</tr>");
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditor.java,v $
- * Date   : $Date: 2006/03/20 18:26:01 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/22 08:33:32 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.7
  */
@@ -155,7 +155,10 @@ public class CmsFCKEditor extends CmsSimplePageEditor {
                 galleryType).append("Command());\n");
             result.append("FCKToolbarItems.RegisterItem(\"oc-").append(galleryType).append("\", ");
             result.append("new FCKToolbarButton(\"oc-").append(galleryType).append("\", \"");
-            result.append(key("button." + galleryName + "list")).append("\"));");
+            result.append(
+                org.opencms.workplace.editors.Messages.get().key(
+                    this.getLocale(),
+                    org.opencms.workplace.editors.Messages.getGalleryKey(galleryName))).append("\"));");
         }
 
         return result.toString();

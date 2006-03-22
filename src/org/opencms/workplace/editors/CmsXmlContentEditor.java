@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/21 14:13:08 $
- * Version: $Revision: 1.65.2.6 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.65.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.6 $ 
+ * @version $Revision: 1.65.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -1093,10 +1093,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append("', ");
             href.append(index);
             href.append(");");
-            buttons.append(button(href.toString(), null, "deletecontent.png", "button.delete", 0));
+            buttons.append(button(href.toString(), null, "deletecontent.png", Messages.GUI_BUTTON_DELETE_0, 0));
             buttonPresent = true;
         } else {
-            buttons.append(button(null, null, "deletecontent_in.png", "button.delete", 0));
+            buttons.append(button(null, null, "deletecontent_in.png", Messages.GUI_BUTTON_DELETE_0, 0));
         }
 
         // build the move down button (move down in API is move up for content editor)
@@ -1131,7 +1131,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // build inactive move up button
             buttons.append(button(null, null, "move_down_in.png", Messages.GUI_EDITOR_XMLCONTENT_MOVE_DOWN_0, 0));
         }
-        
+
         // build the add element button if required
         if (addElement) {
             StringBuffer href = new StringBuffer(64);
@@ -1140,10 +1140,10 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append("', ");
             href.append(index);
             href.append(");");
-            buttons.append(button(href.toString(), null, "new.png", "button.addnew", 0));
+            buttons.append(button(href.toString(), null, "new.png", Messages.GUI_BUTTON_ADDNEW_0, 0));
             buttonPresent = true;
         } else {
-            buttons.append(button(null, null, "new_in.png", "button.addnew", 0));
+            buttons.append(button(null, null, "new_in.png", Messages.GUI_BUTTON_ADDNEW_0, 0));
         }
 
         StringBuffer result = new StringBuffer(512);
@@ -1294,7 +1294,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
-                result.append(key("editor.xmlcontent.validation.error.title"));
+                result.append(Messages.get().key(
+                    this.getLocale(),
+                    Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
                 result.append("</td><td>&nbsp;");
                 result.append("</td></tr>\n");
             }
@@ -1386,7 +1388,9 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     } else {
                         // disabled element, show message for optional element
                         result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                        result.append(key("editor.xmlcontent.optionalelement"));
+                        result.append(Messages.get().key(
+                            this.getLocale(),
+                            Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                         result.append("</td>");
                     }
 

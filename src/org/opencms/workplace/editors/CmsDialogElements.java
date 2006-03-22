@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -294,14 +294,16 @@ public class CmsDialogElements extends CmsDialog {
      */
     public String buildElementList() {
 
+        Locale locale = this.getLocale();
+
         StringBuffer retValue = new StringBuffer(512);
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">"
-            + key("editor.dialog.elements.pageelement")
+            + Messages.get().key(locale, Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
             + "</td>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
-            + key("editor.dialog.elements.enabled")
+            + Messages.get().key(locale, Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
             + "&nbsp;&nbsp;</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td colspan=\"2\"><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -338,13 +340,12 @@ public class CmsDialogElements extends CmsDialog {
                 }
                 retValue.append(">");
                 retValue.append("<script type=\"text/javascript\">registerElement(\"");
-                
+
                 retValue.append(element.getName());
                 retValue.append("\", ");
                 retValue.append(page.isEnabled(element.getName(), getElementLocale()));
                 retValue.append(");</script>");
-                
-                
+
                 retValue.append("</td>\n");
                 retValue.append("</tr>\n");
             }
@@ -471,7 +472,10 @@ public class CmsDialogElements extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(key("editor.dialog.elements.title") + ": " + CmsResource.getName(getParamResource()));
+            setParamTitle(Messages.get().key(
+                Messages.GUI_EDITOR_DIALOG_ELEMENTS_TITLE_1,
+                CmsResource.getName(getParamResource())));
+            //            key("editor.dialog.elements.title")
         }
     }
 

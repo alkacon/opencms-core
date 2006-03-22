@@ -30,7 +30,7 @@ case CmsPropertyChange.ACTION_WAIT:
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<%= wp.key("input.propertychange.result") %> "<%= wp.getParamNewValue() %>":
+<%= Messages.get().key(wp.getLocale(),Messages.GUI_INPUT_PROPERTYCHANGE_RESULT_0) %> "<%= wp.getParamNewValue() %>":
 <%= wp.dialogSpacer() %>
 
 <%= wp.dialogWhiteBoxStart() %>
@@ -69,8 +69,8 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= wp.key("input.propertychange.info") %><br>
-<%= wp.key("input.propertychange.info2") %>
+<%= Messages.get().key(wp.getLocale(),Messages.GUI_INPUT_PROPERTYCHANGE_INFO_0) %><br>
+<%= Messages.get().key(wp.getLocale(),Messages.GUI_INPUT_PROPERTYCHANGE_INFO2_0) %>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
@@ -94,24 +94,24 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.resource") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= Messages.get().key(wp.getLocale(), Messages.GUI_INPUT_PROPERTYCHANGE_RESOURCE_0) %></td>
 	<td class="maxwidth"><input name="<%= wp.PARAM_RESOURCE %>" type="text" value="<%= wp.getParamResource()==null?"":wp.getParamResource() %>" class="maxwidth" style="width: 99%"></td>
-	<td><%=wp.button("javascript:top.openTreeWin('param_resource', true, 'main', '"+wp.PARAM_RESOURCE+"', document);", null, "folder", "button.search", 0)%></td>
+	<td><%=wp.button("javascript:top.openTreeWin('param_resource', true, 'main', '"+wp.PARAM_RESOURCE+"', document);", null, "folder",Messages.GUI_BUTTON_SEARCH_0 , 0)%></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.recursive") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= Messages.get().key(wp.getLocale(), Messages.GUI_INPUT_PROPERTYCHANGE_RECURSIVE_0) %></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_RECURSIVE %>" type="checkbox" value="true"<% if ("true".equals(wp.getParamRecursive())) { out.print("checked=\"checked\""); } %>></td>    
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.property") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= Messages.get().key(wp.getLocale(), Messages.GUI_INPUT_PROPERTY_0)%></td>
 	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + wp.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.propertychange.oldvalue") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= Messages.get().key(wp.getLocale(), Messages.GUI_INPUT_PROPERTYCHANGE_OLDVALUE_0)%></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_OLDVALUE %>" type="text" value="<%= wp.getParamOldValue()==null?"":wp.getParamOldValue() %>" class="maxwidth" style="width: 99%"></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.editpropertyinfo") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%=  Messages.get().key(wp.getLocale(), Messages.GUI_EDITPROPERTYINFO_0) %></td>
 	<td colspan="2" class="maxwidth"><input name="<%= wp.PARAM_NEWVALUE %>" type="text" value="<%= wp.getParamNewValue()==null?"":wp.getParamNewValue() %>" class="maxwidth" style="width: 99%"></td>
 </tr>
 </table>

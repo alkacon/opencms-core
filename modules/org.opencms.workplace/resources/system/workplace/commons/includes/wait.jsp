@@ -18,7 +18,7 @@ function submitForm() {
 
 <table border="0" cellpadding="0" cellspacing="0" align="center" style="margin-top: 100px;">
 <tr>
-	<td style="font-size: 14px;"><%= wp.key("message.wait") %></td>
+	<td style="font-size: 14px;"><%= org.opencms.workplace.commons.Messages.get().key(wp.getLocale(), org.opencms.workplace.commons.Messages.GUI_MESSAGE_WAIT_0)%></td>
 </tr>
 </table>
 

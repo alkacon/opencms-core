@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2005/11/16 12:12:26 $
- * Version: $Revision: 1.93.2.6 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.93.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.6 $ 
+ * @version $Revision: 1.93.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -590,8 +590,7 @@ public class CmsDialog extends CmsToolDialog {
 
         return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL}, new String[] {okAttributes, cancelAttributes});
     }
-    
-    
+
     /**
      * Builds a button row with an "ok", a "cancel" and an "advanced" button.<p>
      * 
@@ -825,6 +824,7 @@ public class CmsDialog extends CmsToolDialog {
      * @return HTML code to fold and unfild a white-box
      */
     public String dialogToggleStart(String headline, String id, boolean show) {
+
         StringBuffer result = new StringBuffer(512);
         // set icon and style class to use: hide user permissions
         String image = "plus.png";
@@ -856,7 +856,7 @@ public class CmsDialog extends CmsToolDialog {
         result.append(styleClass);
         result.append("\" id=\"");
         result.append(id);
-        result.append("\">\n"); 
+        result.append("\">\n");
         return result.toString();
     }
 
@@ -1109,9 +1109,9 @@ public class CmsDialog extends CmsToolDialog {
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
             CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             if (getCms().isInsideCurrentProject(getParamResource())) {
-                return key("explorer.state" + file.getState());
+                return Messages.get().key(Messages.getStateKey(file.getState()));
             } else {
-                return key("explorer.statenip");
+                return Messages.get().key(Messages.GUI_EXPLORER_STATENIP_0);
             }
         }
         return "+++ resource parameter not found +++";
@@ -1291,8 +1291,7 @@ public class CmsDialog extends CmsToolDialog {
     public void setParamCloseLink(String value) {
 
         // ensure decoded chars are re-encoded again properly
-        
-        
+
         m_paramCloseLink = value;
     }
 

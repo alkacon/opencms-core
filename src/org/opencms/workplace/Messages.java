@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Messages.java,v $
- * Date   : $Date: 2006/03/17 10:12:13 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.19.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.19.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -52,6 +52,24 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_WORKPLACE_DIALOG_0 = "ERR_WORKPLACE_DIALOG_0";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_EXIT_0 = "GUI_BUTTON_EXIT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_HELP_0 = "GUI_BUTTON_HELP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PREFERENCES_0 = "GUI_BUTTON_PREFERENCES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_PUBLISH_0 = "GUI_BUTTON_PUBLISH_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_RELOAD_0 = "GUI_BUTTON_RELOAD_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_BUTTON_SYNCFOLDER_0 = "GUI_BUTTON_SYNCFOLDER_0";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_CALENDAR_CHOOSE_DATE_0 = "GUI_CALENDAR_CHOOSE_DATE_0";
 
     /** Message constant for key in the resource bundle. */
@@ -59,6 +77,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_CALENDAR_TIME_FORMAT_0 = "GUI_CALENDAR_TIME_FORMAT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_CALENDAR_TIMEFORMAT_0 = "GUI_CALENDAR_TIMEFORMAT_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_DIALOG_BUTTON_ADDNEW_0 = "GUI_DIALOG_BUTTON_ADDNEW_0";
@@ -118,6 +139,46 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String GUI_ERR_RESOURCE_PERMISSIONS_2 = "GUI_ERR_RESOURCE_PERMISSIONS_2";
 
     /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_STATE_1 = "GUI_EXPLORER_STATE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_STATE0_0 = "GUI_EXPLORER_STATE0_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_STATE1_0 = "GUI_EXPLORER_STATE1_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_STATE2_0 = "GUI_EXPLORER_STATE2_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_STATE3_0 = "GUI_EXPLORER_STATE3_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_STATENIP_0 = "GUI_EXPLORER_STATENIP_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_LOGINADDRESS_0 = "GUI_LABEL_LOGINADDRESS_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_LOGINTIME_0 = "GUI_LABEL_LOGINTIME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_PROJECT_0 = "GUI_LABEL_PROJECT_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_SITE_0 = "GUI_LABEL_SITE_0";
+
+    /** Message constant for key in the resource bundle. */
+
+    public static final String GUI_LABEL_USER_0 = "GUI_LABEL_USER_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_VIEW_0 = "GUI_LABEL_VIEW_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_LABEL_WPTITLE_2 = "GUI_LABEL_WPTITLE_2";
+
+    /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_BUTTON_0 = "GUI_LOGIN_BUTTON_0";
 
     /** Message constant for key in the resource bundle. */
@@ -137,34 +198,34 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_TEMP_DISABLED_0 = "GUI_LOGIN_FAILED_TEMP_DISABLED_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_FAILED_WITH_MESSAGE_1 = "GUI_LOGIN_FAILED_WITH_MESSAGE_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_HEADLINE_0 = "GUI_LOGIN_HEADLINE_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_HEADLINE_ALREADY_IN_0 = "GUI_LOGIN_HEADLINE_ALREADY_IN_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_MESSAGE_0 = "GUI_LOGIN_MESSAGE_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_MESSAGE_ALREADY_IN_0 = "GUI_LOGIN_MESSAGE_ALREADY_IN_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_DATA_0 = "GUI_LOGIN_NO_DATA_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_NAME_0 = "GUI_LOGIN_NO_NAME_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NO_PASSWORD_0 = "GUI_LOGIN_NO_PASSWORD_0";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_NOSCRIPT_1 = "GUI_LOGIN_NOSCRIPT_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0 = "GUI_LOGIN_OPENCMS_IS_FREE_SOFTWARE_0";
 
@@ -188,6 +249,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_LOGIN_USERNAME_0 = "GUI_LOGIN_USERNAME_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WORKFLOW_NAME_0 = "GUI_WORKFLOW_NAME_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_ADD_DIALOG_HANDLER_2 = "INIT_ADD_DIALOG_HANDLER_2";
@@ -290,22 +354,22 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String LOG_PARAM_RESOURCE_2 = "LOG_PARAM_RESOURCE_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_READING_VIEW_FOLDER_FAILED_1 = "LOG_READING_VIEW_FOLDER_FAILED_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_SET_PARAM_2 = "LOG_SET_PARAM_2";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_THREAD_CREATION_FAILED_1 = "LOG_THREAD_CREATION_FAILED_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_UNSUPPORTED_ENCODING_SET_1 = "LOG_UNSUPPORTED_ENCODING_SET_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WORKPLACE_INIT_NO_LOCALES_1 = "LOG_WORKPLACE_INIT_NO_LOCALES_1";
-
+    
     /** Message constant for key in the resource bundle. */
     public static final String LOG_WORKPLACE_INIT_NO_VIEWS_1 = "LOG_WORKPLACE_INIT_NO_VIEWS_1";
 
@@ -314,6 +378,12 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Static instance member. */
     private static final I_CmsMessageBundle INSTANCE = new Messages();
+
+    /**The part of  state constant. */
+    private static final String STATE_POSTFIX = "_0";
+
+    /**The part of  state constant. */
+    private static final String STATE_PREFIX = "GUI_EXPLORER_STATE";
 
     /**
      * Hides the public constructor for this utility class.<p>
@@ -331,6 +401,20 @@ public final class Messages extends A_CmsMessageBundle {
     public static I_CmsMessageBundle get() {
 
         return INSTANCE;
+    }
+
+    /**
+     * Create constant name.
+     * @param state  STATE_UNCHANGED, STATE_CHANGED, STATE_NEW or STATE_DELETED.
+     * @return cconstanname as String
+     */
+    public static String getStateKey(int state) {
+
+        StringBuffer sb = new StringBuffer(STATE_PREFIX);
+        sb.append(state);
+        sb.append(STATE_POSTFIX);
+        return sb.toString();
+
     }
 
     /**

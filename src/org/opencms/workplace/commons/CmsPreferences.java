@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPreferences.java,v $
- * Date   : $Date: 2006/03/21 17:08:30 $
- * Version: $Revision: 1.25.2.6 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.25.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.25.2.6 $ 
+ * @version $Revision: 1.25.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -515,7 +515,9 @@ public class CmsPreferences extends CmsTabDialog {
 
         for (int i = 1; i < 4; i++) {
             for (char k = 'a'; k < 'd'; k++) {
-                options.add(key(CmsTaskService.TASK_FILTER + k + i));
+                options.add(Messages.get().key(
+                    this.getLocale(),
+                    Messages.getTaskKey(CmsTaskService.TASK_FILTER + k + i)));
                 values.add("" + k + i);
                 if (("" + k + i).equals(getParamTabWfFilter())) {
                     selectedIndex = counter;
@@ -527,7 +529,7 @@ public class CmsPreferences extends CmsTabDialog {
             counter++;
         }
         for (int i = 1; i < 4; i++) {
-            options.add(key(CmsTaskService.TASK_FILTER + "d" + i));
+            options.add(Messages.get().key(this.getLocale(), Messages.getTaskKey(CmsTaskService.TASK_FILTER + "d" + i)));
             values.add("d" + i);
             if (("d" + i).equals(getParamTabWfFilter())) {
                 selectedIndex = counter;
@@ -816,13 +818,13 @@ public class CmsPreferences extends CmsTabDialog {
         result.append("<table border=\"0\" cellspacing=\"0\" cellpadding=\"4\">\n");
         result.append("<tr>\n");
         result.append("\t<td style=\"width: 25%;\">");
-        result.append(key(Messages.GUI_LABEL_USER_0));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_USER_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\" style=\"width: 25%;\">");
         result.append(user.getName());
         result.append("</td>\n");
         result.append("\t<td style=\"width: 25%;\">");
-        result.append(key(Messages.GUI_LABEL_EMAIL_0));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_EMAIL_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\" style=\"width: 25%;\">");
         result.append(user.getEmail());
@@ -831,13 +833,13 @@ public class CmsPreferences extends CmsTabDialog {
 
         result.append("<tr>\n");
         result.append("\t<td>");
-        result.append(key(Messages.GUI_LABEL_LASTNAME_0));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_LASTNAME_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\">");
         result.append(user.getLastname());
         result.append("</td>\n");
         result.append("\t<td rowspan=\"3\" style=\"vertical-align: top;\">");
-        result.append(key("input.adress"));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_INPUT_ADRESS_0));
         result.append("</td>\n");
 
         String address = user.getAddress();
@@ -849,7 +851,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         result.append("<tr>\n");
         result.append("\t<td>");
-        result.append(key(Messages.GUI_LABEL_FIRSTNAME_0));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_FIRSTNAME_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\">");
         result.append(user.getFirstname());
@@ -858,7 +860,7 @@ public class CmsPreferences extends CmsTabDialog {
 
         result.append("<tr>\n");
         result.append("\t<td>");
-        result.append(key(Messages.GUI_LABEL_DESCRIPTION_0));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_DESCRIPTION_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\">");
         result.append(user.getDescription());

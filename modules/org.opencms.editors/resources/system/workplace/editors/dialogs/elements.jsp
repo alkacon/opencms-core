@@ -51,7 +51,7 @@ function confirmDelete() {
 		}
 	}
 	if (isDeleted) {
-		var confirmText = "<%= CmsStringUtil.escapeJavaScript(wp.key("editor.dialog.elements.confirmdisable")) %>";
+		var confirmText = "<%= CmsStringUtil.escapeJavaScript(org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_ELEMENTS_CONFIRMDISABLE_0)) %>";
 		if (confirm(confirmText)) {	
 			document.main.submit();
 		}

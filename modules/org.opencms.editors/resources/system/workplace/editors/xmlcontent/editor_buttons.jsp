@@ -59,15 +59,15 @@ if (options.showElement("button.customized", displayOptions)) {%>
 	<td><%= wp.buttonActionDirectEdit("buttonAction(8);", buttonStyle) %></td><%
 }
 %>
-<%= wp.button("javascript:buttonAction(2);", null, "save_exit", "button.saveclose", buttonStyle) %>
-<%= wp.button("javascript:buttonAction(3);", null, "save", "button.save", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "save_exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0, buttonStyle) %>
+<%= wp.button("javascript:buttonAction(3);", null, "save", org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0, buttonStyle) %>
 
 
 <%
 
 if (options.showElement("option.element.language", displayOptions) && wp.showElementLanguageSelector()) {
 	out.println(wp.buttonBarSeparator(5, 5));
-	out.println(wp.buttonBarLabel("input.lang"));
+	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_LANG_0));
 	out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"changeElementLanguage();\"") + "</td>");
 }
 
@@ -77,7 +77,7 @@ if (options.showElement("option.element.language", displayOptions) && wp.showEle
 
 if (wp.isPreviewEnabled()) {
 	// show preview button if enabled
-	out.println(wp.button("javascript:buttonAction(7);", null, "preview.png", "button.preview", buttonStyle));
+	out.println(wp.button("javascript:buttonAction(7);", null, "preview.png", org.opencms.workplace.editors.Messages.GUI_BUTTON_PREVIEW_0, buttonStyle));
 	out.println(wp.buttonBarSeparator(5, 5));
 }
 
@@ -85,7 +85,7 @@ if (wp.isPreviewEnabled()) {
 
 <td width="100%">&nbsp;</td>
 		
-<%= wp.button("javascript:confirmExit();", null, "exit", "button.close", buttonStyle) %>
+<%= wp.button("javascript:confirmExit();", null, "exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
 
 </form>
 

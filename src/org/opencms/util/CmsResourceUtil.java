@@ -42,7 +42,6 @@ import org.opencms.file.types.I_CmsResourceType;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.WorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 
 import java.util.List;
@@ -487,9 +486,12 @@ public final class CmsResourceUtil {
         int state = m_resource.getState();
         String name;
         if (m_request == null) {
-            name = WorkplaceMessages.get().key("explorer.state" + state);
+            name = org.opencms.workplace.explorer.Messages.get().key(
+                org.opencms.workplace.explorer.Messages.getStateKey(state));
         } else {
-            name = WorkplaceMessages.get().key(m_request.getLocale(), "explorer.state" + state);
+            name = org.opencms.workplace.explorer.Messages.get().key(
+                m_request.getLocale(),
+                org.opencms.workplace.explorer.Messages.getStateKey(state));
         }
         return name;
     }

@@ -4,7 +4,7 @@
 	CmsDialog wp = new CmsDialog(pageContext, request, response);
 	wp.setParamIsPopup("true");
 	
-%><%= wp.htmlStart(null, wp.key("title.newanchor")) %>
+%><%= wp.htmlStart(null, org.opencms.workplace.editors.Messages.get().key(wp.getLocale() , org.opencms.workplace.editors.Messages.GUI_TITLE_NEWANCHOR_0)) %>
 <script type="text/javascript">
 <!--
 
@@ -68,7 +68,7 @@ function init() {
 <%= wp.bodyStart("dialog", " onLoad=\"init();\"") %>
 
 <%= wp.dialogStart() %>
-<%= wp.dialogContentStart(wp.key("title.newanchor")) %>
+<%= wp.dialogContentStart(org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_TITLE_NEWANCHOR_0)) %>
 
 <form name="NEU" class="nomargin" onsubmit="pasteLink();">
 
@@ -76,7 +76,7 @@ function init() {
 
 <table border="0" cellspacing="0" cellpadding="4" width="100%">
             <tr>
-                    <td style="white-space: nowrap;"><%= wp.key("input.linkanchor") %>:</td>
+                    <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_LINKANCHOR_0) %>:</td>
                     <td class="maxwidth">
                         <input type="text" name="linkanchor" class="maxwidth" />
                     </td>
@@ -84,10 +84,10 @@ function init() {
                 <script type="text/javascript">
                 <!--
                 if (linkEditorStyleInputs) {
-                  document.write('<tr><td style="white-space: nowrap;"><%= wp.key("input.linkstyle") %>:</td>' +
+                  document.write('<tr><td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_LINKSTYLE_0) %>:</td>' +
                     '<td class="maxwidth"><input type="text" name="linkstyle" class="maxwidth"  />' +
                     '</td><td>&nbsp;</td></tr><tr>' +
-                    '<td style="white-space: nowrap;"><%= wp.key("input.linkstyleclass") %>:</td>' +
+                    '<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_LINKSTYLECLASS_0)%>:</td>' +
                     '<td class="maxwidth"><input type="text" name="linkstyleclass" class="maxwidth" />');
                 }
                 // -->

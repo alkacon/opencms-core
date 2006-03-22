@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyChange.java,v $
- * Date   : $Date: 2006/01/25 09:27:02 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.2 $ 
+ * @version $Revision: 1.12.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsPropertyChange extends CmsDialog {
     private static final Log LOG = CmsLog.getLog(CmsPropertyChange.class);
 
     private List m_changedResources;
-    
+
     /** The error message. */
     private String m_errorMessage;
 
@@ -102,7 +102,7 @@ public class CmsPropertyChange extends CmsDialog {
     private String m_paramOldValue;
     private String m_paramPropertyName;
     private String m_paramRecursive;
-    
+
     private boolean m_validationErrors;
 
     /**
@@ -215,7 +215,7 @@ public class CmsPropertyChange extends CmsDialog {
             }
         } else {
             // nothing was changed, show message
-            result.append(key("input.propertychange.result.none"));
+            result.append(Messages.get().key(this.getLocale(), Messages.GUI_INPUT_PROPERTYCHANGE_RESULT_NONE_0));
         }
         return result.toString();
     }
@@ -228,9 +228,10 @@ public class CmsPropertyChange extends CmsDialog {
      */
     public String buildSelectProperty(String attributes) {
 
-        return buildSelectProperty(getCms(), key("please.select"), attributes, getParamPropertyName());
+        return buildSelectProperty(getCms(), Messages.get().key(this.getLocale(),
+            Messages.GUI_PLEASE_SELECT_0), attributes, getParamPropertyName());
     }
-    
+
     /**
      * Returns the error message.<p>
      *
@@ -251,7 +252,7 @@ public class CmsPropertyChange extends CmsDialog {
      * @return the value of the newvalue parameter
      */
     public String getParamNewValue() {
-        
+
         if (m_paramNewValue != null) {
             return m_paramNewValue;
         } else {
@@ -306,7 +307,7 @@ public class CmsPropertyChange extends CmsDialog {
             return "14";
         }
     }
-    
+
     /**
      * Returns if validation errors were found.<p>
      * 
@@ -382,10 +383,10 @@ public class CmsPropertyChange extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for change property value dialog     
-            setParamTitle(key("title.propertychange"));
+            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUI_TITLE_PROPERTYCHANGE_0));
         }
     }
-    
+
     /**
      * Sets the error message.<p>
      *
@@ -395,7 +396,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         m_errorMessage = errorMessage;
     }
-    
+
     /**
      * Sets the validation error flag.<p>
      * 
@@ -454,7 +455,7 @@ public class CmsPropertyChange extends CmsDialog {
 
         m_changedResources = changedResources;
     }
-    
+
     /**
      * Validates the submitted form parameters.<p>
      * 
@@ -464,7 +465,7 @@ public class CmsPropertyChange extends CmsDialog {
      *
      */
     private boolean validateParameters() {
-        
+
         Locale locale = getLocale();
         boolean allOk = true;
 
@@ -473,22 +474,22 @@ public class CmsPropertyChange extends CmsDialog {
         // check resource parameter presence
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamResource()) || !getCms().existsResource(getParamResource())) {
             allOk = false;
-            validationErrors.append(
-                Messages.get().key(locale, Messages.GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0, null)).append("<br>");
+            validationErrors.append(Messages.get().key(locale, Messages.GUI_PROP_CHANGE_VALIDATE_VFS_RESOURCE_0, null)).append(
+                "<br>");
         }
-        
+
         // check selected property name
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamPropertyName())) {
             allOk = false;
             validationErrors.append(
-                Messages.get().key(locale,  Messages.GUI_PROP_CHANGE_VALIDATE_SELECT_PROPERTY_0, null)).append("<br>");
+                Messages.get().key(locale, Messages.GUI_PROP_CHANGE_VALIDATE_SELECT_PROPERTY_0, null)).append("<br>");
         }
-        
+
         // check old property value to look up
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamOldValue())) {
             allOk = false;
             validationErrors.append(
-                Messages.get().key(locale,  Messages.GUI_PROP_CHANGE_VALIDATE_OLD_PROP_VALUE_0, null)).append("<br>");
+                Messages.get().key(locale, Messages.GUI_PROP_CHANGE_VALIDATE_OLD_PROP_VALUE_0, null)).append("<br>");
         } else {
             try {
                 // compile regular expression pattern
@@ -496,19 +497,20 @@ public class CmsPropertyChange extends CmsDialog {
             } catch (PatternSyntaxException e) {
                 allOk = false;
                 validationErrors.append(
-                    Messages.get().key(locale,  Messages.GUI_PROP_CHANGE_VALIDATE_OLD_PROP_PATTERN_0, null)).append("<br>");
+                    Messages.get().key(locale, Messages.GUI_PROP_CHANGE_VALIDATE_OLD_PROP_PATTERN_0, null)).append(
+                    "<br>");
             }
         }
-        
+
         // check new property value
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(getParamNewValue())) {
-              // if no new value was given, set it to the delete value
-              setParamNewValue(CmsProperty.DELETE_VALUE);
+            // if no new value was given, set it to the delete value
+            setParamNewValue(CmsProperty.DELETE_VALUE);
         }
-        
+
         setErrorMessage(validationErrors.toString());
         setValidationErrors(!allOk);
         return allOk;
     }
-    
+
 }

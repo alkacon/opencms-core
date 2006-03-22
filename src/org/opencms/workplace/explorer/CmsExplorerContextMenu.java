@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2005/11/26 01:18:02 $
- * Version: $Revision: 1.12.2.3 $
+ * Date   : $Date: 2006/03/22 08:33:22 $
+ * Version: $Revision: 1.12.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
-import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -57,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.3 $ 
+ * @version $Revision: 1.12.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -202,7 +201,8 @@ public class CmsExplorerContextMenu {
         // try to get the stored entries from the Map
         String entries = (String)m_generatedScripts.get(locale);
         if (entries == null) {
-            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+            //CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
+
             // entries not yet in Map, so generate them
             StringBuffer result = new StringBuffer(4096);
             String jspWorkplaceUri = OpenCms.getLinkManager().substituteLink(cms, CmsWorkplace.PATH_WORKPLACE);
@@ -212,7 +212,7 @@ public class CmsExplorerContextMenu {
                 result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append(
                     "\", ");
                 result.append("\"");
-                result.append(messages.key(settings.getKey()));
+                result.append(Messages.get().key(locale, settings.getKey()));
                 result.append("\", vi.skinPath + \"filetypes/");
                 result.append(settings.getIcon());
                 result.append("\", \"");
@@ -233,7 +233,7 @@ public class CmsExplorerContextMenu {
                 result.append(", ");
                 if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                     // create a menu entry
-                    result.append("\"").append(messages.key(item.getKey())).append("\", ");
+                    result.append("\"").append(Messages.get().key(locale, item.getKey())).append("\", ");
                     result.append("\"");
                     if (item.getUri().startsWith("/")) {
                         result.append(OpenCms.getLinkManager().substituteLink(cms, item.getUri()));
@@ -351,7 +351,7 @@ public class CmsExplorerContextMenu {
         }
         StringBuffer newRules = new StringBuffer(rules.length() + 4);
         newRules.append(rules.substring(0, 6));
-        if ("explorer.context.lock".equalsIgnoreCase(key) || "explorer.context.unlock".equalsIgnoreCase(key)) {
+        if (Messages.GUI_EXPLORER_CONTEXT_LOCK_0.equalsIgnoreCase(key) || Messages.GUI_EXPLORER_CONTEXT_UNLOCK_0.equalsIgnoreCase(key)) {
             // for "lock" and "unlock" item, use same rules as "unlocked" column
             newRules.append(rules.substring(2, 6));
         } else {

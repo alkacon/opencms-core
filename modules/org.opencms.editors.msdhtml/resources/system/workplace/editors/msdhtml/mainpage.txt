@@ -65,22 +65,22 @@ var skinUri = "<%= wp.getSkinUri() %>";
 
 // Object for color picker modaldialog
 var colorPicker = new Object();
-colorPicker.title = "<%= wp.key("dialog.color.title") %>";
+colorPicker.title = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_DIALOG_COLOR_TITLE_0) %>";
 colorPicker.color = "000000";
 
-var LANG_CUT = "<%= wp.key("editor.context.cut") %>";
-var LANG_COPY = "<%= wp.key("editor.context.copy") %>";
-var LANG_PASTE = "<%= wp.key("editor.context.paste") %>";
-var LANG_INSERTROW = "<%= wp.key("editor.context.insertrow") %>";
-var LANG_DELETEROW = "<%= wp.key("editor.context.deleterow") %>";
-var LANG_INSERTCOL = "<%= wp.key("editor.context.insertcol") %>";
-var LANG_DELETECOL = "<%= wp.key("editor.context.deletecol") %>";
-var LANG_INSERTCELL = "<%= wp.key("editor.context.insertcell") %>";
-var LANG_DELETECELL = "<%= wp.key("editor.context.deletecell") %>";
-var LANG_MERGECELL = "<%= wp.key("editor.context.mergecell") %>";
-var LANG_SPLITCELL = "<%= wp.key("editor.context.splitcell") %>";
+var LANG_CUT = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_CUT_0) %>"; 
+var LANG_COPY = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_COPY_0)%>";
+var LANG_PASTE = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_PASTE_0)%>";
+var LANG_INSERTROW = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_INSERTROW_0)%>";
+var LANG_DELETEROW = "<%=  org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_DELETEROW_0)%>";
+var LANG_INSERTCOL = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_INSERTCOL_0) %>";
+var LANG_DELETECOL = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_DELETECOL_0)%>";
+var LANG_INSERTCELL = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_INSERTCELL_0)%>";
+var LANG_DELETECELL = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_DELETECELL_0)%>";
+var LANG_MERGECELL = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_MERGECELL_0)%>";
+var LANG_SPLITCELL = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_CONTEXT_SPLITCELL_0) %>";
 
-var LANG_NOSELECTION = "<%= wp.key("editor.message.noselection") %>";
+var LANG_NOSELECTION = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0)%>";
 
 // popup window holder and counter
 var openWindow = null;
@@ -142,7 +142,7 @@ function buttonAction(para) {
 
 function confirmExitHTML() {
 	if (EDITOR.EDIT_HTML.IsDirty) {
-		if (confirm("<%= wp.key("editor.message.exit") %>")) {
+		if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 			doEditHTML(1);
 		}
 	} else {
@@ -151,7 +151,7 @@ function confirmExitHTML() {
 }
 
 function confirmExit() {
-	if (confirm("<%= wp.key("editor.message.exit") %>")) {
+	if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 		doEdit(1);
 	}
 }
@@ -271,14 +271,14 @@ End Sub
 <%
 boolean showSource = options.showElement("option.sourcecode", displayOptions);
 if (showSource) { 
-	%><%= wp.buttonBarLabel("input.editor") %>
+	%><%= wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_EDITOR_0) %>
 	<td><%= wp.buildSelectViews("class=\"textfeld\" name=\"editormode\" width=\"120\" onchange=\"buttonAction(1);\"") %></td>
 	<%= wp.buttonBarSeparator(5, 5) %><%
 }
 boolean elementSelection = options.showElement("option.element.selection", displayOptions);
 boolean elementLanguage = options.showElement("option.element.language", displayOptions);
 if (elementSelection || elementLanguage) {
-	out.println(wp.buttonBarLabel("input.element"));
+	out.println(wp.buttonBarLabel(org.opencms.workplace.editors.Messages.GUI_INPUT_ELEMENT_0));
 	if (elementLanguage) {
 		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 		out.println(wp.buttonBarSpacer(2));
@@ -288,7 +288,7 @@ if (elementSelection || elementLanguage) {
 	if (elementSelection) {
 		out.println("<td>" + wp.buildSelectElementName("name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 		out.println(wp.buttonBarSeparator(5, 5));
-		out.println(wp.button("javascript:buttonAction(4);", null, "elements", "editor.dialog.elements.button", buttonStyle));
+		out.println(wp.button("javascript:buttonAction(4);", null, "elements", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_ELEMENTS_BUTTON_0, buttonStyle));
 	} else {
 		%><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
 	}
@@ -300,12 +300,12 @@ if (options.showElement("option.properties", displayOptions)) {
 	if ((showSource || elementLanguage) && !elementSelection) {
 		out.println(wp.buttonBarSeparator(5, 5));
 	}
-	out.println(wp.button("javascript:buttonAction(5);", null, "properties", "editor.dialog.properties.button", buttonStyle));
+	out.println(wp.button("javascript:buttonAction(5);", null, "properties", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_PROPERTIES_BUTTON_0, buttonStyle));
 }
-out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", "editor.dialog.cleanup.button", buttonStyle));
+out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_CLEANUP_BUTTON_0, buttonStyle));
 %>
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:buttonAction(2);", null, "preview.png", "button.preview", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "preview.png",org.opencms.workplace.editors.Messages.GUI_BUTTON_PREVIEW_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 <%= wp.buttonBar(wp.HTML_END) %>
 <%= wp.buttonBarHorizontalLine() %>

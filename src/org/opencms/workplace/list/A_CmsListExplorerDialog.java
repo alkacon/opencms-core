@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/03/15 10:19:55 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/22 08:33:22 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,6 @@ import org.opencms.main.CmsLog;
 import org.opencms.util.CmsResourceUtil;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplace;
-import org.opencms.workplace.WorkplaceMessages;
 import org.opencms.workplace.explorer.CmsExplorer;
 
 import java.util.ArrayList;
@@ -59,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -423,7 +422,6 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
      */
     protected void initMessages() {
 
-        addMessages(WorkplaceMessages.get().getBundleName());
         super.initMessages();
     }
 
@@ -497,7 +495,8 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         // position 4: name
         CmsListColumnDefinition nameCol = new CmsListExplorerColumn(LIST_COLUMN_NAME);
-        nameCol.setName(WorkplaceMessages.get().container("input.name"));
+        nameCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0));
 
         // add resource open action
         CmsListDefaultAction resourceOpenDefAction = new CmsListOpenResourceAction(
@@ -510,66 +509,78 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         // position 5: title
         CmsListColumnDefinition titleCol = new CmsListExplorerColumn(LIST_COLUMN_TITLE);
-        titleCol.setName(WorkplaceMessages.get().container("input.title"));
+        titleCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0));
         metadata.addColumn(titleCol);
 
         // position 6: resource type
         CmsListColumnDefinition typeCol = new CmsListExplorerColumn(LIST_COLUMN_TYPE);
-        typeCol.setName(WorkplaceMessages.get().container("input.type"));
+        typeCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_TYPE_0));
         metadata.addColumn(typeCol);
 
         // position 7: size
         CmsListColumnDefinition sizeCol = new CmsListExplorerColumn(LIST_COLUMN_SIZE);
-        sizeCol.setName(WorkplaceMessages.get().container("input.size"));
+        sizeCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0));
         metadata.addColumn(sizeCol);
 
         // position 8: permissions
         CmsListColumnDefinition permissionsCol = new CmsListExplorerColumn(LIST_COLUMN_PERMISSIONS);
-        permissionsCol.setName(WorkplaceMessages.get().container("input.permissions"));
+        permissionsCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_PERMISSIONS_0));
         metadata.addColumn(permissionsCol);
 
         // position 9: date of last modification
         CmsListColumnDefinition dateLastModCol = new CmsListExplorerColumn(LIST_COLUMN_DATELASTMOD);
-        dateLastModCol.setName(WorkplaceMessages.get().container("input.datelastmodified"));
+        dateLastModCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0));
         dateLastModCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(dateLastModCol);
 
         // position 10: user who last modified the resource
         CmsListColumnDefinition userLastModCol = new CmsListExplorerColumn(LIST_COLUMN_USERLASTMOD);
-        userLastModCol.setName(WorkplaceMessages.get().container("input.userlastmodified"));
+        userLastModCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0));
         metadata.addColumn(userLastModCol);
 
         // position 11: date of creation
         CmsListColumnDefinition dateCreateCol = new CmsListExplorerColumn(LIST_COLUMN_DATECREATE);
-        dateCreateCol.setName(WorkplaceMessages.get().container("input.datecreated"));
+        dateCreateCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0));
         dateCreateCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter());
         metadata.addColumn(dateCreateCol);
 
         // position 12: user who created the resource
         CmsListColumnDefinition userCreateCol = new CmsListExplorerColumn(LIST_COLUMN_USERCREATE);
-        userCreateCol.setName(WorkplaceMessages.get().container("input.usercreated"));
+        userCreateCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_USERCREATED_0));
         metadata.addColumn(userCreateCol);
 
         // position 13: date of release
         CmsListColumnDefinition dateReleaseCol = new CmsListExplorerColumn(LIST_COLUMN_DATEREL);
-        dateReleaseCol.setName(WorkplaceMessages.get().container("input.datereleased"));
+        dateReleaseCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0));
         dateReleaseCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter(CmsResource.DATE_RELEASED_DEFAULT));
         metadata.addColumn(dateReleaseCol);
 
         // position 14: date of expiration
         CmsListColumnDefinition dateExpirationCol = new CmsListExplorerColumn(LIST_COLUMN_DATEEXP);
-        dateExpirationCol.setName(WorkplaceMessages.get().container("input.dateexpired"));
+        dateExpirationCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0));
         dateExpirationCol.setFormatter(CmsListDateMacroFormatter.getDefaultDateFormatter(CmsResource.DATE_EXPIRED_DEFAULT));
         metadata.addColumn(dateExpirationCol);
 
         // position 15: state (changed, unchanged, new, deleted)
         CmsListColumnDefinition stateCol = new CmsListExplorerColumn(LIST_COLUMN_STATE);
-        stateCol.setName(WorkplaceMessages.get().container("input.state"));
+        stateCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0));
         metadata.addColumn(stateCol);
 
         // position 16: locked by
         CmsListColumnDefinition lockedByCol = new CmsListExplorerColumn(LIST_COLUMN_LOCKEDBY);
-        lockedByCol.setName(WorkplaceMessages.get().container("input.lockedby"));
+        lockedByCol.setName(org.opencms.workplace.explorer.Messages.get().container(
+            org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0));
         metadata.addColumn(lockedByCol);
     }
 

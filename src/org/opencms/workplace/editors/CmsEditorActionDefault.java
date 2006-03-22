@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.18.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18.2.1 $ 
+ * @version $Revision: 1.18.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,8 +100,8 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append("&action=");
         params.append(CmsDialog.DIALOG_CONFIRMED);
         params.append("&directpublish=true&publishsiblings=true");
-        params.append("&title=");
-        params.append(CmsEncoder.escapeWBlanks(editor.key("messagebox.title.publishresource")
+        params.append("&title="); 
+        params.append(CmsEncoder.escapeWBlanks(Messages.get().key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0)
             + ": "
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
         params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
@@ -130,7 +130,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
      */
     public String getButtonName() {
 
-        return "explorer.context.publish";
+        return Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/03/07 08:24:35 $
- * Version: $Revision: 1.31.2.7 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.31.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31.2.7 $ 
+ * @version $Revision: 1.31.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -324,7 +324,7 @@ public abstract class CmsEditor extends CmsDialog {
         } else {
             // action class not defined, display inactive button
             url = getSkinUri() + "buttons/publish_in.png";
-            name = "explorer.context.publish";
+            name = Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0;
         }
         String image = url.substring(url.lastIndexOf("/") + 1);
         if (url.endsWith(".gif")) {

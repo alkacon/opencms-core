@@ -17,7 +17,7 @@
 <p>This module contains the OpenCms administration tools for managing the file history feature.</p>
 <p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.0</version>
+		<version>1.0.1</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -162,11 +162,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.view.groups.history}]]></value>
+					<value><![CDATA[${key.GUI_HISTORY_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.history.description}]]></value>
+					<value><![CDATA[${key.GUI_HISTORY_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -174,7 +174,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.label.admin.history}]]></value>
+					<value><![CDATA[${key.GUI_HISTORY_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 				<property>
 					<name>Title</name>
@@ -206,11 +206,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.history.groups.clearhistory}]]></value>
+					<value><![CDATA[${key.GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.clearhistory.description}]]></value>
+					<value><![CDATA[${key.GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -218,7 +218,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.label.admin.history.clear}]]></value>
+					<value><![CDATA[${key.GUI_CLEARHISTORY_HISTORY_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

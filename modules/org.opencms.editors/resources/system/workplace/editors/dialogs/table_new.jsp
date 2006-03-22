@@ -6,10 +6,10 @@
 	int buttonStyle = 0;
 	
 	String titleType = (String)request.getParameter("titleType");
-	String dialogTitle = wp.key("title.newtable");
+	String dialogTitle = org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_TITLE_NEWTABLE_0);
 	String disabled = "";
 	if ("edit".equals(titleType)) {
-		dialogTitle = wp.key("title.edittable");
+		dialogTitle = org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_TITLE_EDITTABLE_0);
 		disabled = " disabled=\"disabled\" style=\"background-color: Menu;\"";
 	} 
 	
@@ -21,7 +21,7 @@ var ColorSelected = -1;
 
 <!-- Object for color picker modaldialog -->
 var colorPicker = new Object();
-colorPicker.title = "<%= wp.key("dialog.color.title") %>";
+colorPicker.title = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_DIALOG_COLOR_TITLE_0)%>";
 colorPicker.color = "000000";
 
 <!-- Checks if a entered number is a digit -->
@@ -214,63 +214,63 @@ function resizeWindow() {
 
 <table border="0" cellpadding="3" cellspacing="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;"><%= wp.key("input.rows") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ROWS_0) %>:</td>
 	<td><input id="NumRows" type="text" size="15" style="width: 140px;" name="NumRows" onkeypress="event.returnValue=IsDigit();"<%= disabled %>></td>
 	<td class="maxwidth">&nbsp;</td>
-	<td style="white-space: nowrap;"><%= wp.key("input.width") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_WIDTH_0)%>:</td>
 	<td><select name="TableWidthMode" id="TableWidthMode" size="1" style="width: 150px;" onchange="checkField('TableWidthMode', 'TableWidth');"<%= disabled %>>
-  			<option value="" selected="selected"><%= wp.key("editor.dialog.table.notspecified") %></option>
-      		<option value="%"> <%= wp.key("input.inpercent") %>
-      		<option value="pixel"> <%= wp.key("input.inpixel") %>
+  			<option value="" selected="selected"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0)%></option>
+      		<option value="%"> <%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_INPERCENT_0) %>
+      		<option value="pixel"> <%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_INPIXEL_0) %>
       	</select></td>
     <td><input id="TableWidth" type="text" size="5" name="TableWidth" onkeypress="event.returnValue=IsDigit();"></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= wp.key("input.columns") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_INPUT_COLUMNS_0)%>:</td>
 	<td><input id="NumCols" type="text" size="15" style="width: 140px;" name="NumCols" onkeypress="event.returnValue=IsDigit();"<%= disabled %>></td>
 	<td class="maxwidth">&nbsp;</td>
-	<td style="white-space: nowrap;"><%= wp.key("input.height") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_HEIGHT_0) %>:</td>
 	<td><select name="TableHeightMode" id="TableHeightMode" size="1" style="width: 150px;" onchange="checkField('TableHeightMode', 'TableHeight');"<%= disabled %>>
-  			<option value="" selected="selected"><%= wp.key("editor.dialog.table.notspecified") %></option>
-      		<option value="%"> <%= wp.key("input.inpercent") %>
-      		<option value="pixel"> <%= wp.key("input.inpixel") %>
+  			<option value="" selected="selected"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0) %></option>
+      		<option value="%"> <%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_INPERCENT_0)%>
+      		<option value="pixel"> <%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_INPIXEL_0) %>
       	</select></td> 
     <td><input id="TableHeight" type="text" size="5" name="TableHeight" onkeypress="event.returnValue=IsDigit();"></td>	
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= wp.key("input.title") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_TITLE_0) %>:</td>
   	<td colspan="2"><input type="text" size="15" style="width: 140px;" name="Caption"<%= disabled %>></td>
 	<td class="maxwidth">&nbsp;</td>
 	<td colspan="2">&nbsp;</td>  	
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= wp.key("input.alignment") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNMENT_0)%>:</td>
 	<td><select id="TableAlignment" name="TableAlignment" size="1" style="width: 140px;"<%= disabled %>>
-			<option value="" selected="selected"><%= wp.key("editor.dialog.table.notspecified") %></option>
-      		<option value="left"><%= wp.key("input.alignleft") %></option>
-      		<option value="center"><%= wp.key("input.aligncenter") %></option>
-      		<option value="right"><%= wp.key("input.alignright") %></option>
+			<option value="" selected="selected"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0) %></option>
+      		<option value="left"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNLEFT_0)%></option>
+      		<option value="center"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNCENTER_0) %></option>
+      		<option value="right"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNRIGHT_0)%></option>
       	</select> 
     </td>
     <td class="maxwidth">&nbsp;</td>
-	<td style="white-space: nowrap;"><%= wp.key("input.padding") %>: </td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_PADDING_0) %>: </td>
   	<td style="white-space: nowrap;" colspan="2"><input id="CellPadding" type="text" size="5" name="CellPadding" onkeypress="event.returnValue=IsDigit();">
-  	<%= wp.key("input.paddinginfo") %></td>
+  	<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_PADDINGINFO_0)%></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= wp.key("input.border") %>:</td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_BORDER_0) %>:</td>
 	<td><input id="BorderLineWitdh" type="text" size="15" style="width: 140px;" name="BorderLineWidth" onkeypress="event.returnValue=IsDigit();"></td>
     <td class="maxwidth">&nbsp;</td>
-	<td style="white-space: nowrap;"><%= wp.key("input.spacing") %>: </td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_SPACING_0) %>: </td>
   	<td style="white-space: nowrap;" colspan="2"><input id="CellSpacing" type="text" size="5" name="CellSpacing" onkeypress="event.returnValue=IsDigit();">
-  	<%= wp.key("input.spacinginfo") %></td>
+  	<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_SPACINGINFO_0) %></td>
 </tr>
 <tr>
-	<td style="white-space: nowrap;"><%= wp.key("input.color") %></td>
+	<td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_COLOR_0) %></td>
 	<td><input type="text" id="TableColor" name="TableColor" size="15" style="width: 140px;" maxlength="7" onkeyup="previewColor('TableColor', 'TableColor');"></td>
 	<td colspan="4"><table border="0" cellpadding="0" cellspacing="0">
 						<tr>
-							<%= wp.button("javascript:openColorWindow();", null, "color_fill", "button.color", buttonStyle) %>
+							<%= wp.button("javascript:openColorWindow();", null, "color_fill", org.opencms.workplace.editors.Messages.GUI_BUTTON_COLOR_0 , buttonStyle) %>
 						</tr>
 					</table>
 	</td>

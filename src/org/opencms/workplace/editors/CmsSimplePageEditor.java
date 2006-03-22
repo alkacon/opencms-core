@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsSimplePageEditor.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.13.2.4 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.13.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.13.2.4 $ 
+ * @version $Revision: 1.13.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -78,7 +78,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
     private static final String EDITOR_TYPE = "simplehtml";
 
     /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class); 
+    private static final Log LOG = CmsLog.getLog(CmsSimplePageEditor.class);
 
     /**
      * Public constructor.<p>
@@ -99,7 +99,7 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
         Map galleryMap = OpenCms.getWorkplaceManager().getGalleries();
         List galleries = new ArrayList(galleryMap.size());
         Map typeMap = new HashMap(galleryMap.size());
-        
+
         Iterator i = galleryMap.keySet().iterator();
         while (i.hasNext()) {
             String key = (String)i.next();
@@ -108,19 +108,22 @@ public class CmsSimplePageEditor extends CmsDefaultPageEditor {
             // put the type name to the type Map
             typeMap.put(currGallery, key);
         }
-        
+
         // sort the found galleries by their order
         Collections.sort(galleries);
-        
-        for (int k=0; k<galleries.size(); k++) {
+
+        for (int k = 0; k < galleries.size(); k++) {
             A_CmsGallery currGallery = (A_CmsGallery)galleries.get(k);
             String galleryType = (String)typeMap.get(currGallery);
             String galleryName = CmsStringUtil.substitute(galleryType, "gallery", "");
             if (options.showElement("gallery." + galleryName, displayOptions)) {
                 // gallery is shown, create button code
-                result.append(button("javascript:openGallery(\'" + galleryType + "\');", null, galleryType, "button."
-                    + galleryName
-                    + "list", buttonStyle));
+                result.append(button(
+                    "javascript:openGallery(\'" + galleryType + "\');",
+                    null,
+                    galleryType,
+                    Messages.getGalleryKey(galleryName),
+                    buttonStyle));
             }
         }
 

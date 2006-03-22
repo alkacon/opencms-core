@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsDownloadGallery.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,8 @@ import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
 import org.opencms.util.CmsStringUtil;
 
+import java.util.Locale;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.jsp.PageContext;
@@ -47,12 +49,12 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsDownloadGallery extends A_CmsGallery {
-    
+
     /** URI of the download gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "download_fs.jsp";
 
@@ -96,6 +98,8 @@ public class CmsDownloadGallery extends A_CmsGallery {
      */
     public String buildGalleryItemPreview() {
 
+        Locale locale = this.getLocale();
+
         StringBuffer html = new StringBuffer(64);
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
@@ -125,16 +129,21 @@ public class CmsDownloadGallery extends A_CmsGallery {
                     html.append("</a></td>");
                     html.append("</tr>");
                     // file title
-                    html.append(previewRow(key("input.title"), title));
+                    html.append(previewRow(Messages.get().key(locale, Messages.GUI_INPUT_TITLE_0), title));
+
                     // file last modified date
-                    html.append(previewRow(key("input.datelastmodified"), lastmodified));
+                    html.append(previewRow(
+                        Messages.get().key(locale, Messages.GUI_INPUT_DATELASTMODIFIED_0), 
+                        lastmodified));
                     // file description if existing
                     if (CmsStringUtil.isNotEmpty(description)) {
-                        html.append(previewRow(key("input.description"), description));
+                        html.append(previewRow(
+                            Messages.get().key(locale, Messages.GUI_INPUT_DESCRIPTION_0),
+                            description));
                     }
                     // file keywords if existing
                     if (CmsStringUtil.isNotEmpty(keywords)) {
-                        html.append(previewRow(key("input.keywords"), keywords));
+                        html.append(previewRow(Messages.get().key(locale, Messages.GUI_INPUT_KEYWORDS_0), keywords));
                     }
                     html.append("</table>");
                 }
@@ -161,14 +170,14 @@ public class CmsDownloadGallery extends A_CmsGallery {
 
         return "450";
     }
-    
+
     /**
      * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
      * 
      * @return the order of the implemented gallery
      */
     public Integer getOrder() {
-        
+
         return ORDER_GALLERY;
     }
 }

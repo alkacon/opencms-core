@@ -8,26 +8,28 @@
 %>function vars_resources() { 
 
 this.stati = new Array(
-	"<%= wp.key("explorer.state0") %>",
-	"<%= wp.key("explorer.state1") %>",
-	"<%= wp.key("explorer.state2") %>",
-	"<%= wp.key("explorer.state3") %>"
+     
+	"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_STATE0_0) %>",
+	"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_STATE1_0) %>",
+	"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_STATE2_0) %>",
+	"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_STATE3_0) %>"
 );
 this.descr = new Array(
-	"<%= wp.key("input.name") %>",    
-	"<%= wp.key("input.title") %>",    
-	"<%= wp.key("input.type") %>",    
-	"<%= wp.key("input.size") %>",    
-	"<%= wp.key("input.permissions") %>", 	
-	"<%= wp.key("input.datelastmodified") %>",
-	"<%= wp.key("input.userlastmodified") %>",  
-	"<%= wp.key("input.datecreated") %>",
-	"<%= wp.key("input.usercreated") %>",  
-	"<%= wp.key("input.datereleased") %>",  
-	"<%= wp.key("input.dateexpired") %>", 
-	"<%= wp.key("input.state") %>",
-	"<%= wp.key("input.lockedby") %>"
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_NAME_0) %>",  						
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TITLE_0) %>",  						 
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_TYPE_0) %>", 
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_SIZE_0) %>",
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PERMISSIONS_0) %>", 
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATELASTMODIFIED_0) %>", 
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_USERLASTMODIFIED_0) %>",
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATECREATED_0) %>",
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_USERCREATED_0) %>",
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATERELEASED_0) %>",
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_DATEEXPIRED_0) %>",  
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_STATE_0) %>", 
+		"<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_LOCKEDBY_0) %>"
 );	    
+
 
 this.actProject;        
 this.onlineProject;
@@ -38,19 +40,20 @@ this.userName="<%= wp.getSettings().getUser().getName() %>";
 this.servpath="<%= OpenCms.getSystemInfo().getOpenCmsContext() %>";
 this.serverName="<%= request.getServerName() %>";
 
-this.lockedBy="<%=    wp.key("title.locked") %>";
-this.titleString="<%= wp.key("label.wptitle") %>";
-this.langback="<%=    wp.key("button.back") %>";
-this.langsearch="<%=  wp.key("button.search") %>";
-this.langup="<%=      wp.key("button.parent") %>";
-this.langnew="<%=     wp.key("button.new") %>";
-this.langupload="<%=  wp.key("button.upload") %>";
-this.langadress="<%=  wp.key("input.adress") %>";
-this.langpage="<%=    wp.key("input.page") %>";
-this.langloading="<%= wp.key("label.loading") %>";
-this.altlockedby="<%= wp.key("explorer.lockedby") %>";
-this.altlockedin="<%= wp.key("explorer.lockedin") %>";
-this.altbelongto="<%= wp.key("explorer.altbelongto") %>";
+this.lockedBy="<%=    org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_TITLE_LOCKED_0) %>";
+this.langback="<%=    org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_BUTTON_BACK_0) %>";
+this.langsearch="<%=  org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_BUTTON_SEARCH_0) %>";
+this.langup="<%=      org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_BUTTON_PARENT_0) %>";
+this.langnew="<%=     org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_BUTTON_NEW_0) %>";
+this.langupload="<%=  org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_BUTTON_UPLOAD_0) %>";
+this.langadress="<%=  org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_ADRESS_0) %>";
+this.langpage="<%=    org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_INPUT_PAGE_0) %>";
+this.langloading="<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_LABEL_LOADING_0) %>";
+this.altlockedby="<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_LOCKEDBY_0) %>";
+this.altlockedin="<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_LOCKEDIN_0) %>";
+this.altbelongto="<%= org.opencms.workplace.explorer.Messages.get().key(org.opencms.workplace.explorer.Messages.GUI_EXPLORER_ALTBELONGTO_0) %>";
+
+
 
 this.viewcfg=<%= wp.getExplorerSettings() %>;      
 

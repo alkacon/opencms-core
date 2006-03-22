@@ -171,11 +171,11 @@ function buttonAction(para) {
     	break;
      case 11:
     	// open the anchor dialog popup
-    	openAnchorDialog("<%= wp.key("editor.message.noselection") %>");
+    	openAnchorDialog("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
     	break;
     	case 12:
     	// open the link dialog popup
-    	openLinkDialog("<%= wp.key("editor.message.noselection") %>");
+    	openLinkDialog("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
     	break;
     	case 13:
         // clear document
@@ -246,7 +246,7 @@ function popupCloseAction(closeObj) {
 
 // confirm exit dialog
 function confirmExit() {
-	if (confirm("<%= wp.key("editor.message.exit") %>")) {
+	if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 		buttonAction(6);
 	}
 }
@@ -290,13 +290,13 @@ function initEditor() {
 
 var config = __editor.config;
 
-config.registerButton("oc-exit", "<%= wp.key("button.close") %>", __editor.imgURL("images/opencms/exit.gif"), true, function(e) { confirmExit(); });
-config.registerButton("oc-save-exit", "<%= wp.key("button.saveclose") %>", __editor.imgURL("images/opencms/save_exit.gif"), true, function(e) { buttonAction(7); });
-config.registerButton("oc-save", "<%= wp.key("button.save") %>", __editor.imgURL("images/opencms/save.gif"), true, function(e) { buttonAction(8); });
+config.registerButton("oc-exit", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0) %>", __editor.imgURL("images/opencms/exit.gif"), true, function(e) { confirmExit(); });
+config.registerButton("oc-save-exit", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0)%>", __editor.imgURL("images/opencms/save_exit.gif"), true, function(e) { buttonAction(7); });
+config.registerButton("oc-save", "<%=  org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0) %>", __editor.imgURL("images/opencms/save.gif"), true, function(e) { buttonAction(8); });
 
-config.registerButton("oc-chars", "<%= wp.key("button.specialchars") %>", __editor.imgURL("../../buttons/specialchar.png"), false, function(e) { buttonAction(10); });
-config.registerButton("oc-anchor", "<%= wp.key("button.anchor") %>", __editor.imgURL("../../buttons/anchor.png"), false, function(e) { buttonAction(11); });
-config.registerButton("oc-link", "<%= wp.key("button.linkto") %>", __editor.imgURL("../../buttons/link.png"), false, function(e) { buttonAction(12); });
+config.registerButton("oc-chars", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SPECIALCHARS_0) %>", __editor.imgURL("../../buttons/specialchar.png"), false, function(e) { buttonAction(10); });
+config.registerButton("oc-anchor", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_ANCHOR_0)%>", __editor.imgURL("../../buttons/anchor.png"), false, function(e) { buttonAction(11); });
+config.registerButton("oc-link", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0)%>", __editor.imgURL("../../buttons/link.png"), false, function(e) { buttonAction(12); });
 
 <%= wp.buildGalleryButtons(options, buttonStyle, displayOptions) %>
 
@@ -309,9 +309,9 @@ if (options.showElement("button.customized", displayOptions)) {
 	I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
 	ocDirectPublish = "\"oc-direct-publish\", ";
 	if (actionClass.isButtonActive(wp.getJsp(), wp.getParamResource())) {
-		%>config.registerButton("oc-direct-publish", "<%= wp.key("explorer.context.publish") %>", __editor.imgURL("images/opencms/publish.gif"), true, function(e) { buttonAction(9); });<%
+		%>config.registerButton("oc-direct-publish", "<%=  org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0) %>", __editor.imgURL("images/opencms/publish.gif"), true, function(e) { buttonAction(9); });<%
 	} else {
-		%>config.registerButton("oc-direct-publish", "<%= wp.key("explorer.context.publish") %>", __editor.imgURL("images/opencms/publish_in.gif"), true, function(e) { });<%
+		%>config.registerButton("oc-direct-publish", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0) %>", __editor.imgURL("images/opencms/publish_in.gif"), true, function(e) { });<%
 	
 	}
 }
@@ -415,7 +415,7 @@ for (i=0; i<config.toolbar[2].length; i++) {
 // determine help button display
 String onlineHelp = "";
 if (wp.isHelpEnabled()) { %>
-	config.registerButton("oc-onlinehelp", "<%= wp.key("button.help") %>", __editor.imgURL("../../buttons/help.png"), true, function(e) { buttonAction(30); });<%
+	config.registerButton("oc-onlinehelp", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0) %>", __editor.imgURL("../../buttons/help.png"), true, function(e) { buttonAction(30); });<%
 	onlineHelp = " \"separator\", \"oc-onlinehelp\", ";
 
 }
@@ -482,7 +482,7 @@ config.toolbar = [
 boolean elementSelection = options.showElement("option.element.selection", displayOptions);
 boolean elementLanguage = options.showElement("option.element.language", displayOptions);
 if (elementSelection || elementLanguage) {
-	out.println(wp.buttonBarLabel("input.element"));
+	out.println(wp.buttonBarLabel( org.opencms.workplace.editors.Messages.GUI_INPUT_ELEMENT_0));
 	if (elementLanguage) {
 		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 		out.println(wp.buttonBarSpacer(2));
@@ -492,7 +492,7 @@ if (elementSelection || elementLanguage) {
 	if (elementSelection) {
 		out.println("<td>" + wp.buildSelectElementName("name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 		out.println(wp.buttonBarSeparator(5, 5));
-		out.println(wp.button("javascript:buttonAction(4);", null, "elements", "editor.dialog.elements.button", buttonStyle));
+		out.println(wp.button("javascript:buttonAction(4);", null, "elements", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_ELEMENTS_BUTTON_0, buttonStyle));
 	} else {
 		%><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
 	}
@@ -504,12 +504,12 @@ if (options.showElement("option.properties", displayOptions)) {
 	if (elementLanguage && !elementSelection) {
 		out.println(wp.buttonBarSeparator(5, 5));
 	}
-	out.println(wp.button("javascript:buttonAction(5);", null, "properties", "editor.dialog.properties.button", buttonStyle));
+	out.println(wp.button("javascript:buttonAction(5);", null, "properties", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_PROPERTIES_BUTTON_0 , buttonStyle));
 }
-out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", "editor.dialog.cleanup.button", buttonStyle));
+out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_CLEANUP_BUTTON_0, buttonStyle));
 %>             
 <td class="maxwidth">&nbsp;</td>
-<%= wp.button("javascript:buttonAction(2);", null, "preview", "button.preview", buttonStyle) %>
+<%= wp.button("javascript:buttonAction(2);", null, "preview", org.opencms.workplace.editors.Messages.GUI_BUTTON_PREVIEW_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
 </tr></table>
 </td></tr>

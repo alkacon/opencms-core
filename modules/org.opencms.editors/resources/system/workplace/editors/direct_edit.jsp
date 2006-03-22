@@ -78,11 +78,11 @@ if (showEdit) {
 %>
 	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= editAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.png');">&nbsp;<%= wp.key("editor.frontend.button.edit") %></span><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.png');">&nbsp;<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0)%></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.edit") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0) %></span><%
    } else { 
-	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.png'); background-position: 0px 0px;" title="<%= wp.key("editor.frontend.button.edit") %>">&nbsp;</span><%
+	%><span id="bt_<%= editId %>" unselectable="on" class="ocms_combobutton" style="padding-left: 15px; padding-right: 1px; background-image: url('<%= wp.getSkinUri() %>buttons/directedit_cl.png'); background-position: 0px 0px;" title="<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_EDIT_0) %>">&nbsp;</span><%
    } %></span></a></td>
 <% 
 }
@@ -91,11 +91,11 @@ if (showDelete) {
 
 	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= deleteAction %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="del_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.png');">&nbsp;<%= wp.key("button.delete") %></span><%
+	%><span id="del_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/deletecontent.png');">&nbsp;<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("button.delete") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %></span><%
    } else { 
-	%><img border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.png" title="<%= wp.key("button.delete") %>" alt=""><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/deletecontent.png" title="<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0)%>" alt=""><%
    } %></span></a></td>   
 <%
 }
@@ -103,11 +103,11 @@ if (showNew) {
 %>   
 	<td class="ocms_de"><a href="#" onclick="javascript:submitOcms('<%= editId %>', '<%= newAction %>', '<%= editNewLink %>');" class="ocms_button"><span unselectable="on" class="ocms_over" onmouseover="className='ocms_over'" onmouseout="className='ocms_over'" onmousedown="className='ocms_push'" onmouseup="className='ocms_over'"><%
    if (editButtonStyle == 1) { 
-	%><span id="new_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/new.png');">&nbsp;<%= wp.key("button.new") %></span><%
+	%><span id="new_<%= editId %>" unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/new.png');">&nbsp;<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_NEW_0)%></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("button.new") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_NEW_0)%></span><%
    } else { 
-	%><img border="0" src="<%= wp.getSkinUri() %>buttons/new.png" title="<%= wp.key("button.new") %>" alt=""><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/new.png" title="<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_NEW_0) %>" alt=""><%
    } %></span></a></td>     
 <%
 }
@@ -137,11 +137,11 @@ if (showNew) {
 <tr>
 	<td class="ocms_de"><span unselectable="on" class="ocms_disabled"><%
    if (editButtonStyle == 1) { 
-	%><span unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_in.png');">&nbsp;<%= wp.key("editor.frontend.button.locked") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="background-image: url('<%= wp.getSkinUri() %>buttons/directedit_in.png');">&nbsp;<%=  org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0)%></span><%
    } else if (editButtonStyle == 2) { 
-	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= wp.key("editor.frontend.button.locked") %></span><%
+	%><span unselectable="on" class="ocms_combobutton" style="padding-left: 4px;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0) %></span><%
    } else { 
-	%><img border="0" src="<%= wp.getSkinUri() %>buttons/directedit_in.png" title="<%= wp.key("editor.frontend.button.locked") %>" alt=""><%
+	%><img border="0" src="<%= wp.getSkinUri() %>buttons/directedit_in.png" title="<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_FRONTEND_BUTTON_LOCKED_0) %>" alt=""><%
    } %></span></td>
 </table>
 </span>
@@ -277,7 +277,7 @@ function submitOcms(id, action, link) {
 			form.submit();
 			return;
 		} else if (action == "<%= newAction %>") {	
-			form.editortitle.value = "<%= wp.key("editor.title.new") %>";	
+			form.editortitle.value = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_TITLE_NEW_0) %>";	
 			form.newlink.value = link;	
 			form.submit();
 			return;

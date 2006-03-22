@@ -52,7 +52,7 @@ function confirmAction(actionValue, theForm) {
 </tr>
 </table>
 
-<%= wp.dialogBlockStart(wp.key("message.reason")) %>
+<%= wp.dialogBlockStart(org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_MESSAGE_REASON_0)) %>
 
 <%= wp.getParamReasonSuggestion() %>
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResourceXmlContent.java,v $
- * Date   : $Date: 2006/01/09 16:11:37 $
- * Version: $Revision: 1.12.2.3 $
+ * Date   : $Date: 2006/03/22 08:33:22 $
+ * Version: $Revision: 1.12.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.12.2.3 $ 
+ * @version $Revision: 1.12.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -125,7 +125,7 @@ public class CmsNewResourceXmlContent extends CmsNewResource {
             setAction(ACTION_SUBMITFORM);
         } else if (DIALOG_NEWFORM.equals(getParamAction())) {
             setAction(ACTION_NEWFORM);
-            setParamTitle(key("title.new" + getParamNewResourceType()));
+            setParamTitle(Messages.get().key(this.getLocale(), Messages.getTitleKey(getParamNewResourceType())));
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {

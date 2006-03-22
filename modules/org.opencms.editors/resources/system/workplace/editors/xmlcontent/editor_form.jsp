@@ -147,7 +147,7 @@ var editedElementLanguage = "<%= wp.getParamElementlanguage() %>";
 	
 // Ask user whether he really wants to leave the editor without saving
 function confirmExit() {
-	if (confirm("<%= wp.key("editor.message.exit") %>")) {
+	if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 		buttonAction(1);
 	}
 }

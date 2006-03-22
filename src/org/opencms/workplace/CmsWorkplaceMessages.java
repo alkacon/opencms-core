@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.38.2.1 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.38.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,14 +58,11 @@ import java.util.Set;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.38.2.1 $ 
+ * @version $Revision: 1.38.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsWorkplaceMessages extends CmsMultiMessages {
-
-    /** The name of the property file. */
-    public static final String DEFAULT_WORKPLACE_MESSAGE_BUNDLE = "org.opencms.workplace.workplace";
 
     /**
      * Constructor for creating a new messages object
@@ -93,12 +90,6 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
         // create a new list and add the base bundle
         ArrayList result = new ArrayList();
-        // try to load the default resource bundle
-        CmsMessages wpMsg = new CmsMessages(DEFAULT_WORKPLACE_MESSAGE_BUNDLE, locale);
-        // bundle was loaded, add to list of bundles
-        if (wpMsg.isInitialized()) {
-            result.add(wpMsg);
-        }
 
         ////////////    iterate over all registered modules ////////////////        
         Set names = OpenCms.getModuleManager().getModuleNames();

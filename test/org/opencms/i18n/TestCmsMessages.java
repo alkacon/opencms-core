@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessages.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/22 08:33:31 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,7 +31,6 @@
 
 package org.opencms.i18n;
 
-import org.opencms.workplace.CmsWorkplaceMessages;
 
 import java.util.Locale;
 
@@ -42,11 +41,14 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $
+ * @version $Revision: 1.6.2.1 $
  * 
  * @since 6.0.0
  */
 public class TestCmsMessages extends TestCase {
+
+    /** The name of the property file. */
+    public static final String DEFAULT_WORKPLACE_MESSAGE_BUNDLE = "org.opencms.workplace.workplace";
 
     /**
      * Tests parameter replacement in messages.<p>
@@ -57,7 +59,7 @@ public class TestCmsMessages extends TestCase {
 
         String value;
 
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
+        CmsMessages messages = new CmsMessages(TestCmsMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
 
         value = messages.key("editor.xmlcontent.validation.error");
         assertEquals("Invalid value \"{0}\" according to rule {1}", value);
@@ -96,7 +98,7 @@ public class TestCmsMessages extends TestCase {
         value = "";
         assertFalse(CmsMessages.isUnknownKey(value));
 
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
+        CmsMessages messages = new CmsMessages(TestCmsMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);
         value = messages.key("name");
         assertFalse(CmsMessages.isUnknownKey(value));
         assertEquals("English", value);

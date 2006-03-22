@@ -5,7 +5,7 @@
 	wp.setParamIsPopup("true");
 	int buttonStyle = 0;
 	
-	String dialogTitle = wp.key("label.specialchar");
+	String dialogTitle = org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_LABEL_SPECIALCHAR_0);
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
 

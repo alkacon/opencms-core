@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.22.2.3 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.22.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import org.opencms.workplace.explorer.CmsNewResourceUpload;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -73,7 +74,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.2.3 $ 
+ * @version $Revision: 1.22.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -253,7 +254,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         }
         // get the gallery class name for the type
         A_CmsGallery template = (A_CmsGallery)OpenCms.getWorkplaceManager().getGalleries().get(galleryTypeName);
-        
+
         if (template == null) {
             // requested gallery type is not configured
             CmsMessageContainer message;
@@ -340,7 +341,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
 
         if (MODE_VIEW.equals(getParamDialogMode())) {
             // in view mode, show disabled button
-            return button(null, null, "apply_in.png", "button.paste", 0);
+            return button(null, null, "apply_in.png", Messages.GUI_BUTTON_PASTE_0, 0);
         } else {
             // in editor or widget mode, create enabled button
             String uri = getParamResourcePath();
@@ -351,7 +352,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 "javascript:link('" + uri + "',document.form.title.value, document.form.title.value);",
                 null,
                 "apply.png",
-                "button.paste",
+                Messages.GUI_BUTTON_PASTE_0,
                 0);
         }
     }
@@ -364,6 +365,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public String buildGalleryButtonBar() {
 
         StringBuffer buttonBar = new StringBuffer();
+        Locale locale = this.getLocale();
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 // we have a resource to display
@@ -388,7 +390,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     buttonBar.append(deleteButton());
                     buttonBar.append(buttonBarSeparator(5, 5));
                     buttonBar.append("<td class=\"nowrap\"><b>");
-                    buttonBar.append(key("input.title"));
+                    buttonBar.append(Messages.get().key(locale, Messages.GUI_INPUT_TITLE_0));
                     buttonBar.append("</b>&nbsp;</td>");
                     buttonBar.append("<td class=\"maxwidth\">");
                     buttonBar.append("<input name=\"title\" value=\"");
@@ -495,7 +497,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 result.append("\" href=\"javascript: preview(\'");
                 result.append(resPath);
                 result.append("\');\" title=\"");
-                result.append(key("button.preview"));
+                result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_PREVIEW_0));
                 result.append("\">");
                 result.append(resName);
                 result.append("</a></td>\n");
@@ -580,7 +582,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         } else {
             // no gallery present, create hidden input field to avoid JS errors
             StringBuffer result = new StringBuffer(4);
-            result.append(key("error.reason.no." + getGalleryTypeName()));
+            result.append(Messages.get().key(this.getLocale(), Messages.getGalleryNotFoundKey(getGalleryTypeName())));
             result.append("\r\n<input type=\"hidden\" name=\"");
             result.append(PARAM_GALLERYPATH);
             result.append("\">");
@@ -678,7 +680,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     "javascript:deleteResource(\'" + getParamResourcePath() + "\');",
                     null,
                     "deletecontent.png",
-                    "title.delete",
+                    Messages.GUI_TITLE_DELETE_0,
                     0);
             }
         } catch (CmsException e) {
@@ -707,7 +709,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     "javascript:editProperty('" + getParamResourcePath() + "');",
                     null,
                     "edit.png",
-                    "input.editpropertyinfo",
+                    Messages.GUI_INPUT_EDITPROPERTYINFO_0,
                     0);
             }
         } catch (CmsException e) {
@@ -905,7 +907,8 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getKeyTitle() {
 
-        return key("button." + getGalleryTypeName());
+        //return key("button." + getGalleryTypeName());
+        return Messages.get().key(Messages.getTitleGalleryKey(getGalleryTypeName()));
     }
 
     /**
@@ -1084,7 +1087,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
             getJsp().link(getCms().getSitePath(getCurrentResource())),
             "_preview",
             "preview.png",
-            "button.preview",
+            Messages.GUI_BUTTON_PREVIEW_0,
             0));
         return previewButton.toString();
     }
@@ -1129,7 +1132,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 "javascript:publishResource(\'" + getParamResourcePath() + "\');",
                 null,
                 "publish.png",
-                "messagebox.title.publishresource",
+                Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0,
                 0);
         }
         return button(null, null, "publish_in.png", "", 0);
@@ -1142,7 +1145,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String searchButton() {
 
-        return button("javascript:displayGallery();", null, "search.png", "input.search", 0);
+        return button("javascript:displayGallery();", null, "search.png", Messages.GUI_INPUT_SEARCH_0, 0);
     }
 
     /**
@@ -1247,7 +1250,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         StringBuffer targetSelectBox = new StringBuffer(32);
         targetSelectBox.append(buttonBarSpacer(5));
         targetSelectBox.append("<td nowrap><b>");
-        targetSelectBox.append(key("input.linktarget"));
+        targetSelectBox.append(Messages.get().key(this.getLocale(), Messages.GUI_INPUT_LINKTARGET_0));
         targetSelectBox.append("</b>&nbsp;</td>");
         targetSelectBox.append("<td>\r\n");
         targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
@@ -1289,7 +1292,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         result.append("\" style=\"text-align: right;\">");
         result.append(res.getLength() / 1024);
         result.append(" ");
-        result.append(key("label.kilobytes"));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_KILOBYTES_0));
         result.append("</td>\n");
         return result.toString();
     }
@@ -1336,13 +1339,13 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         headline.append("<tr>");
         headline.append("<td class=\"headline\">&nbsp;</td>");
         headline.append("<td class=\"headline\" width=\"35%\">");
-        headline.append(key("label.name"));
+        headline.append(Messages.get().key(Messages.GUI_LABEL_NAME_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" width=\"55%\">");
-        headline.append(key("label.title"));
+        headline.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_TITLE_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" style=\"text-align: right;\" width=\"10%\">");
-        headline.append(key("label.size"));
+        headline.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_SIZE_0));
         headline.append("</td>");
         headline.append("</tr>");
 
@@ -1414,15 +1417,16 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     protected String getTargetOptions() {
 
+        Locale locale = this.getLocale();
         StringBuffer options = new StringBuffer();
         options.append("<option value=\"_self\">");
-        options.append(key("input.linktargetself"));
+        options.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTARGETSELF_0));
         options.append("</option>\r\n");
         options.append("<option value=\"_blank\">");
-        options.append(key("input.linktargetblank"));
+        options.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTARGETBLANK_0));
         options.append("</option>\r\n");
         options.append("<option value=\"_top\">");
-        options.append(key("input.linktargettop"));
+        options.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTARGETTOP_0));
         options.append("</option>\r\n");
 
         return options.toString();

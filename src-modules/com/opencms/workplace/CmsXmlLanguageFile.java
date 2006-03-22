@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/src-modules/com/opencms/workplace/Attic/CmsXmlLanguageFile.java,v $
-* Date   : $Date: 2006/03/10 15:49:26 $
-* Version: $Revision: 1.10.2.2 $
+* Date   : $Date: 2006/03/22 08:33:21 $
+* Version: $Revision: 1.10.2.3 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ package com.opencms.workplace;
  * been changed to use the standard <code>java.util.ResouceBundle</code> technology.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10.2.2 $ $Date: 2006/03/10 15:49:26 $
+ * @version $Revision: 1.10.2.3 $ $Date: 2006/03/22 08:33:21 $
  * 
  * @deprecated Will not be supported past the OpenCms 6 release.
  */
@@ -61,7 +61,7 @@ import java.util.Set;
 public class CmsXmlLanguageFile { 
 
     /** The name of the property file */
-    public static final String C_BUNDLE_NAME = CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE;
+    public static final String C_BUNDLE_NAME = "com.opencms.workplace.workplace";
     
     /** The Locales Support Runtime Property Name */
     public static final String C_COMPATIBILITY_OLDLOCALES = "compatibility.support.oldlocales";

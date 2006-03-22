@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2006/01/09 11:51:20 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.8.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,6 +42,7 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -64,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.2.2 $ 
+ * @version $Revision: 1.8.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,6 +106,8 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     public String buildEditForm() {
 
+        Locale locale = this.getLocale();
+
         StringBuffer retValue = new StringBuffer(2048);
 
         // check if the properties are editable
@@ -117,16 +120,20 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("\t<td class=\"textbold\">" + key("input.property") + "</td>\n");
-        retValue.append("\t<td class=\"textbold\">" + key("label.value") + "</td>\n");
+        retValue.append("\t<td class=\"textbold\">"
+            + Messages.get().key(locale, Messages.GUI_INPUT_PROPERTY_0)
+            + "</td>\n");
+        retValue.append("\t<td class=\"textbold\">"
+            + Messages.get().key(locale, Messages.GUI_LABEL_VALUE_0)
+            + "</td>\n");
         retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-            + key("input.usedproperty")
+            + Messages.get().key(Messages.GUI_INPUT_USEDPROPERTY_0)
             + "</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
 
         // create template select box row
-        retValue.append(buildTableRowStart(key("input.template")));
+        retValue.append(buildTableRowStart(Messages.get().key(locale, Messages.GUI_INPUT_TEMPLATE_0)));
         retValue.append(buildSelectTemplates("name=\""
             + CmsPropertyDefinition.PROPERTY_TEMPLATE
             + "\" class=\"maxwidth noborder\""
@@ -301,10 +308,12 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     private void addCurrentTemplate(String currentTemplate, List options, List values) {
 
+        Locale locale = this.getLocale();
+
         // template was not found in regular template folders, add current template value
         if (CmsStringUtil.isEmpty(currentTemplate)) {
             // current template not available, add "please select" value
-            options.add(0, "--- " + key("please.select") + " ---");
+            options.add(0, "--- " + Messages.get().key(locale, Messages.GUI_PLEASE_SELECT_0) + " ---");
             values.add(0, "");
         } else {
             // current template was set to some value, add this value to the selection

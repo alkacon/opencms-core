@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsFrameset.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.84.2.5 $
+ * Date   : $Date: 2006/03/22 08:33:21 $
+ * Version: $Revision: 1.84.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.84.2.5 $ 
+ * @version $Revision: 1.84.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -264,16 +264,16 @@ public class CmsFrameset extends CmsWorkplace {
 
         if (PUBLISHBUTTON_SHOW_AUTO.equals(publishButton)) {
             if (getCms().isManagerOfProject()) {
-                return button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle);
+                return button("../commons/publishproject.jsp", "body", "publish.png", Messages.GUI_BUTTON_PUBLISH_0 , buttonStyle);
             } else {
                 return "";
             }
         }
 
         if (getCms().isManagerOfProject()) {
-            return (button("../commons/publishproject.jsp", "body", "publish.png", "button.publish", buttonStyle));
+            return (button("../commons/publishproject.jsp", "body", "publish.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
         } else {
-            return (button(null, null, "publish_in.png", "button.publish", buttonStyle));
+            return (button(null, null, "publish_in.png", Messages.GUI_BUTTON_PUBLISH_0, buttonStyle));
         }
     }
 

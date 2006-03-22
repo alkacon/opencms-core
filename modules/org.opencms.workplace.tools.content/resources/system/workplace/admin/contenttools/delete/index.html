@@ -37,7 +37,7 @@ case CmsPropertyDelete.ACTION_OK:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= wp.key("message.deleteproperty") %>
+<%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(),  org.opencms.workplace.tools.content.Messages.GUI_MESSAGE_DELETEPROPERTY_0)%>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
@@ -84,7 +84,7 @@ default:
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
 <%= wp.dialogBlockStart(null) %>
-<%= wp.key("input.propertydelete.info") %>
+<%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(),  org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTYDELETE_INFO_0)%>
 <%= wp.dialogBlockEnd() %>
 <%= wp.dialogSpacer() %>
 
@@ -95,7 +95,7 @@ default:
 
 <table border="0" width="100%">
 <tr>
-	<td style="white-space: nowrap;" unselectable="on"><%= wp.key("input.property") %></td>
+	<td style="white-space: nowrap;" unselectable="on"><%= org.opencms.workplace.tools.content.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.content.Messages.GUI_INPUT_PROPERTY_0) %></td>
 	<td colspan="2" class="maxwidth"><%= wp.buildSelectProperty("name=\"" + wp.PARAM_PROPERTYNAME + "\" size=\"1\"") %></td>
 </tr>
 </table>

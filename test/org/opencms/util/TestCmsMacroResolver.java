@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/22 08:33:32 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,7 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.workplace.CmsWorkplaceMessages;
+import org.opencms.i18n.TestCmsMessages;
 
 import java.util.Locale;
 
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -63,7 +63,7 @@ public class TestCmsMacroResolver extends TestCase {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         
         // add the messages to the resolver
-        CmsMessages messages = new CmsMessages(CmsWorkplaceMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);        
+        CmsMessages messages = new CmsMessages(TestCmsMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);        
         resolver.setMessages(messages);
         
         // resgister some macros for the validation

@@ -18,7 +18,7 @@
 <p>Its allows you to install and/or develop administration tools for OpenCms 6.</p>
 <p><i>(c) 2004-2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.5</version>
+		<version>1.0.6</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -715,7 +715,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.select.admin}]]></value>
+					<value><![CDATA[${key.GUI_ADMIN_NAME_0}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
