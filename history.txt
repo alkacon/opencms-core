@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/22 14:51:57 $
- * Version: $Revision: 1.682.2.98 $
+ * Date   : $Date: 2006/03/22 16:21:46 $
+ * Version: $Revision: 1.682.2.99 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -20,6 +20,7 @@ Legend:
 - General comment
 
 OpenCms 6.1.11 - March ???, 2006
+* Fixed issue #1047: change MySQL tables from MEDIUMBLOB to LONGBLOB to allow resources of size > 16MB
 * Fixed issue #1051: admin menu width is now adjusted during refresh
 * Fixed issue #1030: Detail issues fixed in the 'admin view' list
 * Detail issues fixed in the 'admin view' explorer list
