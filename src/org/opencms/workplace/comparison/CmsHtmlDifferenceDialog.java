@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2006/03/22 11:51:35 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/22 16:12:26 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -50,7 +50,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,13 +108,13 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
         out.println(allParamsAsHidden());
         out.println("</form>");
         out.println("<p>");
-
         out.println(getDiffOnlyButtonsHtml());
         
         String onClic = "javascript:document.forms['diff-form'].textmode.value = '";
         String iconPath = null;
         CmsMessageContainer iconName = null;
-        if (MODE_HTML.equals(getParamTextmode())) {
+        boolean htmlMode = MODE_HTML.equals(getParamTextmode());
+        if (htmlMode) {
             iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
         } else {
             iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -128,13 +128,14 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
             "id",
             iconName.key(getLocale()),
             null,
-            true,
+            htmlMode, // activate Button, if in html mode
             iconPath,
             null,
             onClic));
+        out.println("&nbsp;&nbsp;");
 
         onClic = "javascript:document.forms['diff-form'].textmode.value = '";
-        if (MODE_TEXT.equals(getParamTextmode())) {
+        if (!htmlMode) {
             iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
         } else {
             iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
@@ -148,11 +149,11 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
             "id",
             iconName.key(getLocale()),
             null,
-            true,
+            !htmlMode, // activate Button, if in text mode
             iconPath,
             null,
             onClic));
-        
+        out.println("&nbsp;&nbsp;");
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/A_CmsDiffViewDialog.java,v $
- * Date   : $Date: 2006/03/22 11:51:35 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/03/22 16:12:17 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -53,7 +53,7 @@ import javax.servlet.jsp.JspWriter;
  * @author Michael Moossen  
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,7 +80,6 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
      */
     public void displayDialog() throws Exception {
 
-        boolean changed = !getOriginalSource().equals(getCopySource());
         if (getAction() == ACTION_CANCEL) {
             actionCloseDialog();
         }
@@ -132,7 +131,8 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
         String iconPath = null;
         String onClic = "javascript:document.forms['diff-form'].mode.value = '";
         onClic += CmsDiffViewMode.DIFF_ONLY;
-        if (getMode() == CmsDiffViewMode.DIFF_ONLY) {
+        boolean diffOnlyMode = (getMode() == CmsDiffViewMode.DIFF_ONLY);
+        if (diffOnlyMode) {
             iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
         } else {
             iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
@@ -145,10 +145,11 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
                 "id",
                 CmsDiffViewMode.ALL.getName().key(getLocale()),
                 null,
-                true,
+                !diffOnlyMode, // activate button, if the whole text is shown
                 iconPath,
                 null,
                 onClic));
+            result.append("&nbsp;&nbsp;");
         } else {
             // display all text, if there are no differences
             setMode(CmsDiffViewMode.ALL);
@@ -169,10 +170,11 @@ public abstract class A_CmsDiffViewDialog extends CmsDialog {
                 "id",
                 CmsDiffViewMode.DIFF_ONLY.getName().key(getLocale()),
                 null,
-                true,
+                diffOnlyMode, // activate button, if only the differences are shown
                 iconPath,
                 null,
                 onClic));
+            result.append("&nbsp;&nbsp;");
         } else {
             // display all text, if there are no differences
             setMode(CmsDiffViewMode.ALL);
