@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsMacroResolver.java,v $
- * Date   : $Date: 2006/03/22 08:33:32 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2006/03/22 16:38:53 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,7 +32,6 @@
 package org.opencms.util;
 
 import org.opencms.i18n.CmsMessages;
-import org.opencms.i18n.TestCmsMessages;
 
 import java.util.Locale;
 
@@ -42,7 +41,7 @@ import junit.framework.TestCase;
  * Test cases for {@link org.opencms.util.CmsMacroResolver}.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.8.2.1 $
+ * @version $Revision: 1.8.2.2 $
  */
 public class TestCmsMacroResolver extends TestCase {
       
@@ -63,7 +62,7 @@ public class TestCmsMacroResolver extends TestCase {
         CmsMacroResolver resolver = CmsMacroResolver.newInstance();
         
         // add the messages to the resolver
-        CmsMessages messages = new CmsMessages(TestCmsMessages.DEFAULT_WORKPLACE_MESSAGE_BUNDLE, Locale.ENGLISH);        
+        CmsMessages messages = new CmsMessages(org.opencms.xml.content.Messages.get().getBundleName(), Locale.ENGLISH);       
         resolver.setMessages(messages);
         
         // resgister some macros for the validation
@@ -74,23 +73,7 @@ public class TestCmsMacroResolver extends TestCase {
         String value1, value2;
         String keyName;
         
-        keyName = "editor.xmlcontent.validation.error";
-        value1 = messages.key(keyName);
-        value2 = resolver.resolveMacros("${key." + keyName + "}");
-        assertEquals("Invalid value \"{0}\" according to rule {1}", value1);
-        assertEquals(value1, value2);
-        
-        value1 = messages.key(keyName, new Object[]{"'value'", "'rule'"});
-        value2 = resolver.resolveMacros("${key." + keyName + "|'value'|'rule'}");
-        assertEquals("Invalid value \"'value'\" according to rule 'rule'", value1);
-        assertEquals(value1, value2);
-        
-        value1 = messages.key(keyName, new Object[]{"This is the final result", "second"});
-        value2 = resolver.resolveMacros("${key." + keyName + "|${one${two${three}}}|${two${three}}}");
-        assertEquals("Invalid value \"This is the final result\" according to rule second", value1);
-        assertEquals(value1, value2);    
-        
-        keyName = "editor.xmlcontent.validation.warning";
+        keyName = "GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2";
         value1 = messages.key(keyName);
         value2 = resolver.resolveMacros("${key." + keyName + "}");
         assertEquals("Bad value \"{0}\" according to rule {1}", value1);
