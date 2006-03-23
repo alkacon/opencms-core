@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsPrincipal.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/23 13:41:46 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,13 +38,16 @@ import org.opencms.main.CmsException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
+import java.util.Iterator;
+import java.util.List;
+
 /**
  * Common methods shared among user and group principals, 
  * also contains several utility functions to deal with principal instances.<p>
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -68,6 +71,72 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
     protected CmsPrincipal() {
 
         // empty constructor for subclassing
+    }
+
+    /**
+     * Filters out all principals with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
+     * 
+     * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
+     * 
+     * @param principals a list of <code>{@link CmsPrincipal}</code> objects
+     * 
+     * @return the filtered principal list
+     */
+    public static List filterCore(List principals) {
+
+        Iterator it = principals.iterator();
+        while (it.hasNext()) {
+            CmsPrincipal p = (CmsPrincipal)it.next();
+            if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
+                it.remove();
+            }
+        }
+        return principals;
+    }
+
+    /**
+     * Filters out all principals that do not have the given flag set,
+     * but leaving principals with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code> untouched.<p>
+     * 
+     * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
+     * 
+     * @param principals a list of <code>{@link CmsPrincipal}</code> objects
+     * @param flag the flag for filtering
+     * 
+     * @return the filtered principal list
+     */
+    public static List filterCoreFlag(List principals, int flag) {
+
+        Iterator it = principals.iterator();
+        while (it.hasNext()) {
+            CmsPrincipal p = (CmsPrincipal)it.next();
+            if (p.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (p.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return principals;
+    }
+
+    /**
+     * Filters out all principals that do not have the given flag set.<p>
+     * 
+     * The given parameter list is directly modified, so the returned list is the same object as the input list.<p>
+     * 
+     * @param principals the list of <code>{@link CmsPrincipal}</code> objects
+     * @param flag the flag for filtering
+     * 
+     * @return the filtered principal list
+     */
+    public static List filterFlag(List principals, int flag) {
+
+        Iterator it = principals.iterator();
+        while (it.hasNext()) {
+            CmsPrincipal p = (CmsPrincipal)it.next();
+            if ((p.getFlags() & flag) != flag) {
+                it.remove();
+            }
+        }
+        return principals;
     }
 
     /**
@@ -131,7 +200,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         // invalid principal name was given
         throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_1, name));
     }
-    
+
     /**
      * Utility function to read a principal of the given type from the OpenCms database using the 
      * provided OpenCms user context.<p>
@@ -161,7 +230,7 @@ public abstract class CmsPrincipal implements I_CmsPrincipal {
         }
         // invalid principal type was given
         throw new CmsSecurityException(Messages.get().container(Messages.ERR_INVALID_PRINCIPAL_TYPE_2, type, name));
-    }    
+    }
 
     /**
      * @see java.lang.Object#equals(java.lang.Object)

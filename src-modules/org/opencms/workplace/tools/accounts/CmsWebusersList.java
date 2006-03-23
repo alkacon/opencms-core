@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/Attic/CmsWebusersList.java,v $
- * Date   : $Date: 2005/10/19 13:27:07 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/23 13:41:46 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -34,6 +34,7 @@ package org.opencms.workplace.tools.accounts;
 import org.opencms.file.CmsUser;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 import org.opencms.workplace.list.CmsHtmlList;
@@ -52,7 +53,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,9 +116,7 @@ public class CmsWebusersList extends A_CmsUsersList {
      */
     protected List getUsers() throws CmsException {
 
-        List users = getCms().getUsers(CmsUser.USER_TYPE_WEBUSER);
-        CmsUser.filterCore(users);
-        return users;
+        return CmsPrincipal.filterCore(getCms().getUsers(CmsUser.USER_TYPE_WEBUSER));
     }
 
     /**

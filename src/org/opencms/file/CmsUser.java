@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/CmsUser.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.29.2.3 $
+ * Date   : $Date: 2006/03/23 13:41:46 $
+ * Version: $Revision: 1.29.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,8 +42,6 @@ import org.opencms.util.CmsStringUtil;
 import org.opencms.util.CmsUUID;
 
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -71,7 +69,7 @@ import java.util.Map;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.29.2.3 $
+ * @version $Revision: 1.29.2.4 $
  * 
  * @since 6.0.0
  * 
@@ -126,9 +124,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
 
         this(null, "", "");
         setAdditionalInfo(new HashMap());
-
-        int todo = 0;
-        // check different semantic between empty user / group constructors (variable initialization yes/no)
     }
 
     /**
@@ -228,78 +223,6 @@ public class CmsUser extends CmsPrincipal implements I_CmsPrincipal, Cloneable {
         if (!CmsStringUtil.validateRegex(zipcode, "[\\w]*", true)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_ZIPCODE_VALIDATION_1, zipcode));
         }
-    }
-
-    /**
-     * Filters out all users with flags greater than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
-     * 
-     * @param users the list of <code>{@link CmsUser}</code>
-     * 
-     * @return the same filtered list
-     */
-    public static List filterCore(List users) {
-
-        // TODO: should this method really be here?
-        // TODO: unify with group based on new Principal class
-        int todo = 0;
-
-        Iterator it = users.iterator();
-        while (it.hasNext()) {
-            CmsUser user = (CmsUser)it.next();
-            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT) {
-                it.remove();
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Filters out all users that does not have the given flag set,
-     * but leaving all users with flags less than <code>{@link I_CmsPrincipal#FLAG_CORE_LIMIT}</code>.<p>
-     * 
-     * @param users the list of <code>{@link CmsUser}</code>
-     * @param flag the flag for filtering
-     * 
-     * @return the same filtered list
-     */
-    public static List filterCoreFlag(List users, int flag) {
-
-        // TODO: should this method really be here?
-        // TODO: unify with group based on new Principal class
-        int todo = 0;
-
-        Iterator it = users.iterator();
-        while (it.hasNext()) {
-            CmsUser user = (CmsUser)it.next();
-            if (user.getFlags() > I_CmsPrincipal.FLAG_CORE_LIMIT && (user.getFlags() & flag) != flag) {
-                it.remove();
-            }
-        }
-        return users;
-    }
-
-    /**
-     * Filters out all users that does not have the given flag set.<p>
-     * 
-     * @param users the list of <code>{@link CmsUser}</code>
-     * @param flag the flag for filtering
-     * 
-     * @return the same filtered list
-     */
-    public static List filterFlag(List users, int flag) {
-
-        // TODO: should this method really be here?
-        // TODO: unify with group based on new Principal class
-        int todo = 0;
-
-        Iterator it = users.iterator();
-        while (it.hasNext()) {
-            CmsUser user = (CmsUser)it.next();
-            if ((user.getFlags() & flag) != flag) {
-                it.remove();
-            }
-        }
-        return users;
     }
 
     /**

@@ -35,6 +35,7 @@ import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsRuntimeException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.list.A_CmsListDefaultJsAction;
 import org.opencms.workplace.list.A_CmsListDialog;
@@ -222,7 +223,7 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         }
         if (getParamFlags() != null) {
             int flags = Integer.parseInt(getParamFlags());
-            return CmsGroup.filterFlag(ret, flags);
+            return CmsPrincipal.filterFlag(ret, flags);
         }
         return ret;
     }

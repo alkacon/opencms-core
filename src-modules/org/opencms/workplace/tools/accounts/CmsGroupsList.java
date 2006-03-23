@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/accounts/CmsGroupsList.java,v $
- * Date   : $Date: 2005/09/16 13:11:11 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/03/23 13:41:46 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,9 +31,9 @@
 
 package org.opencms.workplace.tools.accounts;
 
-import org.opencms.file.CmsGroup;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
+import org.opencms.security.CmsPrincipal;
 import org.opencms.workplace.list.CmsListColumnDefinition;
 import org.opencms.workplace.list.CmsListDirectAction;
 
@@ -48,7 +48,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -84,9 +84,7 @@ public class CmsGroupsList extends A_CmsGroupsList {
      */
     protected List getGroups() throws CmsException {
 
-        List groups = getCms().getGroups();
-        CmsGroup.filterCore(groups);
-        return groups;
+        return CmsPrincipal.filterCore(getCms().getGroups());
     }
 
     /**
