@@ -690,7 +690,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Schemadefinition for decoration]]></value>
+					<value><![CDATA[Nested XSD for decoration]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
@@ -708,7 +708,7 @@
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Schemadefinition for property check]]></value>
+					<value><![CDATA[XSD for decoration]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
