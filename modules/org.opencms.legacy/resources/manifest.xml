@@ -422,6 +422,7 @@
             <resource uri="/system/workplace/resources/_bg_mitte_oben.gif"/>
             <resource uri="/system/workplace/resources/_bg_mitte_rahmen.gif"/>
             <resource uri="/system/workplace/resources/_bg_mitte_rahmen_mitte.gif"/>
+			<resource uri="/system/workplace/views/workflow/"/>
 		</resources>
 		<parameters/>
 	</module>
