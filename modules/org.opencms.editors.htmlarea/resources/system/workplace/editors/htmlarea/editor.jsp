@@ -133,7 +133,7 @@ function buttonAction(para) {
     case 5:
         // open properties window
     	saveContent();
-        dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,status=no,dependent=yes");
+        dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=yes,location=no,menubar=no,toolbar=no,status=no,dependent=yes");
         document.PROPERTIES.submit();
         dialogPropertyWindow.focus();
         break;

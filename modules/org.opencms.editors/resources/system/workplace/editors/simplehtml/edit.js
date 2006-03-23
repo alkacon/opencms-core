@@ -1,7 +1,7 @@
 /*
 * File   : $Source: /alkacon/cvs/opencms/modules/org.opencms.editors/resources/system/workplace/editors/simplehtml/edit.js,v $
-* Date   : $Date: 2005/10/25 09:08:58 $
-* Version: $Revision: 1.3.2.1 $
+* Date   : $Date: 2006/03/23 14:42:33 $
+* Version: $Revision: 1.3.2.2 $
 *
 * This library is part of OpenCms -
 * the Open Source Content Mananagement System
@@ -101,7 +101,7 @@ function buttonAction(para) {
 	case 5:
 		// open properties window
 		saveContent();
-		dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=no,location=no,menubar=no,toolbar=no,dependent=yes");
+		dialogPropertyWindow = window.open("about:blank","DIALOGPROPERTY","width=600,height=280,left=0,top=0,resizable=yes,scrollbars=yes,location=no,menubar=no,toolbar=no,dependent=yes");
 		document.PROPERTIES.submit();
 		dialogPropertyWindow.focus();
 		break;

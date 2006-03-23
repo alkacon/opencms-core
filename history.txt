@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/22 17:21:07 $
- * Version: $Revision: 1.682.2.101 $
+ * Date   : $Date: 2006/03/23 14:44:45 $
+ * Version: $Revision: 1.682.2.102 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,6 +40,7 @@ OpenCms 6.1.11 - March ???, 2006
 - Updated Lucene search engine to version 1.9.1 (this requires rebuilding of the search index files !)
 - Improved XML content editor dynamic HTML generation for element operation buttons and help texts
 - Added several new mime type settings to the "mimetypes.properties" file
+* Fixed issue #1092: WYSIWYG editor property popup window now has scrollbars to avoid problems accessing ok/cancel buttons
 
 OpenCms 6.1.10 - March 14, 2006
 * Improved usage of 'synchronized' code in oder to avoid deadlocks on heavy load
