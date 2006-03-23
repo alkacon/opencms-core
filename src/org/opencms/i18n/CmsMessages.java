@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2006/01/15 10:29:22 $
- * Version: $Revision: 1.22.2.1 $
+ * Date   : $Date: 2006/03/23 13:01:10 $
+ * Version: $Revision: 1.22.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22.2.1 $ 
+ * @version $Revision: 1.22.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,6 +188,24 @@ public class CmsMessages {
     }
 
     /**
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    public boolean equals(Object obj) {
+
+        if (obj == this) {
+            return true;
+        }
+        if (obj instanceof CmsMultiMessages) {
+            return false;
+        }
+        if (obj instanceof CmsMessages) {
+            CmsMessages other = (CmsMessages)obj;
+            return other.m_baseName.equals(m_baseName) && other.getLocale().equals(m_locale);
+        }
+        return false;
+    }
+
+    /**
      * Returns the resource bundle this message object was initialized with.<p>
      * 
      * @return the resource bundle this message object was initialized with or null if initialization was not successful
@@ -307,7 +325,7 @@ public class CmsMessages {
             } catch (MissingResourceException e) {
                 throw new CmsMessageException(Messages.get().container(
                     Messages.ERR_CANT_FIND_RESOURCE_FOR_BUNDLE_2,
-                    keyName, 
+                    keyName,
                     m_baseName));
             }
         } else {
@@ -315,6 +333,14 @@ public class CmsMessages {
                 Messages.ERR_MESSAGE_BUNDLE_NOT_INITIALIZED_1,
                 m_baseName));
         }
+    }
+
+    /**
+     * @see java.lang.Object#hashCode()
+     */
+    public int hashCode() {
+
+        return m_baseName.hashCode() + m_locale.hashCode();
     }
 
     /**

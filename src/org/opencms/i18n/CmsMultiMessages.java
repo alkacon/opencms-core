@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2005/10/05 08:30:12 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/03/23 13:01:10 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,6 +37,7 @@ import org.opencms.main.CmsLog;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -52,7 +53,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -69,6 +70,17 @@ public class CmsMultiMessages extends CmsMessages {
 
     /** List of resource bundles from the installed modules. */
     private List m_messages;
+
+    /**
+     * Constructor for creating a new messages object
+     * initialized with the provided bundle.<p>
+     * 
+     * @param messages a message instance
+     */
+    public CmsMultiMessages(CmsMessages messages) {
+
+        this(new CmsMessages[] {messages});
+    }
 
     /**
      * Constructor for creating a new messages object
@@ -109,14 +121,18 @@ public class CmsMultiMessages extends CmsMessages {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
         }
 
-        // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
-        m_messageCache = new Hashtable();
+        // set the locale
+        m_locale = ((CmsMessages)messages.get(0)).getLocale();
 
         // set messages        
-        m_messages = new ArrayList(messages);
+        m_messages = new ArrayList();
+        Iterator i = messages.iterator();
+        while (i.hasNext()) {
+            addMessage((CmsMessages)i.next());
+        }
 
-        // set the locale
-        m_locale = ((CmsMessages)m_messages.get(0)).getLocale();
+        // use "old" Hashtable since it is the most efficient synchronized HashMap implementation
+        m_messageCache = new Hashtable();
     }
 
     /**

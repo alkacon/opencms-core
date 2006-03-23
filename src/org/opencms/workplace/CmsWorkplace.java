@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.146.2.7 $
+ * Date   : $Date: 2006/03/23 13:01:10 $
+ * Version: $Revision: 1.146.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.7 $ 
+ * @version $Revision: 1.146.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -209,14 +209,6 @@ public abstract class CmsWorkplace {
     /** The URI to the stylesheet resources (cached for performance reasons). */
     private static String m_styleUri;
 
-    /** 
-     * Temporary variable for easily adding new resource bundles.<p>    
-     *   
-     * @see #initMessages()
-     * @see #addMessages(String)
-     */
-    private List m_bundles = new ArrayList();
-
     /** The current users OpenCms context. */
     private CmsObject m_cms;
 
@@ -236,7 +228,7 @@ public abstract class CmsWorkplace {
      * The current used message bundle. 
      * @see #initMessages()
      */
-    private CmsMessages m_messages;
+    private CmsMultiMessages m_messages;
 
     /** The list of multi part file items (if available). */
     private List m_multiPartFileItems;
@@ -1936,13 +1928,27 @@ public abstract class CmsWorkplace {
     /**
      * Auxiliary method for initialization of messages.<p>
      * 
+     * @param messages the messages to add
+     * 
+     * @see #initMessages()
+     */
+    protected void addMessages(CmsMessages messages) {
+
+        if (messages != null) {
+            m_messages.addMessage(messages);
+        }
+    }
+
+    /**
+     * Auxiliary method for initialization of messages.<p>
+     * 
      * @param bundleName the bundle name to instanciate
      * 
      * @see #initMessages()
      */
     protected void addMessages(String bundleName) {
 
-        m_bundles.add(new CmsMessages(bundleName, getLocale()));
+        addMessages(new CmsMessages(bundleName, getLocale()));
     }
 
     /**
@@ -2025,7 +2031,6 @@ public abstract class CmsWorkplace {
     protected void initMessages() {
 
         // manually add the initialized workplace messages for the current user
-        m_bundles.add(m_messages);
         addMessages(Messages.get().getBundleName());
     }
 
@@ -2055,11 +2060,9 @@ public abstract class CmsWorkplace {
             }
 
             // initialize messages and also store them in settings
-            m_messages = OpenCms.getWorkplaceManager().getMessages(m_settings.getUserSettings().getLocale());
+            m_messages = new CmsMultiMessages(OpenCms.getWorkplaceManager().getMessages(
+                m_settings.getUserSettings().getLocale()));
             initMessages();
-            if (!m_bundles.isEmpty()) {
-                m_messages = new CmsMultiMessages(m_bundles);
-            }
 
             // check request for changes in the workplace settings
             initWorkplaceRequestValues(m_settings, m_jsp.getRequest());
