@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsGalleryWidget.java,v $
- * Date   : $Date: 2005/06/27 23:22:06 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/23 08:39:44 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.opencms.workplace.galleries.A_CmsGallery;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,7 +137,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             "javascript:open" + getNameUpper() + "Gallery('" + A_CmsGallery.MODE_WIDGET + "',  '" + id + "');",
             null,
             getNameLower() + "gallery",
-            "button." + getNameLower() + "list",
+            Messages.getButtonName(getNameLower()),
             widgetDialog.getButtonStyle()));
         // create preview button
         String previewClass = "hide";
@@ -155,7 +155,7 @@ public abstract class A_CmsGalleryWidget extends A_CmsWidget {
             "javascript:preview" + getNameUpper() + "('" + id + "');",
             null,
             "preview.png",
-            "button.preview",
+            Messages.GUI_BUTTON_PREVIEW_0,
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
 
