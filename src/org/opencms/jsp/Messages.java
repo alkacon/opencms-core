@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/Messages.java,v $
- * Date   : $Date: 2006/02/14 09:43:17 $
- * Version: $Revision: 1.20.2.5 $
+ * Date   : $Date: 2006/03/23 15:54:16 $
+ * Version: $Revision: 1.20.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Jan Baudisch
  * 
- * @version $Revision: 1.20.2.5 $
+ * @version $Revision: 1.20.2.6 $
  * 
  * @since 6.0.0
  */
@@ -80,6 +80,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_COLLECTOR_NOT_FOUND_1 = "ERR_COLLECTOR_NOT_FOUND_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String ERR_IMAGE_TAG_VFS_ACCESS_1 = "ERR_IMAGE_TAG_VFS_ACCESS_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_CMS_CONTROLLER_1 = "ERR_MISSING_CMS_CONTROLLER_1";

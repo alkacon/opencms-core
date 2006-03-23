@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/02/14 09:43:17 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/23 15:54:16 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.2.0 
  */
@@ -263,7 +263,16 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
             try {
                 // create the HTML image tag 
-                String imageTag = imageTagAction(m_src, m_scaler, m_attributes, m_partialTag, req);
+                String imageTag = null;
+                try {
+                    imageTag = imageTagAction(m_src, m_scaler, m_attributes, m_partialTag, req);
+                } catch (CmsException e) {
+                    // any issue accessing the VFS - just return an empty string 
+                    // otherwise template layout will get mixed up with nasty exception messages
+                    if (LOG.isWarnEnabled()) {
+                        LOG.warn(Messages.get().key(Messages.ERR_IMAGE_TAG_VFS_ACCESS_1, m_src), e);
+                    }
+                }
                 // make sure that no null String is returned
                 pageContext.getOut().print(imageTag == null ? "" : imageTag);
 
