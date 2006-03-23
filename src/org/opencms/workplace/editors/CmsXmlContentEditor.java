@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/23 08:57:16 $
- * Version: $Revision: 1.65.2.11 $
+ * Date   : $Date: 2006/03/23 09:48:42 $
+ * Version: $Revision: 1.65.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.11 $ 
+ * @version $Revision: 1.65.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1132,17 +1132,34 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         if (buttonPresent) {
             // at least one button active, create mouseover button
             String btIcon = "xmledit.png";
-            // determine icon to use
+            String btAction = jsCall.toString();
+            // determine icon to use and if a direct click action is possible
             if (addElement && removeElement) {
                 btIcon = "xmledit_del_add.png";
             } else if (addElement) {
                 btIcon = "xmledit_add.png";
+                // create button action to add element on button click
+                StringBuffer action = new StringBuffer(128);
+                action.append("addElement('");
+                action.append(elementName);
+                action.append("', ");
+                action.append(index);
+                action.append(");");
+                btAction = action.toString();
             } else if (removeElement) {
                 btIcon = "xmledit_del.png";
+                // create button action to remove element on button click
+                StringBuffer action = new StringBuffer(128);
+                action.append("removeElement('");
+                action.append(elementName);
+                action.append("', ");
+                action.append(index);
+                action.append(");");
+                btAction = action.toString();
             }
             StringBuffer href = new StringBuffer(512);
             href.append("javascript:");
-            href.append(jsCall);
+            href.append(btAction);
             href.append("\" onmouseover=\"");
             href.append(jsCall);
             href.append("checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\" id=\"btimg.");
