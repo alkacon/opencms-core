@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2006/03/22 16:12:26 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/03/23 10:45:45 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -31,14 +31,10 @@ package org.opencms.workplace.comparison;
 import com.alkacon.diff.Diff;
 
 import org.opencms.i18n.CmsEncoder;
-import org.opencms.i18n.CmsMessageContainer;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.util.CmsHtml2TextConverter;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplaceSettings;
-import org.opencms.workplace.list.A_CmsListDialog;
-import org.opencms.workplace.tools.A_CmsHtmlIconButton;
-import org.opencms.workplace.tools.CmsHtmlIconButtonStyleEnum;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -50,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,50 +106,17 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
         out.println("<p>");
         out.println(getDiffOnlyButtonsHtml());
         
-        String onClic = "javascript:document.forms['diff-form'].textmode.value = '";
-        String iconPath = null;
-        CmsMessageContainer iconName = null;
-        boolean htmlMode = MODE_HTML.equals(getParamTextmode());
-        if (htmlMode) {
-            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
-        } else {
-            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
-        }        
-        onClic += MODE_TEXT;        
-        iconName = Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0);
-        onClic += "'; document.forms['diff-form'].submit();";
-        out.println(A_CmsHtmlIconButton.defaultButtonHtml(
-            getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            "id",
-            iconName.key(getLocale()),
-            null,
-            htmlMode, // activate Button, if in html mode
-            iconPath,
-            null,
-            onClic));
-        out.println("&nbsp;&nbsp;");
-
-        onClic = "javascript:document.forms['diff-form'].textmode.value = '";
-        if (!htmlMode) {
-            iconPath = A_CmsListDialog.ICON_DETAILS_SHOW;
-        } else {
-            iconPath = A_CmsListDialog.ICON_DETAILS_HIDE;
-        } 
-        onClic += MODE_HTML;
-        iconName = Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0);
-        onClic += "'; document.forms['diff-form'].submit();";
-        out.println(A_CmsHtmlIconButton.defaultButtonHtml(
-            getJsp(),
-            CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
-            "id",
-            iconName.key(getLocale()),
-            null,
-            !htmlMode, // activate Button, if in text mode
-            iconPath,
-            null,
-            onClic));
-        out.println("&nbsp;&nbsp;");
+        String onClic1 = "javascript:document.forms['diff-form'].textmode.value = '";
+        onClic1 += MODE_TEXT; 
+        onClic1 += "'; document.forms['diff-form'].submit();";
+        String onClic2 = "javascript:document.forms['diff-form'].textmode.value = '";
+        onClic2 += MODE_HTML; 
+        onClic2 += "'; document.forms['diff-form'].submit();";
+        out.println(getTwoButtonsHtml(Messages.get().container(Messages.GUI_DIFF_MODE_TEXT_0).key(getLocale()),
+            Messages.get().container(Messages.GUI_DIFF_MODE_HTML_0).key(getLocale()), onClic1, onClic2,
+            MODE_HTML.equals(getParamTextmode())
+        ));
+        
         out.println("</p>");
         out.println(dialogBlockStart(null));
         out.println("<table cellspacing='0' cellpadding='0' class='xmlTable'>\n<tr><td><pre style='overflow:auto'>");
