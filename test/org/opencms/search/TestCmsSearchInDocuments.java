@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/search/TestCmsSearchInDocuments.java,v $
- * Date   : $Date: 2005/07/28 15:53:10 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,6 +38,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.types.CmsResourceTypeBinary;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.file.types.CmsResourceTypePlain;
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.OpenCms;
 import org.opencms.report.CmsShellReport;
 import org.opencms.search.documents.I_CmsDocumentFactory;
@@ -57,7 +58,7 @@ import junit.framework.TestSuite;
  * Unit test for searching in extracted document text.<p>
  * 
  * @author Alexander Kandzior 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  */
 public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
@@ -422,7 +423,11 @@ public class TestCmsSearchInDocuments extends OpenCmsTestCase {
 
         // HTML page is encoded using UTF-8
         List properties = new ArrayList();
-        properties.add(new CmsProperty(CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING, "UTF-8", null, true));
+        properties.add(new CmsProperty(
+            CmsPropertyDefinition.PROPERTY_CONTENT_ENCODING,
+            CmsEncoder.ENCODING_UTF_8,
+            null,
+            true));
         importTestResource(
             cms,
             "org/opencms/search/extractors/test1.html",

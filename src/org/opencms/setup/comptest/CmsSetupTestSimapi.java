@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestSimapi.java,v $
- * Date   : $Date: 2006/03/08 16:17:05 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestSimapi.java,v $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,12 +29,14 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.setup.comptest;
 
 import com.alkacon.simapi.RenderSettings;
 import com.alkacon.simapi.Simapi;
 import com.alkacon.simapi.filter.ImageMath;
 import com.alkacon.simapi.filter.RotateFilter;
+
+import org.opencms.setup.CmsSetupBean;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
@@ -49,7 +51,7 @@ import javax.imageio.ImageIO;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.1.8 
  */
@@ -59,7 +61,7 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
     public static final String TEST_NAME = "Image Processing";
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#getName()
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
      */
     public String getName() {
 
@@ -67,9 +69,9 @@ public class CmsSetupTestSimapi implements I_CmsSetupTest {
     }
     
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#run(org.opencms.setup.CmsSetupBean)
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
-    public CmsSetupTestResult run(CmsSetupBean setupBean) {
+    public CmsSetupTestResult execute(CmsSetupBean setupBean) {
         
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
         boolean ok = true;

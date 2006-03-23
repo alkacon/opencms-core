@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/configuration/TestConfiguration.java,v $
- * Date   : $Date: 2005/07/21 13:38:47 $
- * Version: $Revision: 1.14 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.14.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.configuration;
 
+import org.opencms.i18n.CmsEncoder;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.util.CmsFileUtil;
 import org.opencms.xml.CmsXmlEntityResolver;
@@ -49,7 +50,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.14 $
+ * @version $Revision: 1.14.2.1 $
  * 
  * @since 6.0.0
  */
@@ -102,7 +103,7 @@ public class TestConfiguration extends OpenCmsTestCase {
 
             // output the document
             System.out.println("---");
-            System.out.println(CmsXmlUtils.marshal(outputDoc, "UTF-8"));
+            System.out.println(CmsXmlUtils.marshal(outputDoc, CmsEncoder.ENCODING_UTF_8));
             System.out.println("---");
 
             assertEquals(outputDoc, inputDoc);

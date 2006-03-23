@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	if (Bean.isInitialized()) {
-		Bean.prepareUpdateStep6();
+		Bean.prepareUpdateStep7();
 		session.invalidate();
 	}
 %>

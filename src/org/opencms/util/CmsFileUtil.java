@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/03/20 16:56:04 $
- * Version: $Revision: 1.21.2.9 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.21.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.util;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
@@ -38,6 +39,7 @@ import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.CmsLog;
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.staticexport.CmsLinkManager;
 
 import java.io.ByteArrayInputStream;
@@ -67,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.9 $ 
+ * @version $Revision: 1.21.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -730,7 +732,7 @@ public final class CmsFileUtil {
             return null;
         }
 
-        File configFile = new File(f, "config/opencms.xml".replace('/', File.separatorChar));
+        File configFile = new File(f, CmsSystemInfo.FOLDER_CONFIG + CmsConfigurationManager.DEFAULT_XML_FILE_NAME);
         if (configFile.exists() && configFile.isFile()) {
             return f.getAbsolutePath();
         }

@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestWarFileUnpacked.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestWarFileUnpacked.java,v $
+ * Date   : $Date: 2006/03/23 17:47:22 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.setup.comptest;
+
+import org.opencms.main.CmsSystemInfo;
+import org.opencms.setup.CmsSetupBean;
 
 import java.io.File;
 
@@ -48,7 +51,7 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
     public static final String TEST_NAME = "Unpacked WAR File";
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#getName()
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
      */
     public String getName() {
 
@@ -56,9 +59,9 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
     }
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#run(org.opencms.setup.CmsSetupBean)
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
-    public CmsSetupTestResult run(CmsSetupBean setupBean) {
+    public CmsSetupTestResult execute(CmsSetupBean setupBean) {
 
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
 
@@ -66,7 +69,10 @@ public class CmsSetupTestWarFileUnpacked implements I_CmsSetupTest {
         if (!basePath.endsWith(File.separator)) {
             basePath += File.separator;
         }
-        File file = new File(basePath + "WEB-INF" + File.separator + "config" + File.separator + "opencms.properties");
+        File file = new File(basePath
+            + CmsSetupBean.FOLDER_WEBINF
+            + CmsSystemInfo.FOLDER_CONFIG
+            + CmsSystemInfo.FILE_PROPERTIES);
         if (file.exists() && file.canRead() && file.canWrite()) {
             testResult.setGreen();
             testResult.setResult(RESULT_PASSED);

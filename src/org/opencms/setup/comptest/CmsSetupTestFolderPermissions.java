@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestFolderPermissions.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestFolderPermissions.java,v $
+ * Date   : $Date: 2006/03/23 17:47:22 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,9 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.setup.comptest;
+
+import org.opencms.setup.CmsSetupBean;
 
 import java.io.File;
 import java.io.FileReader;
@@ -50,7 +52,7 @@ public class CmsSetupTestFolderPermissions implements I_CmsSetupTest {
     public static final String TEST_NAME = "Folder Permissions";
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#getName()
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
      */
     public String getName() {
 
@@ -58,9 +60,9 @@ public class CmsSetupTestFolderPermissions implements I_CmsSetupTest {
     }
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#run(org.opencms.setup.CmsSetupBean)
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
-    public CmsSetupTestResult run(CmsSetupBean setupBean) {
+    public CmsSetupTestResult execute(CmsSetupBean setupBean) {
 
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
 

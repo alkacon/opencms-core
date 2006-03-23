@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewCsvFile.java,v $
- * Date   : $Date: 2006/01/25 16:56:16 $
- * Version: $Revision: 1.23.2.8 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.23.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.23.2.8 $ 
+ * @version $Revision: 1.23.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,10 +114,10 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
     /** The delimiter to start a tag. */
     public static final String TAG_START_DELIMITER = "<";
-    
+
     /** The delimiter to end a tag. */
-    public static final String TAG_END_DELIMITER = ">";  
-    
+    public static final String TAG_END_DELIMITER = ">";
+
     /** the delimiters, the csv data can be separated with.*/
     static final String[] DELIMITERS = {";", ",", "\t"};
 
@@ -554,7 +554,8 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         List result = new ArrayList();
         try {
             // find all files of generic xmlcontent in the modules folder
-            Iterator xmlFiles = getCms().readResources(CmsWorkplace.VFS_PATH_MODULES,
+            Iterator xmlFiles = getCms().readResources(
+                CmsWorkplace.VFS_PATH_MODULES,
                 CmsResourceFilter.DEFAULT_FILES.addRequireType(CmsResourceTypePlain.getStaticTypeId()),
                 true).iterator();
             while (xmlFiles.hasNext()) {
@@ -638,9 +639,9 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
         BufferedReader br = new BufferedReader(new StringReader(csvData));
         while ((line = br.readLine()) != null) {
             xml.append("<tr>\n");
-            
+
             // must use tokenizer with delimiters include in order to handle empty cells appropriately
-            StringTokenizer t = new StringTokenizer(line, delimiter, true); 
+            StringTokenizer t = new StringTokenizer(line, delimiter, true);
             boolean hasValue = false;
             while (t.hasMoreElements()) {
                 String item = (String)t.nextElement();
@@ -652,7 +653,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
 
                     // remove enclosing delimiters
                     item = removeStringDelimiters(item);
-                    
+
                     // in order to allow links, lines starting and ending with tag delimiters (< ...>) remains unescaped
                     if (item.startsWith(TAG_START_DELIMITER) && item.endsWith(TAG_END_DELIMITER)) {
                         xml.append(item);
@@ -669,7 +670,7 @@ public class CmsNewCsvFile extends CmsNewResourceUpload {
             } else {
                 xml.append("<td></td>\n");
             }
-            
+
             xml.append("</tr>\n");
         }
 

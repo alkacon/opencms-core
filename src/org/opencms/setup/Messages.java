@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/Messages.java,v $
- * Date   : $Date: 2006/01/31 16:19:30 $
- * Version: $Revision: 1.8.2.3 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.8.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * @author Jan Baudisch 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.8.2.3 $ 
+ * @version $Revision: 1.8.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -54,6 +54,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_MISSING_DB_SETUP_SCRIPT_1 = "ERR_MISSING_DB_SETUP_SCRIPT_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_WARNING_ALL_MODULES_UPTODATE_0 = "GUI_WARNING_ALL_MODULES_UPTODATE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String INIT_IMPORT_WORKPLACE_FINISHED_0 = "INIT_IMPORT_WORKPLACE_FINISHED_0";
@@ -120,6 +123,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_END_UPDATE_MODULE_1 = "RPT_END_UPDATE_MODULE_1";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String RPT_MODULE_UPTODATE_1 = "RPT_MODULE_UPTODATE_1";
 
     /** Message constant for key in the resource bundle. */
     public static final String RPT_UPDATE_JAR_FILE_3 = "RPT_UPDATE_JAR_FILE_3";

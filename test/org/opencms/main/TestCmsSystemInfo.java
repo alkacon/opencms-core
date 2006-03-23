@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsSystemInfo.java,v $
- * Date   : $Date: 2005/11/15 10:32:55 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.test.OpenCmsTestCase;
 import org.opencms.test.OpenCmsTestProperties;
 
@@ -46,7 +47,7 @@ import junit.framework.TestSuite;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -175,7 +176,7 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf("config");
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG);
         assertNotNull(path);
         path = path.trim();
         assertEquals(true, path.length() != 0);
@@ -183,7 +184,8 @@ public class TestCmsSystemInfo extends OpenCmsTestCase {
         assertEquals(path + " does not exist.", true, file.exists());
         assertEquals(true, file.isDirectory());
 
-        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf("config/opencms-search.xml");
+        path = sysinfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG
+            + CmsSearchConfiguration.DEFAULT_XML_FILE_NAME);
         assertNotNull(path);
         path = path.trim();
         assertEquals(true, path.length() != 0);

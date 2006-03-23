@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,74 +54,101 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.16.2.1 $
+ * @version $Revision: 1.16.2.2 $
  * 
  * @since 6.0.0
  */
 public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
     /** The name of the DTD for this configuration. */
-    private static final String CONFIGURATION_DTD_NAME = "opencms-search.dtd";
+    public static final String CONFIGURATION_DTD_NAME = "opencms-search.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-search.xml";
 
     /** Node name constant. */
-    private static final String N_ANALYZER = "analyzer";
+    public static final String N_ANALYZER = "analyzer";
+
     /** Node name constant. */
-    private static final String N_ANALYZERS = "analyzers";
+    public static final String N_ANALYZERS = "analyzers";
+
     /** Node name constant. */
-    private static final String N_CACHE = "cache";
+    public static final String N_CACHE = "cache";
+
     /** Node name constant. */
-    private static final String N_CLASS = "class";
+    public static final String N_CLASS = "class";
+
     /** Node name constant. */
-    private static final String N_DIRECTORY = "directory";
+    public static final String N_DIRECTORY = "directory";
+
     /** Node name constant. */
-    private static final String N_DOCUMENTTYPE = "documenttype";
+    public static final String N_DOCUMENTTYPE = "documenttype";
+
     /** Node name constant. */
-    private static final String N_DOCUMENTTYPES = "documenttypes";
+    public static final String N_DOCUMENTTYPES = "documenttypes";
+
     /** Node name constant. */
-    private static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";
+    public static final String N_DOCUMENTTYPES_INDEXED = "documenttypes-indexed";
+
     /** Node name constant. */
-    private static final String N_EXCERPT = "excerpt";
+    public static final String N_EXCERPT = "excerpt";
+
     /** Node name constant. */
-    private static final String N_HIGHLIGHTER = "highlighter";
+    public static final String N_HIGHLIGHTER = "highlighter";
+
     /** Node name constant. */
-    private static final String N_INDEX = "index";
+    public static final String N_INDEX = "index";
+
     /** Node name constant. */
-    private static final String N_INDEXER = "indexer";
+    public static final String N_INDEXER = "indexer";
+
     /** Node name constant. */
-    private static final String N_INDEXES = "indexes";
+    public static final String N_INDEXES = "indexes";
+
     /** Node name constant. */
-    private static final String N_INDEXSOURCE = "indexsource";
+    public static final String N_INDEXSOURCE = "indexsource";
+
     /** Node name constant. */
-    private static final String N_INDEXSOURCES = "indexsources";
+    public static final String N_INDEXSOURCES = "indexsources";
+
     /** Node name constant. */
-    private static final String N_LOCALE = "locale";
+    public static final String N_LOCALE = "locale";
+
     /** Node name constant. */
-    private static final String N_MIMETYPE = "mimetype";
+    public static final String N_MIMETYPE = "mimetype";
+
     /** Node name constant. */
-    private static final String N_MIMETYPES = "mimetypes";
+    public static final String N_MIMETYPES = "mimetypes";
+
     /** Node name constant. */
-    private static final String N_PROJECT = "project";
+    public static final String N_PROJECT = "project";
+
     /** Node name constant. */
-    private static final String N_REBUILD = "rebuild";
+    public static final String N_REBUILD = "rebuild";
+
     /** Node name constant. */
-    private static final String N_RESOURCES = "resources";
+    public static final String N_RESOURCES = "resources";
+
     /** Node name constant. */
-    private static final String N_RESOURCETYPE = "resourcetype";
+    public static final String N_RESOURCETYPE = "resourcetype";
+
     /** Node name constant. */
-    private static final String N_RESOURCETYPES = "resourcetypes";
+    public static final String N_RESOURCETYPES = "resourcetypes";
+
     /** Node name constant. */
-    private static final String N_SEARCH = "search";
+    public static final String N_SEARCH = "search";
+
     /** Node name constant. */
-    private static final String N_SOURCE = "source";
+    public static final String N_SOURCE = "source";
+
     /** Node name constant. */
-    private static final String N_SOURCES = "sources";
+    public static final String N_SOURCES = "sources";
+
     /** Node name constant. */
-    private static final String N_STEMMER = "stemmer";
+    public static final String N_STEMMER = "stemmer";
+
     /** Node name constant. */
-    private static final String N_TIMEOUT = "timeout";
+    public static final String N_TIMEOUT = "timeout";
 
     /** Node name constant. */
     private static final String XPATH_SEARCH = "*/" + N_SEARCH;

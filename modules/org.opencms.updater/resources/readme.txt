@@ -1,7 +1,7 @@
 to update:
 - shutdown your servlet container
 - unzip the updater zip into your OpenCms webapp:
-  this will replace your WEB-INF/lib/opencms.jar so it is a good idea to do a backup of this file.
+  this will replace your WEB-INF/lib/opencms.jar and another jar files so it is a good idea to do a backup of this folder.
 - enable the wizard:
   set the 'wizard.enabled' property in your WEB-INF/config/opencms.properties to 'true'.
 - start your servlet container

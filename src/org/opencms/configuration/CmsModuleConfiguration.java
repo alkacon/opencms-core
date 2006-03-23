@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,20 +51,20 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.2.1 $
  * 
  * @since 6.0.0
  */
 public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
-    /** The node name for the modules top node. */
-    protected static final String N_MODULES = "modules";
-
     /** The name of the DTD for this configuration. */
-    private static final String CONFIGURATION_DTD_NAME = "opencms-modules.dtd";
+    public static final String CONFIGURATION_DTD_NAME = "opencms-modules.dtd";
 
     /** The name of the default XML file for this configuration. */
-    private static final String DEFAULT_XML_FILE_NAME = "opencms-modules.xml";
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-modules.xml";
+
+    /** The node name for the modules top node. */
+    protected static final String N_MODULES = "modules";
 
     /** The module manager generated from the configuration. */
     private CmsModuleManager m_moduleManager;

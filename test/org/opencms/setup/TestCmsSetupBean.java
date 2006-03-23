@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupBean.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.setup;
 
+import org.opencms.main.CmsSystemInfo;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
@@ -43,7 +44,7 @@ import org.apache.commons.collections.ExtendedProperties;
 /** 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8 $
+ * @version $Revision: 1.8.2.1 $
  * 
  * @since 6.0.0
  */
@@ -75,8 +76,8 @@ public class TestCmsSetupBean extends OpenCmsTestCase {
         CmsSetupBean bean = new CmsSetupBean();
         bean.init("", null, null);
 
-        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "config" + File.separator);
-        String inputFile = base + "opencms.properties";
+        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
+        String inputFile = base + CmsSystemInfo.FILE_PROPERTIES;
         String outputFile = base + "output.properties";
 
         System.out.println("Reading properties from " + inputFile);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/01/31 16:19:30 $
- * Version: $Revision: 1.1.2.8 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.1.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,36 +31,45 @@
 
 package org.opencms.setup;
 
+import org.opencms.configuration.CmsConfigurationManager;
+import org.opencms.configuration.CmsModuleConfiguration;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
+import org.opencms.module.CmsModule;
+import org.opencms.module.CmsModuleVersion;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
-import org.opencms.util.CmsFileUtil;
 import org.opencms.util.CmsStringUtil;
+import org.opencms.xml.CmsXmlException;
 
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.jsp.JspWriter;
 
-import org.apache.commons.collections.ExtendedProperties;
+import org.apache.commons.logging.Log;
 
 /**
  * A java bean as a controller for the OpenCms update wizard.<p>
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.8 $ 
+ * @version $Revision: 1.1.2.9 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsUpdateBean extends CmsSetupBean {
-
-    /** name of the jars folder. */
-    public static final String FOLDER_JARS = "jars" + File.separatorChar;
 
     /** name of the update folder. */
     public static final String FOLDER_UPDATE = "update" + File.separatorChar;
@@ -80,8 +89,8 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** replace pattern constant for the cms script. */
     private static final String C_UPDATE_SITE = "@UPDATE_SITE@";
 
-    /** property name. */
-    private static final String PROP_JARS_TO_REMOVE = "jars.to.remove";
+    /** The static log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsUpdateBean.class);
 
     /** The used admin user name. */
     private String m_adminGroup = "_tmpUpdateGroup" + (System.currentTimeMillis() % 1000);
@@ -92,11 +101,17 @@ public class CmsUpdateBean extends CmsSetupBean {
     /** The used admin user name. */
     private String m_adminUser = "Admin";
 
+    /** List of module to be updated. */
+    private List m_modulesToUpdate;
+
     /** the update project. */
     private String m_updateProject = "_tmpUpdateProject" + (System.currentTimeMillis() % 1000);
 
     /** the site for update. */
     private String m_updateSite = "/sites/default/";
+
+    /** Cache for the up-to-date module names. */
+    private List m_uptodateModules;
 
     /** The workplace import thread. */
     private CmsUpdateThread m_workplaceUpdateThread;
@@ -108,7 +123,7 @@ public class CmsUpdateBean extends CmsSetupBean {
 
         super();
         m_modulesFolder = FOLDER_UPDATE + CmsSystemInfo.FOLDER_MODULES;
-        m_logFile = FOLDER_WEBINF + FOLDER_LOGS + "update.log";
+        m_logFile = FOLDER_WEBINF + CmsLog.FOLDER_LOGS + "update.log";
     }
 
     /**
@@ -132,6 +147,51 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns a map of all previously installed modules.<p>
+     * 
+     * @return a map of <code>[String, {@link org.opencms.module.CmsModuleVersion}]</code> objects
+     * 
+     * @see org.opencms.module.CmsModuleManager#getAllInstalledModules()
+     */
+    public Map getInstalledModules() {
+
+        String file = CmsModuleConfiguration.DEFAULT_XML_FILE_NAME;
+        String basePath = "/opencms/modules/module[?]/";
+        Map modules = new HashMap();
+        String name = "";
+        for (int i = 1; name != null; i++) {
+            if (i > 1) {
+                String ver = CmsModuleVersion.DEFAULT_VERSION;
+                try {
+                    ver = getXmlHelper().getValue(file, basePath.replace("?", "" + (i - 1)) + "version");
+                } catch (CmsXmlException e) {
+                    // ignore
+                }
+                modules.put(name, new CmsModuleVersion(ver));
+            }
+            try {
+                name = getXmlHelper().getValue(file, basePath.replace("?", "" + i) + "name");
+            } catch (CmsXmlException e) {
+                // ignore
+            }
+        }
+        return modules;
+    }
+
+    /**
+     * List of modules to be updated.<p>
+     * 
+     * @return a list of module names
+     */
+    public List getModulesToUpdate() {
+
+        if (m_modulesToUpdate == null) {
+            getUptodateModules();
+        }
+        return m_modulesToUpdate;
+    }
+
+    /**
      * Returns the update Project.<p>
      *
      * @return the update Project
@@ -152,6 +212,43 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
+     * Returns the modules that does not need to be updated.<p>
+     * 
+     * @return a list of module names
+     */
+    public List getUptodateModules() {
+
+        if (m_uptodateModules == null) {
+            m_uptodateModules = new ArrayList();
+            m_modulesToUpdate = new ArrayList();
+            Map installedModules = getInstalledModules();
+            Map availableModules = getAvailableModules();
+            Iterator itMods = availableModules.keySet().iterator();
+            while (itMods.hasNext()) {
+                String name = (String)itMods.next();
+                CmsModuleVersion instVer = (CmsModuleVersion)installedModules.get(name);
+                CmsModuleVersion availVer = ((CmsModule)availableModules.get(name)).getVersion();
+                boolean uptodate = (instVer != null && instVer.compareTo(availVer) >= 0);
+                if (uptodate) {
+                    m_uptodateModules.add(name);
+                } else {
+                    m_modulesToUpdate.add(name);
+                }
+                if (LOG.isDebugEnabled()) {
+                    LOG.debug(name
+                        + " --- installed: "
+                        + instVer
+                        + " available: "
+                        + availVer
+                        + " --- uptodate: "
+                        + uptodate);
+                }
+            }
+        }
+        return m_uptodateModules;
+    }
+
+    /**
      * Returns the workplace update thread.<p>
      * 
      * @return the workplace update thread
@@ -159,6 +256,37 @@ public class CmsUpdateBean extends CmsSetupBean {
     public CmsUpdateThread getWorkplaceUpdateThread() {
 
         return m_workplaceUpdateThread;
+    }
+
+    /**
+     * @see org.opencms.setup.CmsSetupBean#htmlModules()
+     */
+    public String htmlModules() {
+
+        StringBuffer html = new StringBuffer(1024);
+        Set uptodate = new HashSet(getUptodateModules());
+        Iterator itModules = sortModules(getAvailableModules().values()).iterator();
+        boolean hasModules = false;
+        for (int i = 0; itModules.hasNext(); i++) {
+            String moduleName = (String)itModules.next();
+            CmsModule module = (CmsModule)getAvailableModules().get(moduleName);
+            if (!uptodate.contains(moduleName)) {
+                html.append(htmlModule(module, i));
+                hasModules = true;
+            } else {
+                html.append("<input type='hidden' name='availableModules' value='");
+                html.append(moduleName);
+                html.append("'>\n");
+            }
+        }
+        if (!hasModules) {
+            html.append("\t<tr>\n");
+            html.append("\t\t<td style='vertical-align: middle;'>\n");
+            html.append(Messages.get().key(Messages.GUI_WARNING_ALL_MODULES_UPTODATE_0));
+            html.append("\t\t</td>\n");
+            html.append("\t</tr>\n");
+        }
+        return html.toString();
     }
 
     /** 
@@ -195,7 +323,7 @@ public class CmsUpdateBean extends CmsSetupBean {
             try {
                 String fileName = getWebAppRfsPath() + FOLDER_UPDATE + "cmsupdate";
                 // read the file
-                FileInputStream fis = new FileInputStream(fileName + ".ori");
+                FileInputStream fis = new FileInputStream(fileName + CmsConfigurationManager.POSTFIX_ORI);
                 String script = "";
                 int readChar = fis.read();
                 while (readChar > -1) {
@@ -256,7 +384,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         if (isInitialized()) {
             for (int i = m_oldLoggingOffset; i < m_newLoggingOffset; i++) {
                 String str = m_workplaceUpdateThread.getLoggingThread().getMessages().get(i).toString();
-                str = CmsEncoder.escapeWBlanks(str, "UTF-8");
+                str = CmsEncoder.escapeWBlanks(str, CmsEncoder.ENCODING_UTF_8);
                 out.println("output[" + (i - m_oldLoggingOffset) + "] = \"" + str + "\";");
             }
         } else {
@@ -285,13 +413,13 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * Prepares step 6 of the update wizard.<p>
      */
-    public void prepareUpdateStep6() {
+    public void prepareUpdateStep7() {
 
         if (isInitialized()) {
             // lock the wizard for further use 
             lockWizard();
             // save Properties to file "opencms.properties" 
-            saveProperties(getProperties(), "opencms.properties", false);
+            saveProperties(getProperties(), CmsSystemInfo.FILE_PROPERTIES, false);
         }
     }
 
@@ -363,115 +491,6 @@ public class CmsUpdateBean extends CmsSetupBean {
     }
 
     /**
-     * Removes all jars indicated in the jars.to.remove property of file /update/jars/removejars.properties, and
-     * copies all jars in the /update/jars/ folder to the /WEB-INF/lib/ folder.<p>
-     * 
-     * @throws IOException if something goes wrong 
-     */
-    public void updateJarsFromUpdateBean() throws IOException {
-
-        String jarFolder = getWebAppRfsPath() + FOLDER_UPDATE + FOLDER_JARS;
-        String libFolder = getWebAppRfsPath() + FOLDER_WEBINF + FOLDER_LIB;
-        I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
-        report.println(Messages.get().container(Messages.RPT_BEGIN_DELETE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
-        ExtendedProperties props = loadProperties(jarFolder + "/removejars.properties");
-        String[] jars = props.getStringArray(PROP_JARS_TO_REMOVE);
-        if (jars != null) {
-            for (int i = 0, n = jars.length; i < n; i++) {
-                File jar = new File(libFolder + jars[i]);
-                if (jar.exists() && jar.canWrite()) {
-                    if (jar.delete()) {
-                        report.println(Messages.get().container(
-                            Messages.RPT_DELETE_JAR_FILE_3,
-                            new Integer(i + 1),
-                            new Integer(n),
-                            jar.getAbsolutePath()));
-                    } else {
-                        report.println(Messages.get().container(
-                            Messages.RPT_DELETE_JAR_FILE_FAILED_3,
-                            new Integer(i + 1),
-                            new Integer(n),
-                            jar.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
-                    }
-                } else if (jar.exists() && !jar.canWrite()) {
-                    report.println(Messages.get().container(
-                        Messages.RPT_DELETE_JAR_PERMISSIONS_3,
-                        new Integer(i + 1),
-                        new Integer(n),
-                        jar.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
-                } else {
-                    // this is just a warning
-                    report.println(Messages.get().container(
-                        Messages.RPT_DELETE_JAR_SKIPPED_FILE_3,
-                        new Integer(i + 1),
-                        new Integer(n),
-                        jar.getAbsolutePath()));
-                }
-            }
-        } else {
-            report.println(Messages.get().container(
-                Messages.RPT_DELETE_JARS_FAILED_1,
-                jarFolder + "/removejars.properties"), I_CmsReport.FORMAT_ERROR);
-        }
-        report.println(Messages.get().container(Messages.RPT_END_DELETE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
-        File folder = new File(jarFolder);
-        report.println(Messages.get().container(Messages.RPT_BEGIN_UPDATE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
-        if (folder.exists() && folder.canWrite()) {
-            // list all child resources in the given folder
-            File[] folderFiles = folder.listFiles();
-            if (folderFiles != null) {
-                for (int i = 0; i < folderFiles.length; i++) {
-                    File jarFile = folderFiles[i];
-                    if (jarFile.isFile() && !(jarFile.getAbsolutePath().toLowerCase().endsWith(".jar"))) {
-                        // just a warning
-                        report.println(Messages.get().container(
-                            Messages.RPT_UPDATE_JAR_SKIPPED_FILE_3,
-                            new Integer(i + 1),
-                            new Integer(folderFiles.length),
-                            jarFile.getAbsolutePath()));
-                    } else {
-                        if (jarFile.canWrite()) {
-                            try {
-                                CmsFileUtil.copy(jarFile.getAbsolutePath(), libFolder + jarFile.getName());
-                                report.println(Messages.get().container(
-                                    Messages.RPT_UPDATE_JAR_FILE_3,
-                                    new Integer(i + 1),
-                                    new Integer(folderFiles.length),
-                                    jarFile.getAbsolutePath()));
-                            } catch (Exception e) {
-                                report.println(Messages.get().container(
-                                    Messages.RPT_UPDATE_JAR_FILE_FAILED_3,
-                                    new Integer(i + 1),
-                                    new Integer(folderFiles.length),
-                                    jarFile.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
-                            }
-                        } else {
-                            report.println(Messages.get().container(
-                                Messages.RPT_UPDATE_JAR_PERMISSIONS_3,
-                                new Integer(i + 1),
-                                new Integer(folderFiles.length),
-                                jarFile.getAbsolutePath()), I_CmsReport.FORMAT_ERROR);
-                        }
-                    }
-                }
-            } else {
-                report.println(
-                    Messages.get().container(Messages.RPT_UPDATE_JARS_FAILED_1, folder.getAbsolutePath()),
-                    I_CmsReport.FORMAT_ERROR);
-            }
-        } else if (folder.exists() && !folder.canWrite()) {
-            report.println(
-                Messages.get().container(Messages.RPT_UPDATE_JARS_PERMISSIONS_1, folder.getAbsolutePath()),
-                I_CmsReport.FORMAT_ERROR);
-        } else {
-            report.println(
-                Messages.get().container(Messages.RPT_UPDATE_JARS_FAILED_1, folder.getAbsolutePath()),
-                I_CmsReport.FORMAT_ERROR);
-        }
-        report.println(Messages.get().container(Messages.RPT_END_UPDATE_JARS_0), I_CmsReport.FORMAT_HEADLINE);
-    }
-
-    /**
      * Installed all modules that have been set using {@link #setInstallModules(String)}.<p>
      * 
      * This method is invoked as a shell command.<p>
@@ -490,15 +509,22 @@ public class CmsUpdateBean extends CmsSetupBean {
         // 6) thus, the setup bean can do things with the Cms
 
         if (m_cms != null && m_installModules != null) {
+            Set utdModules = new HashSet(getUptodateModules());
             I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
             for (int i = 0; i < m_installModules.size(); i++) {
                 String name = (String)m_installModules.get(i);
-                String filename = (String)m_moduleFilenames.get(name);
-                try {
-                    updateModule(name, filename, report);
-                } catch (Exception e) {
-                    // log a exception during module import, but make sure the next module is still imported
-                    e.printStackTrace(System.err);
+                if (!utdModules.contains(name)) {
+                    String filename = (String)m_moduleFilenames.get(name);
+                    try {
+                        updateModule(name, filename, report);
+                    } catch (Exception e) {
+                        // log a exception during module import, but make sure the next module is still imported
+                        e.printStackTrace(System.err);
+                    }
+                } else {
+                    report.println(
+                        Messages.get().container(Messages.RPT_MODULE_UPTODATE_1, name),
+                        I_CmsReport.FORMAT_HEADLINE);
                 }
             }
         }

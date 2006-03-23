@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupXmlHelper.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,16 +31,21 @@
 
 package org.opencms.setup;
 
+import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.main.CmsSystemInfo;
+import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.test.OpenCmsTestCase;
 
 import java.io.File;
+
+import org.dom4j.Document;
 
 /** 
  * Tests the setup xml helper class.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.1.8
  */
@@ -63,51 +68,98 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
      */
     public void testXmlModification() throws Exception {
 
-        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + "config" + File.separator);
+        String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
         CmsSetupXmlHelper xmlHelper = new CmsSetupXmlHelper(base);
 
-        String inputFile = "opencms-workplace.xml";
+        String inputFile = CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME;
 
         System.out.println("Modifying xml from " + base + inputFile);
+        Document ori = xmlHelper.getDocument(inputFile);
 
-        String xPath = "/opencms/workplace/localizedfolders/resource[2]/@uri";
+        // simple test
+        String xPath = "/opencms/workplace/autolock";
         String value = xmlHelper.getValue(inputFile, xPath);
-        assertEquals("/system/login/", value);
-        xmlHelper.setValue(inputFile, xPath, "/");
-        value = xmlHelper.getValue(inputFile, xPath);
-        assertEquals("/", value);
-
-        xPath = "/opencms/workplace/autolock";
-        value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("true", value);
-        xmlHelper.setValue(inputFile, xPath, "false");
+        String expected = "false";
+        xmlHelper.setValue(inputFile, xPath, expected);
         value = xmlHelper.getValue(inputFile, xPath);
-        assertEquals("false", value);
+        assertEquals(expected, value);
+
+        // advanced test
+        xPath = "/opencms/workplace/localizedfolders/resource[2]/@uri";
+        value = xmlHelper.getValue(inputFile, xPath);
+        assertEquals("/system/login/", value);
+        expected = "/";
+        xmlHelper.setValue(inputFile, xPath, expected);
+        value = xmlHelper.getValue(inputFile, xPath);
+        assertEquals(expected, value);
+
+        // test adding a new node
+        xPath = "/opencms/workplace/test1/test2/test3";
+        expected = "test4";
+        assertEquals(1, xmlHelper.setValue(inputFile, xPath, expected));
+        value = xmlHelper.getValue(inputFile, xPath);
+        assertEquals(expected, value);
+
+        // test adding a new attribute
+        xPath = "/opencms/workplace/localizedfolders/resource[2]/@test-attr";
+        expected = "test-value";
+        assertEquals(1, xmlHelper.setValue(inputFile, xPath, expected));
+        value = xmlHelper.getValue(inputFile, xPath);
+        assertEquals(expected, value);
+
+        // test adding a new node in a list
+        xPath = "/opencms/workplace/test1/test2[2]/test5";
+        expected = "test6";
+        assertEquals(1, xmlHelper.setValue(inputFile, xPath, expected));
+        value = xmlHelper.getValue(inputFile, xPath);
+        assertEquals(expected, value);
 
         // write modified file
         xmlHelper.write(inputFile);
 
+        // restoring file
         xPath = "/opencms/workplace/localizedfolders/resource[2]/@uri";
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("/", value);
-        xmlHelper.setValue(inputFile, xPath, "/system/login/");
+        expected = "/system/login/";
+        xmlHelper.setValue(inputFile, xPath, expected);
         value = xmlHelper.getValue(inputFile, xPath);
-        assertEquals("/system/login/", value);
+        assertEquals(expected, value);
 
         xPath = "/opencms/workplace/autolock";
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("false", value);
-        xmlHelper.setValue(inputFile, xPath, "true");
+        expected = "true";
+        xmlHelper.setValue(inputFile, xPath, expected);
         value = xmlHelper.getValue(inputFile, xPath);
-        assertEquals("true", value);
+        assertEquals(expected, value);
+
+        // test removing a node
+        xPath = "/opencms/workplace/test1";
+        assertEquals(1, xmlHelper.setValue(inputFile, xPath, null));
+        assertNull(xmlHelper.getValue(inputFile, xPath));
+
+        // test removing an attribute
+        xPath = "/opencms/workplace/localizedfolders/resource[2]/@test-attr";
+        assertEquals(1, xmlHelper.setValue(inputFile, xPath, null));
+        assertNull(xmlHelper.getValue(inputFile, xPath));
+        assertNotNull(xmlHelper.getValue(inputFile, xPath.substring(0, xPath.lastIndexOf('/')) + "/@uri"));
+
+        // test removing non existent node
+        xPath = "/opencms/workplace/test1";
+        assertEquals(0, xmlHelper.setValue(inputFile, xPath, null));
+
+        // test removing non existent attribute
+        xPath = "/opencms/workplace/localizedfolders/resource[2]/@test-xxx";
+        assertEquals(0, xmlHelper.setValue(inputFile, xPath, null));
 
         // write restored file
         xmlHelper.write(inputFile);
 
-        // test non existent nodes access
-        xPath = "/non/existent/node";
-        value = xmlHelper.getValue(inputFile, xPath);
-        assertNull(value);
-        assertFalse(xmlHelper.setValue(inputFile, xPath, "val"));
+        // compare documents
+        xmlHelper.flushAll();
+        Document cur = xmlHelper.getDocument(inputFile);
+        assertEquals(ori, cur);
     }
 }

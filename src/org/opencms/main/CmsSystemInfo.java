@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSystemInfo.java,v $
- * Date   : $Date: 2005/10/12 14:16:51 $
- * Version: $Revision: 1.45.2.2 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.45.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,17 +51,23 @@ import java.util.Properties;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.45.2.2 $ 
+ * @version $Revision: 1.45.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsSystemInfo {
 
+    /** The name of the opencms.properties file. */
+    public static final String FILE_PROPERTIES = "opencms.properties";
+
+    /** Path to the "config" folder relative to the "WEB-INF" directory of the application. */
+    public static final String FOLDER_CONFIG = "config" + File.separatorChar;
+
     /** The name of the module folder in the package path. */
-    public static final String FOLDER_MODULES = "modules/";
+    public static final String FOLDER_MODULES = "modules" + File.separatorChar;
 
     /** Path to the "packages" folder relative to the "WEB-INF" directory of the application. */
-    public static final String FOLDER_PACKAGES = "packages/";
+    public static final String FOLDER_PACKAGES = "packages" + File.separatorChar;
 
     /** Default encoding. */
     private static final String DEFAULT_ENCODING = CmsEncoder.ENCODING_UTF_8;
@@ -83,10 +89,10 @@ public class CmsSystemInfo {
 
     /** The HTTP basic authentication settings. */
     private CmsHttpAuthenticationSettings m_httpAuthenticationSettings;
-    
+
     /** The settings for the internal OpenCms email service. */
     private CmsMailSettings m_mailSettings;
-    
+
     /** The project in which timestamps for the content notification are read. */
     private String m_notificationProject;
 
@@ -202,7 +208,7 @@ public class CmsSystemInfo {
     public String getConfigurationFileRfsPath() {
 
         if (m_configurationFileRfsPath == null) {
-            m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf("config/opencms.properties");
+            m_configurationFileRfsPath = getAbsoluteRfsPathRelativeToWebInf(FOLDER_CONFIG + FILE_PROPERTIES);
         }
         return m_configurationFileRfsPath;
     }
@@ -262,7 +268,7 @@ public class CmsSystemInfo {
 
         return m_httpAuthenticationSettings;
     }
-    
+
     /**
      * Returns the filename of the logfile (in the "real" file system).<p>
      * 
@@ -285,22 +291,24 @@ public class CmsSystemInfo {
 
         return m_mailSettings;
     }
-    
+
     /**
      * Returns the project in which timestamps for the content notification are read.<p>
      * 
      * @return the project in which timestamps for the content notification are read
      */
     public String getNotificationProject() {
+
         return m_notificationProject;
     }
-    
+
     /**
      * Returns the duration after which responsibles will be notified about out-dated content (in days).<p>
      * 
      * @return the duration after which responsibles will be notified about out-dated content
      */
     public int getNotificationTime() {
+
         return m_notificationTime;
     }
 
@@ -486,15 +494,17 @@ public class CmsSystemInfo {
      * @param notificationProject the project in which timestamps for the content notification are read
      */
     public void setNotificationProject(String notificationProject) {
+
         m_notificationProject = notificationProject;
     }
-    
+
     /**
      * Sets the duration after which responsibles will be notified about out-dated content (in days).<p>
      * 
      * @param notificationTime the duration after which responsibles will be notified about out-dated content
      */
     public void setNotificationTime(int notificationTime) {
+
         m_notificationTime = notificationTime;
     }
 

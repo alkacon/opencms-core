@@ -12,6 +12,9 @@
 	if (Bean.isInitialized() && isFormSubmitted) {
 		response.sendRedirect(nextPage);
 	}	
+	if (Bean.getModulesToUpdate().isEmpty()) {
+		response.sendRedirect("step_5_xmlupdate.jsp");
+	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
 OpenCms Update Wizard

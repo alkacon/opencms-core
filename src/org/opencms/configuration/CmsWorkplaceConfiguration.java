@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2005/11/26 01:18:02 $
- * Version: $Revision: 1.39.2.7 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.39.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.7 $
+ * @version $Revision: 1.39.2.8 $
  * 
  * @since 6.0.0
  */
@@ -94,11 +94,20 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The "target" attribute. */
     public static final String A_TARGET = "target";
 
+    /** The name of the DTD for this configuration. */
+    public static final String CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
+
+    /** The name of the default XML file for this configuration. */
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";
+
     /** The name of the access control node. */
     public static final String N_ACCESSCONTROL = "accesscontrol";
 
     /** The name of the access entry node. */
     public static final String N_ACCESSENTRY = "accessentry";
+
+    /** The name of the autolock node. */
+    public static final String N_AUTOLOCK = "autolock";
 
     /** The node name of the buttonstyle node. */
     public static final String N_BUTTONSTYLE = "buttonstyle";
@@ -106,14 +115,44 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the context menu node. */
     public static final String N_CONTEXTMENU = "contextmenu";
 
+    /** The node name of the datecreated column node. */
+    public static final String N_DATECREATED = "show-datecreated";
+
+    /** The node name of the date expired column node. */
+    public static final String N_DATEEXPIRED = "show-dateexpired";
+
+    /** The node name of the datelastmodified column node. */
+    public static final String N_DATELASTMODIFIED = "show-datelastmodified";
+
+    /** The node name of the date released  column node. */
+    public static final String N_DATERELEASED = "show-datereleased";
+
+    /** The name of the default access control node. */
+    public static final String N_DEFAULTACCESSCONTROL = "defaultaccesscontrol";
+
+    /** The name of the node for the default locale. */
+    public static final String N_DEFAULTLOCALE = "defaultlocale";
+
     /** The name of the default properties node. */
     public static final String N_DEFAULTPROPERTIES = "defaultproperties";
+
+    /** The name of the default properties on structure node. */
+    public static final String N_DEFAULTPROPERTIESONSTRUCTURE = "defaultpropertiesonstructure";
 
     /** The name of the default property node. */
     public static final String N_DEFAULTPROPERTY = "defaultproperty";
 
+    /** Individual workplace handler node name. */
+    public static final String N_DIALOGHANDLER = "dialoghandler";
+
+    /** The main workplace handler node name. */
+    public static final String N_DIALOGHANDLERS = "dialoghandlers";
+
     /** The node name of the dialogs defaultsettings node. */
     public static final String N_DIALOGSDEFAULTSETTINGS = "dialogs-defaultsettings";
+
+    /** The node name of the dialogs preferences node. */
+    public static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
 
     /** The node name of the directedit style node. */
     public static final String N_DIRECTEDITSTYLE = "directeditstyle";
@@ -127,14 +166,29 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the editor node. */
     public static final String N_EDITOR = "editor";
 
+    /** The name of the editor action node. */
+    public static final String N_EDITORACTION = "editoraction";
+
     /** The node name of the editors general options node. */
     public static final String N_EDITORGENERALOPTIONS = "editors-generaloptions";
+
+    /** The name of the editor handler node. */
+    public static final String N_EDITORHANDLER = "editorhandler";
+
+    /** The node name of the editors preferences node. */
+    public static final String N_EDITORPREFERENCES = "editors-preferences";
 
     /** The node name of the editors preferred editors node. */
     public static final String N_EDITORPREFERREDEDITORS = "editors-preferrededitors";
 
+    /** The name of the "enable advanced property tabs" node. */
+    public static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
+
     /** The subname of the rfsfilesettings/enabled node. */
     public static final String N_ENABLED = "enabled";
+
+    /** The name of the "user management enabled" node. */
+    public static final String N_ENABLEUSERMGMT = "enableusermanagement";
 
     /** The node name of the file entries node. */
     public static final String N_ENTRIES = "entries";
@@ -153,6 +207,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The node name of the explorer generaloptions node. */
     public static final String N_EXPLORERGENERALOPTIONS = "explorer-generaloptions";
+
+    /** The node name of the explorer preferences node. */
+    public static final String N_EXPLORERPREFERENCES = "explorer-preferences";
 
     /** The name of the explorer type node. */
     public static final String N_EXPLORERTYPE = "explorertype";
@@ -190,8 +247,20 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the key node. */
     public static final String N_KEY = "key";
 
+    /** The name of the "labeled folders" node. */
+    public static final String N_LABELEDFOLDERS = "labeledfolders";
+
     /** The node name of the locale node. */
     public static final String N_LOCALE = "locale";
+
+    /** The name of the "localized folders" node. */
+    public static final String N_LOCALIZEDFOLDERS = "localizedfolders";
+
+    /** The node name of the lockedby column node. */
+    public static final String N_LOCKEDBY = "show-lockedby";
+
+    /** The name of the "max file upload size" node. */
+    public static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
 
     /** The node name of the message-accepted node. */
     public static final String N_MESSAGEACCEPTED = "message-accepted";
@@ -208,12 +277,15 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The name of the new resource node. */
     public static final String N_NEWRESOURCE = "newresource";
 
+    /** The node name of the permissions column node. */
+    public static final String N_PERMISSIONS = "show-permissions";
+
     /** The name of the inherit permissions on folder node. */
     public static final String N_PERMISSIONSINHERITONFOLDER = "permissions-inheritonfolder";
 
     /** The node name of the project node. */
     public static final String N_PROJECT = "project";
-    
+
     /** The node name of the publish button appearance node. */
     public static final String N_PUBLISHBUTTONAPPEARANCE = "publishbuttonappearance";
 
@@ -247,17 +319,38 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the showprojects node. */
     public static final String N_SHOWPROJECTS = "showprojects";
 
+    /** The node name of the size column node. */
+    public static final String N_SIZE = "show-size";
+
     /** The node name of the startupfilter node. */
     public static final String N_STARTUPFILTER = "startupfilter";
 
+    /** The node name of the state column node. */
+    public static final String N_STATE = "show-state";
+
+    /** The node name of the title column node. */
+    public static final String N_TITLE = "show-title";
+
     /** The node name of the tool-manager node. */
     public static final String N_TOOLMANAGER = "tool-manager";
+
+    /** The node name of the type column node. */
+    public static final String N_TYPE = "show-type";
 
     /** The node name of the uploadapplet node. */
     public static final String N_UPLOADAPPLET = "uploadapplet";
 
     /** The node name of the uri node. */
     public static final String N_URI = "uri";
+
+    /** The node name of the default preferences node. */
+    public static final String N_DEFAULTPREFERENCES = "default-preferences";
+
+    /** The node name of the user created node. */
+    public static final String N_USERCREATED = "show-usercreated";
+
+    /** The node name of the user lastmodified node. */
+    public static final String N_USERLASTMODIFIED = "show-userlastmodified";
 
     /** The subname of the rfsfilesettings/windowSize node. */
     public static final String N_WINDOWSIZE = "windowSize";
@@ -271,116 +364,23 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the workflow general options node. */
     public static final String N_WORKFLOWGENERALOPTIONS = "workflow-generaloptions";
 
+    /** The node name of the workflow preferences node. */
+    public static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
+
+    /** The node name of the master workplace node. */
+    public static final String N_WORKPLACE = "workplace";
+
     /** The node name of the workplace general options node. */
     public static final String N_WORKPLACEGENERALOPTIONS = "workplace-generaloptions";
+
+    /** The node name of the workplace preferences node. */
+    public static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
 
     /** The node name of the workplace startup settings node. */
     public static final String N_WORKPLACESTARTUPSETTINGS = "workplace-startupsettings";
 
     /** The node name of the view node. */
     public static final String N_WORKPLACEVIEW = "workplaceview";
-
-    /** The name of the autolock node. */
-    protected static final String N_AUTOLOCK = "autolock";
-
-    /** The node name of the datecreated column node. */
-    protected static final String N_DATECREATED = "show-datecreated";
-
-    /** The node name of the date expired column node. */
-    protected static final String N_DATEEXPIRED = "show-dateexpired";
-
-    /** The node name of the datelastmodified column node. */
-    protected static final String N_DATELASTMODIFIED = "show-datelastmodified";
-
-    /** The node name of the date released  column node. */
-    protected static final String N_DATERELEASED = "show-datereleased";
-
-    /** The name of the default access control node. */
-    protected static final String N_DEFAULTACCESSCONTROL = "defaultaccesscontrol";
-
-    /** The name of the node for the default locale. */
-    protected static final String N_DEFAULTLOCALE = "defaultlocale";
-
-    /** The name of the default properties on structure node. */
-    protected static final String N_DEFAULTPROPERTIESONSTRUCTURE = "defaultpropertiesonstructure";
-
-    /** Individual workplace handler node name. */
-    protected static final String N_DIALOGHANDLER = "dialoghandler";
-
-    /** The main workplace handler node name. */
-    protected static final String N_DIALOGHANDLERS = "dialoghandlers";
-
-    /** The node name of the dialogs preferences node. */
-    protected static final String N_DIALOGSPREFERENCES = "dialogs-preferences";
-
-    /** The name of the editor action node. */
-    protected static final String N_EDITORACTION = "editoraction";
-
-    /** The name of the editor handler node. */
-    protected static final String N_EDITORHANDLER = "editorhandler";
-
-    /** The node name of the editors preferences node. */
-    protected static final String N_EDITORPREFERENCES = "editors-preferences";
-
-    /** The name of the "enable advanced property tabs" node. */
-    protected static final String N_ENABLEADVANCEDPROPERTYTABS = "enableadvancedpropertytabs";
-
-    /** The name of the "user management enabled" node. */
-    protected static final String N_ENABLEUSERMGMT = "enableusermanagement";
-
-    /** The node name of the explorer preferences node. */
-    protected static final String N_EXPLORERPREFERENCES = "explorer-preferences";
-
-    /** The name of the "labeled folders" node. */
-    protected static final String N_LABELEDFOLDERS = "labeledfolders";
-
-    /** The name of the "localized folders" node. */
-    protected static final String N_LOCALIZEDFOLDERS = "localizedfolders";
-
-    /** The node name of the lockedby column node. */
-    protected static final String N_LOCKEDBY = "show-lockedby";
-
-    /** The name of the "max file upload size" node. */
-    protected static final String N_MAXUPLOADSIZE = "maxfileuploadsize";
-
-    /** The node name of the permissions column node. */
-    protected static final String N_PERMISSIONS = "show-permissions";
-
-    /** The node name of the size column node. */
-    protected static final String N_SIZE = "show-size";
-
-    /** The node name of the state column node. */
-    protected static final String N_STATE = "show-state";
-
-    /** The node name of the title column node. */
-    protected static final String N_TITLE = "show-title";
-
-    /** The node name of the type column node. */
-    protected static final String N_TYPE = "show-type";
-
-    /** The node name of the default preferences node. */
-    protected static final String N_USER = "default-preferences";
-
-    /** The node name of the user created node. */
-    protected static final String N_USERCREATED = "show-usercreated";
-
-    /** The node name of the user lastmodified node. */
-    protected static final String N_USERLASTMODIFIED = "show-userlastmodified";
-
-    /** The node name of the workflow preferences node. */
-    protected static final String N_WORKFLOWPREFERENCES = "workflow-preferences";
-
-    /** The node name of the master workplace node. */
-    protected static final String N_WORKPLACE = "workplace";
-
-    /** The node name of the workplace preferences node. */
-    protected static final String N_WORKPLACEPREFERENCES = "workplace-preferences";
-
-    /** The name of the DTD for this configuration. */
-    private static final String CONFIGURATION_DTD_NAME = "opencms-workplace.dtd";
-
-    /** The name of the default XML file for this configuration. */
-    private static final String DEFAULT_XML_FILE_NAME = "opencms-workplace.xml";
 
     /** The configured workplace manager. */
     private CmsWorkplaceManager m_workplaceManager;
@@ -531,7 +531,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
             defaultAccess = OpenCms.getWorkplaceManager().getDefaultAccess();
         }
 
-        Iterator i = explorerTypes.iterator();        
+        Iterator i = explorerTypes.iterator();
         while (i.hasNext()) {
             // create an explorer type node
             CmsExplorerTypeSettings settings = (CmsExplorerTypeSettings)i.next();
@@ -794,14 +794,14 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         addExplorerTypeXmlRules(digester);
 
         // creation of the default user settings              
-        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_USER, CmsDefaultUserSettings.class);
-        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_USER, "setDefaultUserSettings");
+        digester.addObjectCreate("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, CmsDefaultUserSettings.class);
+        digester.addSetNext("*/" + N_WORKPLACE + "/" + N_DEFAULTPREFERENCES, "setDefaultUserSettings");
 
         // add workplace preferences generaloptions rules 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -811,7 +811,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -821,7 +821,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -831,7 +831,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -843,7 +843,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -853,7 +853,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -863,7 +863,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -873,7 +873,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -883,7 +883,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -893,7 +893,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKPLACEPREFERENCES
             + "/"
@@ -905,7 +905,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -915,7 +915,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -927,7 +927,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -937,7 +937,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -947,7 +947,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -957,7 +957,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -967,7 +967,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -977,7 +977,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -987,7 +987,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -997,7 +997,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -1007,7 +1007,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -1017,7 +1017,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -1027,7 +1027,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -1037,7 +1037,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EXPLORERPREFERENCES
             + "/"
@@ -1049,7 +1049,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1059,7 +1059,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1069,7 +1069,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1079,7 +1079,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1089,7 +1089,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1099,7 +1099,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1109,7 +1109,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1119,7 +1119,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1129,7 +1129,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_DIALOGSPREFERENCES
             + "/"
@@ -1141,7 +1141,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
@@ -1151,7 +1151,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
@@ -1163,7 +1163,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
@@ -1173,7 +1173,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallParam("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
@@ -1183,7 +1183,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallParam("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_EDITORPREFERENCES
             + "/"
@@ -1195,7 +1195,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKFLOWPREFERENCES
             + "/"
@@ -1205,7 +1205,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKFLOWPREFERENCES
             + "/"
@@ -1217,7 +1217,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKFLOWPREFERENCES
             + "/"
@@ -1227,7 +1227,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKFLOWPREFERENCES
             + "/"
@@ -1237,7 +1237,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKFLOWPREFERENCES
             + "/"
@@ -1247,7 +1247,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         digester.addCallMethod("*/"
             + N_WORKPLACE
             + "/"
-            + N_USER
+            + N_DEFAULTPREFERENCES
             + "/"
             + N_WORKFLOWPREFERENCES
             + "/"
@@ -1416,7 +1416,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
         }
 
         // add the <default-preferences> user settings main node
-        Element defaultPreferences = workplaceElement.addElement(N_USER);
+        Element defaultPreferences = workplaceElement.addElement(N_DEFAULTPREFERENCES);
         // add the <workplace-preferences> node
         Element workplacePreferences = defaultPreferences.addElement(N_WORKPLACEPREFERENCES);
         // add the <workplace-generaloptions> node

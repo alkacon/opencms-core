@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.29 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.29.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29 $
+ * @version $Revision: 1.29.2.1 $
  * 
  * @since 6.0.0
  */
@@ -80,29 +80,32 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     /** The default prefix for the OpenCms configuration DTD. */
     public static final String DEFAULT_DTD_PREFIX = "http://www.opencms.org/dtd/6.0/";
 
+    /** The name of the default XML file for this configuration. */
+    public static final String DEFAULT_XML_FILE_NAME = "opencms.xml";
+
+    /** The name of the DTD file for this configuration. */
+    public static final String DTD_FILE_NAME = "opencms-configuration.dtd";
+
+    /** The "opencms" root node of the XML configuration. */
+    public static final String N_ROOT = "opencms";
+
+    /** Postfix for original configuration files. */
+    public static final String POSTFIX_ORI = ".ori";
+
     /** The config node. */
     protected static final String N_CONFIG = "config";
 
     /** The configurations node. */
     protected static final String N_CONFIGURATION = "configuration";
 
-    /** The "opencms" root node of the XML configuration. */
-    protected static final String N_ROOT = "opencms";
-
     /** Date format for the backup file time prefix. */
     private static final SimpleDateFormat BACKUP_DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss_");
 
-    /** The name of the default XML file for this configuration. */
-    private static final String DEFAULT_XML_FILE_NAME = "opencms.xml";
-
-    /** The name of the DTD file for this configuration. */
-    private static final String DTD_FILE_NAME = "opencms-configuration.dtd";
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsConfigurationManager.class);
 
     /** The number of days to keep old backups for. */
     private static final long MAX_BACKUP_DAYS = 15;
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsConfigurationManager.class);
 
     /** The folder where to store the backup files of the configuration. */
     private File m_backupFolder;
@@ -118,7 +121,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
     /** The legacy configuration based on "opencms.properties". */
     private Map m_legacyConfiguration;
-    
+
     /**
      * Creates a new OpenCms configuration manager.<p>
      * 
@@ -129,27 +132,19 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         m_baseFolder = new File(baseFolder);
         if (!m_baseFolder.exists()) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(
-                    Messages.LOG_INVALID_CONFIG_BASE_FOLDER_1,
-                    m_baseFolder.getAbsolutePath()));
+                LOG.error(Messages.get().key(Messages.LOG_INVALID_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
             }
         }
         m_backupFolder = new File(m_baseFolder.getAbsolutePath() + File.separatorChar + "backup");
         if (!m_backupFolder.exists()) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    Messages.LOG_CREATE_CONFIG_BKP_FOLDER_1,
-                    m_backupFolder.getAbsolutePath()));
+                LOG.debug(Messages.get().key(Messages.LOG_CREATE_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
             }
             m_backupFolder.mkdirs();
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                Messages.LOG_CONFIG_BASE_FOLDER_1,
-                m_baseFolder.getAbsolutePath()));
-            LOG.debug(Messages.get().key(
-                Messages.LOG_CONFIG_BKP_FOLDER_1,
-                m_backupFolder.getAbsolutePath()));
+            LOG.debug(Messages.get().key(Messages.LOG_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
+            LOG.debug(Messages.get().key(Messages.LOG_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
         }
         cacheDtdSystemId(this);
         m_configurations = new ArrayList();
@@ -353,10 +348,10 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
      * @param legacyConfiguration the configuration read from the legacy "opencms.properties"
      */
     public void setConfiguration(Map legacyConfiguration) {
-        
+
         m_legacyConfiguration = legacyConfiguration;
     }
-    
+
     /**
      * Writes the XML configuration for the provided configuration instance.<p>
      * 
@@ -368,7 +363,9 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         I_CmsXmlConfiguration configuration = getConfiguration(clazz);
         if (configuration == null) {
-            throw new CmsConfigurationException(Messages.get().container(Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1, clazz.getName()));
+            throw new CmsConfigurationException(Messages.get().container(
+                Messages.ERR_CONFIG_WITH_UNKNOWN_CLASS_1,
+                clazz.getName()));
         }
 
         // generate the file URL for the XML input
@@ -385,7 +382,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         OutputFormat format = OutputFormat.createPrettyPrint();
         format.setIndentSize(4);
         format.setTrimText(false);
-        format.setEncoding("UTF-8");
+        format.setEncoding(CmsEncoder.ENCODING_UTF_8);
 
         try {
             OutputStream out = new FileOutputStream(file);
@@ -483,7 +480,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         // instantiate Digester and enable XML validation
         m_digester = new Digester();
-        m_digester.setUseContextClassLoader(true);        
+        m_digester.setUseContextClassLoader(true);
         m_digester.setValidating(true);
         m_digester.setEntityResolver(new CmsXmlEntityResolver(null));
         m_digester.setRuleNamespaceURI(null);
@@ -510,12 +507,10 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         for (int i = 0; i < files.length; i++) {
             File file = files[i];
             long lastMod = file.lastModified();
-            if ((lastMod < maxAge) & (!file.getAbsolutePath().endsWith(".ori"))) {
+            if ((lastMod < maxAge) & (!file.getAbsolutePath().endsWith(CmsConfigurationManager.POSTFIX_ORI))) {
                 file.delete();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
-                        Messages.LOG_REMOVE_CONFIG_FILE_1,
-                        file.getAbsolutePath()));
+                    LOG.debug(Messages.get().key(Messages.LOG_REMOVE_CONFIG_FILE_1, file.getAbsolutePath()));
                 }
             }
         }

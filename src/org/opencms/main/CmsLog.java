@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsLog.java,v $
- * Date   : $Date: 2006/01/15 10:29:22 $
- * Version: $Revision: 1.24.2.2 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.24.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.main;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsResource;
 import org.opencms.util.CmsFileUtil;
 
@@ -59,11 +60,17 @@ import org.apache.log4j.helpers.Loader;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.24.2.2 $ 
+ * @version $Revision: 1.24.2.3 $ 
  * 
  * @since 6.0.0 
  */
 public final class CmsLog {
+
+    /** The name of the opencms.log file. */
+    public static final String FILE_LOG = "opencms.log";
+
+    /** Path to the "logs" folder relative to the "WEB-INF" directory of the application. */
+    public static final String FOLDER_LOGS = "logs" + File.separatorChar;
 
     /** Log for initialization messages. */
     public static final Log INIT = LogFactory.getLog("org.opencms.init");
@@ -92,7 +99,9 @@ public final class CmsLog {
                 // in a default OpenCms configuration, the following path would point to the OpenCms "WEB-INF" folder
                 String webInfPath = CmsResource.getParentFolder(CmsResource.getFolderPath(path));
                 // check for the OpenCms configuration file
-                String configFilePath = webInfPath + "config/opencms.xml";
+                String configFilePath = webInfPath
+                    + CmsSystemInfo.FOLDER_CONFIG
+                    + CmsConfigurationManager.DEFAULT_XML_FILE_NAME;
                 File configFile = new File(configFilePath);
                 if (configFile.exists()) {
                     // assume this is a default OpenCms log configuration                
@@ -101,7 +110,7 @@ public final class CmsLog {
                     boolean setLogFile = configuration.getBoolean("opencms.set.logfile", false);
                     if (setLogFile) {
                         // set "opencms.log" variable 
-                        String logFilePath = CmsFileUtil.normalizePath(webInfPath + "logs/opencms.log", '/');
+                        String logFilePath = CmsFileUtil.normalizePath(webInfPath + FOLDER_LOGS + FILE_LOG, '/');
                         File logFile = new File(logFilePath);
                         m_logFileRfsPath = logFile.getAbsolutePath();
                         System.setProperty("opencms.logfile", m_logFileRfsPath);

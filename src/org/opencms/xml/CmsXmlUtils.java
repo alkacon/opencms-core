@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2005/10/19 13:07:25 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.apache.commons.logging.Log;
 
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
+import org.dom4j.Node;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.SAXReader;
 import org.dom4j.io.XMLWriter;
@@ -64,7 +65,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.2.1 $ 
+ * @version $Revision: 1.20.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -348,6 +349,35 @@ public final class CmsXmlUtils {
     }
 
     /**
+     * Marshals (writes) an XML node into an output stream using XML pretty-print formatting.<p>
+     * 
+     * @param node the XML node to marshal
+     * @param encoding the encoding to use
+     * 
+     * @return the string with the xml content
+     * 
+     * @throws CmsXmlException if something goes wrong
+     */
+    public static String marshal(Node node, String encoding) throws CmsXmlException {
+
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        try {
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            format.setEncoding(encoding);
+            format.setSuppressDeclaration(true);
+
+            XMLWriter writer = new XMLWriter(out, format);
+            writer.setEscapeText(false);
+
+            writer.write(node);
+            writer.close();
+        } catch (Exception e) {
+            throw new CmsXmlException(Messages.get().container(Messages.ERR_MARSHALLING_XML_DOC_0), e);
+        }
+        return new String(out.toByteArray());
+    }
+
+    /**
      * Removes the first Xpath element from the path.<p>
      * 
      * If the provided path does not contain a "/" character, 
@@ -395,8 +425,25 @@ public final class CmsXmlUtils {
         if (pos < 0) {
             return path;
         }
-
-        return path.substring(0, pos);
+        // count ' chars
+        int p = pos;
+        int count = -1;
+        while (p > 0) {
+            count++;
+            p = path.indexOf("\'", p + 1);
+        }
+        String parentPath = path.substring(0, pos);
+        if (count % 2 == 0) {
+            // if substring is complete 
+            return parentPath;
+        }
+        // if not complete
+        p = parentPath.lastIndexOf("'");
+        if (p >= 0) {
+            // complete it if possible
+            return removeLastXpathElement(parentPath.substring(0, p));
+        }
+        return parentPath;
     }
 
     /**
@@ -556,8 +603,7 @@ public final class CmsXmlUtils {
      * 
      * @throws CmsXmlException if the validation fails
      */
-    public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver)
-    throws CmsXmlException {
+    public static void validateXmlStructure(byte[] xmlData, EntityResolver resolver) throws CmsXmlException {
 
         XMLReader reader;
         try {

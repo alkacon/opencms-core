@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSystemConfiguration.java,v $
- * Date   : $Date: 2005/10/10 10:53:19 $
- * Version: $Revision: 1.34.2.3 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.34.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,293 +74,293 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.3 $
+ * @version $Revision: 1.34.2.4 $
  * 
  * @since 6.0.0
  */
 public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
     
+    /** The "server" attribute. */
+    public static final String A_SERVER = "server";
+
+    /** The name of the DTD for this configuration. */
+    public static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
+
+    /** The name of the default XML file for this configuration. */
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-system.xml";
+
+    /** The node name for the job "active" value. */
+    public static final String N_ACTIVE = "active";
+
+    /** The node name for the alias node. */
+    public static final String N_ALIAS = "alias";
+
+    /** The node name for the avgcachebytes node. */
+    public static final String N_AVGCACHEBYTES = "avgcachebytes";
+
+    /** The node name for the browser-based node. */
+    public static final String N_BROWSER_BASED = "browser-based";
+
+    /** the result cache node. */
+    public static final String N_CACHE = "resultcache";
+
+    /** The node name for the cache-enabled node. */
+    public static final String N_CACHE_ENABLED = "cache-enabled";
+
+    /** The node name for the cache-offline node. */
+    public static final String N_CACHE_OFFLINE = "cache-offline";
+
+    /** The node name for a job class. */
+    public static final String N_CLASS = "class";
+
+    /** The duration after which responsibles will be notified about out-dated content. */
+    public static final String N_CONTENT_NOTIFICATION = "content-notification";
+
+    /** The node name for the job context. */
+    public static final String N_CONTEXT = "context";
+
+    /** The node name for the job cron expression. */
+    public static final String N_CRONEXPRESSION = "cronexpression";
+
+    /** The node name for the defaultcontentencoding node. */
+    public static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
+
+    /** The node name for the default-uri node. */
+    public static final String N_DEFAULT_URI = "default-uri";
+
+    /** The node name for the defaultusers expression. */
+    public static final String N_DEFAULTUSERS = "defaultusers";
+
+    /** The node name for the digest type. */
+    public static final String N_DIGESTTYPE = "digest-type";
+
+    /** The node name for the login account lock minutes.  */
+    public static final String N_DISABLEMINUTES = "disableMinutes";
+
+    /** The node name for the email-interval node. */
+    public static final String N_EMAIL_INTERVAL = "email-interval";
+
+    /** The node name for the email-receiver node. */
+    public static final String N_EMAIL_RECEIVER = "email-receiver";
+
+    /** The node name for the email-sender node. */
+    public static final String N_EMAIL_SENDER = "email-sender";
+    
     /** The node name for the login message enabled flag. */
     public static final String N_ENABLED = "enabled";
+
+    /** The node name for the context encoding. */
+    public static final String N_ENCODING = "encoding";
+
+    /** The node name for the flexcache node. */
+    public static final String N_FLEXCACHE = "flexcache";
+
+    /** The node name for the form-based node. */
+    public static final String N_FORM_BASED = "form-based";
+
+    /** The node name for the group-administrators node. */
+    public static final String N_GROUP_ADMINISTRATORS = "group-administrators";
+
+    /** The node name for the group-guests node. */
+    public static final String N_GROUP_GUESTS = "group-guests";
+    
+    /** The node name for the group-projectmanagers node. */
+    public static final String N_GROUP_PROJECTMANAGERS = "group-projectmanagers";
+
+    /** The node name for the group-users node. */
+    public static final String N_GROUP_USERS = "group-users";
+
+    /** The node name for the http-authentication node. */
+    public static final String N_HTTP_AUTHENTICATION = "http-authentication";
+
+    /** The node name for the internationalization node. */
+    public static final String N_I18N = "internationalization";
+
+    /** The node name for a job. */
+    public static final String N_JOB = "job";
+
+    /** The name of the class to generate cache keys. */
+    public static final String N_KEYGENERATOR = "keygenerator";
+
+    /** The node name for individual locales. */
+    public static final String N_LOCALE = "locale";
+
+    /** The node name for the locale handler. */
+    public static final String N_LOCALEHANDLER = "localehandler";
+
+    /** The node name for the configured locales. */
+    public static final String N_LOCALESCONFIGURED = "localesconfigured";
+
+    /** The node name for the default locale(s). */
+    public static final String N_LOCALESDEFAULT = "localesdefault";
+
+    /** The node name for the log-interval node. */
+    public static final String N_LOG_INTERVAL = "log-interval";
 
     /** The node name for the login message login forbidden flag. */
     public static final String N_LOGINFORBIDDEN = "loginForbidden";
 
+    /** The node name for the login manager. */
+    public static final String N_LOGINMANAGER = "loginmanager";
+
     /** The node name for the login message. */
     public static final String N_LOGINMESSAGE = "loginmessage";
 
+    /** The node name for the mail configuration. */
+    public static final String N_MAIL = "mail";
+
+    /** The node name for the "mail from" node. */
+    public static final String N_MAILFROM = "mailfrom";
+
+    /** The node name for the "mail host" node. */
+    public static final String N_MAILHOST = "mailhost";
+    
+    /** The node name for the login manager bad attempt count. */
+    public static final String N_MAXBADATTEMPTS = "maxBadAttempts";
+
+    /** The node name for the maxcachebytes node. */
+    public static final String N_MAXCACHEBYTES = "maxcachebytes";
+
+    /** The node name for the maxentrybytes node. */
+    public static final String N_MAXENTRYBYTES = "maxentrybytes";
+
+    /** The node name for the maxkeys node. */
+    public static final String N_MAXKEYS = "maxkeys";
+
+    /** The node name for the maxusagepercent node. */
+    public static final String N_MAXUSAGE_PERCENT = "maxusagepercent";
+
+    /** The node name for the memorymonitor node. */
+    public static final String N_MEMORYMONITOR = "memorymonitor";
+
     /** The node name for the login message text. */
     public static final String N_MESSAGE = "message";
+
+    /** The duration after which responsibles will be notified about out-dated content. */
+    public static final String N_NOTIFICATION_PROJECT = "notification-project";
+
+    /** The duration after which responsibles will be notified about out-dated content. */
+    public static final String N_NOTIFICATION_TIME = "notification-time";
+
+    /** The node name for the job parameters. */
+    public static final String N_PARAMETERS = "parameters";
+
+    /** The node name for the password encoding. */
+    public static final String N_PASSWORDENCODING = "encoding";
+
+    /** The node name for the password handler. */
+    public static final String N_PASSWORDHANDLER = "passwordhandler";
+
+    /** The node name for the context project name. */
+    public static final String N_PROJECT = "project";
+
+    /** The node name for the memory email receiver. */
+    public static final String N_RECEIVER = "receiver";
+
+    /** The node name for the context remote addr. */
+    public static final String N_REMOTEADDR = "remoteaddr";
+
+    /** The node name for the context requested uri. */
+    public static final String N_REQUESTEDURI = "requesteduri";
+
+    /** The node name for the request handler classes. */
+    public static final String N_REQUESTHANDLER = "requesthandler";
+
+    /** The node name for the request handlers. */
+    public static final String N_REQUESTHANDLERS = "requesthandlers";
+
+    /** The node name for the resource init classes. */
+    public static final String N_RESOURCEINIT = "resourceinit";
+
+    /** The node name for the resource init classes. */
+    public static final String N_RESOURCEINITHANDLER = "resourceinithandler";
+
+    /** The node name for the job "reuseinstance" value. */
+    public static final String N_REUSEINSTANCE = "reuseinstance";
+
+    /** The node name for the runtime info. */
+    public static final String N_RUNTIMECLASSES = "runtimeclasses";
+
+    /** The node name for the runtime info factory. */
+    public static final String N_RUNTIMEINFO = "runtimeinfo";
+
+    /** The node name for the runtime properties node. */
+    public static final String N_RUNTIMEPROPERTIES = "runtimeproperties";
+
+    /** The node name for the scheduler. */
+    public static final String N_SCHEDULER = "scheduler";
+
+    /** The node name for the secure site. */
+    public static final String N_SECURE = "secure";
+
+    /** The node name for the context site root. */
+    public static final String N_SITEROOT = "siteroot";
+
+    /** The node name for the sites node. */
+    public static final String N_SITES = "sites";
+
+    /** The size of the driver manager's cache for ACLS. */
+    public static final String N_SIZE_ACLS = "size-accesscontrollists";
+
+    /** The size of the driver manager's cache for groups. */
+    public static final String N_SIZE_GROUPS = "size-groups";
+
+    /** The size of the security manager's cache for permission checks. */
+    public static final String N_SIZE_PERMISSIONS = "size-permissions";
+
+    /** The size of the driver manager's cache for projects. */
+    public static final String N_SIZE_PROJECTS = "size-projects";
+
+    /** The size of the driver manager's cache for properties. */
+    public static final String N_SIZE_PROPERTIES = "size-properties";
+
+    /** The size of the driver manager's cache for lists of resources. */
+    public static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
+
+    /** The size of the driver manager's cache for resources. */
+    public static final String N_SIZE_RESOURCES = "size-resources";
+
+    /** The size of the driver manager's cache for user/group relations. */
+    public static final String N_SIZE_USERGROUPS = "size-usergroups";
+
+    /** The size of the driver manager's cache for users. */
+    public static final String N_SIZE_USERS = "size-users";
+
+    /** The main system configuration node name. */
+    public static final String N_SYSTEM = "system";
 
     /** The node name for the login message end time. */
     public static final String N_TIMEEND = "timeEnd";
 
     /** The node name for the login message start time. */
     public static final String N_TIMESTART = "timeStart";
-
-    /** The "server" attribute. */
-    protected static final String A_SERVER = "server";
-
-    /** The name of the DTD for this configuration. */
-    protected static final String CONFIGURATION_DTD_NAME = "opencms-system.dtd";
-
-    /** The name of the default XML file for this configuration. */
-    protected static final String DEFAULT_XML_FILE_NAME = "opencms-system.xml";
-
-    /** The node name for the job "active" value. */
-    protected static final String N_ACTIVE = "active";
-
-    /** The node name for the alias node. */
-    protected static final String N_ALIAS = "alias";
-
-    /** The node name for the avgcachebytes node. */
-    protected static final String N_AVGCACHEBYTES = "avgcachebytes";
-
-    /** The node name for the browser-based node. */
-    protected static final String N_BROWSER_BASED = "browser-based";
-
-    /** The node name for the cache-enabled node. */
-    protected static final String N_CACHE_ENABLED = "cache-enabled";
-
-    /** The node name for the cache-offline node. */
-    protected static final String N_CACHE_OFFLINE = "cache-offline";
-
-    /** The node name for a job class. */
-    protected static final String N_CLASS = "class";
-
-    /** The node name for the job context. */
-    protected static final String N_CONTEXT = "context";
-
-    /** The node name for the job cron expression. */
-    protected static final String N_CRONEXPRESSION = "cronexpression";
-
-    /** The node name for the defaultcontentencoding node. */
-    protected static final String N_DEFAULT_CONTENT_ENCODING = "defaultcontentencoding";
-
-    /** The node name for the default-uri node. */
-    protected static final String N_DEFAULT_URI = "default-uri";
-
-    /** The node name for the defaultusers expression. */
-    protected static final String N_DEFAULTUSERS = "defaultusers";
-
-    /** The node name for the digest type. */
-    protected static final String N_DIGESTTYPE = "digest-type";
     
-    /** The node name for the login account lock minutes.  */
-    protected static final String N_DISABLEMINUTES = "disableMinutes";
-
-    /** The node name for the email-interval node. */
-    protected static final String N_EMAIL_INTERVAL = "email-interval";
-
-    /** The node name for the email-receiver node. */
-    protected static final String N_EMAIL_RECEIVER = "email-receiver";
-
-    /** The node name for the email-sender node. */
-    protected static final String N_EMAIL_SENDER = "email-sender";
-
-    /** The node name for the context encoding. */
-    protected static final String N_ENCODING = "encoding";
-
-    /** The node name for the flexcache node. */
-    protected static final String N_FLEXCACHE = "flexcache";
-    
-    /** The node name for the form-based node. */
-    protected static final String N_FORM_BASED = "form-based";
-
-    /** The node name for the group-administrators node. */
-    protected static final String N_GROUP_ADMINISTRATORS = "group-administrators";
-
-    /** The node name for the group-guests node. */
-    protected static final String N_GROUP_GUESTS = "group-guests";
-
-    /** The node name for the group-projectmanagers node. */
-    protected static final String N_GROUP_PROJECTMANAGERS = "group-projectmanagers";
-
-    /** The node name for the group-users node. */
-    protected static final String N_GROUP_USERS = "group-users";
-
-    /** The node name for the http-authentication node. */
-    protected static final String N_HTTP_AUTHENTICATION = "http-authentication";
-
-    /** The node name for the internationalization node. */
-    protected static final String N_I18N = "internationalization";
-
-    /** The node name for a job. */
-    protected static final String N_JOB = "job";
-
-    /** The node name for individual locales. */
-    protected static final String N_LOCALE = "locale";
-
-    /** The node name for the locale handler. */
-    protected static final String N_LOCALEHANDLER = "localehandler";
-
-    /** The node name for the configured locales. */
-    protected static final String N_LOCALESCONFIGURED = "localesconfigured";
-
-    /** The node name for the default locale(s). */
-    protected static final String N_LOCALESDEFAULT = "localesdefault";
-
-    /** The node name for the log-interval node. */
-    protected static final String N_LOG_INTERVAL = "log-interval";
-
-    /** The node name for the login manager. */
-    protected static final String N_LOGINMANAGER = "loginmanager";
-
-    /** The node name for the mail configuration. */
-    protected static final String N_MAIL = "mail";
-
-    /** The node name for the "mail from" node. */
-    protected static final String N_MAILFROM = "mailfrom";
-
-    /** The node name for the "mail host" node. */
-    protected static final String N_MAILHOST = "mailhost";
-    
-    /** The node name for the login manager bad attempt count. */
-    protected static final String N_MAXBADATTEMPTS = "maxBadAttempts";
-
-    /** The node name for the maxcachebytes node. */
-    protected static final String N_MAXCACHEBYTES = "maxcachebytes";
-
-    /** The node name for the maxentrybytes node. */
-    protected static final String N_MAXENTRYBYTES = "maxentrybytes";
-
-    /** The node name for the maxkeys node. */
-    protected static final String N_MAXKEYS = "maxkeys";
-
-    /** The node name for the maxusagepercent node. */
-    protected static final String N_MAXUSAGE_PERCENT = "maxusagepercent";
-
-    /** The node name for the memorymonitor node. */
-    protected static final String N_MEMORYMONITOR = "memorymonitor";
-
-    /** The node name for the job parameters. */
-    protected static final String N_PARAMETERS = "parameters";
-
-    /** The node name for the password encoding. */
-    protected static final String N_PASSWORDENCODING = "encoding";
-
-    /** The node name for the password handler. */
-    protected static final String N_PASSWORDHANDLER = "passwordhandler";
-
-    /** The node name for the context project name. */
-    protected static final String N_PROJECT = "project";
-
-    /** The node name for the memory email receiver. */
-    protected static final String N_RECEIVER = "receiver";
-
-    /** The node name for the context remote addr. */
-    protected static final String N_REMOTEADDR = "remoteaddr";
-
-    /** The node name for the context requested uri. */
-    protected static final String N_REQUESTEDURI = "requesteduri";
-
-    /** The node name for the request handler classes. */
-    protected static final String N_REQUESTHANDLER = "requesthandler";
-
-    /** The node name for the request handlers. */
-    protected static final String N_REQUESTHANDLERS = "requesthandlers";
-
-    /** The node name for the resource init classes. */
-    protected static final String N_RESOURCEINIT = "resourceinit";
-
-    /** The node name for the resource init classes. */
-    protected static final String N_RESOURCEINITHANDLER = "resourceinithandler";
-
-    /** The node name for the job "reuseinstance" value. */
-    protected static final String N_REUSEINSTANCE = "reuseinstance";
-
-    /** The node name for the runtime info. */
-    protected static final String N_RUNTIMECLASSES = "runtimeclasses";
-
-    /** The node name for the runtime info factory. */
-    protected static final String N_RUNTIMEINFO = "runtimeinfo";
-
-    /** The node name for the runtime properties node. */
-    protected static final String N_RUNTIMEPROPERTIES = "runtimeproperties";
-
-    /** The node name for the scheduler. */
-    protected static final String N_SCHEDULER = "scheduler";
-
-    /** The node name for the secure site. */
-    protected static final String N_SECURE = "secure";
-
-    /** The node name for the context site root. */
-    protected static final String N_SITEROOT = "siteroot";
-
-    /** The node name for the sites node. */
-    protected static final String N_SITES = "sites";
-
-    /** The main system configuration node name. */
-    protected static final String N_SYSTEM = "system";
-
     /** The node name for the user-admin node. */
-    protected static final String N_USER_ADMIN = "user-admin";
-
-    /** The node name for the user-export node. */
-    protected static final String N_USER_EXPORT = "user-export";
-
-    /** The node name for the user-guest node. */
-    protected static final String N_USER_GUEST = "user-guest";
+    public static final String N_USER_ADMIN = "user-admin";
 
     /** The node name for the user-deletedresource node. */
-    protected static final String N_USER_DELETEDRESOURCE = "user-deletedresource";
+    public static final String N_USER_DELETEDRESOURCE = "user-deletedresource";
+
+    /** The node name for the user-export node. */
+    public static final String N_USER_EXPORT = "user-export";
+
+    /** The node name for the user-guest node. */
+    public static final String N_USER_GUEST = "user-guest";
 
     /** The node name for the context user name. */
-    protected static final String N_USERNAME = "user";
+    public static final String N_USERNAME = "user";
 
     /** The node name for the version history. */
-    protected static final String N_VERSIONHISTORY = "versionhistory";
+    public static final String N_VERSIONHISTORY = "versionhistory";
 
     /** The node name for the warning-interval node. */
-    protected static final String N_WARNING_INTERVAL = "warning-interval";
+    public static final String N_WARNING_INTERVAL = "warning-interval";
 
     /** The node name for the workplace-server node. */
-    protected static final String N_WORKPLACE_SERVER = "workplace-server";
+    public static final String N_WORKPLACE_SERVER = "workplace-server";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsSystemConfiguration.class);
-
-    /** the result cache node. */
-    private static final String N_CACHE = "resultcache";
-
-    /** The name of the class to generate cache keys. */
-    private static final String N_KEYGENERATOR = "keygenerator";
-
-    /** The duration after which responsibles will be notified about out-dated content. */
-    private static final String N_NOTIFICATION_TIME = "notification-time";
-
-    /** The duration after which responsibles will be notified about out-dated content. */
-    private static final String N_NOTIFICATION_PROJECT = "notification-project";
-
-    /** The duration after which responsibles will be notified about out-dated content. */
-    private static final String N_CONTENT_NOTIFICATION = "content-notification";
-    
-    /** The size of the driver manager's cache for ACLS. */
-    private static final String N_SIZE_ACLS = "size-accesscontrollists";
-
-    /** The size of the driver manager's cache for groups. */
-    private static final String N_SIZE_GROUPS = "size-groups";
-
-    /** The size of the security manager's cache for permission checks. */
-    private static final String N_SIZE_PERMISSIONS = "size-permissions";
-
-    /** The size of the driver manager's cache for projects. */
-    private static final String N_SIZE_PROJECTS = "size-projects";
-
-    /** The size of the driver manager's cache for properties. */
-    private static final String N_SIZE_PROPERTIES = "size-properties";
-
-    /** The size of the driver manager's cache for lists of resources. */
-    private static final String N_SIZE_RESOURCELISTS = "size-resourcelists";
-
-    /** The size of the driver manager's cache for resources. */
-    private static final String N_SIZE_RESOURCES = "size-resources";
-
-    /** The size of the driver manager's cache for user/group relations. */
-    private static final String N_SIZE_USERGROUPS = "size-usergroups";
-
-    /** The size of the driver manager's cache for users. */
-    private static final String N_SIZE_USERS = "size-users";
     
     /** The settings of the driver manager. */
     private CmsCacheSettings m_cacheSettings;
@@ -395,12 +395,12 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     /** The mail settings. */
     private CmsMailSettings m_mailSettings;
 
+    /** Notification project. */
+    private String m_notificationProject; 
+
     /** The duration after which responsibles will be notified about out-dated content (in days). */
     // It is an Integer object so that it can be distinguished if this optional element was set or not
-    private Integer m_notificationTime; 
-
-    /** Notification project. */
-    private String m_notificationProject;
+    private Integer m_notificationTime;
     
     /** The password handler. */
     private I_CmsPasswordHandler m_passwordHandler;
@@ -1129,6 +1129,16 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
     
     /**
+     * Returns the project in which timestamps for the content notification are read.<p>
+     * 
+     * @return the project in which timestamps for the content notification are read
+     */
+    public String getNotificationProject() {
+
+        return m_notificationProject;
+    }    
+
+    /**
      * Returns the duration after which responsibles will be notified about out-dated content (in days).<p>
      * 
      * @return the duration after which responsibles will be notified about out-dated content
@@ -1140,16 +1150,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         } else {
             return -1;
         }
-    }    
-
-    /**
-     * Returns the project in which timestamps for the content notification are read.<p>
-     * 
-     * @return the project in which timestamps for the content notification are read
-     */
-    public String getNotificationProject() {
-
-        return m_notificationProject;
     } 
     
     /**
@@ -1422,6 +1422,19 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
     }
 
     /**
+     * Sets the project in which timestamps for the content notification are read.<p>
+     * 
+     * @param notificationProject the project in which timestamps for the content notification are read
+     */
+    public void setNotificationProject(String notificationProject) {
+
+        m_notificationProject = notificationProject;
+        if (CmsLog.INIT.isInfoEnabled()) {
+            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NOTIFICATION_PROJECT_1, m_notificationProject));
+        }
+    }
+    
+    /**
      * Sets the duration after which responsibles will be notified about out-dated content (in days).<p>
      * 
      * @param notificationTime the duration after which responsibles will be notified about out-dated content
@@ -1435,19 +1448,6 @@ public class CmsSystemConfiguration extends A_CmsXmlConfiguration implements I_C
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             CmsLog.INIT.info(Messages.get().key(Messages.INIT_NOTIFICATION_TIME_1, m_notificationTime));
-        }
-    }
-    
-    /**
-     * Sets the project in which timestamps for the content notification are read.<p>
-     * 
-     * @param notificationProject the project in which timestamps for the content notification are read
-     */
-    public void setNotificationProject(String notificationProject) {
-
-        m_notificationProject = notificationProject;
-        if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NOTIFICATION_PROJECT_1, m_notificationProject));
         }
     }
 

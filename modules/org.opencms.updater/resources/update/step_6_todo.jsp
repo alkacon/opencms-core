@@ -2,7 +2,7 @@
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsUpdateBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 // next page 
-String nextPage = "step_6_finished.jsp";
+String nextPage = "step_7_finished.jsp";
 
 boolean showButtons = false;
 %>

@@ -12,7 +12,7 @@
 	boolean hasUserAccepted = (request.getParameter("accept") != null) && (request.getParameter("accept").equals("true"));
 
 	String descriptions = "";
-	CmsSetupTests setupTests = null;
+	org.opencms.setup.comptest.CmsSetupTests setupTests = null;
 	CmsSetupTestResult testResult = null;
 	String resultIcon = null;
 	String helpIcon = null;

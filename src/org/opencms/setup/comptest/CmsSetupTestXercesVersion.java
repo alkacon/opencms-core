@@ -1,6 +1,6 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupTestXercesVersion.java,v $
- * Date   : $Date: 2006/03/08 15:05:50 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestXercesVersion.java,v $
+ * Date   : $Date: 2006/03/23 17:47:22 $
  * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
@@ -29,7 +29,10 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.setup.comptest;
+
+import org.opencms.i18n.CmsEncoder;
+import org.opencms.setup.CmsSetupBean;
 
 import java.io.ByteArrayInputStream;
 
@@ -54,7 +57,7 @@ public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
     public static final String TEST_NAME = "XML Parser";
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#getName()
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
      */
     public String getName() {
 
@@ -62,15 +65,15 @@ public class CmsSetupTestXercesVersion implements I_CmsSetupTest {
     }
 
     /**
-     * @see org.opencms.setup.I_CmsSetupTest#run(org.opencms.setup.CmsSetupBean)
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
-    public CmsSetupTestResult run(CmsSetupBean setupBean) throws Exception {
+    public CmsSetupTestResult execute(CmsSetupBean setupBean) throws Exception {
 
         CmsSetupTestResult testResult = new CmsSetupTestResult(this);
 
         DOMParser parser = new DOMParser();
         String document = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<test>test</test>\n";
-        parser.parse(new InputSource(new ByteArrayInputStream(document.getBytes("UTF-8"))));
+        parser.parse(new InputSource(new ByteArrayInputStream(document.getBytes(CmsEncoder.ENCODING_UTF_8))));
         Document doc = parser.getDocument();
 
         // Xerces 1 and 2 APIs are different, let's see what we have...

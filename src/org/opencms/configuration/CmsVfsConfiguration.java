@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2005/10/19 09:25:23 $
- * Version: $Revision: 1.38.2.2 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.38.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,104 +58,104 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38.2.2 $
+ * @version $Revision: 1.38.2.3 $
  * 
  * @since 6.0.0
  */
 public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
+
+    /** The widget attribute. */
+    public static final String A_DEFAULTWIDGET = "defaultwidget";
+
+    /** The source attribute name. */
+    public static final String A_SOURCE = "source";
+    
+    /** The target attribute name. */
+    public static final String A_TARGET = "target";    
+
+    /** The name of the DTD for this configuration. */
+    public static final String CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
+
+    /** The name of the default XML file for this configuration. */
+    public static final String DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
+
+    /** The collector node name. */
+    public static final String N_COLLECTOR = "collector";
+    
+    /** The collectors node name. */
+    public static final String N_COLLECTORS = "collectors";
+
+    /** The copy-resource node name.*/
+    public static final String N_COPY_RESOURCE = "copy-resource";
+
+    /** The copy-resources node name.*/
+    public static final String N_COPY_RESOURCES = "copy-resources";
+
+    /** The defaultfile node name. */
+    public static final String N_DEFAULTFILE = "defaultfile";
+
+    /** The defaultfiles node name. */
+    public static final String N_DEFAULTFILES = "defaultfiles";
+
+    /** File translations node name. */
+    public static final String N_FILETRANSLATIONS = "filetranslations";
+
+    /** Folder translations node name. */
+    public static final String N_FOLDERTRANSLATIONS = "foldertranslations";
+
+    /** The node name of an individual resource loader. */
+    public static final String N_LOADER = "loader";
 
     /** The mapping node name. */
     public static final String N_MAPPING = "mapping";
 
     /** The mappings node name. */
     public static final String N_MAPPINGS = "mappings";
-    
+
     /** The properties node name. */
-    public static final String N_PROPERTIES = "properties";    
+    public static final String N_PROPERTIES = "properties";
+
+    /** The resource loaders node name. */
+    public static final String N_RESOURCELOADERS = "resourceloaders";
+
+    /** The main resource node name. */
+    public static final String N_RESOURCES = "resources";
 
     /** The resource types node name. */
     public static final String N_RESOURCETYPES = "resourcetypes";
 
-    /** The node name of an individual resource type. */
-    public static final String N_TYPE = "type";
-
-    /** The widget attribute. */
-    protected static final String A_DEFAULTWIDGET = "defaultwidget";
-    
-    /** The collector node name. */
-    protected static final String N_COLLECTOR = "collector";
-
-    /** The collectors node name. */
-    protected static final String N_COLLECTORS = "collectors";
-
-    /** The defaultfile node name. */
-    protected static final String N_DEFAULTFILE = "defaultfile";
-
-    /** The defaultfiles node name. */
-    protected static final String N_DEFAULTFILES = "defaultfiles";
-
-    /** File translations node name. */
-    protected static final String N_FILETRANSLATIONS = "filetranslations";
-
-    /** Folder translations node name. */
-    protected static final String N_FOLDERTRANSLATIONS = "foldertranslations";
-
-    /** The node name of an individual resource loader. */
-    protected static final String N_LOADER = "loader";
-
-    /** The resource loaders node name. */
-    protected static final String N_RESOURCELOADERS = "resourceloaders";
-
-    /** The main resource node name. */
-    protected static final String N_RESOURCES = "resources";
-
     /** The schematype node name. */
-    protected static final String N_SCHEMATYPE = "schematype";
-
+    public static final String N_SCHEMATYPE = "schematype";
+    
     /** The schematypes node name. */
-    protected static final String N_SCHEMATYPES = "schematypes";
+    public static final String N_SCHEMATYPES = "schematypes";    
 
     /** Individual translation node name. */
-    protected static final String N_TRANSLATION = "translation";
+    public static final String N_TRANSLATION = "translation";    
 
     /** The translations master node name. */
-    protected static final String N_TRANSLATIONS = "translations";
-
-    /** The node name for the version history. */
-    protected static final String N_VERSIONHISTORY = "versionhistory";
-
-    /** The main vfs configuration node name. */
-    protected static final String N_VFS = "vfs";
+    public static final String N_TRANSLATIONS = "translations";
     
+    /** The node name of an individual resource type. */
+    public static final String N_TYPE = "type";
+    
+    /** The node name for the version history. */
+    public static final String N_VERSIONHISTORY = "versionhistory";
+    
+    /** The main vfs configuration node name. */
+    public static final String N_VFS = "vfs";
+
     /** The widget node name. */
-    protected static final String N_WIDGET = "widget";    
+    public static final String N_WIDGET = "widget";
 
     /** The widgets node name. */
-    protected static final String N_WIDGETS = "widgets";    
-
+    public static final String N_WIDGETS = "widgets";
+    
     /** The xmlcontent node name. */
-    protected static final String N_XMLCONTENT = "xmlcontent";
+    public static final String N_XMLCONTENT = "xmlcontent";
     
     /** The xmlcontents node name. */
-    protected static final String N_XMLCONTENTS = "xmlcontents";
-    
-    /** The source attribute name. */
-    private static final String A_SOURCE = "source";
-    
-    /** The target attribute name. */
-    private static final String A_TARGET = "target";
-
-    /** The name of the DTD for this configuration. */
-    private static final String CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
-
-    /** The name of the default XML file for this configuration. */
-    public static final String DEFAULT_XML_FILE_NAME = "opencms-vfs.xml";
-    
-    /** The copy-resource node name.*/
-    private static final String N_COPY_RESOURCE = "copy-resource";
-    
-    /** The copy-resources node name.*/
-    private static final String N_COPY_RESOURCES = "copy-resources";
+    public static final String N_XMLCONTENTS = "xmlcontents";
 
     /** The configured XML content type manager. */
     CmsXmlContentTypeManager m_xmlContentTypeManager;

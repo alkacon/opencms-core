@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/main/TestCmsShell.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.9 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.9.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.io.FileInputStream;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.9 $
+ * @version $Revision: 1.9.2.1 $
  * 
  * @since 6.0.0
  */
@@ -132,7 +132,7 @@ public class TestCmsShell extends OpenCmsTestCase {
         shell.start(stream);
 
         // get the name of the folder for the backup configuration files
-        File configBackupDir = new File(getTestDataPath("WEB-INF/config/backup/"));
+        File configBackupDir = new File(getTestDataPath("WEB-INF/" + CmsSystemInfo.FOLDER_CONFIG + "backup/"));
 
         // exit the shell
         shell.exit();

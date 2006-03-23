@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/util/TestCmsStringUtil.java,v $
- * Date   : $Date: 2005/10/28 12:07:37 $
- * Version: $Revision: 1.10.2.4 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.10.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.util;
 
+import org.opencms.i18n.CmsEncoder;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,7 +44,7 @@ import junit.framework.TestCase;
  * @author Andreas Zahner 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.10.2.4 $
+ * @version $Revision: 1.10.2.5 $
  */
 public class TestCmsStringUtil extends TestCase {
 
@@ -211,14 +213,14 @@ public class TestCmsStringUtil extends TestCase {
             + "<opencms/>";
 
         result = CmsStringUtil.extractXmlEncoding(xml);
-        assertEquals(result, "UTF-8");
+        assertEquals(result, CmsEncoder.ENCODING_UTF_8);
 
         xml = "<?xml version=\"1.0\" encoding='ISO-8859-1'?>\n" + "<opencms/>";
 
         result = CmsStringUtil.extractXmlEncoding(xml);
         assertEquals(result, "ISO-8859-1");
     }
-    
+
     /**
      * Tests for the resource name formatting.<p>
      */
@@ -240,7 +242,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("/.../subsubfolder/index.html", CmsStringUtil.formatResourceName(test, 25));
         assertEquals("/.../index.html", CmsStringUtil.formatResourceName(test, 21));
         test = "/demopages/search-demo/example-documents/";
-        assertEquals("/.../search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 39)); 
+        assertEquals("/.../search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 39));
         assertEquals("/demopages/search-demo/example-documents/", CmsStringUtil.formatResourceName(test, 40));
     }
 
@@ -267,7 +269,7 @@ public class TestCmsStringUtil extends TestCase {
         char delimChar = '/';
         String[] arrayResult;
         List listResult;
-               
+
         // test usability for path-tokenization (e.g. admin tool of workplace)
         toSplit = "/system/workplace/admin/searchindex/";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
@@ -278,14 +280,14 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("searchindex", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test an empty String: 
         toSplit = "";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
         assertEquals(0, arrayResult.length);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a whitespace only String
         toSplit = "               ";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
@@ -293,19 +295,19 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(toSplit, arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // with truncation
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar, true);
         assertEquals(1, listResult.size());
         assertEquals("", listResult.get(0));
-        
+
         // test a 1 separator-only String
         toSplit = "/";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
         assertEquals(0, arrayResult.length);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 2 separator-only String
         toSplit = "//";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
@@ -313,7 +315,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a single token String with starting delimiter
         toSplit = "/token";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
@@ -321,7 +323,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("token", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a single token String with ending delimiter
         toSplit = "token/";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
@@ -329,7 +331,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("token", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 3 separator-only String
         toSplit = "///";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
@@ -338,7 +340,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[1]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         toSplit = "/a // b/ c /";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimChar);
         assertEquals(4, arrayResult.length);
@@ -348,7 +350,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(" c ", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // with truncation
         listResult = CmsStringUtil.splitAsList(toSplit, delimChar, true);
         assertEquals(4, listResult.size());
@@ -367,7 +369,7 @@ public class TestCmsStringUtil extends TestCase {
         String delimString = "/";
         String[] arrayResult;
         List listResult;
-        
+
         toSplit = "/system/workplace/admin/searchindex/";
 
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -385,7 +387,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(0, arrayResult.length);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // whitespace only String
         toSplit = "               ";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -393,19 +395,19 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(toSplit, arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // with truncation
         listResult = CmsStringUtil.splitAsList(toSplit, delimString, true);
         assertEquals(1, listResult.size());
         assertEquals("", listResult.get(0));
-        
+
         // test a 1 separator-only String
         toSplit = "/";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(0, arrayResult.length);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 2 separator-only String
         toSplit = "//";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -413,7 +415,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a single token String with starting delimiter
         toSplit = "/token";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -421,7 +423,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("token", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a single token String with ending delimiter
         toSplit = "token/";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -429,26 +431,26 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("token", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 3 separator-only String
         toSplit = "///";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(2, arrayResult.length);
         assertEquals("", arrayResult[0]);
-        assertEquals("", arrayResult[1]);        
+        assertEquals("", arrayResult[1]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         toSplit = "/a // b/ c /";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(4, arrayResult.length);
         assertEquals("a ", arrayResult[0]);
         assertEquals("", arrayResult[1]);
         assertEquals(" b", arrayResult[2]);
-        assertEquals(" c ", arrayResult[3]);  
+        assertEquals(" c ", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // with truncation
         listResult = CmsStringUtil.splitAsList(toSplit, delimString, true);
         assertEquals(4, listResult.size());
@@ -456,9 +458,9 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", listResult.get(1));
         assertEquals("b", listResult.get(2));
         assertEquals("c", listResult.get(3));
-        
+
         // some tests with a separator longer than 1 
-        
+
         delimString = ",,";
         toSplit = ",,system,,workplace,,admin,,searchindex,,";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -476,7 +478,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(0, arrayResult.length);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a whitespace String with truncation:
         toSplit = "               ";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -484,14 +486,14 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(toSplit, arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 1 separator-only String
         toSplit = ",,";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(0, arrayResult.length);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 2 separator-only String
         toSplit = ",,,,";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -499,7 +501,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a single token String with starting delimiter
         toSplit = ",,token";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -507,7 +509,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("token", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a single token String with ending delimiter
         toSplit = "token,,";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -515,7 +517,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("token", arrayResult[0]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         // test a 3 separator-only String
         toSplit = ",,,,,,";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -524,7 +526,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[1]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
         assertEquals(Arrays.asList(arrayResult), listResult);
-        
+
         toSplit = ",,a, aber nicht b,,,,b, aber nicht c,,c, but not a,,";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(4, arrayResult.length);
@@ -533,8 +535,8 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("b, aber nicht c", arrayResult[2]);
         assertEquals("c, but not a", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
-        assertEquals(Arrays.asList(arrayResult), listResult);        
-        
+        assertEquals(Arrays.asList(arrayResult), listResult);
+
         delimString = "/delim/";
         toSplit = "/delim fake at start/delim//not a delim//delim//delim//delim fake at end";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
@@ -544,8 +546,8 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[2]);
         assertEquals("/delim fake at end", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
-        assertEquals(Arrays.asList(arrayResult), listResult);  
-        
+        assertEquals(Arrays.asList(arrayResult), listResult);
+
         toSplit = "/delim fake at start/delim//not a delim//delim//delim//delim";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(4, arrayResult.length);
@@ -554,8 +556,8 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[2]);
         assertEquals("/delim", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
-        assertEquals(Arrays.asList(arrayResult), listResult); 
-        
+        assertEquals(Arrays.asList(arrayResult), listResult);
+
         toSplit = "/delim//delim fake at start/delim//not a delim//delim//delim//delim fake at end/delim/";
         arrayResult = CmsStringUtil.splitAsArray(toSplit, delimString);
         assertEquals(4, arrayResult.length);
@@ -564,7 +566,7 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals("", arrayResult[2]);
         assertEquals("/delim fake at end", arrayResult[3]);
         listResult = CmsStringUtil.splitAsList(toSplit, delimString);
-        assertEquals(Arrays.asList(arrayResult), listResult);  
+        assertEquals(Arrays.asList(arrayResult), listResult);
     }
 
     /**
@@ -586,10 +588,10 @@ public class TestCmsStringUtil extends TestCase {
         assertEquals(test, "<a href=\"/opencms/opencms/test.jpg\">");
 
         content = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pics/";
-        result = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";               
+        result = "[0-9]$1/[^a]|/([}>\"'\\[]\\s*)/pucs/";
         test = CmsStringUtil.substitute(content, "i", "u");
         assertEquals(test, result);
-        
+
         content = "/delim//delim fake at start/delim//not a delim//delim//delim//delim fake at end/delim/";
         result = "REPLACED!/delim fake at startREPLACED!/not a delim/REPLACED!REPLACED!/delim fake at endREPLACED!";
         test = CmsStringUtil.substitute(content, "/delim/", "REPLACED!");

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsEncoder.java,v $
- * Date   : $Date: 2006/03/22 18:18:53 $
- * Version: $Revision: 1.10.2.3 $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.10.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.10.2.3 $
+ * @version $Revision: 1.10.2.4 $
  * 
  * @since 6.0.0
  */
@@ -51,7 +51,7 @@ public class TestCmsEncoder extends TestCase {
     private static final String ENC_ISO_8859_1 = "ISO-8859-1";
     private static final String ENC_ISO_8859_15 = "ISO-8859-15";
     private static final String ENC_US_ASCII = "US-ASCII";
-    private static final String ENC_UTF_8 = "UTF-8";
+    private static final String ENC_UTF_8 = CmsEncoder.ENCODING_UTF_8;
     private static final String ENC_WINDOWS_1252 = "Cp1252";
 
     // working around encoding issues (e.g. of CVS) by using unicode values 
@@ -173,10 +173,10 @@ public class TestCmsEncoder extends TestCase {
      */
     public void testLookupEncoding() {
 
-        assertEquals(CmsEncoder.lookupEncoding("UTF-8", null), "UTF-8");
-        assertEquals(CmsEncoder.lookupEncoding("utf-8", null), "UTF-8");
-        assertEquals(CmsEncoder.lookupEncoding("UTF8", null), "UTF-8");
-        assertEquals(CmsEncoder.lookupEncoding("utf8", null), "UTF-8");
+        assertEquals(CmsEncoder.lookupEncoding("UTF-8", null), CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.lookupEncoding("utf-8", null), CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.lookupEncoding("UTF8", null), CmsEncoder.ENCODING_UTF_8);
+        assertEquals(CmsEncoder.lookupEncoding("utf8", null), CmsEncoder.ENCODING_UTF_8);
         assertEquals(CmsEncoder.lookupEncoding("ISO-8859-1", null), "ISO-8859-1");
         assertEquals(CmsEncoder.lookupEncoding("iso-8859-1", null), "ISO-8859-1");
         assertEquals(CmsEncoder.lookupEncoding("ISO8859-1", null), "ISO-8859-1");

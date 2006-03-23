@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/I_CmsSetupTest.java,v $
- * Date   : $Date: 2006/03/19 21:48:29 $
- * Version: $Revision: 1.1.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/comptest/Attic/CmsSetupTestOperatingSystem.java,v $
+ * Date   : $Date: 2006/03/23 17:47:22 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -29,43 +29,48 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package org.opencms.setup;
+package org.opencms.setup.comptest;
+
+import org.opencms.setup.CmsSetupBean;
 
 /**
- * Represent a test to give users infos about whether their system is compatible to OpenCms.<p>
+ * Tests the operating system.<p>
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.1.8 
  */
-public interface I_CmsSetupTest {
+public class CmsSetupTestOperatingSystem implements I_CmsSetupTest {
 
-    /** Test failed display text. */
-    String RESULT_FAILED = "failed!";
-
-    /** Test passed display text. */
-    String RESULT_PASSED = "passed";
-
-    /** Test warning display text. */
-    String RESULT_WARNING = "warning!";
+    /** The test name. */
+    public static final String TEST_NAME = "Operating System";
 
     /**
-     * Returns the nice name for the test.<p>
-     * 
-     * @return the nice name
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#getName()
      */
-    String getName();
+    public String getName() {
+
+        return TEST_NAME;
+    }
 
     /**
-     * Returns the test results.<p>
-     * 
-     * @param setupBean the setup bean
-     * 
-     * @return the test results
-     * 
-     * @throws Exception if something goes wrong 
+     * @see org.opencms.setup.comptest.I_CmsSetupTest#execute(org.opencms.setup.CmsSetupBean)
      */
-    CmsSetupTestResult run(CmsSetupBean setupBean) throws Exception;
+    public CmsSetupTestResult execute(CmsSetupBean setupBean) {
+
+        CmsSetupTestResult testResult = new CmsSetupTestResult(this);
+
+        String osName = System.getProperty("os.name");
+        String osVersion = System.getProperty("os.version");
+
+        testResult.setResult(osName + " " + osVersion);
+        testResult.setHelp("Your operating system version");
+
+        // there is still no handling to test the operating system
+        testResult.setGreen();
+
+        return testResult;
+    }
 }

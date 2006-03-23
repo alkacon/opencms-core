@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsCore.java,v $
- * Date   : $Date: 2006/03/13 15:45:25 $
- * Version: $Revision: 1.216.2.7 $
+ * Date   : $Date: 2006/03/23 17:47:21 $
+ * Version: $Revision: 1.216.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -132,7 +132,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.216.2.7 $ 
+ * @version $Revision: 1.216.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -839,7 +839,7 @@ public final class OpenCmsCore {
 
         // create the configuration manager instance    
         m_configurationManager = new CmsConfigurationManager(getSystemInfo().getAbsoluteRfsPathRelativeToWebInf(
-            "config/"));
+            CmsSystemInfo.FOLDER_CONFIG));
         // store the configuration read from "opencms.properties" in the configuration manager 
         m_configurationManager.setConfiguration(configuration);
 
