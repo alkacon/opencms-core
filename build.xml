@@ -406,25 +406,36 @@ ${opencms.inputlib.textextraction}
 
     	<for list="${modules.var}" param="module" trim="yes">
     	  <sequential>
-    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
-    	  	</zip>
         	<if>
-	    		<available file="${opencms.output}/build/jars-@{module}" />
+        		<not>
+        			<or>
+			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos" />
+			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.list" />
+			    		<equals arg1="@{module}" arg2="org.opencms.workplace.demos.widget" />
+        			</or>
+        		</not>
 				<then>
 		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-		            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="WEB-INF/lib" includes="@{module}.jar" />
+		            	<zipfileset dir="${opencms.output.distfiles}" prefix="update/modules" includes="@{module}_*.zip" />
 		    	  	</zip>
+		        	<if>
+			    		<available file="${opencms.output}/build/jars-@{module}" />
+						<then>
+				    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+				            	<zipfileset dir="${opencms.output}/build/jars-@{module}" prefix="WEB-INF/lib" includes="@{module}.jar" />
+				    	  	</zip>
+						</then>
+					</if>
+		        	<if>
+			    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
+						<then>
+				    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+				            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="WEB-INF/lib" includes="*.jar" />
+				    	  	</zip>
+						</then>
+					</if>
 				</then>
-			</if>
-        	<if>
-	    		<available file="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" />
-				<then>
-		    	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
-		            	<zipfileset dir="${opencms.input}/modules/@{module}/resources/system/modules/@{module}/lib" prefix="WEB-INF/lib" includes="*.jar" />
-		    	  	</zip>
-				</then>
-			</if>
+			</if>    	  	
     	  </sequential>
     	</for>
     	

@@ -7,3 +7,4 @@ to update:
 - start your servlet container
 - execute the update wizard:
   browse something like: http://localhost:8080/opencms/update/
+- since the new update wizard automatically updates your xml configuration files, you should also backup your WEB-INF/config/ folder
