@@ -11920,21 +11920,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<destination>system/workplace/views/administration</destination>
-			<type>folder</type>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>default-file</name>
-					<value><![CDATA[/system/workplace/action/administration.html]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>		<file>
 			<destination>system/workplace/views/workflow</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
