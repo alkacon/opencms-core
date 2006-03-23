@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/22 16:26:43 $
- * Version: $Revision: 1.65.2.10 $
+ * Date   : $Date: 2006/03/23 08:57:16 $
+ * Version: $Revision: 1.65.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.10 $ 
+ * @version $Revision: 1.65.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -1131,6 +1131,15 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
         String result;
         if (buttonPresent) {
             // at least one button active, create mouseover button
+            String btIcon = "xmledit.png";
+            // determine icon to use
+            if (addElement && removeElement) {
+                btIcon = "xmledit_del_add.png";
+            } else if (addElement) {
+                btIcon = "xmledit_add.png";
+            } else if (removeElement) {
+                btIcon = "xmledit_del.png";
+            }
             StringBuffer href = new StringBuffer(512);
             href.append("javascript:");
             href.append(jsCall);
@@ -1141,7 +1150,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             result = button(
                 href.toString(),
                 null,
-                "directedit_op.png",
+                btIcon,
                 Messages.GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0,
                 0);
         } else {
