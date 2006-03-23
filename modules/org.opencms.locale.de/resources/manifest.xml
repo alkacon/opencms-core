@@ -1025,24 +1025,7 @@
 			<properties/>
 			<accesscontrol/>
 		</file>
-		<file>
-			<source>system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/workplace_de.properties</source>
-			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/cache/workplace_de.properties</destination>
-			<type>plain</type>
-			<uuidresource>655ceb93-d42f-11d9-bd97-555ce86a56d5</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>content-encoding</name>
-					<value><![CDATA[ISO-8859-1]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
+		
 		<file>
 			<destination>system/workplace/locales/de/messages/org/opencms/workplace/tools/content</destination>
 			<type>folder</type>
@@ -1401,6 +1384,35 @@
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<destination>system/workplace/locales/de/messages/org/opencms/frontend/templateone</destination>
+			<type>folder</type>
+			<datelastmodified>Thu, 23 Mar 2006 13:27:59 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Mar 2006 13:27:59 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties/>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>system/workplace/locales/de/messages/org/opencms/frontend/templateone/messages_de.properties</source>
+			<destination>system/workplace/locales/de/messages/org/opencms/frontend/templateone/messages_de.properties</destination>
+			<type>plain</type>
+			<uuidresource>dc0d8d84-ba70-11da-9bf7-79c738b15b78</uuidresource>
+			<datelastmodified>Thu, 23 Mar 2006 16:27:34 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Mar 2006 13:28:05 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>content-encoding</name>
+					<value><![CDATA[ISO-8859-1]]></value>
+				</property>
+			</properties>
 			<accesscontrol/>
 		</file>
 
