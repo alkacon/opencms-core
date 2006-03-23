@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsColorpickerWidget.java,v $
- * Date   : $Date: 2005/06/23 11:11:23 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/23 08:44:02 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -92,7 +92,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
         StringBuffer result = new StringBuffer(128);
         result.append("function initColorPicker() {\n");
         result.append("\tcolorPicker.title = \"");
-        result.append(widgetDialog.getMessages().key("dialog.color.title"));
+        result.append(Messages.get().key(Messages.GUI_DIALOG_COLOR_TITLE_0)); 
         result.append("\";\n");
         result.append("\tcolorPicker.url=\"");
         result.append(CmsWorkplace.getSkinUri());
@@ -132,7 +132,7 @@ public class CmsColorpickerWidget extends A_CmsWidget {
             "javascript:showColorPicker('" + id + "');",
             null,
             "color_fill",
-            "button.color",
+            Messages.GUI_BUTTON_COLOR_0,
             widgetDialog.getButtonStyle()));
         result.append("</tr></table>");
 

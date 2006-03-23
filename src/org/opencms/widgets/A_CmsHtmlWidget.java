@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2005/10/17 14:34:01 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/23 08:43:06 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.1 
  */
@@ -175,7 +175,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
             result.append(widgetDialog.button("javascript:setActiveEditor('"
                 + paramId
                 + "');openLinkDialog('"
-                + widgetDialog.getMessages().key("editor.message.noselection")
+                + Messages.get().key(Messages.GUI_BUTTON_LINKTO_0)
                 + "');", null, "link", "button.linkto", widgetDialog.getButtonStyle()));
             buttonsActive = true;
         }
@@ -183,8 +183,8 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
             result.append(widgetDialog.button("javascript:setActiveEditor('"
                 + paramId
                 + "');openAnchorDialog('"
-                + widgetDialog.getMessages().key("editor.message.noselection")
-                + "');", null, "anchor", "button.anchor", widgetDialog.getButtonStyle()));
+                + Messages.get().key(Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0)
+                + "');", null, "anchor", Messages.GUI_BUTTON_ANCHOR_0, widgetDialog.getButtonStyle()));
             buttonsActive = true;
         }
 
@@ -216,9 +216,10 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
                     + paramId
                     + "');openGallery('"
                     + galleryType
-                    + "');", null, galleryType, "button."
-                    + CmsStringUtil.substitute(galleryType, "gallery", "")
-                    + "list", widgetDialog.getButtonStyle()));
+                    + "');", null, galleryType, Messages.getButtonName(CmsStringUtil.substitute(
+                    galleryType,
+                    "gallery",
+                    "")), widgetDialog.getButtonStyle()));
                 showGallery = true;
             }
         }
