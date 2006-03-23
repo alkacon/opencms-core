@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/Messages.java,v $
- * Date   : $Date: 2006/03/22 16:35:58 $
- * Version: $Revision: 1.7.2.4 $
+ * Date   : $Date: 2006/03/23 09:17:21 $
+ * Version: $Revision: 1.7.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.7.2.4 $ 
+ * @version $Revision: 1.7.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,7 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1 = "ERR_UPLOAD_FILE_SIZE_TOO_HIGH_1";
-
+    
     /** Message constant for key in the resource bundle. */
 
     public static final String GUI_BUTTON_BACK_0 = "GUI_BUTTON_BACK_0";
@@ -169,6 +169,9 @@ public final class Messages extends A_CmsMessageBundle {
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0 = "GUI_EXPLORER_CONTEXT_RENAMEIMAGES_0";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EXPLORER_CONTEXT_REPLACE_0			="GUI_EXPLORER_CONTEXT_REPLACE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EXPLORER_CONTEXT_SECURE_0 = "GUI_EXPLORER_CONTEXT_SECURE_0";

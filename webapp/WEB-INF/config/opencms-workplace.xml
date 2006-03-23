@@ -162,7 +162,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
 						<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.replace" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
+						<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
 						<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
@@ -241,7 +241,7 @@
 						<entry key="GUI_EXPLORER_CONTEXT_COPY_0" uri="commons/copy.jsp" rules="d d aaai aaai dddd" order="150"/>
 						<entry key="GUI_EXPLORER_CONTEXT_MOVE_0" uri="commons/move.jsp" rules="d d iiii aaai dddd" order="170"/>
 						<entry key="GUI_EXPLORER_CONTEXT_DELETE_0" uri="commons/delete.jsp" rules="d d iiii aaai dddd" order="180"/>
-						<entry key="explorer.context.replace" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
+						<entry key="GUI_EXPLORER_CONTEXT_REPLACE_0" uri="commons/replace.jsp" rules="d d iiii aaai dddd" order="185"/>
 						<entry key="GUI_EXPLORER_CONTEXT_TOUCH_0" uri="commons/touch.jsp" rules="d d iiii aaai dddd" order="190"/>
 						<entry key="GUI_EXPLORER_CONTEXT_AVAILABILITY_0" uri="commons/availability.jsp" rules="d d iiii aaai dddd" order="200"/>
 						<entry key="GUI_EXPLORER_CONTEXT_UNDOCHANGES_0" uri="commons/undochanges.jsp" rules="d d iiid iaid dddd" order="210"/>
