@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/22 15:10:29 $
- * Version: $Revision: 1.44.2.11 $
+ * Date   : $Date: 2006/03/23 07:48:49 $
+ * Version: $Revision: 1.44.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.11 $ 
+ * @version $Revision: 1.44.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -1501,7 +1501,7 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
                     }
                     setDbProperty(getDatabase() + ".constr", conStr + getDbProperty(getDatabase() + ".templateDb"));
                     setDbProperty(getDatabase() + ".constr.newDb", conStr + getDbProperty(getDatabase() + ".newDb"));
-
+                    conStr += database;
                 } else if (provider.equals(MYSQL_PROVIDER) || provider.equals(POSTGRESQL_PROVIDER)) {
                     if (!conStr.endsWith("/")) {
                         conStr += "/";
