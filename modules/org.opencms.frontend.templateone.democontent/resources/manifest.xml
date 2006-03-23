@@ -1071,19 +1071,37 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>demopages/search-demo/example-documents/OpenCms6_Alkacon_Business.pdf</source>
-			<destination>demopages/search-demo/example-documents/OpenCms6_Alkacon_Business.pdf</destination>
+			<source>demopages/search-demo/example-documents/Alkacon_OpenCms_6_Business.pdf</source>
+			<destination>demopages/search-demo/example-documents/Alkacon_OpenCms_6_Business.pdf</destination>
 			<type>binary</type>
 			<uuidresource>89c0c6e0-2741-11d9-b67d-1fd2a335da0f</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
+			<datelastmodified>Thu, 23 Mar 2006 14:00:00 GMT</datelastmodified>
 			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
+			<datecreated>Thu, 23 Mar 2006 14:00:00 GMT</datecreated>
 			<usercreated>Admin</usercreated>
 			<flags>0</flags>
 			<properties>
 				<property>
 					<name>Title</name>
-					<value><![CDATA[Alkacon OpenCms 6.0 business presentation]]></value>
+					<value><![CDATA[Alkacon OpenCms 6 business presentation]]></value>
+				</property>
+			</properties>
+			<accesscontrol/>
+		</file>
+		<file>
+			<source>demopages/search-demo/example-documents/Alkacon_OpenCms_6_Technical.pdf</source>
+			<destination>demopages/search-demo/example-documents/Alkacon_OpenCms_6_Technical.pdf</destination>
+			<type>binary</type>
+			<uuidresource>f3c7cc5d-ba6d-11da-b3ac-9964a7a1b508</uuidresource>
+			<datelastmodified>Thu, 23 Mar 2006 14:00:00 GMT</datelastmodified>
+			<userlastmodified>Admin</userlastmodified>
+			<datecreated>Thu, 23 Mar 2006 14:00:00 GMT</datecreated>
+			<usercreated>Admin</usercreated>
+			<flags>0</flags>
+			<properties>
+				<property>
+					<name>Title</name>
+					<value><![CDATA[Alkacon OpenCms 6 technical presentation]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
