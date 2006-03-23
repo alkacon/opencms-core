@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2005/12/21 09:41:58 $
- * Version: $Revision: 1.28.2.3 $
+ * Date   : $Date: 2006/03/23 16:35:08 $
+ * Version: $Revision: 1.28.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,6 +57,7 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -72,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.3 $ 
+ * @version $Revision: 1.28.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -248,6 +249,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      */
     public String buildEditForm() {
 
+        Locale locale = this.getLocale();
         StringBuffer result = new StringBuffer();
 
         // check if the properties are editable
@@ -257,23 +259,20 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append("<table border=\"0\">\n");
         result.append("<tr>\n");
         result.append("\t<td class=\"textbold\">");
-        result.append(key("input.property"));
+        result.append(Messages.get().key(locale, Messages.GUI_INPUT_PROPERTY_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold maxwidth\">");
-        result.append(key("label.value"));
+        result.append(Messages.get().key(locale, Messages.GUI_LABEL_VALUE_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
-        result.append(key("input.usedproperty"));
+        result.append(Messages.get().key(locale, Messages.GUI_USED_PROPERTY_0));
         result.append("</td>\n");
         result.append("</tr>\n");
         result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
 
         // create the text property input rows from m_defaultProperties
         for (int i = 0; i < DEFAULT_PROPERTIES.length; i++) {
-            result.append(buildPropertyEntry(
-                DEFAULT_PROPERTIES[i],
-                key(KEY_PREFIX + DEFAULT_PROPERTIES[i]),
-                editable));
+            result.append(buildPropertyEntry(DEFAULT_PROPERTIES[i], key(KEY_PREFIX + DEFAULT_PROPERTIES[i]), editable));
         }
 
         // show navigation properties
@@ -296,7 +295,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         // build image link search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, KEY_PREFIX
             + CmsTemplateBean.PROPERTY_HEAD_IMGLINK, editable));
-        
+
         // build head element search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, KEY_PREFIX
             + CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, editable));
@@ -415,10 +414,8 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         try {
             CmsResource res = jsp.getCmsObject().readResource(resource, CmsResourceFilter.ALL);
-            String template = jsp.getCmsObject().readPropertyObject(
-                res,
-                CmsPropertyDefinition.PROPERTY_TEMPLATE,
-                true).getValue("");
+            String template = jsp.getCmsObject().readPropertyObject(res, CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
+                "");
             if (!res.isFolder()
                 && res.getTypeId() != CmsResourceTypeBinary.getStaticTypeId()
                 && res.getTypeId() != CmsResourceTypePlain.getStaticTypeId()
@@ -646,7 +643,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(PREFIX_VALUE);
         result.append(propertyName);
         result.append("', document);\" class=\"button\" title=\"");
-        result.append(key("button.search"));
+        result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_SEARCH_0));
         result.append("\"><img class=\"button\" src=\"");
         result.append(getSkinUri());
         result.append("/buttons/folder.png\" border=\"0\"></a></td>");
