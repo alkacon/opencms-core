@@ -264,11 +264,11 @@
 				</property>
 				<property>
 					<name>NavInfo</name>
-					<value><![CDATA[${key.admin.history.groups.historysettings}]]></value>
+					<value><![CDATA[${key.GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_GROUP_0}]]></value>
 				</property>
 				<property>
 					<name>Description</name>
-					<value><![CDATA[${key.admin.historysettings.description}]]></value>
+					<value><![CDATA[${key.GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_HELP_0}]]></value>
 				</property>
 				<property>
 					<name>NavImage</name>
@@ -276,7 +276,7 @@
 				</property>
 				<property>
 					<name>NavText</name>
-					<value><![CDATA[${key.label.admin.history.settings}]]></value>
+					<value><![CDATA[${key.GUI_HISTORYSETTINGS_HISTORY_ADMIN_TOOL_NAME_0}]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>
