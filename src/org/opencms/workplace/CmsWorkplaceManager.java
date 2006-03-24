@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceManager.java,v $
- * Date   : $Date: 2006/01/15 10:29:22 $
- * Version: $Revision: 1.72.2.8 $
+ * Date   : $Date: 2006/03/24 13:59:24 $
+ * Version: $Revision: 1.72.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -95,7 +95,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.72.2.8 $ 
+ * @version $Revision: 1.72.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -667,7 +667,7 @@ public final class CmsWorkplaceManager implements I_CmsLocaleHandler, I_CmsEvent
 
         // messages have not been read so far
         synchronized (this) {
-            result = new CmsWorkplaceMessages(locale);
+            result = new CmsWorkplaceModuleMessages(locale);
             m_messages.put(locale, result);
         }
         return result;

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2006/03/23 13:01:10 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2006/03/24 13:59:24 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,6 +39,7 @@ import java.util.Arrays;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -53,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.2.2 $ 
+ * @version $Revision: 1.12.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,12 +118,13 @@ public class CmsMultiMessages extends CmsMessages {
     throws CmsIllegalArgumentException {
 
         super();
+        setBundleName(CmsMultiMessageBundle.MULTI_BUNDLE_NAME);
         if ((messages == null) || (messages.size() == 0)) {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_MULTIMSG_EMPTY_LIST_0));
         }
 
         // set the locale
-        m_locale = ((CmsMessages)messages.get(0)).getLocale();
+        setLocale(((CmsMessages)messages.get(0)).getLocale());
 
         // set messages        
         m_messages = new ArrayList();
@@ -144,12 +146,20 @@ public class CmsMultiMessages extends CmsMessages {
      */
     public void addMessage(CmsMessages message) throws CmsIllegalArgumentException {
 
-        if (!m_locale.equals(message.getLocale())) {
-            // only add matching locales
-            throw new CmsIllegalArgumentException(Messages.get().container(
-                Messages.ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2,
-                message.getLocale(),
-                m_locale));
+        Locale locale = message.getLocale();
+        if (!getLocale().equals(locale)) {
+            // not the same locale, try to change the locale if this is a simple CmsMessage object
+            if (!(message instanceof CmsMultiMessages)) {
+                // match locale of multi bundle
+                String bundleName = message.getBundleName();
+                message = new CmsMessages(bundleName, getLocale());
+            } else {
+                // multi bundles with wring locales can't be added this way
+                throw new CmsIllegalArgumentException(Messages.get().container(
+                    Messages.ERR_MULTIMSG_LOCALE_DOES_NOT_MATCH_2,
+                    message.getLocale(),
+                    getLocale()));
+            }
         }
         if (!m_messages.contains(message)) {
             if (m_messageCache != null) {

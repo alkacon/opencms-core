@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/I_CmsWidgetDialog.java,v $
- * Date   : $Date: 2005/10/02 08:59:08 $
- * Version: $Revision: 1.8.2.3 $
+ * Date   : $Date: 2006/03/24 13:59:24 $
+ * Version: $Revision: 1.8.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Set;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.2.3 $ 
+ * @version $Revision: 1.8.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -200,6 +200,7 @@ public interface I_CmsWidgetDialog {
      * @return the current users locale setting
      * 
      * @see org.opencms.workplace.CmsWorkplace#getLocale()
+     * @see org.opencms.file.CmsRequestContext#getLocale()
      */
     Locale getLocale();
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/23 13:01:10 $
- * Version: $Revision: 1.146.2.8 $
+ * Date   : $Date: 2006/03/24 13:59:24 $
+ * Version: $Revision: 1.146.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.8 $ 
+ * @version $Revision: 1.146.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -1402,17 +1402,13 @@ public abstract class CmsWorkplace {
     }
 
     /**
-     * Returns the current users locale setting.<p>
+     * Returns the current users workplace locale settings.<p>
      * 
-     * This is a convenience method that just 
-     * executes the following code: 
-     * <code>getCms().getRequestContext().getLocale()</code>.<p>
-     * 
-     * @return the current users locale setting
+     * @return the current users workplace locale setting
      */
     public Locale getLocale() {
 
-        return getCms().getRequestContext().getLocale();
+        return m_settings.getUserSettings().getLocale();
     }
 
     /**
@@ -2059,9 +2055,9 @@ public abstract class CmsWorkplace {
                 storeSettings(m_session, m_settings);
             }
 
-            // initialize messages and also store them in settings
-            m_messages = new CmsMultiMessages(OpenCms.getWorkplaceManager().getMessages(
-                m_settings.getUserSettings().getLocale()));
+            // initialize messages
+            CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(getLocale());
+            m_messages = new CmsMultiMessages(messages);
             initMessages();
 
             // check request for changes in the workplace settings
@@ -2069,7 +2065,6 @@ public abstract class CmsWorkplace {
 
             // set cms context accordingly
             initWorkplaceCmsContext(m_settings, m_cms);
-
         }
     }
 

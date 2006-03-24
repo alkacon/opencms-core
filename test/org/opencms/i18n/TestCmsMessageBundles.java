@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessageBundles.java,v $
- * Date   : $Date: 2005/06/23 14:27:27 $
- * Version: $Revision: 1.12 $
+ * Date   : $Date: 2006/03/24 13:59:24 $
+ * Version: $Revision: 1.12.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,7 +44,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12 $
+ * @version $Revision: 1.12.2.1 $
  * 
  * @since 6.0.0
  */
@@ -194,7 +194,7 @@ public abstract class TestCmsMessageBundles extends TestCase {
 
         CmsMessages messages = bundle.getBundle();
 
-        Enumeration bundleKeys = messages.m_resourceBundle.getKeys();
+        Enumeration bundleKeys = messages.getResourceBundle().getKeys();
         while (bundleKeys.hasMoreElements()) {
             String bundleKey = (String)bundleKeys.nextElement();
             if (bundleKey.toUpperCase().equals(bundleKey)) {

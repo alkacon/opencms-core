@@ -1,7 +1,7 @@
 /*
- * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplaceMessages.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.38.2.2 $
+ * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/Attic/CmsWorkplaceModuleMessages.java,v $
+ * Date   : $Date: 2006/03/24 13:59:24 $
+ * Version: $Revision: 1.1.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -44,35 +44,38 @@ import java.util.Locale;
 import java.util.Set;
 
 /**
- * Provides access to the localized messages for the workplace.<p>
+ * Provides access to the localized messages for modules of the workplace.<p>
  * 
- * The workplace messages are collected from the workplace resource bundles of all installed modules,
- * plus the default workplace messages of the OpenCms core.
- * To be recognized as a workplace resource bundle,
+ * The workplace module messages are collected from the workplace resource bundles of all installed modules.
+ * To be recognized as a workplace module resource bundle,
  * the workplace property file must follow the naming convention <code>${module_package_name}.workplace${locale}.properties</code>,
  * for example like <code>com.mycompany.module.workplace_en.properties</code>.<p> 
  * 
- * Workplace messages are cached for faster lookup. If a localized key is contained in more then one module,
+ * Workplace module messages are cached for faster lookup. If a localized key is contained in more then one module,
  * it will be used only from the module where it was first found in. The module order is undefined. It is therefore 
  * recommended to ensure the uniqueness of all module keys by placing a special prefix in front of all keys of a module.<p>
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.38.2.2 $ 
+ * @version $Revision: 1.1.2.1 $ 
  * 
  * @since 6.0.0 
  */
-public class CmsWorkplaceMessages extends CmsMultiMessages {
+public class CmsWorkplaceModuleMessages extends CmsMultiMessages {
 
+    /** Constant for the multi bundle name. */
+    public static final String WORKPLACE_BUNDLE_NAME = CmsWorkplaceModuleMessages.class.getName();
+    
     /**
      * Constructor for creating a new messages object
      * initialized with the provided locale.<p>
      * 
      * @param locale the locale to initialize 
      */
-    public CmsWorkplaceMessages(Locale locale) {
+    public CmsWorkplaceModuleMessages(Locale locale) {
 
-        super(collectModuleMessages(locale));
+        super(collectModuleMessages(locale));        
+        setBundleName(WORKPLACE_BUNDLE_NAME);
     }
 
     /**
@@ -128,5 +131,4 @@ public class CmsWorkplaceMessages extends CmsMultiMessages {
 
         return result;
     }
-
 }
