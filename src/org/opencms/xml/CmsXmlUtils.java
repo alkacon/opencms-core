@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.20.2.2 $
+ * Date   : $Date: 2006/03/24 09:29:33 $
+ * Version: $Revision: 1.20.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.2.2 $ 
+ * @version $Revision: 1.20.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -425,6 +425,28 @@ public final class CmsXmlUtils {
         if (pos < 0) {
             return path;
         }
+
+        return path.substring(0, pos);
+    }
+
+    /**
+     * Removes the last complex Xpath element from the path.<p>
+     * 
+     * The same as {@link #removeLastXpathElement(String)} both it works with more complex xpaths.
+     * 
+     * <p>Example:<br> 
+     * <code>system/backup[@date='23/10/2003']/resource[path='/a/b/c']</code> becomes <code>system/backup[@date='23/10/2003']</code><p>
+     * 
+     * @param path the Xpath to remove the last element from
+     * 
+     * @return the path with the last element removed
+     */
+    public static String removeLastComplexXpathElement(String path) {
+
+        int pos = path.lastIndexOf('/');
+        if (pos < 0) {
+            return path;
+        }
         // count ' chars
         int p = pos;
         int count = -1;
@@ -441,7 +463,7 @@ public final class CmsXmlUtils {
         p = parentPath.lastIndexOf("'");
         if (p >= 0) {
             // complete it if possible
-            return removeLastXpathElement(parentPath.substring(0, p));
+            return removeLastComplexXpathElement(parentPath.substring(0, p));
         }
         return parentPath;
     }
