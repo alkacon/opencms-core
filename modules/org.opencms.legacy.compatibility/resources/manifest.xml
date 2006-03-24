@@ -10,17 +10,17 @@
 	</info>
 	<module>
 		<name>org.opencms.legacy.compatibility</name>
-		<nicename><![CDATA[OpenCms 6.0 Compatibility settings for old modules]]></nicename>
+		<nicename><![CDATA[OpenCms 6 Compatibility settings for old modules]]></nicename>
 		<group>OpenCms Legacy Support</group>
 		<class>com.opencms.legacy.CmsLegacyModuleAction</class>
 		<description><![CDATA[
-<p>This module contains OpenCms compatibility settings to use version 5.0 modules with OpenCms 6.0.</p>
+<p>This module contains OpenCms compatibility settings to use version 5.0 modules with OpenCms 6.</p>
 <p>Install this module only if you have to use older modules built for OpenCms 5.0.</p>
 <p><strong>Note:</strong> This module will create additional tables in your database, so the OpenCms database user must have appropriate permissions for DDL operations.</p>
 <p><strong>Note:</strong> For Oracle setup, please specify the index tablespace as module parameter if you are not using the default "users" tablespace.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.0.0</version>
+		<version>1.2.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -32,7 +32,6 @@
 			<resource uri="/system/modules/org.opencms.legacy.compatibility/"/>
 		</resources>
 		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.legacy.compatibility/</param>
 			<param name="${indexTablespace}">users</param>
 		</parameters>
 	</module>

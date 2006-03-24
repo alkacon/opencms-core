@@ -10,15 +10,15 @@
 	</info>
 	<module>
 		<name>org.opencms.locale.de</name>
-		<nicename><![CDATA[OpenCms 6.0 German localization for the workplace]]></nicename>
+		<nicename><![CDATA[OpenCms 6 German localization for the workplace]]></nicename>
 		<group>OpenCms Localization</group>
 		<class/>
 		<description><![CDATA[
 <p>This module contains the German language localization files for the OpenCms workplace.</p>
 <p>Install this module if you want to use the german version of the OpenCms Workplace.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>1.1.4</version>
+		<version>1.2.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -31,8 +31,7 @@
 		<resources>
 			<resource uri="/system/workplace/locales/de/messages/"/>
 		</resources>
-		<parameters>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>

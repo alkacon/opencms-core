@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.frontend.layoutpage</name>
-		<nicename><![CDATA[OpenCms frontend Layoutpage]]></nicename>
+		<nicename><![CDATA[OpenCms 6 frontend Layoutpage]]></nicename>
 		<group>OpenCms frontend</group>
 		<class/>
 		<description><![CDATA[<p>Contains the resource type "layoutpage" that helps creating pages following a set of predefined layout patterns.</p>

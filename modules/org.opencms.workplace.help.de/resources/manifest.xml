@@ -10,22 +10,21 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.help.de</name>
-		<nicename><![CDATA[OpenCms 6.0 Workplace german online help]]></nicename>
+		<nicename><![CDATA[OpenCms 6 Workplace german online help]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
 		<description><![CDATA[This module contains the online help pages for the OpenCms workplace in German language.
 Install this module if you want to use the german version of the OpenCms Workplace.
 
-(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
-		<version>0.36</version>
+(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).]]></description>
+		<version>1.2.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated/>
 		<userinstalled/>
 		<dateinstalled/>
 		<dependencies>
-			<dependency name="org.opencms.workplace" version="1.0"/>
-			<dependency name="org.opencms.workplace.help" version="0"/>
+			<dependency name="org.opencms.workplace.help" version="1.0.0"/>
 		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.help.de/classes/" destination="WEB-INF/classes/"/>

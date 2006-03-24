@@ -10,13 +10,13 @@
 	</info>
 	<module>
 		<name>org.opencms.frontend.templateone.form</name>
-		<nicename><![CDATA[OpenCms 6.0 Template One online input form]]></nicename>
+		<nicename><![CDATA[OpenCms 6 Template One online input form]]></nicename>
 		<group>Template One</group>
 		<class/>
 		<description><![CDATA[<p>This module contains online form functionality for the OpenCms frontend template one.</p>
 <p>This module can easily be used to create online input forms.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
-		<version>1.2.2</version>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>]]></description>
+		<version>2.0.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -33,9 +33,7 @@
 			<resource uri="/system/workplace/resources/filetypes/emailform.gif"/>
 			<resource uri="/system/workplace/admin/captcha/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.frontend.templateone.form/;/system/workplace/resources/filetypes/emailform.gif</param>
-		</parameters>
+		<parameters/>
 		<resourcetypes>
 			<type class="org.opencms.file.types.CmsResourceTypeXmlContent" name="emailform" id="60">
 				<properties>

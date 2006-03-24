@@ -10,7 +10,7 @@
 	</info>
 	<module>
 		<name>org.opencms.welcome</name>
-		<nicename><![CDATA[OpenCms 6.0 Welcome page and release notes]]></nicename>
+		<nicename><![CDATA[OpenCms 6 Welcome page and release notes]]></nicename>
 		<group>OpenCms Release Notes</group>
 		<class/>
 		<description><![CDATA[
@@ -18,9 +18,9 @@
 <p>Install this module as a simple demonstration for the template capabilities of OpenCms 6.0.</p>
 <p><strong>Note:</strong> Deleting this module will remove the "/release" folder and all pages there. 
 It will also remove the "default" template.</p>
-<p><i>(c) 2005 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
+<p><i>(c) 2006 by Alkacon Software GmbH (http://www.alkacon.com).</i></p>
 ]]></description>
-		<version>4.0.1</version>
+		<version>4.2.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
@@ -33,9 +33,7 @@ It will also remove the "default" template.</p>
 			<resource uri="/release/"/>
 			<resource uri="/system/modules/org.opencms.welcome/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/index.jsp;/release/;/system/modules/org.opencms.welcome/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>

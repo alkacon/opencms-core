@@ -10,27 +10,27 @@
 	</info>
 	<module>
 		<name>org.opencms.workplace.help</name>
-		<nicename><![CDATA[OpenCms 6.0 Workplace online help - Base module]]></nicename>
+		<nicename><![CDATA[OpenCms 6 Workplace online help - Base module]]></nicename>
 		<group>OpenCms Online Help</group>
 		<class/>
 		<description><![CDATA[<p>This module installs the basic templates required for the online help in all languages.</p>
-<p><i>(c) 2004-2005 by Alkacon Software</i></p>]]></description>
-		<version>1.0.7</version>
+<p><i>(c) 2006 by Alkacon Software</i></p>]]></description>
+		<version>1.2.0</version>
 		<authorname><![CDATA[Alkacon Software GmbH]]></authorname>
 		<authoremail><![CDATA[info@alkacon.com]]></authoremail>
 		<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
 		<userinstalled/>
 		<dateinstalled/>
-		<dependencies/>
+		<dependencies>
+			<dependency name="org.opencms.workplace" version="1.0.0"/>
+		</dependencies>
 		<exportpoints>
 			<exportpoint uri="/system/modules/org.opencms.workplace.help/classes/" destination="WEB-INF/classes/"/>
 		</exportpoints>
 		<resources>
 			<resource uri="/system/modules/org.opencms.workplace.help/"/>
 		</resources>
-		<parameters>
-			<param name="additionalresources">/system/modules/org.opencms.workplace.help/</param>
-		</parameters>
+		<parameters/>
 	</module>
 	<files>
 		<file>
