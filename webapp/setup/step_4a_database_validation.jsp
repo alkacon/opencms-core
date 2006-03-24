@@ -51,10 +51,15 @@ Alkacon OpenCms Setup Wizard - Validate database connection
 								<td><img src="resources/error.png" border="0"></td>
 								<td>&nbsp;&nbsp;</td>
 								<td>It was not possible to create a database connection with the given parameters.<br>
-									Please check the Exception below, and be aware that Alkacon recommends to use the
+									Please check the Exception below. There can be two reasons for this error:
+									<ul>
+									  <li><b>Your database is down</b>, or</li>
+									  <li><b>Your database is not accessible with the given connection parameters.</b></li>
+									</ul>
+									Be also aware that Alkacon recommends to use the
 									following JDBC drivers for <%=Bean.getDatabaseName(Bean.getDatabase())%>:<br>
 									<code><%=Bean.getDatabaseLibs(Bean.getDatabase()).toString()%></code><p>
-									<b>Check that the Jdbc drivers are included in your class path.</b>
+									Check that the Jdbc drivers are included in your class path.
 								</td>
 							</tr>
 							<tr>
