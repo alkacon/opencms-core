@@ -16,9 +16,10 @@
     <property name="opencms.output.warfiles"            location="${opencms.output}/build/${app.name}" />
     <property name="opencms.output.distfiles"           location="${opencms.output}/zip" />    
 
-    <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
     <property name="opencms.input.updater"            	location="${opencms.input}/modules/org.opencms.updater/resources" />
-    <property name="opencms.input.libs" 				location="${opencms.input.warfiles}/WEB-INF/lib" />
+    <property name="opencms.input.warfiles"            	location="${opencms.input}/webapp" />
+    <property name="opencms.input.webinf" 				location="${opencms.input.warfiles}/WEB-INF" />
+    <property name="opencms.input.libs" 				location="${opencms.input.webinf}/lib" />
     <property name="opencms.input.externlibs" 			location="${opencms.output}/lib" />
     <property name="opencms.input.defaultconfiguration" location="${opencms.input.warfiles}/WEB-INF/config/opencms.properties" />
     <property name="opencms.input.default.registry"		location="${opencms.input.warfiles}/WEB-INF/config/registry.xml" />
@@ -77,7 +78,8 @@
 	
 	<!-- comma separated list of jar archives to be removed during update -->
 	<property name="updater.jars.remove"				value="ant-opencms-1.0.jar,dom4j-1.5.2.jar,htmlparser-1.5-20050313.jar,jstl-1.1.2.jar,lucene-1.4.3.jar,snowball-1.0.jar,standard-1.1.2.jar" />
-	
+	<!-- comma separated list of files in WEB-INF/ to be updated -->
+	<property name="updater.webinf.files"				value="opencms.tld,web.xml,cmsshell.sh" />
 
  	<taskdef resource="net/sf/antcontrib/antlib.xml" loaderref="contrib">
 	  <classpath>
@@ -451,6 +453,10 @@ ${opencms.inputlib.textextraction}
     	
 	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
         	<zipfileset dir="${opencms.output}/build/jars-core/" prefix="WEB-INF/lib" includes="*.jar" />
+	  	</zip>
+    	
+	  	<zip zipfile="${opencms.output.distfiles}/opencms-updater.zip" update="true" whenempty="fail">
+        	<zipfileset dir="${opencms.input.webinf}" prefix="WEB-INF" includes="${updater.webinf.files}" />
 	  	</zip>
     	
     </target>
