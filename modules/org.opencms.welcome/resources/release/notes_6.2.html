@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<pages xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.opencms.org/dtd/6.0/xmlpage.xsd">
+  <page language="en">
+    <element name="body">
+      <links>
+        <link name="link0" type="A" internal="true">
+          <target><![CDATA[/sites/default/release/mailinglist.html]]></target>
+        </link>
+        <link name="link1" type="A" internal="false">
+          <target><![CDATA[http://www.opencms.org/bugzilla/]]></target>
+        </link>
+      </links>
+      <content><![CDATA[<h1>Release Notes for OpenCms 6.2</h1>
+<p>February 9, 2006: This is the public final release of OpenCms 6.2. OpenCms 6.2 is a major
+upgrade which adds several new and useful features&nbsp;to OpenCms 6.0. It has been in public beta
+testing for more than 6 weeks and can be considered very stable.
+<br /></p>
+<h2>Whats new in version&nbsp;6.2 compared to the 6.0 version:</h2>
+<p>
+<strong>Major new features</strong>
+</p>
+<ul>
+<li>Multiple selections and operations in the Workplace Explorer</li>
+<li>Native image scaling and manipulation</li>
+<li>Visual ("diff" like) comparison of document versions</li>
+<li>Integration of the popular FCKeditor for WYSIWYG editing</li>
+<li>Much improved search index administration interface</li>
+<li>More&nbsp;options for generating accessible website content</li>
+</ul>
+<p>
+<strong>Additional improvements
+<br /></strong>
+</p>
+<ul>
+<li>New frontend module to display photo albums conveniently on a website</li>
+<li>New frontend module containing the new resource type "layout pattern page" that allows content
+editors
+<br />to easily create new web pages from from predefined paragraph layouts</li>
+<li>New Content check tool to validate file contents and properties</li>
+<li>All list displays in the Workplace offer a print version</li>
+<li>Image galleries now show a thumbnail of all the images in the gallery</li>
+<li>In the Workplace Explorer, it is&nbsp;now possible to select resources by right-clicking on the
+resource name</li>
+<li>The Workplace Explorer tree now shows the resource state for new and changed resources</li>
+<li>It's possible to enable Link or Gallery dialogs in XML content WYSIWYG fields</li>
+<li>XML content WYSIWYG fields use the user configured editor (if possible)</li>
+<li>Added "move content up and down" function to XML content editor</li>
+<li>Improved XML content editor dynamic HTML generation for element operation buttons and localized
+help texts</li>
+<li>Added &lt;cms:img&gt; tag that automatically generates HTML for scaled images</li>
+<li>Added &lt;cms:decorate&gt; tag for parsing and decorating HTML content</li>
+<li>It is&nbsp;now possible to select 'individual' or 'shared' property mappings for XML
+content</li>
+<li>Workplace Explorer resources to display can now be configured using a Collector</li>
+<li>New project file list</li>
+<li>New option to export webuser data</li>
+<li>New option to export a folder recursively or not</li>
+<li>Project resources can now be modified in the Project Management "Edit project" dialog</li>
+<li>Added "before publish" event</li>
+<li>
+<p>Added several new mime type settings to the "mimetypes.properties" file</p>
+</li>
+</ul>
+<p>
+<strong>Resolved Issues compared to the 6.2 beta release</strong>
+</p>
+<ul>
+<li>Fixed issue #1092: WYSIWYG editor property popup window now has scrollbars to avoid problems
+accessing ok/cancel buttons</li>
+<li>Fixed issue #1002: static export does not produce NPEs in BackupHandler anymore</li>
+<li>Fixed issue #1064: font modifications in upload applet to let it work on systems without the
+Verdana font</li>
+<li>Fixed issue #995: improved scrubbing of statically exported files</li>
+<li>Fixed issue #999: addCookie() and sendRedirect() can now be used on a JSP page</li>
+<li>Fixed issue #990: it is&nbsp;now possible to set the status code in a JSP using the
+CmsJspBean</li>
+<li>Fixed issue #1032: needless module sub-directories are skipped during setup</li>
+<li>Fixed issue #1049: multi copy &amp; move operations now work with relative paths</li>
+<li>Fixed issue #1043: Html from FCKeditor and XML contents is now re-formatted while saving, so
+that "diff" can be used</li>
+<li>Fixed issue #1047: change MySQL tables from MEDIUMBLOB to LONGBLOB to allow resources of size
+&gt; 16MB</li>
+<li>Fixed issue #1051: Administration&nbsp;menu width is now adjusted during refresh</li>
+<li>Fixed issue #1030: detail issues fixed in the 'Administration&nbsp;view' list</li>
+<li>Fixed issue #1035: long project names do not make 'Preferences' and 'Exit' buttons disappear
+anymore</li>
+<li>Fixed issue #1001: added confirmation to lock dialog if a folder contains already locked
+resources</li>
+<li>Fixed issue #1004: editor preview button is now working even if the edited file is expired</li>
+<li>Fixed issue #1015: simultaneous creation of new XML content resources with frontend direct edit
+button is now possible</li>
+<li>Fixed issues with PostgreSQL driver thanks to Ivan Codarin</li>
+</ul>
+<p>
+<strong>Support of new database versions</strong>
+</p>
+<ul>
+<li>MySQL 5.0.x</li>
+<li>Oracle 10g</li>
+<li>MS SQL Server (contributed by Andras Balogh, experimental)</li>
+</ul>
+<h2>Backward compatibility</h2>
+<p>We recommend everyone who uses an earlier version of OpenCms to update to the 6.2 release. In
+case you are using one of the previous versions (OpenCms 6.0.x or 6.2 beta&nbsp;), there have been
+a lot of issues fixed in the final 6.2&nbsp;release. If you still use OpenCms 5.0.x, you should
+definitely consider an update since the 6.2 version is much more advanced and stable.</p>
+<p>OpenCms 6.2 should be highly backward compatible with all 6.0 versions. Certain minor API
+changes have been made, so some adjustments may have to be done for code that uses more advanced
+API functions. All Templates should be backward compatible without changes.</p>
+<p>To upgrade an existing OpenCms 6.0.x or 6.2 beta&nbsp;to the new 6.2 final&nbsp;release, an easy
+to use upgrade wizard is provided.
+<br /></p>
+<h2>Compatibility with Java versions, Servlet containers and Databases</h2>
+<p>OpenCms 6.2 requires Java 1.4.x or Java 1.5.x. It won't work with Java 1.3.x. We have tested
+only with SUNs version of the JDK. However, OpenCms has no dependencies to sun.* packages so it
+should in theory run with all compliant JVMs.</p>
+<p>We have tested this release on the Tomcat servlet engine and to some extend on JBoss 4.0.
+OpenCms 6.2 works "out of the box" with Tomcat 5.0.x and Tomcat 5.5.x. Others have reported
+deploying 6.x versions successfully on other servlet containers like BEA Weblogic and SunONE.</p>
+<p>On the database side, we have tested with MySQL 4.0, MySQL 4.1, MySQL 5.0, Oracle 9.x and Oracle
+10.x. PostgresSQL support has been contributed thanks to Antonio Core and Ivan Codarin. maxDB
+support has been contributed thanks to Clovis Wichoski and Fabiano Rech. MS SQL server
+support&nbsp; has been contributed thanks to Andras Balogh. We still are looking for volunteers to
+support testing the stability of the PostgreSQL, maxDB and MS SQL server releases.
+<br /></p>
+<h2>Regarding version numbers and CVS build tags</h2>
+<p>In case you want to check out OpenCms from the CVS, please keep the following in mind: The CVS
+tag for the 6.2 release is "build_6_2_0". You can check out the current development version by
+selecting the "dev_6_0_1" branch of the CVS. The development version provides new features which
+will be added to future stable OpenCms versions, but is considered to be not as stable as the CVS
+HEAD. The development version uses the version numbers 6.3.x and is likewise tagged in the CVS.</p>
+<h2>How you can help</h2>
+<p>Contributions to the OpenCms core development are most welcome. Please contact the core
+development team on the 
+<a target="_self" href="${link0}">opencms-dev</a> mailing list in
+case you are interested in supporting the development of OpenCms 6.2.</p>
+<p>Please use our Bugzilla to report bugs in this release: 
+<a target="extern" href="${link1}">http://www.opencms.org/bugzilla/
+<br /></a></p>
+<p>Thank you for using OpenCms and have fun with OpenCms 6.2 :-)</p>]]></content>
+    </element>
+  </page>
+</pages>
