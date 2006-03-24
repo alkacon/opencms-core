@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2005/12/13 17:11:49 $
- * Version: $Revision: 1.80.2.4 $
+ * Date   : $Date: 2006/03/24 16:00:33 $
+ * Version: $Revision: 1.80.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,6 +48,7 @@ import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
 import org.opencms.report.CmsShellReport;
+import org.opencms.report.I_CmsReport;
 import org.opencms.security.CmsAccessControlEntry;
 import org.opencms.security.CmsAccessControlList;
 import org.opencms.security.CmsRole;
@@ -59,6 +60,7 @@ import org.opencms.workplace.CmsWorkplace;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -76,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.80.2.4 $ 
+ * @version $Revision: 1.80.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -857,6 +859,20 @@ class CmsShellCommands implements I_CmsShellCommands {
     }
 
     /**
+     * Purges the jsp repository.<p>
+     * 
+     * @throws Exception if something goes wrong
+     * 
+     * @see org.opencms.flex.CmsFlexCache#cmsEvent(org.opencms.main.CmsEvent)
+     */
+    public void purgeJspRepository() throws Exception {
+
+        OpenCms.fireCmsEvent(new CmsEvent(
+            I_CmsEventListener.EVENT_FLEX_PURGE_JSP_REPOSITORY,
+            new HashMap(0)));
+    }
+
+    /**
      * Returns the current folder set as URI in the request context.<p>
      * 
      * @return the current folder
@@ -935,11 +951,17 @@ class CmsShellCommands implements I_CmsShellCommands {
      * Rebuilds (if required creates) all configured search indexes.<p>
      * 
      * @throws Exception if something goes wrong
+     * 
      * @see org.opencms.search.CmsSearchManager#rebuildAllIndexes(org.opencms.report.I_CmsReport)
      */
     public void rebuildAllIndexes() throws Exception {
 
-        OpenCms.getSearchManager().rebuildAllIndexes(new CmsShellReport(m_cms.getRequestContext().getLocale()), true);
+        I_CmsReport report = new CmsShellReport(m_cms.getRequestContext().getLocale());
+        try {
+            OpenCms.getSearchManager().rebuildAllIndexes(report, true);
+        } catch (CmsException e) {
+            report.println(e);
+        }
     }
 
     /**
