@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/A_CmsXmlWorkplace.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -62,9 +62,12 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
      * @param xpath the base xpath
      * @param principal the principal
      * @param permissions the permissions string
+     * 
+     * @return if a modification has been needed
      */
-    protected void setAccessEntry(Document document, String xpath, String principal, String permissions) {
+    protected boolean setAccessEntry(Document document, String xpath, String principal, String permissions) {
 
+        boolean ret = false;
         String xp = xpath
             + "/"
             + CmsWorkplaceConfiguration.N_ACCESSENTRY
@@ -73,8 +76,17 @@ public abstract class A_CmsXmlWorkplace extends A_CmsSetupXmlUpdate {
             + "='"
             + principal
             + "']";
+        if (CmsSetupXmlHelper.getValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PRINCIPAL) == null) {
+            ret = true;
+        }
         CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PRINCIPAL, principal);
-        CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PERMISSIONS, permissions);
+        if (!permissions.equals(CmsSetupXmlHelper.getValue(document, xp
+            + "/@"
+            + CmsWorkplaceConfiguration.A_PERMISSIONS))) {
+            CmsSetupXmlHelper.setValue(document, xp + "/@" + CmsWorkplaceConfiguration.A_PERMISSIONS, permissions);
+            ret = true;
+        }
+        return ret;
     }
 
     /**

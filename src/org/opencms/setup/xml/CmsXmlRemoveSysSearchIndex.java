@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlRemoveSysSearchIndex.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,7 +35,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.I_CmsXmlConfiguration;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -69,14 +69,6 @@ public class CmsXmlRemoveSysSearchIndex extends A_CmsSetupXmlUpdate {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
-     */
-    protected int getNodeRelation() {
-
-        return 0;
-    }
-
-    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToRemove() {
@@ -95,22 +87,7 @@ public class CmsXmlRemoveSysSearchIndex extends A_CmsSetupXmlUpdate {
             xp.append("[");
             xp.append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='System folder']");
-            m_xpaths = new ArrayList();
-            m_xpaths.add(xp.toString());
-            // /opencms/search/indexsources/indexsource[name='source2']
-            xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_SEARCH);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXSOURCES);
-            xp.append("/");
-            xp.append(CmsSearchConfiguration.N_INDEXSOURCE);
-            xp.append("[");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='source2']");
-            m_xpaths.add(xp.toString());
+            m_xpaths = Collections.singletonList(xp.toString());
         }
         return m_xpaths;
     }

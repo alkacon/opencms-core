@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddImgGalleryContextMenues.java,v $
- * Date   : $Date: 2006/03/24 09:29:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -102,14 +102,6 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
         } else if (xpath.indexOf(CmsWorkplaceConfiguration.A_REFERENCE) > 0) {
             if (node != null) {
                 CmsSetupXmlHelper.setValue(document, xpath, null);
-                return true;
-            }
-        } else if (xpath.indexOf(CmsWorkplaceConfiguration.N_ACCESSCONTROL) > 0) {
-            if (node == null) {
-                setAccessEntry(document, xpath, "GROUP.Administrators", "+r+v+w+c");
-                setAccessEntry(document, xpath, "GROUP.Projectmanagers", "+r+v+w+c");
-                setAccessEntry(document, xpath, "GROUP.Users", "+r+v+w+c");
-                setAccessEntry(document, xpath, "GROUP.TestGroup", "+r+v+w+c");
                 return true;
             }
         } else {
@@ -282,11 +274,13 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
-    protected int getNodeRelation() {
+    protected String getCommonPath() {
 
-        return 4;
+        // /opencms/workplace/explorertypes
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**
@@ -297,26 +291,16 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='imagegallery']/editoptions/contextmenu/entry[@uri='commons/${res}images.jsp']
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='");
-            xp.append("imagegallery");
-            xp.append("']/");
-            xp.append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_ENTRY);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.A_URI);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='").append("imagegallery");
+            xp.append("']/").append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_ENTRY);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
             xp.append("='commons/${res}images.jsp']");
             m_xpaths = new ArrayList();
             // ${res}: rename, comment
@@ -324,22 +308,14 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${res}", "comment"));
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}' and @reference='imagegallery']
             xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='");
-            xp.append("${etype}");
-            xp.append("' and @");
-            xp.append(CmsWorkplaceConfiguration.A_REFERENCE);
-            xp.append("='");
-            xp.append("imagegallery");
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='").append("${etype}");
+            xp.append("' and @").append(CmsWorkplaceConfiguration.A_REFERENCE);
+            xp.append("='").append("imagegallery");
             xp.append("']");
             // ???: linkgallery, htmlgallery, tablegallery
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "linkgallery"));
@@ -347,21 +323,13 @@ public class CmsXmlAddImgGalleryContextMenues extends A_CmsXmlWorkplace {
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "tablegallery"));
 
             xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='");
-            xp.append("downloadgallery");
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='").append("downloadgallery");
             xp.append("']/");
-            // /opencms/workplace/explorertypes/explorertype[@name='downloadgallery']/accesscontrol
-            m_xpaths.add(xp.toString() + CmsWorkplaceConfiguration.N_ACCESSCONTROL);
             // /opencms/workplace/explorertypes/explorertype[@name='downloadgallery']/editoptions
             m_xpaths.add(xp.toString() + CmsWorkplaceConfiguration.N_EDITOPTIONS);
             // /opencms/workplace/explorertypes/explorertype[@name='downloadgallery']/@reference

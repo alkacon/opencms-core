@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsSetupXmlManager.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.Map;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -146,14 +146,18 @@ public class CmsSetupXmlManager {
         while (itFiles.hasNext()) {
             String fileName = (String)itFiles.next();
             Iterator itPlugins = ((List)m_sortedPlugins.get(fileName)).iterator();
-            html.append("<tr><th colspan='2' align='left'>");
-            html.append(fileName);
-            html.append("</th></tr>\n");
+            StringBuffer code = new StringBuffer(256);
             for (int i = 0; itPlugins.hasNext(); i++) {
                 I_CmsSetupXmlUpdate plugin = (I_CmsSetupXmlUpdate)itPlugins.next();
                 if (plugin.validate(setupBean)) {
-                    html.append(htmlPlugin(setupBean, plugin, i));
+                    code.append(htmlPlugin(setupBean, plugin, i));
                 }
+            }
+            if (code.length() > 0) {
+                html.append("<tr><th colspan='2' align='left'>");
+                html.append(fileName);
+                html.append("</th></tr>\n");
+                html.append(code.toString());
             }
         }
         return html.toString();

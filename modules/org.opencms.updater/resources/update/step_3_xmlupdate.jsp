@@ -4,13 +4,24 @@
 --%><jsp:setProperty name="xmlBean" property="*" /><%
 	
 	// next page
-	String nextPage = "step_6_todo.jsp";	
+	String nextPage = "step_4_module_selection.jsp";	
+	// previous page
+	String prevPage = "step_2_settings.jsp";
 	
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
 	
-	if (Bean.isInitialized() && isFormSubmitted) {
-	  xmlBean.execute(Bean);
+	String htmlAvailablePlugins = "";
+	if (Bean.isInitialized()) {
+	  if (isFormSubmitted) {
+	    xmlBean.execute(Bean);
 		response.sendRedirect(nextPage);
+		return;
+      }
+	  htmlAvailablePlugins = xmlBean.htmlAvailablePlugins(Bean);
+	  if (htmlAvailablePlugins.trim().length()==0) {
+		response.sendRedirect(nextPage);
+		return;
+      }
 	}	
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -80,7 +91,7 @@ OpenCms Update Wizard - XML Configuration Files Update
 
 	<div style="width:96%; height: 300px; overflow: auto;">
     <table border="0" cellpadding="2" cellspacing="0">
-<%= xmlBean.htmlAvailablePlugins(Bean) %>
+<%= htmlAvailablePlugins %>
 	</table>
 	</div>
 
@@ -93,7 +104,7 @@ OpenCms Update Wizard - XML Configuration Files Update
 <%= Bean.getHtmlPart("C_CONTENT_END") %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" disabled="disabled">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton" >
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

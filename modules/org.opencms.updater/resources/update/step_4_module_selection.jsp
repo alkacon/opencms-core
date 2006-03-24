@@ -3,9 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 	
 	// next page
-	String nextPage = "step_4_update_modules.jsp";	
-	// previous page
-	String prevPage = "step_2_settings.jsp";
+	String nextPage = "step_5_update_modules.jsp";	
 	
 	boolean isFormSubmitted = (request.getParameter("submit") != null);
 	
@@ -13,7 +11,7 @@
 		response.sendRedirect(nextPage);
 	}	
 	if (Bean.getModulesToUpdate().isEmpty()) {
-		response.sendRedirect("step_5_xmlupdate.jsp");
+		response.sendRedirect(nextPage);
 	}
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -181,7 +179,7 @@ OpenCms Update Wizard - Module selection
 <%= Bean.htmlModuleHelpDescriptions() %>
 
 <%= Bean.getHtmlPart("C_BUTTONS_START") %>
-<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" onclick="location.href='<%= prevPage %>';">
+<input name="back" type="button" value="&#060;&#060; Back" class="dialogbutton" disabled="disabled">
 <input name="submit" type="submit" value="Continue &#062;&#062;" class="dialogbutton" >
 <input name="cancel" type="button" value="Cancel" class="dialogbutton" onclick="location.href='index.jsp';" style="margin-left: 50px;">
 </form>

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateDefaultPermissions.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -86,39 +86,66 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
                     + "[@"
                     + CmsWorkplaceConfiguration.A_PRINCIPAL
                     + "='???']";
-                CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(xp, "???", "GROUP.Administrators"), null);
-                CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(xp, "???", "GROUP.Projectmanagers"), null);
-                CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(xp, "???", "GROUP.Users"), null);
-                CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(xp, "???", "GROUP.Guests"), null);
-                CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(xp, "???", "GROUP.TestGroup"), null);
-                CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(xp, "???", "DEFAULT"), null);
+                if (xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0 && xpath.indexOf("XMLTemplate") < 0) {
+                    if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) < 0) {
+                        changed = changed
+                            || (0 < CmsSetupXmlHelper.setValue(
+                                document,
+                                CmsStringUtil.substitute(xp, "???", "DEFAULT"),
+                                null));
+                        changed = changed
+                        || (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
+                            xp,
+                            "???",
+                            "GROUP.Guests"), null));
+                    }
+                    changed = changed
+                        || (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
+                            xp,
+                            "???",
+                            "GROUP.Administrators"), null));
+                }
+                changed = changed
+                    || (0 < CmsSetupXmlHelper.setValue(document, CmsStringUtil.substitute(
+                        xp,
+                        "???",
+                        "GROUP.Projectmanagers"), null));
+                changed = changed
+                    || (0 < CmsSetupXmlHelper.setValue(
+                        document,
+                        CmsStringUtil.substitute(xp, "???", "GROUP.Users"),
+                        null));
+                changed = changed
+                    || (0 < CmsSetupXmlHelper.setValue(
+                        document,
+                        CmsStringUtil.substitute(xp, "???", "GROUP.TestGroup"),
+                        null));
                 if (CmsSetupXmlHelper.getValue(document, xpath + "/" + CmsWorkplaceConfiguration.N_ACCESSENTRY) == null) {
                     if (xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) < 0 && xpath.indexOf("XMLTemplate") < 0) {
-                        CmsSetupXmlHelper.setValue(document, xpath, null);
+                        changed = changed || (0 < CmsSetupXmlHelper.setValue(document, xpath, null));
                     }
                 }
-                changed = true;
             }
             if (xpath.indexOf(CmsResourceTypeJsp.getStaticTypeName()) > 0 || xpath.indexOf("XMLTemplate") > 0) {
-                setAccessEntry(document, xpath, "DEFAULT", "+r+v");
-                setAccessEntry(document, xpath, "GROUP.Administrators", "+r+v+w+c");
-                setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c");
-                changed = true;
+                changed = changed || setAccessEntry(document, xpath, "DEFAULT", "+r+v");
+                changed = changed || setAccessEntry(document, xpath, "GROUP.Administrators", "+r+v+w+c");
+                changed = changed || setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c");
             } else if (xpath.indexOf(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL) > 0) {
-                setAccessEntry(document, xpath, "DEFAULT", "+r+v+w+c");
-                setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c");
-                changed = true;
+                changed = changed || setAccessEntry(document, xpath, "DEFAULT", "+r+v+w+c");
+                changed = changed || setAccessEntry(document, xpath, "GROUP.Guests", "-r-v-w-c");
             }
         }
         return changed;
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
      */
-    protected int getNodeRelation() {
+    protected String getCommonPath() {
 
-        return 2;
+        // /opencms/workplace/explorertypes
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
     }
 
     /**
@@ -129,16 +156,11 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/accesscontrol
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='${etype}']/");
             xp.append(CmsWorkplaceConfiguration.N_ACCESSCONTROL);
             m_xpaths = new ArrayList();
@@ -159,16 +181,11 @@ public class CmsXmlUpdateDefaultPermissions extends A_CmsXmlWorkplace {
 
             // /opencms/workplace/explorertypes/defaultaccesscontrol/accesscontrol
             xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_ACCESSCONTROL);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_DEFAULTACCESSCONTROL);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_ACCESSCONTROL);
             m_xpaths.add(xp.toString());
         }
         return m_xpaths;

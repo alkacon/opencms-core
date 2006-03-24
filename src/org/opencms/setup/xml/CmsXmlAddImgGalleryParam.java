@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddImgGalleryParam.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -92,6 +92,23 @@ public class CmsXmlAddImgGalleryParam extends A_CmsSetupXmlUpdate {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/vfs/resources/resourcetypes/type[@class='org.opencms.file.types.CmsResourceTypeFolderExtended']
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsVfsConfiguration.N_VFS);
+        xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+        xp.append("/").append(CmsVfsConfiguration.N_RESOURCETYPES);
+        xp.append("/").append(CmsVfsConfiguration.N_TYPE);
+        xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
+        xp.append("='").append(CmsResourceTypeFolderExtended.class.getName());
+        return xp.append("']").toString();
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToUpdate() {
@@ -99,25 +116,16 @@ public class CmsXmlAddImgGalleryParam extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             // "/opencms/vfs/resources/resourcetypes/type[@class='org.opencms.file.types.CmsResourceTypeFolderExtended']/param[@name='folder.class.params']";
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_VFS);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_RESOURCES);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_RESOURCETYPES);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_TYPE);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsVfsConfiguration.N_VFS);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCETYPES);
+            xp.append("/").append(CmsVfsConfiguration.N_TYPE);
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='");
-            xp.append(CmsResourceTypeFolderExtended.class.getName());
-            xp.append("']");
-            xp.append("/");
-            xp.append(I_CmsXmlConfiguration.N_PARAM);
+            xp.append("='").append(CmsResourceTypeFolderExtended.class.getName());
+            xp.append("']/").append(I_CmsXmlConfiguration.N_PARAM);
             xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
-            xp.append("='");
-            xp.append(CmsResourceTypeFolderExtended.CONFIGURATION_FOLDER_CLASS_PARAMS);
+            xp.append("='").append(CmsResourceTypeFolderExtended.CONFIGURATION_FOLDER_CLASS_PARAMS);
             xp.append("']");
             m_xpaths = Collections.singletonList(xp.toString());
         }

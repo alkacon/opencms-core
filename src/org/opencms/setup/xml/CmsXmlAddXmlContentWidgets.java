@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddXmlContentWidgets.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -118,6 +118,20 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/vfs/xmlcontent/widgets
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsVfsConfiguration.N_VFS);
+        xp.append("/").append(CmsVfsConfiguration.N_XMLCONTENT);
+        xp.append("/").append(CmsVfsConfiguration.N_WIDGETS);
+        return xp.toString();
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToUpdate() {
@@ -125,16 +139,11 @@ public class CmsXmlAddXmlContentWidgets extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             // "/opencms/vfs/xmlcontent/widgets/widget[@alias='widget']";
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_VFS);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_XMLCONTENT);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_WIDGETS);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_WIDGET);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsVfsConfiguration.N_VFS);
+            xp.append("/").append(CmsVfsConfiguration.N_XMLCONTENT);
+            xp.append("/").append(CmsVfsConfiguration.N_WIDGETS);
+            xp.append("/").append(CmsVfsConfiguration.N_WIDGET);
             xp.append("[@").append(I_CmsXmlConfiguration.A_ALIAS);
             xp.append("='");
             m_xpaths = new ArrayList();

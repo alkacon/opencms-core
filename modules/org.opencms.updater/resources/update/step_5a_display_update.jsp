@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page to be accessed
-	String nextPage = "step_5_xmlupdate.jsp";
+	String nextPage = "step_6_finished.jsp";
 	// previous page in the setup process 
 	String prevPage = "index.jsp";
 
@@ -23,7 +23,7 @@ OpenCms Update Wizard - Update modules
 		// indicates if the document has been loaded 
 		function enable() {
 			enabled = true;
-			parent.data.location.href="step_4b_data_update.jsp";
+			parent.data.location.href="step_5b_data_update.jsp";
 			replaceInfo(message, "wait.gif");
 		}
 

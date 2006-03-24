@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/03/24 10:35:46 $
- * Version: $Revision: 1.1.2.10 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,12 +33,14 @@ package org.opencms.setup;
 
 import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsModuleConfiguration;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.main.OpenCms;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleVersion;
+import org.opencms.module.CmsModuleXmlHandler;
 import org.opencms.report.CmsShellReport;
 import org.opencms.report.I_CmsReport;
 import org.opencms.util.CmsStringUtil;
@@ -65,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -108,7 +110,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     private String m_updateProject = "_tmpUpdateProject" + (System.currentTimeMillis() % 1000);
 
     /** the site for update. */
-    private String m_updateSite = "/sites/default/";
+    private String m_updateSite = CmsResource.VFS_FOLDER_SITES + "/default/";
 
     /** Cache for the up-to-date module names. */
     private List m_uptodateModules;
@@ -156,21 +158,27 @@ public class CmsUpdateBean extends CmsSetupBean {
     public Map getInstalledModules() {
 
         String file = CmsModuleConfiguration.DEFAULT_XML_FILE_NAME;
-        String basePath = "/opencms/modules/module[?]/";
+        // /opencms/modules/module[?]
+        String basePath = new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsModuleConfiguration.N_MODULES).append("/").append(CmsModuleXmlHandler.N_MODULE).append("[?]/").toString();
         Map modules = new HashMap();
         String name = "";
         for (int i = 1; name != null; i++) {
             if (i > 1) {
                 String ver = CmsModuleVersion.DEFAULT_VERSION;
                 try {
-                    ver = getXmlHelper().getValue(file, CmsStringUtil.substitute(basePath, "?", "" + (i - 1)) + "version");
+                    ver = getXmlHelper().getValue(
+                        file,
+                        CmsStringUtil.substitute(basePath, "?", "" + (i - 1)) + CmsModuleXmlHandler.N_VERSION);
                 } catch (CmsXmlException e) {
                     // ignore
                 }
                 modules.put(name, new CmsModuleVersion(ver));
             }
             try {
-                name = getXmlHelper().getValue(file, CmsStringUtil.substitute(basePath, "?", "" + i) + "name");
+                name = getXmlHelper().getValue(
+                    file,
+                    CmsStringUtil.substitute(basePath, "?", "" + i) + CmsModuleXmlHandler.N_NAME);
             } catch (CmsXmlException e) {
                 // ignore
             }
@@ -317,7 +325,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * Prepares step 4 of the update wizard.<p>
      */
-    public void prepareUpdateStep4() {
+    public void prepareUpdateStep5() {
 
         if (isInitialized()) {
             try {
@@ -350,7 +358,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * Prepares the update wizard.<p>
      */
-    public void prepareUpdateStep4b() {
+    public void prepareUpdateStep5b() {
 
         if (!isInitialized()) {
             return;
@@ -377,7 +385,7 @@ public class CmsUpdateBean extends CmsSetupBean {
      * 
      * @throws IOException in case errors occur while writing to "out"
      */
-    public void prepareUpdateStep4bOutput(JspWriter out) throws IOException {
+    public void prepareUpdateStep5bOutput(JspWriter out) throws IOException {
 
         m_oldLoggingOffset = m_newLoggingOffset;
         m_newLoggingOffset = m_workplaceUpdateThread.getLoggingThread().getMessages().size();
@@ -413,7 +421,7 @@ public class CmsUpdateBean extends CmsSetupBean {
     /**
      * Prepares step 6 of the update wizard.<p>
      */
-    public void prepareUpdateStep7() {
+    public void prepareUpdateStep6() {
 
         if (isInitialized()) {
             // lock the wizard for further use 

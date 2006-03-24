@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddImageLoader.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -110,6 +110,17 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/vfs/resources/resourceloaders
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsVfsConfiguration.N_VFS).append("/").append(CmsVfsConfiguration.N_RESOURCES).append("/").append(
+            CmsVfsConfiguration.N_RESOURCELOADERS).toString();
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToUpdate() {
@@ -117,20 +128,13 @@ public class CmsXmlAddImageLoader extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             // "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']";
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_VFS);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_RESOURCES);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_RESOURCELOADERS);
-            xp.append("/");
-            xp.append(CmsVfsConfiguration.N_LOADER);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsVfsConfiguration.N_VFS);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+            xp.append("/").append(CmsVfsConfiguration.N_RESOURCELOADERS);
+            xp.append("/").append(CmsVfsConfiguration.N_LOADER);
             xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
-            xp.append("='");
-            xp.append(CmsImageLoader.class.getName());
-            xp.append("']");
+            xp.append("='").append(CmsImageLoader.class.getName()).append("']");
             m_xpaths = Collections.singletonList(xp.toString());
         }
         return m_xpaths;

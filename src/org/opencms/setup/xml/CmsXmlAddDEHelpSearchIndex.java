@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddDEHelpSearchIndex.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -73,14 +73,6 @@ public class CmsXmlAddDEHelpSearchIndex extends A_CmsSetupXmlUpdate {
     public String getXmlFilename() {
 
         return CmsSearchConfiguration.DEFAULT_XML_FILE_NAME;
-    }
-
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
-     */
-    protected int getNodeRelation() {
-
-        return 2;
     }
 
     /**
@@ -124,6 +116,16 @@ public class CmsXmlAddDEHelpSearchIndex extends A_CmsSetupXmlUpdate {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/search
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsSearchConfiguration.N_SEARCH).toString();
     }
 
     /**

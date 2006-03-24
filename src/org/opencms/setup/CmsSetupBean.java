@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsSetupBean.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.44.2.13 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.44.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,9 +39,12 @@ import org.opencms.configuration.CmsSearchConfiguration;
 import org.opencms.configuration.CmsSystemConfiguration;
 import org.opencms.configuration.CmsVfsConfiguration;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.db.CmsDbPool;
 import org.opencms.file.CmsObject;
+import org.opencms.file.CmsResource;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.loader.CmsImageLoader;
 import org.opencms.main.CmsLog;
 import org.opencms.main.CmsRuntimeException;
 import org.opencms.main.CmsShell;
@@ -107,7 +110,7 @@ import org.apache.commons.collections.ExtendedProperties;
  * @author Alexander Kandzior
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.44.2.13 $ 
+ * @version $Revision: 1.44.2.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -1248,15 +1251,51 @@ public class CmsSetupBean extends Object implements Cloneable, I_CmsShellCommand
 
             CmsSetupTestResult testResult = new CmsSetupTestSimapi().execute(this);
             if (testResult.getResult().equals(I_CmsSetupTest.RESULT_FAILED)) {
+                // "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']/param[@name='image.scaling.enabled']";
+                StringBuffer xp = new StringBuffer(256);
+                xp.append("/").append(CmsConfigurationManager.N_ROOT);
+                xp.append("/").append(CmsVfsConfiguration.N_VFS);
+                xp.append("/").append(CmsVfsConfiguration.N_RESOURCES);
+                xp.append("/").append(CmsVfsConfiguration.N_RESOURCELOADERS);
+                xp.append("/").append(CmsVfsConfiguration.N_LOADER);
+                xp.append("[@").append(I_CmsXmlConfiguration.A_CLASS);
+                xp.append("='").append(CmsImageLoader.class.getName());
+                xp.append("']/").append(I_CmsXmlConfiguration.N_PARAM);
+                xp.append("[@").append(I_CmsXmlConfiguration.A_NAME);
+                xp.append("='").append(CmsImageLoader.CONFIGURATION_SCALING_ENABLED).append("']");
+
                 getXmlHelper().setValue(
                     CmsVfsConfiguration.DEFAULT_XML_FILE_NAME,
-                    "/opencms/vfs/resources/resourceloaders/loader[@class='org.opencms.loader.CmsImageLoader']/param[@name='image.scaling.enabled']",
-                    "false");
+                    xp.toString(),
+                    Boolean.FALSE.toString());
             }
+            // /opencms/system/sites/workplace-server
+            StringBuffer xp = new StringBuffer(256);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+            xp.append("/").append(CmsSystemConfiguration.N_SITES);
+            xp.append("/").append(CmsSystemConfiguration.N_WORKPLACE_SERVER);
+
             getXmlHelper().setValue(
                 CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
-                "/opencms/system/sites/workplace-server",
+                xp.toString(),
                 getWorkplaceSite());
+
+            // /opencms/system/sites/site[@uri='/sites/default/']/@server
+            xp = new StringBuffer(256);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsSystemConfiguration.N_SYSTEM);
+            xp.append("/").append(CmsSystemConfiguration.N_SITES);
+            xp.append("/").append(I_CmsXmlConfiguration.N_SITE);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
+            xp.append("='").append(CmsResource.VFS_FOLDER_SITES);
+            xp.append("/default/']/@").append(CmsSystemConfiguration.A_SERVER);
+
+            getXmlHelper().setValue(
+                CmsSystemConfiguration.DEFAULT_XML_FILE_NAME,
+                xp.toString(),
+                getWorkplaceSite());
+
             getXmlHelper().writeAll();
         }
         return true;

@@ -3,7 +3,7 @@
 --%><jsp:setProperty name="Bean" property="*" /><%--
 --%><%
 
-Bean.prepareUpdateStep4b();
+Bean.prepareUpdateStep5b();
 
 %><!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN">
 <html>
@@ -16,7 +16,7 @@ Bean.prepareUpdateStep4b();
 var output = new Array();
 <%
 
-Bean.prepareUpdateStep4bOutput(out);
+Bean.prepareUpdateStep5bOutput(out);
 
 %>
 

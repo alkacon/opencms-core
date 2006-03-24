@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlRemovePageSearchIndexSource1.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.List;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -66,14 +66,6 @@ public class CmsXmlRemovePageSearchIndexSource1 extends A_CmsSetupXmlUpdate {
     public String getXmlFilename() {
 
         return CmsSearchConfiguration.DEFAULT_XML_FILE_NAME;
-    }
-
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
-     */
-    protected int getNodeRelation() {
-
-        return 0;
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlUpdateHistoryContextMenu.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -76,14 +76,6 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
     public String getXmlFilename() {
 
         return CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME;
-    }
-
-    /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
-     */
-    protected int getNodeRelation() {
-
-        return 5;
     }
 
     /**
@@ -111,7 +103,7 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
                     + "["
                     + CmsWorkplaceConfiguration.N_KEY
                     + "='admin']";
-                
+
                 CmsSetupXmlHelper.setValue(document, xp + "/" + CmsWorkplaceConfiguration.N_KEY, "admin");
                 CmsSetupXmlHelper.setValue(
                     document,
@@ -125,7 +117,7 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
                     document,
                     xp + "/" + CmsWorkplaceConfiguration.N_HELPTEXT,
                     "${key.GUI_ADMIN_VIEW_ROOT_HELP_0}");
-                
+
                 // TODO: check this
                 xp = CmsStringUtil.substitute(xp, "admin", "explorer");
                 CmsSetupXmlHelper.setValue(document, xp + "/" + CmsWorkplaceConfiguration.N_KEY, "explorer");
@@ -149,6 +141,16 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/workplace
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsWorkplaceConfiguration.N_WORKPLACE).toString();
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToUpdate() {
@@ -156,24 +158,16 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/editoptions/contextmenu/entry[@uri='commons/history.jsp']
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
             xp.append("='${etype}']/");
             xp.append(CmsWorkplaceConfiguration.N_EDITOPTIONS);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_ENTRY);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.A_URI);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_CONTEXTMENU);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_ENTRY);
+            xp.append("[@").append(I_CmsXmlConfiguration.A_URI);
             xp.append("='commons/history.jsp']");
             m_xpaths = new ArrayList();
             // ???: xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate
@@ -187,12 +181,9 @@ public class CmsXmlUpdateHistoryContextMenu extends A_CmsSetupXmlUpdate {
             m_xpaths.add(CmsStringUtil.substitute(xp.toString(), "${etype}", "XMLTemplate"));
             // /opencms/workplace/tool-manager
             xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_TOOLMANAGER);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_TOOLMANAGER);
             m_xpaths.add(xp.toString());
         }
         return m_xpaths;

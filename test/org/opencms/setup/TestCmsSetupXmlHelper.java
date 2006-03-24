@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/setup/TestCmsSetupXmlHelper.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,10 +31,13 @@
 
 package org.opencms.setup;
 
+import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.configuration.CmsWorkplaceConfiguration;
+import org.opencms.configuration.I_CmsXmlConfiguration;
 import org.opencms.main.CmsSystemInfo;
 import org.opencms.setup.xml.CmsSetupXmlHelper;
 import org.opencms.test.OpenCmsTestCase;
+import org.opencms.util.CmsFileUtil;
 
 import java.io.File;
 
@@ -45,7 +48,7 @@ import org.dom4j.Document;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.8
  */
@@ -71,13 +74,17 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         String base = getTestDataPath(File.separator + "WEB-INF" + File.separator + CmsSystemInfo.FOLDER_CONFIG);
         CmsSetupXmlHelper xmlHelper = new CmsSetupXmlHelper(base);
 
-        String inputFile = CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME;
+        // create test file
+        String inputFile = "test.xml";
+        CmsFileUtil.copy(base + CmsWorkplaceConfiguration.DEFAULT_XML_FILE_NAME, base + inputFile);
 
+        // open test file
         System.out.println("Modifying xml from " + base + inputFile);
         Document ori = xmlHelper.getDocument(inputFile);
 
+        String baseXp = "/" + CmsConfigurationManager.N_ROOT + "/" + CmsWorkplaceConfiguration.N_WORKPLACE + "/";
         // simple test
-        String xPath = "/opencms/workplace/autolock";
+        String xPath = baseXp + CmsWorkplaceConfiguration.N_AUTOLOCK;
         String value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("true", value);
         String expected = "false";
@@ -86,7 +93,12 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         assertEquals(expected, value);
 
         // advanced test
-        xPath = "/opencms/workplace/localizedfolders/resource[2]/@uri";
+        xPath = baseXp
+            + CmsWorkplaceConfiguration.N_LOCALIZEDFOLDERS
+            + "/"
+            + I_CmsXmlConfiguration.N_RESOURCE
+            + "[2]/@"
+            + I_CmsXmlConfiguration.A_URI;
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("/system/login/", value);
         expected = "/";
@@ -95,21 +107,25 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         assertEquals(expected, value);
 
         // test adding a new node
-        xPath = "/opencms/workplace/test1/test2/test3";
+        xPath = baseXp + "test1/test2/test3";
         expected = "test4";
         assertEquals(1, xmlHelper.setValue(inputFile, xPath, expected));
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals(expected, value);
 
         // test adding a new attribute
-        xPath = "/opencms/workplace/localizedfolders/resource[2]/@test-attr";
+        xPath = baseXp
+            + CmsWorkplaceConfiguration.N_LOCALIZEDFOLDERS
+            + "/"
+            + I_CmsXmlConfiguration.N_RESOURCE
+            + "[2]/@test-attr";
         expected = "test-value";
         assertEquals(1, xmlHelper.setValue(inputFile, xPath, expected));
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals(expected, value);
 
         // test adding a new node in a list
-        xPath = "/opencms/workplace/test1/test2[2]/test5";
+        xPath = baseXp + "test1/test2[2]/test5";
         expected = "test6";
         assertEquals(1, xmlHelper.setValue(inputFile, xPath, expected));
         value = xmlHelper.getValue(inputFile, xPath);
@@ -119,7 +135,12 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         xmlHelper.write(inputFile);
 
         // restoring file
-        xPath = "/opencms/workplace/localizedfolders/resource[2]/@uri";
+        xPath = baseXp
+            + CmsWorkplaceConfiguration.N_LOCALIZEDFOLDERS
+            + "/"
+            + I_CmsXmlConfiguration.N_RESOURCE
+            + "[2]/@"
+            + I_CmsXmlConfiguration.A_URI;
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("/", value);
         expected = "/system/login/";
@@ -127,7 +148,7 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals(expected, value);
 
-        xPath = "/opencms/workplace/autolock";
+        xPath = baseXp + CmsWorkplaceConfiguration.N_AUTOLOCK;
         value = xmlHelper.getValue(inputFile, xPath);
         assertEquals("false", value);
         expected = "true";
@@ -136,22 +157,30 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         assertEquals(expected, value);
 
         // test removing a node
-        xPath = "/opencms/workplace/test1";
+        xPath = baseXp + "test1";
         assertEquals(1, xmlHelper.setValue(inputFile, xPath, null));
         assertNull(xmlHelper.getValue(inputFile, xPath));
 
         // test removing an attribute
-        xPath = "/opencms/workplace/localizedfolders/resource[2]/@test-attr";
+        xPath = baseXp
+            + CmsWorkplaceConfiguration.N_LOCALIZEDFOLDERS
+            + "/"
+            + I_CmsXmlConfiguration.N_RESOURCE
+            + "[2]/@test-attr";
         assertEquals(1, xmlHelper.setValue(inputFile, xPath, null));
         assertNull(xmlHelper.getValue(inputFile, xPath));
         assertNotNull(xmlHelper.getValue(inputFile, xPath.substring(0, xPath.lastIndexOf('/')) + "/@uri"));
 
         // test removing non existent node
-        xPath = "/opencms/workplace/test1";
+        xPath = baseXp + "test1";
         assertEquals(0, xmlHelper.setValue(inputFile, xPath, null));
 
         // test removing non existent attribute
-        xPath = "/opencms/workplace/localizedfolders/resource[2]/@test-xxx";
+        xPath = baseXp
+            + CmsWorkplaceConfiguration.N_LOCALIZEDFOLDERS
+            + "/"
+            + I_CmsXmlConfiguration.N_RESOURCE
+            + "[2]/@test-xxx";
         assertEquals(0, xmlHelper.setValue(inputFile, xPath, null));
 
         // write restored file
@@ -161,5 +190,8 @@ public class TestCmsSetupXmlHelper extends OpenCmsTestCase {
         xmlHelper.flushAll();
         Document cur = xmlHelper.getDocument(inputFile);
         assertEquals(ori, cur);
+
+        // remove test file
+        new File(base + inputFile).delete();
     }
 }

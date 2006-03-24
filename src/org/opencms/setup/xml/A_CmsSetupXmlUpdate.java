@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2006/03/24 10:35:46 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.8 
  */
@@ -94,7 +94,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         }
 
         // create new temp doc to modify
-        String parentPath = null;
+        String parentPath = getCommonPath();
         // could be better done...
         Document newDoc = prepareDoc(doc);
 
@@ -103,28 +103,13 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
         Iterator itUpdate = getXPathsToUpdate().iterator();
         while (itUpdate.hasNext()) {
             String xpath = (String)itUpdate.next();
-            Node node = doc.selectSingleNode(xpath);
-            if (parentPath == null && getNodeRelation() > 0) {
-                parentPath = (!xpath.startsWith("//*") || node == null ? xpath : node.getUniquePath());
-                for (int i = getNodeRelation(); i > 0; i--) {
-                    parentPath = CmsXmlUtils.removeLastComplexXpathElement(parentPath);
-                }
-            }
-            if (node != null) {
-                // could be better done...
-                if (!xpath.startsWith("//*")) {
-                    CmsSetupXmlHelper.setValue(newDoc, CmsXmlUtils.removeLastComplexXpathElement(xpath), " ");
-                    node = (Node)node.clone();
-                    node.setParent(null);
-                    ((Branch)newDoc.selectSingleNode(CmsXmlUtils.removeLastComplexXpathElement(xpath))).add(node);
-                }
-            }
+            updateDoc(doc, newDoc, xpath);
             boolean exe = executeUpdate(newDoc, xpath);
             modified = modified || exe;
-            if (getNodeRelation() == 0 && exe) {
-                Node node2 = newDoc.selectSingleNode(xpath);
-                if (node2 != null) {
-                    ret += CmsXmlUtils.marshal(node2, CmsEncoder.ENCODING_UTF_8);
+            if (parentPath == null && exe) {
+                Node node = newDoc.selectSingleNode(xpath);
+                if (node != null) {
+                    ret += CmsXmlUtils.marshal(node, CmsEncoder.ENCODING_UTF_8);
                 }
             }
         }
@@ -135,6 +120,34 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
             }
         }
         return ret.trim();
+    }
+    
+    /**
+     * Updates the given doc inserting the given node corresponding to the given xpath.<p>
+     * 
+     * @param document the original document to update
+     * @param newDoc the document to update
+     * @param xpath the corresponding xpath
+     */
+    protected void updateDoc(Document document, Document newDoc, String xpath) {
+
+        Node node = document.selectSingleNode(xpath);
+        if (node != null) {
+            CmsSetupXmlHelper.setValue(newDoc, CmsXmlUtils.removeLastComplexXpathElement(xpath), " ");
+            node = (Node)node.clone();
+            node.setParent(null);
+            ((Branch)newDoc.selectSingleNode(CmsXmlUtils.removeLastComplexXpathElement(xpath))).add(node);
+        }
+    }
+
+    /**
+     * Returns a parent path that is common for all nodes to modify.<p> 
+     * 
+     * @return common parent path
+     */
+    protected String getCommonPath() {
+        
+        return null;
     }
 
     /**
@@ -162,16 +175,6 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
     }
 
     /**
-     * Returns the degree of node relation, zero is no relation, one is parent relation and so on.<p>
-     * 
-     * @return the degree of node relation
-     */
-    protected int getNodeRelation() {
-
-        return 1;
-    }
-
-    /**
      * Returns a list of xpaths for the nodes to remove.<p>
      * 
      * @return a list of strings
@@ -193,6 +196,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
 
     /**
      * Prepares a new document.<p>
+     * 
      * @param doc the original document
      * 
      * @return a new document 

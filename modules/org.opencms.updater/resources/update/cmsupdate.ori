@@ -7,6 +7,12 @@ login "@ADMIN_USER@" "@ADMIN_PWD@"
 # Switch to the default context
 setSiteRoot "@UPDATE_SITE@"
 
+# Rebuild search indexes
+rebuildAllIndexes
+
+# Rebuild search indexes
+purgeJspRepository
+
 # Import the modules that have been selected in the update wizard
 updateModulesFromUpdateBean
 

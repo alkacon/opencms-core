@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddAutoSetFeatures.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -72,14 +72,6 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
     }
 
     /**
-     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getNodeRelation()
-     */
-    protected int getNodeRelation() {
-
-        return 3;
-    }
-
-    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#executeUpdate(org.dom4j.Document, java.lang.String)
      */
     protected boolean executeUpdate(Document document, String xpath) {
@@ -93,6 +85,16 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/workplace/explorertypes
+        return new StringBuffer("/").append(CmsConfigurationManager.N_ROOT).append("/").append(
+            CmsWorkplaceConfiguration.N_WORKPLACE).append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES).toString();
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToUpdate() {
@@ -100,18 +102,12 @@ public class CmsXmlAddAutoSetFeatures extends A_CmsXmlWorkplace {
         if (m_xpaths == null) {
             // /opencms/workplace/explorertypes/explorertype[@name='${etype}']/newresource/@${attr}
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
-            xp.append("[@");
-            xp.append(I_CmsXmlConfiguration.N_NAME);
-            xp.append("='${etype}']/");
-            xp.append(CmsWorkplaceConfiguration.N_NEWRESOURCE);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_EXPLORERTYPE);
+            xp.append("[@").append(I_CmsXmlConfiguration.N_NAME);
+            xp.append("='${etype}']/").append(CmsWorkplaceConfiguration.N_NEWRESOURCE);
             xp.append("/@");
             m_xpaths = new ArrayList();
             // ${etype}: folder, imagegallery, downloadgallery, xmlcontent, xmlpage, plain, image, jsp, binary, pointer, XMLTemplate, link, upload, extendedfolder, structurecontent

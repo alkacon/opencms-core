@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/CmsXmlAddPublishButtonAppearance.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/24 16:01:25 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.8 
  */
@@ -76,6 +76,21 @@ public class CmsXmlAddPublishButtonAppearance extends A_CmsXmlWorkplace {
     }
 
     /**
+     * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getCommonPath()
+     */
+    protected String getCommonPath() {
+
+        // /opencms/workplace/default-preferences/workplace-preferences/workplace-generaloptions
+        StringBuffer xp = new StringBuffer(256);
+        xp.append("/").append(CmsConfigurationManager.N_ROOT);
+        xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+        xp.append("/").append(CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES);
+        xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES);
+        xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS);
+        return xp.toString();
+    }
+
+    /**
      * @see org.opencms.setup.xml.A_CmsSetupXmlUpdate#getXPathsToUpdate()
      */
     protected List getXPathsToUpdate() {
@@ -83,18 +98,12 @@ public class CmsXmlAddPublishButtonAppearance extends A_CmsXmlWorkplace {
         if (m_xpaths == null) {
             // /opencms/workplace/default-preferences/workplace-preferences/workplace-generaloptions/publishbuttonappearance
             StringBuffer xp = new StringBuffer(256);
-            xp.append("/");
-            xp.append(CmsConfigurationManager.N_ROOT);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACE);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS);
-            xp.append("/");
-            xp.append(CmsWorkplaceConfiguration.N_PUBLISHBUTTONAPPEARANCE);
+            xp.append("/").append(CmsConfigurationManager.N_ROOT);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACE);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_DEFAULTPREFERENCES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACEPREFERENCES);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_WORKPLACEGENERALOPTIONS);
+            xp.append("/").append(CmsWorkplaceConfiguration.N_PUBLISHBUTTONAPPEARANCE);
             m_xpaths = Collections.singletonList(xp.toString());
         }
         return m_xpaths;

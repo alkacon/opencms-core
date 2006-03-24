@@ -3,11 +3,11 @@
 --%><jsp:setProperty name="Bean" property="*" /><%
 
 	// next page
-	String nextPage = "step_5_xmlupdate.jsp";	
+	String nextPage = "step_6_finished.jsp";	
 	// previous page 
 	String prevPage = "index.jsp";
 	
-	Bean.prepareUpdateStep4();	
+	Bean.prepareUpdateStep5();	
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>
@@ -16,7 +16,7 @@ OpenCms Update Wizard - Update modules
 
 </head>
 <frameset rows="100%,*">
-	<frame src="step_4a_display_update.jsp" name="display">
+	<frame src="step_5a_display_update.jsp" name="display">
 	<frame src="about:blank" name="data">
 </frameset>
 </html>
