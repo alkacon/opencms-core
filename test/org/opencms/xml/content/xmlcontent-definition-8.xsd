@@ -29,7 +29,7 @@
 
 	<xsd:annotation>
 		<xsd:appinfo>
-			<resourcebundle name="org.opencms.workplace.workplace" />
+			<resourcebundle name="org.opencms.xml.content.messages" />
 			<mappings>
 				<mapping element="String" mapto="property:Title" />
 				<mapping element="String[2]" mapto="property:shared:NavImage" />
