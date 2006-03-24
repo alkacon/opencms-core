@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCache.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.51.2.1 $
+ * Date   : $Date: 2006/03/24 16:02:15 $
+ * Version: $Revision: 1.51.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -96,7 +96,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.51.2.1 $ 
+ * @version $Revision: 1.51.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -209,6 +209,12 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
 
     /** Initial size for variation lists, should be a power of 2. */
     public static final int INITIAL_CAPACITY_VARIATIONS = 8;
+
+    /** Offline repository constant. */
+    public static final String REPOSITORY_OFFLINE = "offline";
+
+    /** Online repository constant. */
+    public static final String REPOSITORY_ONLINE = "online";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFlexCache.class);
@@ -853,10 +859,10 @@ public class CmsFlexCache extends Object implements I_CmsEventListener {
         }
 
         File d;
-        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + "online" + File.separator);
+        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + REPOSITORY_ONLINE + File.separator);
         CmsFileUtil.purgeDirectory(d);
 
-        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + "offline" + File.separator);
+        d = new File(org.opencms.loader.CmsJspLoader.getJspRepository() + REPOSITORY_OFFLINE + File.separator);
         CmsFileUtil.purgeDirectory(d);
 
         clear();

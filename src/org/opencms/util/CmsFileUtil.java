@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsFileUtil.java,v $
- * Date   : $Date: 2006/03/23 17:47:22 $
- * Version: $Revision: 1.21.2.10 $
+ * Date   : $Date: 2006/03/24 16:02:15 $
+ * Version: $Revision: 1.21.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.configuration.CmsConfigurationManager;
 import org.opencms.file.CmsObject;
 import org.opencms.file.CmsRequestContext;
 import org.opencms.file.CmsResource;
+import org.opencms.flex.CmsFlexCache;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsIllegalArgumentException;
@@ -69,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.10 $ 
+ * @version $Revision: 1.21.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -288,7 +289,7 @@ public final class CmsFileUtil {
 
         StringBuffer result = new StringBuffer(64);
         result.append(repository);
-        result.append(online ? "online" : "offline");
+        result.append(online ? CmsFlexCache.REPOSITORY_ONLINE : CmsFlexCache.REPOSITORY_OFFLINE);
         result.append(vfspath);
         return result.toString();
     }

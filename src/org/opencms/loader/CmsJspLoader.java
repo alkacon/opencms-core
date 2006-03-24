@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.97.2.4 $
+ * Date   : $Date: 2006/03/24 16:02:15 $
+ * Version: $Revision: 1.97.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.97.2.4 $ 
+ * @version $Revision: 1.97.2.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -119,6 +119,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
     /** Property value for "cache" that indicates that the ouput should be streamed. */
     public static final String CACHE_PROPERTY_STREAM = "stream";
 
+    /** Default jsp folder constant. */
+    public static final String DEFAULT_JSP_FOLDER = "/WEB-INF/jsp/";
+
     /** Special JSP directive tag start (<code>%&gt;</code>). */
     public static final String DIRECTIVE_END = "%>";
 
@@ -127,6 +130,18 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
     /** Extension for JSP managed by OpenCms (<code>.jsp</code>). */
     public static final String JSP_EXTENSION = ".jsp";
+
+    /** Cache max age parameter name. */
+    public static final String PARAM_CLIENT_CACHE_MAXAGE = "client.cache.maxage";
+
+    /** Error page commited parameter name. */
+    public static final String PARAM_JSP_ERRORPAGE_COMMITTED = "jsp.errorpage.committed";
+
+    /** Jsp folder parameter name. */
+    public static final String PARAM_JSP_FOLDER = "jsp.folder";
+
+    /** Jsp repository parameter name. */
+    public static final String PARAM_JSP_REPOSITORY = "jsp.repository";
 
     /** The id of this loader. */
     public static final int RESOURCE_LOADER_ID = 6;
@@ -291,17 +306,17 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         ExtendedProperties config = new ExtendedProperties();
         config.putAll(m_configuration);
 
-        m_jspRepository = config.getString("jsp.repository");
+        m_jspRepository = config.getString(PARAM_JSP_REPOSITORY);
         if (m_jspRepository == null) {
             m_jspRepository = OpenCms.getSystemInfo().getWebApplicationRfsPath();
         }
-        m_jspWebAppRepository = config.getString("jsp.folder", "/WEB-INF/jsp/");
+        m_jspWebAppRepository = config.getString(PARAM_JSP_FOLDER, DEFAULT_JSP_FOLDER);
         if (!m_jspWebAppRepository.endsWith("/")) {
             m_jspWebAppRepository += "/";
         }
         m_jspRepository = CmsFileUtil.normalizePath(m_jspRepository + m_jspWebAppRepository);
 
-        String maxAge = config.getString("client.cache.maxage");
+        String maxAge = config.getString(PARAM_CLIENT_CACHE_MAXAGE);
         if (maxAge == null) {
             m_clientCacheMaxAge = -1;
         } else {
@@ -309,7 +324,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         }
 
         // get the "error pages are commited or not" flag from the configuration
-        m_errorPagesAreNotCommited = config.getBoolean("jsp.errorpage.committed", true);
+        m_errorPagesAreNotCommited = config.getBoolean(PARAM_JSP_ERRORPAGE_COMMITTED, true);
 
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
