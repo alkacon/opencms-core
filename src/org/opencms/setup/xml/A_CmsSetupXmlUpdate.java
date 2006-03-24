@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/xml/Attic/A_CmsSetupXmlUpdate.java,v $
- * Date   : $Date: 2006/03/24 09:29:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/24 10:35:46 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Node;
  * 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.8 
  */
@@ -178,7 +178,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      */
     protected List getXPathsToRemove() {
 
-        return Collections.emptyList();
+        return Collections.EMPTY_LIST;
     }
 
     /**
@@ -188,7 +188,7 @@ public abstract class A_CmsSetupXmlUpdate implements I_CmsSetupXmlUpdate {
      */
     protected List getXPathsToUpdate() {
 
-        return Collections.emptyList();
+        return Collections.EMPTY_LIST;
     }
 
     /**

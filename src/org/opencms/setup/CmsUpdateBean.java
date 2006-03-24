@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.1.2.9 $
+ * Date   : $Date: 2006/03/24 10:35:46 $
+ * Version: $Revision: 1.1.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.9 $ 
+ * @version $Revision: 1.1.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -163,14 +163,14 @@ public class CmsUpdateBean extends CmsSetupBean {
             if (i > 1) {
                 String ver = CmsModuleVersion.DEFAULT_VERSION;
                 try {
-                    ver = getXmlHelper().getValue(file, basePath.replace("?", "" + (i - 1)) + "version");
+                    ver = getXmlHelper().getValue(file, CmsStringUtil.substitute(basePath, "?", "" + (i - 1)) + "version");
                 } catch (CmsXmlException e) {
                     // ignore
                 }
                 modules.put(name, new CmsModuleVersion(ver));
             }
             try {
-                name = getXmlHelper().getValue(file, basePath.replace("?", "" + i) + "name");
+                name = getXmlHelper().getValue(file, CmsStringUtil.substitute(basePath, "?", "" + i) + "name");
             } catch (CmsXmlException e) {
                 // ignore
             }
