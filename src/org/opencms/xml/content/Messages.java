@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/Messages.java,v $
- * Date   : $Date: 2006/03/22 10:16:38 $
- * Version: $Revision: 1.5.2.3 $
+ * Date   : $Date: 2006/03/24 09:04:04 $
+ * Version: $Revision: 1.5.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -37,7 +37,7 @@ import org.opencms.i18n.I_CmsMessageBundle;
 /**
  * Convenience class to access the localized messages of this OpenCms package.<p> 
  * 
- * @version $Revision: 1.5.2.3 $ 
+ * @version $Revision: 1.5.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -113,7 +113,10 @@ public final class Messages extends A_CmsMessageBundle {
     public static final String ERR_XMLCONTENT_UNMARSHAL_0 = "ERR_XMLCONTENT_UNMARSHAL_0";
 
     /** Message constant for key in the resource bundle. */
-    public static final String GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_0 = "GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_0";
+    public static final String GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2 = "GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_2";
+
+    /** Message constant for key in the resource bundle. */
+    public static final String GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0 = "GUI_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0";
 
     /** Message constant for key in the resource bundle. */
     public static final String GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2 = "GUI_EDITOR_XMLCONTENT_VALIDATION_WARNING_2";
