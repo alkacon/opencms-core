@@ -62,7 +62,7 @@ function init() {
 <%= wp.paramsAsHidden() %>
 <input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
 
-<%= wp.key("messagebox.staticexport1") %>
+<%= org.opencms.workplace.tools.database.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.database.Messages.GUT_TITLE_STATICEXPORT_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>
