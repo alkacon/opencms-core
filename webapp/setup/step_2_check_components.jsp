@@ -13,7 +13,7 @@
 
 	String descriptions = "";
 	org.opencms.setup.comptest.CmsSetupTests setupTests = null;
-	CmsSetupTestResult testResult = null;
+	org.opencms.setup.comptest.CmsSetupTestResult testResult = null;
 	String resultIcon = null;
 	String helpIcon = null;
 	String violatedConditions = "";
@@ -21,7 +21,7 @@
 
 	if (Bean.isInitialized()) {
 		if(!isSubmitted) {
-			setupTests = new CmsSetupTests();
+			setupTests = new org.opencms.setup.comptest.CmsSetupTests();
 			setupTests.runTests(Bean);
 		} else {
 			response.sendRedirect(nextPage);
@@ -68,7 +68,7 @@ Alkacon OpenCms Setup Wizard - Component tests
 <%
 		List testResults = setupTests.getTestResults();
 		for (int i=0;i<testResults.size();i++) {
-			testResult = (CmsSetupTestResult) testResults.get(i);
+			testResult = (org.opencms.setup.comptest.CmsSetupTestResult) testResults.get(i);
 			
 			if (testResult.isRed()) {
 				resultIcon = "cross";
