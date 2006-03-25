@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsStringUtil.java,v $
- * Date   : $Date: 2006/03/19 21:49:59 $
- * Version: $Revision: 1.34.2.11 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.34.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.oro.text.perl.Perl5Util;
  * @author  Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.34.2.11 $ 
+ * @version $Revision: 1.34.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -467,7 +467,7 @@ public final class CmsStringUtil {
             result = Color.decode(value);
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_COLOR_2, value, key));
             }
             result = defaultValue;
         }
@@ -492,7 +492,7 @@ public final class CmsStringUtil {
             result = Integer.valueOf(value).intValue();
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_PARSE_INT_2, value, key));
             }
             result = defaultValue;
         }
@@ -860,7 +860,7 @@ public final class CmsStringUtil {
             return perlUtil.substitute(translationRule, content);
         } catch (MalformedPerl5PatternException e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, translationRule), e);
             }
         }
         return content;

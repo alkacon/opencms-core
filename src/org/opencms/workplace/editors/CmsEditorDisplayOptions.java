@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorDisplayOptions.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.10.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.10.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.10.2.2 $ 
+ * @version $Revision: 1.10.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -110,7 +110,7 @@ public class CmsEditorDisplayOptions {
         m_userMappings = new LRUMap(SIZE_USERENTRIES);
         m_loadedConfigurations = new LRUMap(SIZE_CONFIGURATIONFILES);
     }
-    
+
     /**
      * Reads the editor configuration file valid for the current user and caches the result in a Map.<p>
      * 
@@ -191,7 +191,7 @@ public class CmsEditorDisplayOptions {
             }
             if (LOG.isDebugEnabled()) {
                 // check which mapping has been stored
-                LOG.debug(Messages.get().key(
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_MAP_CONFIG_FILE_TO_USER_2,
                     mappedConfigFile,
                     cms.getRequestContext().currentUser().getName()));

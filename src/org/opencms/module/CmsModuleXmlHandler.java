@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleXmlHandler.java,v $
- * Date   : $Date: 2005/10/27 15:16:35 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -456,7 +456,7 @@ public class CmsModuleXmlHandler {
         m_dependencies.add(dependency);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_DEPENDENCY_2, name, version));
         }
     }
 
@@ -484,7 +484,7 @@ public class CmsModuleXmlHandler {
         CmsExportPoint point = new CmsExportPoint(uri, destination);
         m_exportPoints.add(point);
         if (CmsLog.INIT.isInfoEnabled() && (point.getDestinationPath() != null)) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_EXPORT_POINT_2,
                 point.getUri(),
                 point.getDestinationPath()));
@@ -507,7 +507,7 @@ public class CmsModuleXmlHandler {
         }
         m_parameters.put(key, value);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_PARAM_KEY_2, key, value));
         }
     }
 
@@ -519,7 +519,7 @@ public class CmsModuleXmlHandler {
     public void addResource(String resource) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MOD_RESOURCE_1, resource));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MOD_RESOURCE_1, resource));
         }
         m_resources.add(resource);
     }
@@ -569,9 +569,9 @@ public class CmsModuleXmlHandler {
 
         if (!CmsStringUtil.isValidJavaClassName(name)) {
             // ensure backward compatibility with old (5.0) module names
-            LOG.error(Messages.get().key(Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_MOD_NAME_IMPORTED_1, name));
             moduleName = makeValidJavaClassName(name);
-            LOG.error(Messages.get().key(Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CORRECTED_MOD_NAME_1, moduleName));
         } else {
             moduleName = name;
         }
@@ -647,8 +647,7 @@ public class CmsModuleXmlHandler {
 
         m_oldModule = true;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_OLD_MODULE_IMPORTED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_OLD_MODULE_IMPORTED_0));
         }
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsDocumentTypeList.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.1.2.1 $
+ * @version $Revision: 1.1.2.2 $
  * 
  * @since 6.0.0
  */
@@ -402,12 +402,10 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         } else {
             result = new ArrayList(0);
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(
-                    getLocale(),
+                LOG.error(Messages.get().getBundle().key(
                     Messages.ERR_SEARCHINDEX_EDIT_MISSING_PARAM_1,
-                    new Object[] {A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE}));
+                    A_CmsEditIndexSourceDialog.PARAM_INDEXSOURCE));
             }
-
         }
         return result;
     }
@@ -465,5 +463,4 @@ public class CmsDocumentTypeList extends A_CmsEmbeddedListDialog {
         html.append("</ul>\n");
         item.set(detailId, html.toString());
     }
-
 }

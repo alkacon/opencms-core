@@ -5,10 +5,10 @@
 	wp.setParamIsPopup("true");
 	int buttonStyle = 0;
 	
-	String titleType = (String)request.getParameter("titleType");
-	String dialogTitle = org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_TITLE_CHANGETD_0);
+	String titleType = request.getParameter("titleType");
+	String dialogTitle = wp.key(org.opencms.workplace.editors.Messages.GUI_TITLE_CHANGETD_0);
 	if ("TR".equals(titleType)) {
-		dialogTitle = org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_TITLE_CHANGETR_0);
+		dialogTitle = wp.key(org.opencms.workplace.editors.Messages.GUI_TITLE_CHANGETR_0);
 	} 
 	
 %><%= wp.htmlStart(null, dialogTitle) %>
@@ -29,7 +29,7 @@ var colorField = null;
 
 <!-- Object for color picker modaldialog -->
 var colorPicker = new Object();
-colorPicker.title = "<%=  org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_DIALOG_COLOR_TITLE_0) %>";
+colorPicker.title = "<%=  wp.key(org.opencms.workplace.editors.Messages.GUI_DIALOG_COLOR_TITLE_0) %>";
 colorPicker.color = "000000";
 
 <!-- Checks if a entered number is a digit -->
@@ -81,14 +81,14 @@ function init() {
 		case "error_notable":
 			if (window.dialogArguments["error_notable"] == "true") {
 				// Not inside table, display message and close window
-				alert("<%=  org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_NOTABLE_0) %>");
+				alert("<%=  wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_NOTABLE_0) %>");
 				window.close();
 			}
 			break;
 		case "error_selection":
 			if (window.dialogArguments["error_selection"] == "true") {
 				// Not selection.type = "None", display message and close window
-				alert("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_SELECTION_0) %>");
+				alert("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_SELECTION_0) %>");
 				window.close();
 			}
 			break;
@@ -104,7 +104,7 @@ function openColorWindow(colorType) {
 	SelColor=-1;
 	colorField = colorType;
 	CheckColor= window.setInterval("setColor(SelColor, colorField)", 500);
-	SelColor = showModalDialog("<%= wp.getSkinUri() %>components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
+	SelColor = showModalDialog("<%= CmsWorkplace.getSkinUri() %>components/js_colorpicker/index.html", colorPicker, "resizable: no; help: no; status: no; scroll: no;");
 	if (SelColor != null) {
 		ColorSelected = 1;
 	} else {
@@ -216,36 +216,36 @@ function checkField(elementId, checkFieldId) {
 
 <table border="0" cellpadding="3" cellspacing="0">
 <tr>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_HEIGHT_0) %>:</td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_HEIGHT_0) %>:</td>
   <td><input id="TDHeight" type="text" size="7" maxlength="7" style="width:150px;" name="TDHeight" onkeypress="event.returnValue=IsDigit();"></td>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_BORDERINFO_0)%></td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_BORDERINFO_0)%></td>
 </tr>
 <tr>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_WIDTH_0)%>: </td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_WIDTH_0)%>: </td>
   <td><input id="TDWidth" type="text" size="7" maxlength="7" style="width:150px;" name="TDWidth" onkeypress="event.returnValue=IsDigit();"></td>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_BORDERINFO_0) %></td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_BORDERINFO_0) %></td>
 </tr>  
 <tr>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGN_0)%>: </td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGN_0)%>: </td>
   <td colspan="2"><select name="TDAlign" id="TDAlign" size="1" style="width:150px;">
-        <option value=""><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0)%></option>
-        <option value="left"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNLEFT_0)%></option>
-        <option value="center"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNCENTER_0) %></option>
-        <option value="right"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNRIGHT_0) %></option>
+        <option value=""><%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0)%></option>
+        <option value="left"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNLEFT_0)%></option>
+        <option value="center"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNCENTER_0) %></option>
+        <option value="right"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_ALIGNRIGHT_0) %></option>
       </select>
 </tr>
 <tr>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGN_0)%>: </td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGN_0)%>: </td>
   <td colspan="2"><select name="TDVAlign" id="TDVAlign" size="1" style="width:150px;">
-        <option value=""><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0) %></option>
-        <option value="top"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNTOP_0) %></option>
-        <option value="middle"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNMIDDLE_0) %></option>
-        <option value="bottom"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNBOTTOM_0) %></option>        
-        <option value="baseline"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNBASELINE_0) %></option>
+        <option value=""><%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_TABLE_NOTSPECIFIED_0) %></option>
+        <option value="top"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNTOP_0) %></option>
+        <option value="middle"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNMIDDLE_0) %></option>
+        <option value="bottom"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNBOTTOM_0) %></option>        
+        <option value="baseline"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_VALIGNBASELINE_0) %></option>
       </select>
 </tr>
 <tr>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_TBGCOLOR_0) %>:</td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_TBGCOLOR_0) %>:</td>
   <td><input type="text" id="TBGColor" size=7 maxlength="7" name="TBGColor" style="width:150px;" onkeyup="previewColor('TBGColor', 'TBGColor');"></td>
   <td><table border="0" cellpadding="0" cellspacing="0">
   		<tr>
@@ -255,7 +255,7 @@ function checkField(elementId, checkFieldId) {
   </td>
 </tr>
 <tr>
-  <td style="white-space: nowrap;"><%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_INPUT_TBORDERCOLOR_0)%>:</td>
+  <td style="white-space: nowrap;"><%= wp.key(org.opencms.workplace.editors.Messages.GUI_INPUT_TBORDERCOLOR_0)%>:</td>
   <td><input type="text" id="TBorderColor" size=7 maxlength="7" name="TBorderColor" style="width:150px;" onkeyup="previewColor('TBorderColor', 'TBorderColor');"></td>
   <td><table border="0" cellpadding="0" cellspacing="0">
   		<tr>

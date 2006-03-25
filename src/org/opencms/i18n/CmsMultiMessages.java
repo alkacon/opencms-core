@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMultiMessages.java,v $
- * Date   : $Date: 2006/03/24 13:59:24 $
- * Version: $Revision: 1.12.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.12.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.12.2.3 $ 
+ * @version $Revision: 1.12.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,7 @@ public class CmsMultiMessages extends CmsMessages {
     private String resolveKey(String keyName) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_RESOLVE_MESSAGE_KEY_1, keyName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_RESOLVE_MESSAGE_KEY_1, keyName));
         }
 
         String result = (String)m_messageCache.get(keyName);
@@ -244,21 +244,21 @@ public class CmsMultiMessages extends CmsMessages {
         } else {
             // result was found in cache
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_MESSAGE_KEY_FOUND_CACHED_2, keyName, result));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_MESSAGE_KEY_FOUND_CACHED_2, keyName, result));
             }
             return result;
         }
         if (result == null) {
             // key was not found in "regular" bundle as well as module messages
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_MESSAGE_KEY_NOT_FOUND_1, keyName));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_MESSAGE_KEY_NOT_FOUND_1, keyName));
             }
             // ensure null values are also cached
             m_messageCache.put(keyName, NULL_STRING);
         } else {
             // optional debug output
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_MESSAGE_KEY_FOUND_2, keyName, result));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_MESSAGE_KEY_FOUND_2, keyName, result));
             }
             // cache the result
             m_messageCache.put(keyName, result);

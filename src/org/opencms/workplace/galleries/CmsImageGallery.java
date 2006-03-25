@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsImageGallery.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.13.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.13.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.jsp.PageContext;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.13.2.7 $ 
+ * @version $Revision: 1.13.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -260,12 +260,12 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append("*");
             result.append(scaler.getHeight());
             result.append(" ");
-            result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_PIXELS_0));
+            result.append(key(Messages.GUI_LABEL_PIXELS_0));
             result.append(" / ");
         }
         result.append(res.getLength() / 1024);
         result.append(" ");
-        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_KILOBYTES_0));
+        result.append(key(Messages.GUI_LABEL_KILOBYTES_0));
         result.append("</td>\n");
 
         return result.toString();
@@ -306,7 +306,7 @@ public class CmsImageGallery extends A_CmsGallery {
             result.append("\" href=\"javascript: preview(\'");
             result.append(resPath);
             result.append("\');\" title=\"");
-            result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_PREVIEW_0));
+            result.append(key(Messages.GUI_BUTTON_PREVIEW_0));
             result.append("\">");
             result.append("<img src=\"");
             result.append(getJsp().link(resPath));

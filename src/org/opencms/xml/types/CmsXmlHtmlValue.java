@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/CmsXmlHtmlValue.java,v $
- * Date   : $Date: 2005/06/29 13:20:55 $
- * Version: $Revision: 1.34 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.34.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.htmlparser.util.ParserException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34 $ 
+ * @version $Revision: 1.34.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -151,7 +151,9 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                 value.setStringValue(cms, defaultValue);
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
-                LOG.error(Messages.get().key(Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1, defaultValue), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1, defaultValue),
+                    e);
                 element.clearContent();
             }
         }
@@ -343,7 +345,7 @@ public class CmsXmlHtmlValue extends A_CmsXmlContentValue implements I_CmsXmlCon
                     content = linkProcessor.processLinks(content);
                 } catch (ParserException e) {
                     // should better not happen
-                    LOG.error(Messages.get().key(Messages.ERR_XMLCONTENT_LINK_PROCESS_FAILED_0), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_XMLCONTENT_LINK_PROCESS_FAILED_0), e);
                 }
             }
         }

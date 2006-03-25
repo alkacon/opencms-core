@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsCollectorData.java,v $
- * Date   : $Date: 2005/11/23 08:15:27 $
- * Version: $Revision: 1.8.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.8.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior
  * @author Thomas Weckert
  * 
- * @version $Revision: 1.8.2.2 $
+ * @version $Revision: 1.8.2.3 $
  * 
  * @since 6.0.0
  */
@@ -104,7 +104,7 @@ public class CmsCollectorData {
                 I_CmsResourceType resourceType = OpenCms.getResourceManager().getResourceType(typeInt);
                 m_type = resourceType.getTypeId();
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_RESTYPE_INTID_2,
                         resourceType.getTypeName(),
                         new Integer(m_type)));

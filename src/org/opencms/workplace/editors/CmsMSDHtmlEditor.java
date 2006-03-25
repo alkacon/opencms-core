@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/Attic/CmsMSDHtmlEditor.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.14.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.14.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import java.util.regex.Pattern;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.14.2.1 $ 
+ * @version $Revision: 1.14.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsMSDHtmlEditor extends CmsSimplePageEditor {
         for (int i = 0; i < contents.length; i++) {
             String value = contents[i];
             values.addElement(value);
-            String s = key("select." + value, value);
+            String s = keyDefault("select." + value, value);
             names.addElement(s);
         }
         int browserId = 0;

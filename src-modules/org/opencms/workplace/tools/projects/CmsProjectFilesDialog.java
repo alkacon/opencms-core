@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/projects/CmsProjectFilesDialog.java,v $
- * Date   : $Date: 2006/03/16 10:02:52 $
- * Version: $Revision: 1.15.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.15.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.15.2.4 $ 
+ * @version $Revision: 1.15.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -175,11 +175,11 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
 
         int projectId = new Integer(getProject().getId()).intValue();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_READ_PROJECT_VIEW_START_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_START_0));
         }
         List resources = getCms().readProjectView(projectId, CmsResource.STATE_KEEP);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_READ_PROJECT_VIEW_END_1, new Integer(resources.size())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_END_1, new Integer(resources.size())));
         }
         return getListItemsFromResources(resources);
     }
@@ -219,7 +219,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
         if (Boolean.valueOf(getParamShowexplorer()).booleanValue()) {
             int projectId = getProject().getId();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_READ_PROJECT_VIEW_START_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_START_0));
             }
             List resources;
             try {
@@ -239,7 +239,7 @@ public class CmsProjectFilesDialog extends A_CmsListExplorerDialog {
                 resources = new ArrayList();
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_READ_PROJECT_VIEW_END_1, new Integer(resources.size())));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_PROJECT_VIEW_END_1, new Integer(resources.size())));
             }
             Map params = new HashMap();
             // set action parameter to initial dialog call

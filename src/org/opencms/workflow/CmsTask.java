@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/CmsTask.java,v $
- * Date   : $Date: 2005/06/27 23:22:21 $
- * Version: $Revision: 1.13 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.13.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -39,7 +39,7 @@ import org.opencms.util.CmsUUID;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.13 $ 
+ * @version $Revision: 1.13.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -636,25 +636,25 @@ public class CmsTask {
 
         switch (state) {
             case CmsTaskService.TASK_STATE_PREPARE:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_PREPARED_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_PREPARED_0);
                 break;
             case CmsTaskService.TASK_STATE_START:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_START_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_START_0);
                 break;
             case CmsTaskService.TASK_STATE_STARTED:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_STARTED_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_STARTED_0);
                 break;
             case CmsTaskService.TASK_STATE_NOTENDED:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_RUNNING_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_RUNNING_0);
                 break;
             case CmsTaskService.TASK_STATE_ENDED:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_ENDED_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_ENDED_0);
                 break;
             case CmsTaskService.TASK_STATE_HALTED:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_HALTED_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_HALTED_0);
                 break;
             default:
-                result = Messages.get().key(Messages.GUI_TASK_STATE_UNKNOWN_0);
+                result = Messages.get().getBundle().key(Messages.GUI_TASK_STATE_UNKNOWN_0);
         }
         return result;
     }

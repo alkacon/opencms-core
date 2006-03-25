@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsElementChangeLocaleDialog.java,v $
- * Date   : $Date: 2006/01/09 11:51:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.1 
  */
@@ -213,7 +213,7 @@ public class CmsElementChangeLocaleDialog extends CmsWidgetDialog {
         result.append(createWidgetErrorHeader());
 
         // create export file name block
-        result.append(createWidgetBlockStart(Messages.get().key(Messages.GUI_CHANGEELEMENTLOCALE_DIALOG_BLOCK_SETTINGS_0)));
+        result.append(createWidgetBlockStart(key(Messages.GUI_CHANGEELEMENTLOCALE_DIALOG_BLOCK_SETTINGS_0)));
         result.append(createDialogRowsHtml(0, 4));
         result.append(createWidgetBlockEnd());
 

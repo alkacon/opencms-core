@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/A_CmsListExplorerDialog.java,v $
- * Date   : $Date: 2006/03/22 08:33:22 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Moossen 
  * 
- * @version $Revision: 1.1.2.4 $ 
+ * @version $Revision: 1.1.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -352,7 +352,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
 
         List ret = new ArrayList();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_PROCESS_PROJECT_VIEW_START_1, new Integer(resources.size())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESS_PROJECT_VIEW_START_1, new Integer(resources.size())));
         }
         CmsResourceUtil resUtil = getResourceUtil();
         applyColumnVisibilities();
@@ -382,7 +382,7 @@ public abstract class A_CmsListExplorerDialog extends A_CmsListDialog {
             ret.add(item);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_PROCESS_PROJECT_VIEW_END_1, new Integer(ret.size())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PROCESS_PROJECT_VIEW_END_1, new Integer(ret.size())));
         }
         return ret;
     }

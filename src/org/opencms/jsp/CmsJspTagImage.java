@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagImage.java,v $
- * Date   : $Date: 2006/03/23 15:54:16 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.2.0 
  */
@@ -270,7 +270,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
                     // any issue accessing the VFS - just return an empty string 
                     // otherwise template layout will get mixed up with nasty exception messages
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.ERR_IMAGE_TAG_VFS_ACCESS_1, m_src), e);
+                        LOG.warn(Messages.get().getBundle().key(Messages.ERR_IMAGE_TAG_VFS_ACCESS_1, m_src), e);
                     }
                 }
                 // make sure that no null String is returned
@@ -278,7 +278,7 @@ public class CmsJspTagImage extends BodyTagSupport implements I_CmsJspTagParamPa
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "image"), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "image"), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

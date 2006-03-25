@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsAvailability.java,v $
- * Date   : $Date: 2006/01/11 09:07:30 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -78,7 +77,7 @@ import org.apache.commons.logging.Log;
  * @author Jan Baudisch
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,17 +154,16 @@ public class CmsAvailability extends CmsMultiDialog {
     /**
      * Returns a localized String for "Group", if the flag of a group ACE, and the localization for "User" otherwise.<p>
      * 
-     * @param locale the locale to return the result in
      * @param flags the flags of the ACE
      * 
      * @return localization for "Group", if the flag belongs to a group ACE
      */
-    protected static String getLocalizedType(Locale locale, int flags) {
+    protected String getLocalizedType(int flags) {
 
         if ((flags & CmsAccessControlEntry.ACCESS_FLAGS_USER) > 0) {
-            return Messages.get().key(locale, Messages.GUI_LABEL_USER_0);
+            return key(Messages.GUI_LABEL_USER_0);
         } else {
-            return Messages.get().key(locale, Messages.GUI_LABEL_GROUP_0);
+            return key(Messages.GUI_LABEL_GROUP_0);
         }
     }
 
@@ -391,10 +389,10 @@ public class CmsAvailability extends CmsMultiDialog {
                 for (int j = 0; i.hasNext(); j++) {
                     I_CmsPrincipal principal = (I_CmsPrincipal)i.next();
                     String image = "user.png";
-                    String localizedType = getLocalizedType(getLocale(), CmsAccessControlEntry.ACCESS_FLAGS_USER);
+                    String localizedType = getLocalizedType(CmsAccessControlEntry.ACCESS_FLAGS_USER);
                     if (principal instanceof CmsGroup) {
                         image = "group.png";
-                        localizedType = getLocalizedType(getLocale(), CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
+                        localizedType = getLocalizedType(CmsAccessControlEntry.ACCESS_FLAGS_GROUP);
                     }
                     result.append("<div class=\"dialogrow\"><img src=\"");
                     result.append(getSkinUri());

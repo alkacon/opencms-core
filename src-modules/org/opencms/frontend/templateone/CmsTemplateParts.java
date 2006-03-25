@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateParts.java,v $
- * Date   : $Date: 2006/03/13 10:05:41 $
- * Version: $Revision: 1.19.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.19.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.4 $ 
+ * @version $Revision: 1.19.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -126,7 +126,7 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                 // flush Map
                 initPartsMap();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_CMSTEMPLATEPARTS_CLEARED_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_CMSTEMPLATEPARTS_CLEARED_0));
                 }
                 break;
             default: // no operation
@@ -184,16 +184,16 @@ public final class CmsTemplateParts implements I_CmsEventListener {
                     part = "";
                 }
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_NOT_FOUND_1, partKey));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_INCLUDE_PART_NOT_FOUND_1, partKey));
                 }
             } else if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_FOUND_1, partKey));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_INCLUDE_PART_FOUND_1, partKey));
             }
         } catch (Throwable t) {
             // catch all errors to avoid displaying rubbish
             part = "";
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_INCLUDE_PART_ERR_2, partKey, t));
             }
         }
         return part;

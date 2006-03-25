@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsDecorationDefintion.java,v $
- * Date   : $Date: 2006/01/06 14:05:20 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -138,13 +138,16 @@ public class CmsDecorationDefintion {
         // get configfile basename and the list of all decoration map files
         List decorationMapFiles = getDecorationMapFiles(cms);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_DEFINITION_MAP_FILES_2, decorationMapFiles, locale));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_DECORATION_DEFINITION_MAP_FILES_2,
+                decorationMapFiles,
+                locale));
         }
 
         // create decoration maps
         List decorationMaps = getDecorationMaps(cms, decorationMapFiles);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_DECORATION_DEFINITION_MAPS_2, decorationMaps, locale));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DECORATION_DEFINITION_MAPS_2, decorationMaps, locale));
         }
 
         // now that we have all decoration maps we can build the decoration bundle
@@ -346,7 +349,7 @@ public class CmsDecorationDefintion {
                 || (locale != null && decMap.getLocale() == null)) {
                 decorationBundle.putAll(decMap.getDecorationMap());
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DECORATION_DEFINITION_CREATE_BUNDLE_2,
                         decMap.getName(),
                         locale));
@@ -423,7 +426,10 @@ public class CmsDecorationDefintion {
                 decorationMaps.add(decMap);
             } catch (CmsException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_DECORATION_DEFINITION_CREATE_MAP_2, res.getName(), e));
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_DECORATION_DEFINITION_CREATE_MAP_2,
+                        res.getName(),
+                        e));
                 }
             }
         }

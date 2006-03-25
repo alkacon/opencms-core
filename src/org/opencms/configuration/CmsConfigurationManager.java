@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsConfigurationManager.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.29.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.29.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.29.2.1 $
+ * @version $Revision: 1.29.2.2 $
  * 
  * @since 6.0.0
  */
@@ -132,19 +132,23 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         m_baseFolder = new File(baseFolder);
         if (!m_baseFolder.exists()) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_INVALID_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_INVALID_CONFIG_BASE_FOLDER_1,
+                    m_baseFolder.getAbsolutePath()));
             }
         }
         m_backupFolder = new File(m_baseFolder.getAbsolutePath() + File.separatorChar + "backup");
         if (!m_backupFolder.exists()) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CREATE_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_CREATE_CONFIG_BKP_FOLDER_1,
+                    m_backupFolder.getAbsolutePath()));
             }
             m_backupFolder.mkdirs();
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
-            LOG.debug(Messages.get().key(Messages.LOG_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CONFIG_BASE_FOLDER_1, m_baseFolder.getAbsolutePath()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CONFIG_BKP_FOLDER_1, m_backupFolder.getAbsolutePath()));
         }
         cacheDtdSystemId(this);
         m_configurations = new ArrayList();
@@ -158,7 +162,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
     public void addConfiguration(I_CmsXmlConfiguration configuration) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_CONFIG_1, configuration));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_CONFIG_1, configuration));
         }
         m_configurations.add(configuration);
         cacheDtdSystemId(configuration);
@@ -311,7 +315,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         // does not need to be initialized
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
 
@@ -325,7 +329,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
 
         URL baseUrl = m_baseFolder.toURL();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_BASE_URL_1, baseUrl));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_URL_1, baseUrl));
         }
 
         // first load the base configuration
@@ -371,7 +375,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // generate the file URL for the XML input
         File file = new File(m_baseFolder, configuration.getXmlFileName());
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_WRITE_CONFIG_XMLFILE_1, file.getAbsolutePath()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITE_CONFIG_XMLFILE_1, file.getAbsolutePath()));
         }
 
         // generate the XML document 
@@ -396,7 +400,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_WRITE_CONFIG_SUCCESS_2,
                 file.getAbsolutePath(),
                 configuration.getClass().getName()));
@@ -418,13 +422,13 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             + configuration.getXmlFileName();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CREATE_CONFIG_BKP_2, fromName, toName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_CONFIG_BKP_2, fromName, toName));
         }
 
         try {
             CmsFileUtil.copy(fromName, toName);
         } catch (IOException e) {
-            LOG.error(Messages.get().key(Messages.LOG_CREATE_CONFIG_BKP_FAILURE_1, toName), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_CONFIG_BKP_FAILURE_1, toName), e);
         }
     }
 
@@ -443,7 +447,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                     configuration.getDtdUrlPrefix() + configuration.getDtdFilename(),
                     file.getBytes(CmsEncoder.ENCODING_UTF_8));
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_CACHE_DTD_SYSTEM_ID_1,
                         configuration.getDtdUrlPrefix()
                             + configuration.getDtdFilename()
@@ -452,7 +456,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
                             + configuration.getDtdFilename()));
                 }
             } catch (IOException e) {
-                LOG.error(Messages.get().key(
+                LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_CACHE_DTD_SYSTEM_ID_FAILURE_1,
                     configuration.getDtdSystemLocation() + configuration.getDtdFilename()), e);
             }
@@ -472,7 +476,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
         // generate the file URL for the XML input
         URL fileUrl = new URL(url, configuration.getXmlFileName());
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_LOAD_CONFIG_XMLFILE_1, fileUrl));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_LOAD_CONFIG_XMLFILE_1, fileUrl));
         }
 
         // create a backup of the configuration
@@ -510,7 +514,7 @@ public class CmsConfigurationManager implements I_CmsXmlConfiguration {
             if ((lastMod < maxAge) & (!file.getAbsolutePath().endsWith(CmsConfigurationManager.POSTFIX_ORI))) {
                 file.delete();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_REMOVE_CONFIG_FILE_1, file.getAbsolutePath()));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_REMOVE_CONFIG_FILE_1, file.getAbsolutePath()));
                 }
             }
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchParameters.java,v $
- * Date   : $Date: 2006/03/22 13:38:07 $
- * Version: $Revision: 1.5.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.5.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,11 +55,11 @@ import org.apache.lucene.search.SortField;
  * well as support for creation of restrictions of several search query parameter sets. <p>
  * 
  *   
- * @version $Revision: 1.5.2.7 $
+ * @version $Revision: 1.5.2.8 $
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.7 $ 
+ * @version $Revision: 1.5.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -189,6 +189,7 @@ public class CmsSearchParameters {
         m_page = 1;
         m_queryLength = -1;
     }
+
     /**
      * Returns wether category counts are calculated for search results or not. <p>
      * 
@@ -198,6 +199,7 @@ public class CmsSearchParameters {
 
         return m_calculateCategories;
     }
+
     /**
      * Returns the list of categories to limit the search to.<p>
      *
@@ -207,7 +209,7 @@ public class CmsSearchParameters {
 
         return m_categories;
     }
-    
+
     /**
      * Returns the list of search index fields to search in.<p>
      *
@@ -551,7 +553,7 @@ public class CmsSearchParameters {
                 setSearchIndex(index);
             } catch (Exception exc) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
                 }
             }
         }
@@ -581,7 +583,7 @@ public class CmsSearchParameters {
                 new Integer(getQueryLength())));
         }
         m_query = query;
-     }
+    }
 
     /**
      * Sets the minimum length of the search query.<p>

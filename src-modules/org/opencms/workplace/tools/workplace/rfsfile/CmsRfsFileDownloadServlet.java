@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/Attic/CmsRfsFileDownloadServlet.java,v $
- * Date   : $Date: 2005/09/11 13:27:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -115,7 +115,7 @@ public final class CmsRfsFileDownloadServlet extends HttpServlet {
         // find the file: 
         String fileToFind = req.getParameter("filePath");
         if (CmsStringUtil.isEmpty(fileToFind)) {
-            throw new ServletException(Messages.get().key(Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
+            throw new ServletException(Messages.get().getBundle().key(Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
         } else {
 
             File downloadFile = new File(fileToFind);

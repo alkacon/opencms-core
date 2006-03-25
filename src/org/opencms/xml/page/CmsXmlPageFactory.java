@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPageFactory.java,v $
- * Date   : $Date: 2005/06/27 23:22:23 $
- * Version: $Revision: 1.15 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.15.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.xml.sax.EntityResolver;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15 $ 
+ * @version $Revision: 1.15.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -121,7 +121,7 @@ public final class CmsXmlPageFactory {
             return CmsXmlUtils.marshal(createDocument(locale), encoding);
         } catch (CmsXmlException e) {
             // this should never happen
-            LOG.error(Messages.get().key(Messages.ERR_XML_PAGE_FACT_CREATE_DOC_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_FACT_CREATE_DOC_0), e);
             return null;
         }
     }

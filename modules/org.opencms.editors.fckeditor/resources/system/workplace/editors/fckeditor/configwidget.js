@@ -1,9 +1,8 @@
-<%@ page import="java.util.*, 
+<%@ page import="
 	org.opencms.editors.fckeditor.*,
 	org.opencms.jsp.*,
 	org.opencms.main.*,
 	org.opencms.util.*,
-	org.opencms.widgets.*,
 	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*"
 %><%

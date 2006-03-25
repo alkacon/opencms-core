@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsExportThread.java,v $
- * Date   : $Date: 2005/06/23 11:11:55 $
- * Version: $Revision: 1.6 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.6.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,7 +91,7 @@ public class CmsExportThread extends A_CmsReportThread {
             OpenCms.getImportExportManager().exportData(getCms(), m_handler, getReport());
         } catch (CmsException e) {
             getReport().println(e);
-            LOG.error(Messages.get().key(Messages.ERR_DB_EXPORT_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_DB_EXPORT_0), e);
         }
     }
 }

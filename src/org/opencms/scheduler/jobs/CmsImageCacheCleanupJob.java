@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsImageCacheCleanupJob.java,v $
- * Date   : $Date: 2005/11/12 08:51:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -108,7 +108,7 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
                             f.delete();
                             count++;
                         } catch (Exception e) {
-                            LOG.error(Messages.get().key(
+                            LOG.error(Messages.get().getBundle().key(
                                 Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
                                 f.getAbsolutePath()));
                         }
@@ -120,7 +120,7 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
                     directory.delete();
                     count++;
                 } catch (Exception e) {
-                    LOG.error(Messages.get().key(
+                    LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_IMAGE_CACHE_UNABLE_TO_DELETE_1,
                         directory.getAbsolutePath()));
                 }
@@ -136,7 +136,7 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
 
         if (!CmsImageLoader.isEnabled() || (CmsImageLoader.getImageRepositoryPath() == null)) {
             // scaling functions are not available
-            return Messages.get().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
+            return Messages.get().getBundle().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
         }
 
         String maxAgeStr = (String)parameters.get(PARAM_MAXAGE);
@@ -146,12 +146,15 @@ public class CmsImageCacheCleanupJob implements I_CmsScheduledJob {
         } catch (NumberFormatException e) {
             // in case of an error, use maxage of one week
             maxAge = 24f * 7f;
-            LOG.error(Messages.get().key(Messages.LOG_IMAGE_CACHE_BAD_MAXAGE_2, maxAgeStr, new Float(maxAge)));
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_IMAGE_CACHE_BAD_MAXAGE_2,
+                maxAgeStr,
+                new Float(maxAge)));
         }
 
         // now perform the image cache cleanup
         int count = cleanImageCache(maxAge);
 
-        return Messages.get().key(Messages.LOG_IMAGE_CACHE_CLEANUP_COUNT_1, new Integer(count));
+        return Messages.get().getBundle().key(Messages.LOG_IMAGE_CACHE_CLEANUP_COUNT_1, new Integer(count));
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion3.java,v $
- * Date   : $Date: 2006/03/22 17:38:53 $
- * Version: $Revision: 1.74.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.74.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.74.2.2 $ 
+ * @version $Revision: 1.74.2.3 $ 
  * 
  * @since 6.0.0 
  * 
@@ -224,7 +224,7 @@ public class CmsImportVersion3 extends A_CmsImport {
             immutableResources = Collections.EMPTY_LIST;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
                 Integer.toString(immutableResources.size())));
         }

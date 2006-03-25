@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlErrorHandler.java,v $
- * Date   : $Date: 2005/06/23 11:11:33 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.xml.sax.SAXParseException;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -60,7 +60,7 @@ public class CmsXmlErrorHandler implements ErrorHandler {
      */
     public void error(SAXParseException exception) throws SAXException {
 
-        LOG.error(Messages.get().key(Messages.LOG_PARSING_XML_RESOURCE_ERROR_0), exception);
+        LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_ERROR_0), exception);
         throw exception;
     }
 
@@ -69,7 +69,7 @@ public class CmsXmlErrorHandler implements ErrorHandler {
      */
     public void fatalError(SAXParseException exception) throws SAXException {
 
-        LOG.error(Messages.get().key(Messages.LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0), exception);
+        LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_FATAL_ERROR_0), exception);
         throw exception;
     }
 
@@ -79,7 +79,7 @@ public class CmsXmlErrorHandler implements ErrorHandler {
     public void warning(SAXParseException exception) {
 
         if (LOG.isWarnEnabled()) {
-            LOG.error(Messages.get().key(Messages.LOG_PARSING_XML_RESOURCE_WARNING_0), exception);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSING_XML_RESOURCE_WARNING_0), exception);
         }
     }
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexCacheKey.java,v $
- * Date   : $Date: 2005/10/19 09:39:23 $
- * Version: $Revision: 1.23.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.23.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.23.2.2 $ 
+ * @version $Revision: 1.23.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,7 @@ public class CmsFlexCacheKey {
             parseFlexKey(cacheDirectives);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_GENERATED_1, toString()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_GENERATED_1, toString()));
         }
     }
 
@@ -291,13 +291,13 @@ public class CmsFlexCacheKey {
         StringBuffer str = new StringBuffer(100);
         if (m_always < 0) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_NEVER_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_NEVER_0));
             }
             return null;
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_PARAMS_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CHECK_NO_PARAMS_0));
         }
         if ((m_noparams != null) && (key.getParams() != null)) {
             if ((m_noparams.size() == 0) && (key.getParams().size() > 0)) {
@@ -313,7 +313,7 @@ public class CmsFlexCacheKey {
 
         if (m_always > 0) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_ALWAYS_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_KEYMATCH_CACHE_ALWAYS_0));
             }
             str.append(CACHE_00_ALWAYS);
             return str.toString();
@@ -669,7 +669,7 @@ public class CmsFlexCacheKey {
                 }
                 m_always = 0;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_FLEXKEY_3, t, k, v));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_FLEXKEY_3, t, k, v));
                 }
                 switch (CACHE_COMMANDS.indexOf(k)) {
                     case 0: // always
@@ -748,7 +748,7 @@ public class CmsFlexCacheKey {
         } catch (Exception e) {
             // any Exception here indicates a parsing error
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_ERROR_1, e.toString()));
             }
             m_parseError = true;
         }
@@ -778,7 +778,7 @@ public class CmsFlexCacheKey {
             value = value.substring(0, len - 1);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXCACHEKEY_PARSE_VALUES_1, value));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCACHEKEY_PARSE_VALUES_1, value));
         }
         List tokens = CmsStringUtil.splitAsList(value, ',', true);
         Set result = new HashSet();

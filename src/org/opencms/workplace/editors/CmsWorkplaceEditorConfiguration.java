@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorConfiguration.java,v $
- * Date   : $Date: 2005/10/19 09:57:28 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.13.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13.2.2 $ 
+ * @version $Revision: 1.13.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -94,7 +94,7 @@ public class CmsWorkplaceEditorConfiguration {
 
     /** Name of the useragents node. */
     protected static final String N_USERAGENTS = "useragents";
-    
+
     /** Name of the widgeteditor node. */
     protected static final String N_WIDGETEDITOR = "widgeteditor";
 
@@ -108,7 +108,7 @@ public class CmsWorkplaceEditorConfiguration {
     private List m_userAgentsRegEx;
     private boolean m_validConfiguration;
     private String m_widgetEditor;
-    
+
     /**
      * Constructor with xml data String.<p>
      * 
@@ -122,7 +122,7 @@ public class CmsWorkplaceEditorConfiguration {
             initialize(CmsXmlUtils.unmarshalHelper(xmlData, null), editorUri);
         } catch (CmsXmlException e) {
             // xml String could not be parsed
-            logConfigurationError(Messages.get().key(Messages.ERR_XML_PARSE_0), e);
+            logConfigurationError(Messages.get().getBundle().key(Messages.ERR_XML_PARSE_0), e);
         }
     }
 
@@ -214,14 +214,14 @@ public class CmsWorkplaceEditorConfiguration {
 
         return m_userAgentsRegEx;
     }
-    
+
     /**
      * Returns the widget editor class for rich text editing.<p>
      * 
      * @return the widget editor class for rich text editing
      */
     public String getWidgetEditor() {
-        
+
         return m_widgetEditor;
     }
 
@@ -241,7 +241,7 @@ public class CmsWorkplaceEditorConfiguration {
      * @return true if the editor is usable as a widget editor for rich text editing, otherwise false
      */
     public boolean isWidgetEditor() {
-    
+
         return CmsStringUtil.isNotEmpty(m_widgetEditor);
     }
 
@@ -260,7 +260,7 @@ public class CmsWorkplaceEditorConfiguration {
             boolean matches = ((Pattern)getBrowserPattern().get(i)).matcher(currentBrowser.trim()).matches();
             if (matches) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_BROWSER_MATCHES_CONFIG_1, currentBrowser));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_BROWSER_MATCHES_CONFIG_1, currentBrowser));
                 }
                 return true;
             }
@@ -289,16 +289,16 @@ public class CmsWorkplaceEditorConfiguration {
 
         // get the root element of the configuration
         Element rootElement = document.getRootElement();
-        
+
         // set the label of the editor
         setEditorLabel(rootElement.elementText(N_LABEL));
-        
+
         // set the widget editor class if available
         String widgetClass = rootElement.elementText(N_WIDGETEDITOR);
         if (CmsStringUtil.isNotEmpty(widgetClass)) {
             setWidgetEditor(widgetClass);
         }
-        
+
         // set the URI of the editor
         setEditorUri(editorUri);
 
@@ -310,13 +310,13 @@ public class CmsWorkplaceEditorConfiguration {
             float ranking;
             String name = currentType.elementText(N_NAME);
             if (CmsStringUtil.isEmpty(name)) {
-                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_NAME_0), null);
+                logConfigurationError(Messages.get().getBundle().key(Messages.ERR_INVALID_RESTYPE_NAME_0), null);
                 continue;
             }
             try {
                 ranking = Float.parseFloat(currentType.elementText(N_RANKING));
             } catch (Throwable t) {
-                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
+                logConfigurationError(Messages.get().getBundle().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
                 continue;
             }
             String mapTo = currentType.elementText(N_MAPTO);
@@ -336,14 +336,14 @@ public class CmsWorkplaceEditorConfiguration {
                 I_CmsEditorTypeMatcher matcher = (I_CmsEditorTypeMatcher)Class.forName(name).newInstance();
                 assignedTypes = matcher.getAdditionalResourceTypes();
             } catch (Throwable t) {
-                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_CLASS_1, name), t);
+                logConfigurationError(Messages.get().getBundle().key(Messages.ERR_INVALID_RESTYPE_CLASS_1, name), t);
                 continue;
             }
             float ranking;
             try {
                 ranking = Float.parseFloat(currentClass.elementText(N_RANKING));
             } catch (Throwable t) {
-                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
+                logConfigurationError(Messages.get().getBundle().key(Messages.ERR_INVALID_RESTYPE_RANKING_1, name), t);
                 continue;
             }
             String mapTo = currentClass.elementText(N_MAPTO);
@@ -372,10 +372,12 @@ public class CmsWorkplaceEditorConfiguration {
                 try {
                     pattern.add(Pattern.compile(agentName));
                 } catch (PatternSyntaxException e) {
-                    logConfigurationError(Messages.get().key(Messages.ERR_COMPILE_EDITOR_REGEX_1, agentName), e);
+                    logConfigurationError(
+                        Messages.get().getBundle().key(Messages.ERR_COMPILE_EDITOR_REGEX_1, agentName),
+                        e);
                 }
             } else {
-                logConfigurationError(Messages.get().key(Messages.ERR_INVALID_USERAGENT_DEF_0), null);
+                logConfigurationError(Messages.get().getBundle().key(Messages.ERR_INVALID_USERAGENT_DEF_0), null);
             }
         }
         setBrowserPattern(pattern);
@@ -393,9 +395,9 @@ public class CmsWorkplaceEditorConfiguration {
         setValidConfiguration(false);
         if (LOG.isErrorEnabled()) {
             if (t == null) {
-                LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message));
             } else {
-                LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_EDITOR_CONFIG_ERROR_1, message), t);
             }
         }
     }
@@ -409,7 +411,7 @@ public class CmsWorkplaceEditorConfiguration {
 
         if (pattern == null || pattern.size() == 0) {
             setValidConfiguration(false);
-            LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_PATTERN_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_EDITOR_CONFIG_NO_PATTERN_0));
         }
         m_browserPattern = pattern;
     }
@@ -423,7 +425,7 @@ public class CmsWorkplaceEditorConfiguration {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(label)) {
             setValidConfiguration(false);
-            LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_LABEL_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_EDITOR_CONFIG_NO_LABEL_0));
         }
         m_editorLabel = label;
     }
@@ -436,7 +438,7 @@ public class CmsWorkplaceEditorConfiguration {
 
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(uri)) {
             setValidConfiguration(false);
-            LOG.error(Messages.get().key(Messages.LOG_EDITOR_CONFIG_NO_URI_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_EDITOR_CONFIG_NO_URI_0));
         }
         m_editorUri = uri;
     }
@@ -450,7 +452,7 @@ public class CmsWorkplaceEditorConfiguration {
 
         if (types == null || types.size() == 0) {
             setValidConfiguration(false);
-            LOG.error(Messages.get().key(Messages.LOG_NO_RESOURCE_TYPES_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_RESOURCE_TYPES_0));
         }
         m_resTypes = types;
     }
@@ -464,7 +466,7 @@ public class CmsWorkplaceEditorConfiguration {
 
         if (agents == null || agents.size() == 0) {
             setValidConfiguration(false);
-            LOG.error(Messages.get().key(Messages.LOG_NO_USER_AGENTS_0));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_USER_AGENTS_0));
         }
         m_userAgentsRegEx = agents;
     }
@@ -485,7 +487,7 @@ public class CmsWorkplaceEditorConfiguration {
      * @param widgetEditor the widget editor class for rich text editing
      */
     private void setWidgetEditor(String widgetEditor) {
-    
+
         m_widgetEditor = widgetEditor;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/A_CmsContentCheck.java,v $
- * Date   : $Date: 2005/11/16 12:14:12 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import java.util.Map;
  * 
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -89,7 +89,7 @@ public abstract class A_CmsContentCheck implements I_CmsContentCheck, I_CmsToolH
      */
     public String getGroup() {
 
-        return org.opencms.workplace.tools.content.Messages.get().key(
+        return org.opencms.workplace.tools.content.Messages.get().getBundle().key(
             org.opencms.workplace.tools.content.Messages.GUI_CHECKCONTENT_CONFIGURATION_ADMIN_TOOL_NAME_0);
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateBean.java,v $
- * Date   : $Date: 2006/03/16 10:02:52 $
- * Version: $Revision: 1.40.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.40.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.40.2.5 $ 
+ * @version $Revision: 1.40.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -252,7 +252,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
         } catch (Exception e) {
             // problem getting properties, log error
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_XMLCONTEN_CONFIG_NOT_FOUND_2,
                     fileName,
                     cms.getRequestContext().getUri()));
@@ -435,7 +435,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             CmsWorkplace.VFS_PATH_MODULES + MODULE_NAME,
             PROPERTY_VALUE_NONE);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_EXT_MODULE_PROP_VALUE_1, configModule));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_EXT_MODULE_PROP_VALUE_1, configModule));
         }
         if (!PROPERTY_VALUE_NONE.equals(configModule)) {
             // extension module name found, check presence of file
@@ -446,7 +446,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             } catch (CmsException e) {
                 // file not found in extension module, use default file from template one module
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EXT_MODULE_FILE_NOT_FOUND_1, fileName));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EXT_MODULE_FILE_NOT_FOUND_1, fileName));
                 }
             }
         }
@@ -534,7 +534,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
                         url = link(url);
                     }
                     // try to get localized version for found text
-                    text = key(text, text);
+                    text = keyDefault(text, text);
                 } catch (Exception e) {
                     // problem extracting information from property
                     if (LOG.isErrorEnabled()) {
@@ -664,7 +664,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             } catch (CmsLoaderException e) {
                 // resource type could not be determined
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_MICROSITE_FOLDER_NOT_FOUND_0));
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_MICROSITE_FOLDER_NOT_FOUND_0));
                 }
             }
             m_startFolder = "/";
@@ -676,7 +676,7 @@ public class CmsTemplateBean extends CmsTemplateBase {
             } catch (CmsException e) {
                 // no matching start folder found    
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_MICROSITE_READ_START_FOLDER_0));
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_MICROSITE_READ_START_FOLDER_0));
                 }
             }
         }
@@ -933,11 +933,11 @@ public class CmsTemplateBean extends CmsTemplateBase {
      * @param defaultValue the default value in case the key does not exist in the bundle
      * @return the resource string for the given key it it exists, or the given default if not
      * 
-     * @see CmsMessages#key(String, String) 
+     * @see CmsMessages#keyDefault(String, String) 
      */
-    public String key(String keyName, String defaultValue) {
+    public String keyDefault(String keyName, String defaultValue) {
 
-        return messages().key(keyName, defaultValue);
+        return messages().keyDefault(keyName, defaultValue);
     }
 
     /**

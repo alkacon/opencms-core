@@ -1,4 +1,6 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page import="
+	java.util.*
+" session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -135,7 +137,9 @@ Alkacon OpenCms Setup Wizard - Component tests
 		<div class="dialogspacer" unselectable="on">&nbsp;</div>
 		
 		<table border="0" cellpadding="2" cellspacing="0">
-			<% if (!setupTests.isGreen()) { %>
+			<% if (!setupTests.isGreen()) { 
+			    // show table
+			%>
 				<tr><td>
 				<table border="0"><tr>
 					<td style="vertical-align: top;"><input type="checkbox" name="accept" value="true" onClick="toggleContinueButton()"> </td>

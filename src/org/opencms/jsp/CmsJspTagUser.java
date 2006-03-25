@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagUser.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -167,7 +167,7 @@ public class CmsJspTagUser extends TagSupport {
                 pageContext.getOut().print(result);
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "user"), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "user"), ex);
                 }
                 throw new javax.servlet.jsp.JspException(ex);
             }

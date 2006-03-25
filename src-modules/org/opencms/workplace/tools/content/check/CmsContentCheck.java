@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/check/CmsContentCheck.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:48 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.2 
  */
@@ -396,12 +396,12 @@ public class CmsContentCheck {
                         plugin.init(m_cms);
                         // store the plugin instance
                         m_plugins.add(plugin);
-                        LOG.info(Messages.get().key(Messages.LOG_CREATE_PLUGIN_1, classname));
+                        LOG.info(Messages.get().getBundle().key(Messages.LOG_CREATE_PLUGIN_1, classname));
                     } else {
-                        LOG.warn(Messages.get().key(Messages.LOG_CANNOT_CREATE_PLUGIN_1, classname));
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_CANNOT_CREATE_PLUGIN_1, classname));
                     }
                 } catch (Throwable t) {
-                    LOG.error(Messages.get().key(Messages.LOG_CANNOT_CREATE_PLUGIN_2, classname, t));
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_CANNOT_CREATE_PLUGIN_2, classname, t));
                 }
             }
         }

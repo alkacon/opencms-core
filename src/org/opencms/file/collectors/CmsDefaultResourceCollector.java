@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/collectors/CmsDefaultResourceCollector.java,v $
- * Date   : $Date: 2005/06/28 17:45:03 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.10 $
+ * @version $Revision: 1.10.2.1 $
  * 
  * @since 6.0.0 
  */
@@ -257,7 +257,7 @@ public class CmsDefaultResourceCollector extends A_CmsResourceCollector {
             } else if (LOG.isInfoEnabled()) {
                 // printing a log messages makes it a little easier to indentify 
                 // resources having not the NavPos property set
-                LOG.info(Messages.get().key(Messages.LOG_RESOURCE_WITHOUT_NAVPROP_1, navElement.getResourceName()));
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_RESOURCE_WITHOUT_NAVPROP_1, navElement.getResourceName()));
             }
         }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServletErrorHandler.java,v $
- * Date   : $Date: 2006/03/13 15:45:25 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  * 
@@ -86,7 +86,7 @@ public class OpenCmsServletErrorHandler extends OpenCmsServlet {
                     errorMessage = "";
                 }
                 String output = "<html><body>"
-                    + CmsStringUtil.escapeHtml(Messages.get().key(
+                    + CmsStringUtil.escapeHtml(Messages.get().getBundle().key(
                         Messages.ERR_OPENCMS_NOT_INITIALIZED_2,
                         errorStatus,
                         errorMessage))

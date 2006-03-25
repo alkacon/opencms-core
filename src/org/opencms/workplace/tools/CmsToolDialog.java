@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolDialog.java,v $
- * Date   : $Date: 2006/03/16 11:31:25 $
- * Version: $Revision: 1.30.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.30.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.30.2.7 $ 
+ * @version $Revision: 1.30.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,7 +153,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",
-                Messages.get().key(getLocale(), Messages.GUI_ADMIN_VIEW_UPLEVEL_0, null),
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_ADMIN_VIEW_UPLEVEL_0),
                 parentName,
                 true,
                 "admin/images/up.png",
@@ -373,7 +373,7 @@ public class CmsToolDialog extends CmsWorkplace {
                 html.append("commons/wait.gif");
                 html.append("' height='32' width='32' alt=''/>\n");
                 html.append("\t\t\t\t<strong>");
-                html.append(Messages.get().key(getLocale(), Messages.GUI_ADMIN_VIEW_LOADING_0, null));
+                html.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_ADMIN_VIEW_LOADING_0));
                 html.append("</strong></p>\n");
                 html.append("\t\t\t</td></tr></table>\n");
                 html.append("\t\t</div></td></tr>\n");

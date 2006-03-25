@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewDialog.java,v $
- * Date   : $Date: 2005/07/15 10:34:03 $
- * Version: $Revision: 1.7 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.7.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -155,7 +155,7 @@ public class CmsRfsFileViewDialog extends A_CmsRfsFileWidgetDialog {
 
         String fileContentHeader;
         if (m_logView.getFilePath() == null) {
-            fileContentHeader = Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_NO_FILE_SELECTED_0, null);
+            fileContentHeader = key(Messages.GUI_WORKPLACE_LOGVIEW_NO_FILE_SELECTED_0);
         } else {
             fileContentHeader = m_logView.getFilePath().replace('\\', '/');
         }

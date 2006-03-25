@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/site/CmsSiteManager.java,v $
- * Date   : $Date: 2005/10/19 09:46:05 $
- * Version: $Revision: 1.50.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.50.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.50.2.1 $ 
+ * @version $Revision: 1.50.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,7 +106,7 @@ public final class CmsSiteManager implements Cloneable {
         m_aliases = new ArrayList();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_START_SITE_CONFIG_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SITE_CONFIG_0));
         }
     }
 
@@ -180,7 +180,7 @@ public final class CmsSiteManager implements Cloneable {
                 }
             }
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_SITE_PROP_FAILED_0), t);
         } finally {
             // restore the user's current context 
             cms.getRequestContext().restoreSiteRoot();
@@ -303,7 +303,7 @@ public final class CmsSiteManager implements Cloneable {
         m_aliases = new ArrayList();
         m_siteRoots.add(site.getSiteRoot());
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SITE_ROOT_ADDED_1, site.toString()));
         }
     }
 
@@ -377,7 +377,7 @@ public final class CmsSiteManager implements Cloneable {
     public void initialize(CmsObject cms) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_NUM_SITE_ROOTS_CONFIGURED_1,
                 new Integer((m_sites.size() + ((m_defaultUri != null) ? 1 : 0)))));
         }
@@ -391,7 +391,7 @@ public final class CmsSiteManager implements Cloneable {
                     cms.readResource(site.getSiteRoot());
                 } catch (Throwable t) {
                     if (CmsLog.INIT.isWarnEnabled()) {
-                        CmsLog.INIT.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_1, site));
+                        CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_NO_ROOT_FOLDER_1, site));
                     }
                 }
             }
@@ -406,7 +406,9 @@ public final class CmsSiteManager implements Cloneable {
                 cms.readResource(m_defaultSite.getSiteRoot());
             } catch (Throwable t) {
                 if (CmsLog.INIT.isWarnEnabled()) {
-                    CmsLog.INIT.warn(Messages.get().key(Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1, m_defaultSite));
+                    CmsLog.INIT.warn(Messages.get().getBundle().key(
+                        Messages.INIT_NO_ROOT_FOLDER_DEFAULT_SITE_1,
+                        m_defaultSite));
                 }
             }
         }
@@ -415,17 +417,17 @@ public final class CmsSiteManager implements Cloneable {
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             if (m_defaultSite != null) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_1, m_defaultSite));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DEFAULT_SITE_ROOT_0));
             }
         }
         m_workplaceSiteMatcher = new CmsSiteMatcher(m_workplaceServer);
         if (CmsLog.INIT.isInfoEnabled()) {
             if (m_workplaceSiteMatcher != null) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_1, m_workplaceSiteMatcher));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_SITE_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_SITE_0));
             }
         }
 
@@ -489,7 +491,10 @@ public final class CmsSiteManager implements Cloneable {
         CmsSite site = matchSite(matcher);
         if (LOG.isDebugEnabled()) {
             String requestServer = req.getScheme() + "://" + req.getServerName() + ":" + req.getServerPort();
-            LOG.debug(Messages.get().key(Messages.LOG_MATCHING_REQUEST_TO_SITE_2, requestServer, site.toString()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_MATCHING_REQUEST_TO_SITE_2,
+                requestServer,
+                site.toString()));
         }
         return site;
     }

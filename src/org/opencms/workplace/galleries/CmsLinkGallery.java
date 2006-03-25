@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsLinkGallery.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.18.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.18.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,6 @@ import org.opencms.workplace.explorer.CmsNewResourceUpload;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.18.2.5 $ 
+ * @version $Revision: 1.18.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,8 +149,6 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     public String buildGalleryItemPreview() {
 
-        Locale locale = this.getLocale();
-
         StringBuffer html = new StringBuffer(32);
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
@@ -171,7 +168,7 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html.append("<table cellpadding=\"2\" cellspacing=\"2\" border=\"0\" style=\"align: middle; width:100%; background-color: ThreeDFace; margin: 0;\">");
                     html.append("<tr align=\"left\">");
                     html.append("<td width=\"35%\"><b>");
-                    html.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTO_0));
+                    html.append(key(Messages.GUI_INPUT_LINKTO_0));
                     html.append("</b></td>");
                     html.append("<td width=\"65%\"><a href=\"#\" onclick=\"");
                     html.append("javascript:window.open('");
@@ -181,22 +178,18 @@ public class CmsLinkGallery extends A_CmsGallery {
                     html.append(pointer);
                     html.append("</a></td>");
                     // file name
-                    html.append(previewRow(Messages.get().key(locale, Messages.GUI_LABEL_NAME_0), res.getName()));
+                    html.append(previewRow(key(Messages.GUI_LABEL_NAME_0), res.getName()));
                     // file title
-                    html.append(previewRow(Messages.get().key(locale, Messages.GUI_INPUT_TITLE_0), title));
+                    html.append(previewRow(key(Messages.GUI_INPUT_TITLE_0), title));
                     // file last modified date
-                    html.append(previewRow(
-                        Messages.get().key(locale, Messages.GUI_INPUT_DATELASTMODIFIED_0),
-                        lastmodified));
+                    html.append(previewRow(key(Messages.GUI_INPUT_DATELASTMODIFIED_0), lastmodified));
                     // file description if existing
                     if (CmsStringUtil.isNotEmpty(description)) {
-                        html.append(previewRow(
-                            Messages.get().key(locale, Messages.GUI_INPUT_DESCRIPTION_0),
-                            description));
+                        html.append(previewRow(key(Messages.GUI_INPUT_DESCRIPTION_0), description));
                     }
                     // file keywords if existing
                     if (CmsStringUtil.isNotEmpty(keywords)) {
-                        html.append(previewRow(Messages.get().key(locale, Messages.GUI_INPUT_KEYWORDS_0), keywords));
+                        html.append(previewRow(key(Messages.GUI_INPUT_KEYWORDS_0), keywords));
                     }
                     html.append("</table>");
                 }
@@ -292,18 +285,17 @@ public class CmsLinkGallery extends A_CmsGallery {
      */
     protected String buildGalleryItemListHeadline() {
 
-        Locale locale = this.getLocale();
         StringBuffer headline = new StringBuffer(16);
         headline.append("<tr>");
         headline.append("<td class=\"headline\">&nbsp;</td>");
         headline.append("<td class=\"headline\" width=\"25%\">");
-        headline.append(Messages.get().key(Messages.GUI_LABEL_NAME_0));
+        headline.append(key(Messages.GUI_LABEL_NAME_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" width=\"45%\">");
-        headline.append(Messages.get().key(locale, Messages.GUI_LABEL_TITLE_0));
+        headline.append(key(Messages.GUI_LABEL_TITLE_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" width=\"30%\">");
-        headline.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTO_0));
+        headline.append(key(Messages.GUI_INPUT_LINKTO_0));
         headline.append("</td>");
         headline.append("</tr>");
 

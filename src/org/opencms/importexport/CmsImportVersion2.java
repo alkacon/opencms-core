@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion2.java,v $
- * Date   : $Date: 2006/03/22 17:38:53 $
- * Version: $Revision: 1.110.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.110.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Node;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.110.2.4 $ 
+ * @version $Revision: 1.110.2.5 $ 
  * 
  * @since 6.0.0 
  * 
@@ -400,7 +400,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             if (CmsStringUtil.isNotEmpty(name)) {
                 webAppNames.add(name);
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_PATH_2,
                         Integer.toString((i + 1)),
                         name));
@@ -411,7 +411,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         String key = (webAppNames.size() > 0) ? Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_ENABLED_0
         : Messages.INIT_IMPORTEXPORT_OLD_CONTEXT_SUPPORT_DISABLED_0;
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(key));
+            LOG.info(Messages.get().getBundle().key(key));
         }
 
         // check if list is null
@@ -450,7 +450,8 @@ public class CmsImportVersion2 extends A_CmsImport {
             m_webAppNames = getCompatibilityWebAppNames();
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ERROR_GETTING_WEBAPP_COMPATIBILITY_NAMES_0), e);
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_ERROR_GETTING_WEBAPP_COMPATIBILITY_NAMES_0), e);
             }
             m_report.println(e);
         }
@@ -478,7 +479,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             immutableResources = Collections.EMPTY_LIST;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
                 Integer.toString(immutableResources.size())));
         }
@@ -539,7 +540,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_ORIGINAL_RESOURCE_NAME_1, destination));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_ORIGINAL_RESOURCE_NAME_1,
+                        destination));
                 }
 
                 String translatedName = m_cms.getRequestContext().addSiteRoot(m_importPath + destination);
@@ -551,7 +554,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_TRANSLATED_RESOURCE_NAME_1, translatedName));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_TRANSLATED_RESOURCE_NAME_1,
+                        translatedName));
                 }
 
                 boolean resourceNotImmutable = checkImmutable(translatedName, immutableResources);
@@ -604,7 +609,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         }
                         importAccessControlEntries(res, aceList);
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_IMPORTING_4,
                                 new Object[] {
                                     String.valueOf(i + 1),
@@ -620,7 +625,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                             org.opencms.report.Messages.RPT_ARGUMENT_1,
                             translatedName));
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_SKIPPING_3,
                                 String.valueOf(i + 1),
                                 String.valueOf(importSize),
@@ -635,7 +640,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         translatedName));
 
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(
+                        LOG.info(Messages.get().getBundle().key(
                             Messages.LOG_SKIPPING_3,
                             String.valueOf(i + 1),
                             String.valueOf(importSize),
@@ -797,7 +802,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                     m_cms.unlockResource(resName);
                 } catch (CmsLockException e) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1, resName), e);
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_IMPORTEXPORT_UNABLE_TO_UNLOCK_RESOURCE_1,
+                            resName), e);
                     }
                 }
             }
@@ -836,7 +843,7 @@ public class CmsImportVersion2 extends A_CmsImport {
         try {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_START_MERGING_1, resourcename));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_START_MERGING_1, resourcename));
             }
 
             // in OpenCms versions <5 node names have not been case sensitive. thus, nodes are read both in upper
@@ -930,7 +937,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
                 if (m_convertToXmlPage) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_START_CONVERTING_TO_XML_0));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_START_CONVERTING_TO_XML_0));
                     }
 
                     CmsXmlPage xmlPage = CmsXmlPageConverter.convertToXmlPage(m_cms, bodyfile.getContents(), getLocale(
@@ -938,7 +945,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                         properties), encoding);
 
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_CONVERTING_TO_XML_0));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_END_CONVERTING_TO_XML_0));
                     }
 
                     if (xmlPage != null) {
@@ -974,7 +981,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_START_IMPORTING_XML_PAGE_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_START_IMPORTING_XML_PAGE_0));
                 }
 
                 // now import the resource
@@ -985,7 +992,7 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_cms.deleteResource(bodyname, CmsResource.DELETE_PRESERVE_SIBLINGS);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_IMPORTING_XML_PAGE_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_END_IMPORTING_XML_PAGE_0));
                 }
 
                 m_report.println(
@@ -1006,7 +1013,9 @@ public class CmsImportVersion2 extends A_CmsImport {
                 m_cms.unlockResource(resourcename);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_CANNOT_CONVERT_XML_STRUCTURE_1, resourcename));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_CANNOT_CONVERT_XML_STRUCTURE_1,
+                        resourcename));
                 }
 
                 m_report.println(Messages.get().container(Messages.RPT_NOT_CONVERTED_0), I_CmsReport.FORMAT_OK);
@@ -1014,7 +1023,7 @@ public class CmsImportVersion2 extends A_CmsImport {
             }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_END_MERGING_1, resourcename));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_IMPORTEXPORT_END_MERGING_1, resourcename));
             }
         } catch (CmsXmlException e) {
 
@@ -1099,7 +1108,7 @@ public class CmsImportVersion2 extends A_CmsImport {
 
             mergePageFile(resname);
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_MERGING_3,
                     String.valueOf(counter),
                     String.valueOf(size),

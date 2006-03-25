@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsSecurityManager.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.93.2.10 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.93.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -1601,7 +1601,9 @@ public final class CmsSecurityManager {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_SECURITY_MANAGER_SHUTDOWN_1,
+                this.getClass().getName()));
         }
     }
 
@@ -1682,8 +1684,7 @@ public final class CmsSecurityManager {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public CmsPublishList fillPublishList(CmsRequestContext context, CmsPublishList publishList)
-    throws CmsException {
+    public CmsPublishList fillPublishList(CmsRequestContext context, CmsPublishList publishList) throws CmsException {
 
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
         CmsPublishList result = null;
@@ -2683,7 +2684,7 @@ public final class CmsSecurityManager {
         m_driverManager = CmsDriverManager.newInstance(configurationManager, this, dbContextFactory);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SECURITY_MANAGER_INIT_0));
         }
     }
 
@@ -2882,8 +2883,7 @@ public final class CmsSecurityManager {
      * 
      * @see #fillPublishList(CmsRequestContext, CmsPublishList)
      */
-    public CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report)
-    throws CmsException {
+    public CmsUUID publishProject(CmsObject cms, CmsPublishList publishList, I_CmsReport report) throws CmsException {
 
         CmsRequestContext context = cms.getRequestContext();
         CmsDbContext dbc = m_dbContextFactory.getDbContext(context);
@@ -5452,7 +5452,7 @@ public final class CmsSecurityManager {
             }
         } catch (Throwable t) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_DRIVER_MANAGER_CLOSE_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_DRIVER_MANAGER_CLOSE_0), t);
             }
         }
 
@@ -5582,7 +5582,7 @@ public final class CmsSecurityManager {
         m_permissionCache.put(cacheKey, result);
 
         if ((result != PERM_ALLOWED_INTEGER) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_NO_PERMISSION_RESOURCE_USER_4,
                 new Object[] {
                     dbc.getRequestContext().removeSiteRoot(resource.getRootPath()),

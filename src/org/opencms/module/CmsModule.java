@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModule.java,v $
- * Date   : $Date: 2005/10/12 15:25:37 $
- * Version: $Revision: 1.26.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.26.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.26.2.3 $ 
+ * @version $Revision: 1.26.2.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -258,7 +258,7 @@ public class CmsModule implements Comparable {
         initOldAdditionalResources();
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_MODULE_INSTANCE_CREATED_1, m_name));
         }
         m_resourceTypes = Collections.EMPTY_LIST;
         m_explorerTypeSettings = Collections.EMPTY_LIST;

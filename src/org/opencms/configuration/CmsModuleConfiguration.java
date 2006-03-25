@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsModuleConfiguration.java,v $
- * Date   : $Date: 2006/03/24 16:02:15 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12.2.2 $
+ * @version $Revision: 1.12.2.3 $
  * 
  * @since 6.0.0
  */
@@ -80,7 +80,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         m_modules = new ArrayList();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MODULE_CONFIG_INIT_0));
         }
     }
 
@@ -157,7 +157,7 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
         // create the module manager with the configured modules
         m_moduleManager = new CmsModuleManager(m_modules);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_MODULE_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MODULE_CONFIG_FINISHED_0));
         }
     }
 
@@ -171,5 +171,4 @@ public class CmsModuleConfiguration extends A_CmsXmlConfiguration implements I_C
         // add the module info to the list of configured modules
         m_modules.add(moduleHandler.getModule());
     }
-
 }

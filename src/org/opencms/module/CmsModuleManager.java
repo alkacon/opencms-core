@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleManager.java,v $
- * Date   : $Date: 2006/03/20 11:01:58 $
- * Version: $Revision: 1.32.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.32.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen
  * 
- * @version $Revision: 1.32.2.4 $ 
+ * @version $Revision: 1.32.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsModuleManager {
     public CmsModuleManager(List configuredModules) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_MOD_MANAGER_CREATED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MOD_MANAGER_CREATED_0));
         }
 
         m_modules = new Hashtable();
@@ -106,12 +106,14 @@ public class CmsModuleManager {
             CmsModule module = (CmsModule)configuredModules.get(i);
             m_modules.put(module.getName(), module);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_MOD_CONFIGURED_1, module.getName()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_MOD_CONFIGURED_1, module.getName()));
             }
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_MODS_CONFIGURED_1, new Integer(m_modules.size())));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_NUM_MODS_CONFIGURED_1,
+                new Integer(m_modules.size())));
         }
         m_moduleExportPoints = Collections.EMPTY_SET;
     }
@@ -345,7 +347,7 @@ public class CmsModuleManager {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_CREATE_NEW_MOD_1, module.getName()));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_CREATE_NEW_MOD_1, module.getName()));
         }
 
         // initialize the module
@@ -360,7 +362,7 @@ public class CmsModuleManager {
                 moduleAction.moduleUpdate(module);
             }
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.LOG_MOD_UPDATE_ERR_1, module.getName()), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_MOD_UPDATE_ERR_1, module.getName()), t);
         }
 
         // initialize the export points
@@ -484,7 +486,7 @@ public class CmsModuleManager {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_DEL_MOD_1, moduleName));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_1, moduleName));
         }
 
         CmsModule module;
@@ -521,7 +523,7 @@ public class CmsModuleManager {
                     moduleAction.moduleUninstall(module);
                 }
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_MOD_UNINSTALL_ERR_1, moduleName), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_MOD_UNINSTALL_ERR_1, moduleName), t);
             }
         }
 
@@ -535,19 +537,16 @@ public class CmsModuleManager {
 
             try {
                 // try to read a (leftover) module delete project
-                deleteProject = cms.readProject(Messages.get().key(
-                    cms.getRequestContext().getLocale(),
+                deleteProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                     Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
                     new Object[] {moduleName}));
             } catch (CmsException e) {
                 // create a Project to delete the module
                 deleteProject = cms.createProject(
-                    Messages.get().key(
-                        cms.getRequestContext().getLocale(),
+                    Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                         Messages.GUI_DELETE_MODULE_PROJECT_NAME_1,
                         new Object[] {moduleName}),
-                    Messages.get().key(
-                        cms.getRequestContext().getLocale(),
+                    Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                         Messages.GUI_DELETE_MODULE_PROJECT_DESC_1,
                         new Object[] {moduleName}),
                     OpenCms.getDefaultUsers().getGroupAdministrators(),
@@ -567,7 +566,9 @@ public class CmsModuleManager {
                     }
                 } catch (CmsException e) {
                     // may happen if the resource has already been deleted
-                    LOG.error(Messages.get().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)), e);
+                    LOG.error(
+                        Messages.get().getBundle().key(Messages.LOG_MOVE_RESOURCE_FAILED_1, projectFiles.get(i)),
+                        e);
                     report.println(e);
                 }
             }
@@ -583,7 +584,7 @@ public class CmsModuleManager {
                 try {
                     currentResource = (String)module.getResources().get(i);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_RESOURCE_1, currentResource));
                     }
                     if (cms.existsResource(currentResource)) {
                         // lock the resource
@@ -601,7 +602,7 @@ public class CmsModuleManager {
                     }
                 } catch (CmsException e) {
                     // ignore the exception and delete the next resource
-                    LOG.error(Messages.get().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_DEL_MOD_EXC_1, currentResource), e);
                     report.println(e);
                 }
             }
@@ -718,16 +719,16 @@ public class CmsModuleManager {
                     try {
                         moduleAction = (I_CmsModuleAction)Class.forName(module.getActionClass()).newInstance();
                     } catch (Exception e) {
-                        CmsLog.INIT.info(
-                            Messages.get().key(Messages.INIT_CREATE_INSTANCE_FAILED_1, module.getName()),
-                            e);
+                        CmsLog.INIT.info(Messages.get().getBundle().key(
+                            Messages.INIT_CREATE_INSTANCE_FAILED_1,
+                            module.getName()), e);
                     }
                 }
                 if (moduleAction != null) {
                     count++;
                     module.setActionInstance(moduleAction);
                     if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().key(
+                        CmsLog.INIT.info(Messages.get().getBundle().key(
                             Messages.INIT_INITIALIZE_MOD_CLASS_1,
                             moduleAction.getClass().getName()));
                     }
@@ -738,7 +739,7 @@ public class CmsModuleManager {
                         // initialize the module
                         moduleAction.initialize(adminCmsCopy, configurationManager, module);
                     } catch (Throwable t) {
-                        LOG.error(Messages.get().key(
+                        LOG.error(Messages.get().getBundle().key(
                             Messages.LOG_INSTANCE_INIT_ERR_1,
                             moduleAction.getClass().getName()), t);
                     }
@@ -750,7 +751,7 @@ public class CmsModuleManager {
         initModuleExportPoints();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_NUM_CLASSES_INITIALIZED_1, new Integer(count)));
         }
     }
 
@@ -776,7 +777,7 @@ public class CmsModuleManager {
 
             count++;
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_SHUTDOWN_MOD_CLASS_1,
                     moduleAction.getClass().getName()));
             }
@@ -784,18 +785,20 @@ public class CmsModuleManager {
                 // shut down the module
                 moduleAction.shutDown(module);
             } catch (Throwable t) {
-                LOG.error(
-                    Messages.get().key(Messages.LOG_INSTANCE_SHUTDOWN_ERR_1, moduleAction.getClass().getName()),
-                    t);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_INSTANCE_SHUTDOWN_ERR_1,
+                    moduleAction.getClass().getName()), t);
             }
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1, new Integer(count)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_SHUTDOWN_NUM_MOD_CLASSES_1,
+                new Integer(count)));
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
     }
 
@@ -822,7 +825,7 @@ public class CmsModuleManager {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_MOD_UPDATE_1, module.getName()));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_MOD_UPDATE_1, module.getName()));
         }
 
         if (oldModule.getVersion().compareTo(module.getVersion()) == 0) {
@@ -848,7 +851,7 @@ public class CmsModuleManager {
                 module.setActionInstance(moduleAction);
             }
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.LOG_INSTANCE_UPDATE_ERR_1, module.getName()), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INSTANCE_UPDATE_ERR_1, module.getName()), t);
         }
 
         // initialize the export points
@@ -872,12 +875,18 @@ public class CmsModuleManager {
                 CmsExportPoint point = (CmsExportPoint)moduleExportPoints.get(j);
                 if (exportPoints.contains(point)) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.LOG_DUPLICATE_EXPORT_POINT_2, point, module.getName()));
+                        LOG.warn(Messages.get().getBundle().key(
+                            Messages.LOG_DUPLICATE_EXPORT_POINT_2,
+                            point,
+                            module.getName()));
                     }
                 } else {
                     exportPoints.add(point);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_ADD_EXPORT_POINT_2, point, module.getName()));
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_ADD_EXPORT_POINT_2,
+                            point,
+                            module.getName()));
                     }
                 }
             }

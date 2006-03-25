@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexController.java,v $
- * Date   : $Date: 2005/12/04 00:04:22 $
- * Version: $Revision: 1.34.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.34.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.34.2.2 $ 
+ * @version $Revision: 1.34.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -604,9 +604,9 @@ public class CmsFlexController {
         } else {
             if (LOG.isDebugEnabled()) {
                 if (resource != null) {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1, resource));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_1, resource));
                 } else {
-                    LOG.debug(Messages.get().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXCONTROLLER_IGNORED_EXCEPTION_0));
                 }
             }
         }

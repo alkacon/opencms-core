@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/jobs/CmsCreateImageSizeJob.java,v $
- * Date   : $Date: 2005/10/09 07:15:20 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import java.util.Map;
  * 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.0.2 
  */
@@ -73,7 +73,7 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
         if (!CmsImageLoader.isEnabled()) {
             // scaling functions are not available
-            return Messages.get().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
+            return Messages.get().getBundle().key(Messages.LOG_IMAGE_SCALING_DISABLED_0);
         }
 
         I_CmsReport report = new CmsLogReport(cms.getRequestContext().getLocale(), CmsCreateImageSizeJob.class);
@@ -179,6 +179,6 @@ public class CmsCreateImageSizeJob implements I_CmsScheduledJob {
 
         report.println(Messages.get().container(Messages.RPT_IMAGE_SIZE_END_0), I_CmsReport.FORMAT_HEADLINE);
 
-        return Messages.get().key(Messages.LOG_IMAGE_SIZE_UPDATE_COUNT_1, new Integer(count));
+        return Messages.get().getBundle().key(Messages.LOG_IMAGE_SIZE_UPDATE_COUNT_1, new Integer(count));
     }
 }

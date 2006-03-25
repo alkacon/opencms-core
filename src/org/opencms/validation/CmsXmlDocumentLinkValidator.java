@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsXmlDocumentLinkValidator.java,v $
- * Date   : $Date: 2006/03/19 21:50:35 $
- * Version: $Revision: 1.8.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.8.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert
  *   
- * @version $Revision: 1.8.2.1 $ 
+ * @version $Revision: 1.8.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +144,7 @@ public class CmsXmlDocumentLinkValidator {
                     validatableResources.add(resource);
                 }
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_RETRIEVAL_RESOURCE_1, resourceName), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_RETRIEVAL_RESOURCE_1, resourceName), e);
             }
         }
 
@@ -186,7 +186,7 @@ public class CmsXmlDocumentLinkValidator {
                         I_CmsReport.FORMAT_OK);
                 }
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_LINK_SEARCH_1, resourceName), e);
             }
         }
 

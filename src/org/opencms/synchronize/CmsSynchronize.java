@@ -1,9 +1,9 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/synchronize/CmsSynchronize.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.61.2.2 $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.61.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.61.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.61.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.61.2.2 $ 
+ * @version $Revision: 1.61.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -135,7 +135,7 @@ public class CmsSynchronize {
             m_cms.getRequestContext().saveSiteRoot();
             // set site to root site
             m_cms.getRequestContext().setSiteRoot("/");
-            
+
             // get the destination folder
             m_destinationPathInRfs = settings.getDestinationPathInRfs();
 
@@ -433,9 +433,9 @@ public class CmsSynchronize {
                             ((I_CmsSynchronizeModification)i.next()).modifyFs(m_cms, vfsFile, fsFile);
                         } catch (CmsSynchronizeException e) {
                             if (LOG.isWarnEnabled()) {
-                                LOG.warn(
-                                    Messages.get().key(Messages.LOG_SYNCHRONIZE_EXPORT_FAILED_1, res.getRootPath()),
-                                    e);
+                                LOG.warn(Messages.get().getBundle().key(
+                                    Messages.LOG_SYNCHRONIZE_EXPORT_FAILED_1,
+                                    res.getRootPath()), e);
                             }
                             break;
                         }
@@ -559,10 +559,7 @@ public class CmsSynchronize {
                 }
             }
             // we have to read the new resource again, to get the correct timestamp
-            m_cms.setDateLastModified(
-                m_cms.getSitePath(newFile),
-                fsFile.lastModified(),
-                false);
+            m_cms.setDateLastModified(m_cms.getSitePath(newFile), fsFile.lastModified(), false);
             CmsResource newRes = m_cms.readResource(m_cms.getSitePath(newFile));
             // add resource to synchronisation list
             CmsSynchronizeList syncList = new CmsSynchronizeList(
@@ -880,7 +877,7 @@ public class CmsSynchronize {
                 translation = ((I_CmsSynchronizeModification)i.next()).translate(m_cms, name);
             } catch (CmsSynchronizeException e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_EXTERNAL_TRANSLATION_1, name), e);
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_EXTERNAL_TRANSLATION_1, name), e);
                 }
                 break;
             }
@@ -941,17 +938,16 @@ public class CmsSynchronize {
                 ((I_CmsSynchronizeModification)i.next()).modifyVfs(m_cms, vfsFile, fsFile);
             } catch (CmsSynchronizeException e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_SYNCHRONIZE_UPDATE_FAILED_1, res.getRootPath()), e);
+                    LOG.info(
+                        Messages.get().getBundle().key(Messages.LOG_SYNCHRONIZE_UPDATE_FAILED_1, res.getRootPath()),
+                        e);
                 }
                 break;
             }
         }
         // everything is done now, so unlock the resource
         // read the resource again, nescessary to get the actual timestamps
-        m_cms.setDateLastModified(
-            resourcename,
-            fsFile.lastModified(),
-            false);
+        m_cms.setDateLastModified(resourcename, fsFile.lastModified(), false);
         res = m_cms.readResource(resourcename);
 
         //add resource to synchronisation list

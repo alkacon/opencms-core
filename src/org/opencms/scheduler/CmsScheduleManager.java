@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/scheduler/CmsScheduleManager.java,v $
- * Date   : $Date: 2006/03/16 10:02:52 $
- * Version: $Revision: 1.24.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.24.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.quartz.impl.StdSchedulerFactory;
  * 
  * @author Alexander Kandzior 
  *  
- * @version $Revision: 1.24.2.5 $ 
+ * @version $Revision: 1.24.2.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -126,7 +126,7 @@ public class CmsScheduleManager implements Job {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SCHEDULER_CREATED_1, new Integer(size)));
         }
     }
 
@@ -146,13 +146,13 @@ public class CmsScheduleManager implements Job {
         CmsScheduledJobInfo jobInfo = (CmsScheduledJobInfo)jobData.get(SCHEDULER_JOB_INFO);
 
         if (jobInfo == null) {
-            LOG.error(Messages.get().key(Messages.LOG_INVALID_JOB_1, context.getJobDetail().getFullName()));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_JOB_1, context.getJobDetail().getFullName()));
             // can not continue
             return;
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_JOB_STARTING_1, jobInfo.getJobName()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_STARTING_1, jobInfo.getJobName()));
         }
 
         I_CmsScheduledJob job = jobInfo.getJobInstance();
@@ -170,18 +170,24 @@ public class CmsScheduleManager implements Job {
 
                 String result = job.launch(cms, jobInfo.getParameters());
                 if (CmsStringUtil.isNotEmpty(result) && LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_JOB_EXECUTION_OK_2, jobInfo.getJobName(), result));
+                    LOG.info(Messages.get().getBundle().key(
+                        Messages.LOG_JOB_EXECUTION_OK_2,
+                        jobInfo.getJobName(),
+                        result));
                 }
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_JOB_EXECUTION_ERROR_1, jobInfo.getJobName()), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTION_ERROR_1, jobInfo.getJobName()), t);
             }
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_JOB_EXECUTED_1, jobInfo.getJobName()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_JOB_EXECUTED_1, jobInfo.getJobName()));
             Date nextExecution = jobInfo.getExecutionTimeNext();
             if (nextExecution != null) {
-                LOG.info(Messages.get().key(Messages.LOG_JOB_NEXT_EXECUTION_2, jobInfo.getJobName(), nextExecution));
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_JOB_NEXT_EXECUTION_2,
+                    jobInfo.getJobName(),
+                    nextExecution));
             }
         }
     }
@@ -252,14 +258,14 @@ public class CmsScheduleManager implements Job {
             SchedulerFactory schedulerFactory = new StdSchedulerFactory(properties);
             m_scheduler = schedulerFactory.getScheduler();
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_NO_SCHEDULER_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_NO_SCHEDULER_0), e);
             // can not continue
             m_scheduler = null;
             return;
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_INITIALIZED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SCHEDULER_INITIALIZED_0));
         }
 
         if (m_configuredJobs != null) {
@@ -279,15 +285,15 @@ public class CmsScheduleManager implements Job {
             // start the scheduler
             m_scheduler.start();
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_CANNOT_START_SCHEDULER_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_CANNOT_START_SCHEDULER_0), e);
             // can not continue
             m_scheduler = null;
             return;
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_STARTED_0));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SCHEDULER_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SCHEDULER_STARTED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SCHEDULER_CONFIG_FINISHED_0));
         }
     }
 
@@ -448,7 +454,7 @@ public class CmsScheduleManager implements Job {
         m_jobs.add(jobInfo);
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_JOB_SCHEDULED_4,
                 new Object[] {
                     new Integer(m_jobs.size()),
@@ -457,7 +463,10 @@ public class CmsScheduleManager implements Job {
                     jobInfo.getContextInfo().getUserName()}));
             Date nextExecution = jobInfo.getExecutionTimeNext();
             if (nextExecution != null) {
-                LOG.info(Messages.get().key(Messages.LOG_JOB_NEXT_EXECUTION_2, jobInfo.getJobName(), nextExecution));
+                LOG.info(Messages.get().getBundle().key(
+                    Messages.LOG_JOB_NEXT_EXECUTION_2,
+                    jobInfo.getJobName(),
+                    nextExecution));
             }
         }
     }
@@ -470,14 +479,14 @@ public class CmsScheduleManager implements Job {
         m_adminCms = null;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
 
         if (m_scheduler != null) {
             try {
                 m_scheduler.shutdown();
             } catch (SchedulerException e) {
-                LOG.error(Messages.get().key(Messages.LOG_SHUTDOWN_ERROR_0));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_SHUTDOWN_ERROR_0));
             }
         }
 
@@ -510,7 +519,7 @@ public class CmsScheduleManager implements Job {
                 if (jobId.equals(job.getId())) {
                     m_jobs.remove(i);
                     if (jobInfo != null) {
-                        LOG.error(Messages.get().key(Messages.LOG_MULTIPLE_JOBS_FOUND_1, jobId));
+                        LOG.error(Messages.get().getBundle().key(Messages.LOG_MULTIPLE_JOBS_FOUND_1, jobId));
                     }
                     jobInfo = job;
                 }
@@ -523,11 +532,11 @@ public class CmsScheduleManager implements Job {
                 // try to remove the job from Quartz
                 m_scheduler.unscheduleJob(jobId, Scheduler.DEFAULT_GROUP);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_UNSCHEDULED_JOB_1, jobId));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNSCHEDULED_JOB_1, jobId));
                 }
             } catch (SchedulerException e) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_UNSCHEDULING_ERROR_1, jobId));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_UNSCHEDULING_ERROR_1, jobId));
                 }
             }
         }

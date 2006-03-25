@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsStaticExportManager.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.116.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.116.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.116.2.5 $ 
+ * @version $Revision: 1.116.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -354,7 +354,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 // event data contains a list of the published resources
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
                 I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 if (report == null) {
@@ -365,7 +365,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 clearCaches(event);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1, publishHistoryId));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1,
+                        publishHistoryId));
                 }
 
                 break;
@@ -429,7 +431,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORT_SITE_ROOT_2, siteRoot, vfsName));
         }
         cms.getRequestContext().setSiteRoot(siteRoot);
 
@@ -444,7 +446,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             wrapRes = new CmsStaticExportResponseWrapper(res);
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SE_RESOURCE_START_1, data));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SE_RESOURCE_START_1, data));
         }
 
         CmsFile file;
@@ -1051,7 +1053,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                         parameters,
                         System.currentTimeMillis());
                 } catch (CmsException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_WRITE_FAILED_1, rfsName), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_WRITE_FAILED_1, rfsName), e);
                 }
             }
         } catch (CmsException e) {
@@ -1229,9 +1231,9 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         if (CmsLog.INIT.isDebugEnabled()) {
             if (cms != null) {
-                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
+                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_SE_MANAGER_CREATED_1, cms));
             } else {
-                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_SE_MANAGER_CREATED_0));
+                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_SE_MANAGER_CREATED_0));
             }
         }
 
@@ -1296,53 +1298,58 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         if (CmsLog.INIT.isInfoEnabled()) {
             if (isStaticExportEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_ENABLED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_DEFAULT_1,
                     new Boolean(getExportPropertyDefault())));
                 itRfsRules = m_rfsRules.iterator();
                 while (itRfsRules.hasNext()) {
                     CmsStaticExportRfsRule rfsRule = (CmsStaticExportRfsRule)itRfsRules.next();
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_EXPORT_RFS_RULE_EXPORT_PATH_2,
                         rfsRule.getSource(),
                         rfsRule.getExportPath()));
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_EXPORT_RFS_RULE_RFS_PREFIX_2,
                         rfsRule.getSource(),
                         rfsRule.getRfsPrefix()));
                     if (rfsRule.getUseRelativeLinks() != null) {
                         if (rfsRule.getUseRelativeLinks().booleanValue()) {
-                            CmsLog.INIT.info(Messages.get().key(
+                            CmsLog.INIT.info(Messages.get().getBundle().key(
                                 Messages.INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1,
                                 rfsRule.getSource()));
                         } else {
-                            CmsLog.INIT.info(Messages.get().key(
+                            CmsLog.INIT.info(Messages.get().getBundle().key(
                                 Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1,
                                 rfsRule.getSource()));
                         }
                     }
                 }
                 // default rule
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_RFS_RULE_EXPORT_PATH_2,
                     "/",
                     m_staticExportPath));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_RULE_RFS_PREFIX_2, "/", m_rfsPrefix));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EXPORT_RFS_RULE_RFS_PREFIX_2,
+                    "/",
+                    m_rfsPrefix));
                 if (m_exportRelativeLinks) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1, "/"));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_RELATIVE_LINKS_1, "/"));
                 } else {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_RFS_RULE_ABSOLUTE_LINKS_1, "/"));
                 }
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_VFS_PREFIX_1, getVfsPrefix()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_EXPORT_EXPORT_HANDLER_1,
                     getHandler().getClass().getName()));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_OPTIMIZATION_1, getPlainExportOptimization()));
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_URL_1, getExportUrl()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(
+                    Messages.INIT_EXPORT_OPTIMIZATION_1,
+                    getPlainExportOptimization()));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_TESTRESOURCE_1, getTestResource()));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATIC_EXPORT_DISABLED_0));
             }
         }
     }
@@ -1588,12 +1595,12 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
         if (CmsStringUtil.splitAsArray(exportHeader, ':').length == 2) {
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_EXPORT_HEADERS_1, exportHeader));
             }
             m_exportHeaders.add(exportHeader);
         } else {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.INIT_INVALID_HEADER_1, exportHeader));
             }
         }
     }
@@ -1717,7 +1724,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             count++;
             try {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_STATIC_EXPORT_SHUTDOWN_3,
                         m_handler.getClass().getName(),
                         String.valueOf(count),
@@ -1731,7 +1738,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_1, this.getClass().getName()));
         }
 
     }
@@ -1866,7 +1873,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             if (event.getType() != I_CmsEventListener.EVENT_CLEAR_CACHES) {
                 eventType = "EVENT_PUBLISH_PROJECT";
             }
-            LOG.debug(Messages.get().key(Messages.LOG_FLUSHED_CACHES_1, eventType));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLUSHED_CACHES_1, eventType));
         }
     }
 
@@ -2108,13 +2115,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
             } else {
                 // write log message
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
                 }
             }
         } catch (Throwable t) {
             // ignore, nothing to do about the
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
             }
         }
         // iterate over the rules
@@ -2138,13 +2145,13 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 } else {
                     // write log message
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
+                        LOG.info(Messages.get().getBundle().key(Messages.LOG_DEL_MAIN_SE_FOLDER_1, exportFolderName));
                     }
                 }
             } catch (Throwable t) {
                 // ignore, nothing to do about the
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_FOLDER_DELETION_FAILED_1, exportFolderName), t);
                 }
             }
         }
@@ -2161,7 +2168,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
     private synchronized void setExportnames() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_START_0));
         }
 
         List resources;
@@ -2194,7 +2201,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
         }
         m_exportnameResources = Collections.unmodifiableMap(m_exportnameResources);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXPORTNAME_PROP_FINISHED_0));
         }
     }
 
@@ -2235,7 +2242,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
 
                 // log export success 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_STATIC_EXPORTED_2, vfsName, exportFileName));
                 }
 
             } catch (Throwable t) {
@@ -2249,7 +2256,7 @@ public class CmsStaticExportManager implements I_CmsEventListener {
                 if ((dateLastModified != null) && (dateLastModified.longValue() != -1)) {
                     exportFile.setLastModified((dateLastModified.longValue() / 1000) * 1000);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_SET_LAST_MODIFIED_2,
                             exportFile.getName(),
                             new Long((dateLastModified.longValue() / 1000) * 1000)));

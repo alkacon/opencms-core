@@ -1405,28 +1405,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/commons/newcsvfile.jsp</source>
-			<destination>system/workplace/commons/newcsvfile.jsp</destination>
-			<type>jsp</type>
-			<uuidresource>5f30dbeb-ab24-11d9-a409-c958787aaa00</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Dialog - New CSV File]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/commons/newcsvfile_upload.jsp</source>
 			<destination>system/workplace/commons/newcsvfile_upload.jsp</destination>
 			<type>jsp</type>

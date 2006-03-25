@@ -128,12 +128,11 @@ public class CmsGroupSelectionList extends A_CmsListDialog {
         html.append("\t\t<tr>\n");
         html.append("\t\t\t<td>\n");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamUser())) {
-            html.append(Messages.get().key(
-                getLocale(),
+            html.append(Messages.get().getBundle(getLocale()).key(
                 Messages.GUI_GROUPSELECTION_USER_TITLE_1,
-                new Object[] {getParamUser()}));
+                getParamUser()));
         } else {
-            html.append(Messages.get().key(getLocale(), Messages.GUI_GROUPSELECTION_INTRO_TITLE_0));
+            html.append(Messages.get().getBundle(getLocale()).key(Messages.GUI_GROUPSELECTION_INTRO_TITLE_0));
         }
         html.append("\n\t\t\t</td>");
         html.append("\t\t</tr>\n");

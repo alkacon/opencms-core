@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.list;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.tools.A_CmsHtmlIconButton;
@@ -98,6 +99,7 @@ public class CmsListPrintDialog extends CmsDialog {
 
         // build title
         StringBuffer html = new StringBuffer(512);
+        CmsMessages message = Messages.get().getBundle(getLocale());
         html.append("<div class='screenTitle'>\n");
         html.append("\t<table width='100%' cellspacing='0'>\n");
         html.append("\t\t<tr>\n");
@@ -109,8 +111,8 @@ public class CmsListPrintDialog extends CmsDialog {
             getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             "id-print",
-            Messages.get().key(getLocale(), Messages.GUI_ACTION_PRINT_NAME_0),
-            Messages.get().key(getLocale(), Messages.GUI_ACTION_PRINT_HELP_0),
+            message.key(Messages.GUI_ACTION_PRINT_NAME_0),
+            message.key(Messages.GUI_ACTION_PRINT_HELP_0),
             true,
             "list/print.png",
             null,
@@ -119,7 +121,7 @@ public class CmsListPrintDialog extends CmsDialog {
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");
         html.append("</div>\n");
-        
+
         return CmsToolMacroResolver.resolveMacros(html.toString(), this);
     }
 

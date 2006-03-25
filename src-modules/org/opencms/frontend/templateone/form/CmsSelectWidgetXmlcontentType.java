@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/CmsSelectWidgetXmlcontentType.java,v $
- * Date   : $Date: 2006/03/06 11:36:13 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -28,6 +28,7 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
+
 package org.opencms.frontend.templateone.form;
 
 import org.opencms.file.CmsFile;
@@ -138,7 +139,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.7 $
+ * @version $Revision: 1.1.2.8 $
  * 
  * @since 6.1.3
  * 
@@ -152,7 +153,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.7 $
+     * @version $Revision: 1.1.2.8 $
      * 
      * @since 6.1.6
      * 
@@ -251,7 +252,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
      * 
      * @author Achim Westermann
      * 
-     * @version $Revision: 1.1.2.7 $
+     * @version $Revision: 1.1.2.8 $
      * 
      * @since 6.1.6
      * 
@@ -461,7 +462,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
             } catch (CmsException e) {
                 // should never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(
+                    LOG.error(Messages.get().getBundle().key(
                         Messages.ERR_SELECTWIDGET_INTERNAL_CONFIGURATION_2,
                         new Object[] {getClass().getName(), getConfiguration()}));
                 }
@@ -501,7 +502,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                 context.setSiteRoot(oldSiteroot);
                 if (resources.size() == 0) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(
+                        LOG.error(Messages.get().getBundle().key(
                             Messages.LOG_ERR_SELECTWIDGET_NO_RESOURCES_FOUND_3,
                             configuration,
                             m_resourceFolder.getRootPath(),
@@ -562,9 +563,10 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
 
             } catch (Exception e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(
-                        Messages.get().key(Messages.ERR_SELECTWIDGET_CONFIGURATION_2, getClass(), configuration),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_SELECTWIDGET_CONFIGURATION_2,
+                        getClass(),
+                        configuration), e);
                 }
             }
 
@@ -846,7 +848,7 @@ public class CmsSelectWidgetXmlcontentType extends CmsSelectWidget {
                     result.append(xmlcontent.getValue(xpath, locale).getPlainText(cms));
                 } catch (Exception ex) {
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(
+                        LOG.error(Messages.get().getBundle().key(
                             Messages.LOG_ERR_SELECTWIDGET_XPATH_INVALID_4,
                             new Object[] {
                                 xpath,

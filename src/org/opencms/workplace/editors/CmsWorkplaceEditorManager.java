@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsWorkplaceEditorManager.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.9.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.9.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -98,7 +98,7 @@ public class CmsWorkplaceEditorManager {
         try {
             editorFolders = cms.getSubFolders(CmsEditor.PATH_EDITORS);
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_READ_EDITIR_FOLDER_FAILED_1, CmsEditor.PATH_EDITORS));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_EDITIR_FOLDER_FAILED_1, CmsEditor.PATH_EDITORS));
             // can not throw exception here since then OpenCms would not even start in shell mode (runlevel 2)
             editorFolders = new ArrayList();
         }
@@ -179,7 +179,7 @@ public class CmsWorkplaceEditorManager {
         }
         return configurableEditors;
     }
-    
+
     /**
      * Returns the editor URI for the current resource type.<p>
      * 

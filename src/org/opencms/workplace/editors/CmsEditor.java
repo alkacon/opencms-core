@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditor.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.31.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.31.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.31.2.8 $ 
+ * @version $Revision: 1.31.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,9 +124,6 @@ public abstract class CmsEditor extends CmsDialog {
 
     /** Stores the VFS editor path. */
     public static final String PATH_EDITORS = PATH_WORKPLACE + "editors/";
-    
-    /** Constant for the Editor special "save error" confirmation dialog. */
-    public static final String FILE_DIALOG_EDITOR_CONFIRM = PATH_EDITORS + "dialogs/confirm.jsp";
 
     /** Parameter name for the request parameter "backlink". */
     public static final String PARAM_BACKLINK = "backlink";

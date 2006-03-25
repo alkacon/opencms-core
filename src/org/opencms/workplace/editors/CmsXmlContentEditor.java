@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentEditor.java,v $
- * Date   : $Date: 2006/03/23 13:01:10 $
- * Version: $Revision: 1.65.2.13 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.65.2.14 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.65.2.13 $ 
+ * @version $Revision: 1.65.2.14 $ 
  * 
  * @since 6.0.0 
  */
@@ -384,7 +384,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_CREATE_XML_CONTENT_ITEM_1, m_paramNewLink), e);
             }
             throw new JspException(e);
         } finally {
@@ -639,7 +639,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
 
         // set "editor mode" attribute (required for link replacement in the root site) 
         getCms().getRequestContext().setAttribute(CmsRequestContext.ATTRIBUTE_EDITOR, new Boolean(true));
-        
+
         // add customized message bundle eventually specified in XSD of XML content
         addMessages(m_content.getContentDefinition().getContentHandler().getMessages(getLocale()));
 
@@ -981,7 +981,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionToggleElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().key(
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
@@ -995,7 +995,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionToggleElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().key(
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
@@ -1009,7 +1009,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionMoveElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().key(
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
@@ -1023,7 +1023,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 actionMoveElement();
             } catch (JspException e) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.workplace.Messages.get().key(
+                    LOG.error(org.opencms.workplace.Messages.get().getBundle().key(
                         org.opencms.workplace.Messages.LOG_INCLUDE_ERRORPAGE_FAILED_0));
                 }
             }
@@ -1168,12 +1168,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             href.append(jsCall);
             href.append("checkElementButtons(true);\" onmouseout=\"checkElementButtons(false);\" id=\"btimg.");
             href.append(elementName).append(".").append(index);
-            result = button(
-                href.toString(),
-                null,
-                btIcon,
-                Messages.GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0,
-                0);
+            result = button(href.toString(), null, btIcon, Messages.GUI_EDITOR_XMLCONTENT_ELEMENT_BUTTONS_0, 0);
         } else {
             // no active button, create a spacer
             result = buttonBarSpacer(1);
@@ -1295,9 +1290,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                 result.append("<tr><td colspan=\"4\">&nbsp;</td></tr>\n");
                 result.append("<tr><td colspan=\"2\">&nbsp;</td>");
                 result.append("<td class=\"xmlTdErrorHeader\">");
-                result.append(Messages.get().key(
-                    this.getLocale(),
-                    Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
+                result.append(key(Messages.ERR_EDITOR_XMLCONTENT_VALIDATION_ERROR_TITLE_0));
                 result.append("</td><td>&nbsp;");
                 result.append("</td></tr>\n");
             }
@@ -1357,7 +1350,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                         result.append("Disabled");
                     }
                     result.append("\">");
-                    result.append(key(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
+                    result.append(keyDefault(A_CmsWidget.getLabelKey((I_CmsWidgetParameter)value), value.getName()));
                     if (elementCount > 1) {
                         result.append(" [").append(value.getIndex() + 1).append("]");
                     }
@@ -1389,9 +1382,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
                     } else {
                         // disabled element, show message for optional element
                         result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                        result.append(Messages.get().key(
-                            this.getLocale(),
-                            Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
+                        result.append(key(Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                         result.append("</td>");
                     }
 
@@ -1431,7 +1422,7 @@ public class CmsXmlContentEditor extends CmsEditor implements I_CmsWidgetDialog 
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.ERR_XML_EDITOR_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_EDITOR_0), t);
         }
         return result;
     }

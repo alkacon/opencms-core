@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsVfsMemoryObjectCache.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.1.3
  */
@@ -78,7 +78,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
         // register the event listeners
         registerEventListener();
     }
-    
+
     /**
      * Returns the VFS memory Object cache.<p>
      * 
@@ -104,7 +104,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
                 // flush cache   
                 m_cache.clear();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_ER_FLUSHED_CACHES_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
@@ -207,7 +207,7 @@ public final class CmsVfsMemoryObjectCache implements I_CmsEventListener {
         Object o;
         o = m_cache.remove(getCacheKey(systemId, false));
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
         }
     }
 }

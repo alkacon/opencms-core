@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWorkplace.java,v $
- * Date   : $Date: 2006/03/24 13:59:24 $
- * Version: $Revision: 1.146.2.9 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.146.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -88,7 +88,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.146.2.9 $ 
+ * @version $Revision: 1.146.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -1242,7 +1242,7 @@ public abstract class CmsWorkplace {
             value = decodeParamValue(name, value);
             try {
                 if (LOG.isDebugEnabled() && (value != null)) {
-                    LOG.debug(Messages.get().key(Messages.LOG_SET_PARAM_2, m.getName(), value));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_PARAM_2, m.getName(), value));
                 }
                 m.invoke(this, new Object[] {value});
             } catch (InvocationTargetException ite) {
@@ -1656,11 +1656,11 @@ public abstract class CmsWorkplace {
      * @param defaultValue the default value in case the key does not exist in the bundle
      * @return the resource string for the given key it it exists, or the given default if not 
      * 
-     * @see CmsMessages#key(String, String)
+     * @see CmsMessages#keyDefault(String, String)
      */
-    public String key(String keyName, String defaultValue) {
+    public String keyDefault(String keyName, String defaultValue) {
 
-        return getMessages().key(keyName, defaultValue);
+        return getMessages().keyDefault(keyName, defaultValue);
     }
 
     /**
@@ -1913,7 +1913,7 @@ public abstract class CmsWorkplace {
      */
     public String shortKey(String keyName) {
 
-        String value = key(keyName + CmsMessages.KEY_SHORT_SUFFIX, (String)null);
+        String value = keyDefault(keyName + CmsMessages.KEY_SHORT_SUFFIX, (String)null);
         if (value == null) {
             // short key value not found, return "long" key value
             return key(keyName);

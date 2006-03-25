@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThread.java,v $
- * Date   : $Date: 2005/07/29 10:13:36 $
- * Version: $Revision: 1.25 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.25.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,7 +48,7 @@ import org.apache.lucene.index.IndexWriter;
  *  
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.25 $ 
+ * @version $Revision: 1.25.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,13 +117,16 @@ public class CmsIndexingThread extends Thread {
     public void run() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_INDEXING_WITH_FACTORY_2, m_res.getRootPath(), m_factory.getName()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_INDEXING_WITH_FACTORY_2,
+                m_res.getRootPath(),
+                m_factory.getName()));
         }
 
         try {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_CREATING_INDEX_DOC_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATING_INDEX_DOC_0));
             }
             Document doc = m_factory.newInstance(m_cms, m_res, m_index.getLocale());
 
@@ -132,7 +135,9 @@ public class CmsIndexingThread extends Thread {
             }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_WRITING_INDEX_TO_WRITER_1, String.valueOf(m_writer)));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_WRITING_INDEX_TO_WRITER_1,
+                    String.valueOf(m_writer)));
             }
 
             if (!isInterrupted()) {
@@ -148,12 +153,12 @@ public class CmsIndexingThread extends Thread {
                     I_CmsReport.FORMAT_OK);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_WRITE_SUCCESS_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITE_SUCCESS_0));
                 }
             }
 
             if (isInterrupted() && LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_ABANDONED_THREAD_FINISHED_1, m_res.getRootPath()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ABANDONED_THREAD_FINISHED_1, m_res.getRootPath()));
             }
         } catch (Exception exc) {
             // Ignore exception caused by empty documents, so that the report is not messed up with error message
@@ -176,7 +181,7 @@ public class CmsIndexingThread extends Thread {
 
                 }
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(
+                    LOG.error(Messages.get().getBundle().key(
                         Messages.ERR_INDEX_RESOURCE_FAILED_2,
                         m_res.getRootPath(),
                         m_index.getName()), exc);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsSessionManager.java,v $
- * Date   : $Date: 2006/03/13 15:45:25 $
- * Version: $Revision: 1.11.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.11.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -69,7 +69,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  *
- * @version $Revision: 1.11.2.1 $ 
+ * @version $Revision: 1.11.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -329,13 +329,13 @@ public class CmsSessionManager {
         m_sessionCountCurrent = (m_sessionCountCurrent <= 0) ? 1 : (m_sessionCountCurrent + 1);
         m_sessionCountTotal++;
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_SESSION_CREATED_2,
                 new Integer(m_sessionCountTotal),
                 new Integer(m_sessionCountCurrent)));
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_CREATED_1, event.getSession().getId()));
         }
     }
 
@@ -367,13 +367,13 @@ public class CmsSessionManager {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_SESSION_DESTROYED_2,
                 new Integer(m_sessionCountTotal),
                 new Integer(m_sessionCountCurrent)));
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SESSION_DESTROYED_1, event.getSession().getId()));
         }
     }
 

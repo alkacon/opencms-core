@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsPropertyTemplateOne.java,v $
- * Date   : $Date: 2006/03/23 16:35:08 $
- * Version: $Revision: 1.28.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.28.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,6 @@ import org.opencms.workplace.explorer.CmsExplorerTypeSettings;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -73,7 +72,7 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.4 $ 
+ * @version $Revision: 1.28.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -117,6 +116,9 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
     /** Prefix for the localized keys of the dialog. */
     private static final String KEY_PREFIX = "templateonedialog.";
 
+    /** The log object for this class. */
+    private static final Log LOG = CmsLog.getLog(CmsPropertyTemplateOne.class);
+
     /** The module path. */
     private static final String MODULE_PATH = "/system/modules/org.opencms.frontend.templateone/";
 
@@ -140,9 +142,6 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
     /** The VFS path to the global configuration files for right content lists. */
     private static final String VFS_PATH_CONFIGFILES_RIGHT = VFS_PATH_CONFIGFILES + "right/";
-
-    /** The log object for this class. */
-    private static final Log LOG = CmsLog.getLog(CmsPropertyTemplateOne.class);
 
     /**
      * Default constructor needed for dialog handler implementation.<p>
@@ -249,7 +248,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      */
     public String buildEditForm() {
 
-        Locale locale = this.getLocale();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer result = new StringBuffer();
 
         // check if the properties are editable
@@ -259,13 +258,13 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append("<table border=\"0\">\n");
         result.append("<tr>\n");
         result.append("\t<td class=\"textbold\">");
-        result.append(Messages.get().key(locale, Messages.GUI_INPUT_PROPERTY_0));
+        result.append(messages.key(Messages.GUI_INPUT_PROPERTY_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold maxwidth\">");
-        result.append(Messages.get().key(locale, Messages.GUI_LABEL_VALUE_0));
+        result.append(messages.key(Messages.GUI_LABEL_VALUE_0));
         result.append("</td>\n");
         result.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">");
-        result.append(Messages.get().key(locale, Messages.GUI_USED_PROPERTY_0));
+        result.append(messages.key(Messages.GUI_USED_PROPERTY_0));
         result.append("</td>\n");
         result.append("</tr>\n");
         result.append("<tr><td colspan=\"3\"><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -291,14 +290,14 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         // build image uri search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_IMGURI, KEY_PREFIX
-            + CmsTemplateBean.PROPERTY_HEAD_IMGURI, editable));
+            + CmsTemplateBean.PROPERTY_HEAD_IMGURI, editable, messages));
         // build image link search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_IMGLINK, KEY_PREFIX
-            + CmsTemplateBean.PROPERTY_HEAD_IMGLINK, editable));
+            + CmsTemplateBean.PROPERTY_HEAD_IMGLINK, editable, messages));
 
         // build head element search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, KEY_PREFIX
-            + CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, editable));
+            + CmsTemplateBean.PROPERTY_HEAD_ELEMENTURI, editable, messages));
 
         // build head navigation radio buttons   
         result.append(buildRadioButtons(CmsTemplateBean.PROPERTY_SHOW_HEADNAV, ENABLE, null, editable));
@@ -308,10 +307,10 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         // build navleft element search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI, KEY_PREFIX
-            + CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI, editable));
+            + CmsTemplateBean.PROPERTY_NAVLEFT_ELEMENTURI, editable, messages));
         // build side uri search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_SIDE_URI, KEY_PREFIX
-            + CmsTemplateBean.PROPERTY_SIDE_URI, editable));
+            + CmsTemplateBean.PROPERTY_SIDE_URI, editable, messages));
 
         // build center layout selector
         result.append(buildPropertySelectbox(
@@ -328,7 +327,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
 
         // build configuration path search input 
         result.append(buildPropertySearchEntry(CmsTemplateBean.PROPERTY_CONFIGPATH, KEY_PREFIX
-            + CmsTemplateBean.PROPERTY_CONFIGPATH, editable));
+            + CmsTemplateBean.PROPERTY_CONFIGPATH, editable, messages));
 
         result.append("</table>");
 
@@ -583,10 +582,15 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
      * @param propertyName the name of the property
      * @param propertyTitle the nice name of the property
      * @param editable indicates if the properties are editable
+     * @param messages the messages to use for localization
      * 
      * @return the html for a single text input property row
      */
-    private StringBuffer buildPropertySearchEntry(String propertyName, String propertyTitle, boolean editable) {
+    private StringBuffer buildPropertySearchEntry(
+        String propertyName,
+        String propertyTitle,
+        boolean editable,
+        CmsMessages messages) {
 
         StringBuffer result = new StringBuffer(256);
         result.append(buildTableRowStart(key(propertyTitle)));
@@ -643,7 +647,7 @@ public class CmsPropertyTemplateOne extends CmsPropertyCustom implements I_CmsDi
         result.append(PREFIX_VALUE);
         result.append(propertyName);
         result.append("', document);\" class=\"button\" title=\"");
-        result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_SEARCH_0));
+        result.append(messages.key(Messages.GUI_BUTTON_SEARCH_0));
         result.append("\"><img class=\"button\" src=\"");
         result.append(getSkinUri());
         result.append("/buttons/folder.png\" border=\"0\"></a></td>");

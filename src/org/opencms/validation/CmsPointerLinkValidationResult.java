@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/validation/Attic/CmsPointerLinkValidationResult.java,v $
- * Date   : $Date: 2005/10/19 09:48:05 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,8 @@
 
 package org.opencms.validation;
 
+import org.opencms.i18n.CmsMessages;
+
 import java.util.Date;
 import java.util.Iterator;
 import java.util.Locale;
@@ -42,7 +44,7 @@ import java.util.Map.Entry;
  * 
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,30 +76,22 @@ public class CmsPointerLinkValidationResult {
      */
     public String toHtml(Locale locale) {
 
+        CmsMessages mg = Messages.get().getBundle(locale);
         if (m_brokenLinks.size() > 0) {
             StringBuffer result = new StringBuffer(1024);
             Iterator brokenLinks = m_brokenLinks.entrySet().iterator();
-            result.append(
-                Messages.get().key(
-                    locale,
-                    Messages.GUI_LINK_VALIDATION_RESULTS_INTRO_1,
-                    new Object[] {m_validationDate})).append("<ul>");
+            result.append(mg.key(Messages.GUI_LINK_VALIDATION_RESULTS_INTRO_1, new Object[] {m_validationDate})).append(
+                "<ul>");
             while (brokenLinks.hasNext()) {
                 Entry link = (Map.Entry)brokenLinks.next();
                 String linkPath = (String)link.getKey();
                 String linkUrl = (String)link.getValue();
-                String msg = Messages.get().key(
-                    locale,
-                    Messages.GUI_LINK_POINTING_TO_2,
-                    new Object[] {linkPath, linkUrl});
+                String msg = mg.key(Messages.GUI_LINK_POINTING_TO_2, new Object[] {linkPath, linkUrl});
                 result.append("<li>").append(msg).append("</li>");
             }
             return result.append("</ul>").toString();
         } else {
-            return Messages.get().key(
-                locale,
-                Messages.GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1,
-                new Object[] {m_validationDate});
+            return mg.key(Messages.GUI_LINK_VALIDATION_RESULTS_ALL_VALID_1, new Object[] {m_validationDate});
         }
     }
 }

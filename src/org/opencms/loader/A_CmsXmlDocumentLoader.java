@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/A_CmsXmlDocumentLoader.java,v $
- * Date   : $Date: 2005/11/01 23:43:33 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import javax.servlet.http.HttpServletResponse;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.2.0 
  */
@@ -171,7 +171,9 @@ abstract class A_CmsXmlDocumentLoader implements I_CmsResourceLoader, I_CmsResou
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOADER_INITIALIZED_1,
+                this.getClass().getName()));
         }
     }
 

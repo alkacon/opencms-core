@@ -58,11 +58,6 @@ function aB() {
 	parent.appendBr();
 }
 
-<%
-String str = new String(wp.getReportUpdate());
-// System.err.println(str);
-%>
-
 var active = null;
 
 function init() {
@@ -74,7 +69,7 @@ function init() {
     
     parent.flushArray();
 
-<%= str %>
+<%= wp.getReportUpdate() %>
 	
     parent.update();
     

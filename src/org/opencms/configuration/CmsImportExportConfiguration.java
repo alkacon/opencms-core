@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsImportExportConfiguration.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.24.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.24.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -53,7 +53,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.24.2.1 $
+ * @version $Revision: 1.24.2.2 $
  * 
  * @since 6.0.0
  */
@@ -213,7 +213,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_CONFIG_INIT_0));
         }
     }
 
@@ -731,7 +731,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
     public void initializeFinished() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_CONFIG_FINISHED_0));
         }
     }
 
@@ -744,7 +744,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         m_importExportManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_IMPORT_MANAGER_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_IMPORT_MANAGER_0));
         }
     }
 
@@ -757,8 +757,7 @@ public class CmsImportExportConfiguration extends A_CmsXmlConfiguration implemen
 
         m_staticExportManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_STATEXP_MANAGER_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_STATEXP_MANAGER_0));
         }
     }
-
 }

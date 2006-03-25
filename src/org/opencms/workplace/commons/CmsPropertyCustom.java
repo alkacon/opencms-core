@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyCustom.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.19.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.19.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.4 $ 
+ * @version $Revision: 1.19.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -535,7 +535,7 @@ public class CmsPropertyCustom extends CmsPropertyAdvanced {
             try {
                 includeErrorpage(this, e);
             } catch (JspException exc) {
-                LOG.error(Messages.get().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, FILE_DIALOG_SCREEN_ERRORPAGE));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_INCLUDE_FAILED_1, FILE_DIALOG_SCREEN_ERRORPAGE));
             }
         }
     }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsExport.java,v $
- * Date   : $Date: 2006/02/06 15:46:31 $
- * Version: $Revision: 1.80.2.9 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.80.2.10 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -91,7 +91,7 @@ import org.xml.sax.SAXException;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.80.2.9 $ 
+ * @version $Revision: 1.80.2.10 $ 
  * 
  * @since 6.0.0 
  */
@@ -957,7 +957,7 @@ public class CmsExport {
                     I_CmsReport.FORMAT_OK);
 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_EXPORTING_OK_2,
                         String.valueOf(m_exportCount),
                         getCms().getSitePath(resource)));
@@ -1162,7 +1162,7 @@ public class CmsExport {
         }
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(Messages.LOG_EXPORTING_OK_2, String.valueOf(m_exportCount), source));
+            LOG.info(Messages.get().getBundle().key(Messages.LOG_EXPORTING_OK_2, String.valueOf(m_exportCount), source));
         }
         report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -1294,7 +1294,9 @@ public class CmsExport {
                 getReport().println(ioe);
 
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1, user.getName()), ioe);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.ERR_IMPORTEXPORT_ERROR_EXPORTING_USER_1,
+                        user.getName()), ioe);
                 }
             }
             // append the node for groups of user
@@ -1335,7 +1337,7 @@ public class CmsExport {
             if (m_exportUserdata) {
                 // add system users
                 allUsers.addAll(getCms().getUsers());
-            } 
+            }
             if (m_exportWebusers) {
                 // add webusers
                 allUsers.addAll(getCms().getUsers(CmsUser.USER_TYPE_WEBUSER));

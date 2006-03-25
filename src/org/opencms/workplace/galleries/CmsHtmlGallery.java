@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/CmsHtmlGallery.java,v $
- * Date   : $Date: 2005/09/29 12:48:27 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,12 +52,12 @@ import org.apache.commons.logging.Log;
  * @author Armen Markarian 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsHtmlGallery extends A_CmsGallery {
-    
+
     /** URI of the image gallery popup dialog. */
     public static final String URI_GALLERY = PATH_GALLERIES + "html_fs.jsp";
 
@@ -119,7 +119,7 @@ public class CmsHtmlGallery extends A_CmsGallery {
             } catch (CmsException e) {
                 // this should never happen
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(org.opencms.db.Messages.get().key(
+                    LOG.error(org.opencms.db.Messages.get().getBundle().key(
                         org.opencms.db.Messages.ERR_READ_RESOURCE_1,
                         getParamResourcePath()));
                 }
@@ -164,14 +164,14 @@ public class CmsHtmlGallery extends A_CmsGallery {
 
         return CmsResourceTypePlain.getStaticTypeId();
     }
-    
+
     /**
      * Returns the order of the implemented gallery, used to sort the gallery buttons in the editors.<p>
      * 
      * @return the order of the implemented gallery
      */
     public Integer getOrder() {
-        
+
         return ORDER_GALLERY;
     }
 

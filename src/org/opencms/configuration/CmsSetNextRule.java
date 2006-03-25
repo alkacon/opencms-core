@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSetNextRule.java,v $
- * Date   : $Date: 2005/10/12 14:38:21 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -84,7 +84,7 @@ import org.xml.sax.Attributes;
  * @author Craig McClanahan 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.6.2.1 $
+ * @version $Revision: 1.6.2.2 $
  * 
  * @since 6.0.0
  */
@@ -410,7 +410,7 @@ public class CmsSetNextRule extends Rule {
                     m_paramTypes[i] = aDigester.getClassLoader().loadClass(m_paramClassNames[i]);
                 } catch (ClassNotFoundException e) {
                     // use the digester log
-                    LOG.error(Messages.get().key(Messages.ERR_LOAD_CLASS_1, m_paramClassNames[i]), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_LOAD_CLASS_1, m_paramClassNames[i]), e);
                     m_paramTypes[i] = null; // Will cause NPE later
                 }
             }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/OpenCmsServlet.java,v $
- * Date   : $Date: 2006/03/13 15:45:25 $
- * Version: $Revision: 1.55.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.55.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.55.2.1 $ 
+ * @version $Revision: 1.55.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -195,7 +195,9 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 } catch (CmsException e) {
                     // unlikely to happen 
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2, name, path), e);
+                        LOG.warn(
+                            Messages.get().getBundle().key(Messages.LOG_INIT_CMSOBJECT_IN_HANDLER_2, name, path),
+                            e);
                     }
                 }
                 if (exportData != null) {
@@ -206,7 +208,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                         res.setStatus(OpenCms.getStaticExportManager().export(exportReq, res, cms, exportData));
                     } catch (Throwable t) {
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().key(Messages.LOG_ERROR_EXPORT_1, exportData), t);
+                            LOG.warn(Messages.get().getBundle().key(Messages.LOG_ERROR_EXPORT_1, exportData), t);
                         }
                         openErrorHandler(req, res, errorCode);
                     }
@@ -239,7 +241,7 @@ public class OpenCmsServlet extends HttpServlet implements I_CmsRequestHandler {
                 throw new ServletException(e.getMessage());
             }
         } catch (Throwable t) {
-            LOG.error(Messages.get().key(Messages.LOG_ERROR_GENERIC_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERROR_GENERIC_0), t);
         }
     }
 

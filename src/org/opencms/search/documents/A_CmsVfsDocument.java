@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/documents/A_CmsVfsDocument.java,v $
- * Date   : $Date: 2006/03/22 17:38:54 $
- * Version: $Revision: 1.13.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.13.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.lucene.document.Field;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.4 $ 
+ * @version $Revision: 1.13.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -168,7 +168,7 @@ public abstract class A_CmsVfsDocument implements I_CmsDocumentFactory {
             content.release();
         } catch (Exception e) {
             // text extraction failed for document - continue indexing meta information only
-            LOG.error(Messages.get().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_TEXT_EXTRACTION_1, resource.getRootPath()), e);
         }
         if (text != null) {
             document.add(new Field(I_CmsDocumentFactory.DOC_CONTENT, text, Field.Store.YES, Field.Index.TOKENIZED));

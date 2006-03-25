@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/A_CmsXmlConfiguration.java,v $
- * Date   : $Date: 2005/06/27 23:22:20 $
- * Version: $Revision: 1.17 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.17.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.17 $
+ * @version $Revision: 1.17.2.1 $
  * 
  * @since 6.0.0
  */
@@ -61,7 +61,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
         // simple default configuration does not support parameters 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_CONFIG_PARAM_3, paramName, paramValue, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_CONFIG_PARAM_3, paramName, paramValue, this));
         }
     }
 
@@ -72,7 +72,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
         // simple default configuration does not support parameters
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_GET_CONFIGURATION_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_GET_CONFIGURATION_1, this));
         }
         return null;
     }
@@ -108,7 +108,7 @@ public abstract class A_CmsXmlConfiguration implements I_CmsXmlConfiguration {
 
         // simple default configuration does not need to be initialized
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIGURATION_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIGURATION_1, this));
         }
     }
 

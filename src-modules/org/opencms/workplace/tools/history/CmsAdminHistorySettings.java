@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistorySettings.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,13 +32,12 @@
 package org.opencms.workplace.tools.history;
 
 import org.opencms.configuration.CmsSystemConfiguration;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
 import org.opencms.workplace.CmsDialog;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -56,7 +55,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,30 +123,30 @@ public class CmsAdminHistorySettings extends CmsDialog {
         StringBuffer retValue = new StringBuffer(512);
         boolean histEnabled = OpenCms.getSystemInfo().isVersionHistoryEnabled();
         int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
-        Locale locale= this.getLocale();  
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTENABLED_0) + "</td>\n");
+        retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTENABLED_0) + "</td>\n");
         retValue.append("<td><input type=\"radio\" name=\"enable\" id=\"enabled\" value=\"true\" onclick=\"checkEnabled();\"");
         if (histEnabled) {
             retValue.append(" checked=\"checked\"");
         }
         retValue.append("></td>\n");
-        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTENABLE_YES_0) + "</td>\n");
+        retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTENABLE_YES_0) + "</td>\n");
         retValue.append("<td>&nbsp;</td>\n");
         retValue.append("<td><input type=\"radio\" name=\"enable\" id=\"disabled\" value=\"false\" onclick=\"checkEnabled();\"");
         if (!histEnabled) {
             retValue.append(" checked=\"checked\"");
         }
         retValue.append("></td>\n");
-        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTENABLE_NO_0) + "</td>\n");
+        retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTENABLE_NO_0) + "</td>\n");
         retValue.append("</tr>\n");
         retValue.append("</table>\n");
 
         retValue.append("<div class=\"hide\" id=\"settings\">\n");
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTNUMBER_0) + "</td>\n");
+        retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTNUMBER_0) + "</td>\n");
         retValue.append("<td colspan=\"5\"><input type=\"text\" name=\"versions\" value=\"");
         if (maxVersions != -1) {
             retValue.append(maxVersions);
@@ -177,7 +176,7 @@ public class CmsAdminHistorySettings extends CmsDialog {
         } else {
             // set the default action               
             setAction(ACTION_DEFAULT);
-            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0));
         }
     }
 

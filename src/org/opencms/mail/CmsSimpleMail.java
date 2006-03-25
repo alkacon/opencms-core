@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/mail/CmsSimpleMail.java,v $
- * Date   : $Date: 2005/10/19 09:43:41 $
- * Version: $Revision: 1.9.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.9.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.commons.mail.SimpleEmail;
  *
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.9.2.1 $ 
+ * @version $Revision: 1.9.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -87,7 +87,7 @@ public class CmsSimpleMail extends SimpleEmail {
             setFrom(OpenCms.getSystemInfo().getMailSettings().getMailFromDefault());
         } catch (MessagingException e) {
             // default email address is not valid, log error
-            LOG.error(Messages.get().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_INVALID_SENDER_ADDRESS_0), e);
         }
     }
 

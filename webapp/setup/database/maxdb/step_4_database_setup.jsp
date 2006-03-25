@@ -1,4 +1,6 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page import="
+	java.util.*
+" session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -7,7 +9,7 @@
 	// previous page
 	String prevPage = "../../step_2_check_components.jsp";
 	
-    boolean isFormSubmitted = Bean.setDbParamaters(request, Bean.MAXDB_PROVIDER);
+    boolean isFormSubmitted = Bean.setDbParamaters(request, org.opencms.setup.CmsSetupBean.MAXDB_PROVIDER);
 
 %>
 <%= Bean.getHtmlPart("C_HTML_START") %>

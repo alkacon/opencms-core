@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/content/CmsXmlContent.java,v $
- * Date   : $Date: 2005/10/01 10:53:51 $
- * Version: $Revision: 1.33.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.33.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.xml.sax.SAXException;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.33.2.1 $ 
+ * @version $Revision: 1.33.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -302,7 +302,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
         String relativeRoot = null;
         if (m_file != null) {
             relativeRoot = CmsResource.getParentFolder(cms.getSitePath(m_file));
-        }        
+        }
         return new CmsLinkProcessor(cms, linkTable, getEncoding(), relativeRoot);
     }
 
@@ -469,7 +469,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
                 addLocale(locale);
                 processSchemaNode(node, null, locale, definition);
             } catch (NullPointerException e) {
-                LOG.error(Messages.get().key(Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLCONTENT_INIT_BOOKMARKS_0), e);
             }
         }
 
@@ -639,7 +639,7 @@ public class CmsXmlContent extends A_CmsXmlDocument implements I_CmsXmlDocument 
             } else {
                 // unknown XML node name according to schema
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(
+                    LOG.error(Messages.get().getBundle().key(
                         Messages.LOG_XMLCONTENT_INVALID_ELEM_2,
                         name,
                         definition.getSchemaLocation()));

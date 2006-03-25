@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/notification/CmsNotificationCandidates.java,v $
- * Date   : $Date: 2005/12/02 09:13:28 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:48 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -230,7 +230,7 @@ public class CmsNotificationCandidates {
 
         Iterator notifications = filterConfirmedResources(getContentNotifications()).iterator();
         if (notifications.hasNext()) {
-            StringBuffer result = new StringBuffer(Messages.get().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
+            StringBuffer result = new StringBuffer(Messages.get().getBundle().key(Messages.LOG_NOTIFICATIONS_SENT_TO_0));
             result.append(' ');
             while (notifications.hasNext()) {
                 CmsContentNotification contentNotification = (CmsContentNotification)notifications.next();
@@ -246,7 +246,7 @@ public class CmsNotificationCandidates {
             }
             return result.toString();
         } else {
-            return Messages.get().key(Messages.LOG_NO_NOTIFICATIONS_SENT_0);
+            return Messages.get().getBundle().key(Messages.LOG_NO_NOTIFICATIONS_SENT_0);
         }
     }
 

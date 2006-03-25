@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/A_CmsOnDemandStaticExportHandler.java,v $
- * Date   : $Date: 2006/01/06 14:06:04 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  * 
@@ -69,7 +69,7 @@ implements I_CmsStaticExportHandler {
             count++;
             try {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_WAITING_STATIC_EXPORT_3,
                         getClass().getName(),
                         new Integer(count),
@@ -87,7 +87,7 @@ implements I_CmsStaticExportHandler {
             Object[] arguments = new Object[] {
                 publishHistoryId,
                 new Integer(CmsStaticExportManager.HANDLER_FINISH_TIME)};
-            LOG.error(Messages.get().key(Messages.LOG_SCRUBBING_FOLDER_FAILED_2, arguments));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_SCRUBBING_FOLDER_FAILED_2, arguments));
 
             return;
         }
@@ -107,9 +107,8 @@ implements I_CmsStaticExportHandler {
                         m_busy = false;
                     }
                 }
-            }, Messages.get().key(Messages.GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1, String.valueOf(id)));
+            }, Messages.get().getBundle().key(Messages.GUI_THREAD_NAME_SCRUB_EXPORT_FOLDERS_1, String.valueOf(id)));
             t.start();
         }
     }
-
 }

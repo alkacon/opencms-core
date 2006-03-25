@@ -22,38 +22,38 @@ boolean showTableOptions = options.showElement("option.table", displayOptions);
 	
 switch (wp.getAction()) {
 
-case CmsSimplePageEditor.ACTION_SHOW_ERRORMESSAGE:
+case CmsEditor.ACTION_SHOW_ERRORMESSAGE:
 //////////////////// ACTION: display the common error dialog
 	
 	// do nothing here, only prevents editor content from being displayed!
 	
 break;
-case CmsSimplePageEditor.ACTION_PREVIEW:
+case CmsEditor.ACTION_PREVIEW:
 //////////////////// ACTION: preview the page
 
 	wp.actionPreview();
 
 break;
-case CmsSimplePageEditor.ACTION_EXIT:
+case CmsEditor.ACTION_EXIT:
 //////////////////// ACTION: exit the editor
 
 	wp.actionExit();
 
 break;
-case CmsSimplePageEditor.ACTION_SAVEEXIT:
+case CmsEditor.ACTION_SAVEEXIT:
 //////////////////// ACTION: save the modified content and exit the editor
 
 	wp.actionSave();
 	wp.actionExit();
 
 break;
-case CmsSimplePageEditor.ACTION_SAVE:
+case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content
 
 	wp.actionSave();
 
-case CmsSimplePageEditor.ACTION_DEFAULT:
-case CmsSimplePageEditor.ACTION_SHOW:
+case CmsDialog.ACTION_DEFAULT:
+case CmsEditor.ACTION_SHOW:
 default:
 //////////////////// ACTION: show editor frame (default)
 
@@ -105,21 +105,21 @@ function buttonAction(para) {
     case 1:
         // reload the editor
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_SHOW %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_SHOW %>";
         _form.target = "_self";
         _form.submit();
         break;
     case 2:
         // preview selected 
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_PREVIEW %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_PREVIEW %>";
         _form.target = "PREVIEW";
         _form.submit();
         break;
     case 3:
         // change element
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_CHANGE_ELEMENT %>";
         _form.target = "_self";
         _form.submit();
         break;
@@ -140,28 +140,28 @@ function buttonAction(para) {
     case 6:
     	// exit without saving 
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_EXIT %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_EXIT %>";
         _form.target = "_top";
         _form.submit();
         break;
     case 7:
     	// save and exit
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_SAVEEXIT %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_SAVEEXIT %>";
         _form.target = "_top";
         _form.submit();
         break;
     case 8:
     	// save
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_SAVE %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_SAVE %>";
         _form.target = "_self";
         _form.submit();
         break;
     case 9:
     	// save and reload top editor frame
     	saveContent();
-        _form.action.value = "<%= wp.EDITOR_SAVEACTION %>";
+        _form.action.value = "<%= CmsEditor.EDITOR_SAVEACTION %>";
         _form.target = "_top";
         _form.submit();
         break;
@@ -171,16 +171,16 @@ function buttonAction(para) {
     	break;
      case 11:
     	// open the anchor dialog popup
-    	openAnchorDialog("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
+    	openAnchorDialog("<%= wp.key(org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
     	break;
     	case 12:
     	// open the link dialog popup
-    	openLinkDialog("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
+    	openLinkDialog("<%= wp.key(org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
     	break;
     	case 13:
         // clear document
         saveContent();
-		_form.action.value = "<%= wp.EDITOR_CLEANUP %>";
+		_form.action.value = "<%= CmsEditor.EDITOR_CLEANUP %>";
 		_form.target = "_self";
 		_form.submit();
         break;		
@@ -191,14 +191,14 @@ function buttonAction(para) {
 }
 
 function deleteEditorContent(elementName, language) {
-    if (elementName == document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= wp.PARAM_ELEMENTLANGUAGE %>.value) {
+    if (elementName == document.EDITOR.<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>.value) {
         document.EDITOR.edit1.value = "";
     }
 }
 
 function changeElement(elementName, language) {
-    if (elementName != document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= wp.PARAM_ELEMENTLANGUAGE %>.value) {
-        document.EDITOR.<%= wp.PARAM_ELEMENTNAME %>.value = elementName;
+    if (elementName != document.EDITOR.<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>.value && language == document.EDITOR.<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>.value) {
+        document.EDITOR.<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>.value = elementName;
         buttonAction(3);   
     } else {
         buttonAction(1);
@@ -230,7 +230,7 @@ function closeDialog() {
     if (dialogAnchorWindow) {
     	window.dialogAnchorWindow.close();
     }
-    if (document.EDITOR.<%= wp.PARAM_ACTION %>.value == "null" || document.EDITOR.<%= wp.PARAM_ACTION %>.value == "") {
+    if (document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value == "null" || document.EDITOR.<%= CmsDialog.PARAM_ACTION %>.value == "") {
         top.closeframe.closePage("<%= wp.getParamTempfile() %>", "<%= wp.getParamResource() %>");
     }        
 }
@@ -246,24 +246,25 @@ function popupCloseAction(closeObj) {
 
 // confirm exit dialog
 function confirmExit() {
-	if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
+	if (confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 		buttonAction(6);
 	}
 }
 </script>
 
 <script type="text/javascript">
-   _editor_url = "<%= wp.getSkinUri() + "editors/htmlarea/" %>";
+   _editor_url = "<%= CmsWorkplace.getSkinUri() + "editors/htmlarea/" %>";
    _editor_lang = "<%= CmsHtmlAreaWidget.getHtmlAreaLocale(cms.getCmsObject(), wp.getLocale()) %>";
 </script>
 
-<script type="text/javascript" src="<%= wp.getSkinUri() + "editors/htmlarea/" %>htmlarea.js"></script>
+<script type="text/javascript" src="<%= CmsWorkplace.getSkinUri() + "editors/htmlarea/" %>htmlarea.js"></script>
 
 <script type="text/javascript">
 
 // load the HTMLArea plugin files
 <%
 	if (showTableOptions) {
+	    // load HTML area plugin
 		%>HTMLArea.loadPlugin("TableOperations");<%
 	}
 %>
@@ -281,6 +282,7 @@ function initEditor() {
 	// register the TableOperations plugin with the editor	
 	<%
 	if (showTableOptions) {
+	    // show options
 		%>__editor.registerPlugin(TableOperations);<%
 	}
 	%>
@@ -290,13 +292,13 @@ function initEditor() {
 
 var config = __editor.config;
 
-config.registerButton("oc-exit", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0) %>", __editor.imgURL("images/opencms/exit.gif"), true, function(e) { confirmExit(); });
-config.registerButton("oc-save-exit", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0)%>", __editor.imgURL("images/opencms/save_exit.gif"), true, function(e) { buttonAction(7); });
-config.registerButton("oc-save", "<%=  org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0) %>", __editor.imgURL("images/opencms/save.gif"), true, function(e) { buttonAction(8); });
+config.registerButton("oc-exit", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0) %>", __editor.imgURL("images/opencms/exit.gif"), true, function(e) { confirmExit(); });
+config.registerButton("oc-save-exit", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0)%>", __editor.imgURL("images/opencms/save_exit.gif"), true, function(e) { buttonAction(7); });
+config.registerButton("oc-save", "<%=  wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0) %>", __editor.imgURL("images/opencms/save.gif"), true, function(e) { buttonAction(8); });
 
-config.registerButton("oc-chars", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SPECIALCHARS_0) %>", __editor.imgURL("../../buttons/specialchar.png"), false, function(e) { buttonAction(10); });
-config.registerButton("oc-anchor", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_ANCHOR_0)%>", __editor.imgURL("../../buttons/anchor.png"), false, function(e) { buttonAction(11); });
-config.registerButton("oc-link", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0)%>", __editor.imgURL("../../buttons/link.png"), false, function(e) { buttonAction(12); });
+config.registerButton("oc-chars", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SPECIALCHARS_0) %>", __editor.imgURL("../../buttons/specialchar.png"), false, function(e) { buttonAction(10); });
+config.registerButton("oc-anchor", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_ANCHOR_0)%>", __editor.imgURL("../../buttons/anchor.png"), false, function(e) { buttonAction(11); });
+config.registerButton("oc-link", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0)%>", __editor.imgURL("../../buttons/link.png"), false, function(e) { buttonAction(12); });
 
 <%= wp.buildGalleryButtons(options, buttonStyle, displayOptions) %>
 
@@ -309,9 +311,9 @@ if (options.showElement("button.customized", displayOptions)) {
 	I_CmsEditorActionHandler actionClass = OpenCms.getWorkplaceManager().getEditorActionHandler();
 	ocDirectPublish = "\"oc-direct-publish\", ";
 	if (actionClass.isButtonActive(wp.getJsp(), wp.getParamResource())) {
-		%>config.registerButton("oc-direct-publish", "<%=  org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0) %>", __editor.imgURL("images/opencms/publish.gif"), true, function(e) { buttonAction(9); });<%
+		%>config.registerButton("oc-direct-publish", "<%=  wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0) %>", __editor.imgURL("images/opencms/publish.gif"), true, function(e) { buttonAction(9); });<%
 	} else {
-		%>config.registerButton("oc-direct-publish", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0) %>", __editor.imgURL("images/opencms/publish_in.gif"), true, function(e) { });<%
+		%>config.registerButton("oc-direct-publish", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0) %>", __editor.imgURL("images/opencms/publish_in.gif"), true, function(e) { });<%
 	
 	}
 }
@@ -399,8 +401,9 @@ if (outFontButtons.endsWith(",")) {
 	outFontButtons = outFontButtons.substring(0, outFontButtons.length() - 1);
 }
 
-if (showTableOptions) { %>
-
+if (showTableOptions) { 
+// show table options
+%>
 var tablebar = new Array();
 tablebar[0] = "starttab";
 for (i=0; i<config.toolbar[2].length; i++) {
@@ -415,7 +418,7 @@ for (i=0; i<config.toolbar[2].length; i++) {
 // determine help button display
 String onlineHelp = "";
 if (wp.isHelpEnabled()) { %>
-	config.registerButton("oc-onlinehelp", "<%= org.opencms.workplace.editors.Messages.get().key(org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0) %>", __editor.imgURL("../../buttons/help.png"), true, function(e) { buttonAction(30); });<%
+	config.registerButton("oc-onlinehelp", "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0) %>", __editor.imgURL("../../buttons/help.png"), true, function(e) { buttonAction(30); });<%
 	onlineHelp = " \"separator\", \"oc-onlinehelp\", ";
 
 }
@@ -428,9 +431,9 @@ config.toolbar = [
 
 	[ "starttab", "formatblock", "space",<%= outFontButtons %> ]<%
 	if (showTableOptions) {
+		// table plugin will already have been added at position 2 
 		%>,
 
-	// table plugin will already have been added at position 2 
 	tablebar<%
 	}
 	%>
@@ -440,8 +443,8 @@ config.toolbar = [
 	
 	__editor.generate();
 	<%
-	// if necessary, switch to text mode
 	if ("edit".equals(wp.getParamEditormode())) {
+		// if necessary, switch to text mode	    
 		%>setTimeout("__editor.execCommand('htmlmode');", 500);<%
 	}
 	%>
@@ -461,17 +464,17 @@ config.toolbar = [
 <body class="buttons-head" unselectable="on" onload="initEditor();" onunload="closeDialog();">
 
 <form style="width:100%; height:100%; margin:0px; padding:0px; " name="EDITOR" id="EDITOR" method="post" action="<%= wp.getDialogRealUri() %>">
-<input type="hidden" name="<%= wp.PARAM_CONTENT %>">
-<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
-<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
-<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
-<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
-<input type="hidden" name="<%= wp.PARAM_OLDELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
-<input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
-<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
-<input type="hidden" name="<%= wp.PARAM_EDITORMODE %>" value="<%= wp.getParamEditormode() %>">
-<input type="hidden" name="<%= wp.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_CONTENT %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="<%= CmsDefaultPageEditor.PARAM_OLDELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_EDITORMODE %>" value="<%= wp.getParamEditormode() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
 
 <table cellspacing="0" cellpadding="0" border="0" style="width:100%; height:100%;">
 
@@ -484,21 +487,21 @@ boolean elementLanguage = options.showElement("option.element.language", display
 if (elementSelection || elementLanguage) {
 	out.println(wp.buttonBarLabel( org.opencms.workplace.editors.Messages.GUI_INPUT_ELEMENT_0));
 	if (elementLanguage) {
-		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + wp.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+		out.println("<td>" + wp.buildSelectElementLanguage("name=\"" + CmsEditor.PARAM_ELEMENTLANGUAGE + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 		out.println(wp.buttonBarSpacer(2));
 	} else {
-		%><input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><%
+		%><input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><%
 	}
 	if (elementSelection) {
-		out.println("<td>" + wp.buildSelectElementName("name=\"" + wp.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
+		out.println("<td>" + wp.buildSelectElementName("name=\"" + CmsDefaultPageEditor.PARAM_ELEMENTNAME + "\" width=\"150\" onchange=\"buttonAction(3);\"") + "</td>");
 		out.println(wp.buttonBarSeparator(5, 5));
 		out.println(wp.button("javascript:buttonAction(4);", null, "elements", org.opencms.workplace.editors.Messages.GUI_EDITOR_DIALOG_ELEMENTS_BUTTON_0, buttonStyle));
 	} else {
-		%><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
+		%><input type="hidden" name="<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
 	}
 } else {
 	// build hidden input fields that editor works correctly
-	%><input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
+	%><input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>"><input type="hidden" name="<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>"><%
 }
 if (options.showElement("option.properties", displayOptions)) {
 	if (elementLanguage && !elementSelection) {
@@ -527,17 +530,17 @@ out.println(wp.button("javascript:buttonAction(13);", null, "cleanup", org.openc
 </form>
 
 <form style="display: none;" name="ELEMENTS" action="dialogs/elements.jsp" target="DIALOGELEMENT" method="post">
-<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
-<input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
-<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= CmsDefaultPageEditor.PARAM_ELEMENTNAME %>" value="<%= wp.getParamElementname() %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
 <input type="hidden" name="ispopup" value="true">
 </form>
 
 <form style="display: none;" name="PROPERTIES" action="../commons/property.jsp" target="DIALOGPROPERTY" method="post">
-<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamTempfile() %>">
 <input type="hidden" name="usetempfileproject" value="true">
-<input type="hidden" name="<%= wp.PARAM_ISPOPUP %>" value="true">
+<input type="hidden" name="<%= CmsDialog.PARAM_ISPOPUP %>" value="true">
 </form>
 
 </body>

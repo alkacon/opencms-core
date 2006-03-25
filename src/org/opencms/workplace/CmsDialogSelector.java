@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialogSelector.java,v $
- * Date   : $Date: 2005/06/27 23:22:16 $
- * Version: $Revision: 1.20 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.20.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.20 $ 
+ * @version $Revision: 1.20.2.1 $ 
  * 
  * @since 6.0.0 
  * 
@@ -100,8 +100,8 @@ public class CmsDialogSelector {
     public String getSelectedDialogUri() {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_DIALOG_HANDLER_CLASS_2, getClass().getName(), getHandler()));
-            LOG.debug(Messages.get().key(Messages.LOG_PARAM_RESOURCE_2, getClass().getName(), getParamResource()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIALOG_HANDLER_CLASS_2, getClass().getName(), getHandler()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PARAM_RESOURCE_2, getClass().getName(), getParamResource()));
         }
         // get the handler class from the OpenCms runtime property
         I_CmsDialogHandler dialogClass = (I_CmsDialogHandler)OpenCms.getWorkplaceManager().getDialogHandler(

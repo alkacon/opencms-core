@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsChtype.java,v $
- * Date   : $Date: 2006/03/20 08:51:30 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.19.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.19.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -199,7 +199,7 @@ public class CmsChtype extends CmsDialog {
             }
         } catch (CmsException e) {
             // error reading the VFS resource, log error
-            LOG.error(Messages.get().key(Messages.ERR_BUILDING_RESTYPE_LIST_1, dialog.getParamResource()));
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_BUILDING_RESTYPE_LIST_1, dialog.getParamResource()));
         }
         return result.toString();
     }

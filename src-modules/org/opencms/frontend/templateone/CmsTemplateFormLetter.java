@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateFormLetter.java,v $
- * Date   : $Date: 2005/10/19 10:00:35 $
- * Version: $Revision: 1.13.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.13.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.13.2.1 $ 
+ * @version $Revision: 1.13.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -364,7 +364,7 @@ public class CmsTemplateFormLetter extends CmsTemplateForm {
             if (LOG.isWarnEnabled()) {
                 LOG.warn(e);
             } else if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_SEND_MAIL_CONTACT_1));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_SEND_MAIL_CONTACT_1));
             }
             return false;
         }

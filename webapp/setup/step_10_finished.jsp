@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -18,7 +18,9 @@ function openWin() {
 	var theWindow = window.open("<%= openLink %>", "OpenCms", "top=10,left=10,width=780,height=550,location=yes,menubar=yes,resizable=yes,scrollbars=yes,status=yes,toolbar=yes");
 	theWindow.focus();
 }
-<% if (Bean.isInitialized()) { %>
+<% if (Bean.isInitialized()) { 
+// open window
+%>
 openWin();
 <% } %>
 </script>

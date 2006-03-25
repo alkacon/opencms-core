@@ -17,7 +17,7 @@ if (wp.isReloadRequired()) {
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 
-<title><%= org.opencms.workplace.Messages.get().key(wp.getLocale(), org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, new Object[]{wp.getSettings().getUser().getName(), request.getServerName()}) %></title>
+<title><%= wp.key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, new Object[]{wp.getSettings().getUser().getName(), request.getServerName()}) %></title>
 
 <script type="text/javascript" src="<%= wp.getSkinUri() %>commons/explorer.js"></script>
 <script type="text/javascript" src="<%= cms.link("/system/workplace/views/top_js.jsp") %>"></script> 

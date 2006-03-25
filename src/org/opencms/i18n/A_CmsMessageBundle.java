@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/A_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/11/16 12:11:44 $
- * Version: $Revision: 1.49.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.49.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -38,7 +38,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.49.2.2 $
+ * @version $Revision: 1.49.2.3 $
  * 
  * @since 6.0.0
  */
@@ -158,64 +158,6 @@ public abstract class A_CmsMessageBundle implements I_CmsMessageBundle {
     public CmsMessages getBundle(Locale locale) {
 
         return new CmsMessages(getBundleName(), locale);
-    }
-
-    /**
-     * 
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.util.Locale, java.lang.String)
-     */
-    public String key(Locale locale, String key) {
-
-        return key(locale, key, new Object[] {});
-    }
-
-    /**
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.util.Locale, java.lang.String, java.lang.Object[])
-     */
-    public String key(Locale locale, String key, Object[] args) {
-
-        return getBundle(locale).key(key, args);
-    }
-
-    /**
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.lang.String)
-     */
-    public String key(String key) {
-
-        return key(key, null);
-    }
-
-    /**
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.lang.String, java.lang.Object)
-     */
-    public String key(String key, Object arg0) {
-
-        return key(key, new Object[] {arg0});
-
-    }
-
-    /**
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.lang.String, java.lang.Object, java.lang.Object)
-     */
-    public String key(String key, Object arg0, Object arg1) {
-
-        return key(key, new Object[] {arg0, arg1});
-    }
-
-    /**
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.lang.String, java.lang.Object, java.lang.Object, java.lang.Object)
-     */
-    public String key(String key, Object arg0, Object arg1, Object arg2) {
-
-        return key(key, new Object[] {arg0, arg1, arg2});
-    }
-
-    /**
-     * @see org.opencms.i18n.I_CmsMessageBundle#key(java.lang.String, java.lang.Object[])
-     */
-    public String key(String key, Object[] args) {
-
-        return getBundle().key(key, args);
     }
 
     /**

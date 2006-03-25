@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/types/A_CmsXmlContentValue.java,v $
- * Date   : $Date: 2006/03/19 21:54:32 $
- * Version: $Revision: 1.32.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.32.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.32.2.3 $ 
+ * @version $Revision: 1.32.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -220,7 +220,9 @@ public abstract class A_CmsXmlContentValue implements I_CmsXmlContentValue, I_Cm
                 value.setStringValue(cms, defaultValue);
             } catch (CmsRuntimeException e) {
                 // should not happen if default value is correct
-                LOG.error(Messages.get().key(Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1, defaultValue), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_XMLCONTENT_INVALID_ELEM_DEFAULT_1, defaultValue),
+                    e);
                 element.clearContent();
             }
         }

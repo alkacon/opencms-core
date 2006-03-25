@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceSettings.java,v $
- * Date   : $Date: 2006/01/23 16:39:27 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -40,7 +40,6 @@ import org.opencms.util.CmsStringUtil;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedMap;
@@ -63,7 +62,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.1.7
  * 
@@ -304,16 +303,14 @@ public final class CmsTagReplaceSettings {
                     // (for the whitespace!)
                 } else {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
-                            Locale.ENGLISH,
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_2,
-                            new Object[] {attName, tag.getTagName()}));
+                            attName, tag.getTagName()));
 
                     }
                     itAttribs.remove();
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
-                            Locale.ENGLISH,
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_TAG_REMOVE_ATTRIB_OK_0));
                     }
                 }

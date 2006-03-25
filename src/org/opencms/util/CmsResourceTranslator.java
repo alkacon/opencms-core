@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsResourceTranslator.java,v $
- * Date   : $Date: 2005/06/23 11:11:24 $
- * Version: $Revision: 1.22 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.22.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.oro.text.regex.MalformedPatternException;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22 $ 
+ * @version $Revision: 1.22.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -120,13 +120,15 @@ public class CmsResourceTranslator {
             try {
                 m_perlPatternCache.addPattern(m_translations[i]);
             } catch (MalformedPatternException e) {
-                LOG.error(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]),
+                    e);
             }
         }
         // initialize the Perl5Util
         m_perlUtil = new Perl5Util(m_perlPatternCache);
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_NUM_TRANSLATION_RULES_INITIALIZED_1,
                 new Integer(translations.length)));
         }
@@ -177,7 +179,7 @@ public class CmsResourceTranslator {
                     } else {
                         // first pattern matched, return the result
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.LOG_TRANSLATION_MATCH_3,
                                 new Integer(i),
                                 resourceName,
@@ -188,13 +190,15 @@ public class CmsResourceTranslator {
                     }
                 }
             } catch (MalformedPerl5PatternException e) {
-                LOG.error(Messages.get().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_MALFORMED_TRANSLATION_RULE_1, m_translations[i]),
+                    e);
             }
         }
 
         // the pattern matched, return the result
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_TRANSLATION_MATCH_2, resourceName, current));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_TRANSLATION_MATCH_2, resourceName, current));
         }
         // return last translation (or original if no matching translation found)
         return current;

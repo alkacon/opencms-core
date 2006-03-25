@@ -339,28 +339,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/dialogs/confirm.jsp</source>
-			<destination>system/workplace/editors/dialogs/confirm.jsp</destination>
-			<type>jsp</type>
-			<uuidresource>5f37dade-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>export</name>
-					<value><![CDATA[false]]></value>
-				</property>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Save error confirmation page]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<source>system/workplace/editors/dialogs/elements.jsp</source>
 			<destination>system/workplace/editors/dialogs/elements.jsp</destination>
 			<type>jsp</type>
@@ -562,24 +540,6 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/editors/simple/mainpage.txt</source>
-			<destination>system/workplace/editors/simple/mainpage.txt</destination>
-			<type>plain</type>
-			<uuidresource>600e16eb-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Main editor page]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
 			<destination>system/workplace/editors/simplehtml</destination>
 			<type>folder</type>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -644,24 +604,6 @@
 				<property>
 					<name>Title</name>
 					<value><![CDATA[Editor configuration file]]></value>
-				</property>
-			</properties>
-			<accesscontrol/>
-		</file>
-		<file>
-			<source>system/workplace/editors/simplehtml/mainpage.txt</source>
-			<destination>system/workplace/editors/simplehtml/mainpage.txt</destination>
-			<type>plain</type>
-			<uuidresource>6031ca9a-f052-11d8-ba65-db38cc8f19d7</uuidresource>
-			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
-			<userlastmodified>Admin</userlastmodified>
-			<datecreated>Mon, 27 Jun 2005 08:00:00 GMT</datecreated>
-			<usercreated>Admin</usercreated>
-			<flags>0</flags>
-			<properties>
-				<property>
-					<name>Title</name>
-					<value><![CDATA[Main editor page]]></value>
 				</property>
 			</properties>
 			<accesscontrol/>

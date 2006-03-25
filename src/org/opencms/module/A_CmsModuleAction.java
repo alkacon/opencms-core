@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/A_CmsModuleAction.java,v $
- * Date   : $Date: 2005/06/23 11:11:58 $
- * Version: $Revision: 1.11 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.11.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.11 $ 
+ * @version $Revision: 1.11.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -61,7 +61,7 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void cmsEvent(CmsEvent event) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_EVENT_CAUGHT_2,
                 this.getClass().getName(),
                 new Integer(event.getType())));
@@ -74,7 +74,10 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void initialize(CmsObject adminCms, CmsConfigurationManager configurationManager, CmsModule module) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_MODULE_INITIALIZED_2, module.getName(), this.getClass().getName()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_MODULE_INITIALIZED_2,
+                module.getName(),
+                this.getClass().getName()));
         }
     }
 
@@ -84,7 +87,10 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void moduleUninstall(CmsModule module) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_MODULE_UNINSTALLED_2, module.getName(), this.getClass().getName()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_MODULE_UNINSTALLED_2,
+                module.getName(),
+                this.getClass().getName()));
         }
     }
 
@@ -94,7 +100,10 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void moduleUpdate(CmsModule module) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_MODULE_UPDATED_2, module.getName(), this.getClass().getName()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_MODULE_UPDATED_2,
+                module.getName(),
+                this.getClass().getName()));
         }
     }
 
@@ -104,7 +113,7 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void publishProject(CmsObject cms, CmsPublishList publishList, int backupTagId, I_CmsReport report) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_PUBLISH_PROJECT_1, this.getClass().getName()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_PUBLISH_PROJECT_1, this.getClass().getName()));
         }
     }
 
@@ -114,7 +123,10 @@ public abstract class A_CmsModuleAction implements I_CmsModuleAction {
     public void shutDown(CmsModule module) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_MODULE_SHUTDOWN_2, module.getName(), this.getClass().getName()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_MODULE_SHUTDOWN_2,
+                module.getName(),
+                this.getClass().getName()));
         }
     }
 }

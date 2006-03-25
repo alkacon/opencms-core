@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeSettings.java,v $
- * Date   : $Date: 2005/10/19 09:58:11 $
- * Version: $Revision: 1.16.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.16.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.16.2.1 $ 
+ * @version $Revision: 1.16.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -114,7 +114,7 @@ public class CmsExplorerTypeSettings implements Comparable {
             orderValue = Integer.valueOf(order);
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
             }
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
@@ -127,7 +127,7 @@ public class CmsExplorerTypeSettings implements Comparable {
         
         m_contextMenuEntries.add(item);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
         }
     }
 
@@ -142,7 +142,7 @@ public class CmsExplorerTypeSettings implements Comparable {
         try {
             orderValue = Integer.valueOf(order);
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
             CmsExplorerContextMenuItem.TYPE_SEPARATOR,
@@ -153,7 +153,7 @@ public class CmsExplorerTypeSettings implements Comparable {
             orderValue);
         m_contextMenuEntries.add(item);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
         }
     }
 
@@ -167,7 +167,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(propertyName)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_ADD_PROP_1, propertyName));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_PROP_1, propertyName));
             }
             return m_properties.add(propertyName);
         } else {
@@ -212,7 +212,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_contextMenu.addEntries(getContextMenuEntries());
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CREATE_CONTEXT_MENU_1, getName()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CREATE_CONTEXT_MENU_1, getName()));
         }
     }
 
@@ -452,7 +452,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_autoSetNavigation = Boolean.valueOf(autoSetNavigation).booleanValue();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_AUTO_NAV_1, autoSetNavigation));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_AUTO_NAV_1, autoSetNavigation));
         }
     }
 
@@ -465,7 +465,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_autoSetTitle = Boolean.valueOf(autoSetTitle).booleanValue();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_AUTO_TITLE_1, autoSetTitle));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_AUTO_TITLE_1, autoSetTitle));
         }
     }
 
@@ -498,7 +498,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_icon = icon;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_ICON_1, icon));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_ICON_1, icon));
         }
     }
 
@@ -511,7 +511,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_key = key;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_KEY_1, key));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_KEY_1, key));
         }
     }
 
@@ -524,7 +524,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_name = name;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_NAME_1, name));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_NAME_1, name));
         }
     }
 
@@ -548,7 +548,7 @@ public class CmsExplorerTypeSettings implements Comparable {
         try {
             m_newResourceOrder = Integer.valueOf(newResourceOrder);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_SET_NEW_RESOURCE_ORDER_1, newResourceOrder));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_NEW_RESOURCE_ORDER_1, newResourceOrder));
             }
         } catch (Exception e) {
             // can usually be ignored
@@ -578,7 +578,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_newResourceUri = newResourceUri;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_NEW_RESOURCE_URI_1, newResourceUri));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_NEW_RESOURCE_URI_1, newResourceUri));
         }
     }
 
@@ -613,7 +613,7 @@ public class CmsExplorerTypeSettings implements Comparable {
         setPropertiesEnabled(Boolean.valueOf(enabled).booleanValue());
         setShowNavigation(Boolean.valueOf(showNavigation).booleanValue());
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_PROP_DEFAULTS_2, enabled, showNavigation));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_PROP_DEFAULTS_2, enabled, showNavigation));
         }
     }
 
@@ -626,7 +626,7 @@ public class CmsExplorerTypeSettings implements Comparable {
 
         m_reference = reference;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SET_REFERENCE_1, m_reference));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SET_REFERENCE_1, m_reference));
         }
     }
 

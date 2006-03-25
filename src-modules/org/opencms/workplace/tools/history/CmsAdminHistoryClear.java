@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/history/Attic/CmsAdminHistoryClear.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.15.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.15.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.tools.history;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.main.OpenCms;
@@ -39,7 +40,6 @@ import org.opencms.workplace.CmsWorkplaceSettings;
 
 import java.text.ParseException;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -58,7 +58,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.1 $ 
+ * @version $Revision: 1.15.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -138,19 +138,19 @@ public class CmsAdminHistoryClear extends CmsReport {
      */
     public String buildClearForm() {
 
-        Locale locale = this.getLocale();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer retValue = new StringBuffer(512);
         int maxVersions = OpenCms.getSystemInfo().getVersionHistoryMaxCount();
 
         // append settings info or disabled message if history is disabled
-        retValue.append(dialogBlockStart(Messages.get().key(locale, Messages.GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0)));
+        retValue.append(dialogBlockStart(messages.key(Messages.GUI_LABEL_ADMNIN_HISTORY_SETTINGS_0)));
         if (isHistoryEnabled()) {
-            retValue.append(Messages.get().key(
-                Messages.GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1,
-                new Object[] {new Integer(maxVersions)}));
-            retValue.append("<br>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTORY_CLEAR_SELECTINFO_0));
+            retValue.append(messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_VERSIONINFO_1, new Object[] {new Integer(
+                maxVersions)}));
+            retValue.append("<br>");
+            retValue.append(messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_SELECTINFO_0));
         } else {
-            retValue.append(Messages.get().key(locale, Messages.GUI_INPUT_HISTORY_CLEAR_DISABLEDINFO_0));
+            retValue.append(messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_DISABLEDINFO_0));
         }
         retValue.append(dialogBlockEnd());
         retValue.append(dialogSpacer());
@@ -159,20 +159,20 @@ public class CmsAdminHistoryClear extends CmsReport {
         if (isHistoryEnabled()) {
             retValue.append("<table border=\"0\">\n");
             retValue.append("<tr>\n");
-            retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTORY_CLEAR_NUMBER_0) + "</td>\n");
+            retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_NUMBER_0) + "</td>\n");
             retValue.append("<td colspan=\"2\">" + buildSelectVersions(null) + "</td>\n");
             retValue.append("</tr>\n");
             retValue.append("<tr><td colspan=\"3\">&nbsp;</td></tr>\n");
             retValue.append("<tr>\n");
-            retValue.append("<td>" + Messages.get().key(locale, Messages.GUI_INPUT_HISTORY_CLEAR_DATE_0) + "</td>\n");
+            retValue.append("<td>" + messages.key(Messages.GUI_INPUT_HISTORY_CLEAR_DATE_0) + "</td>\n");
             retValue.append("<td>");
             retValue.append("<input type=\"text\" name=\"date\" id=\"date\">");
             retValue.append("</td>\n<td>");
             retValue.append("<img src=\"" + getSkinUri() + "buttons/calendar.png\" id=\"triggercalendar\" ");
             retValue.append("alt=\""
-                + Messages.get().key(locale, Messages.GUI_CALENDAR_INPUT_CHOOSEDATE_0)
+                + messages.key(Messages.GUI_CALENDAR_INPUT_CHOOSEDATE_0)
                 + "\" title=\""
-                + Messages.get().key(locale, Messages.GUI_CALENDAR_INPUT_CHOOSEDATE_0)
+                + messages.key(Messages.GUI_CALENDAR_INPUT_CHOOSEDATE_0)
                 + "\">");
             retValue.append("</td>\n");
             retValue.append("</tr>\n");
@@ -233,7 +233,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         } else {
             // set the default action               
             setAction(ACTION_DEFAULT);
-            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_ADMIN_HISTORY_CLEAR_0));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_LABEL_ADMIN_HISTORY_CLEAR_0));
         }
     }
 
@@ -256,7 +256,7 @@ public class CmsAdminHistoryClear extends CmsReport {
         }
         retValue.append(">\n");
         retValue.append("\t<option value=\"\" selected=\"selected\">"
-            + Messages.get().key(this.getLocale(), Messages.GUI_INPUT_HISTORY_CLEAR_SELECT_0)
+            + Messages.get().getBundle(getLocale()).key(Messages.GUI_INPUT_HISTORY_CLEAR_SELECT_0)
             + "</option>\n");
         for (int i = startValue; i <= endValue; i++) {
             retValue.append("\t<option value=\"" + i + "\">" + i + "</option>\n");

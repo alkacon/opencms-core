@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/decorator/CmsHtmlDecorator.java,v $
- * Date   : $Date: 2006/02/08 12:02:32 $
- * Version: $Revision: 1.1.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.htmlparser.util.Translate;
  *
  * @author Michael Emmerich  
  * 
- * @version $Revision: 1.1.2.7 $ 
+ * @version $Revision: 1.1.2.8 $ 
  * 
  * @since 6.1.3 
  */
@@ -256,7 +256,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
     private void appendText(String text, String[] delimiters, boolean recursive) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_APPEND_TEXT_2, m_config, text));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_HTML_DECORATOR_APPEND_TEXT_2, m_config, text));
         }
 
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(text)) {
@@ -268,7 +268,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 String word = (String)wordList.get(i);
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_HTML_DECORATOR_PROCESS_WORD_2,
                         word,
                         new Boolean(mustDecode(word, wordList, i))));
@@ -278,7 +278,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 if (mustDecode(word, wordList, i)) {
                     word = Translate.decode(word);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECODED_WORD_1, word));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_HTML_DECORATOR_DECODED_WORD_1, word));
                     }
                 }
 
@@ -290,7 +290,10 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                 }
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2, decObj, word));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_2,
+                        decObj,
+                        word));
                 }
 
                 // if there is a decoration obejct for this word, we must do the decoration
@@ -324,7 +327,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                                 decKey.append(wordList.get(i + j));
                                 decObj = (CmsDecorationObject)m_decorations.get(decKey.toString());
                                 if (LOG.isDebugEnabled()) {
-                                    LOG.debug(Messages.get().key(
+                                    LOG.debug(Messages.get().getBundle().key(
                                         Messages.LOG_HTML_DECORATOR_DECORATION_FOUND_FWL_3,
                                         decObj,
                                         word,
@@ -332,7 +335,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                                 }
                                 if (decObj != null) {
                                     if (LOG.isDebugEnabled()) {
-                                        LOG.debug(Messages.get().key(
+                                        LOG.debug(Messages.get().getBundle().key(
                                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
                                             decObj.getContentDecoration(m_config)));
                                     }
@@ -346,7 +349,9 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                         }
                         if (decObj == null) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1, word));
+                                LOG.debug(Messages.get().getBundle().key(
+                                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_WORD_1,
+                                    word));
                             }
                             // no decoration was found, use the word alone
                             m_result.append(word);
@@ -354,7 +359,7 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
                     }
                 } else {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_DECORATION_1,
                             decObj.getContentDecoration(m_config)));
                     }
@@ -364,7 +369,9 @@ public class CmsHtmlDecorator extends CmsHtmlParser {
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1, text));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_HTML_DECORATOR_DECORATION_APPEND_ORIGINALTEXT_1,
+                    text));
             }
             m_result.append(text);
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/CmsDriverManager.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.557.2.23 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.557.2.24 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -460,10 +460,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // create a driver manager instance
             driverManager = new CmsDriverManager();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE1_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE1_0));
             }
             if ((runtimeInfoFactory == null) && CmsLog.INIT.isDebugEnabled()) {
-                CmsLog.INIT.debug(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_RT_0));
+                CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_RT_0));
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
@@ -480,7 +480,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         driverManager.m_sqlManager = new CmsSqlManager(driverManager);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE2_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE2_0));
         }
 
         // read the pool names to initialize
@@ -490,7 +490,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             for (int p = 0; p < driverPoolNames.length; p++) {
                 names += driverPoolNames[p] + " ";
             }
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_POOLS_1, names));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_POOLS_1, names));
         }
 
         // initialize each pool
@@ -504,7 +504,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE3_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE3_0));
         }
 
         // read the vfs driver class properties and initialize a new instance 
@@ -548,7 +548,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 workflowDriver,
                 backupDriver);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_OK_0));
             }
         } catch (Exception exc) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_ERR_DRIVER_MANAGER_START_0);
@@ -972,7 +972,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
     public void cmsEvent(CmsEvent event) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CMS_EVENT_1, new Integer(event.getType())));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CMS_EVENT_1, new Integer(event.getType())));
         }
 
         I_CmsReport report;
@@ -1963,10 +1963,8 @@ public final class CmsDriverManager implements I_CmsEventListener {
             projectManagerGroup,
             task,
             I_CmsProjectDriver.TEMP_FILE_PROJECT_NAME,
-            Messages.get().key(
-                dbc.getRequestContext().getLocale(),
-                Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0,
-                null),
+            Messages.get().getBundle(dbc.getRequestContext().getLocale()).key(
+                Messages.GUI_WORKPLACE_TEMPFILE_PROJECT_DESC_0),
             CmsProject.PROJECT_STATE_INVISIBLE,
             CmsProject.PROJECT_STATE_INVISIBLE,
             null);
@@ -2700,7 +2698,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_DESTROY_1, getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_DRIVER_MANAGER_DESTROY_1,
+                getClass().getName()));
         }
     }
 
@@ -2756,8 +2756,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
      * 
      * @see org.opencms.db.CmsPublishList
      */
-    public CmsPublishList fillPublishList(CmsDbContext dbc, CmsPublishList publishList)
-    throws CmsException {
+    public CmsPublishList fillPublishList(CmsDbContext dbc, CmsPublishList publishList) throws CmsException {
 
         if (!publishList.isDirectPublish()) {
             // when publishing a project, 
@@ -3699,7 +3698,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
         // initialize the access-module.
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_MANAGER_START_PHASE4_0));
         }
 
         // store the access objects
@@ -3800,7 +3799,9 @@ public final class CmsDriverManager implements I_CmsEventListener {
             projectResources = readProjectResources(dbc, dbc.currentProject());
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1, resourcename), e);
+                LOG.error(Messages.get().getBundle().key(
+                    Messages.LOG_CHECK_RESOURCE_INSIDE_CURRENT_PROJECT_1,
+                    resourcename), e);
             }
             return false;
         }
@@ -4289,19 +4290,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // try to get the class
             driverClass = Class.forName(driverName);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_START_1, driverName));
             }
 
             // try to create a instance
             driver = (I_CmsDriver)driverClass.newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
             }
 
             // invoke the init-method of this access class
             driver.init(dbc, configurationManager, successiveDrivers, this);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INIT_FINISHED_0));
             }
 
         } catch (Throwable t) {
@@ -4337,19 +4338,19 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // try to get the class
             driverClass = Class.forName(driverName);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_START_1, driverName));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_START_1, driverName));
             }
 
             // try to create a instance
             driver = driverClass.newInstance();
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INITIALIZING_1, driverName));
             }
 
             // invoke the init-method of this access class
             driver.getClass().getMethod("init", initParamClasses).invoke(driver, initParams);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DRIVER_INIT_FINISHED_1, driverPoolUrl));
             }
 
         } catch (Exception exc) {
@@ -4489,7 +4490,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     try {
                         m_projectDriver.deleteProject(dbc, dbc.currentProject());
                     } catch (CmsException e) {
-                        LOG.error(Messages.get().key(
+                        LOG.error(Messages.get().getBundle().key(
                             Messages.LOG_DELETE_TEMP_PROJECT_FAILED_1,
                             new Integer(publishProjectId)));
                     }
@@ -6785,7 +6786,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
             // collect the old properties
             List properties = m_vfsDriver.readPropertyObjects(dbc, onlineProject, onlineFile);
-            
+
             // bugfix 1020: delete all properties (included shared), 
             // shared properties will be recreated by the next call of #createResource(...)
             m_vfsDriver.deletePropertyObjects(
@@ -6802,7 +6803,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             // note that this does NOT apply to folders, since a folder cannot be replaced
             // like a resource anyway
             deleteResource(dbc, resource, CmsResource.DELETE_PRESERVE_SIBLINGS);
-            
+
             CmsResource res = createResource(
                 dbc,
                 restoredFile.getRootPath(),
@@ -6810,7 +6811,6 @@ public final class CmsDriverManager implements I_CmsEventListener {
                 restoredFile.getContents(),
                 properties,
                 false);
-            
 
             // copy the access control entries from the online project
             m_userDriver.removeAccessControlEntries(dbc, dbc.currentProject(), resource.getResourceId());
@@ -6934,7 +6934,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
             if (exportPoints.size() == 0) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
                 }
                 return;
             }
@@ -6958,7 +6958,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
 
                 // print some report messages
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_WRITE_EXPORT_POINT_1, currentExportPoint));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_WRITE_EXPORT_POINT_1, currentExportPoint));
                 }
 
                 try {
@@ -7003,14 +7003,14 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     // -> ignore exceptions which are not "resource not found" exception quiet here
                     if (e instanceof CmsVfsResourceNotFoundException) {
                         if (LOG.isErrorEnabled()) {
-                            LOG.error(Messages.get().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
+                            LOG.error(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
                         }
                     }
                 }
             }
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_UPDATE_EXORT_POINTS_ERROR_0), e);
             }
         }
     }
@@ -7221,7 +7221,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             List publishedResources = m_projectDriver.readPublishedResources(dbc, projectId, publishHistoryId);
             if (publishedResources.size() == 0) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_EMPTY_PUBLISH_HISTORY_1, publishHistoryId));
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_EMPTY_PUBLISH_HISTORY_1, publishHistoryId));
                 }
                 return;
             }
@@ -7232,7 +7232,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             exportPoints.addAll(OpenCms.getModuleManager().getExportPoints());
             if (exportPoints.size() == 0) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_EXPORT_POINTS_CONFIGURED_0));
                 }
                 return;
             }
@@ -7315,7 +7315,7 @@ public final class CmsDriverManager implements I_CmsEventListener {
             }
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_WRITE_EXPORT_POINTS_ERROR_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_WRITE_EXPORT_POINTS_ERROR_0), e);
             }
         } finally {
             if (printReportHeaders) {
@@ -7667,27 +7667,27 @@ public final class CmsDriverManager implements I_CmsEventListener {
             try {
                 m_projectDriver.destroy();
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.ERR_CLOSE_PROJECT_DRIVER_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_PROJECT_DRIVER_0), t);
             }
             try {
                 m_userDriver.destroy();
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.ERR_CLOSE_USER_DRIVER_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_USER_DRIVER_0), t);
             }
             try {
                 m_vfsDriver.destroy();
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.ERR_CLOSE_VFS_DRIVER_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_VFS_DRIVER_0), t);
             }
             try {
                 m_workflowDriver.destroy();
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.ERR_CLOSE_WORKFLOW_DRIVER_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_WORKFLOW_DRIVER_0), t);
             }
             try {
                 m_backupDriver.destroy();
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_CLOSE_BACKUP_DRIVER_0), t);
             }
 
             for (int i = 0; i < m_connectionPools.size(); i++) {
@@ -7697,10 +7697,10 @@ public final class CmsDriverManager implements I_CmsEventListener {
                     try {
                         driver.closePool(pools[j]);
                         if (CmsLog.INIT.isDebugEnabled()) {
-                            CmsLog.INIT.debug(Messages.get().key(Messages.INIT_CLOSE_CONN_POOL_1, pools[j]));
+                            CmsLog.INIT.debug(Messages.get().getBundle().key(Messages.INIT_CLOSE_CONN_POOL_1, pools[j]));
                         }
                     } catch (Throwable t) {
-                        LOG.error(Messages.get().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);
+                        LOG.error(Messages.get().getBundle().key(Messages.LOG_CLOSE_CONN_POOL_ERROR_1, pools[j]), t);
                     }
                 }
             }

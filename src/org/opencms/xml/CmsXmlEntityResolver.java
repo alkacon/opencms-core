@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlEntityResolver.java,v $
- * Date   : $Date: 2006/01/06 15:35:02 $
- * Version: $Revision: 1.21.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.21.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.xml.sax.InputSource;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.2 $ 
+ * @version $Revision: 1.21.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -198,7 +198,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         m_cacheContentDefinitions.put(cacheKey, contentDefinition);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ER_CACHED_SYSTEM_ID_1, cacheKey));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_CACHED_SYSTEM_ID_1, cacheKey));
         }
     }
 
@@ -215,7 +215,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cacheTemporary.clear();
                 m_cacheContentDefinitions.clear();
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_ER_FLUSHED_CACHES_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_FLUSHED_CACHES_0));
                 }
                 break;
             case I_CmsEventListener.EVENT_RESOURCE_MODIFIED:
@@ -246,7 +246,7 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         String cacheKey = getCacheKeyForCurrentProject(systemId);
         CmsXmlContentDefinition result = (CmsXmlContentDefinition)m_cacheContentDefinitions.get(cacheKey);
         if ((result != null) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_CACHE_LOOKUP_SUCCEEDED_1, cacheKey));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_CACHE_LOOKUP_SUCCEEDED_1, cacheKey));
         }
         return result;
     }
@@ -273,20 +273,22 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_XMLPAGE_XSD_NOT_FOUND_1, XMLPAGE_XSD_LOCATION), t);
             }
 
         } else if (systemId.equals(XMLPAGE_OLD_DTD_SYSTEM_ID_1) || systemId.endsWith(XMLPAGE_OLD_DTD_SYSTEM_ID_2)) {
 
             // XML page DTD reference
-            try {                
+            try {
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(XMLPAGE_OLD_DTD_LOCATION);
                 // cache the XML page DTD
                 content = CmsFileUtil.readFully(stream);
                 m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_XMLPAGE_DTD_NOT_FOUND_1, XMLPAGE_OLD_DTD_LOCATION), t);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.LOG_XMLPAGE_DTD_NOT_FOUND_1, XMLPAGE_OLD_DTD_LOCATION),
+                    t);
             }
         } else if ((m_cms != null) && systemId.startsWith(OPENCMS_SCHEME)) {
 
@@ -307,11 +309,11 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 // store content in cache
                 m_cacheTemporary.put(cacheKey, content);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_ER_CACHED_SYS_ID_1, cacheKey));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_CACHED_SYS_ID_1, cacheKey));
                 }
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ENTITY_RESOLVE_FAILED_1, systemId), t);
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
             }
@@ -326,10 +328,10 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
                 InputStream stream = getClass().getClassLoader().getResourceAsStream(location);
                 content = CmsFileUtil.readFully(stream);
                 // cache the DTD
-                m_cachePermanent.put(systemId, content);                
+                m_cachePermanent.put(systemId, content);
                 return new InputSource(new ByteArrayInputStream(content));
             } catch (Throwable t) {
-                LOG.error(Messages.get().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_DTD_NOT_FOUND_1, location), t);
             }
 
         }
@@ -388,11 +390,13 @@ public class CmsXmlEntityResolver implements EntityResolver, I_CmsEventListener 
         Object o;
         o = m_cacheTemporary.remove(getCacheKey(systemId, false));
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ER_UNCACHED_SYS_ID_1, getCacheKey(systemId, false)));
         }
         o = m_cacheContentDefinitions.remove(getCacheKey(systemId, false));
         if ((null != o) && LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ER_UNCACHED_CONTENT_DEF_1, getCacheKey(systemId, false)));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_ER_UNCACHED_CONTENT_DEF_1,
+                getCacheKey(systemId, false)));
         }
     }
 }

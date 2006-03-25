@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDefaultPageEditor.java,v $
- * Date   : $Date: 2005/11/02 14:21:40 $
- * Version: $Revision: 1.21.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.21.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.21.2.1 $ 
+ * @version $Revision: 1.21.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -408,7 +408,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
                     "");
             }
         } catch (CmsException e) {
-            LOG.warn(Messages.get().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_STYLESHEET_FAILED_0), e);
         }
         return result;
     }
@@ -425,7 +425,7 @@ public abstract class CmsDefaultPageEditor extends CmsEditor {
             result = getCms().readPropertyObject(getParamTempfile(), CmsPropertyDefinition.PROPERTY_TEMPLATE, true).getValue(
                 "");
         } catch (CmsException e) {
-            LOG.warn(Messages.get().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_PROP_FAILED_0), e);
         }
         return result;
     }

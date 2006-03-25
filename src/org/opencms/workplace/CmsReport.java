@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsReport.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.25.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.25.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -50,7 +50,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.25.2.2 $ 
+ * @version $Revision: 1.25.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -176,7 +176,8 @@ public class CmsReport extends CmsMultiDialog {
             detailsAttrs += " ";
         }
 
-        if (Boolean.valueOf(getParamThreadHasNext()).booleanValue() && CmsStringUtil.isNotEmpty(getParamReportContinueKey())) {
+        if (Boolean.valueOf(getParamThreadHasNext()).booleanValue()
+            && CmsStringUtil.isNotEmpty(getParamReportContinueKey())) {
             return dialogButtons(new int[] {BUTTON_OK, BUTTON_CANCEL, BUTTON_DETAILS}, new String[] {
                 okAttrs,
                 cancelAttrs,
@@ -415,7 +416,9 @@ public class CmsReport extends CmsMultiDialog {
             } catch (Exception e) {
                 // can usually be ignored
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_THREAD_CREATION_FAILED_1, new Integer(value)), e);
+                    LOG.info(
+                        Messages.get().getBundle().key(Messages.LOG_THREAD_CREATION_FAILED_1, new Integer(value)),
+                        e);
                 }
             }
         }
@@ -445,14 +448,14 @@ public class CmsReport extends CmsMultiDialog {
             setAction(ACTION_REPORT_BEGIN);
         }
     }
-    
+
     /**
      * Returns always true and does nothing else, has to be implemented.<p>
      * 
      * @see org.opencms.workplace.CmsMultiDialog#performDialogOperation()
      */
     protected boolean performDialogOperation() {
-        
+
         // do nothing, has to be implemented
         return true;
     }

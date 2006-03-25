@@ -1,4 +1,4 @@
-<%@ page import="org.opencms.setup.*,java.util.*" session="true" %><%--
+<%@ page session="true" %><%--
 --%><jsp:useBean id="Bean" class="org.opencms.setup.CmsSetupBean" scope="session" /><%--
 --%><jsp:setProperty name="Bean" property="*" /><%
 
@@ -14,7 +14,9 @@
 Alkacon OpenCms Setup Wizard - Import modules
 <%= Bean.getHtmlPart("C_HEAD_START") %>
 
-<% if (importWp) { %>
+<% if (importWp) { 
+    // import the workplace
+%>
 </head>
 <frameset rows="100%,*">
 	<frame src="step_8a_display_import.jsp" name="display">

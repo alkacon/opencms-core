@@ -32,7 +32,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.1.2.10 $ 
+ * @version $Revision: 1.1.2.11 $ 
  * 
  * @since 6.2.0
  */
@@ -150,7 +150,7 @@ public class CmsImageScaler {
         } catch (Exception e) {
             // nothing we can do about this, keep the original properties            
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1, rootPath), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.ERR_UNABLE_TO_EXTRACT_IMAGE_SIZE_1, rootPath), e);
             }
             // set height / width to default of -1
             init();
@@ -546,7 +546,10 @@ public class CmsImageScaler {
         if (imageType == null) {
             // unknown type, unable to scale the image
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, file.getRootPath(), toString()));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.ERR_UNABLE_TO_SCALE_IMAGE_2,
+                    file.getRootPath(),
+                    toString()));
             }
             return result;
         }
@@ -615,7 +618,10 @@ public class CmsImageScaler {
             result = scaler.getBytes(image, imageType);
         } catch (Exception e) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.ERR_UNABLE_TO_SCALE_IMAGE_2, file.getRootPath(), toString()), e);
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.ERR_UNABLE_TO_SCALE_IMAGE_2,
+                    file.getRootPath(),
+                    toString()), e);
             }
         }
         return result;
@@ -928,12 +934,12 @@ public class CmsImageScaler {
                     setFilters(v);
                 } else {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
+                        LOG.debug(Messages.get().getBundle().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
                     }
                 }
             } else {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
+                    LOG.debug(Messages.get().getBundle().key(Messages.ERR_INVALID_IMAGE_SCALE_PARAMS_2, k, v));
                 }
             }
         }

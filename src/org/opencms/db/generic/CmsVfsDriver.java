@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsVfsDriver.java,v $
- * Date   : $Date: 2006/03/22 17:38:53 $
- * Version: $Revision: 1.255.2.6 $
+ * Date   : $Date: 2006/03/25 22:42:42 $
+ * Version: $Revision: 1.255.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.apache.commons.logging.Log;
  * @author Thomas Weckert 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.255.2.6 $
+ * @version $Revision: 1.255.2.7 $
  * 
  * @since 6.0.0 
  */
@@ -800,7 +800,7 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -830,12 +830,14 @@ public class CmsVfsDriver implements I_CmsDriver, I_CmsVfsDriver {
         m_driverManager = driverManager;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
+                    getClass().getName()));
             }
         }
     }

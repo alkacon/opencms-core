@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerTypeAccess.java,v $
- * Date   : $Date: 2005/11/26 01:18:02 $
- * Version: $Revision: 1.11.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.11.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.11.2.2 $ 
+ * @version $Revision: 1.11.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -91,7 +91,7 @@ public class CmsExplorerTypeAccess {
 
         m_accessControl.put(key, value);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_ACCESS_ENTRY_2, key, value));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_ACCESS_ENTRY_2, key, value));
         }
     }
 
@@ -164,7 +164,7 @@ public class CmsExplorerTypeAccess {
             groups = cms.getGroupsOfUser(user.getName());
         } catch (CmsException e) {
             // error reading the groups of the current user
-            LOG.error(Messages.get().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_GROUPS_OF_USER_FAILED_1, user.getName()));
         }
         String defaultPermissions = (String)m_accessControl.get(PRINCIPAL_DEFAULT);
         // add the default permissions to the acl

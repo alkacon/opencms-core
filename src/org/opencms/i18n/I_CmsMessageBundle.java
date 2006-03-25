@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/I_CmsMessageBundle.java,v $
- * Date   : $Date: 2005/09/16 08:49:34 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import java.util.Locale;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.5.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -128,87 +128,4 @@ public interface I_CmsMessageBundle {
      * @return the bundle name for this OpenCms package
      */
     String getBundleName();
-
-    /**
-     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
-     * 
-     * Convenience method for messages without argument.<p>
-     * 
-     * @param locale the locale to use
-     * @param key the message key
-     * 
-     * @return the selected localized message from this bundle  for the given locale.<p>
-     */
-    String key(Locale locale, String key);
-
-    /**
-     * Returns the selected localized message from this bundle for the given locale.<p>
-     * 
-     * @param locale the locale to use
-     * @param key the message key
-     * @param args the message arguments
-     * 
-     * @return the selected localized message from this bundle for the given locale
-     */
-    String key(Locale locale, String key, Object[] args);
-
-    /**
-     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
-     * 
-     * Convenience method for messages without arguments.<p>
-     * 
-     * @param key the message key
-     * 
-     * @return the selected localized message from this bundle for the OpenCms default locale
-     */
-    String key(String key);
-
-    /**
-     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
-     * 
-     * Convenience method for messages with one argument.<p>
-     * 
-     * @param key the message key
-     * @param arg0 the message argument
-     * 
-     * @return the selected localized message from this bundle for the OpenCms default locale
-     */
-    String key(String key, Object arg0);
-
-    /**
-     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
-     * 
-     * Convenience method for messages with two arguments.<p>
-     * 
-     * @param key the message key
-     * @param arg0 the first message argument
-     * @param arg1 the second message argument
-     * 
-     * @return the selected localized message from this bundle for the OpenCms default locale
-     */
-    String key(String key, Object arg0, Object arg1);
-
-    /**
-     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
-     * 
-     * Convenience method for messages with three arguments.<p>
-     * 
-     * @param key the message key
-     * @param arg0 the first message argument
-     * @param arg1 the second message argument
-     * @param arg2 the third message argument
-     * 
-     * @return the selected localized message from this bundle for the OpenCms default locale
-     */
-    String key(String key, Object arg0, Object arg1, Object arg2);
-
-    /**
-     * Returns the selected localized message from this bundle for the OpenCms default locale.<p>
-     * 
-     * @param key the message key
-     * @param args the message arguments
-     * 
-     * @return the selected localized message from this bundle for the OpenCms default locale
-     */
-    String key(String key, Object[] args);
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsLogin.java,v $
- * Date   : $Date: 2006/03/17 10:12:13 $
- * Version: $Revision: 1.19.2.6 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.19.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.6 $ 
+ * @version $Revision: 1.19.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -231,7 +231,7 @@ public class CmsLogin extends CmsJspLoginBean {
                         }
                     } catch (Exception e) {
                         // unable to set the startup project, bad but not critical
-                        LOG.warn(Messages.get().key(
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_LOGIN_NO_STARTUP_PROJECT_2,
                             m_username,
                             settings.getStartProject()), e);
@@ -437,10 +437,10 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("\t\tvar winLeft = window.screenLeft;\n");
         html.append("\t}\n");
         html.append("\n");
-        
+
         if (requestedResource.startsWith(CmsWorkplace.VFS_PATH_WORKPLACE)) {
             html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=no,location=no,toolbar=no,menubar=no,directories=no,status=yes,resizable=yes\";\n");
-        } else {            
+        } else {
             html.append("\tvar openerStr = \"width=\" + winWidth + \",height=\" + winHeight + \",left=\" + winLeft + \",top=\" + winTop + \",scrollbars=yes,location=yes,toolbar=yes,menubar=yes,directories=no,status=yes,resizable=yes\";\n");
         }
         html.append("\tvar OpenCmsWin = window.open(url, name, openerStr);\n");
@@ -636,7 +636,7 @@ public class CmsLogin extends CmsJspLoginBean {
         html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_TRADEMARKS_0));
-        html.append("</div>\n");        
+        html.append("</div>\n");
         html.append("<div style=\"text-align: center; font-size: 10px; white-space: nowrap;\">");
         html.append("&copy; 2006 Alkacon Software GmbH. ");
         html.append(Messages.get().getBundle(m_locale).key(Messages.GUI_LOGIN_RIGHTS_RESERVED_0));
@@ -644,10 +644,9 @@ public class CmsLogin extends CmsJspLoginBean {
 
         html.append("<noscript>\n");
         html.append("<div style=\"text-align: center; font-size: 14px; border: 2px solid black; margin: 50px; padding: 20px; background-color: red; color: white; white-space: nowrap;\"><b>");
-        html.append(CmsStringUtil.escapeHtml(Messages.get().key(
-            m_locale,
+        html.append(CmsStringUtil.escapeHtml(Messages.get().getBundle(m_locale).key(
             Messages.GUI_LOGIN_NOSCRIPT_1,
-            new Object[] {OpenCms.getSiteManager().getWorkplaceSiteMatcher()})));
+            OpenCms.getSiteManager().getWorkplaceSiteMatcher())));
         html.append("</b></div>\n");
         html.append("</noscript>\n");
 

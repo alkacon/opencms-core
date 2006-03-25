@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsDefaultLocaleHandler.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.20.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.20.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior  
  * 
- * @version $Revision: 1.20.2.4 $ 
+ * @version $Revision: 1.20.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -119,7 +119,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
                 try {
                     defaultNames = adminCms.readPropertyObject(res, CmsPropertyDefinition.PROPERTY_LOCALE, true).getValue();
                 } catch (CmsException e) {
-                    LOG.warn(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                    LOG.warn(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
                 }
                 if (defaultNames != null) {
                     defaultLocales = localeManager.getAvailableLocales(defaultNames);
@@ -131,7 +131,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
                         OpenCms.getSystemInfo().getDefaultEncoding());
                 } catch (CmsException e) {
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
+                        LOG.info(Messages.get().getBundle().key(Messages.ERR_READ_ENCODING_PROP_1, resourceName), e);
                     }
                 }
             }
@@ -151,7 +151,7 @@ public class CmsDefaultLocaleHandler implements I_CmsLocaleHandler {
             try {
                 req.setCharacterEncoding(encoding);
             } catch (UnsupportedEncodingException e) {
-                LOG.error(Messages.get().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_UNSUPPORTED_REQUEST_ENCODING_1, encoding), e);
             }
         }
 

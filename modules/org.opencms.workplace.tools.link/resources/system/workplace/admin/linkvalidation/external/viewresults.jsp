@@ -2,8 +2,7 @@
 
 	org.opencms.main.*,
 	org.opencms.workplace.*,
-    org.opencms.validation.*,
-	org.opencms.workplace.tools.workplace.*
+    org.opencms.validation.*
 
 "%><%	
 
@@ -44,9 +43,9 @@ function init() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="return submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
 <% 
   CmsPointerLinkValidationResult result = OpenCms.getLinkManager().getPointerLinkValidationResult();

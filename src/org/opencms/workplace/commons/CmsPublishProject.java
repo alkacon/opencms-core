@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPublishProject.java,v $
- * Date   : $Date: 2005/10/28 12:07:36 $
- * Version: $Revision: 1.26.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.26.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -73,7 +73,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.26.2.2 $ 
+ * @version $Revision: 1.26.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -544,7 +544,7 @@ public class CmsPublishProject extends CmsReport {
             try {
                 setParamProjectname(getCms().readProject(id).getName());
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_SET_PROJECT_NAME_FAILED_0), e);
             }
         }
     }
@@ -564,7 +564,7 @@ public class CmsPublishProject extends CmsReport {
                     getLocale()));
                 setParamModifieduser(getCms().readUser(res.getUserLastModified()).getName());
             } catch (CmsException e) {
-                LOG.error(Messages.get().key(Messages.LOG_COMPUTING_PUBRES_FAILED_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_COMPUTING_PUBRES_FAILED_0), e);
             }
         }
     }
@@ -597,7 +597,7 @@ public class CmsPublishProject extends CmsReport {
                 return (getCms().countLockedResources(id) > 0);
             }
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_DISPLAY_UNLOCK_INF_FAILED_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_DISPLAY_UNLOCK_INF_FAILED_0), e);
         }
         return false;
     }

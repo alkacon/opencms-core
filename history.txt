@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/history.txt,v $
- * Date   : $Date: 2006/03/25 22:06:37 $
- * Version: $Revision: 1.682.2.103 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.682.2.104 $
  *
  * This file is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -18,6 +18,9 @@ Legend:
 ! New Feature
 * Bug fixed
 - General comment
+
+OpenCms 6.1.12 - March xxx, 2006
+- Refactored usage of resource bundle messages
 
 OpenCms 6.1.11 - March 25, 2006
 * Fixed issue #1047: change MySQL tables from MEDIUMBLOB to LONGBLOB to allow resources of size > 16MB

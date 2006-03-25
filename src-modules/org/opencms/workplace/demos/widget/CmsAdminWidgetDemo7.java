@@ -179,7 +179,7 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
                 result.append("Disabled");
             }
             result.append("\">");
-            result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
+            result.append(keyDefault(A_CmsWidget.getLabelKey(p), p.getName()));
             if (count > 1) {
                 result.append(" [").append(p.getIndex() + 1).append("]");
             }
@@ -199,7 +199,8 @@ public class CmsAdminWidgetDemo7 extends CmsWidgetDialog {
             } else {
                 // disabled element, show message for optional element
                 result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                result.append(Messages.get().key(this.getLocale(), Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
+                result.append(Messages.get().getBundle(getLocale()).key(
+                    Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                 result.append("</td>");
             }
 

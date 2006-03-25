@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/galleries/Attic/A_CmsGallery.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.22.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.22.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,6 @@ import org.opencms.workplace.explorer.CmsNewResourceUpload;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 
@@ -74,7 +73,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.22.2.4 $ 
+ * @version $Revision: 1.22.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -365,7 +364,6 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
     public String buildGalleryButtonBar() {
 
         StringBuffer buttonBar = new StringBuffer();
-        Locale locale = this.getLocale();
         try {
             if (CmsStringUtil.isNotEmpty(getParamResourcePath())) {
                 // we have a resource to display
@@ -390,7 +388,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                     buttonBar.append(deleteButton());
                     buttonBar.append(buttonBarSeparator(5, 5));
                     buttonBar.append("<td class=\"nowrap\"><b>");
-                    buttonBar.append(Messages.get().key(locale, Messages.GUI_INPUT_TITLE_0));
+                    buttonBar.append(key(Messages.GUI_INPUT_TITLE_0));
                     buttonBar.append("</b>&nbsp;</td>");
                     buttonBar.append("<td class=\"maxwidth\">");
                     buttonBar.append("<input name=\"title\" value=\"");
@@ -497,7 +495,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
                 result.append("\" href=\"javascript: preview(\'");
                 result.append(resPath);
                 result.append("\');\" title=\"");
-                result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_PREVIEW_0));
+                result.append(key(Messages.GUI_BUTTON_PREVIEW_0));
                 result.append("\">");
                 result.append(resName);
                 result.append("</a></td>\n");
@@ -582,7 +580,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         } else {
             // no gallery present, create hidden input field to avoid JS errors
             StringBuffer result = new StringBuffer(4);
-            result.append(Messages.get().key(this.getLocale(), Messages.getGalleryNotFoundKey(getGalleryTypeName())));
+            result.append(key(Messages.getGalleryNotFoundKey(getGalleryTypeName())));
             result.append("\r\n<input type=\"hidden\" name=\"");
             result.append(PARAM_GALLERYPATH);
             result.append("\">");
@@ -907,8 +905,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     public String getKeyTitle() {
 
-        //return key("button." + getGalleryTypeName());
-        return Messages.get().key(Messages.getTitleGalleryKey(getGalleryTypeName()));
+        return key(Messages.getTitleGalleryKey(getGalleryTypeName()));
     }
 
     /**
@@ -1250,7 +1247,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         StringBuffer targetSelectBox = new StringBuffer(32);
         targetSelectBox.append(buttonBarSpacer(5));
         targetSelectBox.append("<td nowrap><b>");
-        targetSelectBox.append(Messages.get().key(this.getLocale(), Messages.GUI_INPUT_LINKTARGET_0));
+        targetSelectBox.append(key(Messages.GUI_INPUT_LINKTARGET_0));
         targetSelectBox.append("</b>&nbsp;</td>");
         targetSelectBox.append("<td>\r\n");
         targetSelectBox.append("<select name=\"linktarget\" id=\"linktarget\" size=\"1\" style=\"width:150px\"");
@@ -1292,7 +1289,7 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         result.append("\" style=\"text-align: right;\">");
         result.append(res.getLength() / 1024);
         result.append(" ");
-        result.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_KILOBYTES_0));
+        result.append(key(Messages.GUI_LABEL_KILOBYTES_0));
         result.append("</td>\n");
         return result.toString();
     }
@@ -1339,13 +1336,13 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
         headline.append("<tr>");
         headline.append("<td class=\"headline\">&nbsp;</td>");
         headline.append("<td class=\"headline\" width=\"35%\">");
-        headline.append(Messages.get().key(Messages.GUI_LABEL_NAME_0));
+        headline.append(key(Messages.GUI_LABEL_NAME_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" width=\"55%\">");
-        headline.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_TITLE_0));
+        headline.append(key(Messages.GUI_LABEL_TITLE_0));
         headline.append("</td>");
         headline.append("<td class=\"headline\" style=\"text-align: right;\" width=\"10%\">");
-        headline.append(Messages.get().key(this.getLocale(), Messages.GUI_LABEL_SIZE_0));
+        headline.append(key(Messages.GUI_LABEL_SIZE_0));
         headline.append("</td>");
         headline.append("</tr>");
 
@@ -1417,16 +1414,15 @@ public abstract class A_CmsGallery extends CmsDialog implements Comparable {
      */
     protected String getTargetOptions() {
 
-        Locale locale = this.getLocale();
         StringBuffer options = new StringBuffer();
         options.append("<option value=\"_self\">");
-        options.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTARGETSELF_0));
+        options.append(key(Messages.GUI_INPUT_LINKTARGETSELF_0));
         options.append("</option>\r\n");
         options.append("<option value=\"_blank\">");
-        options.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTARGETBLANK_0));
+        options.append(key(Messages.GUI_INPUT_LINKTARGETBLANK_0));
         options.append("</option>\r\n");
         options.append("<option value=\"_top\">");
-        options.append(Messages.get().key(locale, Messages.GUI_INPUT_LINKTARGETTOP_0));
+        options.append(key(Messages.GUI_INPUT_LINKTARGETTOP_0));
         options.append("</option>\r\n");
 
         return options.toString();

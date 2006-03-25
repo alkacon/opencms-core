@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsPointerLoader.java,v $
- * Date   : $Date: 2005/10/19 09:42:54 $
- * Version: $Revision: 1.49.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.49.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.49.2.1 $ 
+ * @version $Revision: 1.49.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +123,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
         StringBuffer result = new StringBuffer(128);
         result.append(EXPORT_PREFIX);
         if (pointer.indexOf(':') < 0) {
-            result.append(OpenCms.getLinkManager().substituteLink(cms, pointer)); 
+            result.append(OpenCms.getLinkManager().substituteLink(cms, pointer));
         } else {
             result.append(pointer);
         }
@@ -160,7 +160,7 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
      */
     public String getResourceLoaderInfo() {
 
-        return Messages.get().key(Messages.GUI_LOADER_POINTER_DEFAULT_DESC_0);
+        return Messages.get().getBundle().key(Messages.GUI_LOADER_POINTER_DEFAULT_DESC_0);
     }
 
     /**
@@ -169,7 +169,9 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
     public void initConfiguration() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOADER_INITIALIZED_1,
+                this.getClass().getName()));
         }
     }
 
@@ -223,9 +225,9 @@ public class CmsPointerLoader implements I_CmsResourceLoader {
                 resource.getName()));
         }
         if (pointer.indexOf(':') < 0) {
-            pointer = OpenCms.getLinkManager().substituteLink(cms, pointer); 
+            pointer = OpenCms.getLinkManager().substituteLink(cms, pointer);
         }
-        
+
         res.sendRedirect(pointer);
     }
 

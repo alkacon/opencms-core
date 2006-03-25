@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexResponse.java,v $
- * Date   : $Date: 2006/03/18 08:40:32 $
- * Version: $Revision: 1.40.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.40.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.40.2.4 $ 
+ * @version $Revision: 1.40.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -133,7 +133,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         public void flush() throws IOException {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_FLUSHED_1, m_servletStream));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_FLUSHED_1, m_servletStream));
             }
             if (m_servletStream != null) {
                 m_servletStream.flush();
@@ -430,18 +430,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_cachingRequired && !m_includeMode) {
             addHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_ELEMENT_BUFFER_2,
+                    name,
+                    value));
             }
         }
 
         if (m_writeOnlyToBuffer) {
             addHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_HEADERS_2,
+                    name,
+                    value));
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_ADDING_HEADER_TO_PARENT_RESPONSE_2,
+                    name,
+                    value));
             }
             m_res.addHeader(name, value);
         }
@@ -589,7 +598,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             return;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SENDREDIRECT_1, location));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_SENDREDIRECT_1, location));
         }
         if (m_cachingRequired && !m_includeMode) {
             m_bufferRedirect = location;
@@ -599,12 +608,12 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             // If caching is required a cached entry will be constructed first and redirect will
             // be called after this is completed and stored in the cache
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_TOPRESPONSE_SENDREDIRECT_1, location));
             }
             if (LOG.isWarnEnabled()) {
                 if (m_controller.getResponseStackSize() > 2) {
                     // sendRedirect in a stacked response scenario, this may cause issues in some appservers
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_FLEXRESPONSE_REDIRECTWARNING_3,
                         m_controller.getCmsResource().getRootPath(),
                         m_controller.getCurrentRequest().getElementUri(),
@@ -629,7 +638,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
     public void setContentType(String type) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_SETTING_CONTENTTYPE_1, type));
         }
         // only if this is the "Top-Level" element, do set the content type    
         // otherwise an included JSP could reset the type with some unwanted defaults  
@@ -670,18 +679,27 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
         if (m_cachingRequired && !m_includeMode) {
             setHeaderList(m_bufferHeaders, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_ELEMENT_BUFFER_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_ELEMENT_BUFFER_2,
+                    name,
+                    value));
             }
         }
 
         if (m_writeOnlyToBuffer) {
             setHeaderList(m_headers, name, value);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_HEADERS_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_HEADERS_2,
+                    name,
+                    value));
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_PARENT_RESPONSE_2, name, value));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_FLEXRESPONSE_SETTING_HEADER_IN_PARENT_RESPONSE_2,
+                    name,
+                    value));
             }
             m_res.setHeader(name, value);
         }
@@ -814,14 +832,15 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
                             m_out.clear();
                         } catch (Exception e) {
                             if (LOG.isDebugEnabled()) {
-                                LOG.debug(Messages.get().key(
+                                LOG.debug(Messages.get().getBundle().key(
                                     Messages.LOG_FLEXRESPONSE_ERROR_FLUSHING_OUTPUT_STREAM_1,
                                     e));
                             }
                         }
                     } else {
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ERROR_OUTPUT_STREAM_NULL_0));
+                            LOG.debug(Messages.get().getBundle().key(
+                                Messages.LOG_FLEXRESPONSE_ERROR_OUTPUT_STREAM_NULL_0));
                         }
                     }
                     writeCachedResultToStream(this);
@@ -939,7 +958,7 @@ public class CmsFlexResponse extends HttpServletResponseWrapper {
             }
         } else {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_FLEXRESPONSE_ERROR_WRITING_TO_OUTPUT_STREAM_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXRESPONSE_ERROR_WRITING_TO_OUTPUT_STREAM_0));
             }
             // The request is not buffered, so we can write directly to it's parents output stream 
             m_res.getOutputStream().write(bytes);

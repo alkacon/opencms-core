@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/page/CmsXmlPage.java,v $
- * Date   : $Date: 2005/07/29 10:13:57 $
- * Version: $Revision: 1.31 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.31.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.xml.sax.InputSource;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.31 $ 
+ * @version $Revision: 1.31.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -516,7 +516,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 }
             }
         } catch (NullPointerException e) {
-            LOG.error(Messages.get().key(Messages.ERR_XML_PAGE_INIT_BOOKMARKS_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_INIT_BOOKMARKS_0), e);
         }
     }
 
@@ -583,7 +583,7 @@ public class CmsXmlPage extends A_CmsXmlDocument {
                 }
 
             } catch (NullPointerException e) {
-                LOG.error(Messages.get().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_XML_PAGE_CONVERT_CONTENT_0), e);
             }
         }
 

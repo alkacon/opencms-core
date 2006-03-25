@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsMacroResolver.java,v $
- * Date   : $Date: 2006/03/19 21:49:59 $
- * Version: $Revision: 1.17.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.17.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -60,7 +60,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.17.2.3 $ 
+ * @version $Revision: 1.17.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -95,7 +95,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
 
     /** Key used to specify the country of the current user as macro value. */
     public static final String KEY_CURRENT_USER_COUNTRY = "currentuser.country";
-    
+
     /** Key prefix used to specify the value of a localized key as macro value. */
     public static final String KEY_LOCALIZED_PREFIX = "key.";
 
@@ -385,7 +385,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                     }
                 } catch (CmsException e) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_PROPERTY_READING_FAILED_2,
                             macro,
                             controller.getCurrentRequest().getElementUri()), e);
@@ -490,7 +490,7 @@ public class CmsMacroResolver implements I_CmsMacroResolver {
                 // the key is the current users country
                 return m_cms.getRequestContext().currentUser().getCountry();
             }
-            
+
             if (CmsMacroResolver.KEY_CURRENT_USER_CITY.equals(macro)) {
                 // the key is the current users city
                 return m_cms.getRequestContext().currentUser().getCity();

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsDialog.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.93.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.93.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.93.2.7 $ 
+ * @version $Revision: 1.93.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -1109,9 +1109,9 @@ public class CmsDialog extends CmsToolDialog {
         if (CmsStringUtil.isNotEmpty(getParamResource())) {
             CmsResource file = getCms().readResource(getParamResource(), CmsResourceFilter.ALL);
             if (getCms().isInsideCurrentProject(getParamResource())) {
-                return Messages.get().key(Messages.getStateKey(file.getState()));
+                return key(Messages.getStateKey(file.getState()));
             } else {
-                return Messages.get().key(Messages.GUI_EXPLORER_STATENIP_0);
+                return key(Messages.GUI_EXPLORER_STATENIP_0);
             }
         }
         return "+++ resource parameter not found +++";
@@ -1177,7 +1177,7 @@ public class CmsDialog extends CmsToolDialog {
      */
     public void includeErrorpage(CmsWorkplace wp, Throwable t) throws JspException {
 
-        CmsLog.getLog(wp).error(Messages.get().key(Messages.ERR_WORKPLACE_DIALOG_0), t);
+        CmsLog.getLog(wp).error(Messages.get().getBundle().key(Messages.ERR_WORKPLACE_DIALOG_0), t);
         getJsp().getRequest().setAttribute(SESSION_WORKPLACE_CLASS, wp);
         getJsp().getRequest().setAttribute(ATTRIBUTE_THROWABLE, t);
         getJsp().include(FILE_DIALOG_SCREEN_ERRORPAGE);

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListExplorerFrameset.java,v $
- * Date   : $Date: 2006/03/22 08:33:22 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -62,7 +63,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Michael Moossen 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -116,7 +117,10 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
         html.append("\t\t<meta HTTP-EQUIV=\"Content-Type\" CONTENT=\"text/html; charset=\"").append(getEncoding()).append(
             "\">\n");
         html.append("\t\t<title>\n");
-        html.append("\t\t\t").append(org.opencms.workplace.Messages.get().key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, getSettings().getUser().getName(), getJsp().getRequest().getServerName())).append("\n");
+        html.append("\t\t\t").append(
+            key(org.opencms.workplace.Messages.GUI_LABEL_WPTITLE_2, new Object[] {
+                getSettings().getUser().getName(),
+                getJsp().getRequest().getServerName()})).append("\n");
         html.append("\t\t</title>\n");
         html.append("\t</head>\n");
         html.append("\t<frameset rows='57,*' border='0' frameborder='0' framespacing='0'>\n");
@@ -172,12 +176,13 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
             html.append(getJsp().link(A_CmsListExplorerDialog.PATH_EXPLORER_LIST)).append("'>\n");
         }
         // list view button
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
             getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             "id-list-switch",
-            Messages.get().key(getLocale(), Messages.GUI_LIST_ACTION_LIST_SWITCH_NAME_0, null),
-            Messages.get().key(getLocale(), Messages.GUI_LIST_ACTION_LIST_SWITCH_HELP_0, null),
+            messages.key(Messages.GUI_LIST_ACTION_LIST_SWITCH_NAME_0),
+            messages.key(Messages.GUI_LIST_ACTION_LIST_SWITCH_HELP_0),
             true,
             "list/list.png",
             null,
@@ -219,10 +224,8 @@ public class CmsListExplorerFrameset extends CmsExplorerDialog {
                 getJsp(),
                 CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
                 "id-up-level",
-                org.opencms.workplace.tools.Messages.get().key(
-                    getLocale(),
-                    org.opencms.workplace.tools.Messages.GUI_ADMIN_VIEW_UPLEVEL_0,
-                    null),
+                org.opencms.workplace.tools.Messages.get().getBundle(getLocale()).key(
+                    org.opencms.workplace.tools.Messages.GUI_ADMIN_VIEW_UPLEVEL_0),
                 parentName,
                 true,
                 "admin/images/up.png",

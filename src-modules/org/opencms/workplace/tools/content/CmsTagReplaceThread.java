@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsTagReplaceThread.java,v $
- * Date   : $Date: 2006/01/23 15:29:28 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.htmlparser.util.ParserException;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.1.2.2 $
+ * @version $Revision: 1.1.2.3 $
  * 
  * @since 6.1.8
  */
@@ -89,7 +89,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
      */
     public CmsTagReplaceThread(CmsObject cms, CmsTagReplaceSettings settings) {
 
-        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_TAGREPLACE_THREAD_NAME_0, null));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_TAGREPLACE_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
         m_settings = settings;
         m_markerProperty = new CmsProperty(
@@ -188,13 +188,15 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
         report.print(Messages.get().container(Messages.RPT_TAGREPLACE_READ_RESOURCES_1, m_settings.getWorkPath()));
         report.print(org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_DOTS_0));
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.RPT_TAGREPLACE_READ_RESOURCES_1, m_settings.getWorkPath()));
+            LOG.debug(Messages.get().getBundle().key(Messages.RPT_TAGREPLACE_READ_RESOURCES_1, m_settings.getWorkPath()));
         }
         CmsResourceFilter filter = CmsResourceFilter.ALL.addRequireType(OpenCms.getResourceManager().getResourceType(
             "xmlpage").getTypeId());
         List resources = getCms().readResources(m_settings.getWorkPath(), filter, true);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_TAGREPLACE_READ_RESOURCES_OK_1, m_settings.getWorkPath()));
+            LOG.debug(Messages.get().getBundle().key(
+                Messages.LOG_TAGREPLACE_READ_RESOURCES_OK_1,
+                m_settings.getWorkPath()));
         }
         report.println(
             org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),
@@ -262,27 +264,24 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_1,
-                new Object[] {resource.getRootPath()}));
+                resource.getRootPath()));
         }
         try {
             // checking the lock:
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    getCms().getRequestContext().getLocale(),
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_TAGREPLACE_LOCK_READ_1,
-                    new Object[] {resource.getRootPath()}));
+                    resource.getRootPath()));
             }
 
             CmsLock lock = getCms().getLock(resource);
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    getCms().getRequestContext().getLocale(),
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_TAGREPLACE_LOCK_READ_1,
-                    new Object[] {resource.getRootPath()}));
+                    resource.getRootPath()));
             }
 
             boolean myLock = !lock.isNullLock()
@@ -290,30 +289,27 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
             if (lock.isNullLock() || myLock) {
                 if (!myLock) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
-                            getCms().getRequestContext().getLocale(),
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_1,
-                            new Object[] {resource.getRootPath()}));
+                            resource.getRootPath()));
                     }
                     // obtaining the lock:
                     getCms().lockResource(
                         getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
                         CmsLock.TYPE_EXCLUSIVE);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
-                            getCms().getRequestContext().getLocale(),
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_LOCK_RESOURCE_OK_1,
-                            new Object[] {resource.getRootPath()}));
+                            resource.getRootPath()));
                     }
                 }
             } else {
                 // locked by another user:
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
-                        getCms().getRequestContext().getLocale(),
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DEBUG_TAGREPLACE_RESOURCE_SKIPPED_1,
-                        new Object[] {resource.getRootPath()}));
-                    LOG.debug(Messages.get().key(Locale.ENGLISH, Messages.RPT_TAGREPLACE_SKIP_REASON_LOCKED_0));
+                        resource.getRootPath()));
+                    LOG.debug(Messages.get().getBundle().key(Messages.RPT_TAGREPLACE_SKIP_REASON_LOCKED_0));
                 }
                 report.print(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
@@ -328,21 +324,19 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                         Messages.get().container(Messages.RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0),
                         I_CmsReport.FORMAT_WARNING);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
-                            getCms().getRequestContext().getLocale(),
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DEBUG_TAGREPLACE_RESOURCE_SKIPPED_1,
-                            new Object[] {resource.getRootPath()}));
-                        LOG.debug(Messages.get().key(Locale.ENGLISH, Messages.RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0));
+                            resource.getRootPath()));
+                        LOG.debug(Messages.get().getBundle().key(Messages.RPT_TAGREPLACE_SKIP_REASON_ERR_LOCK_0));
                     }
                 }
                 return;
             }
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(
-                    getCms().getRequestContext().getLocale(),
+                LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_WARN_TAGREPLACE_LOCK_RESOURCE_FAILED_1,
-                    new Object[] {resource.getRootPath()}), e);
+                    resource.getRootPath()), e);
             }
             report.print(
                 org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_SKIPPED_0),
@@ -354,32 +348,24 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
         }
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
-                Messages.LOG_DEBUG_TAGREPLACE_LOAD_FILE_1,
-                new Object[] {resource.getRootPath()}));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_TAGREPLACE_LOAD_FILE_1, resource.getRootPath()));
         }
 
         CmsFile file = CmsFile.upgrade(resource, getCms());
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DEBUG_TAGREPLACE_LOAD_FILE_OK_1,
-                new Object[] {resource.getRootPath()}));
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
-                Messages.LOG_DEBUG_TAGREPLACE_UNMARSHAL_1,
-                new Object[] {resource.getRootPath()}));
+                resource.getRootPath()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_TAGREPLACE_UNMARSHAL_1, resource.getRootPath()));
         }
 
         CmsXmlContent xmlcontent = CmsXmlContentFactory.unmarshal(getCms(), file);
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
-                getCms().getRequestContext().getLocale(),
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_DEBUG_TAGREPLACE_UNMARSHAL_OK_1,
-                new Object[] {resource.getRootPath()}));
+                resource.getRootPath()));
         }
 
         List locales = xmlcontent.getLocales();
@@ -393,10 +379,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
         while (itLocales.hasNext()) {
             locale = (Locale)itLocales.next();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    Locale.ENGLISH,
-                    Messages.LOG_DEBUG_TAGREPLACE_LOCALE_1,
-                    new Object[] {locale.getLanguage()}));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_TAGREPLACE_LOCALE_1, locale.getLanguage()));
             }
 
             elements = xmlcontent.getValues(locale);
@@ -405,10 +388,10 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                 value = (I_CmsXmlContentValue)itElements.next();
                 String content = value.getStringValue(getCms());
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
-                        Locale.ENGLISH,
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DEBUG_TAGREPLACE_ELEMENT_2,
-                        new Object[] {value.getPath(), content}));
+                        value.getPath(),
+                        content));
                 }
                 try {
 
@@ -431,43 +414,37 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
         if (parser.isChangedContent()) {
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    getCms().getRequestContext().getLocale(),
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_TAGREPLACE_MARSHAL_1,
-                    new Object[] {resource.getRootPath()}));
+                    resource.getRootPath()));
             }
             byte[] content = xmlcontent.marshal();
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    getCms().getRequestContext().getLocale(),
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_TAGREPLACE_MARSHAL_OK_1,
-                    new Object[] {resource.getRootPath()}));
+                    resource.getRootPath()));
             }
 
             // write back the modified xmlcontent:
             file.setContents(content);
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    Locale.ENGLISH,
-                    Messages.LOG_DEBUG_TAGREPLACE_WRITE_1,
-                    new Object[] {resource.getRootPath()}));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_TAGREPLACE_WRITE_1, resource.getRootPath()));
             }
 
             getCms().writeFile(file);
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(
-                    Locale.ENGLISH,
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_DEBUG_TAGREPLACE_WRITE_OK_1,
-                    new Object[] {resource.getRootPath()}));
+                    resource.getRootPath()));
             }
 
             try {
                 // set the marker property:
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_3,
                         new Object[] {
                             m_markerProperty.getName(),
@@ -478,7 +455,7 @@ public class CmsTagReplaceThread extends A_CmsReportThread {
                     getCms().getRequestContext().removeSiteRoot(resource.getRootPath()),
                     m_markerProperty);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_OK_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_DEBUG_TAGREPLACE_PROPERTY_WRITE_OK_0));
                 }
                 report.println(
                     org.opencms.report.Messages.get().container(org.opencms.report.Messages.RPT_OK_0),

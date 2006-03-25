@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListMetadata.java,v $
- * Date   : $Date: 2006/03/16 11:54:55 $
- * Version: $Revision: 1.20.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.20.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -47,7 +47,7 @@ import java.util.TreeSet;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.20.2.7 $ 
+ * @version $Revision: 1.20.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -466,7 +466,7 @@ public class CmsListMetadata {
         html.append("\t<td align='center' colspan='");
         html.append(getWidth());
         html.append("'>\n");
-        html.append(Messages.get().key(locale, Messages.GUI_LIST_EMPTY_0, null));
+        html.append(Messages.get().getBundle(locale).key(Messages.GUI_LIST_EMPTY_0));
         html.append("\t</td>\n");
         html.append("</tr>\n");
         return html.toString();

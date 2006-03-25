@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsExplorerContextMenu.java,v $
- * Date   : $Date: 2006/03/22 08:33:22 $
- * Version: $Revision: 1.12.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.12.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.explorer;
 
 import org.opencms.file.CmsObject;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsLog;
 import org.opencms.main.OpenCms;
 import org.opencms.security.CmsPermissionSet;
@@ -56,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.12.2.4 $ 
+ * @version $Revision: 1.12.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -123,7 +124,7 @@ public class CmsExplorerContextMenu {
             orderValue = Integer.valueOf(order);
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_ORDER_CONTEXT_MENU_1, key));
             }
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
@@ -136,7 +137,7 @@ public class CmsExplorerContextMenu {
 
         addEntry(item);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_ADD_MENU_ENTRY_2, key, order));
         }
     }
 
@@ -151,7 +152,7 @@ public class CmsExplorerContextMenu {
         try {
             orderValue = Integer.valueOf(order);
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
         }
         CmsExplorerContextMenuItem item = new CmsExplorerContextMenuItem(
             CmsExplorerContextMenuItem.TYPE_SEPARATOR,
@@ -162,7 +163,7 @@ public class CmsExplorerContextMenu {
             orderValue);
         addEntry(item);
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRONG_MENU_SEP_ORDER_0, order));
         }
     }
 
@@ -200,6 +201,7 @@ public class CmsExplorerContextMenu {
 
         // try to get the stored entries from the Map
         String entries = (String)m_generatedScripts.get(locale);
+        CmsMessages messages = Messages.get().getBundle(locale);
         if (entries == null) {
             //CmsMessages messages = OpenCms.getWorkplaceManager().getMessages(locale);
 
@@ -212,7 +214,7 @@ public class CmsExplorerContextMenu {
                 result.append("\nvi.resource[").append(resTypeId).append("]=new res(\"").append(settings.getName()).append(
                     "\", ");
                 result.append("\"");
-                result.append(Messages.get().key(locale, settings.getKey()));
+                result.append(messages.key(settings.getKey()));
                 result.append("\", vi.skinPath + \"filetypes/");
                 result.append(settings.getIcon());
                 result.append("\", \"");
@@ -233,7 +235,7 @@ public class CmsExplorerContextMenu {
                 result.append(", ");
                 if (CmsExplorerContextMenuItem.TYPE_ENTRY.equals(item.getType())) {
                     // create a menu entry
-                    result.append("\"").append(Messages.get().key(locale, item.getKey())).append("\", ");
+                    result.append("\"").append(messages.key(item.getKey())).append("\", ");
                     result.append("\"");
                     if (item.getUri().startsWith("/")) {
                         result.append(OpenCms.getLinkManager().substituteLink(cms, item.getUri()));
@@ -351,7 +353,8 @@ public class CmsExplorerContextMenu {
         }
         StringBuffer newRules = new StringBuffer(rules.length() + 4);
         newRules.append(rules.substring(0, 6));
-        if (Messages.GUI_EXPLORER_CONTEXT_LOCK_0.equalsIgnoreCase(key) || Messages.GUI_EXPLORER_CONTEXT_UNLOCK_0.equalsIgnoreCase(key)) {
+        if (Messages.GUI_EXPLORER_CONTEXT_LOCK_0.equalsIgnoreCase(key)
+            || Messages.GUI_EXPLORER_CONTEXT_UNLOCK_0.equalsIgnoreCase(key)) {
             // for "lock" and "unlock" item, use same rules as "unlocked" column
             newRules.append(rules.substring(2, 6));
         } else {

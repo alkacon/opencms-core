@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsVfsConfiguration.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.38.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.38.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -58,7 +58,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.38.2.3 $
+ * @version $Revision: 1.38.2.4 $
  * 
  * @since 6.0.0
  */
@@ -69,9 +69,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The source attribute name. */
     public static final String A_SOURCE = "source";
-    
+
     /** The target attribute name. */
-    public static final String A_TARGET = "target";    
+    public static final String A_TARGET = "target";
 
     /** The name of the DTD for this configuration. */
     public static final String CONFIGURATION_DTD_NAME = "opencms-vfs.dtd";
@@ -81,7 +81,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The collector node name. */
     public static final String N_COLLECTOR = "collector";
-    
+
     /** The collectors node name. */
     public static final String N_COLLECTORS = "collectors";
 
@@ -126,22 +126,22 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The schematype node name. */
     public static final String N_SCHEMATYPE = "schematype";
-    
+
     /** The schematypes node name. */
-    public static final String N_SCHEMATYPES = "schematypes";    
+    public static final String N_SCHEMATYPES = "schematypes";
 
     /** Individual translation node name. */
-    public static final String N_TRANSLATION = "translation";    
+    public static final String N_TRANSLATION = "translation";
 
     /** The translations master node name. */
     public static final String N_TRANSLATIONS = "translations";
-    
+
     /** The node name of an individual resource type. */
     public static final String N_TYPE = "type";
-    
+
     /** The node name for the version history. */
     public static final String N_VERSIONHISTORY = "versionhistory";
-    
+
     /** The main vfs configuration node name. */
     public static final String N_VFS = "vfs";
 
@@ -150,10 +150,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
     /** The widgets node name. */
     public static final String N_WIDGETS = "widgets";
-    
+
     /** The xmlcontent node name. */
     public static final String N_XMLCONTENT = "xmlcontent";
-    
+
     /** The xmlcontents node name. */
     public static final String N_XMLCONTENTS = "xmlcontents";
 
@@ -188,7 +188,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         m_folderTranslations = new ArrayList();
         m_defaultFiles = new ArrayList();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_CONFIG_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_CONFIG_INIT_0));
         }
     }
 
@@ -196,42 +196,109 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
      * Adds the resource type rules to the given digester.<p>
      * 
      * @param digester the digester to add the rules to
-     */     
+     */
     public static void addResourceTypeXmlRules(Digester digester) {
 
         // add rules for resource types
         digester.addFactoryCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE, CmsDigesterResourceTypeCreationFactory.class);
 
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD, 3);
+        digester.addCallMethod(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD,
+            3);
         // please note: the resource types use a special version of the init method with 3 parameters 
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 0, A_NAME);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 1, A_ID);
         digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE, 2, A_CLASS);
-        
-        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.ADD_RESOURCE_TYPE_METHOD);   
+
+        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE, I_CmsResourceType.ADD_RESOURCE_TYPE_METHOD);
 
         // add rules for default properties
-        digester.addObjectCreate("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY, CmsProperty.class);
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_NAME, "setName", 1);
-        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_NAME, 0);
-        
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE, "setValue", 2);
-        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE, 0);
-        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY + "/" + N_VALUE, 1,  A_TYPE);
-        
-        digester.addSetNext("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY, "addDefaultProperty");   
+        digester.addObjectCreate(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY,
+            CmsProperty.class);
+        digester.addCallMethod("*/"
+            + N_RESOURCETYPES
+            + "/"
+            + N_TYPE
+            + "/"
+            + N_PROPERTIES
+            + "/"
+            + N_PROPERTY
+            + "/"
+            + N_NAME, "setName", 1);
+        digester.addCallParam("*/"
+            + N_RESOURCETYPES
+            + "/"
+            + N_TYPE
+            + "/"
+            + N_PROPERTIES
+            + "/"
+            + N_PROPERTY
+            + "/"
+            + N_NAME, 0);
+
+        digester.addCallMethod("*/"
+            + N_RESOURCETYPES
+            + "/"
+            + N_TYPE
+            + "/"
+            + N_PROPERTIES
+            + "/"
+            + N_PROPERTY
+            + "/"
+            + N_VALUE, "setValue", 2);
+        digester.addCallParam("*/"
+            + N_RESOURCETYPES
+            + "/"
+            + N_TYPE
+            + "/"
+            + N_PROPERTIES
+            + "/"
+            + N_PROPERTY
+            + "/"
+            + N_VALUE, 0);
+        digester.addCallParam("*/"
+            + N_RESOURCETYPES
+            + "/"
+            + N_TYPE
+            + "/"
+            + N_PROPERTIES
+            + "/"
+            + N_PROPERTY
+            + "/"
+            + N_VALUE, 1, A_TYPE);
+
+        digester.addSetNext(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_PROPERTIES + "/" + N_PROPERTY,
+            "addDefaultProperty");
 
         // extension mapping rules
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, I_CmsResourceType.ADD_MAPPING_METHOD, 1);
-        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, 0, A_SUFFIX);       
-        
+        digester.addCallMethod(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING,
+            I_CmsResourceType.ADD_MAPPING_METHOD,
+            1);
+        digester.addCallParam("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_MAPPINGS + "/" + N_MAPPING, 0, A_SUFFIX);
+
         // copy resource rules
-        digester.addCallMethod("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, "addCopyResource", 3);
-        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, 0, A_SOURCE);  
-        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, 1, A_TARGET);  
-        digester.addCallParam ("*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE, 2, A_TYPE);  
-    }   
-    
+        digester.addCallMethod(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE,
+            "addCopyResource",
+            3);
+        digester.addCallParam(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE,
+            0,
+            A_SOURCE);
+        digester.addCallParam(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE,
+            1,
+            A_TARGET);
+        digester.addCallParam(
+            "*/" + N_RESOURCETYPES + "/" + N_TYPE + "/" + N_COPY_RESOURCES + "/" + N_COPY_RESOURCE,
+            2,
+            A_TYPE);
+    }
+
     /**
      * Creates the xml output for resourcetype nodes.<p>
      * 
@@ -326,8 +393,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         m_defaultFiles.add(defaultFile);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(
-                Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_VFS_DEFAULT_FILE_2,
                 new Integer(m_defaultFiles.size()),
                 defaultFile));
@@ -343,9 +409,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         m_fileTranslations.add(translation);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_VFS_ADD_FILE_TRANSLATION_1,
-                translation));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_ADD_FILE_TRANSLATION_1, translation));
         }
     }
 
@@ -358,9 +422,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         m_folderTranslations.add(translation);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
-                Messages.INIT_VFS_ADD_FOLDER_TRANSLATION_1,
-                translation));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_ADD_FOLDER_TRANSLATION_1, translation));
         }
     }
 
@@ -374,39 +436,64 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
 
         // creation of the resource manager
         digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES, CmsResourceManager.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_RESOURCES,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
         digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES, "setResourceManager");
 
         // add rules for resource loaders
-        digester.addObjectCreate("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, A_CLASS, CmsConfigurationException.class);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
-        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");  
+        digester.addObjectCreate(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER,
+            A_CLASS,
+            CmsConfigurationException.class);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER,
+            I_CmsConfigurationParameterHandler.INIT_CONFIGURATION_METHOD);
+        digester.addSetNext("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_RESOURCELOADERS + "/" + N_LOADER, "addLoader");
 
         // add rules for resource types
         addResourceTypeXmlRules(digester);
-        
+
         // add rules for VFS content collectors
-        digester.addCallMethod("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, "addContentCollector", 2);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR,
+            "addContentCollector",
+            2);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 0, A_CLASS);
         digester.addCallParam("*/" + N_VFS + "/" + N_RESOURCES + "/" + N_COLLECTORS + "/" + N_COLLECTOR, 1, A_ORDER);
 
         // generic <param> parameter rules
-        digester.addCallMethod("*/" + I_CmsXmlConfiguration.N_PARAM, I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD, 2);
-        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
-        digester.addCallParam ("*/" +  I_CmsXmlConfiguration.N_PARAM, 1);         
-                      
+        digester.addCallMethod(
+            "*/" + I_CmsXmlConfiguration.N_PARAM,
+            I_CmsConfigurationParameterHandler.ADD_PARAMETER_METHOD,
+            2);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 0, I_CmsXmlConfiguration.A_NAME);
+        digester.addCallParam("*/" + I_CmsXmlConfiguration.N_PARAM, 1);
+
         // add rule for default files
         digester.addCallMethod("*/" + N_VFS + "/" + N_DEFAULTFILES + "/" + N_DEFAULTFILE, "addDefaultFile", 1);
         digester.addCallParam("*/" + N_VFS + "/" + N_DEFAULTFILES + "/" + N_DEFAULTFILE, 0, A_NAME);
 
         // add rules for file translations
-        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS + "/" + N_TRANSLATION, "addFileTranslation", 0);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, "setFileTranslationEnabled", 1);
-        digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, 0, A_ENABLED);        
-        
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS + "/" + N_TRANSLATION,
+            "addFileTranslation",
+            0);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS,
+            "setFileTranslationEnabled",
+            1);
+        digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FILETRANSLATIONS, 0, A_ENABLED);
+
         // add rules for file translations
-        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS + "/" + N_TRANSLATION, "addFolderTranslation", 0);
-        digester.addCallMethod("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, "setFolderTranslationEnabled", 1);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS + "/" + N_TRANSLATION,
+            "addFolderTranslation",
+            0);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS,
+            "setFolderTranslationEnabled",
+            1);
         digester.addCallParam("*/" + N_VFS + "/" + N_TRANSLATIONS + "/" + N_FOLDERTRANSLATIONS, 0, A_ENABLED);
 
         // XML content type manager creation rules
@@ -419,11 +506,17 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_WIDGETS + "/" + N_WIDGET, 1, A_ALIAS);
 
         // XML content schema type add rules
-        digester.addCallMethod("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, "addSchemaType", 2);
+        digester.addCallMethod(
+            "*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE,
+            "addSchemaType",
+            2);
         digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 0, A_CLASS);
-        digester.addCallParam("*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE, 1, A_DEFAULTWIDGET); 
+        digester.addCallParam(
+            "*/" + N_VFS + "/" + N_XMLCONTENT + "/" + N_SCHEMATYPES + "/" + N_SCHEMATYPE,
+            1,
+            A_DEFAULTWIDGET);
     }
-    
+
     /**
      * @see org.opencms.configuration.I_CmsXmlConfiguration#generateXml(org.dom4j.Element)
      */
@@ -472,9 +565,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         Iterator it = m_resourceManager.getRegisteredContentCollectors().iterator();
         while (it.hasNext()) {
             I_CmsResourceCollector collector = (I_CmsResourceCollector)it.next();
-            collectorsElement.addElement(N_COLLECTOR)
-                .addAttribute(A_CLASS, collector.getClass().getName())
-                .addAttribute(A_ORDER, String.valueOf(collector.getOrder()));
+            collectorsElement.addElement(N_COLLECTOR).addAttribute(A_CLASS, collector.getClass().getName()).addAttribute(
+                A_ORDER,
+                String.valueOf(collector.getOrder()));
         }
 
         // add default file names
@@ -497,9 +590,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         }
 
         // folder translation rules
-        Element folderTransElement = 
-            translationsElement.addElement(N_FOLDERTRANSLATIONS)
-                .addAttribute(A_ENABLED, new Boolean(m_folderTranslationEnabled).toString());        
+        Element folderTransElement = translationsElement.addElement(N_FOLDERTRANSLATIONS).addAttribute(
+            A_ENABLED,
+            new Boolean(m_folderTranslationEnabled).toString());
         it = m_folderTranslations.iterator();
         while (it.hasNext()) {
             folderTransElement.addElement(N_TRANSLATION).setText(it.next().toString());
@@ -526,10 +619,10 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         while (it.hasNext()) {
             I_CmsXmlSchemaType type = (I_CmsXmlSchemaType)it.next();
             I_CmsWidget widget = m_xmlContentTypeManager.getWidgetDefault(type.getTypeName());
-            xmlSchemaTypesElement.addElement(N_SCHEMATYPE)
-                .addAttribute(A_CLASS, type.getClass().getName())
-                .addAttribute(A_DEFAULTWIDGET, widget.getClass().getName());
-        }       
+            xmlSchemaTypesElement.addElement(N_SCHEMATYPE).addAttribute(A_CLASS, type.getClass().getName()).addAttribute(
+                A_DEFAULTWIDGET,
+                widget.getClass().getName());
+        }
 
         // return the vfs node
         return vfs;
@@ -609,7 +702,7 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     public void initializeFinished() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_CONFIG_FINISHED_0));
         }
     }
 
@@ -623,9 +716,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         m_fileTranslationEnabled = Boolean.valueOf(value).booleanValue();
         if (CmsLog.INIT.isInfoEnabled()) {
             if (m_fileTranslationEnabled) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_FILE_TRANSLATION_ENABLE_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_FILE_TRANSLATION_ENABLE_0));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_FILE_TRANSLATION_DISABLE_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_FILE_TRANSLATION_DISABLE_0));
             }
         }
     }
@@ -640,9 +733,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
         m_folderTranslationEnabled = Boolean.valueOf(value).booleanValue();
         if (CmsLog.INIT.isInfoEnabled()) {
             if (m_folderTranslationEnabled) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_FOLDER_TRANSLATION_ENABLE_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_FOLDER_TRANSLATION_ENABLE_0));
             } else {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_FOLDER_TRANSLATION_DISABLE_0));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_FOLDER_TRANSLATION_DISABLE_0));
             }
         }
     }
@@ -665,9 +758,9 @@ public class CmsVfsConfiguration extends A_CmsXmlConfiguration implements I_CmsX
     public void setXmlContentTypeManager(CmsXmlContentTypeManager manager) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_VFS_XML_CONTENT_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_VFS_XML_CONTENT_FINISHED_0));
         }
         m_xmlContentTypeManager = manager;
     }
-    
+
 }

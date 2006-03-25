@@ -31,12 +31,9 @@
 
 package org.opencms.workplace.tools.database;
 
-import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.workplace.CmsReport;
 import org.opencms.workplace.CmsWorkplaceSettings;
-
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.6 $ 
+ * @version $Revision: 1.6.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -150,9 +147,8 @@ public class CmsHtmlImportReport extends CmsReport {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            Locale locale = CmsFlexController.getCmsObject(request).getRequestContext().getLocale();
             // add the title for the dialog 
-            setParamTitle(Messages.get().key(locale, Messages.GUI_HTMLIMPORT_DIALOG_TITLE_0, null));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_HTMLIMPORT_DIALOG_TITLE_0));
         }
     }
 }

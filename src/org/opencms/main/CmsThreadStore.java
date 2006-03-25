@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsThreadStore.java,v $
- * Date   : $Date: 2006/03/13 15:45:25 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.13.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.13.2.2 $
+ * @version $Revision: 1.13.2.3 $
  * 
  * @since 6.0.0
  */
@@ -137,7 +137,7 @@ public class CmsThreadStore extends Thread {
                     if (thread.isDoomed()) {
                         doomed.add(key);
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.LOG_THREADSTORE_DOOMED_2,
                                 thread.getName(),
                                 thread.getUUID()));
@@ -154,7 +154,7 @@ public class CmsThreadStore extends Thread {
                 }
             } catch (Throwable t) {
                 // the Grim Reaper must not be stopped by any error 
-                LOG.error(Messages.get().key(Messages.LOG_THREADSTORE_CHECK_THREADS_ERROR_0), t);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_THREADS_ERROR_0), t);
             }
 
             // check the session manager for invalid sessions not removed for whatever reason
@@ -169,7 +169,7 @@ public class CmsThreadStore extends Thread {
                         sessionInfoManager.validateSessionInfos();
                     }
                 } catch (Throwable t) {
-                    LOG.error(Messages.get().key(Messages.LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0), t);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_THREADSTORE_CHECK_SESSIONS_ERROR_0), t);
                 }
             }
         }
@@ -200,7 +200,7 @@ public class CmsThreadStore extends Thread {
                 b.append(thread.getUUID());
                 b.append('\n');
             }
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_THREADSTORE_POOL_CONTENT_2,
                 new Integer(m_threads.size()),
                 b.toString()));

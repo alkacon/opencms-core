@@ -1,4 +1,8 @@
-<%@ page import="org.opencms.jsp.*, org.opencms.workplace.*, org.opencms.workplace.help.*, org.opencms.workplace.editors.*, org.opencms.editors.fckeditor.*" %><%
+<%@ page import="
+	org.opencms.jsp.*,
+	org.opencms.workplace.editors.*, 
+	org.opencms.editors.fckeditor.*
+"%><%
 
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsFCKEditor wp = new CmsFCKEditor(cms);
@@ -207,48 +211,48 @@ function createLink(linkInformation) {
 var exitCommand = function() { this.Name = 'Exit'; }
 exitCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 exitCommand.prototype.Execute = function() {
-	if (!FCK.IsDirty() || confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
-		execAction(FCK.LinkedField.form, '<%= CmsSimplePageEditor.EDITOR_EXIT %>','_top');
+	if (!FCK.IsDirty() || confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0)%>")) {
+		execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_EXIT %>','_top');
 	}
 }
 FCKCommands.RegisterCommand('oc-exit', new exitCommand());
-FCKToolbarItems.RegisterItem('oc-exit', new FCKToolbarButton('oc-exit','<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0) %>', null, null, true));
+FCKToolbarItems.RegisterItem('oc-exit', new FCKToolbarButton('oc-exit','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0) %>', null, null, true));
 
 // OpenCms publish button
 var saveActionCommand = function() { this.Name = 'SaveAction'; }
 saveActionCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 saveActionCommand.prototype.Execute = function() {
-	execAction(FCK.LinkedField.form, '<%= CmsSimplePageEditor.EDITOR_SAVEACTION %>','_top');
+	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVEACTION %>','_top');
 }
 FCKCommands.RegisterCommand('oc-publish', new saveActionCommand());
-FCKToolbarItems.RegisterItem('oc-publish', new FCKToolbarButton('oc-publish','<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0)  %>', null, null, true));
+FCKToolbarItems.RegisterItem('oc-publish', new FCKToolbarButton('oc-publish','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EXPLORER_CONTEXT_PUBLISH_0)  %>', null, null, true));
 
 // OpenCms save button
 var saveCommand = function() { this.Name = 'Save'; }
 saveCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 saveCommand.prototype.Execute = function() {
-	execAction(FCK.LinkedField.form, '<%= CmsSimplePageEditor.EDITOR_SAVE %>','_top');
+	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVE %>','_top');
 }
 FCKCommands.RegisterCommand('oc-save', new saveCommand());
-FCKToolbarItems.RegisterItem('oc-save', new FCKToolbarButton('oc-save','<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0) %>', null, null, true));
+FCKToolbarItems.RegisterItem('oc-save', new FCKToolbarButton('oc-save','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVE_0) %>', null, null, true));
 
 // OpenCms save and exit button
 var saveExitCommand = function() { this.Name = 'SaveExit'; }
 saveExitCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF; }
 saveExitCommand.prototype.Execute = function() {
-	execAction(FCK.LinkedField.form, '<%= CmsSimplePageEditor.EDITOR_SAVEEXIT %>','_top');
+	execAction(FCK.LinkedField.form, '<%= CmsEditor.EDITOR_SAVEEXIT %>','_top');
 }
 FCKCommands.RegisterCommand('oc-save_exit', new saveExitCommand());
-FCKToolbarItems.RegisterItem('oc-save_exit', new FCKToolbarButton('oc-save_exit','<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0) %>', null, null, true));
+FCKToolbarItems.RegisterItem('oc-save_exit', new FCKToolbarButton('oc-save_exit','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_SAVECLOSE_0) %>', null, null, true));
 
 // OpenCms link dialog button
 var linkCommand = function() { this.Name = 'OcmsLink'; }
 linkCommand.prototype.GetState = function() { return FCK_TRISTATE_OFF ; }
 linkCommand.prototype.Execute = function() { 
-    openLinkDialog("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
+    openLinkDialog("<%= wp.key(org.opencms.workplace.editors.Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0) %>");
 }
 FCKCommands.RegisterCommand('oc-link', new linkCommand());
-FCKToolbarItems.RegisterItem('oc-link', new FCKToolbarButton('oc-link','<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0) %>', null, null, true)); 
+FCKToolbarItems.RegisterItem('oc-link', new FCKToolbarButton('oc-link','<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_LINKTO_0) %>', null, null, true)); 
 
 // OpenCms help button
 var helpCommand = function() { this.Name = 'OcmsHelp'; }
@@ -257,7 +261,7 @@ helpCommand.prototype.Execute = function() {
     openOnlineHelp("/system/modules/org.opencms.editors.fckeditor/help/<%= wp.getLocale() %>/index.html");
 }
 FCKCommands.RegisterCommand('oc-help', new helpCommand());
-FCKToolbarItems.RegisterItem('oc-help', new FCKToolbarButton('oc-help','<%=  org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0) %>', null, null, true)); 
+FCKToolbarItems.RegisterItem('oc-help', new FCKToolbarButton('oc-help','<%=  wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_HELP_0) %>', null, null, true)); 
 
 
 // OpenCms gallery buttons

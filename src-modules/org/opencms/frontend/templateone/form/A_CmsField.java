@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/form/A_CmsField.java,v $
- * Date   : $Date: 2006/01/06 10:20:52 $
- * Version: $Revision: 1.3.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.3.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -48,11 +48,11 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Thomas Weckert
  * @author Jan Baudisch
- * @version $Revision: 1.3.2.1 $ 
+ * @version $Revision: 1.3.2.2 $ 
  * @since 6.0.0 
  */
 public abstract class A_CmsField implements I_CmsField {
-    
+
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsFormHandler.class);
 
@@ -70,24 +70,24 @@ public abstract class A_CmsField implements I_CmsField {
     public A_CmsField() {
 
         super();
-        
+
         m_items = new ArrayList();
         m_mandatory = false;
         m_value = "";
         m_validationExpression = "";
     }
-    
+
     /**
      * @see java.lang.Object#finalize()
      */
     protected void finalize() throws Throwable {
-        
+
         try {
-            
+
             if (m_items != null) {
                 m_items.clear();
             }
-            
+
             m_label = null;
             m_name = null;
             m_validationExpression = null;
@@ -95,7 +95,7 @@ public abstract class A_CmsField implements I_CmsField {
         } catch (Throwable t) {
             // ignore
         }
-        
+
         super.finalize();
     }
 
@@ -152,7 +152,8 @@ public abstract class A_CmsField implements I_CmsField {
      */
     public boolean needsItems() {
 
-        return (CmsCheckboxField.class.isAssignableFrom(getClass()) || CmsSelectionField.class.isAssignableFrom(getClass()) || CmsRadioButtonField.class.isAssignableFrom(getClass()));
+        return (CmsCheckboxField.class.isAssignableFrom(getClass())
+            || CmsSelectionField.class.isAssignableFrom(getClass()) || CmsRadioButtonField.class.isAssignableFrom(getClass()));
     }
 
     /**
@@ -221,105 +222,107 @@ public abstract class A_CmsField implements I_CmsField {
 
         m_value = value;
     }
-    
+
     /**
      * Validates the constraints if this field is mandatory.<p>
      * 
      * @return {@link CmsFormHandler#ERROR_MANDATORY} if a constraint is violated
      */
     protected String validateConstraints() {
-        
+
         if (isMandatory()) {
-            
+
             // check if the field has a value
             if (needsItems()) {
-                
+
                 // check if at least one item has been selected
                 Iterator k = m_items.iterator();
                 boolean isSelected = false;
                 while (k.hasNext()) {
-                    
+
                     CmsFieldItem currentItem = (CmsFieldItem)k.next();
                     if (currentItem.isSelected()) {
                         isSelected = true;
                         continue;
                     }
                 }
-                
+
                 if (!isSelected) {
                     // no item has been selected, create an error message
                     return CmsFormHandler.ERROR_MANDATORY;
                 }
             } else {
-                
+
                 // check if the field has been filled out
                 if (CmsStringUtil.isEmpty(m_value)) {
                     return CmsFormHandler.ERROR_MANDATORY;
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * Validates the input value of this field.<p>
      * 
      * @return {@link CmsFormHandler#ERROR_VALIDATION} if validation of the input value failed
      */
     protected String validateValue() {
-        
+
         // validate non-empty values with given regular expression
-        if (CmsStringUtil.isNotEmpty(m_value) /*&& !needsItems()*/ && !"".equals(m_validationExpression)) {
-            
+        if (CmsStringUtil.isNotEmpty(m_value) && (!"".equals(m_validationExpression))) {
+
             Pattern pattern = null;
             try {
-                
+
                 pattern = Pattern.compile(m_validationExpression);
                 if (!pattern.matcher(m_value).matches()) {
                     return CmsFormHandler.ERROR_VALIDATION;
                 }
             } catch (PatternSyntaxException e) {
-                
+
                 // syntax error in regular expression, log to opencms.log
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_ERR_PATTERN_SYNTAX_0), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_PATTERN_SYNTAX_0), e);
                 }
             }
         }
-        
+
         return null;
     }
-    
+
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#validate(CmsFormHandler)
      */
     public String validate(CmsFormHandler formHandler) {
-        
+
         // validate the constraints
         String validationError = validateConstraints();
         if (CmsStringUtil.isEmpty(validationError)) {
-            
+
             // no constraint error- validate the input value
             validationError = validateValue();
         }
-        
+
         return validationError;
     }
-    
+
     /**
      * Sets the error message if validation failed.<p>
      * 
      * @param errorMessage the error message if validation failed
      */
     protected void setErrorMessage(String errorMessage) {
+
         m_errorMessage = errorMessage;
     }
-    
+
     /**
      * @see org.opencms.frontend.templateone.form.I_CmsField#getErrorMessage()
      */
     public String getErrorMessage() {
+
         return m_errorMessage;
     }
 
@@ -329,7 +332,6 @@ public abstract class A_CmsField implements I_CmsField {
      */
     public String toString() {
 
-        
         String result;
         if (needsItems()) {
             // check which item has been selected
@@ -351,7 +353,7 @@ public abstract class A_CmsField implements I_CmsField {
             // for other field types, append value
             result = getValue();
         }
-        
+
         return result;
     }
 }

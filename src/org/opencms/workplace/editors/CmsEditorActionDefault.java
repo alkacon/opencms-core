@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsEditorActionDefault.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.18.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.18.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.18.2.2 $ 
+ * @version $Revision: 1.18.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -100,8 +100,8 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
         params.append("&action=");
         params.append(CmsDialog.DIALOG_CONFIRMED);
         params.append("&directpublish=true&publishsiblings=true");
-        params.append("&title="); 
-        params.append(CmsEncoder.escapeWBlanks(Messages.get().key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0)
+        params.append("&title=");
+        params.append(CmsEncoder.escapeWBlanks(editor.key(Messages.GUI_MESSAGEBOX_TITLE_PUBLISHRESOURCE_0)
             + ": "
             + editor.getParamResource(), CmsEncoder.ENCODING_UTF_8));
         params.append("&").append(CmsDialog.PARAM_REDIRECT).append("=").append(CmsStringUtil.TRUE);
@@ -210,7 +210,7 @@ public class CmsEditorActionDefault implements I_CmsEditorActionHandler {
 
         } catch (CmsException e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_CALC_EDIT_MODE_FAILED_1, filename), e);
             }
             // something went wrong - so the resource seems not to be editable
             return DIRECT_EDIT_MODE_INACTIVE;

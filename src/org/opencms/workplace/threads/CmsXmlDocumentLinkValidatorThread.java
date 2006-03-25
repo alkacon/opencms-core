@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/Attic/CmsXmlDocumentLinkValidatorThread.java,v $
- * Date   : $Date: 2005/10/28 12:07:37 $
- * Version: $Revision: 1.5.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.5.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -42,7 +42,7 @@ import org.apache.commons.logging.Log;
 /**
  * A report thread for the HTML link validator.<p>
  * 
- * @version $Revision: 1.5.2.1 $ 
+ * @version $Revision: 1.5.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -76,8 +76,7 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
      */
     public CmsXmlDocumentLinkValidatorThread(CmsObject cms) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
+        super(cms, Messages.get().getBundle().key(
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
             new Object[] {cms.getRequestContext().currentProject().getName()}));
 
@@ -106,13 +105,9 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
      * @param publishList the list of resources which will be directly published
      * @param settings the current user's workplace settings
      */
-    public CmsXmlDocumentLinkValidatorThread(
-        CmsObject cms,
-        CmsPublishList publishList,
-        CmsWorkplaceSettings settings) {
+    public CmsXmlDocumentLinkValidatorThread(CmsObject cms, CmsPublishList publishList, CmsWorkplaceSettings settings) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
+        super(cms, Messages.get().getBundle().key(
             Messages.GUI_HTML_LINK_VALIDATOR_THREAD_NAME_1,
             new Object[] {cms.getRequestContext().currentProject().getName()}));
         m_publishList = publishList;
@@ -160,8 +155,7 @@ public class CmsXmlDocumentLinkValidatorThread extends A_CmsReportThread {
             }
 
             getReport().println(e);
-            LOG.error(Messages.get().key(Messages.ERR_LINK_VALIDATION_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.ERR_LINK_VALIDATION_0), e);
         }
     }
-
 }

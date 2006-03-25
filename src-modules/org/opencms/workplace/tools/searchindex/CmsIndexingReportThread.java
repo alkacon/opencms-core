@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsIndexingReportThread.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.10.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.10.2.2 $
  *
  * This program is part of the Alkacon OpenCms Software library.
  *
@@ -60,7 +60,7 @@ import java.util.List;
  * 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.10.2.1 $ 
+ * @version $Revision: 1.10.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -80,11 +80,10 @@ public class CmsIndexingReportThread extends A_CmsReportThread {
      */
     public CmsIndexingReportThread(CmsObject cms, List indexNames) {
 
-        super(cms, Messages.get().key(cms.getRequestContext().getLocale(), Messages.GUI_INDEXING_THREAD_NAME_0, null));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_INDEXING_THREAD_NAME_0));
         initHtmlReport(cms.getRequestContext().getLocale());
 
         m_indexNames = indexNames;
-
     }
 
     /**

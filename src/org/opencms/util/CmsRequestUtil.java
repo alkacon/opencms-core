@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsRequestUtil.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.15.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.15.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.15.2.8 $ 
+ * @version $Revision: 1.15.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -536,7 +536,7 @@ public final class CmsRequestUtil {
                 result = items;
             }
         } catch (FileUploadException e) {
-            LOG.error(Messages.get().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSE_MULIPART_REQ_FAILED_0), e);
         }
         return result;
     }
@@ -565,7 +565,7 @@ public final class CmsRequestUtil {
                 try {
                     value = item.getString(encoding);
                 } catch (UnsupportedEncodingException e) {
-                    LOG.error(Messages.get().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_ENC_MULTIPART_REQ_ERROR_0), e);
                     value = item.getString();
                 }
                 parameterMap.put(name, new String[] {value});

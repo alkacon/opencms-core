@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/xml/CmsXmlUtils.java,v $
- * Date   : $Date: 2006/03/24 09:29:33 $
- * Version: $Revision: 1.20.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.20.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.xml.sax.helpers.XMLReaderFactory;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.20.2.3 $ 
+ * @version $Revision: 1.20.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -633,7 +633,7 @@ public final class CmsXmlUtils {
         } catch (SAXException e) {
             // xerces parser not available - no schema validation possible
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_VALIDATION_INIT_XERXES_SAX_READER_FAILED_0), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_VALIDATION_INIT_XERXES_SAX_READER_FAILED_0), e);
             }
             // no validation of the content is possible
             return;
@@ -649,14 +649,14 @@ public final class CmsXmlUtils {
         } catch (SAXNotRecognizedException e) {
             // should not happen as Xerces 2 support this feature
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SAX_READER_FEATURE_NOT_RECOGNIZED_0), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_SAX_READER_FEATURE_NOT_RECOGNIZED_0), e);
             }
             // no validation of the content is possible
             return;
         } catch (SAXNotSupportedException e) {
             // should not happen as Xerces 2 support this feature
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SAX_READER_FEATURE_NOT_SUPPORTED_0), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_SAX_READER_FEATURE_NOT_SUPPORTED_0), e);
             }
             // no validation of the content is possible
             return;
@@ -676,13 +676,13 @@ public final class CmsXmlUtils {
         } catch (IOException e) {
             // should not happen since we read form a byte array
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_READ_XML_FROM_BYTE_ARR_FAILED_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_READ_XML_FROM_BYTE_ARR_FAILED_0), e);
             }
             return;
         } catch (SAXException e) {
             // should not happen since all errors are handled in the XML error handler
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_PARSE_SAX_EXC_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSE_SAX_EXC_0), e);
             }
             return;
         }
@@ -699,7 +699,7 @@ public final class CmsXmlUtils {
             } catch (IOException e) {
                 // should not happen since we write to a StringWriter
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_STRINGWRITER_IO_EXC_0), e);
+                    LOG.error(Messages.get().getBundle().key(Messages.LOG_STRINGWRITER_IO_EXC_0), e);
                 }
             }
             // generate String from XML for display of document in error message

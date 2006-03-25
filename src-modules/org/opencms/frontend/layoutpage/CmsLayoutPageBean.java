@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/layoutpage/CmsLayoutPageBean.java,v $
- * Date   : $Date: 2006/02/27 13:18:53 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.9 
  */
@@ -313,7 +313,7 @@ public class CmsLayoutPageBean extends CmsJspActionElement {
         } catch (CmsException e) {
             // log error if reading resource fails
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.LOG_ERR_VFS_RESOURCE_1, getRequestContext().getUri()));
+                LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_VFS_RESOURCE_1, getRequestContext().getUri()));
             }
         }
         // initialize pattern Map

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/CmsSelectWidgetOption.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.6.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -90,7 +90,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6.2.2 $ 
+ * @version $Revision: 1.6.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -322,7 +322,9 @@ public class CmsSelectWidgetOption {
                     // shortcut syntax, value key must be at first position
                     if ((posDefault == 0) || (posOption == 0) || (posHelp == 0)) {
                         // malformed part - no value given
-                        throw new CmsWidgetException(Messages.get().container(Messages.ERR_MALFORMED_SELECT_OPTIONS_1, input));
+                        throw new CmsWidgetException(Messages.get().container(
+                            Messages.ERR_MALFORMED_SELECT_OPTIONS_1,
+                            input));
                     }
                     posValue = 0;
                     shortValue = true;
@@ -433,9 +435,9 @@ public class CmsSelectWidgetOption {
 
                 result.add(new CmsSelectWidgetOption(value, isDefault, option, help));
 
-           } catch (Exception e) {
+            } catch (Exception e) {
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.ERR_MALFORMED_SELECT_OPTIONS_1, input));
+                    LOG.info(Messages.get().getBundle().key(Messages.ERR_MALFORMED_SELECT_OPTIONS_1, input));
                 }
             }
         }

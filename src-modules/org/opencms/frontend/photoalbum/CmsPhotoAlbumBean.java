@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/photoalbum/CmsPhotoAlbumBean.java,v $
- * Date   : $Date: 2006/02/13 16:32:17 $
- * Version: $Revision: 1.1.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.1.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -36,6 +36,7 @@ import org.opencms.file.CmsResource;
 import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.types.CmsResourceTypeImage;
 import org.opencms.i18n.CmsEncoder;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -44,7 +45,6 @@ import org.opencms.util.CmsStringUtil;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.2 $ 
+ * @version $Revision: 1.1.2.3 $ 
  * 
  * @since 6.1.3 
  */
@@ -107,6 +107,9 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
 
     /** The display action to determine the view to generate. */
     private int m_displayAction;
+
+    /** The messages to use. */
+    private CmsMessages m_messages;
 
     /** The number of pages to display for the thumbnail view. */
     private int m_pageCount;
@@ -180,13 +183,14 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                 // create empty photo list
                 m_albumPhotos = new ArrayList(0);
                 // log error
-                String err = Messages.get().key(
-                    Messages.LOG_ERR_IMAGEFOLDER_NOT_FOUND_1,
-                    getConfiguration().getVfsPathGallery());
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(err);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_ERR_IMAGEFOLDER_NOT_FOUND_1,
+                        getConfiguration().getVfsPathGallery()));
                 }
-                addConfigError(err);
+                addConfigError(m_messages.key(
+                    Messages.LOG_ERR_IMAGEFOLDER_NOT_FOUND_1,
+                    getConfiguration().getVfsPathGallery()));
             }
         }
         return m_albumPhotos;
@@ -259,6 +263,8 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
      */
     public void init(String configUri) {
 
+        // set messages
+        m_messages = Messages.get().getBundle(getRequestContext().getLocale());
         // initialize empty list of configuration errors
         setConfigErrors(new ArrayList());
         // initialize the photo album CSS styles
@@ -354,7 +360,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
         if (!getRequestContext().currentProject().isOnlineProject() && getConfigErrors().size() > 0) {
             // configuration error(s) found, show them in offline projects
             getJspContext().getOut().print("<h1>");
-            getJspContext().getOut().print(Messages.get().key(Messages.GUI_CONFIG_ERRORS_HEADLINE_0));
+            getJspContext().getOut().print(m_messages.key(Messages.GUI_CONFIG_ERRORS_HEADLINE_0));
             getJspContext().getOut().print("</h1>");
             getJspContext().getOut().print("<p>");
             // loop error messages
@@ -385,7 +391,6 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
 
         StringBuffer result = new StringBuffer(1024);
         StringBuffer link = new StringBuffer(256);
-        Locale locale = getRequestContext().getLocale();
         result.append("<tr>\n\t<td");
         result.append(getStyle().getClassNavigation());
         result.append(getConfiguration().getStyleAlignAttribute(getConfiguration().getAlignNavigation()));
@@ -402,15 +407,15 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             link.append(PARAM_IMAGE).append("=").append(photoIndex - 1);
             result.append(link(link.toString()));
             result.append("\">");
-            result.append(Messages.get().key(locale, Messages.GUI_NAVIGATION_BACK_0));
+            result.append(m_messages.key(Messages.GUI_NAVIGATION_BACK_0));
             result.append("</a>");
             result.append(" - ");
         } else {
-            result.append(fillNavSpaces(Messages.get().key(locale, Messages.GUI_NAVIGATION_BACK_0) + " - "));
+            result.append(fillNavSpaces(m_messages.key(Messages.GUI_NAVIGATION_BACK_0) + " - "));
         }
         // build the image index information
         Object[] args = new Object[] {new Integer(photoIndex + 1), new Integer(getAlbumPhotos().size())};
-        result.append(Messages.get().key(locale, Messages.GUI_DETAIL_IMAGEINFO_2, args));
+        result.append(m_messages.key(Messages.GUI_DETAIL_IMAGEINFO_2, args));
         if (photoIndex < (getAlbumPhotos().size() - 1)) {
             // build the "Next" link
             result.append(" - ");
@@ -425,10 +430,10 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             link.append(PARAM_IMAGE).append("=").append(photoIndex + 1);
             result.append(link(link.toString()));
             result.append("\">");
-            result.append(Messages.get().key(locale, Messages.GUI_NAVIGATION_NEXT_0));
+            result.append(m_messages.key(Messages.GUI_NAVIGATION_NEXT_0));
             result.append("</a>");
         } else {
-            result.append(fillNavSpaces(" - " + Messages.get().key(locale, Messages.GUI_NAVIGATION_NEXT_0)));
+            result.append(fillNavSpaces(" - " + m_messages.key(Messages.GUI_NAVIGATION_NEXT_0)));
         }
         result.append("<br>");
 
@@ -449,7 +454,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
         link.append(PARAM_PAGE).append("=").append(thumbPage);
         result.append(link(link.toString()));
         result.append("\">");
-        result.append(Messages.get().key(locale, Messages.GUI_NAVIGATION_OVERVIEW_0));
+        result.append(m_messages.key(Messages.GUI_NAVIGATION_OVERVIEW_0));
         result.append("</a>");
 
         // build the link to the original image if configured
@@ -459,7 +464,7 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             result.append(" href=\"");
             result.append(link(getCmsObject().getSitePath(photo)));
             result.append("\" target=\"originalphoto\">");
-            result.append(Messages.get().key(locale, Messages.GUI_NAVIGATION_ORIGINAL_0));
+            result.append(m_messages.key(Messages.GUI_NAVIGATION_ORIGINAL_0));
             result.append("</a>");
         }
         result.append("</td>\n</tr>\n");
@@ -491,7 +496,6 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
             result.append(getConfiguration().getStyleAlignAttribute(getConfiguration().getAlignNavigation()));
             result.append(">");
             StringBuffer link = new StringBuffer(256);
-            Locale locale = getRequestContext().getLocale();
             if (getCurrentPage() > 1) {
                 // build the "Back" link
                 result.append("<a");
@@ -504,15 +508,15 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                 link.append(PARAM_PAGE).append("=").append(getCurrentPage() - 1);
                 result.append(link(link.toString()));
                 result.append("\">");
-                result.append(Messages.get().key(locale, Messages.GUI_NAVIGATION_BACK_0));
+                result.append(m_messages.key(Messages.GUI_NAVIGATION_BACK_0));
                 result.append("</a>");
                 result.append(" - ");
             } else {
-                result.append(fillNavSpaces(Messages.get().key(locale, Messages.GUI_NAVIGATION_BACK_0) + " - "));
+                result.append(fillNavSpaces(m_messages.key(Messages.GUI_NAVIGATION_BACK_0) + " - "));
             }
             // build the page index information
-            Object[] args = new Object[] {new Integer(getCurrentPage()), new Integer(getPageCount())};
-            result.append(Messages.get().key(locale, Messages.GUI_THUMB_PAGEINFO_2, args));
+            result.append(m_messages.key(Messages.GUI_THUMB_PAGEINFO_2, new Integer(getCurrentPage()), new Integer(
+                getPageCount())));
             if (getCurrentPage() < getPageCount()) {
                 // build the "Next" link
                 result.append(" - ");
@@ -527,10 +531,10 @@ public class CmsPhotoAlbumBean extends CmsJspActionElement {
                 link.append(PARAM_PAGE).append("=").append(getCurrentPage() + 1);
                 result.append(link(link.toString()));
                 result.append("\">");
-                result.append(Messages.get().key(locale, Messages.GUI_NAVIGATION_NEXT_0));
+                result.append(m_messages.key(Messages.GUI_NAVIGATION_NEXT_0));
                 result.append("</a>");
             } else {
-                result.append(fillNavSpaces(" - " + Messages.get().key(locale, Messages.GUI_NAVIGATION_NEXT_0)));
+                result.append(fillNavSpaces(" - " + m_messages.key(Messages.GUI_NAVIGATION_NEXT_0)));
             }
             result.append("</td>\n</tr>\n");
         }

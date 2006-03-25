@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsXmlPageLoader.java,v $
- * Date   : $Date: 2005/11/01 23:43:33 $
- * Version: $Revision: 1.50.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.50.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -46,7 +46,7 @@ import javax.servlet.ServletRequest;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  * 
- * @version $Revision: 1.50.2.2 $ 
+ * @version $Revision: 1.50.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -71,7 +71,7 @@ public class CmsXmlPageLoader extends A_CmsXmlDocumentLoader {
      */
     public String getResourceLoaderInfo() {
 
-        return Messages.get().key(Messages.GUI_LOADER_XMLPAGE_DEFAULT_DESC_0);
+        return Messages.get().getBundle().key(Messages.GUI_LOADER_XMLPAGE_DEFAULT_DESC_0);
     }
 
     /**

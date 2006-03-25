@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsModuleDeleteThread.java,v $
- * Date   : $Date: 2005/12/13 17:11:49 $
- * Version: $Revision: 1.8.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.8.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.8.2.4 $ 
+ * @version $Revision: 1.8.2.5 $ 
  * 
  * @since 6.0.0 
  */
@@ -74,10 +74,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
      */
     public CmsModuleDeleteThread(CmsObject cms, List moduleNames, boolean replaceMode, boolean old) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_DELETE_MODULE_THREAD_NAME_1,
-            new Object[] {moduleNames}));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_DELETE_MODULE_THREAD_NAME_1, moduleNames));
         m_moduleNames = moduleNames;
         m_replaceMode = replaceMode;
         if (old) {
@@ -86,9 +83,8 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             initHtmlReport(cms.getRequestContext().getLocale());
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_CONSTRUCTED_0));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_CONSTRUCTED_0));
         }
-
     }
 
     /**
@@ -107,7 +103,7 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
         I_CmsReport report = getReport();
         try {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_STARTED_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_STARTED_0));
             }
             if (!m_replaceMode) {
                 OpenCms.getModuleManager().checkModuleSelectionList(m_moduleNames, null, true);
@@ -126,11 +122,11 @@ public class CmsModuleDeleteThread extends A_CmsReportThread {
             }
 
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_DELETE_THREAD_FINISHED_0));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_DELETE_THREAD_FINISHED_0));
             }
         } catch (Exception e) {
             report.println(e);
-            LOG.error(Messages.get().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_MODULE_DELETE_FAILED_1, m_moduleNames), e);
         }
     }
 }

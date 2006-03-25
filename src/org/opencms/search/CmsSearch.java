@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearch.java,v $
- * Date   : $Date: 2006/03/20 16:54:09 $
- * Version: $Revision: 1.39.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.39.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.lucene.search.Sort;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.39.2.8 $ 
+ * @version $Revision: 1.39.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -471,7 +471,7 @@ public class CmsSearch implements Cloneable {
             } catch (Exception exc) {
 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_SEARCHING_FAILED_0), exc);
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_SEARCHING_FAILED_0), exc);
                 }
 
                 m_result = null;
@@ -650,7 +650,7 @@ public class CmsSearch implements Cloneable {
                 m_parameters.setSearchIndex(index);
             } catch (Exception exc) {
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_INDEX_ACCESS_FAILED_1, indexName), exc);
                 }
                 m_lastException = exc;
             }
@@ -706,7 +706,7 @@ public class CmsSearch implements Cloneable {
      */
     public void setQueryLength(int length) {
 
-       m_parameters.setQueryLength(length);
+        m_parameters.setQueryLength(length);
     }
 
     /**

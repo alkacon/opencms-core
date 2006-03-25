@@ -11,7 +11,7 @@
 <head>
 <meta HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=<%= wp.getEncoding() %>">
 <link rel="stylesheet" type="text/css" href="<%= wp.getStyleUri(wp.getJsp(),"workplace.css")%>">
-<title><%= org.opencms.workplace.explorer.Messages.get().key(wp.getLocale(), org.opencms.workplace.explorer.Messages.GUI_TITLE_EXPLORERTREE_0) %></title>
+<title><%= org.opencms.workplace.explorer.Messages.get().getBundle(wp.getLocale()).key(org.opencms.workplace.explorer.Messages.GUI_TITLE_EXPLORERTREE_0) %></title>
 
 <script type="text/javascript">
 <!--

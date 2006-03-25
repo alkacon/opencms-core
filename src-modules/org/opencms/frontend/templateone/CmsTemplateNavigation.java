@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/frontend/templateone/CmsTemplateNavigation.java,v $
- * Date   : $Date: 2006/03/16 10:02:52 $
- * Version: $Revision: 1.28.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.28.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -79,7 +79,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.28.2.8 $ 
+ * @version $Revision: 1.28.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -366,7 +366,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     nav.getResourceName(),
                     getHeadNavItemDefaultStringValue());
             } else if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(
+                LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_NAVIGATION_CONFIG_ERR_2,
                     nav.getResourceName(),
                     getRequestContext().getUri()));
@@ -527,7 +527,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                         foldernav.getResourceName(),
                         getHeadNavItemDefaultStringValue());
                 } else if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_NAVIGATION_CONFIG_ERR_2,
                         foldernav.getResourceName(),
                         getRequestContext().getUri()));
@@ -905,7 +905,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                 if (getCmsObject().existsResource(resName)) {
                     showItemProperty = property(PROPERTY_HEADNAV_USE, resName, getHeadNavItemDefaultStringValue());
                 } else if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_NAVIGATION_CONFIG_ERR_2,
                         resName,
                         getRequestContext().getUri()));
@@ -1199,7 +1199,7 @@ public class CmsTemplateNavigation extends CmsTemplateBase {
                     nav.getResourceName(),
                     getHeadNavItemDefaultStringValue());
             } else if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(
+                LOG.warn(Messages.get().getBundle().key(
                     Messages.LOG_NAVIGATION_CONFIG_ERR_2,
                     nav.getResourceName(),
                     getRequestContext().getUri()));

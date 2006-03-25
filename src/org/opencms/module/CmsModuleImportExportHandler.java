@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/module/CmsModuleImportExportHandler.java,v $
- * Date   : $Date: 2006/01/23 11:25:01 $
- * Version: $Revision: 1.31.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.31.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -75,7 +75,7 @@ import org.xml.sax.SAXException;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.31.2.5 $ 
+ * @version $Revision: 1.31.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
     public CmsModuleImportExportHandler() {
 
         super();
-        m_description = org.opencms.importexport.Messages.get().key(
+        m_description = org.opencms.importexport.Messages.get().getBundle().key(
             org.opencms.importexport.Messages.GUI_CMSIMPORTHANDLER_DEFAULT_DESC_0);
     }
 
@@ -316,19 +316,16 @@ public class CmsModuleImportExportHandler implements I_CmsImportExportHandler {
 
                 try {
                     // try to read a (leftover) module import project
-                    importProject = cms.readProject(Messages.get().key(
-                        cms.getRequestContext().getLocale(),
+                    importProject = cms.readProject(Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                         Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
                         new Object[] {modulePackageName}));
                 } catch (CmsException e) {
                     // create a Project to import the module
                     importProject = cms.createProject(
-                        Messages.get().key(
-                            cms.getRequestContext().getLocale(),
+                        Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                             Messages.GUI_IMPORT_MODULE_PROJECT_NAME_1,
                             new Object[] {modulePackageName}),
-                        Messages.get().key(
-                            cms.getRequestContext().getLocale(),
+                        Messages.get().getBundle(cms.getRequestContext().getLocale()).key(
                             Messages.GUI_IMPORT_MODULE_PROJECT_DESC_1,
                             new Object[] {modulePackageName}),
                         OpenCms.getDefaultUsers().getGroupAdministrators(),

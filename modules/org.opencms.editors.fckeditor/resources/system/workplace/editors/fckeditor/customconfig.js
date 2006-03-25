@@ -1,4 +1,11 @@
-<%@ page import="java.util.*, org.opencms.jsp.*, org.opencms.main.*, org.opencms.util.*, org.opencms.workplace.editors.*, org.opencms.editors.fckeditor.*" %><%
+<%@ page import="
+	java.util.*, 
+	org.opencms.jsp.*, 
+	org.opencms.main.*, 
+	org.opencms.util.*, 
+	org.opencms.workplace.editors.*, 
+	org.opencms.editors.fckeditor.*
+"%><%
 
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsFCKEditor wp = new CmsFCKEditor(cms);
@@ -7,8 +14,6 @@ cms.getResponse().setHeader(CmsRequestUtil.HEADER_CACHE_CONTROL, "no-cache");
 
 CmsEditorDisplayOptions options = OpenCms.getWorkplaceManager().getEditorDisplayOptions();
 Properties displayOptions = options.getDisplayOptions(cms);
-
-int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
 // get editor configuration object from session, because request parameters do not work
 CmsFCKEditorConfiguration extConf = CmsFCKEditorConfiguration.getConfiguration(session);

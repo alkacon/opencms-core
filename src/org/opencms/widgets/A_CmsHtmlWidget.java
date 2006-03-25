@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/widgets/A_CmsHtmlWidget.java,v $
- * Date   : $Date: 2006/03/23 08:43:06 $
- * Version: $Revision: 1.1.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.1.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.Map;
  *
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.5 $ 
+ * @version $Revision: 1.1.2.6 $ 
  * 
  * @since 6.0.1 
  */
@@ -169,13 +169,13 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
 
         // generate button row start HTML
         result.append(buildOpenCmsButtonRow(CmsWorkplace.HTML_START, widgetDialog));
-
+        
         // build the link buttons
         if (getHtmlWidgetOption().showLinkDialog()) {
             result.append(widgetDialog.button("javascript:setActiveEditor('"
                 + paramId
                 + "');openLinkDialog('"
-                + Messages.get().key(Messages.GUI_BUTTON_LINKTO_0)
+                + Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.GUI_BUTTON_LINKTO_0)
                 + "');", null, "link", "button.linkto", widgetDialog.getButtonStyle()));
             buttonsActive = true;
         }
@@ -183,7 +183,7 @@ public abstract class A_CmsHtmlWidget extends A_CmsWidget {
             result.append(widgetDialog.button("javascript:setActiveEditor('"
                 + paramId
                 + "');openAnchorDialog('"
-                + Messages.get().key(Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0)
+                + Messages.get().getBundle(widgetDialog.getLocale()).key(Messages.ERR_EDITOR_MESSAGE_NOSELECTION_0)
                 + "');", null, "anchor", Messages.GUI_BUTTON_ANCHOR_0, widgetDialog.getButtonStyle()));
             buttonsActive = true;
         }

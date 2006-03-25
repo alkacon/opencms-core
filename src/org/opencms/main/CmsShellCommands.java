@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/main/CmsShellCommands.java,v $
- * Date   : $Date: 2006/03/24 16:00:33 $
- * Version: $Revision: 1.80.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.80.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,7 +33,6 @@ package org.opencms.main;
 
 import org.opencms.db.CmsDbEntryNotFoundException;
 import org.opencms.db.CmsLoginMessage;
-import org.opencms.db.CmsUserSettings;
 import org.opencms.file.CmsFile;
 import org.opencms.file.CmsGroup;
 import org.opencms.file.CmsObject;
@@ -44,6 +43,7 @@ import org.opencms.file.CmsResourceFilter;
 import org.opencms.file.CmsUser;
 import org.opencms.file.types.CmsResourceTypeFolder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.importexport.CmsVfsImportExportHandler;
 import org.opencms.module.CmsModule;
 import org.opencms.module.CmsModuleImportExportHandler;
@@ -78,7 +78,7 @@ import java.util.StringTokenizer;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.80.2.5 $ 
+ * @version $Revision: 1.80.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,10 +137,7 @@ class CmsShellCommands implements I_CmsShellCommands {
             throw new CmsIllegalArgumentException(Messages.get().container(Messages.ERR_NOT_A_FOLDER_1, resolvedTarget));
         }
         m_cms.getRequestContext().setUri(resolvedTarget);
-        System.out.println('\n' + Messages.get().key(
-            m_shell.getLocale(),
-            Messages.GUI_SHELL_CURRENT_FOLDER_1,
-            new Object[] {resolvedTarget}));
+        System.out.println('\n' + getMessages().key(Messages.GUI_SHELL_CURRENT_FOLDER_1, new Object[] {resolvedTarget}));
         System.out.println();
     }
 
@@ -376,9 +373,9 @@ class CmsShellCommands implements I_CmsShellCommands {
         boolean b = "on".equalsIgnoreCase(echo.trim());
         m_shell.setEcho(b);
         if (b) {
-            System.out.println(Messages.get().key(Messages.GUI_SHELL_ECHO_ON_0));
+            System.out.println(getMessages().key(Messages.GUI_SHELL_ECHO_ON_0));
         } else {
-            System.out.println(Messages.get().key(Messages.GUI_SHELL_ECHO_OFF_0));
+            System.out.println(getMessages().key(Messages.GUI_SHELL_ECHO_OFF_0));
         }
     }
 
@@ -444,8 +441,7 @@ class CmsShellCommands implements I_CmsShellCommands {
         moduleExportHandler.setFileName(filename);
         moduleExportHandler.setAdditionalResources(resources);
         moduleExportHandler.setModuleName(module.getName().replace('\\', '/'));
-        moduleExportHandler.setDescription(Messages.get().key(
-            m_shell.getLocale(),
+        moduleExportHandler.setDescription(getMessages().key(
             Messages.GUI_SHELL_IMPORTEXPORT_MODULE_HANDLER_NAME_1,
             new Object[] {moduleExportHandler.getModuleName()}));
 
@@ -553,7 +549,7 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void getLocales() {
 
-        System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LOCALES_AVAILABLE_0, null));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_LOCALES_AVAILABLE_0));
         Locale[] locales = Locale.getAvailableLocales();
         for (int i = locales.length - 1; i >= 0; i--) {
             System.out.println("  \"" + locales[i].toString() + "\"");
@@ -565,12 +561,11 @@ class CmsShellCommands implements I_CmsShellCommands {
      */
     public void help() {
 
-        Locale locale = m_shell.getLocale();
         System.out.println();
-        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP1_0, null));
-        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP2_0, null));
-        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP3_0, null));
-        System.out.println(Messages.get().key(locale, Messages.GUI_SHELL_HELP4_0, null));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP1_0));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP2_0));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP3_0));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_HELP4_0));
         System.out.println();
     }
 
@@ -661,7 +656,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         CmsProject project = m_cms.createProject(
             "SystemUpdate",
-            Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0, null),
+            getMessages().key(Messages.GUI_SHELL_IMPORT_TEMP_PROJECT_NAME_0),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             OpenCms.getDefaultUsers().getGroupAdministrators(),
             CmsProject.PROJECT_TYPE_TEMPORARY);
@@ -694,11 +689,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void listModules() throws Exception {
 
         Set modules = OpenCms.getModuleManager().getModuleNames();
-        System.out.println("\n"
-            + Messages.get().key(
-                m_shell.getLocale(),
-                Messages.GUI_SHELL_LIST_MODULES_1,
-                new Object[] {new Integer(modules.size())}));
+        System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LIST_MODULES_1, new Integer(modules.size())));
         Iterator i = modules.iterator();
         while (i.hasNext()) {
             String moduleName = (String)i.next();
@@ -720,17 +711,14 @@ class CmsShellCommands implements I_CmsShellCommands {
             m_cms.loginUser(username, password);
             // reset the settings, this will switch the startup site root etc.
             m_shell.initSettings();
-            System.out.println(Messages.get().key(
-                m_shell.getLocale(),
-                Messages.GUI_SHELL_LOGIN_1,
-                new Object[] {whoami().getName()}));
+            System.out.println(getMessages().key(Messages.GUI_SHELL_LOGIN_1, whoami().getName()));
             // output the login message if required
             CmsLoginMessage message = OpenCms.getLoginManager().getLoginMessage();
             if ((message != null) && (message.isActive())) {
                 System.out.println(message.getMessage());
             }
         } catch (Exception exc) {
-            System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_LOGIN_FAILED_0, null));
+            System.out.println(getMessages().key(Messages.GUI_SHELL_LOGIN_FAILED_0));
         }
     }
 
@@ -744,11 +732,7 @@ class CmsShellCommands implements I_CmsShellCommands {
 
         String folder = CmsResource.getFolderPath(m_cms.getRequestContext().getUri());
         List resources = m_cms.getResourcesInFolder(folder, CmsResourceFilter.IGNORE_EXPIRATION);
-        System.out.println("\n"
-            + Messages.get().key(
-                m_shell.getLocale(),
-                Messages.GUI_SHELL_LS_2,
-                new Object[] {folder, new Integer(resources.size())}));
+        System.out.println("\n" + getMessages().key(Messages.GUI_SHELL_LS_2, folder, new Integer(resources.size())));
         Iterator i = resources.iterator();
         while (i.hasNext()) {
             CmsResource r = (CmsResource)i.next();
@@ -1062,19 +1046,13 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void setLocale(String localeName) throws CmsException {
 
         Locale locale = CmsLocaleManager.getLocale(localeName);
-
-        System.out.println(Messages.get().key(
-            m_shell.getLocale(),
+        System.out.println(getMessages().key(
             Messages.GUI_SHELL_SETLOCALE_2,
-            new Object[] {locale.toString(), m_cms.getRequestContext().currentUser().getName()}));
+            locale,
+            m_cms.getRequestContext().currentUser().getName()));
 
-        CmsUserSettings settings = m_shell.getSettings();
-        settings.setLocale(locale);
-        settings.save(m_cms);
-        System.out.println(Messages.get().key(
-            m_shell.getLocale(),
-            Messages.GUI_SHELL_SETLOCALE_POST_1,
-            new Object[] {locale.toString()}));
+        m_shell.setLocale(locale);
+        System.out.println(getMessages().key(Messages.GUI_SHELL_SETLOCALE_POST_1, locale));
     }
 
     /**
@@ -1083,7 +1061,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void shellExit() {
 
         System.out.println();
-        System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_GOODBYE_0, null));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_GOODBYE_0));
     }
 
     /**
@@ -1092,7 +1070,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void shellStart() {
 
         System.out.println();
-        System.out.println(Messages.get().key(m_shell.getLocale(), Messages.GUI_SHELL_WELCOME_0, null));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_WELCOME_0));
         System.out.println();
 
         // print the version information
@@ -1138,10 +1116,7 @@ class CmsShellCommands implements I_CmsShellCommands {
     public void version() {
 
         System.out.println();
-        System.out.println(Messages.get().key(
-            m_shell.getLocale(),
-            Messages.GUI_SHELL_VERSION_1,
-            new Object[] {OpenCms.getSystemInfo().getVersionName()}));
+        System.out.println(getMessages().key(Messages.GUI_SHELL_VERSION_1, OpenCms.getSystemInfo().getVersionName()));
     }
 
     /**
@@ -1152,5 +1127,15 @@ class CmsShellCommands implements I_CmsShellCommands {
     public CmsUser whoami() {
 
         return m_cms.getRequestContext().currentUser();
+    }
+
+    /**
+     * Returns the localized messages object for the current user.<p>
+     * 
+     * @return the localized messages object for the current user
+     */
+    protected CmsMessages getMessages() {
+
+        return m_shell.getMessages();
     }
 }

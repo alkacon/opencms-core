@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/comparison/CmsHtmlDifferenceDialog.java,v $
- * Date   : $Date: 2006/03/23 10:45:45 $
- * Version: $Revision: 1.1.2.6 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.1.2.7 $
  *
  * Copyright (c) 2005 Alkacon Software GmbH (http://www.alkacon.com)
  * All rights reserved.
@@ -46,7 +46,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author Jan Baudisch  
  * 
- * @version $Revision: 1.1.2.6 $ 
+ * @version $Revision: 1.1.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -137,10 +137,14 @@ public class CmsHtmlDifferenceDialog extends CmsDifferenceDialog {
                 String htmlDiff = Diff.diffAsHtml(getOriginalSource(), getCopySource(), conf);
                 if (CmsStringUtil.isNotEmpty(htmlDiff)) {
                     // extracted text is equal, but html differs
-                    out.println(Messages.get().key(Messages.GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0));
-                } else if (getMode() == CmsDiffViewMode.ALL) { 
+                    out.println(Messages.get().container(Messages.GUI_COMPARE_IDENTICAL_TEXT_DIFFERENT_HTML_0).key(
+                        getLocale()));
+                } else if (getMode() == CmsDiffViewMode.ALL) {
                     // print original source, if there are no differences
-                    out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(CmsStringUtil.escapeHtml(originalSource), "<br/>", ""))); 
+                    out.println(wrapLinesWithUnchangedStyle(CmsStringUtil.substitute(
+                        CmsStringUtil.escapeHtml(originalSource),
+                        "<br/>",
+                        "")));
                 }
             }
         } catch (Exception e) {

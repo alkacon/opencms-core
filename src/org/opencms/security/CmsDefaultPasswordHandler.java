@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsDefaultPasswordHandler.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -55,7 +55,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Carsten Weinholz 
  *
- * @version $Revision: 1.19.2.1 $ 
+ * @version $Revision: 1.19.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -204,7 +204,7 @@ public class CmsDefaultPasswordHandler implements I_CmsPasswordHandler {
         if (LOG.isDebugEnabled()) {
             CmsMessageContainer message = Messages.get().container(Messages.LOG_INIT_CONFIG_CALLED_1, this);
             LOG.debug(message.key());
-            LOG.debug(Messages.get().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_INIT_CONFIG_CALLED_1, this));
             // supress compiler warning, this is never true
             if (this == null) {
                 throw new CmsConfigurationException(message);

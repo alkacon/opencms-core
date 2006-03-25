@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/workplace/rfsfile/CmsRfsFileViewSettingsDialog.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.9.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.9.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author  Achim Westermann 
  * 
- * @version $Revision: 1.9.2.2 $ 
+ * @version $Revision: 1.9.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -153,7 +153,8 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
 
         setKeyPrefix(KEY_PREFIX);
         super.defineWidgets();
-        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget(CmsStringUtil.TRUE)));
+        addWidget(new CmsWidgetDialogParameter(m_logView, "isLogfile", "page1", new CmsCheckboxWidget(
+            CmsStringUtil.TRUE)));
         addWidget(new CmsWidgetDialogParameter(m_logView, "filePath", "page1", new CmsComboWidget(
             createComboConfigurationFileChoice())));
 
@@ -196,16 +197,18 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
             cs = (Charset)it.next();
             // default? no equals required: safety by design!
             if (cs == defaultCs) {
-                result.add(new CmsSelectWidgetOption(cs.name(), true, null, Messages.get().key(
-                    getLocale(),
-                    Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0,
-                    null)));
+                result.add(new CmsSelectWidgetOption(
+                    cs.name(),
+                    true,
+                    null,
+                    key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_DEF_HELP_0)));
             } else {
                 if (!cs.name().startsWith("x")) {
-                    result.add(new CmsSelectWidgetOption(cs.name(), false, null, Messages.get().key(
-                        getLocale(),
-                        Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_HELP_0,
-                        null)));
+                    result.add(new CmsSelectWidgetOption(
+                        cs.name(),
+                        false,
+                        null,
+                        key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CHARSET_HELP_0)));
                 }
             }
         }
@@ -227,15 +230,17 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
         List result = new LinkedList();
         CmsSystemInfo sysInfo = OpenCms.getSystemInfo();
         // log file, default
-        result.add(new CmsSelectWidgetOption(sysInfo.getLogFileRfsPath(), true, null, Messages.get().key(
-            getLocale(),
-            Messages.GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0,
-            null)));
+        result.add(new CmsSelectWidgetOption(
+            sysInfo.getLogFileRfsPath(),
+            true,
+            null,
+            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_LOG_HELP_0)));
         // opencms.properties
-        result.add(new CmsSelectWidgetOption(sysInfo.getConfigurationFileRfsPath(), false, null, Messages.get().key(
-            getLocale(),
-            Messages.GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0,
-            null)));
+        result.add(new CmsSelectWidgetOption(
+            sysInfo.getConfigurationFileRfsPath(),
+            false,
+            null,
+            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_CONF_HELP_0)));
         // config xml 
         String configPath = sysInfo.getAbsoluteRfsPathRelativeToWebInf(CmsSystemInfo.FOLDER_CONFIG);
         if (configPath != null) {
@@ -250,7 +255,7 @@ public class CmsRfsFileViewSettingsDialog extends A_CmsRfsFileWidgetDialog {
                             configFile.getAbsolutePath(),
                             false,
                             null,
-                            Messages.get().key(getLocale(), Messages.GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0, null)));
+                            key(Messages.GUI_WORKPLACE_LOGVIEW_FILE_XMLCONF_HELP_0)));
                     }
                 }
             }

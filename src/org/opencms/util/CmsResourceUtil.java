@@ -486,11 +486,10 @@ public final class CmsResourceUtil {
         int state = m_resource.getState();
         String name;
         if (m_request == null) {
-            name = org.opencms.workplace.explorer.Messages.get().key(
+            name = org.opencms.workplace.explorer.Messages.get().getBundle().key(
                 org.opencms.workplace.explorer.Messages.getStateKey(state));
         } else {
-            name = org.opencms.workplace.explorer.Messages.get().key(
-                m_request.getLocale(),
+            name = org.opencms.workplace.explorer.Messages.get().getBundle(m_request.getLocale()).key(
                 org.opencms.workplace.explorer.Messages.getStateKey(state));
         }
         return name;

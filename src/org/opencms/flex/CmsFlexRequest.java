@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/flex/CmsFlexRequest.java,v $
- * Date   : $Date: 2005/07/06 13:14:30 $
- * Version: $Revision: 1.36 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.36.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.36 $ 
+ * @version $Revision: 1.36.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -183,7 +183,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_canCache = (((m_isOnline || m_controller.getCmsCache().cacheOffline()) && !nocachepara) || dorecompile);
         m_doRecompile = dorecompile;
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUEST_CREATED_NEW_REQUEST_1, m_elementUri));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUEST_CREATED_NEW_REQUEST_1, m_elementUri));
         }
     }
 
@@ -206,7 +206,7 @@ public class CmsFlexRequest extends HttpServletRequestWrapper {
         m_includeCalls = m_controller.getCurrentRequest().getCmsIncludeCalls();
         m_parameters = req.getParameterMap();
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_FLEXREQUEST_REUSING_FLEX_REQUEST_1, m_elementUri));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_FLEXREQUEST_REUSING_FLEX_REQUEST_1, m_elementUri));
         }
     }
 

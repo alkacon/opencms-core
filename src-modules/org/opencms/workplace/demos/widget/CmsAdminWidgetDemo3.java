@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.demos.widget;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.widgets.A_CmsWidget;
@@ -111,6 +112,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
     public String buildDemo3Form() {
 
         StringBuffer result = new StringBuffer(1024);
+        CmsMessages messages = Messages.get().getBundle(getLocale());
 
         try {
 
@@ -160,7 +162,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
                         result.append("Disabled");
                     }
                     result.append("\">");
-                    result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
+                    result.append(keyDefault(A_CmsWidget.getLabelKey(p), p.getName()));
                     if (count > 1) {
                         result.append(" [").append(p.getIndex() + 1).append("]");
                     }
@@ -180,9 +182,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
                     } else {
                         // disabled element, show message for optional element
                         result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                        result.append(Messages.get().key(
-                            this.getLocale(),
-                            Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
+                        result.append(messages.key(Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                         result.append("</td>");
                     }
 
@@ -199,7 +199,7 @@ public class CmsAdminWidgetDemo3 extends CmsWidgetDialog {
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            LOG.error(org.opencms.workplace.editors.Messages.get().key(
+            LOG.error(org.opencms.workplace.editors.Messages.get().getBundle().key(
                 org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
         }
         return result.toString();

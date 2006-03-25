@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/A_CmsImport.java,v $
- * Date   : $Date: 2006/03/22 17:38:53 $
- * Version: $Revision: 1.81.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.81.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.81.2.5 $ 
+ * @version $Revision: 1.81.2.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -177,7 +177,9 @@ public abstract class A_CmsImport implements I_CmsImport {
         boolean resourceNotImmutable = true;
         if (immutableResources.contains(translatedName)) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1, translatedName));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_IMPORTEXPORT_RESOURCENAME_IMMUTABLE_1,
+                    translatedName));
             }
             // this resource must not be modified by an import if it already exists
             m_cms.getRequestContext().saveSiteRoot();
@@ -186,14 +188,16 @@ public abstract class A_CmsImport implements I_CmsImport {
                 m_cms.readResource(translatedName);
                 resourceNotImmutable = false;
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1, translatedName));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_IMMUTABLE_FLAG_SET_1,
+                        translatedName));
                 }
             } catch (CmsException e) {
                 // resourceNotImmutable will be true 
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(
-                        Messages.get().key(Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1, translatedName),
-                        e);
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_IMPORTEXPORT_ERROR_ON_TEST_IMMUTABLE_1,
+                        translatedName), e);
                 }
             } finally {
                 m_cms.getRequestContext().restoreSiteRoot();
@@ -280,7 +284,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_CONVERT_LINK_DOTS_OK_3,
                                 String.valueOf(i),
                                 String.valueOf(linksSize),
@@ -294,7 +298,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                             org.opencms.report.Messages.RPT_OK_0), I_CmsReport.FORMAT_OK);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_CONVERT_LINK_OK_3,
                                 String.valueOf(i),
                                 String.valueOf(linksSize),
@@ -309,7 +313,10 @@ public abstract class A_CmsImport implements I_CmsImport {
                         I_CmsReport.FORMAT_WARNING);
 
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2, key, link), e);
+                        LOG.error(Messages.get().getBundle().key(
+                            Messages.ERR_IMPORTEXPORT_LINK_CONVERSION_FAILED_2,
+                            key,
+                            link), e);
                     }
                 }
             }
@@ -345,7 +352,7 @@ public abstract class A_CmsImport implements I_CmsImport {
                     entry = m_importZip.getEntry(filename.substring(1));
                 }
                 if (entry == null) {
-                    throw new ZipException(Messages.get().key(
+                    throw new ZipException(Messages.get().getBundle().key(
                         Messages.LOG_IMPORTEXPORT_FILE_NOT_FOUND_IN_ZIP_1,
                         filename));
                 }
@@ -360,12 +367,12 @@ public abstract class A_CmsImport implements I_CmsImport {
             }
         } catch (FileNotFoundException fnfe) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, filename), fnfe);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_IMPORTEXPORT_FILE_NOT_FOUND_1, filename), fnfe);
             }
             m_report.println(fnfe);
         } catch (IOException ioe) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, filename), ioe);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_IMPORTEXPORT_ERROR_READING_FILE_1, filename), ioe);
             }
             m_report.println(ioe);
         }

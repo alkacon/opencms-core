@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsSearchConfiguration.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.16.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.16.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.dom4j.Element;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.16.2.2 $
+ * @version $Revision: 1.16.2.3 $
  * 
  * @since 6.0.0
  */
@@ -163,7 +163,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_CONFIG_INIT_0));
         }
     }
 
@@ -431,7 +431,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
     public void initializeFinished() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_CONFIG_FINISHED_0));
         }
     }
 
@@ -444,7 +444,7 @@ public class CmsSearchConfiguration extends A_CmsXmlConfiguration implements I_C
 
         m_searchManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SEARCH_MANAGER_FINISHED_0));
         }
     }
 

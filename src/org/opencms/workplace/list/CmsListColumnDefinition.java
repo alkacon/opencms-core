@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsListColumnDefinition.java,v $
- * Date   : $Date: 2005/11/24 09:37:53 $
- * Version: $Revision: 1.21.2.6 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.21.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsWorkplace;
@@ -43,13 +44,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Html list column definition.<p>
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.21.2.6 $ 
+ * @version $Revision: 1.21.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -436,6 +438,8 @@ public class CmsListColumnDefinition {
         CmsListOrderEnum order = list.getCurrentSortOrder();
 
         StringBuffer html = new StringBuffer(512);
+        Locale locale = wp.getLocale(); 
+        CmsMessages messages = Messages.get().getBundle(locale);
         html.append("<th");
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth())) {
             html.append(" width='");
@@ -457,26 +461,21 @@ public class CmsListColumnDefinition {
         String onClic = "listSort('" + listId + "', '" + getId() + "');";
         String helpText = null;
         if (m_helpText != null) {
-            helpText = new MessageFormat(m_helpText.key(wp.getLocale()), wp.getLocale()).format(new Object[] {getName().key(
-                wp.getLocale())});
+            helpText = new MessageFormat(m_helpText.key(locale), locale).format(new Object[] {getName().key(
+                locale)});
         } else {
             if (isSorteable()) {
                 if (nextOrder.equals(CmsListOrderEnum.ORDER_ASCENDING)) {
-                    helpText = Messages.get().key(
-                        wp.getLocale(),
-                        Messages.GUI_LIST_COLUMN_ASC_SORT_1,
-                        new Object[] {getName().key(wp.getLocale())});
+                    helpText = messages.key(Messages.GUI_LIST_COLUMN_ASC_SORT_1, new Object[] {getName().key(
+                        locale)});
                 } else {
-                    helpText = Messages.get().key(
-                        wp.getLocale(),
-                        Messages.GUI_LIST_COLUMN_DESC_SORT_1,
-                        new Object[] {getName().key(wp.getLocale())});
+                    helpText = messages.key(Messages.GUI_LIST_COLUMN_DESC_SORT_1, new Object[] {getName().key(
+                        locale)});
                 }
             } else {
-                helpText = Messages.get().key(
-                    wp.getLocale(),
+                helpText = messages.key(
                     Messages.GUI_LIST_COLUMN_NO_SORT_1,
-                    new Object[] {getName().key(wp.getLocale())});
+                    new Object[] {getName().key(locale)});
             }
         }
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getWidth()) && getWidth().indexOf('%') < 0) {
@@ -488,7 +487,7 @@ public class CmsListColumnDefinition {
             wp.getJsp(),
             CmsHtmlIconButtonStyleEnum.SMALL_ICON_TEXT,
             id,
-            getName().key(wp.getLocale()),
+            getName().key(locale),
             helpText,
             list.isPrintable() ? false : isSorteable(),
             null,

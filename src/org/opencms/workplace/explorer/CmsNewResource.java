@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/explorer/CmsNewResource.java,v $
- * Date   : $Date: 2006/03/22 08:33:22 $
- * Version: $Revision: 1.21.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.21.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Armen Markarian 
  * 
- * @version $Revision: 1.21.2.8 $ 
+ * @version $Revision: 1.21.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,7 +210,7 @@ public class CmsNewResource extends CmsDialog {
         } catch (ClassNotFoundException e) {
 
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1, className), e);
             }
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_NEW_RES_HANDLER_CLASS_NOT_FOUND_1,
@@ -716,7 +716,7 @@ public class CmsNewResource extends CmsDialog {
         switch (button) {
             case BUTTON_NEXT:
                 result.append("<input name=\"next\" type=\"submit\" value=\"");
-                result.append(Messages.get().key(this.getLocale(), Messages.GUI_BUTTON_NEXTSCREEN_0));
+                result.append(key(Messages.GUI_BUTTON_NEXTSCREEN_0));
                 result.append("\" class=\"dialogbutton\"");
                 result.append(attribute);
                 result.append(">\n");
@@ -750,7 +750,7 @@ public class CmsNewResource extends CmsDialog {
             setAction(ACTION_SUBMITFORM);
         } else if (DIALOG_NEWFORM.equals(getParamAction())) {
             setAction(ACTION_NEWFORM);
-            setParamTitle(Messages.get().key(this.getLocale(), Messages.getTitleKey(getParamNewResourceType())));
+            setParamTitle(key(Messages.getTitleKey(getParamNewResourceType())));
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else {

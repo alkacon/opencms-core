@@ -31,10 +31,11 @@ body, table {
 </style>
 <%
 CmsRfsFileViewer viewer = OpenCms.getWorkplaceManager().getFileViewSettings();
+org.opencms.i18n.CmsMessages messages = org.opencms.workplace.tools.workplace.rfsfile.Messages.get().getBundle();
 String filePath = viewer.getFilePath();
 
 if (CmsStringUtil.isEmpty(filePath)) {
-  throw new ServletException(org.opencms.workplace.tools.workplace.rfsfile.Messages.get().key(org.opencms.workplace.tools.workplace.rfsfile.Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
+  throw new ServletException(messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.ERR_DOWNLOAD_SERVLET_FILE_ARG_0));
 }
 File file = new File(filePath);
 %>
@@ -43,14 +44,14 @@ File file = new File(filePath);
 <tr>
 <td colspan="2">
 <b> 
-<%=org.opencms.workplace.tools.workplace.rfsfile.Messages.get().key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1, file.getName())%> 
+<%= messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_HEADER_1, file.getName())%> 
 </b>
 </td>
 </tr>
 <tr>
 <td colspan="2">
-<%=org.opencms.workplace.tools.workplace.rfsfile.Messages.get().key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_MESSAGE_0)%> 
-<span class="link"><a href="javascript:download()" onClick="javascript:download"><%=org.opencms.workplace.tools.workplace.rfsfile.Messages.get().key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_LINKTXT_0)%></a></span>. 
+<%= messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_MESSAGE_0)%> 
+<span class="link"><a href="javascript:download()" onClick="javascript:download"><%= messages.key(org.opencms.workplace.tools.workplace.rfsfile.Messages.GUI_WORLKPLACE_LOGVIEW_DODOWNLOAD_LINKTXT_0)%></a></span>. 
 </td>
 </tr>
 <tr id="spacer">

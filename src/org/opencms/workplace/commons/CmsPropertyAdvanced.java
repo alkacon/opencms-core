@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/commons/CmsPropertyAdvanced.java,v $
- * Date   : $Date: 2005/12/12 09:51:08 $
- * Version: $Revision: 1.23.2.7 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.23.2.8 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -82,7 +82,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.23.2.7 $ 
+ * @version $Revision: 1.23.2.8 $ 
  * 
  * @since 6.0.0 
  */
@@ -282,9 +282,9 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
                 sendForward(splitter.getPrefix(), params);
                 return;
             } catch (IOException e) {
-                LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             } catch (ServletException e) {
-                LOG.error(Messages.get().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_REDIRECT_XMLPAGE_DIALOG_1, PATH_DIALOGS + newUri));
             }
         } else if (getAction() == ACTION_SAVE_EDIT && MODE_WIZARD.equals(getParamDialogmode())) {
             // set request attribute to reload the folder tree after creating a folder in wizard mode
@@ -457,7 +457,7 @@ public class CmsPropertyAdvanced extends CmsTabDialog implements I_CmsDialogHand
             result.append("</table>");
         } else {
             // there are no properties defined for this resource, show nothing (should never happen)
-            result.append(Messages.get().key(Messages.GUI_PROPERTY_ADVANCED_NO_PROPDEFS_0));
+            result.append(key(Messages.GUI_PROPERTY_ADVANCED_NO_PROPDEFS_0));
         }
         return result.toString();
     }

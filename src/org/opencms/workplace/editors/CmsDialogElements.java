@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogElements.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.15.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.15.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -70,7 +70,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.15.2.3 $ 
+ * @version $Revision: 1.15.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -227,7 +227,7 @@ public class CmsDialogElements extends CmsDialog {
             CmsFile pageFile = cms.readFile(xmlPageUri, CmsResourceFilter.IGNORE_EXPIRATION);
             page = CmsXmlPageFactory.unmarshal(cms, pageFile);
         } catch (CmsException e) {
-            LOG.warn(Messages.get().key(Messages.LOG_READ_XMLPAGE_FAILED_1, xmlPageUri), e);
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_READ_XMLPAGE_FAILED_1, xmlPageUri), e);
             // xmlpage will be null, only "template-elements" property on template will be checked
         }
         return computeElements(cms, page, xmlPageUri, locale);
@@ -294,16 +294,14 @@ public class CmsDialogElements extends CmsDialog {
      */
     public String buildElementList() {
 
-        Locale locale = this.getLocale();
-
         StringBuffer retValue = new StringBuffer(512);
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">"
-            + Messages.get().key(locale, Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
+            + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_PAGEELEMENT_0)
             + "</td>\n");
         retValue.append("\t<td class=\"textbold\" unselectable=\"on\">&nbsp;&nbsp;"
-            + Messages.get().key(locale, Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
+            + key(Messages.GUI_EDITOR_DIALOG_ELEMENTS_ENABLED_0)
             + "&nbsp;&nbsp;</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td colspan=\"2\"><span style=\"height: 6px;\"></span></td></tr>\n");
@@ -472,11 +470,9 @@ public class CmsDialogElements extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for delete dialog     
-            setParamTitle(Messages.get().key(
+            setParamTitle(key(
                 Messages.GUI_EDITOR_DIALOG_ELEMENTS_TITLE_1,
-                CmsResource.getName(getParamResource())));
-            //            key("editor.dialog.elements.title")
+                new Object[] {CmsResource.getName(getParamResource())}));
         }
     }
-
 }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsDialogProperty.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.8.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.8.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.editors;
 
 import org.opencms.file.CmsPropertyDefinition;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.main.CmsLog;
@@ -42,7 +43,6 @@ import org.opencms.workplace.explorer.CmsNewResourceXmlPage;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.TreeMap;
 
 import javax.servlet.http.HttpServletRequest;
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.8.2.3 $ 
+ * @version $Revision: 1.8.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -106,8 +106,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     public String buildEditForm() {
 
-        Locale locale = this.getLocale();
-
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer retValue = new StringBuffer(2048);
 
         // check if the properties are editable
@@ -120,20 +119,16 @@ public class CmsDialogProperty extends CmsPropertyCustom {
 
         retValue.append("<table border=\"0\">\n");
         retValue.append("<tr>\n");
-        retValue.append("\t<td class=\"textbold\">"
-            + Messages.get().key(locale, Messages.GUI_INPUT_PROPERTY_0)
-            + "</td>\n");
-        retValue.append("\t<td class=\"textbold\">"
-            + Messages.get().key(locale, Messages.GUI_LABEL_VALUE_0)
-            + "</td>\n");
+        retValue.append("\t<td class=\"textbold\">" + messages.key(Messages.GUI_INPUT_PROPERTY_0) + "</td>\n");
+        retValue.append("\t<td class=\"textbold\">" + messages.key(Messages.GUI_LABEL_VALUE_0) + "</td>\n");
         retValue.append("\t<td class=\"textbold\" style=\"white-space: nowrap;\">"
-            + Messages.get().key(Messages.GUI_INPUT_USEDPROPERTY_0)
+            + messages.key(Messages.GUI_INPUT_USEDPROPERTY_0)
             + "</td>\n");
         retValue.append("</tr>\n");
         retValue.append("<tr><td><span style=\"height: 6px;\"></span></td></tr>\n");
 
         // create template select box row
-        retValue.append(buildTableRowStart(Messages.get().key(locale, Messages.GUI_INPUT_TEMPLATE_0)));
+        retValue.append(buildTableRowStart(messages.key(Messages.GUI_INPUT_TEMPLATE_0)));
         retValue.append(buildSelectTemplates("name=\""
             + CmsPropertyDefinition.PROPERTY_TEMPLATE
             + "\" class=\"maxwidth noborder\""
@@ -180,7 +175,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
         } catch (CmsException e) {
             // ignore this exception
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.LOG_READ_TEMPLATE_FAILED_0), e);
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_READ_TEMPLATE_FAILED_0), e);
             }
         }
         if (currentTemplate == null) {
@@ -308,12 +303,12 @@ public class CmsDialogProperty extends CmsPropertyCustom {
      */
     private void addCurrentTemplate(String currentTemplate, List options, List values) {
 
-        Locale locale = this.getLocale();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
 
         // template was not found in regular template folders, add current template value
         if (CmsStringUtil.isEmpty(currentTemplate)) {
             // current template not available, add "please select" value
-            options.add(0, "--- " + Messages.get().key(locale, Messages.GUI_PLEASE_SELECT_0) + " ---");
+            options.add(0, "--- " + messages.key(Messages.GUI_PLEASE_SELECT_0) + " ---");
             values.add(0, "");
         } else {
             // current template was set to some value, add this value to the selection
@@ -324,7 +319,7 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             } catch (CmsException e) {
                 // ignore this exception - the title for this template was not readable
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_READ_TITLE_PROP_FAILED_1, currentTemplate), e);
+                    LOG.info(messages.key(Messages.LOG_READ_TITLE_PROP_FAILED_1, currentTemplate), e);
                 }
             }
             if (name == null) {
@@ -334,5 +329,4 @@ public class CmsDialogProperty extends CmsPropertyCustom {
             values.add(0, currentTemplate);
         }
     }
-
 }

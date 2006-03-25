@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/htmlarea/Attic/CmsHtmlAreaEditor.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import java.util.Properties;
  *
  * @author  Andreas Zahner 
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.0.1 
  */
@@ -92,9 +92,7 @@ public class CmsHtmlAreaEditor extends CmsSimplePageEditor {
                 result.append("config.registerButton(\"");
                 result.append(galleryType);
                 result.append("\", \"");
-                result.append(org.opencms.workplace.editors.Messages.get().key(this.getLocale(), org.opencms.workplace.editors.Messages.getGalleryKey(galleryName)));
-                    
- 
+                result.append(key(org.opencms.workplace.editors.Messages.getGalleryKey(galleryName)));
                 result.append("\", __editor.imgURL(\"../../editors/htmlarea/images/opencms/");
                 result.append(galleryType);
                 result.append(".gif\"), false, function(e) { openGallery(\'");

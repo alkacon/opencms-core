@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/configuration/CmsWorkplaceConfiguration.java,v $
- * Date   : $Date: 2006/03/23 17:47:21 $
- * Version: $Revision: 1.39.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.39.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -61,7 +61,7 @@ import org.dom4j.Element;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.39.2.8 $
+ * @version $Revision: 1.39.2.9 $
  * 
  * @since 6.0.0
  */
@@ -132,6 +132,9 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
     /** The name of the node for the default locale. */
     public static final String N_DEFAULTLOCALE = "defaultlocale";
+
+    /** The node name of the default preferences node. */
+    public static final String N_DEFAULTPREFERENCES = "default-preferences";
 
     /** The name of the default properties node. */
     public static final String N_DEFAULTPROPERTIES = "defaultproperties";
@@ -343,9 +346,6 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     /** The node name of the uri node. */
     public static final String N_URI = "uri";
 
-    /** The node name of the default preferences node. */
-    public static final String N_DEFAULTPREFERENCES = "default-preferences";
-
     /** The node name of the user created node. */
     public static final String N_USERCREATED = "show-usercreated";
 
@@ -392,7 +392,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         setXmlFileName(DEFAULT_XML_FILE_NAME);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_0));
         }
     }
 
@@ -1623,7 +1623,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
     public void initializeFinished() {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_FINISHED_0));
         }
     }
 
@@ -1636,8 +1636,7 @@ public class CmsWorkplaceConfiguration extends A_CmsXmlConfiguration implements 
 
         m_workplaceManager = manager;
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WORKPLACE_INIT_FINISHED_0));
         }
     }
-
 }

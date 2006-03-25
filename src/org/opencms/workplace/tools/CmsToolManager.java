@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/tools/CmsToolManager.java,v $
- * Date   : $Date: 2005/11/24 09:37:53 $
- * Version: $Revision: 1.40.2.10 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.40.2.11 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -63,7 +63,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.40.2.10 $ 
+ * @version $Revision: 1.40.2.11 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,7 +172,7 @@ public class CmsToolManager {
     public void configure(CmsObject cms) {
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_TOOLMANAGER_CREATED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_TOOLMANAGER_CREATED_0));
         }
         if (m_roots.getObject(ROOTKEY_DEFAULT) == null) {
             CmsToolRootHandler defToolRoot = new CmsToolRootHandler();
@@ -189,7 +189,7 @@ public class CmsToolManager {
             CmsToolRootHandler toolRoot = (CmsToolRootHandler)it.next();
             if (!cms.existsResource(toolRoot.getUri())) {
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_TOOLMANAGER_ROOT_SKIPPED_2,
                         toolRoot.getKey(),
                         toolRoot.getUri()));
@@ -201,12 +201,16 @@ public class CmsToolManager {
                 configureToolRoot(cms, toolRoot);
                 // log info
                 if (CmsLog.INIT.isInfoEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(Messages.INIT_TOOLMANAGER_SETUP_1, toolRoot.getKey()));
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
+                        Messages.INIT_TOOLMANAGER_SETUP_1,
+                        toolRoot.getKey()));
                 }
             } catch (CmsException e) {
                 // log failure
                 if (CmsLog.INIT.isWarnEnabled()) {
-                    CmsLog.INIT.warn(Messages.get().key(Messages.INIT_TOOLMANAGER_SETUP_ERROR_1, toolRoot.getKey()), e);
+                    CmsLog.INIT.warn(Messages.get().getBundle().key(
+                        Messages.INIT_TOOLMANAGER_SETUP_ERROR_1,
+                        toolRoot.getKey()), e);
                 }
             }
         }
@@ -615,7 +619,7 @@ public class CmsToolManager {
                     if (!handler.setup(cms, toolRoot, res.getRootPath())) {
                         // log failure
                         if (CmsLog.INIT.isWarnEnabled()) {
-                            CmsLog.INIT.warn(Messages.get().key(
+                            CmsLog.INIT.warn(Messages.get().getBundle().key(
                                 Messages.INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1,
                                 res.getRootPath()));
                         }
@@ -626,12 +630,12 @@ public class CmsToolManager {
                     // log success
                     if (CmsLog.INIT.isDebugEnabled()) {
                         if (!handler.getLink().equals(VIEW_JSPPAGE_LOCATION)) {
-                            CmsLog.INIT.debug(Messages.get().key(
+                            CmsLog.INIT.debug(Messages.get().getBundle().key(
                                 Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_2,
                                 handler.getPath(),
                                 handler.getLink()));
                         } else {
-                            CmsLog.INIT.debug(Messages.get().key(
+                            CmsLog.INIT.debug(Messages.get().getBundle().key(
                                 Messages.INIT_TOOLMANAGER_NEWTOOL_FOUND_2,
                                 handler.getPath(),
                                 res.getRootPath()));
@@ -640,7 +644,7 @@ public class CmsToolManager {
                 } catch (Exception e) {
                     // log failure
                     if (CmsLog.INIT.isWarnEnabled()) {
-                        CmsLog.INIT.warn(Messages.get().key(
+                        CmsLog.INIT.warn(Messages.get().getBundle().key(
                             Messages.INIT_TOOLMANAGER_TOOL_SETUP_ERROR_1,
                             res.getRootPath()), e);
                     }
@@ -672,7 +676,7 @@ public class CmsToolManager {
         if (!validatePath(toolRoot.getKey(), handler.getPath(), false)) {
             // log failure
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(
+                CmsLog.INIT.warn(Messages.get().getBundle().key(
                     Messages.INIT_TOOLMANAGER_INCONSISTENT_PATH_2,
                     handler.getPath(),
                     handler.getLink()));
@@ -688,7 +692,7 @@ public class CmsToolManager {
             handler.isEnabled(cms);
             handler.isVisible(cms);
         } catch (Throwable ex) {
-            String message = Messages.get().key(
+            String message = Messages.get().getBundle().key(
                 Messages.INIT_TOOLMANAGER_INSTALL_ERROR_2,
                 handler.getPath(),
                 handler.getLink());
@@ -706,7 +710,7 @@ public class CmsToolManager {
             // just for fast association of links with tools
             m_urls.addIdentifiableObject(link, handler.getPath());
         } catch (Throwable ex) {
-            CmsLog.INIT.warn(Messages.get().key(
+            CmsLog.INIT.warn(Messages.get().getBundle().key(
                 Messages.INIT_TOOLMANAGER_DUPLICATED_ERROR_3,
                 handler.getPath(),
                 handler.getLink(),
@@ -755,14 +759,14 @@ public class CmsToolManager {
         // navigate until to reach a valid path
         while (!validatePath(rootKey, path, true)) {
             // log failure
-            LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_MISSING_ADMIN_TOOL_1, path));
             // try parent
             path = getParent(wp, path);
         }
         // navigate until to reach a valid tool
         while (resolveAdminTool(rootKey, path) == null) {
             // log failure
-            LOG.warn(Messages.get().key(wp.getLocale(), Messages.LOG_MISSING_ADMIN_TOOL_1, new Object[] {path}));
+            LOG.warn(Messages.get().getBundle().key(Messages.LOG_MISSING_ADMIN_TOOL_1, path));
             // try parent
             path = getParent(wp, path);
         }

@@ -135,18 +135,15 @@ public class CmsUserSelectionList extends A_CmsListDialog {
         html.append("\t\t\t<td>\n");
         String param = "";
         if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamGroup())) {
-            param = Messages.get().key(
-                getLocale(),
-                Messages.GUI_USERSELECTION_GROUP_BLOCK_1,
-                new Object[] {getParamGroup()});
+            param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_GROUP_BLOCK_1, getParamGroup());
         } else if (CmsStringUtil.isNotEmptyOrWhitespaceOnly(getParamUsertype())) {
             if (Integer.parseInt(getParamUsertype()) == CmsUser.USER_TYPE_WEBUSER) {
-                param = Messages.get().key(getLocale(), Messages.GUI_USERSELECTION_TYPE_WEB_0);
+                param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_TYPE_WEB_0);
             } else {
-                param = Messages.get().key(getLocale(), Messages.GUI_USERSELECTION_TYPE_SYSTEM_0);
+                param = Messages.get().getBundle(getLocale()).key(Messages.GUI_USERSELECTION_TYPE_SYSTEM_0);
             }
         }
-        html.append(Messages.get().key(getLocale(), Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {param}));
+        html.append(key(Messages.GUI_USERSELECTION_INTRO_TITLE_1, new Object[] {param}));
         html.append("\n\t\t\t</td>");
         html.append("\t\t</tr>\n");
         html.append("\t</table>\n");

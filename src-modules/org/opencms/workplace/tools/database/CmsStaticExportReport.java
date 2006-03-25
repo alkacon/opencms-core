@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/database/CmsStaticExportReport.java,v $
- * Date   : $Date: 2006/03/24 12:16:21 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -124,7 +124,7 @@ public class CmsStaticExportReport extends CmsReport {
         } else {
             setAction(ACTION_DEFAULT);
             // add the title for the dialog 
-            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUT_TITLE_STATICEXPORT_0));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_STATICEXPORT_0));
         }
     }
 }

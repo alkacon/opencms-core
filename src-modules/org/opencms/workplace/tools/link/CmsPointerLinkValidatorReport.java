@@ -31,7 +31,6 @@
 
 package org.opencms.workplace.tools.link;
 
-import org.opencms.flex.CmsFlexController;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.report.I_CmsReportThread;
 import org.opencms.workplace.CmsWorkplaceSettings;
@@ -40,7 +39,6 @@ import org.opencms.workplace.threads.CmsPointerLinkValidatorThread;
 import org.opencms.workplace.tools.CmsToolManager;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
@@ -53,7 +51,7 @@ import javax.servlet.jsp.PageContext;
  *
  * @author  Jan Baudisch 
  * 
- * @version $Revision: 1.7 $ 
+ * @version $Revision: 1.7.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -154,9 +152,8 @@ public class CmsPointerLinkValidatorReport extends A_CmsListReport {
             setAction(ACTION_CANCEL);
         } else {
             setAction(ACTION_DEFAULT);
-            Locale locale = CmsFlexController.getCmsObject(request).getRequestContext().getLocale();
             // add the title for the dialog 
-            setParamTitle(Messages.get().key(locale, Messages.GUI_EXTERNALLINK_ADMIN_TOOL_NAME_0, null));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_EXTERNALLINK_ADMIN_TOOL_NAME_0));
         }
     }
 }

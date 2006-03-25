@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/db/generic/CmsUserDriver.java,v $
- * Date   : $Date: 2006/01/06 15:37:27 $
- * Version: $Revision: 1.108.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:40 $
+ * Version: $Revision: 1.108.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -85,7 +85,7 @@ import org.apache.commons.logging.Log;
  * @author Carsten Weinholz 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.108.2.4 $
+ * @version $Revision: 1.108.2.5 $
  * 
  * @since 6.0.0 
  */
@@ -415,7 +415,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
 
         finalize();
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SHUTDOWN_DRIVER_1, getClass().getName()));
         }
     }
 
@@ -605,26 +605,26 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         m_driverManager = driverManager;
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ASSIGNED_POOL_1, poolUrl));
         }
 
         m_digestAlgorithm = config.getString(CmsDriverManager.CONFIGURATION_DB + ".user.digest.type", "MD5");
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DIGEST_ALGORITHM_1, m_digestAlgorithm));
         }
 
         m_digestFileEncoding = config.getString(
             CmsDriverManager.CONFIGURATION_DB + ".user.digest.encoding",
             CmsEncoder.ENCODING_UTF_8);
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_DIGEST_ENCODING_1, m_digestFileEncoding));
         }
 
         // create the digest
         try {
             m_digest = MessageDigest.getInstance(m_digestAlgorithm);
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(
+                CmsLog.INIT.info(Messages.get().getBundle().key(
                     Messages.INIT_DIGEST_ENC_3,
                     m_digest.getAlgorithm(),
                     m_digest.getProvider().getName(),
@@ -632,7 +632,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (NoSuchAlgorithmException e) {
             if (CmsLog.INIT.isInfoEnabled()) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_SET_DIGEST_ERROR_0), e);
             }
         }
 
@@ -644,14 +644,16 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
             }
         } catch (CmsException e) {
             if (CmsLog.INIT.isErrorEnabled()) {
-                CmsLog.INIT.error(Messages.get().key(Messages.INIT_USER_GROUP_INITIALIZATION_FAILED_0), e);
+                CmsLog.INIT.error(Messages.get().getBundle().key(Messages.INIT_USER_GROUP_INITIALIZATION_FAILED_0), e);
             }
             throw new CmsInitException(Messages.get().container(Messages.ERR_INITIALIZING_USER_DRIVER_0), e);
         }
 
         if (successiveDrivers != null && !successiveDrivers.isEmpty()) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1, getClass().getName()));
+                LOG.warn(Messages.get().getBundle().key(
+                    Messages.LOG_SUCCESSIVE_DRIVERS_UNSUPPORTED_1,
+                    getClass().getName()));
             }
         }
     }
@@ -1529,14 +1531,12 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         try {
             info = (Map)oin.readObject();
         } catch (IOException e) {
-            CmsMessageContainer message = Messages.get().container(
-                Messages.ERR_READING_ADDITIONAL_INFO_1,
-                userName);
+            CmsMessageContainer message = Messages.get().container(Messages.ERR_READING_ADDITIONAL_INFO_1, userName);
             LOG.error(message.key());
-            
+
             info = new HashMap();
-        }        
-        
+        }
+
         return new CmsUser(
             new CmsUUID(res.getString(m_sqlManager.readQuery("C_USERS_USER_ID"))),
             userName,
@@ -1685,7 +1685,7 @@ public class CmsUserDriver implements I_CmsDriver, I_CmsUserDriver {
         }
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_USER_GROUP_DEFAULTS_INITIALIZED_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_USER_GROUP_DEFAULTS_INITIALIZED_0));
         }
 
         // avoid warning

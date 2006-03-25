@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/report/A_CmsReport.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.20.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.20.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -33,6 +33,7 @@ package org.opencms.report;
 
 import org.opencms.file.CmsRequestContext;
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.util.CmsStringUtil;
 
 import java.util.ArrayList;
@@ -46,7 +47,7 @@ import java.util.Locale;
  * @author Thomas Weckert  
  * @author Jan Baudisch 
  * 
- * @version $Revision: 1.20.2.1 $ 
+ * @version $Revision: 1.20.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -57,6 +58,9 @@ public abstract class A_CmsReport implements I_CmsReport {
 
     /** The locale this report is written in. */
     private Locale m_locale;
+
+    /** The default report message bundle. */
+    private CmsMessages m_messages;
 
     /** The original site root of the user who started this report. */
     private String m_siteRoot;
@@ -213,6 +217,16 @@ public abstract class A_CmsReport implements I_CmsReport {
     }
 
     /**
+     * Returns the default report message bundle.<p>
+     * 
+     * @return the default report message bundle
+     */
+    protected CmsMessages getMessages() {
+
+        return m_messages;
+    }
+
+    /**
      * Initializes some member variables for this report.<p>
      * 
      * @param locale the locale for this report
@@ -223,6 +237,7 @@ public abstract class A_CmsReport implements I_CmsReport {
         m_starttime = System.currentTimeMillis();
         m_locale = locale;
         m_siteRoot = siteRoot;
+        m_messages = Messages.get().getBundle(locale);
     }
 
     /**

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/staticexport/CmsLinkManager.java,v $
- * Date   : $Date: 2006/03/20 16:54:37 $
- * Version: $Revision: 1.56.2.6 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.56.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -57,7 +57,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.6 $ 
+ * @version $Revision: 1.56.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -233,7 +233,7 @@ public class CmsLinkManager {
 
         } catch (Exception e) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
+                LOG.warn(Messages.get().getBundle().key(Messages.LOG_MALFORMED_URI_1, targetUri), e);
             }
             return null;
         }
@@ -489,7 +489,7 @@ public class CmsLinkManager {
                     } catch (CmsException e) {
                         // the resource could not be read
                         if (LOG.isInfoEnabled()) {
-                            String message = Messages.get().key(
+                            String message = Messages.get().getBundle().key(
                                 Messages.LOG_RESOURCE_ACESS_ERROR_3,
                                 vfsName,
                                 cms.getRequestContext().currentUser().getName(),

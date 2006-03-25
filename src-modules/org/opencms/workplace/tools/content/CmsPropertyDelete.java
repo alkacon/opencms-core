@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/content/CmsPropertyDelete.java,v $
- * Date   : $Date: 2006/03/22 08:33:21 $
- * Version: $Revision: 1.13.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.13.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsProperty;
 import org.opencms.file.CmsPropertyDefinition;
 import org.opencms.file.CmsResource;
 import org.opencms.file.CmsVfsException;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.lock.CmsLock;
 import org.opencms.main.CmsException;
@@ -46,7 +47,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -65,7 +65,7 @@ import javax.servlet.jsp.PageContext;
  * @author  Andreas Zahner 
  * @author  Armen Markarian 
  * 
- * @version $Revision: 1.13.2.2 $ 
+ * @version $Revision: 1.13.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -226,32 +226,32 @@ public class CmsPropertyDelete extends CmsDialog {
 
         // reverse the resource list
         Collections.reverse(resourceList);
-        Locale locale=this.getLocale();
+        CmsMessages messages = Messages.get().getBundle(getLocale());
         StringBuffer result = new StringBuffer();
         result.append("<table border=\"0\" width=\"100%\" cellpadding=\"1\" cellspacing=\"1\">\n");
         result.append("<tr>\n");
         // Type        
         result.append("\t<td style=\"width:5%;\" class=\"textbold\">");
-        result.append(Messages.get().key(locale, Messages.GUI_INPUT_TYPE_0));
+        result.append(messages.key(Messages.GUI_INPUT_TYPE_0));
         result.append("</td>\n");
         // Uri
         result.append("\t<td style=\"width:40%;\" class=\"textbold\">");
-        result.append(Messages.get().key(locale, Messages.GUI_INPUT_ADRESS_0));
+        result.append(messages.key(Messages.GUI_INPUT_ADRESS_0));
         result.append("</td>\n");
         // Name
         result.append("\t<td style=\"width:25%;\" class=\"textbold\">");
-        result.append(Messages.get().key(locale, Messages.GUI_INPUT_TITLE_0));
+        result.append(messages.key(Messages.GUI_INPUT_TITLE_0));
         result.append("</td>\n");
         if (!lockInfo) {
             // Property value
             result.append("\t<td style=\"width:30%;\" class=\"textbold\">");
-            result.append(Messages.get().key(locale, Messages.GUI_INPUT_PROPERTYVALUE_0));
+            result.append(messages.key(Messages.GUI_INPUT_PROPERTYVALUE_0));
             result.append("</td>\n");
         }
         if (lockInfo) {
             // Property value
             result.append("\t<td style=\"width:30%;\" class=\"textbold\">");
-            result.append(Messages.get().key(locale, Messages.GUI_EXPLORER_LOCKEDBY_0));
+            result.append(messages.key(Messages.GUI_EXPLORER_LOCKEDBY_0));
             result.append("</td>\n");
             result.append("</tr>\n");
         }
@@ -313,11 +313,8 @@ public class CmsPropertyDelete extends CmsDialog {
      */
     public String buildSelectProperty(String attributes) {
 
-        return CmsPropertyChange.buildSelectProperty(
-            getCms(),
-            Messages.get().key(this.getLocale(), Messages.GUI_PLEASE_SELECT_0),
-            attributes,
-            "");
+        return CmsPropertyChange.buildSelectProperty(getCms(), Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_PLEASE_SELECT_0), attributes, "");
     }
 
     /**
@@ -352,7 +349,7 @@ public class CmsPropertyDelete extends CmsDialog {
         // set the action for the JSP switch 
         if (DIALOG_OK.equals(getParamAction())) {
             setAction(ACTION_OK);
-            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUI_TITLE_PROPERTYDELETE_0) + ": " + getParamPropertyName());
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0) + ": " + getParamPropertyName());
         } else if (DIALOG_CANCEL.equals(getParamAction())) {
             setAction(ACTION_CANCEL);
         } else if (DIALOG_DELETE_CASCADE.equals(getParamAction())) {
@@ -360,7 +357,7 @@ public class CmsPropertyDelete extends CmsDialog {
         } else {
             setAction(ACTION_DEFAULT);
             // build title for change property value dialog     
-            setParamTitle(Messages.get().key(this.getLocale(), Messages.GUI_TITLE_PROPERTYDELETE_0));
+            setParamTitle(Messages.get().getBundle(getLocale()).key(Messages.GUI_TITLE_PROPERTYDELETE_0));
         }
     }
 

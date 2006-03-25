@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspBean.java,v $
- * Date   : $Date: 2006/03/18 08:40:32 $
- * Version: $Revision: 1.15.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.15.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.2 $ 
+ * @version $Revision: 1.15.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -295,12 +295,14 @@ public class CmsJspBean {
     protected void handleException(Throwable t) {
 
         if (LOG.isErrorEnabled()) {
-            LOG.error(Messages.get().key(Messages.LOG_ERR_JSP_BEAN_0), t);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_ERR_JSP_BEAN_0), t);
         }
         if (!(m_isSupressingExceptions || getRequestContext().currentProject().isOnlineProject())) {
             if (LOG.isDebugEnabled()) {
                 // no stack trace needed since it was already logged with the "error" log message above  
-                LOG.debug(Messages.get().key(Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1, getClass().getName()));
+                LOG.debug(Messages.get().getBundle().key(
+                    Messages.LOG_DEBUG_INTERRUPTED_EXCEPTION_1,
+                    getClass().getName()));
             }
             String uri = null;
             Throwable u = getController().getThrowable();

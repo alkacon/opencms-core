@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpSearchResultView.java,v $
- * Date   : $Date: 2006/02/09 16:56:21 $
- * Version: $Revision: 1.5.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.5.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -35,6 +35,7 @@ import org.opencms.file.CmsObject;
 import org.opencms.file.CmsProject;
 import org.opencms.i18n.CmsEncoder;
 import org.opencms.i18n.CmsLocaleManager;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsException;
 import org.opencms.search.CmsSearch;
@@ -44,7 +45,6 @@ import org.opencms.util.CmsStringUtil;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.SortedMap;
 import java.util.StringTokenizer;
@@ -69,7 +69,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.5.2.3 $
+ * @version $Revision: 1.5.2.4 $
  * 
  * @since 6.0.0
  */
@@ -140,12 +140,10 @@ public class CmsHelpSearchResultView {
 
         initSearch(search);
         StringBuffer result = new StringBuffer(800);
+        CmsMessages messages = org.opencms.search.Messages.get().getBundle(m_jsp.getRequestContext().getLocale());
 
         result.append("<h1>\n");
-        result.append(org.opencms.search.Messages.get().key(
-            m_jsp.getRequestContext().getLocale(),
-            org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_TITLE_0,
-            null));
+        result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_TITLE_0));
         result.append("\n</h1>\n");
         List searchResult;
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(search.getQuery())) {
@@ -155,7 +153,6 @@ public class CmsHelpSearchResultView {
             searchResult = search.getSearchResult();
         }
 
-        Locale locale = m_jsp.getRequestContext().getLocale();
         HttpServletRequest request = m_jsp.getRequest();
         // get the action to perform from the request
         String action = request.getParameter("action");
@@ -164,31 +161,22 @@ public class CmsHelpSearchResultView {
             result.append("<p class=\"formerror\">\n");
             if (search.getLastException() != null) {
 
-                result.append(org.opencms.search.Messages.get().key(
-                    locale,
-                    org.opencms.search.Messages.GUI_HELP_SEARCH_UNAVAILABLE_0,
-                    null));
+                result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_UNAVAILABLE_0));
                 result.append("\n<!-- ").append(search.getLastException().toString());
                 result.append(" //-->\n");
             } else {
-                result.append(org.opencms.search.Messages.get().key(
-                    locale,
-                    org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1,
-                    new Object[] {search.getQuery()}));
+                result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
                 result.append("\n");
             }
             result.append("</p>\n");
         } else if (action != null && searchResult.size() <= 0) {
             result.append("<p class=\"formerror\">\n");
-            result.append(org.opencms.search.Messages.get().key(
-                locale,
-                org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1,
-                new Object[] {search.getQuery()}));
+            result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_NOMATCH_1, search.getQuery()));
             result.append("\n");
             result.append("</p>\n");
         } else if (action != null && searchResult.size() > 0) {
             result.append("<p>\n");
-            result.append(org.opencms.search.Messages.get().key(locale, org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0));
+            result.append(messages.key(org.opencms.search.Messages.GUI_HELP_SEARCH_RESULT_START_0));
             result.append("\n");
             result.append("</p>\n<p>\n");
 
@@ -231,10 +219,7 @@ public class CmsHelpSearchResultView {
                     result.append(getSearchPageLink(m_jsp.link(new StringBuffer(search.getPreviousUrl()).append('&').append(
                         CmsLocaleManager.PARAMETER_LOCALE).append("=").append(m_jsp.getRequestContext().getLocale()).toString())));
                     result.append("\">");
-                    result.append(org.opencms.search.Messages.get().key(
-                        locale,
-                        org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0,
-                        null));
+                    result.append(messages.key(org.opencms.search.Messages.GUI_HELP_BUTTON_BACK_0));
                     result.append(" &lt;&lt;</a>&nbsp;&nbsp;\n");
                 }
                 Map pageLinks = search.getPageLinks();
@@ -259,10 +244,7 @@ public class CmsHelpSearchResultView {
                     result.append(getSearchPageLink(new StringBuffer(m_jsp.link(search.getNextUrl())).append('&').append(
                         CmsLocaleManager.PARAMETER_LOCALE).append("=").append(m_jsp.getRequestContext().getLocale()).toString()));
                     result.append("\">&gt;&gt;");
-                    result.append(org.opencms.search.Messages.get().key(
-                        locale,
-                        org.opencms.search.Messages.GUI_HELP_BUTTON_NEXT_0,
-                        null));
+                    result.append(messages.key(org.opencms.search.Messages.GUI_HELP_BUTTON_NEXT_0));
                     result.append("</a>\n");
                 }
                 result.append("</p>\n");

@@ -1,5 +1,5 @@
 <!-- display resource information -->
 <%= wp.dialogBlockStart(null) %>
-<%= org.opencms.workplace.commons.Messages.get().key(wp.getLocale(), org.opencms.workplace.commons.Messages.GUI_LABEL_TITLE_0)%>: <%= wp.getJsp().property("Title", wp.getParamResource(), "") %><br>
-<%= org.opencms.workplace.commons.Messages.get().key(wp.getLocale(), org.opencms.workplace.commons.Messages.GUI_LABEL_STATE_0) %>: <%= wp.getState() %>
+<%= wp.key(org.opencms.workplace.commons.Messages.GUI_LABEL_TITLE_0)%>: <%= wp.getJsp().property("Title", wp.getParamResource(), "") %><br>
+<%= wp.key(org.opencms.workplace.commons.Messages.GUI_LABEL_STATE_0) %>: <%= wp.getState() %>
 <%= wp.dialogBlockEnd() %>

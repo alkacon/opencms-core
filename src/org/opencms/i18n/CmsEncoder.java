@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsEncoder.java,v $
- * Date   : $Date: 2006/03/20 16:53:51 $
- * Version: $Revision: 1.15.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.15.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -65,7 +65,7 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.15.2.5 $ 
+ * @version $Revision: 1.15.2.6 $ 
  * 
  * @since 6.0.0 
  */
@@ -172,7 +172,7 @@ public final class CmsEncoder {
             }
         } else {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.ERR_UNSUPPORTED_VM_ENCODING_1, encoding));
+                LOG.warn(Messages.get().getBundle().key(Messages.ERR_UNSUPPORTED_VM_ENCODING_1, encoding));
             }
             encoding = OpenCms.getSystemInfo().getDefaultEncoding();
             try {
@@ -182,7 +182,7 @@ public final class CmsEncoder {
             }
         }
         // this code is unreachable in pratice
-        LOG.error(Messages.get().key(Messages.ERR_ENCODING_ISSUES_1, encoding));
+        LOG.error(Messages.get().getBundle().key(Messages.ERR_ENCODING_ISSUES_1, encoding));
         return null;
     }
 

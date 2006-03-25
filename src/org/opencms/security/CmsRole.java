@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/security/CmsRole.java,v $
- * Date   : $Date: 2005/06/25 12:45:06 $
- * Version: $Revision: 1.10 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.10.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import java.util.List;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.10 $ 
+ * @version $Revision: 1.10.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -306,7 +306,7 @@ public final class CmsRole {
         String roleName;
         if (m_systemRole) {
             // localize role names for system roles
-            roleName = Messages.get().key(context.getLocale(), "GUI_ROLENAME_" + m_roleName + "_0", null);
+            roleName = Messages.get().getBundle(context.getLocale()).key("GUI_ROLENAME_" + m_roleName + "_0");
         } else {
             roleName = getRoleName();
         }

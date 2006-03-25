@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsVfsIndexer.java,v $
- * Date   : $Date: 2006/03/22 13:38:07 $
- * Version: $Revision: 1.33.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.33.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -59,7 +59,7 @@ import org.apache.lucene.index.Term;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.33.2.2 $ 
+ * @version $Revision: 1.33.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -105,7 +105,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     reader.deleteDocuments(term);
                 } catch (IOException e) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_IO_INDEX_DOCUMENT_DELETE_2,
                             rootPath,
                             m_index.getName()), e);
@@ -119,7 +119,6 @@ public class CmsVfsIndexer implements I_CmsIndexer {
      * @see org.opencms.search.I_CmsIndexer#getIndexResource(org.opencms.file.CmsObject, org.apache.lucene.document.Document)
      */
     public A_CmsIndexResource getIndexResource(CmsObject cms, Document doc) throws CmsException {
-
 
         A_CmsIndexResource result = null;
 
@@ -214,9 +213,10 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                         e.getLocalizedMessage()), I_CmsReport.FORMAT_WARNING);
                 }
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(
-                        Messages.get().key(Messages.LOG_UNABLE_TO_READ_SOURCE_2, resourceName, m_index.getName()),
-                        e);
+                    LOG.warn(Messages.get().getBundle().key(
+                        Messages.LOG_UNABLE_TO_READ_SOURCE_2,
+                        resourceName,
+                        m_index.getName()), e);
                 }
             }
             if (resources != null) {
@@ -254,7 +254,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                 resource = m_cms.readResource(res.getRootPath());
             } catch (CmsException e) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_UNABLE_TO_READ_RESOURCE_2,
                         resource.getRootPath(),
                         m_index.getName()), e);
@@ -329,7 +329,7 @@ public class CmsVfsIndexer implements I_CmsIndexer {
                     I_CmsReport.FORMAT_WARNING);
             }
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(
+                LOG.warn(Messages.get().getBundle().key(
                     Messages.ERR_INDEX_RESOURCE_FAILED_2,
                     resource.getRootPath(),
                     m_index.getName()), e);

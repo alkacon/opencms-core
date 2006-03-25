@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/administration/CmsAdminMenu.java,v $
- * Date   : $Date: 2005/11/16 12:13:52 $
- * Version: $Revision: 1.12.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.12.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import javax.servlet.http.HttpServletRequest;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.12.2.2 $ 
+ * @version $Revision: 1.12.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -191,10 +191,8 @@ public class CmsAdminMenu extends CmsToolDialog {
         m_groupContainer.clear();
 
         // creates the context help menu
-        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", Messages.get().key(
-            getLocale(),
-            Messages.GUI_ADMIN_MENU_HELP_GROUP_0,
-            null));
+        CmsAdminMenuGroup helpMenu = new CmsAdminMenuGroup("help", Messages.get().getBundle(getLocale()).key(
+            Messages.GUI_ADMIN_MENU_HELP_GROUP_0));
         helpMenu.addMenuItem(new CmsAdminContextHelpMenuItem());
         addGroup(helpMenu);
 

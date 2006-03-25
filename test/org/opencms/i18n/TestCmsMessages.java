@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/test/org/opencms/i18n/TestCmsMessages.java,v $
- * Date   : $Date: 2006/03/22 16:38:22 $
- * Version: $Revision: 1.6.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:45 $
+ * Version: $Revision: 1.6.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -41,7 +41,7 @@ import junit.framework.TestCase;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.6.2.2 $
+ * @version $Revision: 1.6.2.3 $
  * 
  * @since 6.0.0
  */
@@ -95,7 +95,7 @@ public class TestCmsMessages extends TestCase {
         assertEquals("Login", value);
 
         String defaultValue = "This value does not exist!";
-        value = messages.key("idontexist", defaultValue);
+        value = messages.keyDefault("idontexist", defaultValue);
         assertFalse(CmsMessages.isUnknownKey(defaultValue));
         assertEquals(defaultValue, value);
     }

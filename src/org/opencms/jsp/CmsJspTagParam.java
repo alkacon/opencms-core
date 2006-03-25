@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagParam.java,v $
- * Date   : $Date: 2005/11/01 23:34:36 $
- * Version: $Revision: 1.17.2.2 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.17.2.3 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -103,7 +103,7 @@ import javax.servlet.jsp.tagext.Tag;
  *
  * @author Shawn Bayern
  * 
- * @version $Revision: 1.17.2.2 $ 
+ * @version $Revision: 1.17.2.3 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,8 +144,7 @@ public class CmsJspTagParam extends BodyTagSupport {
 
         Tag t = findAncestorWithClass(this, I_CmsJspTagParamParent.class);
         if (t == null) {
-            throw new JspTagException(Messages.get().key(
-                pageContext.getRequest().getLocale(),
+            throw new JspTagException(Messages.get().getBundle(pageContext.getRequest().getLocale()).key(
                 Messages.ERR_PARENTLESS_TAG_1,
                 new Object[] {"param"}));
         }

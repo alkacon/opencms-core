@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/CmsWidgetDialogParameter.java,v $
- * Date   : $Date: 2005/10/25 15:14:32 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.beanutils.PropertyUtilsBean;
  * 
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -423,14 +423,14 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                 throw new CmsWidgetException(Messages.get().container(
                     Messages.ERR_PROPERTY_WRITE_3,
                     value,
-                    dialog.key(A_CmsWidget.getLabelKey(this), getKey()),
+                    dialog.keyDefault(A_CmsWidget.getLabelKey(this), getKey()),
                     m_baseObject.getClass().getName()), e.getTargetException(), this);
             } catch (Exception e) {
                 setError(e);
                 throw new CmsWidgetException(Messages.get().container(
                     Messages.ERR_PROPERTY_WRITE_3,
                     value,
-                    dialog.key(A_CmsWidget.getLabelKey(this), getKey()),
+                    dialog.keyDefault(A_CmsWidget.getLabelKey(this), getKey()),
                     m_baseObject.getClass().getName()), e, this);
             }
         } else if (m_baseCollection instanceof SortedMap) {
@@ -444,7 +444,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                         Object val = map.get(key);
                         CmsWidgetException error = new CmsWidgetException(Messages.get().container(
                             Messages.ERR_MAP_DUPLICATE_KEY_3,
-                            dialog.key(A_CmsWidget.getLabelKey(this), getKey()),
+                            dialog.keyDefault(A_CmsWidget.getLabelKey(this), getKey()),
                             key,
                             val), this);
                         setError(error);
@@ -454,7 +454,7 @@ public class CmsWidgetDialogParameter implements I_CmsWidgetParameter {
                 } else {
                     CmsWidgetException error = new CmsWidgetException(Messages.get().container(
                         Messages.ERR_MAP_PARAMETER_FORM_1,
-                        dialog.key(A_CmsWidget.getLabelKey(this), getKey())), this);
+                        dialog.keyDefault(A_CmsWidget.getLabelKey(this), getKey())), this);
                     setError(error);
                     throw error;
                 }

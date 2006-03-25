@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspTagDecorate.java,v $
- * Date   : $Date: 2006/01/31 15:18:12 $
- * Version: $Revision: 1.1.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.1.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -51,7 +51,7 @@ import org.apache.commons.logging.Log;
  *
  * @author  Michael Emmerich
  * 
- * @version $Revision: 1.1.2.3 $ 
+ * @version $Revision: 1.1.2.4 $ 
  * 
  * @since 6.1.3 
  */
@@ -98,7 +98,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
             return CmsHtmlDecorator.doDecoration(content, config, encoding);
         } catch (Exception e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "decoration"), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "decoration"), e);
             }
             return content;
         }
@@ -123,7 +123,7 @@ public class CmsJspTagDecorate extends BodyTagSupport {
 
             } catch (Exception ex) {
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.ERR_PROCESS_TAG_1, "decoration"), ex);
+                    LOG.error(Messages.get().getBundle().key(Messages.ERR_PROCESS_TAG_1, "decoration"), ex);
                 }
                 throw new JspException(ex);
             }

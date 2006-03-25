@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workflow/Attic/Messages.java,v $
- * Date   : $Date: 2005/06/23 11:11:44 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -43,7 +43,7 @@ import java.util.Locale;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -188,19 +188,18 @@ public final class Messages extends A_CmsMessageBundle {
      */
     public static String toTaskTypeString(int taskType, Locale locale) {
 
-        Object[] dummy = new Object[0];
         switch (taskType) {
             case CmsTaskService.TASKS_ACTIVE:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
+                return Messages.get().getBundle(locale).key(Messages.GUI_TASK_TYPE_ACTIVE_0);
             case CmsTaskService.TASKS_ALL:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
+                return Messages.get().getBundle(locale).key(Messages.GUI_TASK_TYPE_ACTIVE_0);
             case CmsTaskService.TASKS_DONE:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
+                return Messages.get().getBundle(locale).key(Messages.GUI_TASK_TYPE_ACTIVE_0);
             case CmsTaskService.TASKS_NEW:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ACTIVE_0, dummy);
+                return Messages.get().getBundle(locale).key(Messages.GUI_TASK_TYPE_ACTIVE_0);
             case CmsTaskService.TASKS_OPEN:
             default:
-                return Messages.get().key(locale, Messages.GUI_TASK_TYPE_ILLEGAL_0, dummy);
+                return Messages.get().getBundle(locale).key(Messages.GUI_TASK_TYPE_ILLEGAL_0);
         }
     }
 

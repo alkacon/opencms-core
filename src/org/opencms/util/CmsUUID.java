@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/util/CmsUUID.java,v $
- * Date   : $Date: 2006/03/23 13:01:10 $
- * Version: $Revision: 1.19.2.6 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.19.2.7 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -66,7 +66,7 @@ import org.doomdark.uuid.UUIDGenerator;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.19.2.6 $ 
+ * @version $Revision: 1.19.2.7 $ 
  * 
  * @since 6.0.0 
  */
@@ -88,7 +88,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsUUID.class);
-    
+
     /** Serial version UID required for safe serialization. */
     private static final long serialVersionUID = 1736324454709298676L;
 
@@ -329,24 +329,23 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
         if (o instanceof String) {
             // this UUID has been serialized using the new method
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_READ_UUID_1, o));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_1, o));
             }
             m_uuid = new UUID((String)o);
         } else if (o instanceof UUID) {
             // this UUID has been serialized using the old method
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_READ_UUID_OLD_1, o));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_READ_UUID_OLD_1, o));
             }
             m_uuid = (UUID)o;
         } else {
             // UUID cannot be deserialized
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_ERR_READ_UUID_0));
-            }            
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_READ_UUID_0));
+            }
             throw new IOException("Cannot read externalized UUID.");
         }
     }
-    
 
     /**
      * 
@@ -355,7 +354,7 @@ public final class CmsUUID extends Object implements Serializable, Cloneable, Co
     public void writeExternal(ObjectOutput out) throws IOException {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_WRITE_UUID_1, m_uuid.toString()));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITE_UUID_1, m_uuid.toString()));
         }
         out.writeObject(m_uuid.toString());
     }

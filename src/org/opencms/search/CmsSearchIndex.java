@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndex.java,v $
- * Date   : $Date: 2006/03/22 13:38:07 $
- * Version: $Revision: 1.56.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.56.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -74,7 +74,7 @@ import org.apache.lucene.search.TermQuery;
  * @author Thomas Weckert  
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.56.2.8 $ 
+ * @version $Revision: 1.56.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -268,14 +268,14 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             m_priority = Integer.parseInt(value);
             if (m_priority < Thread.MIN_PRIORITY) {
                 m_priority = Thread.MIN_PRIORITY;
-                LOG.error(Messages.get().key(
+                LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_SEARCH_PRIORITY_TOO_LOW_2,
                     value,
                     new Integer(Thread.MIN_PRIORITY)));
 
             } else if (m_priority > Thread.MAX_PRIORITY) {
                 m_priority = Thread.MAX_PRIORITY;
-                LOG.debug(Messages.get().key(
+                LOG.debug(Messages.get().getBundle().key(
                     Messages.LOG_SEARCH_PRIORITY_TOO_HIGH_2,
                     value,
                     new Integer(Thread.MAX_PRIORITY)));
@@ -317,12 +317,15 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 // the project does not exist, disable the index
                 setEnabled(false);
                 if (LOG.isErrorEnabled()) {
-                    LOG.error(Messages.get().key(Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2, getProject(), getName()));
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_SEARCHINDEX_CREATE_BAD_PROJECT_2,
+                        getProject(),
+                        getName()));
                 }
             }
         } else {
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_SEARCHINDEX_DISABLED_1, getName()));
             }
         }
 
@@ -596,7 +599,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
         long timeResultProcessing;
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_SEARCH_PARAMS_2, params, m_name));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_SEARCH_PARAMS_2, params, m_name));
         }
 
         CmsRequestContext context = cms.getRequestContext();
@@ -700,8 +703,8 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                 finalQuery = query;
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_BASE_QUERY_1, query));
-                LOG.debug(Messages.get().key(Messages.LOG_REWRITTEN_QUERY_1, finalQuery));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_BASE_QUERY_1, query));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_REWRITTEN_QUERY_1, finalQuery));
 
             }
 
@@ -770,7 +773,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
                     } catch (Exception e) {
                         // should not happen, but if it does we want to go on with the next result nevertheless                        
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
+                            LOG.warn(Messages.get().getBundle().key(Messages.LOG_RESULT_ITERATION_FAILED_0), e);
                         }
                     }
                 }
@@ -810,7 +813,7 @@ public class CmsSearchIndex implements I_CmsConfigurationParameterHandler {
             new Long(timeLucene),
             new Long(timeResultProcessing)};
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_STAT_RESULTS_TIME_4, logParams));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_STAT_RESULTS_TIME_4, logParams));
         }
 
         return searchResults;

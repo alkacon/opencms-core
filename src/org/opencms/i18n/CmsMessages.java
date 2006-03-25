@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/i18n/CmsMessages.java,v $
- * Date   : $Date: 2006/03/24 13:59:24 $
- * Version: $Revision: 1.22.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.22.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import java.util.ResourceBundle;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.22.2.3 $ 
+ * @version $Revision: 1.22.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -399,8 +399,55 @@ public class CmsMessages {
     }
 
     /**
-     * Returns the localized resource string for a given message key,
-     * with the provided replacement parameters.<p>
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     * 
+     * Convenience method for messages with one argument.<p>
+     * 
+     * @param key the message key
+     * @param arg0 the message argument
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object arg0) {
+
+        return key(key, new Object[] {arg0});
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     * 
+     * Convenience method for messages with two arguments.<p>
+     * 
+     * @param key the message key
+     * @param arg0 the first message argument
+     * @param arg1 the second message argument
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object arg0, Object arg1) {
+
+        return key(key, new Object[] {arg0, arg1});
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
+     * 
+     * Convenience method for messages with three arguments.<p>
+     * 
+     * @param key the message key
+     * @param arg0 the first message argument
+     * @param arg1 the second message argument
+     * @param arg2 the third message argument
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale
+     */
+    public String key(String key, Object arg0, Object arg1, Object arg2) {
+
+        return key(key, new Object[] {arg0, arg1, arg2});
+    }
+
+    /**
+     * Returns the selected localized message for the initialized resource bundle and locale.<p>
      * 
      * If the key was found in the bundle, it will be formatted using
      * a <code>{@link MessageFormat}</code> using the provided parameters.<p>
@@ -409,25 +456,26 @@ public class CmsMessages {
      * <code>"??? " + keyName + " ???"</code>. This will also be returned 
      * if the bundle was not properly initialized first.
      * 
-     * @param keyName the key for the desired string 
-     * @param params the parameters to use for formatting
-     * @return the resource string for the given key 
+     * @param key the message key
+     * @param args the message arguments
+     * 
+     * @return the selected localized message for the initialized resource bundle and locale 
      */
-    public String key(String keyName, Object[] params) {
+    public String key(String key, Object[] args) {
 
-        if ((params == null) || (params.length == 0)) {
+        if ((args == null) || (args.length == 0)) {
             // no parameters available, use simple key method
-            return key(keyName);
+            return key(key);
         }
 
-        String result = key(keyName, true);
+        String result = key(key, true);
         if (result == null) {
             // key was not found
-            result = formatUnknownKey(keyName);
+            result = formatUnknownKey(key);
         } else {
             // key was found in the bundle - create and apply the formatter
             MessageFormat formatter = new MessageFormat(result, m_locale);
-            result = formatter.format(params);
+            result = formatter.format(args);
         }
         // return the result
         return result;
@@ -443,7 +491,7 @@ public class CmsMessages {
      * @param defaultValue the default value in case the key does not exist in the bundle
      * @return the resource string for the given key it it exists, or the given default if not 
      */
-    public String key(String keyName, String defaultValue) {
+    public String keyDefault(String keyName, String defaultValue) {
 
         String result = key(keyName, true);
         return (result == null) ? defaultValue : result;

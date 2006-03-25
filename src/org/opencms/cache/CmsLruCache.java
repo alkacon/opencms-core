@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/cache/CmsLruCache.java,v $
- * Date   : $Date: 2006/03/13 15:45:26 $
- * Version: $Revision: 1.19.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.19.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -56,7 +56,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert 
  * 
- * @version $Revision: 1.19.2.1 $
+ * @version $Revision: 1.19.2.2 $
  * 
  * @since 6.0.0
  */
@@ -124,7 +124,7 @@ public class CmsLruCache extends java.lang.Object {
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((m_maxObjectCosts != -1) && (theCacheObject.getLruCacheCosts() > m_maxObjectCosts)) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_CACHE_COSTS_TOO_HIGH_2,
                     new Integer(theCacheObject.getLruCacheCosts()),
                     new Integer(m_maxObjectCosts)));
@@ -297,7 +297,7 @@ public class CmsLruCache extends java.lang.Object {
         // only objects with cache costs < the max. allowed object cache costs can be cached!
         if ((m_maxObjectCosts != -1) && (theCacheObject.getLruCacheCosts() > m_maxObjectCosts)) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_CACHE_COSTS_TOO_HIGH_2,
                     new Integer(theCacheObject.getLruCacheCosts()),
                     new Integer(m_maxObjectCosts)));

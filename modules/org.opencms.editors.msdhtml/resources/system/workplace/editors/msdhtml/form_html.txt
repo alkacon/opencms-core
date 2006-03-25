@@ -1,4 +1,4 @@
-<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <%
 if (options.showElement("button.customized", displayOptions)) {%>
@@ -48,9 +48,9 @@ if (wp.isHelpEnabled()) {%>
 <td class="maxwidth">&nbsp;</td>
 <%= wp.button("javascript:confirmExitHTML();", null, "exit",org.opencms.workplace.editors.Messages.GUI_BUTTON_CLOSE_0, buttonStyle) %>
 <%= wp.buttonBarSpacer(5) %>
-<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 <%= wp.buttonBarHorizontalLine() %>
-<%= wp.buttonBar(wp.HTML_START) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_START) %>
 <%= wp.buttonBarStartTab(0, 5) %>
 <td><select class="textfeld" name="BLOCK" id="BLOCK" width=100 style="width:100px" onchange="doEditHTML(21);" size="1"><option selected value="Normal">Normal</select></td>
 <%
@@ -103,7 +103,7 @@ if (bgColor) {%>
 	<%= wp.button("javascript:doEditHTML(39);", null, "color_fill", org.opencms.workplace.editors.Messages.GUI_BUTTON_COLOR_0, buttonStyle) %><%
 }
 %>
-<%= wp.buttonBar(wp.HTML_END) %>
+<%= wp.buttonBar(CmsWorkplace.HTML_END) %>
 </td>
 <tr>
 <tr>
@@ -125,4 +125,3 @@ if (bgColor) {%>
 	</object>
 	</td>
 </tr>
-	

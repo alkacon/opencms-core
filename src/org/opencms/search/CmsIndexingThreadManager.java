@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsIndexingThreadManager.java,v $
- * Date   : $Date: 2005/08/02 10:15:48 $
- * Version: $Revision: 1.24 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.24.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -52,7 +52,7 @@ import org.apache.lucene.index.IndexWriter;
  * @author Carsten Weinholz 
  * @author Alexander Kandzior
  * 
- * @version $Revision: 1.24 $ 
+ * @version $Revision: 1.24.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -140,7 +140,7 @@ public class CmsIndexingThreadManager extends Thread {
                     I_CmsReport.FORMAT_NOTE);
             }
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_SKIPPED_1, res.getRootPath()));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_SKIPPED_1, res.getRootPath()));
             }
 
             // no need to continue
@@ -171,7 +171,7 @@ public class CmsIndexingThreadManager extends Thread {
 
                 }
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.ERR_INDEX_RESOURCE_FAILED_2,
                         res.getRootPath(),
                         index.getName()), e);
@@ -191,7 +191,7 @@ public class CmsIndexingThreadManager extends Thread {
                 if (thread.isAlive()) {
 
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_INDEXING_TIMEOUT_1, res.getRootPath()));
                     }
                     m_report.println();
                     m_report.print(
@@ -285,7 +285,7 @@ public class CmsIndexingThreadManager extends Thread {
                 Thread.sleep(30000);
                 // wait 30 seconds before we start checking for "dead" index threads
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_WAITING_ABANDONED_THREADS_2,
                         new Integer(m_abandonedCounter),
                         new Integer((m_fileCounter - m_returnedCounter))));
@@ -298,10 +298,10 @@ public class CmsIndexingThreadManager extends Thread {
 
         if (max > 0) {
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(Messages.LOG_THREADS_FINISHED_0));
+                LOG.info(Messages.get().getBundle().key(Messages.LOG_THREADS_FINISHED_0));
             }
         } else {
-            LOG.error(Messages.get().key(
+            LOG.error(Messages.get().getBundle().key(
                 Messages.LOG_THREADS_FINISHED_0,
                 new Integer(m_fileCounter - m_returnedCounter)));
         }

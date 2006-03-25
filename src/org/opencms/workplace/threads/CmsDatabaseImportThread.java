@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/threads/CmsDatabaseImportThread.java,v $
- * Date   : $Date: 2005/06/27 23:22:25 $
- * Version: $Revision: 1.8 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.8.2.1 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -45,7 +45,7 @@ import org.apache.commons.logging.Log;
  * @author Alexander Kandzior 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -65,10 +65,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
      */
     public CmsDatabaseImportThread(CmsObject cms, String importFile, boolean old) {
 
-        super(cms, Messages.get().key(
-            cms.getRequestContext().getLocale(),
-            Messages.GUI_DB_IMPORT_THREAD_NAME_1,
-            new Object[] {importFile}));
+        super(cms, Messages.get().getBundle().key(Messages.GUI_DB_IMPORT_THREAD_NAME_1, importFile));
         m_importFile = importFile;
         if (old) {
             initOldHtmlReport(cms.getRequestContext().getLocale());
@@ -95,7 +92,7 @@ public class CmsDatabaseImportThread extends A_CmsReportThread {
         } catch (CmsException e) {
             getReport().println(e);
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_DB_IMPORT_0), e);
+                LOG.error(Messages.get().getBundle().key(Messages.ERR_DB_IMPORT_0), e);
             }
         }
     }

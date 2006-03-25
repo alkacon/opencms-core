@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchManager.java,v $
- * Date   : $Date: 2006/01/18 14:51:52 $
- * Version: $Revision: 1.53.2.12 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.53.2.13 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -78,7 +78,7 @@ import org.apache.lucene.store.FSDirectory;
  * @author Carsten Weinholz 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.53.2.12 $ 
+ * @version $Revision: 1.53.2.13 $ 
  * 
  * @since 6.0.0 
  */
@@ -144,7 +144,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_indexSources = new HashMap();
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_START_SEARCH_CONFIG_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_START_SEARCH_CONFIG_0));
         }
     }
 
@@ -158,7 +158,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_analyzers.put(analyzer.getLocale(), analyzer);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_ANALYZER_2,
                 analyzer.getLocale(),
                 analyzer.getClassName()));
@@ -175,7 +175,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_documentTypeConfigs.put(documentType.getName(), documentType);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_SEARCH_DOC_TYPES_2,
                 documentType.getName(),
                 documentType.getClassName()));
@@ -214,7 +214,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_indexes.add(searchIndex);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_ADD_SEARCH_INDEX_2,
                 searchIndex.getName(),
                 searchIndex.getProject()));
@@ -231,7 +231,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_indexSources.put(searchIndexSource.getName(), searchIndexSource);
 
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_SEARCH_INDEX_SOURCE_2,
                 searchIndexSource.getName(),
                 searchIndexSource.getIndexerClassName()));
@@ -251,19 +251,21 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     m_resultCache.clear();
                 }
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_CLEAR_CACHES_0));
                 }
                 break;
             case I_CmsEventListener.EVENT_PUBLISH_PROJECT:
                 // event data contains a list of the published resources
                 CmsUUID publishHistoryId = new CmsUUID((String)event.getData().get(I_CmsEventListener.KEY_PUBLISHID));
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
+                    LOG.debug(Messages.get().getBundle().key(Messages.LOG_EVENT_PUBLISH_PROJECT_1, publishHistoryId));
                 }
                 I_CmsReport report = (I_CmsReport)event.getData().get(I_CmsEventListener.KEY_REPORT);
                 updateAllIndexes(m_adminCms, publishHistoryId, report);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1, publishHistoryId));
+                    LOG.debug(Messages.get().getBundle().key(
+                        Messages.LOG_EVENT_PUBLISH_PROJECT_FINISHED_1,
+                        publishHistoryId));
                 }
                 break;
             default:
@@ -522,7 +524,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     updateList.add(indexNames[i]);
                 } else {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexNames[i]));
+                        LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexNames[i]));
                     }
                 }
             }
@@ -540,7 +542,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
         long runTime = System.currentTimeMillis() - startTime;
 
-        String finishMessage = Messages.get().key(
+        String finishMessage = Messages.get().getBundle().key(
             Messages.LOG_REBUILD_INDEXES_FINISHED_1,
             CmsStringUtil.formatRuntime(runTime));
 
@@ -616,7 +618,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 updateIndex(index, report, false, null, null);
             } else {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
                 }
             }
         }
@@ -632,7 +634,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         m_indexes.remove(searchIndex);
 
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_REMOVE_SEARCH_INDEX_2,
                 searchIndex.getName(),
                 searchIndex.getProject()));
@@ -656,7 +658,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 removeSearchIndex(index);
             } else {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_NO_INDEX_WITH_NAME_1, indexName));
                 }
             }
         }
@@ -752,7 +754,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         try {
             m_maxExcerptLength = Integer.parseInt(maxExcerptLength);
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_PARSE_EXCERPT_LENGTH_FAILED_1, maxExcerptLength), e);
+            LOG.error(Messages.get().getBundle().key(Messages.LOG_PARSE_EXCERPT_LENGTH_FAILED_1, maxExcerptLength), e);
             m_maxExcerptLength = 1024;
         }
     }
@@ -814,7 +816,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 }
             }
         } catch (Exception e) {
-            LOG.error(Messages.get().key(Messages.LOG_IO_INDEX_READER_OPEN_2, index.getPath(), index.getName()), e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_IO_INDEX_READER_OPEN_2,
+                index.getPath(),
+                index.getName()), e);
         }
 
         return indexLocked;
@@ -967,7 +972,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
 
             } catch (CmsException e) {
                 if (LOG.isWarnEnabled()) {
-                    LOG.warn(Messages.get().key(Messages.LOG_DOCTYPE_CONFIG_FAILED_1, name), e);
+                    LOG.warn(Messages.get().getBundle().key(Messages.LOG_DOCTYPE_CONFIG_FAILED_1, name), e);
                 }
             }
         }
@@ -994,19 +999,21 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 } catch (CmsException e) {
                     // in this case the index will be disabled
                     if (CmsLog.INIT.isInfoEnabled()) {
-                        CmsLog.INIT.info(Messages.get().key(Messages.INIT_SEARCH_INIT_FAILED_1, index.getName()), e);
+                        CmsLog.INIT.info(Messages.get().getBundle().key(
+                            Messages.INIT_SEARCH_INIT_FAILED_1,
+                            index.getName()), e);
                     }
                 }
             }
             if (CmsLog.INIT.isInfoEnabled()) {
                 // output a log message if the index was successfully configured or not
                 if (index.isEnabled()) {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_INDEX_CONFIGURED_2,
                         index.getName(),
                         index.getProject()));
                 } else {
-                    CmsLog.INIT.info(Messages.get().key(
+                    CmsLog.INIT.info(Messages.get().getBundle().key(
                         Messages.INIT_INDEX_NOT_CONFIGURED_2,
                         index.getName(),
                         index.getProject()));
@@ -1030,7 +1037,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
             // read the list of all published resources
             publishedResources = adminCms.readPublishedResources(publishHistoryId);
         } catch (CmsException e) {
-            LOG.error(Messages.get().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId), e);
+            LOG.error(
+                Messages.get().getBundle().key(Messages.LOG_READING_CHANGED_RESOURCES_FAILED_1, publishHistoryId),
+                e);
             return;
         }
 
@@ -1072,9 +1081,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         } catch (CmsException e) {
                             // ignore, just use the original resource
                             if (LOG.isWarnEnabled()) {
-                                LOG.warn(
-                                    Messages.get().key(Messages.LOG_UNABLE_TO_READ_SIBLINGS_1, res.getRootPath()),
-                                    e);
+                                LOG.warn(Messages.get().getBundle().key(
+                                    Messages.LOG_UNABLE_TO_READ_SIBLINGS_1,
+                                    res.getRootPath()), e);
                             }
                         }
                     }
@@ -1097,7 +1106,9 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     try {
                         updateIndex(index, report, false, updateResources, documentCache);
                     } catch (CmsException e) {
-                        LOG.error(Messages.get().key(Messages.LOG_UPDATE_INDEX_FAILED_1, index.getName()), e);
+                        LOG.error(
+                            Messages.get().getBundle().key(Messages.LOG_UPDATE_INDEX_FAILED_1, index.getName()),
+                            e);
                     }
                 }
             }
@@ -1134,7 +1145,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
         }
 
         // check if the index has been configured correctly
-        if (! index.checkConfiguration(cms)) {
+        if (!index.checkConfiguration(cms)) {
             // the index is disabled
             return;
         }
@@ -1206,7 +1217,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                     writer.optimize();
                 } catch (IOException e) {
                     if (LOG.isWarnEnabled()) {
-                        LOG.warn(Messages.get().key(
+                        LOG.warn(Messages.get().getBundle().key(
                             Messages.LOG_IO_INDEX_WRITER_OPTIMIZE_1,
                             index.getPath(),
                             index.getName()), e);
@@ -1224,7 +1235,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         writer.close();
                     } catch (IOException e) {
                         if (LOG.isWarnEnabled()) {
-                            LOG.warn(Messages.get().key(
+                            LOG.warn(Messages.get().getBundle().key(
                                 Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
                                 index.getPath(),
                                 index.getName()), e);
@@ -1281,9 +1292,10 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                 try {
                     reader = IndexReader.open(index.getPath());
                 } catch (IOException e) {
-                    LOG.error(
-                        Messages.get().key(Messages.LOG_IO_INDEX_READER_OPEN_2, index.getPath(), index.getName()),
-                        e);
+                    LOG.error(Messages.get().getBundle().key(
+                        Messages.LOG_IO_INDEX_READER_OPEN_2,
+                        index.getPath(),
+                        index.getName()), e);
                 }
                 if (reader != null) {
                     try {
@@ -1301,7 +1313,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                             // close the reader after all resources have been deleted
                             reader.close();
                         } catch (IOException e) {
-                            LOG.error(Messages.get().key(
+                            LOG.error(Messages.get().getBundle().key(
                                 Messages.LOG_IO_INDEX_READER_CLOSE_2,
                                 index.getPath(),
                                 index.getName()), e);
@@ -1350,7 +1362,7 @@ public class CmsSearchManager implements I_CmsScheduledJob, I_CmsEventListener {
                         try {
                             writer.close();
                         } catch (IOException e) {
-                            LOG.error(Messages.get().key(
+                            LOG.error(Messages.get().getBundle().key(
                                 Messages.LOG_IO_INDEX_WRITER_CLOSE_2,
                                 index.getPath(),
                                 index.getName()), e);

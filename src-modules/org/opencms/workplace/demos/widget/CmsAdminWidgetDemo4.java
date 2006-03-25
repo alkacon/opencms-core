@@ -31,6 +31,7 @@
 
 package org.opencms.workplace.demos.widget;
 
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.main.CmsLog;
 import org.opencms.widgets.A_CmsWidget;
@@ -168,7 +169,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                         result.append("Disabled");
                     }
                     result.append("\">");
-                    result.append(key(A_CmsWidget.getLabelKey(p), p.getName()));
+                    result.append(keyDefault(A_CmsWidget.getLabelKey(p), p.getName()));
                     if (count > 1) {
                         result.append(" [").append(p.getIndex() + 1).append("]");
                     }
@@ -188,8 +189,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
                     } else {
                         // disabled element, show message for optional element
                         result.append("<td class=\"xmlTdDisabled maxwidth\">");
-                        result.append(Messages.get().key(
-                            this.getLocale(),
+                        result.append(Messages.get().getBundle(getLocale()).key(
                             Messages.GUI_EDITOR_XMLCONTENT_OPTIONALELEMENT_0));
                         result.append("</td>");
                     }
@@ -212,7 +212,7 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
             // close table
             result.append("</table>\n");
         } catch (Throwable t) {
-            LOG.error(org.opencms.workplace.editors.Messages.get().key(
+            LOG.error(org.opencms.workplace.editors.Messages.get().getBundle().key(
                 org.opencms.workplace.editors.Messages.ERR_XML_EDITOR_0), t);
         }
         return result.toString();
@@ -234,23 +234,19 @@ public class CmsAdminWidgetDemo4 extends CmsWidgetDialog {
         addWidget(new CmsWidgetDialogParameter("tablegalwidget", new CmsTableGalleryWidget(), 0, 5));
         addWidget(new CmsWidgetDialogParameter("extgalwidget", new CmsLinkGalleryWidget(), 0, 5));
 
-        String val1 = Messages.get().key(getLocale(), Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Object[] {"1"});
+        CmsMessages messages = Messages.get().getBundle(getLocale());
+
+        String val1 = messages.key(Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Integer(1));
         List widgetOptions = new ArrayList();
-        widgetOptions.add(new CmsSelectWidgetOption(val1, false, null, Messages.get().key(
-            getLocale(),
+        widgetOptions.add(new CmsSelectWidgetOption(val1, false, null, messages.key(
             Messages.GUI_WIDGETDEMO_DEMOHELP_1,
-            new Object[] {val1})));
-        widgetOptions.add(new CmsSelectWidgetOption(Messages.get().key(
-            getLocale(),
-            Messages.GUI_WIDGETDEMO_DEMOVALUE_1,
-            new Object[] {"2"}), true, null, Messages.get().key(
-            getLocale(),
-            Messages.GUI_WIDGETDEMO_DEMOHELP_VAL2_0,
-            null)));
-        widgetOptions.add(new CmsSelectWidgetOption(Messages.get().key(
-            getLocale(),
-            Messages.GUI_WIDGETDEMO_DEMOVALUE_1,
-            new Object[] {"3"})));
+            val1)));
+        widgetOptions.add(new CmsSelectWidgetOption(
+            messages.key(Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Integer(2)),
+            true,
+            null,
+            messages.key(Messages.GUI_WIDGETDEMO_DEMOHELP_VAL2_0)));
+        widgetOptions.add(new CmsSelectWidgetOption(messages.key(Messages.GUI_WIDGETDEMO_DEMOVALUE_1, new Integer(2))));
         addWidget(new CmsWidgetDialogParameter("combowidget", new CmsComboWidget(widgetOptions), 0, 2));
     }
 

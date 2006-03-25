@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/setup/Attic/CmsUpdateBean.java,v $
- * Date   : $Date: 2006/03/24 16:01:25 $
- * Version: $Revision: 1.1.2.11 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.1.2.12 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -67,7 +67,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Michael Moossen
  * 
- * @version $Revision: 1.1.2.11 $ 
+ * @version $Revision: 1.1.2.12 $ 
  * 
  * @since 6.0.0 
  */
@@ -170,7 +170,7 @@ public class CmsUpdateBean extends CmsSetupBean {
                     ver = getXmlHelper().getValue(
                         file,
                         CmsStringUtil.substitute(basePath, "?", "" + (i - 1)) + CmsModuleXmlHandler.N_VERSION);
-                } catch (CmsXmlException e) {
+                 } catch (CmsXmlException e) {
                     // ignore
                 }
                 modules.put(name, new CmsModuleVersion(ver));
@@ -290,7 +290,7 @@ public class CmsUpdateBean extends CmsSetupBean {
         if (!hasModules) {
             html.append("\t<tr>\n");
             html.append("\t\t<td style='vertical-align: middle;'>\n");
-            html.append(Messages.get().key(Messages.GUI_WARNING_ALL_MODULES_UPTODATE_0));
+            html.append(Messages.get().getBundle().key(Messages.GUI_WARNING_ALL_MODULES_UPTODATE_0));
             html.append("\t\t</td>\n");
             html.append("\t</tr>\n");
         }

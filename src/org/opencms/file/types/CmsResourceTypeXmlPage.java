@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/file/types/CmsResourceTypeXmlPage.java,v $
- * Date   : $Date: 2006/02/08 13:20:00 $
- * Version: $Revision: 1.21.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.21.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,17 +64,11 @@ import org.apache.commons.logging.Log;
  *
  * @author Alexander Kandzior 
  * 
- * @version $Revision: 1.21.2.3 $ 
+ * @version $Revision: 1.21.2.4 $ 
  * 
  * @since 6.0.0 
  */
 public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXmlDocumentLinkValidatable {
-
-    /** The type id of this resource type. */
-    private static final int RESOURCE_TYPE_ID = 6;
-
-    /** The name of this resource type. */
-    private static final String RESOURCE_TYPE_NAME = "xmlpage";
 
     /** The log object for this class. */
     private static final Log LOG = CmsLog.getLog(CmsResourceTypeXmlPage.class);
@@ -84,6 +78,12 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
 
     /** The static type id of this resource type. */
     private static int m_staticTypeId;
+
+    /** The type id of this resource type. */
+    private static final int RESOURCE_TYPE_ID = 6;
+
+    /** The name of this resource type. */
+    private static final String RESOURCE_TYPE_NAME = "xmlpage";
 
     /**
      * Default constructor, used to initialize member variables.<p>
@@ -135,7 +135,7 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
                 CmsResourceFilter.IGNORE_EXPIRATION);
         } catch (CmsException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(org.opencms.db.Messages.get().key(
+                LOG.error(org.opencms.db.Messages.get().getBundle().key(
                     org.opencms.db.Messages.ERR_READ_RESOURCE_1,
                     cms.getSitePath(resource)), e);
             }
@@ -173,7 +173,9 @@ public class CmsResourceTypeXmlPage extends A_CmsResourceType implements I_CmsXm
             }
         } catch (CmsXmlException e) {
             if (LOG.isErrorEnabled()) {
-                LOG.error(Messages.get().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)), e);
+                LOG.error(
+                    Messages.get().getBundle().key(Messages.ERR_PROCESS_HTML_CONTENT_1, cms.getSitePath(resource)),
+                    e);
             }
 
             return Collections.EMPTY_LIST;

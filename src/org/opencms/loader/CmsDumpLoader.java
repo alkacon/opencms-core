@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsDumpLoader.java,v $
- * Date   : $Date: 2005/11/15 16:39:23 $
- * Version: $Revision: 1.64.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.64.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -64,7 +64,7 @@ import org.apache.commons.collections.ExtendedProperties;
  *
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.64.2.1 $ 
+ * @version $Revision: 1.64.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -173,7 +173,7 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
      */
     public String getResourceLoaderInfo() {
 
-        return Messages.get().key(Messages.GUI_LOADER_DUMB_DEFAULT_DESC_0);
+        return Messages.get().getBundle().key(Messages.GUI_LOADER_DUMB_DEFAULT_DESC_0);
     }
 
     /**
@@ -193,9 +193,11 @@ public class CmsDumpLoader implements I_CmsResourceLoader {
 
         if (CmsLog.INIT.isInfoEnabled()) {
             if (maxAge != null) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
             }
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOADER_INITIALIZED_1,
+                this.getClass().getName()));
         }
     }
 

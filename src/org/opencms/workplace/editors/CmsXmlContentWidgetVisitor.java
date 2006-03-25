@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/editors/CmsXmlContentWidgetVisitor.java,v $
- * Date   : $Date: 2005/09/27 11:18:35 $
- * Version: $Revision: 1.6.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.6.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -54,7 +54,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Andreas Zahner 
  * 
- * @version $Revision: 1.6.2.1 $ 
+ * @version $Revision: 1.6.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -143,7 +143,7 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
     public void visit(I_CmsXmlContentValue value) {
 
         if (LOG.isDebugEnabled()) {
-            LOG.debug(org.opencms.workplace.editors.Messages.get().key(
+            LOG.debug(org.opencms.workplace.editors.Messages.get().getBundle().key(
                 org.opencms.workplace.editors.Messages.LOG_VISITING_1,
                 value.getPath()));
         }
@@ -161,12 +161,14 @@ public class CmsXmlContentWidgetVisitor implements I_CmsXmlContentValueVisitor {
                     m_widgets.put(value.getPath(), widget);
                     m_values.put(value.getPath(), value);
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_DEBUG_WIDGETCOLLECTOR_ADD_1, value.getPath()));
+                        LOG.debug(Messages.get().getBundle().key(
+                            Messages.LOG_DEBUG_WIDGETCOLLECTOR_ADD_1,
+                            value.getPath()));
                     }
                 } catch (CmsXmlException e) {
                     // should usually not happen
                     if (LOG.isErrorEnabled()) {
-                        LOG.error(Messages.get().key(Messages.ERR_WIDGETCOLLECTOR_ADD_1, value), e);
+                        LOG.error(Messages.get().getBundle().key(Messages.ERR_WIDGETCOLLECTOR_ADD_1, value), e);
                     }
                 }
             }

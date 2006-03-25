@@ -1,15 +1,11 @@
 <%@ page import="
-	org.opencms.workplace.*,
 	org.opencms.workplace.editors.*,
-	org.opencms.workplace.explorer.*,
-	org.opencms.jsp.*,
-	java.util.*"
+	org.opencms.workplace.*,
+	org.opencms.jsp.*"
 %><%
 	
 CmsJspActionElement cms = new CmsJspActionElement(pageContext, request, response);
 CmsXmlContentEditor wp = new CmsXmlContentEditor(cms);
-CmsEditorDisplayOptions options = wp.getEditorDisplayOptions();
-Properties displayOptions = options.getDisplayOptions(cms);
 
 int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 
@@ -17,25 +13,25 @@ int buttonStyle = wp.getSettings().getUserSettings().getEditorButtonStyle();
 	
 switch (wp.getAction()) {
 
-case CmsXmlContentEditor.ACTION_CANCEL:
-case CmsXmlContentEditor.ACTION_SHOW_ERRORMESSAGE:
+case CmsDialog.ACTION_CANCEL:
+case CmsEditor.ACTION_SHOW_ERRORMESSAGE:
 //////////////////// ACTION: display the common error dialog
 	// do nothing here, only prevent editor content from being displayed!
 	
 break;
-case CmsXmlContentEditor.ACTION_PREVIEW:
+case CmsEditor.ACTION_PREVIEW:
 //////////////////// ACTION: preview the content
 
 	wp.actionPreview();
 
 break;
-case CmsXmlContentEditor.ACTION_EXIT:
+case CmsEditor.ACTION_EXIT:
 //////////////////// ACTION: exit the editor without saving
 
 	wp.actionExit();
 
 break;
-case CmsXmlContentEditor.ACTION_SAVEEXIT:
+case CmsEditor.ACTION_SAVEEXIT:
 //////////////////// ACTION: save the modified content and exit the editor
 
 	wp.actionSave();
@@ -46,18 +42,18 @@ case CmsXmlContentEditor.ACTION_SAVEEXIT:
 		<script type="text/javascript" src="<%= wp.getEditorResourceUri() %>edit.js"></script>
 		<script type="text/javascript">
 		<!--
-			var actionExit = "<%= wp.EDITOR_EXIT %>";
+			var actionExit = "<%= CmsEditor.EDITOR_EXIT %>";
 		//-->
 		</script>
 		</head>
 		<body class="buttons-head" unselectable="on">
 		<form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
-		<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="">
-		<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
-		<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
-		<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
-		<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
-		<input type="hidden" name="<%= wp.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
+		<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="">
+		<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+		<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+		<input type="hidden" name="<%= CmsEditor.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+		<input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+		<input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
 		</form>
 		<script type="text/javascript">
 		<!--
@@ -72,12 +68,12 @@ case CmsXmlContentEditor.ACTION_SAVEEXIT:
 	}
 
 
-case CmsXmlContentEditor.ACTION_SAVE:
+case CmsEditor.ACTION_SAVE:
 //////////////////// ACTION: save the modified content and show the editor again
 	
-	if (wp.getAction() == CmsXmlContentEditor.ACTION_SAVE) {
+	if (wp.getAction() == CmsEditor.ACTION_SAVE) {
 		wp.actionSave();
-		if (wp.getAction() == CmsXmlContentEditor.ACTION_CANCEL) {
+		if (wp.getAction() == CmsDialog.ACTION_CANCEL) {
 			// an error occured during save, do not show editor form
 			break;
 		}
@@ -99,9 +95,10 @@ case CmsXmlContentEditor.ACTION_CHECK:
 		wp.setEditorValues(wp.getElementLocale());
 	}
 
-case CmsXmlContentEditor.ACTION_DEFAULT:
+case CmsDialog.ACTION_DEFAULT:
 default:
 //////////////////// ACTION: show editor frame (default)
+
 %><html>
 <head>
 <meta http-equiv="content-type" content="text/html; charset=<%= wp.getEncoding() %>">
@@ -124,7 +121,7 @@ var contextPath = "<%= wp.getOpenCmsContext() %>";
 // the OpenCms workplace path
 var workplacePath="<%= cms.link("/system/workplace/") %>";
 // skin URI needed in included javascript files 
-var skinUri = "<%= wp.getSkinUri() %>";
+var skinUri = "<%= CmsWorkplace.getSkinUri() %>";
 // style of the buttons
 var buttonStyle = <%= buttonStyle %>;
 
@@ -133,30 +130,30 @@ var stringsPresent = false;
 var stringsInserted = false;
 
 // action parameters of the form
-var actionAddElement = "<%= wp.EDITOR_ACTION_ELEMENT_ADD %>";
-var actionChangeElement = "<%= wp.EDITOR_CHANGE_ELEMENT %>";
-var actionCheck = "<%= wp.EDITOR_ACTION_CHECK %>";
-var actionExit = "<%= wp.EDITOR_EXIT %>";
-var actionPreview = "<%= wp.EDITOR_PREVIEW %>";
-var actionRemoveElement = "<%= wp.EDITOR_ACTION_ELEMENT_REMOVE %>";
-var actionSaveAction = "<%= wp.EDITOR_SAVEACTION %>";
-var actionSaveExit = "<%= wp.EDITOR_SAVEEXIT %>";
-var actionSave = "<%= wp.EDITOR_SAVE %>";
-var actionMoveElementDown = "<%= wp.EDITOR_ACTION_ELEMENT_MOVE_DOWN %>";
-var actionMoveElementUp = "<%= wp.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
+var actionAddElement = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_ADD %>";
+var actionChangeElement = "<%= CmsEditor.EDITOR_CHANGE_ELEMENT %>";
+var actionCheck = "<%= CmsXmlContentEditor.EDITOR_ACTION_CHECK %>";
+var actionExit = "<%= CmsEditor.EDITOR_EXIT %>";
+var actionPreview = "<%= CmsEditor.EDITOR_PREVIEW %>";
+var actionRemoveElement = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_REMOVE %>";
+var actionSaveAction = "<%= CmsEditor.EDITOR_SAVEACTION %>";
+var actionSaveExit = "<%= CmsEditor.EDITOR_SAVEEXIT %>";
+var actionSave = "<%= CmsEditor.EDITOR_SAVE %>";
+var actionMoveElementDown = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_DOWN %>";
+var actionMoveElementUp = "<%= CmsXmlContentEditor.EDITOR_ACTION_ELEMENT_MOVE_UP %>";
 
 // Localized button labels
-var LANG_BT_DELETE = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";
-var LANG_BT_ADD = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_BUTTON_ADDNEW_0) %>";
-var LANG_BT_MOVE_UP = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_MOVE_UP_0) %>";
-var LANG_BT_MOVE_DOWN = "<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_MOVE_DOWN_0) %>";
+var LANG_BT_DELETE = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_DELETE_0) %>";
+var LANG_BT_ADD = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_BUTTON_ADDNEW_0) %>";
+var LANG_BT_MOVE_UP = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_MOVE_UP_0) %>";
+var LANG_BT_MOVE_DOWN = "<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_XMLCONTENT_MOVE_DOWN_0) %>";
 
 // the currently edited element language
 var editedElementLanguage = "<%= wp.getParamElementlanguage() %>";
 	
 // Ask user whether he really wants to leave the editor without saving
 function confirmExit() {
-	if (confirm("<%= org.opencms.workplace.editors.Messages.get().key(wp.getLocale(), org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
+	if (confirm("<%= wp.key(org.opencms.workplace.editors.Messages.GUI_EDITOR_MESSAGE_EXIT_0) %>")) {
 		buttonAction(1);
 	}
 }
@@ -184,18 +181,18 @@ function exitEditor() {
 <body class="buttons-head" unselectable="on" onload="init();" onunload="exitEditor();">
 
 <form name="EDITOR" id="EDITOR" method="post" action="<%= wp.getJsp().link(CmsEditor.PATH_EDITORS + "xmlcontent/editor_form.jsp") %>">
-<input type="hidden" name="<%= wp.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
-<input type="hidden" name="<%= wp.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
-<input type="hidden" name="<%= wp.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
-<input type="hidden" name="<%= wp.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
-<input type="hidden" name="<%= wp.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
-<input type="hidden" name="<%= wp.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
-<input type="hidden" name="<%= wp.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
-<input type="hidden" name="<%= wp.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
-<input type="hidden" name="<%= wp.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
-<input type="hidden" name="<%= wp.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
-<input type="hidden" name="<%= wp.PARAM_ELEMENTINDEX %>" value="">
-<input type="hidden" name="<%= wp.PARAM_ELEMENTNAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_ACTION %>" value="<%= wp.getParamAction() %>">
+<input type="hidden" name="<%= CmsDialog.PARAM_RESOURCE %>" value="<%= wp.getParamResource() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_TEMPFILE %>" value="<%= wp.getParamTempfile() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_LOADDEFAULT %>" value="<%= wp.getParamLoaddefault() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_EDITASTEXT %>" value="<%= wp.getParamEditastext() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_ELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_OLDELEMENTLANGUAGE %>" value="<%= wp.getParamElementlanguage() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_DIRECTEDIT %>" value="<%= wp.getParamDirectedit() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_BACKLINK %>" value="<%= wp.getParamBacklink() %>">
+<input type="hidden" name="<%= CmsEditor.PARAM_MODIFIED %>" value="<%= wp.getParamModified() %>">
+<input type="hidden" name="<%= CmsXmlContentEditor.PARAM_ELEMENTINDEX %>" value="">
+<input type="hidden" name="<%= CmsXmlContentEditor.PARAM_ELEMENTNAME %>" value="">
  
 <%= wp.getXmlEditorForm() %>
 

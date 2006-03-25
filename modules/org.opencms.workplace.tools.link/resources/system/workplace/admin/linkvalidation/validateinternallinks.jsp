@@ -1,7 +1,6 @@
 <%@ page import="
 
 	org.opencms.workplace.*, 
-	org.opencms.workplace.commons.*,
     org.opencms.workplace.tools.link.*
 
 "%><%	
@@ -52,11 +51,11 @@ function init() {
 <%= wp.dialogStart() %>
 <%= wp.dialogContentStart(wp.getParamTitle()) %>
 
-<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= wp.DIALOG_OK %>', null, 'main');">
+<form name="main" action="<%= wp.getDialogUri() %>" method="post" class="nomargin" onsubmit="submitAction('<%= CmsDialog.DIALOG_OK %>', null, 'main');">
 <%= wp.paramsAsHidden() %>
-<input type="hidden" name="<%= wp.PARAM_FRAMENAME %>" value="">
+<input type="hidden" name="<%= CmsDialog.PARAM_FRAMENAME %>" value="">
 
-<%= org.opencms.workplace.tools.link.Messages.get().key(wp.getLocale(), org.opencms.workplace.tools.link.Messages.GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0) %>
+<%= org.opencms.workplace.tools.link.Messages.get().getBundle(wp.getLocale()).key(org.opencms.workplace.tools.link.Messages.GUI_MESSAGEBOX_HTML_LINK_VALIDATOR1_0) %>
 
 <%= wp.dialogContentEnd() %>
 <%= wp.dialogButtonsOkCancel() %>

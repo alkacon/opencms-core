@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/loader/CmsJspLoader.java,v $
- * Date   : $Date: 2006/03/24 16:02:15 $
- * Version: $Revision: 1.97.2.5 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.97.2.6 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -105,7 +105,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  *
- * @version $Revision: 1.97.2.5 $ 
+ * @version $Revision: 1.97.2.6 $ 
  * 
  * @since 6.0.0 
  * 
@@ -295,7 +295,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
      */
     public String getResourceLoaderInfo() {
 
-        return Messages.get().key(Messages.GUI_LOADER_JSP_DEFAULT_DESC_0);
+        return Messages.get().getBundle().key(Messages.GUI_LOADER_JSP_DEFAULT_DESC_0);
     }
 
     /**
@@ -328,16 +328,18 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
-            CmsLog.INIT.info(Messages.get().key(
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_JSP_REPOSITORY_ABS_PATH_1, m_jspRepository));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_WEBAPP_PATH_1, m_jspWebAppRepository));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
                 Messages.INIT_JSP_REPOSITORY_ERR_PAGE_COMMOTED_1,
                 new Boolean(m_errorPagesAreNotCommited)));
             if (maxAge != null) {
-                CmsLog.INIT.info(Messages.get().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
+                CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_CLIENT_CACHE_MAX_AGE_1, maxAge));
             }
 
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_LOADER_INITIALIZED_1, this.getClass().getName()));
+            CmsLog.INIT.info(Messages.get().getBundle().key(
+                Messages.INIT_LOADER_INITIALIZED_1,
+                this.getClass().getName()));
         }
     }
 
@@ -441,7 +443,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
         m_cache = cache;
         // output setup information
         if (CmsLog.INIT.isInfoEnabled()) {
-            CmsLog.INIT.info(Messages.get().key(Messages.INIT_ADD_FLEX_CACHE_0));
+            CmsLog.INIT.info(Messages.get().getBundle().key(Messages.INIT_ADD_FLEX_CACHE_0));
         }
     }
 
@@ -467,7 +469,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 f_res);
         } catch (SocketException e) {
             // uncritical, might happen if client (browser) does not wait until end of page delivery
-            LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
         }
 
         byte[] result = null;
@@ -543,10 +545,10 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
             } catch (IllegalStateException e) {
                 // uncritical, might happen if JSP error page was used
-                LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
             } catch (SocketException e) {
                 // uncritical, might happen if client (browser) does not wait until end of page delivery
-                LOG.debug(Messages.get().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_IGNORING_EXC_1, e.getClass().getName()), e);
             }
         }
 
@@ -617,9 +619,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             content = new String(byteContent, encoding);
         } catch (UnsupportedEncodingException e) {
             // encoding property is not set correctly 
-            LOG.error(
-                Messages.get().key(Messages.LOG_UNSUPPORTED_ENC_1, controller.getCurrentRequest().getElementUri()),
-                e);
+            LOG.error(Messages.get().getBundle().key(
+                Messages.LOG_UNSUPPORTED_ENC_1,
+                controller.getCurrentRequest().getElementUri()), e);
             try {
                 encoding = OpenCms.getSystemInfo().getDefaultEncoding();
                 content = new String(byteContent, encoding);
@@ -673,7 +675,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DIRECTIVE_DETECTED_3,
                         DIRECTIVE_START,
                         directive,
@@ -687,7 +689,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 String argument = null;
                 if (directive.startsWith("cms", t1)) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "cms"));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "cms"));
                     }
                     t2 = directive.indexOf("file", t1 + 3);
                     t5 = 4;
@@ -707,7 +709,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         argument = sub.substring(t3, t4);
                     }
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
                     }
                 }
 
@@ -717,7 +719,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     if (jspname != null) {
                         directive = jspname;
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.LOG_DIRECTIVE_CHANGED_3,
                                 DIRECTIVE_START,
                                 directive,
@@ -775,7 +777,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // no directive found at all, append content to buffer
             buf.append(content);
         }
-        
+
         while (i1 >= 0) {
             // parse the file and set/replace page encoding
             i2 = content.indexOf(DIRECTIVE_END, i1 + slen);
@@ -785,7 +787,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DIRECTIVE_DETECTED_3,
                         DIRECTIVE_START,
                         directive,
@@ -799,7 +801,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 String argument = null;
                 if (directive.startsWith("page", t1)) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
                     }
                     t2 = directive.indexOf("pageEncoding", t1 + 4);
                     t5 = 12;
@@ -822,7 +824,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         argument = sub.substring(t3, t4);
                     }
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
                     }
                 }
 
@@ -833,7 +835,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                     // change the encoding
                     directive = pre + encoding + suf;
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(
+                        LOG.debug(Messages.get().getBundle().key(
                             Messages.LOG_DIRECTIVE_CHANGED_3,
                             DIRECTIVE_START,
                             directive,
@@ -899,7 +901,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             } else if (i2 > i1) {
                 String directive = content.substring(i1 + slen, i2);
                 if (LOG.isDebugEnabled()) {
-                    LOG.debug(Messages.get().key(
+                    LOG.debug(Messages.get().getBundle().key(
                         Messages.LOG_DIRECTIVE_DETECTED_3,
                         DIRECTIVE_START,
                         directive,
@@ -913,13 +915,13 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 String argument = null;
                 if (directive.startsWith("include", t1)) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "include"));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "include"));
                     }
                     t2 = directive.indexOf("file", t1 + 7);
                     t5 = 6;
                 } else if (directive.startsWith("page", t1)) {
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_X_DIRECTIVE_DETECTED_1, "page"));
                     }
                     t2 = directive.indexOf("errorPage", t1 + 4);
                     t5 = 11;
@@ -939,7 +941,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         argument = sub.substring(t3, t4);
                     }
                     if (LOG.isDebugEnabled()) {
-                        LOG.debug(Messages.get().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
+                        LOG.debug(Messages.get().getBundle().key(Messages.LOG_DIRECTIVE_ARG_1, argument));
                     }
                 }
 
@@ -953,7 +955,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                         // only change something in case no error had occured
                         directive = pre + jspname + suf;
                         if (LOG.isDebugEnabled()) {
-                            LOG.debug(Messages.get().key(
+                            LOG.debug(Messages.get().getBundle().key(
                                 Messages.LOG_DIRECTIVE_CHANGED_3,
                                 DIRECTIVE_START,
                                 directive,
@@ -1059,7 +1061,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         if (mustUpdate) {
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_WRITING_JSP_1, jspTargetName));
             }
             byte[] contents;
             String encoding;
@@ -1075,7 +1077,9 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 }
             } catch (CmsException e) {
                 controller.setThrowable(e, jspVfsName);
-                throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName), e);
+                throw new ServletException(
+                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_ACCESS_1, jspVfsName),
+                    e);
             }
 
             try {
@@ -1091,10 +1095,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
                 contents = null;
 
                 if (LOG.isInfoEnabled()) {
-                    LOG.info(Messages.get().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
+                    LOG.info(Messages.get().getBundle().key(Messages.LOG_UPDATED_JSP_2, jspTargetName, jspVfsName));
                 }
             } catch (FileNotFoundException e) {
-                throw new ServletException(Messages.get().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()), e);
+                throw new ServletException(
+                    Messages.get().getBundle().key(Messages.ERR_LOADER_JSP_WRITE_1, f.getName()),
+                    e);
             }
         }
 
@@ -1118,7 +1124,7 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
 
         String jspVfsName = CmsLinkManager.getAbsoluteUri(vfsName, controller.getCurrentRequest().getElementRootPath());
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
+            LOG.debug(Messages.get().getBundle().key(Messages.LOG_UPDATE_JSP_1, jspVfsName));
         }
         String jspRfsName = null;
         try {
@@ -1129,12 +1135,12 @@ public class CmsJspLoader implements I_CmsResourceLoader, I_CmsFlexCacheEnabledL
             // make sure the jsp referenced file is generated
             jspRfsName = updateJsp(includeResource, controller, includes);
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_NAME_REAL_FS_1, jspRfsName));
             }
         } catch (Exception e) {
             jspRfsName = null;
             if (LOG.isDebugEnabled()) {
-                LOG.debug(Messages.get().key(Messages.LOG_ERR_UPDATE_1, jspVfsName), e);
+                LOG.debug(Messages.get().getBundle().key(Messages.LOG_ERR_UPDATE_1, jspVfsName), e);
             }
         }
         return jspRfsName;

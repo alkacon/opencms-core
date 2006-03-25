@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/list/CmsHtmlList.java,v $
- * Date   : $Date: 2006/03/08 16:40:04 $
- * Version: $Revision: 1.32.2.8 $
+ * Date   : $Date: 2006/03/25 22:42:43 $
+ * Version: $Revision: 1.32.2.9 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.list;
 
 import org.opencms.i18n.CmsMessageContainer;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.main.CmsIllegalArgumentException;
 import org.opencms.util.CmsStringUtil;
 import org.opencms.workplace.CmsDialog;
@@ -51,7 +52,7 @@ import java.util.Locale;
  * 
  * @author Michael Moossen  
  * 
- * @version $Revision: 1.32.2.8 $ 
+ * @version $Revision: 1.32.2.9 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,7 +215,7 @@ public class CmsHtmlList {
      */
     public List getCurrentPageItems() {
 
-        if (getSize()==0) {
+        if (getSize() == 0) {
             return Collections.EMPTY_LIST;
         }
         return Collections.unmodifiableList(getContent().subList(displayedFrom() - 1, displayedTo()));
@@ -519,6 +520,7 @@ public class CmsHtmlList {
     public String listJs(Locale locale) {
 
         StringBuffer js = new StringBuffer(1024);
+        CmsMessages messages = Messages.get().getBundle(locale);
         js.append("<script type='text/javascript' src='");
         js.append(CmsWorkplace.getSkinUri());
         js.append("admin/javascript/list.js'></script>\n");
@@ -527,10 +529,7 @@ public class CmsHtmlList {
             js.append("\tvar ");
             js.append(NO_SELECTION_HELP_VAR);
             js.append(" = '");
-            js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
-                locale,
-                Messages.GUI_LIST_ACTION_NO_SELECTION_0,
-                null)));
+            js.append(CmsStringUtil.escapeJavaScript(messages.key(Messages.GUI_LIST_ACTION_NO_SELECTION_0)));
             js.append("';\n");
             Iterator it = m_metadata.getMultiActions().iterator();
             while (it.hasNext()) {
@@ -541,10 +540,9 @@ public class CmsHtmlList {
                     js.append(NO_SELECTION_MATCH_HELP_VAR);
                     js.append(rAction.getId());
                     js.append(" = '");
-                    js.append(CmsStringUtil.escapeJavaScript(Messages.get().key(
-                        locale,
+                    js.append(CmsStringUtil.escapeJavaScript(messages.key(
                         Messages.GUI_LIST_ACTION_NO_SELECTION_MATCH_1,
-                        new Object[] {new Integer(rAction.getSelections())})));
+                        new Integer(rAction.getSelections()))));
                     js.append("';\n");
                 }
             }
@@ -1005,17 +1003,18 @@ public class CmsHtmlList {
             return "";
         }
         StringBuffer html = new StringBuffer(1024);
+        CmsMessages messages = Messages.get().getBundle(wp.getLocale());
         html.append("<table width='100%' cellspacing='0' style='margin-top: 5px;'>\n");
         html.append("\t<tr>\n");
         html.append("\t\t<td class='main'>\n");
         // prev button
         String id = "listPrev";
-        String name = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0, null);
+        String name = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_NAME_0);
         String iconPath = ICON_LEFT;
         boolean enabled = getCurrentPage() > 1;
-        String helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0, null);
+        String helpText = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_HELP_0);
         if (!enabled) {
-            helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0, null);
+            helpText = messages.key(Messages.GUI_LIST_PAGING_PREVIOUS_HELPDIS_0);
         }
         String onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() - 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
@@ -1031,12 +1030,12 @@ public class CmsHtmlList {
         html.append("\n");
         // next button
         id = "listNext";
-        name = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_NAME_0, null);
+        name = messages.key(Messages.GUI_LIST_PAGING_NEXT_NAME_0);
         iconPath = ICON_RIGHT;
         enabled = getCurrentPage() < getNumberOfPages();
-        helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_HELP_0, null);
+        helpText = messages.key(Messages.GUI_LIST_PAGING_NEXT_HELP_0);
         if (!enabled) {
-            helpText = Messages.get().key(wp.getLocale(), Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0, null);
+            helpText = messages.key(Messages.GUI_LIST_PAGING_NEXT_HELPDIS_0);
         }
         onClic = "listSetPage('" + getId() + "', " + (getCurrentPage() + 1) + ")";
         html.append(A_CmsHtmlIconButton.defaultButtonHtml(
@@ -1071,13 +1070,11 @@ public class CmsHtmlList {
         html.append("\t\t\t</select>\n");
         html.append("\t\t\t&nbsp;&nbsp;&nbsp;");
         if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-            html.append(Messages.get().key(
-                wp.getLocale(),
+            html.append(messages.key(
                 Messages.GUI_LIST_PAGING_TEXT_2,
                 new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
         } else {
-            html.append(Messages.get().key(
-                wp.getLocale(),
+            html.append(messages.key(
                 Messages.GUI_LIST_PAGING_FILTER_TEXT_3,
                 new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
         }
@@ -1097,42 +1094,36 @@ public class CmsHtmlList {
     private String htmlTitle(CmsWorkplace wp) {
 
         StringBuffer html = new StringBuffer(512);
+        CmsMessages messages = Messages.get().getBundle(wp.getLocale());
         html.append("<table width='100%' cellspacing='0'>");
         html.append("\t<tr>\n");
         html.append("\t\t<td align='left'>\n");
         html.append("\t\t\t");
         if (getTotalNumberOfPages() > 1) {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-                html.append(Messages.get().key(
-                    wp.getLocale(),
-                    Messages.GUI_LIST_TITLE_TEXT_4,
-                    new Object[] {
-                        m_name.key(wp.getLocale()),
-                        new Integer(displayedFrom()),
-                        new Integer(displayedTo()),
-                        new Integer(getTotalSize())}));
+                html.append(messages.key(Messages.GUI_LIST_TITLE_TEXT_4, new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(displayedFrom()),
+                    new Integer(displayedTo()),
+                    new Integer(getTotalSize())}));
             } else {
-                html.append(Messages.get().key(
-                    wp.getLocale(),
-                    Messages.GUI_LIST_TITLE_FILTERED_TEXT_5,
-                    new Object[] {
-                        m_name.key(wp.getLocale()),
-                        new Integer(displayedFrom()),
-                        new Integer(displayedTo()),
-                        new Integer(getSize()),
-                        new Integer(getTotalSize())}));
+                html.append(messages.key(Messages.GUI_LIST_TITLE_FILTERED_TEXT_5, new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(displayedFrom()),
+                    new Integer(displayedTo()),
+                    new Integer(getSize()),
+                    new Integer(getTotalSize())}));
             }
         } else {
             if (CmsStringUtil.isEmptyOrWhitespaceOnly(m_searchFilter)) {
-                html.append(Messages.get().key(
-                    wp.getLocale(),
-                    Messages.GUI_LIST_SINGLE_TITLE_TEXT_2,
-                    new Object[] {m_name.key(wp.getLocale()), new Integer(getTotalSize())}));
+                html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_TEXT_2, new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(getTotalSize())}));
             } else {
-                html.append(Messages.get().key(
-                    wp.getLocale(),
-                    Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3,
-                    new Object[] {m_name.key(wp.getLocale()), new Integer(getSize()), new Integer(getTotalSize())}));
+                html.append(messages.key(Messages.GUI_LIST_SINGLE_TITLE_FILTERED_TEXT_3, new Object[] {
+                    m_name.key(wp.getLocale()),
+                    new Integer(getSize()),
+                    new Integer(getTotalSize())}));
             }
         }
         html.append("\n");

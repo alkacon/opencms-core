@@ -64,7 +64,7 @@ import org.w3c.tidy.Tidy;
  * 
  * @author Michael Emmerich 
  * 
- * @version $Revision: 1.8 $ 
+ * @version $Revision: 1.8.2.1 $ 
  * 
  * @since 6.0.0 
  */
@@ -214,7 +214,7 @@ public class CmsHtmlImportConverter {
             }
         } catch (IOException e) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0, e.getLocalizedMessage()));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0, e.getLocalizedMessage()));
             }
             return;
         }
@@ -254,7 +254,7 @@ public class CmsHtmlImportConverter {
         /* check if html code has errors */
         if (m_tidy.getParseErrors() != 0) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_0));
             }
         }
         /* second step: create transformed output with printDocument from DOM */
@@ -269,7 +269,7 @@ public class CmsHtmlImportConverter {
 
         } catch (IOException e) {
             if (CmsLog.INIT.isWarnEnabled()) {
-                CmsLog.INIT.warn(Messages.get().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_1, e.getLocalizedMessage()));
+                CmsLog.INIT.warn(Messages.get().getBundle().key(Messages.LOG_HTMLIMPORT_CONVERSION_ERROR_1, e.getLocalizedMessage()));
             }
             return;
         }

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/search/CmsSearchIndexSource.java,v $
- * Date   : $Date: 2005/09/20 15:39:06 $
- * Version: $Revision: 1.12.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:38 $
+ * Version: $Revision: 1.12.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.12.2.1 $ 
+ * @version $Revision: 1.12.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -290,7 +290,9 @@ public class CmsSearchIndexSource implements Comparable {
             m_indexerClassName = indexerClassName;
         } catch (Exception exc) {
             if (LOG.isWarnEnabled()) {
-                LOG.warn(Messages.get().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName), exc);
+                LOG.warn(
+                    Messages.get().getBundle().key(Messages.LOG_INDEXER_CREATION_FAILED_1, m_indexerClassName),
+                    exc);
             }
             throw new CmsIllegalArgumentException(Messages.get().container(
                 Messages.ERR_INDEXSOURCE_INDEXER_CLASS_NAME_2,

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/editors/fckeditor/CmsFCKEditorFileBrowser.java,v $
- * Date   : $Date: 2005/12/16 14:12:40 $
- * Version: $Revision: 1.1.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:48 $
+ * Version: $Revision: 1.1.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -76,7 +76,7 @@ import org.dom4j.Element;
  * 
  * @author Andreas Zahner
  * 
- * @version $Revision: 1.1.2.1 $ 
+ * @version $Revision: 1.1.2.2 $ 
  * 
  * @since 6.1.7
  */
@@ -563,7 +563,6 @@ public class CmsFCKEditorFileBrowser extends CmsDialog {
         }
 
         // get the top response
-        int todo = 0;
         CmsFlexController controller = CmsFlexController.getController(getJsp().getRequest());
         HttpServletResponse res = controller.getTopResponse();
         // set the response headers depending on the command to execute

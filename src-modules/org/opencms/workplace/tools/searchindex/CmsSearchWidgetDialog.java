@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src-modules/org/opencms/workplace/tools/searchindex/CmsSearchWidgetDialog.java,v $
- * Date   : $Date: 2006/03/17 16:47:43 $
- * Version: $Revision: 1.1.2.4 $
+ * Date   : $Date: 2006/03/25 22:42:37 $
+ * Version: $Revision: 1.1.2.5 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -32,6 +32,7 @@
 package org.opencms.workplace.tools.searchindex;
 
 import org.opencms.file.CmsRequestContext;
+import org.opencms.i18n.CmsMessages;
 import org.opencms.jsp.CmsJspActionElement;
 import org.opencms.search.CmsSearch;
 import org.opencms.search.CmsSearchParameters;
@@ -66,7 +67,7 @@ import javax.servlet.jsp.PageContext;
  * 
  * @author Achim Westermann 
  * 
- * @version $Revision: 1.1.2.4 $
+ * @version $Revision: 1.1.2.5 $
  * 
  * @since 6.0.0
  */
@@ -476,18 +477,23 @@ public class CmsSearchWidgetDialog extends A_CmsEditSearchIndexDialog {
     private List getSortWidgetConfiguration() {
 
         List result = new LinkedList();
-        result.add(new CmsSelectWidgetOption(CmsSearchParameters.SORT_NAMES[0], true, Messages.get().key(
-            getLocale(),
-            Messages.GUI_SELECT_LABEL_SEARCH_SORT_SCORE_0)));
-        result.add(new CmsSelectWidgetOption(CmsSearchParameters.SORT_NAMES[1], false, Messages.get().key(
-            getLocale(),
-            Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_CREATED_0)));
-        result.add(new CmsSelectWidgetOption(CmsSearchParameters.SORT_NAMES[2], false, Messages.get().key(
-            getLocale(),
-            Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_LAST_MODIFIED_0)));
-        result.add(new CmsSelectWidgetOption(CmsSearchParameters.SORT_NAMES[3], false, Messages.get().key(
-            getLocale(),
-            Messages.GUI_SELECT_LABEL_SEARCH_SORT_TITLE_0)));
+        CmsMessages messages = Messages.get().getBundle(getLocale());
+        result.add(new CmsSelectWidgetOption(
+            CmsSearchParameters.SORT_NAMES[0],
+            true,
+            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_SCORE_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsSearchParameters.SORT_NAMES[1],
+            false,
+            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_CREATED_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsSearchParameters.SORT_NAMES[2],
+            false,
+            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_DATE_LAST_MODIFIED_0)));
+        result.add(new CmsSelectWidgetOption(
+            CmsSearchParameters.SORT_NAMES[3],
+            false,
+            messages.key(Messages.GUI_SELECT_LABEL_SEARCH_SORT_TITLE_0)));
         return result;
     }
 

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/jsp/CmsJspLoginBean.java,v $
- * Date   : $Date: 2006/03/10 11:48:00 $
- * Version: $Revision: 1.18.2.1 $
+ * Date   : $Date: 2006/03/25 22:42:36 $
+ * Version: $Revision: 1.18.2.2 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -62,7 +62,7 @@ import org.apache.commons.logging.Log;
  * 
  * @author  Alexander Kandzior 
  * 
- * @version $Revision: 1.18.2.1 $ 
+ * @version $Revision: 1.18.2.2 $ 
  * 
  * @since 6.0.0 
  */
@@ -210,7 +210,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         if (m_loginException == null) {
             // login was successful
             if (LOG.isInfoEnabled()) {
-                LOG.info(Messages.get().key(
+                LOG.info(Messages.get().getBundle().key(
                     Messages.LOG_LOGIN_SUCCESSFUL_3,
                     userName,
                     getRequestContext().addSiteRoot(getRequestContext().getUri()),
@@ -228,7 +228,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                 if (org.opencms.security.Messages.ERR_LOGIN_FAILED_DISABLED_3 == m_loginException.getMessageContainer().getKey()) {
 
                     // the user has been disabled
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_LOGIN_FAILED_DISABLED_3,
                         userName,
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
@@ -237,7 +237,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                 } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_TEMP_DISABLED_5 == m_loginException.getMessageContainer().getKey()) {
 
                     // the user has been disabled
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_LOGIN_FAILED_TEMP_DISABLED_5,
                         new Object[] {
                             userName,
@@ -249,7 +249,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                 } else if (org.opencms.security.Messages.ERR_LOGIN_FAILED_NO_USER_3 == m_loginException.getMessageContainer().getKey()) {
 
                     // the requested user does not exist in the database
-                    LOG.warn(Messages.get().key(
+                    LOG.warn(Messages.get().getBundle().key(
                         Messages.LOG_LOGIN_FAILED_NO_USER_3,
                         userName,
                         getRequestContext().addSiteRoot(getRequestContext().getUri()),
@@ -262,7 +262,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
                     if (OpenCms.getLoginManager().getLoginMessage() != null) {
                         endTime = OpenCms.getLoginManager().getLoginMessage().getTimeEnd();
                     }
-                    LOG.info(Messages.get().key(
+                    LOG.info(Messages.get().getBundle().key(
                         Messages.LOG_LOGIN_FAILED_WITH_MESSAGE_4,
                         new Object[] {
                             userName,
@@ -288,7 +288,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
             } else {
                 // the error was database related, there may be an issue with the setup 
                 // write the exception to the log as well
-                LOG.error(Messages.get().key(
+                LOG.error(Messages.get().getBundle().key(
                     Messages.LOG_LOGIN_FAILED_DB_REASON_3,
                     userName,
                     getRequestContext().addSiteRoot(getRequestContext().getUri()),
@@ -337,7 +337,7 @@ public class CmsJspLoginBean extends CmsJspActionElement {
         }
         // logout was successful
         if (LOG.isInfoEnabled()) {
-            LOG.info(Messages.get().key(
+            LOG.info(Messages.get().getBundle().key(
                 Messages.LOG_LOGOUT_SUCCESFUL_3,
                 getRequestContext().currentUser().getName(),
                 getRequestContext().addSiteRoot(getRequestContext().getUri()),

@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/importexport/CmsImportVersion4.java,v $
- * Date   : $Date: 2006/03/22 17:38:53 $
- * Version: $Revision: 1.84.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:44 $
+ * Version: $Revision: 1.84.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -68,7 +68,7 @@ import org.dom4j.Element;
  * @author Michael Emmerich 
  * @author Thomas Weckert  
  * 
- * @version $Revision: 1.84.2.3 $ 
+ * @version $Revision: 1.84.2.4 $ 
  * 
  * @since 6.0.0 
  * 
@@ -359,7 +359,7 @@ public class CmsImportVersion4 extends A_CmsImport {
             immutableResources = Collections.EMPTY_LIST;
         }
         if (LOG.isDebugEnabled()) {
-            LOG.debug(Messages.get().key(
+            LOG.debug(Messages.get().getBundle().key(
                 Messages.LOG_IMPORTEXPORT_IMMUTABLE_RESOURCES_SIZE_1,
                 Integer.toString(immutableResources.size())));
         }
@@ -538,7 +538,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             } catch (CmsException e) {
                                 // user or group of ACE might not exist in target system, ignore ACE
                                 if (LOG.isWarnEnabled()) {
-                                    LOG.warn(Messages.get().key(
+                                    LOG.warn(Messages.get().getBundle().key(
                                         Messages.LOG_IMPORTEXPORT_ERROR_IMPORTING_ACE_1,
                                         translatedName), e);
                                 }
@@ -549,7 +549,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         importAccessControlEntries(res, aceList);
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_IMPORTING_4,
                                 new Object[] {
                                     String.valueOf(i + 1),
@@ -565,7 +565,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                             translatedName));
 
                         if (LOG.isInfoEnabled()) {
-                            LOG.info(Messages.get().key(
+                            LOG.info(Messages.get().getBundle().key(
                                 Messages.LOG_SKIPPING_3,
                                 String.valueOf(i + 1),
                                 String.valueOf(importSize),
@@ -582,7 +582,7 @@ public class CmsImportVersion4 extends A_CmsImport {
                         translatedName));
 
                     if (LOG.isInfoEnabled()) {
-                        LOG.info(Messages.get().key(
+                        LOG.info(Messages.get().getBundle().key(
                             Messages.LOG_SKIPPING_3,
                             String.valueOf(i + 1),
                             String.valueOf(importSize),

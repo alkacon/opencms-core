@@ -1,7 +1,7 @@
 /*
  * File   : $Source: /alkacon/cvs/opencms/src/org/opencms/workplace/help/CmsHelpTemplateBean.java,v $
- * Date   : $Date: 2006/02/09 16:52:25 $
- * Version: $Revision: 1.19.2.3 $
+ * Date   : $Date: 2006/03/25 22:42:49 $
+ * Version: $Revision: 1.19.2.4 $
  *
  * This library is part of OpenCms -
  * the Open Source Content Mananagement System
@@ -80,7 +80,7 @@ import org.apache.commons.logging.Log;
  * @author Andreas Zahner 
  * @author Achim Westermann
  * 
- * @version $Revision: 1.19.2.3 $ 
+ * @version $Revision: 1.19.2.4 $ 
  * 
  * @since 6.0.0 
  */
@@ -421,10 +421,8 @@ public class CmsHelpTemplateBean extends CmsDialog {
             StringBuffer submitAction = new StringBuffer();
             submitAction.append("parseSearchQuery(document.forms[\'searchform\'],\'");
             submitAction.append(
-                Messages.get().key(
-                    getLocale(),
-                    Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1,
-                    new Object[] {new Integer(3)})).append("\');");
+                Messages.get().getBundle(getLocale()).key(Messages.GUI_HELP_ERR_SEARCH_WORD_LENGTH_1, new Integer(3))).append(
+                "\');");
 
             result.append("<form style=\"margin: 0;\" name=\"searchform\" method=\"post\" action=\"");
             String searchLink = getJsp().link(
