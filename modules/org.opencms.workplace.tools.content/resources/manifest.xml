@@ -306,7 +306,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -537,7 +537,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -603,7 +603,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
@@ -665,7 +665,7 @@
 				</property>
 				<property>
 					<name>default-file</name>
-					<value><![CDATA[index.html]]></value>
+					<value><![CDATA[index.jsp]]></value>
 				</property>
 				<property>
 					<name>NavInfo</name>
