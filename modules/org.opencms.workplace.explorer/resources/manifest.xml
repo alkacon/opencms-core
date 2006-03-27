@@ -204,8 +204,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/explorer/history/comparison.html</source>
-			<destination>system/workplace/explorer/history/comparison.html</destination>
+			<source>system/workplace/explorer/history/comparison.jsp</source>
+			<destination>system/workplace/explorer/history/comparison.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>883c690b-50f9-11da-84ab-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -238,8 +238,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/explorer/history/difference.html</source>
-			<destination>system/workplace/explorer/history/difference.html</destination>
+			<source>system/workplace/explorer/history/difference.jsp</source>
+			<destination>system/workplace/explorer/history/difference.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>790e055b-4f79-11da-acca-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
@@ -272,8 +272,8 @@
 			<accesscontrol/>
 		</file>
 		<file>
-			<source>system/workplace/explorer/history/index.html</source>
-			<destination>system/workplace/explorer/history/index.html</destination>
+			<source>system/workplace/explorer/history/index.jsp</source>
+			<destination>system/workplace/explorer/history/index.jsp</destination>
 			<type>jsp</type>
 			<uuidresource>ba415d66-4f73-11da-bca8-29ec6bce001d</uuidresource>
 			<datelastmodified>Mon, 27 Jun 2005 08:00:00 GMT</datelastmodified>
